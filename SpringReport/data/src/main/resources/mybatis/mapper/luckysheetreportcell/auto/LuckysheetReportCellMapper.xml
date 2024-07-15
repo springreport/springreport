@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 本文件由代码生成器自动完成 -->
+<mapper namespace="com.springreport.mapper.luckysheetreportcell.LuckysheetReportCellMapper" >
+
+  <!-- 字段与实体的映射 -->
+  <resultMap id="BaseResultMap" type="com.springreport.entity.luckysheetreportcell.LuckysheetReportCell">
+     <id column="id" property="id" jdbcType="BIGINT" />
+	 <result column="tpl_id" property="tplId" jdbcType="BIGINT" />
+	 <result column="sheet_id" property="sheetId" jdbcType="BIGINT" />
+	 <result column="dataset_name" property="datasetName" jdbcType="VARCHAR" />
+	 <result column="coordsx" property="coordsx" jdbcType="INTEGER" />
+	 <result column="coordsy" property="coordsy" jdbcType="INTEGER" />
+	 <result column="cell_extend" property="cellExtend" jdbcType="TINYINT" />
+	 <result column="cell_value" property="cellValue" jdbcType="LONGVARCHAR" />
+	 <result column="cell_data" property="cellData" jdbcType="LONGVARCHAR" />
+	 <result column="cell_value_type" property="cellValueType" jdbcType="TINYINT" />
+	 <result column="aggregate_type" property="aggregateType" jdbcType="VARCHAR" />
+	 <result column="group_property" property="groupProperty" jdbcType="VARCHAR" />
+	 <result column="is_link" property="isLink" jdbcType="TINYINT" />
+	 <result column="link_config" property="linkConfig" jdbcType="LONGVARCHAR" />
+	 <result column="is_merge" property="isMerge" jdbcType="TINYINT" />
+	 <result column="row_span" property="rowSpan" jdbcType="INTEGER" />
+	 <result column="col_span" property="colSpan" jdbcType="INTEGER" />
+	 <result column="cell_function" property="cellFunction" jdbcType="TINYINT" />
+	 <result column="digit" property="digit" jdbcType="TINYINT" />
+	 <result column="group_summary_dependency_r" property="groupSummaryDependencyR" jdbcType="VARCHAR" />
+	 <result column="group_summary_dependency_c" property="groupSummaryDependencyC" jdbcType="VARCHAR" />
+	 <result column="data_from" property="dataFrom" jdbcType="TINYINT" />
+	 <result column="is_group_merge" property="isGroupMerge" jdbcType="BIT" />
+	 <result column="is_function" property="isFunction" jdbcType="TINYINT" />
+	 <result column="warning" property="warning" jdbcType="BIT" />
+	 <result column="warning_rules" property="warningRules" jdbcType="VARCHAR" />
+	 <result column="warning_color" property="warningColor" jdbcType="VARCHAR" />
+	 <result column="threshold" property="threshold" jdbcType="VARCHAR" />
+	 <result column="warning_content" property="warningContent" jdbcType="VARCHAR" />
+	 <result column="is_relied" property="isRelied" jdbcType="TINYINT" />
+	 <result column="rely_cells" property="relyCells" jdbcType="LONGVARCHAR" />
+	 <result column="is_dict" property="isDict" jdbcType="BIT" />
+	 <result column="datasource_id" property="datasourceId" jdbcType="BIGINT" />
+	 <result column="dict_type" property="dictType" jdbcType="VARCHAR" />
+	 <result column="alternate_format" property="alternateFormat" jdbcType="TINYINT" />
+	 <result column="alternate_format_bc_odd" property="alternateFormatBcOdd" jdbcType="VARCHAR" />
+	 <result column="alternate_format_bc_even" property="alternateFormatBcEven" jdbcType="VARCHAR" />
+	 <result column="alternate_format_fc_odd" property="alternateFormatFcOdd" jdbcType="VARCHAR" />
+	 <result column="alternate_format_fc_even" property="alternateFormatFcEven" jdbcType="VARCHAR" />
+	 <result column="is_conditions" property="isConditions" jdbcType="TINYINT" />
+	 <result column="cell_conditions" property="cellConditions" jdbcType="LONGVARCHAR" />
+	 <result column="filter_type" property="filterType" jdbcType="VARCHAR" />
+	 <result column="is_hidden_conditions" property="isHiddenConditions" jdbcType="TINYINT" />
+	 <result column="hidden_type" property="hiddenType" jdbcType="VARCHAR" />
+	 <result column="hidden_conditions" property="hiddenConditions" jdbcType="LONGVARCHAR" />
+	 <result column="is_chart_attr" property="isChartAttr" jdbcType="TINYINT" />
+	 <result column="chart_ids" property="chartIds" jdbcType="LONGVARCHAR" />
+	 <result column="series_name" property="seriesName" jdbcType="VARCHAR" />
+	 <result column="is_chart_cell" property="isChartCell" jdbcType="TINYINT" />
+	 <result column="is_data_verification" property="isDataVerification" jdbcType="TINYINT" />
+	 <result column="data_verification" property="dataVerification" jdbcType="LONGVARCHAR" />
+	 <result column="is_drill" property="isDrill" jdbcType="BIT" />
+	 <result column="drill_id" property="drillId" jdbcType="BIGINT" />
+	 <result column="drill_attrs" property="drillAttrs" jdbcType="LONGVARCHAR" />
+	 <result column="unit_transfer" property="unitTransfer" jdbcType="BIT" />
+	 <result column="transfer_type" property="transferType" jdbcType="TINYINT" />
+	 <result column="multiple" property="multiple" jdbcType="VARCHAR" />
+	 <result column="creator" property="creator" jdbcType="BIGINT" />
+	 <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+	 <result column="updater" property="updater" jdbcType="BIGINT" />
+	 <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+	 <result column="del_flag" property="delFlag" jdbcType="TINYINT" />
+	 <result column="is_subtotal" property="isSubtotal" jdbcType="BIT" />
+	 <result column="subtotal_cells" property="subtotalCells" jdbcType="LONGVARCHAR" />
+	 <result column="is_subtotal_calc" property="isSubtotalCalc" jdbcType="BIT" />
+	 <result column="subtotal_calc" property="subtotalCalc" jdbcType="LONGVARCHAR" />
+	 <result column="subtotal_attrs" property="subtotalAttrs" jdbcType="LONGVARCHAR" />
+  </resultMap>
+
+  <sql id="sql_where_like">
+	<where>
+		<if test="id !=null and id !=''">
+			and id = #{id,jdbcType=BIGINT}
+		</if>
+		<if test="tplId !=null">
+			and tpl_id = #{tplId,jdbcType=BIGINT}
+		</if>
+		<if test="sheetId !=null">
+			and sheet_id = #{sheetId,jdbcType=BIGINT}
+		</if>
+		<if test="datasetName !=null and datasetName !=''">
+			and dataset_name like concat(concat("%",#{datasetName,jdbcType=VARCHAR}),"%")
+		</if>
+		<if test="coordsx !=null">
+			and coordsx = #{coordsx,jdbcType=INTEGER}
+		</if>
+		<if test="coordsy !=null">
+			and coordsy = #{coordsy,jdbcType=INTEGER}
+		</if>
+		<if test="cellExtend !=null">
+			and cell_extend = #{cellExtend,jdbcType=TINYINT}
+		</if>
+		<if test="cellValue !=null and cellValue !=''">
+			and cell_value like concat(concat("%",#{cellValue,jdbcType=LONGVARCHAR}),"%")
+		</if>
+		<if test="cellData !=null and cellData !=''">
+			and cell_data like concat(concat("%",#{cellData,jdbcType=LONGVARCHAR}),"%")
+		</if>
+		<if test="cellValueType !=null">
+			and cell_value_type = #{cellValueType,jdbcType=TINYINT}
+		</if>
+		<if test="aggregateType !=null and aggregateType !=''">
+			and aggregate_type = #{aggregateType,jdbcType=VARCHAR}
+		</if>
+		<if test="groupProperty !=null and groupProperty !=''">
+			and group_property like concat(concat("%",#{groupProperty,jdbcType=VARCHAR}),"%")
+		</if>
+		<if test="isLink !=null">
+			and is_link = #{isLink,jdbcType=TINYINT}
+		</if>
+		<if test="linkConfig !=null and linkConfig !=''">
+			and link_config like concat(concat("%",#{linkConfig,jdbcType=LONGVARCHAR}),"%")
+		</if>
+		<if test="isMerge !=null">
+			and is_merge = #{isMerge,jdbcType=TINYINT}
+		</if>
+		<if test="rowSpan !=null">
+			and row_span = #{rowSpan,jdbcType=INTEGER}
+		</if>
+		<if test="colSpan !=null">
+			and col_span = #{colSpan,jdbcType=INTEGER}
+		</if>
+		<if test="cellFunction !=null">
+			and cell_function = #{cellFunction,jdbcType=TINYINT}
+		</if>
+		<if test="digit !=null">
+			and digit = #{digit,jdbcType=TINYINT}
+		</if>
+		<if test="groupSummaryDependencyR !=null and groupSummaryDependencyR !=''">
+			and group_summary_dependency_r like concat(concat("%",#{groupSummaryDependencyR,jdbcType=VARCHAR}),"%")
+		</if>
+		<if test="groupSummaryDependencyC !=null and groupSummaryDependencyC !=''">
+			and group_summary_dependency_c like concat(concat("%",#{groupSummaryDependencyC,jdbcType=VARCHAR}),"%")
+		</if>
+		<if test="dataFrom !=null">
+			and data_from = #{dataFrom,jdbcType=TINYINT}
+		</if>
+		<if test="isGroupMerge !=null">
+			and is_group_merge = #{isGroupMerge,jdbcType=INTEGER}
+		</if>
+		<if test="isFunction !=null">
+			and is_function = #{isFunction,jdbcType=TINYINT}
+		</if>
+		<if test="warning !=null">
+			and warning = #{warning,jdbcType=INTEGER}
+		</if>
+		<if test="warningRules !=null and warningRules !=''">
+			and warning_rules like concat(concat("%",#{warningRules,jdbcType=VARCHAR}),"%")
+		</if>
+		<if test="warningColor !=null and warningColor !=''">
+			and warning_color like concat(concat("%",#{warningColor,jdbcType=VARCHAR}),"%")
+		</if>
+		<if test="threshold !=null and threshold !=''">
+			and threshold like concat(concat("%",#{threshold,jdbcType=VARCHAR}),"%")
+		</if>
+		<if test="warningContent !=null and warningContent !=''">
+			and warning_content like concat(concat("%",#{warningContent,jdbcType=VARCHAR}),"%")
+		</if>
+		<if test="isRelied !=null">
+			and is_relied = #{isRelied,jdbcType=TINYINT}
+		</if>
+		<if test="relyCells !=null and relyCells !=''">
+			and rely_cells like concat(concat("%",#{relyCells,jdbcType=LONGVARCHAR}),"%")
+		</if>
+		<if test="isDict !=null">
+			and is_dict = #{isDict,jdbcType=INTEGER}
+		</if>
+		<if test="datasourceId !=null">
+			and datasource_id = #{datasourceId,jdbcType=BIGINT}
+		</if>
+		<if test="dictType !=null and dictType !=''">
+			and dict_type = #{dictType,jdbcType=VARCHAR}
+		</if>
+		<if test="alternateFormat !=null">
+			and alternate_format = #{alternateFormat,jdbcType=TINYINT}
+		</if>
+		<if test="alternateFormatBcOdd !=null and alternateFormatBcOdd !=''">
+			and alternate_format_bc_odd like concat(concat("%",#{alternateFormatBcOdd,jdbcType=VARCHAR}),"%")
+		</if>
+		<if test="alternateFormatBcEven !=null and alternateFormatBcEven !=''">
+			and alternate_format_bc_even like concat(concat("%",#{alternateFormatBcEven,jdbcType=VARCHAR}),"%")
+		</if>
+		<if test="alternateFormatFcOdd !=null and alternateFormatFcOdd !=''">
+			and alternate_format_fc_odd like concat(concat("%",#{alternateFormatFcOdd,jdbcType=VARCHAR}),"%")
+		</if>
+		<if test="alternateFormatFcEven !=null and alternateFormatFcEven !=''">
+			and alternate_format_fc_even like concat(concat("%",#{alternateFormatFcEven,jdbcType=VARCHAR}),"%")
+		</if>
+		<if test="isConditions !=null">
+			and is_conditions = #{isConditions,jdbcType=TINYINT}
+		</if>
+		<if test="cellConditions !=null and cellConditions !=''">
+			and cell_conditions like concat(concat("%",#{cellConditions,jdbcType=LONGVARCHAR}),"%")
+		</if>
+		<if test="filterType !=null and filterType !=''">
+			and filter_type = #{filterType,jdbcType=VARCHAR}
+		</if>
+		<if test="isHiddenConditions !=null">
+			and is_hidden_conditions = #{isHiddenConditions,jdbcType=TINYINT}
+		</if>
+		<if test="hiddenType !=null and hiddenType !=''">
+			and hidden_type = #{hiddenType,jdbcType=VARCHAR}
+		</if>
+		<if test="hiddenConditions !=null and hiddenConditions !=''">
+			and hidden_conditions like concat(concat("%",#{hiddenConditions,jdbcType=LONGVARCHAR}),"%")
+		</if>
+		<if test="isChartAttr !=null">
+			and is_chart_attr = #{isChartAttr,jdbcType=TINYINT}
+		</if>
+		<if test="chartIds !=null and chartIds !=''">
+			and chart_ids = #{chartIds,jdbcType=LONGVARCHAR}
+		</if>
+		<if test="seriesName !=null and seriesName !=''">
+			and series_name like concat(concat("%",#{seriesName,jdbcType=VARCHAR}),"%")
+		</if>
+		<if test="isChartCell !=null">
+			and is_chart_cell = #{isChartCell,jdbcType=TINYINT}
+		</if>
+		<if test="isDataVerification !=null">
+			and is_data_verification = #{isDataVerification,jdbcType=TINYINT}
+		</if>
+		<if test="dataVerification !=null and dataVerification !=''">
+			and data_verification like concat(concat("%",#{dataVerification,jdbcType=LONGVARCHAR}),"%")
+		</if>
+		<if test="isDrill !=null">
+			and is_drill = #{isDrill,jdbcType=INTEGER}
+		</if>
+		<if test="drillId !=null">
+			and drill_id = #{drillId,jdbcType=BIGINT}
+		</if>
+		<if test="drillAttrs !=null and drillAttrs !=''">
+			and drill_attrs like concat(concat("%",#{drillAttrs,jdbcType=LONGVARCHAR}),"%")
+		</if>
+		<if test="unitTransfer !=null">
+			and unit_transfer = #{unitTransfer,jdbcType=INTEGER}
+		</if>
+		<if test="transferType !=null">
+			and transfer_type = #{transferType,jdbcType=TINYINT}
+		</if>
+		<if test="multiple !=null and multiple !=''">
+			and multiple like concat(concat("%",#{multiple,jdbcType=VARCHAR}),"%")
+		</if>
+		<if test="creator !=null">
+			and creator = #{creator,jdbcType=BIGINT}
+		</if>
+		<if test="createTime !=null">
+		</if>
+		<if test="updater !=null">
+			and updater = #{updater,jdbcType=BIGINT}
+		</if>
+		<if test="updateTime !=null">
+		</if>
+		<if test="delFlag !=null">
+			and del_flag = #{delFlag,jdbcType=TINYINT}
+		</if>
+		<if test="isSubtotal !=null">
+			and is_subtotal = #{isSubtotal,jdbcType=INTEGER}
+		</if>
+		<if test="subtotalCells !=null and subtotalCells !=''">
+			and subtotal_cells like concat(concat("%",#{subtotalCells,jdbcType=LONGVARCHAR}),"%")
+		</if>
+		<if test="isSubtotalCalc !=null">
+			and is_subtotal_calc = #{isSubtotalCalc,jdbcType=INTEGER}
+		</if>
+		<if test="subtotalCalc !=null and subtotalCalc !=''">
+			and subtotal_calc like concat(concat("%",#{subtotalCalc,jdbcType=LONGVARCHAR}),"%")
+		</if>
+		<if test="subtotalAttrs !=null and subtotalAttrs !=''">
+			and subtotal_attrs like concat(concat("%",#{subtotalAttrs,jdbcType=LONGVARCHAR}),"%")
+		</if>
+	</where>
+  </sql>
+  <!-- 字段集合 -->
+  <sql id="Base_Column_List">
+    id,tpl_id,sheet_id,dataset_name,coordsx,coordsy,cell_extend,cell_value,cell_data,cell_value_type,aggregate_type,group_property,is_link,link_config,is_merge,row_span,col_span,cell_function,digit,group_summary_dependency_r,group_summary_dependency_c,data_from,is_group_merge,is_function,warning,warning_rules,warning_color,threshold,warning_content,is_relied,rely_cells,is_dict,datasource_id,dict_type,alternate_format,alternate_format_bc_odd,alternate_format_bc_even,alternate_format_fc_odd,alternate_format_fc_even,is_conditions,cell_conditions,filter_type,is_hidden_conditions,hidden_type,hidden_conditions,is_chart_attr,chart_ids,series_name,is_chart_cell,is_data_verification,data_verification,is_drill,drill_id,drill_attrs,unit_transfer,transfer_type,multiple,creator,create_time,updater,update_time,del_flag,is_subtotal,subtotal_cells,is_subtotal_calc,subtotal_calc,subtotal_attrs
+  </sql>
+
+  <!-- 根据条件模糊查询 -->
+  <select id="searchDataLike" resultMap="BaseResultMap" parameterType="com.springreport.entity.luckysheetreportcell.LuckysheetReportCell">
+    select 
+    <include refid="Base_Column_List" />
+    from luckysheet_report_cell 
+    <include refid="sql_where_like" />
+    <if test="orderSql !=null and orderSql !='' ">   
+      order by ${orderSql}
+    </if>
+  </select>
+
+</mapper>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 本文件由代码生成器自动完成 -->
+<mapper namespace="com.springreport.mapper.reportdatasource.ReportDatasourceMapper" >
+
+  <!-- 字段与实体的映射 -->
+  <resultMap id="BaseResultMap" type="com.springreport.entity.reportdatasource.ReportDatasource">
+     <id column="id" property="id" jdbcType="BIGINT" />
+	 <result column="merchant_no" property="merchantNo" jdbcType="VARCHAR" />
+	 <result column="code" property="code" jdbcType="VARCHAR" />
+	 <result column="name" property="name" jdbcType="VARCHAR" />
+	 <result column="type" property="type" jdbcType="TINYINT" />
+	 <result column="driver_class" property="driverClass" jdbcType="VARCHAR" />
+	 <result column="jdbc_url" property="jdbcUrl" jdbcType="VARCHAR" />
+	 <result column="user_name" property="userName" jdbcType="VARCHAR" />
+	 <result column="password" property="password" jdbcType="VARCHAR" />
+	 <result column="api_columns_prefix" property="apiColumnsPrefix" jdbcType="VARCHAR" />
+	 <result column="api_columns" property="apiColumns" jdbcType="LONGVARCHAR" />
+	 <result column="api_result_type" property="apiResultType" jdbcType="VARCHAR" />
+	 <result column="api_request_type" property="apiRequestType" jdbcType="VARCHAR" />
+	 <result column="api_request_header" property="apiRequestHeader" jdbcType="LONGVARCHAR" />
+	 <result column="creator" property="creator" jdbcType="BIGINT" />
+	 <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+	 <result column="updater" property="updater" jdbcType="BIGINT" />
+	 <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+	 <result column="del_flag" property="delFlag" jdbcType="TINYINT" />
+  </resultMap>
+
+  <sql id="sql_where_like">
+	<where>
+		<if test="id !=null and id !=''">
+			and id = #{id,jdbcType=BIGINT}
+		</if>
+		<if test="merchantNo !=null and merchantNo !=''">
+			and merchant_no = #{merchantNo,jdbcType=VARCHAR}
+		</if>
+		<if test="code !=null and code !=''">
+			and code like concat(concat("%",#{code,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="name !=null and name !=''">
+			and name like concat(concat("%",#{name,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="type !=null">
+			and type = #{type,jdbcType=TINYINT}
+		</if>
+		<if test="driverClass !=null and driverClass !=''">
+			and driver_class like concat(concat("%",#{driverClass,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="jdbcUrl !=null and jdbcUrl !=''">
+			and jdbc_url like concat(concat("%",#{jdbcUrl,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="userName !=null and userName !=''">
+			and user_name like concat(concat("%",#{userName,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="password !=null and password !=''">
+			and password like concat(concat("%",#{password,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="apiColumnsPrefix !=null and apiColumnsPrefix !=''">
+			and api_columns_prefix like concat(concat("%",#{apiColumnsPrefix,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="apiColumns !=null and apiColumns !=''">
+			and api_columns like concat(concat("%",#{apiColumns,jdbcType=LONGVARCHAR}),"%") 
+		</if>
+		<if test="apiResultType !=null and apiResultType !=''">
+			and api_result_type = #{apiResultType,jdbcType=VARCHAR}
+		</if>
+		<if test="apiRequestType !=null and apiRequestType !=''">
+			and api_request_type = #{apiRequestType,jdbcType=VARCHAR}
+		</if>
+		<if test="apiRequestHeader !=null and apiRequestHeader !=''">
+			and api_request_header like concat(concat("%",#{apiRequestHeader,jdbcType=LONGVARCHAR}),"%") 
+		</if>
+		<if test="creator !=null">
+			and creator = #{creator,jdbcType=BIGINT}
+		</if>
+		<if test="createTime !=null">
+		</if>
+		<if test="updater !=null">
+			and updater = #{updater,jdbcType=BIGINT}
+		</if>
+		<if test="updateTime !=null">
+		</if>
+		<if test="delFlag !=null">
+			and del_flag = #{delFlag,jdbcType=TINYINT}
+		</if>
+	</where>
+  </sql>
+  <!-- 字段集合 -->
+  <sql id="Base_Column_List">
+    id,merchant_no,code,name,type,driver_class,jdbc_url,user_name,password,api_columns_prefix,api_columns,api_result_type,api_request_type,api_request_header,creator,create_time,updater,update_time,del_flag
+  </sql>
+
+  <!-- 根据条件模糊查询 -->
+  <select id="searchDataLike" databaseId="mysql" resultMap="BaseResultMap" parameterType="com.springreport.entity.reportdatasource.ReportDatasource">
+    select 
+    <include refid="Base_Column_List" />
+    from report_datasource 
+    <include refid="sql_where_like" />
+    <if test="orderSql !=null and orderSql !='' ">   
+      order by ${orderSql}
+    </if>
+  </select>
+
+</mapper>

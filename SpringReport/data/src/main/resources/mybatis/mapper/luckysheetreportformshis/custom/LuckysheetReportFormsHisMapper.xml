@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 本文件由代码生成器自动完成 -->
+<mapper namespace="com.springreport.mapper.luckysheetreportformshis.LuckysheetReportFormsHisMapper" >
+
+ 	<select id="getTableList" parameterType="com.springreport.entity.luckysheetreportformshis.LuckysheetReportFormsHis" resultType="com.springreport.dto.LuckysheetReportFormsHis.LuckysheetReportFormsHisDto">
+ 		SELECT
+		t1.id,
+		t1.tpl_id AS tplId,
+		t1.sheet_index AS sheetIndex,
+		t1.datasource_id AS datasourceId,
+		t1.table_name AS tableName,
+		t1.basic_data AS basicData,
+		t1.report_data AS reportData,
+		t1.change_data_before AS changeDataBefore,
+		t1.change_data_after AS changeDataAfter,
+		t1.operate_ip AS operateIp,
+		t1.creator AS creator,
+		t1.create_time AS createTime,
+		t2.tpl_name AS tplName,
+		t3.sheet_name AS sheetName,
+		t4.user_name AS creatorName,
+		t5.name AS datasourceName
+		FROM
+		luckysheet_report_forms_his t1
+		LEFT JOIN report_tpl t2
+		ON t1.tpl_id = t2.id
+		LEFT JOIN report_tpl_sheet t3
+		ON t1.sheet_index = t3.sheet_index
+		LEFT JOIN sys_user t4
+		ON t1.creator = t4.id
+		LEFT JOIN report_datasource t5
+		ON t1.datasource_id = t5.id
+		WHERE
+		t1.tpl_id = #{tplId}
+		AND t1.sheet_index = #{sheetIndex}
+		AND t1.del_flag = 1
+		order by t1.create_time desc,
+		t1.id desc
+ 	</select>
+
+</mapper>

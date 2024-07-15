@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 本文件由代码生成器自动完成 -->
+<mapper namespace="com.springreport.mapper.sysmerchant.SysMerchantMapper" >
+
+  <!-- 根据条件模糊查询 -->
+  <select id="searchDataLike" databaseId="mysql" resultType="com.springreport.dto.sysmerchant.SysMerchantDto" parameterType="com.springreport.dto.sysmerchant.SysMerchantDto">
+    select 
+    t1.id,
+    t1.merchant_no,
+    t1.merchant_name,
+    t1.phone,email,
+    t1.status,
+    t1.auth_template,
+    t1.creator,
+    t1.create_time,
+    t1.updater,
+    t1.update_time,
+    t1.del_flag,
+    t2.template_name
+    from sys_merchant t1
+    left join
+    sys_merchant_auth_template t2
+    on t1.auth_template = t2.id
+    and t2.del_flag = 1
+	<where>
+		<if test="merchantNo !=null and merchantNo !=''">
+			and t1.merchant_no = #{merchantNo,jdbcType=VARCHAR}
+		</if>
+		<if test="merchantName !=null and merchantName !=''">
+			and t1.merchant_name like concat(concat("%",#{merchantName,jdbcType=VARCHAR}),"%")
+		</if>
+		<if test="phone !=null and phone !=''">
+			and t1.phone like concat(concat("%",#{phone,jdbcType=VARCHAR}),"%")
+		</if>
+		<if test="email !=null and email !=''">
+			and t1.email like concat(concat("%",#{email,jdbcType=VARCHAR}),"%")
+		</if>
+		<if test="isSystemMerchant !=null">
+			and t1.is_system_merchant = #{isSystemMerchant,jdbcType=TINYINT}
+		</if>
+		<if test="delFlag !=null">
+			and t1.del_flag = #{delFlag,jdbcType=TINYINT}
+		</if>
+	</where>
+    <if test="orderSql !=null and orderSql !='' ">   
+      order by ${orderSql}
+    </if>
+  </select>
+  
+</mapper>

@@ -1,0 +1,135 @@
+{
+  "id": "3688321",
+  "name": "springReport2",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "844040",
+      "name": "导出word",
+      "font_class": "daochuword",
+      "unicode": "e66b",
+      "unicode_decimal": 58987
+    },
+    {
+      "icon_id": "2022808",
+      "name": "保护",
+      "font_class": "baohu",
+      "unicode": "e602",
+      "unicode_decimal": 58882
+    },
+    {
+      "icon_id": "9916153",
+      "name": "分页",
+      "font_class": "fenye",
+      "unicode": "e690",
+      "unicode_decimal": 59024
+    },
+    {
+      "icon_id": "19014449",
+      "name": "下标",
+      "font_class": "subscript2svg",
+      "unicode": "e626",
+      "unicode_decimal": 58918
+    },
+    {
+      "icon_id": "19014451",
+      "name": "上标",
+      "font_class": "superscriptsvg",
+      "unicode": "e627",
+      "unicode_decimal": 58919
+    },
+    {
+      "icon_id": "4933368",
+      "name": "屏幕共享",
+      "font_class": "pingmugongxiang",
+      "unicode": "e746",
+      "unicode_decimal": 59206
+    },
+    {
+      "icon_id": "14795573",
+      "name": "广告监控",
+      "font_class": "bianzu-06",
+      "unicode": "e612",
+      "unicode_decimal": 58898
+    },
+    {
+      "icon_id": "666885",
+      "name": "设置",
+      "font_class": "shezhi",
+      "unicode": "e68f",
+      "unicode_decimal": 59023
+    },
+    {
+      "icon_id": "1790502",
+      "name": "斜线表头",
+      "font_class": "xiexianbiaotou",
+      "unicode": "e6fd",
+      "unicode_decimal": 59133
+    },
+    {
+      "icon_id": "2851691",
+      "name": "导出PDF",
+      "font_class": "daochuPDF",
+      "unicode": "e610",
+      "unicode_decimal": 58896
+    },
+    {
+      "icon_id": "11876928",
+      "name": "导出Excel",
+      "font_class": "daochuExcel",
+      "unicode": "e661",
+      "unicode_decimal": 58977
+    },
+    {
+      "icon_id": "1299925",
+      "name": "Image-1",
+      "font_class": "8tupian-1",
+      "unicode": "e66a",
+      "unicode_decimal": 58986
+    },
+    {
+      "icon_id": "587084",
+      "name": "save-as-24",
+      "font_class": "saveas24",
+      "unicode": "e7e4",
+      "unicode_decimal": 59364
+    },
+    {
+      "icon_id": "1703547",
+      "name": "历史记录",
+      "font_class": "lishijilu",
+      "unicode": "e64c",
+      "unicode_decimal": 58956
+    },
+    {
+      "icon_id": "4320345",
+      "name": "配比数据库",
+      "font_class": "peibishujuku",
+      "unicode": "e658",
+      "unicode_decimal": 58968
+    },
+    {
+      "icon_id": "5756347",
+      "name": "上传",
+      "font_class": "shangchuan-copy",
+      "unicode": "e621",
+      "unicode_decimal": 58913
+    },
+    {
+      "icon_id": "17935593",
+      "name": "76预览",
+      "font_class": "_yulan",
+      "unicode": "e625",
+      "unicode_decimal": 58917
+    },
+    {
+      "icon_id": "18028215",
+      "name": "保存2",
+      "font_class": "baocun2",
+      "unicode": "e618",
+      "unicode_decimal": 58904
+    }
+  ]
+}

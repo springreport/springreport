@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 本文件由代码生成器自动完成 -->
+<mapper namespace="com.springreport.mapper.sysposition.SysPositionMapper" >
+
+  <!-- 字段与实体的映射 -->
+  <resultMap id="BaseResultMap" type="com.springreport.entity.sysposition.SysPosition">
+     <id column="id" property="id" jdbcType="INTEGER" />
+	 <result column="area_name" property="areaName" jdbcType="VARCHAR" />
+	 <result column="area_code" property="areaCode" jdbcType="INTEGER" />
+	 <result column="city_code" property="cityCode" jdbcType="VARCHAR" />
+	 <result column="level" property="level" jdbcType="BIT" />
+	 <result column="area_index" property="areaIndex" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="sql_where_like">
+	<where>
+		<if test="id !=null and id !=''">
+			and id = #{id,jdbcType=INTEGER}
+		</if>
+		<if test="areaName !=null and areaName !=''">
+			and area_name like concat(concat("%",#{areaName,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="areaCode !=null">
+			and area_code = #{areaCode,jdbcType=INTEGER}
+		</if>
+		<if test="cityCode !=null and cityCode !=''">
+			and city_code like concat(concat("%",#{cityCode,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="level !=null">
+			and level = #{level,jdbcType=INTEGER}
+		</if>
+		<if test="areaIndex !=null and areaIndex !=''">
+			and area_index like concat(concat("%",#{areaIndex,jdbcType=VARCHAR}),"%") 
+		</if>
+	</where>
+  </sql>
+  <!-- 字段集合 -->
+  <sql id="Base_Column_List">
+    id,area_name,area_code,city_code,level,area_index
+  </sql>
+
+  <!-- 根据条件模糊查询 -->
+  <select id="searchDataLike" resultMap="BaseResultMap" parameterType="com.springreport.entity.sysposition.SysPosition">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_position 
+    <include refid="sql_where_like" />
+    <if test="orderSql !=null and orderSql !='' ">   
+      order by ${orderSql}
+    </if>
+  </select>
+
+</mapper>

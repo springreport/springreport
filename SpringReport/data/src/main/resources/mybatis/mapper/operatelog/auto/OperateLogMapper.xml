@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 本文件由代码生成器自动完成 -->
+<mapper namespace="com.springreport.mapper.operatelog.OperateLogMapper" >
+
+  <!-- 字段与实体的映射 -->
+  <resultMap id="BaseResultMap" type="com.springreport.entity.operatelog.OperateLog">
+     <id column="id" property="id" jdbcType="BIGINT" />
+	 <result column="user_id" property="userId" jdbcType="BIGINT" />
+	 <result column="user_name" property="userName" jdbcType="VARCHAR" />
+	 <result column="fun_module" property="funModule" jdbcType="VARCHAR" />
+	 <result column="operate_type" property="operateType" jdbcType="VARCHAR" />
+	 <result column="operate_remark" property="operateRemark" jdbcType="VARCHAR" />
+	 <result column="operate_method" property="operateMethod" jdbcType="VARCHAR" />
+	 <result column="operate_params" property="operateParams" jdbcType="LONGVARCHAR" />
+	 <result column="operate_time" property="operateTime" jdbcType="TIMESTAMP" />
+	 <result column="operate_status" property="operateStatus" jdbcType="TINYINT" />
+	 <result column="error_info" property="errorInfo" jdbcType="LONGVARCHAR" />
+	 <result column="result" property="result" jdbcType="LONGVARCHAR" />
+	 <result column="operate_ip" property="operateIp" jdbcType="VARCHAR" />
+	 <result column="execute_time" property="executeTime" jdbcType="VARCHAR" />
+	 <result column="creator" property="creator" jdbcType="BIGINT" />
+	 <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+	 <result column="updater" property="updater" jdbcType="BIGINT" />
+	 <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+	 <result column="del_flag" property="delFlag" jdbcType="TINYINT" />
+  </resultMap>
+
+  <sql id="sql_where_like">
+	<where>
+		<if test="id !=null and id !=''">
+			and id = #{id,jdbcType=BIGINT}
+		</if>
+		<if test="userId !=null">
+			and user_id = #{userId,jdbcType=BIGINT}
+		</if>
+		<if test="userName !=null and userName !=''">
+			and user_name like concat(concat("%",#{userName,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="funModule !=null and funModule !=''">
+			and fun_module like concat(concat("%",#{funModule,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="operateType !=null and operateType !=''">
+			and operate_type = #{operateType,jdbcType=VARCHAR}
+		</if>
+		<if test="operateRemark !=null and operateRemark !=''">
+			and operate_remark like concat(concat("%",#{operateRemark,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="operateMethod !=null and operateMethod !=''">
+			and operate_method like concat(concat("%",#{operateMethod,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="operateParams !=null and operateParams !=''">
+			and operate_params like concat(concat("%",#{operateParams,jdbcType=LONGVARCHAR}),"%") 
+		</if>
+		<if test="operateTime !=null">
+			and operate_time = #{operateTime,jdbcType=TIMESTAMP}
+		</if>
+		<if test="operateStatus !=null">
+			and operate_status = #{operateStatus,jdbcType=TINYINT}
+		</if>
+		<if test="errorInfo !=null and errorInfo !=''">
+			and error_info like concat(concat("%",#{errorInfo,jdbcType=LONGVARCHAR}),"%") 
+		</if>
+		<if test="result !=null and result !=''">
+			and result like concat(concat("%",#{result,jdbcType=LONGVARCHAR}),"%") 
+		</if>
+		<if test="operateIp !=null and operateIp !=''">
+			and operate_ip like concat(concat("%",#{operateIp,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="executeTime !=null and executeTime !=''">
+			and execute_time like concat(concat("%",#{executeTime,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="creator !=null">
+			and creator = #{creator,jdbcType=BIGINT}
+		</if>
+		<if test="createTime !=null">
+		</if>
+		<if test="updater !=null">
+			and updater = #{updater,jdbcType=BIGINT}
+		</if>
+		<if test="updateTime !=null">
+		</if>
+		<if test="delFlag !=null">
+			and del_flag = #{delFlag,jdbcType=TINYINT}
+		</if>
+	</where>
+  </sql>
+  <!-- 字段集合 -->
+  <sql id="Base_Column_List">
+    id,user_id,user_name,fun_module,operate_type,operate_remark,operate_method,operate_params,operate_time,operate_status,error_info,result,operate_ip,execute_time,creator,create_time,updater,update_time,del_flag
+  </sql>
+
+  <!-- 根据条件模糊查询 -->
+  <select id="searchDataLike" resultMap="BaseResultMap" parameterType="com.springreport.entity.operatelog.OperateLog">
+    select 
+    <include refid="Base_Column_List" />
+    from operate_log 
+    <include refid="sql_where_like" />
+    <if test="orderSql !=null and orderSql !='' ">   
+      order by ${orderSql}
+    </if>
+  </select>
+
+</mapper>

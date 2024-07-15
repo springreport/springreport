@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 本文件由代码生成器自动完成 -->
+<mapper namespace="com.springreport.mapper.sysroleapi.SysRoleApiMapper" >
+	
+	<select id="getApisByRole" parameterType="com.alibaba.fastjson.JSONObject" resultType="com.springreport.entity.sysapi.SysApi">
+		SELECT
+		t2.id,
+		t2.api_code
+		FROM
+		sys_role_api t1
+		LEFT JOIN
+		sys_api t2
+		ON t1.api_id = t2.id
+		AND t2.del_flag = 1
+		WHERE
+		t1.role_id = #{roleId}
+		<if test="merchantNo !=null and merchantNo !=''">
+			and t1.merchant_no = #{merchantNo,jdbcType=VARCHAR}
+		</if>
+		AND t1.del_flag = 1
+	</select>
+  
+</mapper>

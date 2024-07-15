@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 本文件由代码生成器自动完成 -->
+<mapper namespace="com.springreport.mapper.reporttpldataset.ReportTplDatasetMapper" >
+
+  <!-- 字段与实体的映射 -->
+  <resultMap id="BaseResultMap" type="com.springreport.entity.reporttpldataset.ReportTplDataset">
+     <id column="id" property="id" jdbcType="BIGINT" />
+	 <result column="merchant_no" property="merchantNo" jdbcType="VARCHAR" />
+	 <result column="dataset_type" property="datasetType" jdbcType="TINYINT" />
+	 <result column="dataset_name" property="datasetName" jdbcType="VARCHAR" />
+	 <result column="tpl_id" property="tplId" jdbcType="BIGINT" />
+	 <result column="datasource_id" property="datasourceId" jdbcType="BIGINT" />
+	 <result column="tpl_sql" property="tplSql" jdbcType="LONGVARCHAR" />
+	 <result column="tpl_param" property="tplParam" jdbcType="LONGVARCHAR" />
+	 <result column="sql_type" property="sqlType" jdbcType="TINYINT" />
+	 <result column="in_param" property="inParam" jdbcType="LONGVARCHAR" />
+	 <result column="out_param" property="outParam" jdbcType="LONGVARCHAR" />
+	 <result column="is_pagination" property="isPagination" jdbcType="TINYINT" />
+	 <result column="page_count" property="pageCount" jdbcType="INTEGER" />
+	 <result column="type" property="type" jdbcType="TINYINT" />
+	 <result column="creator" property="creator" jdbcType="BIGINT" />
+	 <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+	 <result column="updater" property="updater" jdbcType="BIGINT" />
+	 <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+	 <result column="del_flag" property="delFlag" jdbcType="TINYINT" />
+  </resultMap>
+
+  <sql id="sql_where_like">
+	<where>
+		<if test="id !=null and id !=''">
+			and id = #{id,jdbcType=BIGINT}
+		</if>
+		<if test="merchantNo !=null and merchantNo !=''">
+			and merchant_no = #{merchantNo,jdbcType=VARCHAR}
+		</if>
+		<if test="datasetType !=null">
+			and dataset_type = #{datasetType,jdbcType=TINYINT}
+		</if>
+		<if test="datasetName !=null and datasetName !=''">
+			and dataset_name like concat(concat("%",#{datasetName,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="tplId !=null">
+			and tpl_id = #{tplId,jdbcType=BIGINT}
+		</if>
+		<if test="datasourceId !=null">
+			and datasource_id = #{datasourceId,jdbcType=BIGINT}
+		</if>
+		<if test="tplSql !=null and tplSql !=''">
+			and tpl_sql like concat(concat("%",#{tplSql,jdbcType=LONGVARCHAR}),"%") 
+		</if>
+		<if test="tplParam !=null and tplParam !=''">
+			and tpl_param like concat(concat("%",#{tplParam,jdbcType=LONGVARCHAR}),"%") 
+		</if>
+		<if test="sqlType !=null">
+			and sql_type = #{sqlType,jdbcType=TINYINT}
+		</if>
+		<if test="inParam !=null and inParam !=''">
+			and in_param like concat(concat("%",#{inParam,jdbcType=LONGVARCHAR}),"%") 
+		</if>
+		<if test="outParam !=null and outParam !=''">
+			and out_param like concat(concat("%",#{outParam,jdbcType=LONGVARCHAR}),"%") 
+		</if>
+		<if test="isPagination !=null">
+			and is_pagination = #{isPagination,jdbcType=TINYINT}
+		</if>
+		<if test="pageCount !=null">
+			and page_count = #{pageCount,jdbcType=INTEGER}
+		</if>
+		<if test="type !=null">
+			and type = #{type,jdbcType=TINYINT}
+		</if>
+		<if test="creator !=null">
+			and creator = #{creator,jdbcType=BIGINT}
+		</if>
+		<if test="createTime !=null">
+		</if>
+		<if test="updater !=null">
+			and updater = #{updater,jdbcType=BIGINT}
+		</if>
+		<if test="updateTime !=null">
+		</if>
+		<if test="delFlag !=null">
+			and del_flag = #{delFlag,jdbcType=TINYINT}
+		</if>
+	</where>
+  </sql>
+  <!-- 字段集合 -->
+  <sql id="Base_Column_List">
+    id,merchant_no,dataset_type,dataset_name,tpl_id,datasource_id,tpl_sql,tpl_param,sql_type,in_param,out_param,is_pagination,page_count,type,creator,create_time,updater,update_time,del_flag
+  </sql>
+
+  <!-- 根据条件模糊查询 -->
+  <select id="searchDataLike" resultMap="BaseResultMap" parameterType="com.springreport.entity.reporttpldataset.ReportTplDataset">
+    select 
+    <include refid="Base_Column_List" />
+    from report_tpl_dataset 
+    <include refid="sql_where_like" />
+    <if test="orderSql !=null and orderSql !='' ">   
+      order by ${orderSql}
+    </if>
+  </select>
+
+</mapper>

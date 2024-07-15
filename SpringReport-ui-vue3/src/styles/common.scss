@@ -1,0 +1,178 @@
+@import './variable.scss';
+@mixin scrollbar {
+    max-height: 88vh;
+    margin-bottom: 0.5vh;
+    overflow-y: auto;
+  
+    &::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+      background: transparent;
+    }
+  
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba(144, 147, 153, 0.3);
+      border-radius: 10px;
+    }
+  
+    &::-webkit-scrollbar-thumb:hover {
+      // background-color: rgba(144, 147, 153, 0.3);
+    }
+  }
+  
+  @mixin base-scrollbar {
+    &::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+  
+    &::-webkit-scrollbar-thumb {
+      background-color: #ddd;
+      background-clip: padding-box;
+      border: 3px solid transparent;
+      border-radius: 7px;
+    }
+  
+    &::-webkit-scrollbar-thumb:hover {
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+  
+    &::-webkit-scrollbar-track {
+      background-color: transparent;
+    }
+  
+    &::-webkit-scrollbar-track:hover {
+      // background-color: #f8fafc;
+    }
+  }
+
+  .icon-hover{
+    cursor: pointer;
+    &:hover {
+      background-color: $base-hover-color;
+    }
+  }
+
+  .i-icon:focus-visible{
+    border: none !important;
+    outline: none !important;
+  }
+
+html {
+  body {
+    @include base-scrollbar;
+    position: relative;
+    box-sizing: border-box;
+    height: 100vh;
+    padding: 0;
+    overflow: hidden;
+  }
+  div {
+    @include base-scrollbar;
+  }
+}
+
+.df {
+  display: flex;
+}
+.df-c {
+  display: flex;
+  align-items: center;
+}
+.df-c-b {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.df-c-c {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.el-menu-vertical{
+.el-sub-menu__title{
+  color: rgba(0, 0, 0, 0.9) !important;
+}
+}
+
+
+.el-sub-menu .el-menu-item {
+  height: 36px !important;
+  line-height: 36px !important;
+  padding: 0 45px;
+  min-width: 200px;
+  font-size: 12px;
+}
+.el-sub-menu__title {
+  height: 36px !important;
+  line-height: 36px !important;
+  font-size: 12px !important;
+  color: #262626 !important;
+}
+.el-sub-menu__title i {
+  color: #262626 !important;
+}
+.el-sub-menu [class^="el-icon-"] {
+  font-size: 14px !important;
+}
+
+.el-menu-item:hover{
+  background: #f0fcf9 !important;
+  border-radius: 3px !important;
+  color: #17b794 !important;
+}
+/* 更改左侧侧边栏 */
+.el-sub-menu.is-active.is-opened .el-sub-menu__title {
+  color: #17b794 !important;
+}
+
+
+.el-sub-menu.is-active.is-opened .el-sub-menu__title i {
+  color: #17b794 !important;
+}
+.el-menu-item.is-active {
+  background: #f0fcf9 !important;
+  border-radius: 3px !important;
+}
+/* 更改公共组件table样式 */
+.ces-table-page {
+  padding: 24px 24px 8px;
+  background: #ffffff;
+  border-radius: 8px;
+}
+.ces-table-page thead tr th {
+  background: linear-gradient(0deg, #e8f8f2, #e8f8f2), #ffffff !important;
+  color: rgba(0, 0, 0, 0.4);
+  font-weight: 400;
+  font-size: 14px;
+  padding: 12px 0;
+}
+.ces-table-page tbody tr td {
+  color: rgba(0, 0, 0, 0.9);
+}
+
+.echarts-container.router-page{
+  padding: 0 !important;
+  background-color: #f1f2f5;
+}
+
+/* 更改树节点的状态 */
+.el-tree-node__content:hover {
+  background: #f0fcf9 !important;
+  border-radius: 3px !important;
+  color: #17b794 !important;
+}
+.el-tree-node.is-current > .el-tree-node__content {
+  background: #f0fcf9 !important;
+  border-radius: 3px !important;
+  color: #17b794 !important;
+}
+.el-tree-node__expand-icon {
+  color: rgba(0, 0, 0, 0.6) !important;
+}
+.el-tree-node__expand-icon.is-leaf {
+  color: transparent !important;
+}
+.el-tree-node__content {
+  margin-bottom: 6px;
+}

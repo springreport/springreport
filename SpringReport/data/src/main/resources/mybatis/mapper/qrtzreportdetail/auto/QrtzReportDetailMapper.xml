@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 本文件由代码生成器自动完成 -->
+<mapper namespace="com.springreport.mapper.qrtzreportdetail.QrtzReportDetailMapper" >
+
+  <!-- 字段与实体的映射 -->
+  <resultMap id="BaseResultMap" type="com.springreport.entity.qrtzreportdetail.QrtzReportDetail">
+     <id column="id" property="id" jdbcType="BIGINT" />
+	 <result column="tpl_id" property="tplId" jdbcType="BIGINT" />
+	 <result column="job_name" property="jobName" jdbcType="VARCHAR" />
+	 <result column="job_time_type" property="jobTimeType" jdbcType="TINYINT" />
+	 <result column="job_time" property="jobTime" jdbcType="VARCHAR" />
+	 <result column="job_cron" property="jobCron" jdbcType="VARCHAR" />
+	 <result column="job_data" property="jobData" jdbcType="LONGVARCHAR" />
+	 <result column="email" property="email" jdbcType="LONGVARCHAR" />
+	 <result column="export_type" property="exportType" jdbcType="TINYINT" />
+	 <result column="creator" property="creator" jdbcType="BIGINT" />
+	 <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+	 <result column="updater" property="updater" jdbcType="BIGINT" />
+	 <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+	 <result column="del_flag" property="delFlag" jdbcType="TINYINT" />
+  </resultMap>
+
+  <sql id="sql_where_like">
+	<where>
+		<if test="id !=null and id !=''">
+			and id = #{id,jdbcType=BIGINT}
+		</if>
+		<if test="tplId !=null">
+			and tpl_id = #{tplId,jdbcType=BIGINT}
+		</if>
+		<if test="jobName !=null and jobName !=''">
+			and job_name like concat(concat("%",#{jobName,jdbcType=VARCHAR}),"%")
+		</if>
+		<if test="jobTimeType !=null">
+			and job_time_type = #{jobTimeType,jdbcType=TINYINT}
+		</if>
+		<if test="jobTime !=null and jobTime !=''">
+			and job_time like concat(concat("%",#{jobTime,jdbcType=VARCHAR}),"%")
+		</if>
+		<if test="jobCron !=null and jobCron !=''">
+			and job_cron like concat(concat("%",#{jobCron,jdbcType=VARCHAR}),"%")
+		</if>
+		<if test="jobData !=null and jobData !=''">
+			and job_data like concat(concat("%",#{jobData,jdbcType=LONGVARCHAR}),"%")
+		</if>
+		<if test="email !=null and email !=''">
+			and email like concat(concat("%",#{email,jdbcType=LONGVARCHAR}),"%")
+		</if>
+		<if test="exportType !=null">
+			and export_type = #{exportType,jdbcType=TINYINT}
+		</if>
+		<if test="creator !=null">
+			and creator = #{creator,jdbcType=BIGINT}
+		</if>
+		<if test="createTime !=null">
+		</if>
+		<if test="updater !=null">
+			and updater = #{updater,jdbcType=BIGINT}
+		</if>
+		<if test="updateTime !=null">
+		</if>
+		<if test="delFlag !=null">
+			and del_flag = #{delFlag,jdbcType=TINYINT}
+		</if>
+	</where>
+  </sql>
+  <!-- 字段集合 -->
+  <sql id="Base_Column_List">
+    id,tpl_id,job_name,job_time_type,job_time,job_cron,job_data,email,export_type,creator,create_time,updater,update_time,del_flag
+  </sql>
+
+  <!-- 根据条件模糊查询 -->
+  <select id="searchDataLike" databaseId="mysql" resultMap="BaseResultMap" parameterType="com.springreport.entity.qrtzreportdetail.QrtzReportDetail">
+    select 
+    <include refid="Base_Column_List" />
+    from qrtz_report_detail 
+    <include refid="sql_where_like" />
+    <if test="orderSql !=null and orderSql !='' ">   
+      order by ${orderSql}
+    </if>
+  </select>
+
+</mapper>

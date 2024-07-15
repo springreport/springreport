@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 本文件由代码生成器自动完成 -->
+<mapper namespace="com.springreport.mapper.sysuser.SysUserMapper" >
+
+  <select id="getTableList" databaseId="mysql" parameterType="com.springreport.dto.sysuser.SysUserDto" resultType="com.springreport.dto.sysuser.SysUserDto">
+  	SELECT
+	t1.id,
+	t1.user_name,
+	t1.user_real_name,
+	t1.user_email,
+	t1.user_phone,
+	t1.user_mobile,
+	t1.user_locked,
+	t1.is_admin,
+	t3.role_name,
+	t2.role_id,
+	t6.id as deptId,
+	t6.dept_name as deptName,
+	t8.id as postId,
+	t8.post_name as postName
+	FROM
+	sys_user t1
+	<if test="deptIds != null and deptIds.size > 0">
+		join sys_user_dept t4
+		on t4.user_id = t1.id
+		and 
+		<foreach collection="deptIds" item="item" open="t4.dept_id IN(" separator="," close=")"> 
+	    		#{item} 
+	   		</foreach> 
+		and t4.del_flag = 1
+	</if>
+	LEFT JOIN
+	sys_user_role t2
+	ON t1.id = t2.user_id
+	AND t2.del_flag = 1
+	LEFT JOIN
+	sys_role t3
+	ON t2.role_id = t3.id
+	left join
+	sys_user_dept t5
+	on t5.user_id = t1.id
+	and t5.del_flag = 1
+	left join 
+	sys_dept t6
+	on t5.dept_id = t6.id
+	and t6.del_flag = 1
+	left join 
+	sys_user_post t7
+	on t1.id = t7.user_id
+	and t7.del_flag = 1
+	left join
+	sys_post t8
+	on t8.id = t7.post_id
+	and t8.del_flag = 1
+	<where>
+		<if test="merchantNo !=null and merchantNo !=''">
+			and t1.merchant_no = #{merchantNo,jdbcType=VARCHAR}
+		</if>
+		<if test="userName !=null and userName !=''">
+			and t1.user_name like concat(concat("%",#{userName,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="userRealName !=null and userRealName !=''">
+			and t1.user_real_name like concat(concat("%",#{userRealName,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="userEmail !=null and userEmail !=''">
+			and t1.user_email like concat(concat("%",#{userEmail,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="userPhone !=null and userPhone !=''">
+			and t1.user_phone like concat(concat("%",#{userPhone,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="userMobile !=null and userMobile !=''">
+			and t1.user_mobile like concat(concat("%",#{userMobile,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="userLocked !=null">
+			and t1.user_locked = #{userLocked,jdbcType=TINYINT}
+		</if>
+		<if test="isAdmin !=null">
+			and t1.is_admin = #{isAdmin,jdbcType=TINYINT}
+		</if>
+		<if test="delFlag !=null">
+			and t1.del_flag = #{delFlag,jdbcType=TINYINT}
+		</if>
+	</where>
+  </select>
+  
+</mapper>

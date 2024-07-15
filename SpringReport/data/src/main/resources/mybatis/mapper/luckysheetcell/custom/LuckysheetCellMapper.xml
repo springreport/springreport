@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 本文件由代码生成器自动完成 -->
+<mapper namespace="com.springreport.mapper.luckysheetcell.LuckysheetCellMapper" >
+
+  <update id="delRowUpdate" parameterType="com.alibaba.fastjson.JSONObject">
+  	update
+  	luckysheet_cell
+  	set
+  	row_no = row_no - #{len}
+  	where
+  	block_id = #{blockId}
+  	and sheet_index = #{index}
+  	and list_id = #{listId}
+  	and row_no > (#{start}+#{len}-1)
+  </update>
+  
+  <update id="delColUpdate" parameterType="com.alibaba.fastjson.JSONObject">
+  	update
+  	luckysheet_cell
+  	set
+  	column_no = column_no - #{len}
+  	where
+  	block_id = #{blockId}
+  	and sheet_index = #{index}
+  	and list_id = #{listId}
+  	and column_no > (#{start}+#{len}-1)
+  </update>
+
+  <delete id="delRowDelCells" parameterType="com.alibaba.fastjson.JSONObject">
+	delete
+	from
+	luckysheet_cell
+	where
+	block_id = #{blockId}
+  	and sheet_index = #{index}
+  	and list_id = #{listId}
+  	and row_no >= #{start}
+  	and (#{start}+#{len}-1) >= row_no
+  </delete>
+  
+  <delete id="delColDelCells" parameterType="com.alibaba.fastjson.JSONObject">
+	delete
+	from
+	luckysheet_cell
+	where
+	block_id = #{blockId}
+  	and sheet_index = #{index}
+  	and list_id = #{listId}
+  	and column_no >= #{start}
+  	and (#{start}+#{len}-1) >= column_no
+  </delete>
+  
+  <update id="addRowUpdate" parameterType="com.alibaba.fastjson.JSONObject">
+  	update
+  	luckysheet_cell
+  	set
+  	row_no = row_no + #{len}
+  	where
+  	block_id = #{blockId}
+  	and sheet_index = #{index}
+  	and list_id = #{listId}
+  	and row_no >= (#{start})
+  </update>
+  <update id="addColUpdate" parameterType="com.alibaba.fastjson.JSONObject">
+  	update
+  	luckysheet_cell
+  	set
+  	column_no = column_no + #{len}
+  	where
+  	block_id = #{blockId}
+  	and sheet_index = #{index}
+  	and list_id = #{listId}
+  	and column_no >= (#{start})
+  </update>
+  <update id="updateCellFormulaSheetName" parameterType="com.alibaba.fastjson.JSONObject">
+  	UPDATE
+	luckysheet_cell
+	set
+	cell_data = REPLACE(cell_data,#{oldtxt},#{txt})
+	where
+	block_id = #{blockId}
+  	and sheet_index = #{index}
+  	and list_id = #{listId}
+  	and row_no = #{r}
+  	and column_no = #{c}
+  </update>
+  
+</mapper>

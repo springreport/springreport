@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 本文件由代码生成器自动完成 -->
+<mapper namespace="com.springreport.mapper.sysmenu.SysMenuMapper" >
+
+  <!-- 字段与实体的映射 -->
+  <resultMap id="BaseResultMap" type="com.springreport.entity.sysmenu.SysMenu">
+     <id column="id" property="id" jdbcType="BIGINT" />
+	 <result column="menu_name" property="menuName" jdbcType="VARCHAR" />
+	 <result column="menu_url" property="menuUrl" jdbcType="VARCHAR" />
+	 <result column="parent_menu_id" property="parentMenuId" jdbcType="BIGINT" />
+	 <result column="menu_icon" property="menuIcon" jdbcType="VARCHAR" />
+	 <result column="is_hidden" property="isHidden" jdbcType="TINYINT" />
+	 <result column="sort" property="sort" jdbcType="INTEGER" />
+	 <result column="creator" property="creator" jdbcType="BIGINT" />
+	 <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+	 <result column="updater" property="updater" jdbcType="BIGINT" />
+	 <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+	 <result column="del_flag" property="delFlag" jdbcType="TINYINT" />
+  </resultMap>
+
+  <sql id="sql_where_like">
+	<where>
+		<if test="id !=null and id !=''">
+			and id = #{id,jdbcType=BIGINT}
+		</if>
+		<if test="menuName !=null and menuName !=''">
+			and menu_name like concat(concat("%",#{menuName,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="menuUrl !=null and menuUrl !=''">
+			and menu_url like concat(concat("%",#{menuUrl,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="parentMenuId !=null">
+			and parent_menu_id = #{parentMenuId,jdbcType=BIGINT}
+		</if>
+		<if test="menuIcon !=null and menuIcon !=''">
+			and menu_icon like concat(concat("%",#{menuIcon,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="isHidden !=null">
+			and is_hidden = #{isHidden,jdbcType=TINYINT}
+		</if>
+		<if test="sort !=null">
+			and sort = #{sort,jdbcType=INTEGER}
+		</if>
+		<if test="creator !=null">
+			and creator = #{creator,jdbcType=BIGINT}
+		</if>
+		<if test="createTime !=null">
+		</if>
+		<if test="updater !=null">
+			and updater = #{updater,jdbcType=BIGINT}
+		</if>
+		<if test="updateTime !=null">
+		</if>
+		<if test="delFlag !=null">
+			and del_flag = #{delFlag,jdbcType=TINYINT}
+		</if>
+	</where>
+  </sql>
+  <!-- 字段集合 -->
+  <sql id="Base_Column_List">
+    id,menu_name,menu_url,parent_menu_id,menu_icon,is_hidden,sort,creator,create_time,updater,update_time,del_flag
+  </sql>
+
+  <!-- 根据条件模糊查询 -->
+  <select id="searchDataLike" databaseId="mysql" resultMap="BaseResultMap" parameterType="com.springreport.entity.sysmenu.SysMenu">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_menu 
+    <include refid="sql_where_like" />
+    <if test="orderSql !=null and orderSql !='' ">   
+      order by ${orderSql}
+    </if>
+  </select>
+
+</mapper>

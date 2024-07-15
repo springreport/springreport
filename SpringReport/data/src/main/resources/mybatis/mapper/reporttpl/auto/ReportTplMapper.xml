@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 本文件由代码生成器自动完成 -->
+<mapper namespace="com.springreport.mapper.reporttpl.ReportTplMapper" >
+
+  <!-- 字段与实体的映射 -->
+  <resultMap id="BaseResultMap" type="com.springreport.entity.reporttpl.ReportTpl">
+     <id column="id" property="id" jdbcType="BIGINT" />
+	 <result column="merchant_no" property="merchantNo" jdbcType="VARCHAR" />
+	 <result column="tpl_code" property="tplCode" jdbcType="VARCHAR" />
+	 <result column="tpl_name" property="tplName" jdbcType="VARCHAR" />
+	 <result column="tpl_type" property="tplType" jdbcType="TINYINT" />
+	 <result column="report_type" property="reportType" jdbcType="BIGINT" />
+	 <result column="is_index" property="isIndex" jdbcType="TINYINT" />
+	 <result column="is_param_merge" property="isParamMerge" jdbcType="TINYINT" />
+	 <result column="config" property="config" jdbcType="LONGVARCHAR" />
+	 <result column="frozen" property="frozen" jdbcType="LONGVARCHAR" />
+	 <result column="images" property="images" jdbcType="LONGVARCHAR" />
+	 <result column="view_auth" property="viewAuth" jdbcType="TINYINT" />
+	 <result column="design_pwd" property="designPwd" jdbcType="VARCHAR" />
+	 <result column="export_encrypt" property="exportEncrypt" jdbcType="TINYINT" />
+	 <result column="sheet_index" property="sheetIndex" jdbcType="VARCHAR" />
+	 <result column="calc_chain" property="calcChain" jdbcType="LONGVARCHAR" />
+	 <result column="concurrency_flag" property="concurrencyFlag" jdbcType="TINYINT" />
+	 <result column="show_toolbar" property="showToolbar" jdbcType="TINYINT" />
+	 <result column="show_row_header" property="showRowHeader" jdbcType="TINYINT" />
+	 <result column="show_col_header" property="showColHeader" jdbcType="TINYINT" />
+	 <result column="show_gridlines" property="showGridlines" jdbcType="TINYINT" />
+	 <result column="creator" property="creator" jdbcType="BIGINT" />
+	 <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+	 <result column="updater" property="updater" jdbcType="BIGINT" />
+	 <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+	 <result column="del_flag" property="delFlag" jdbcType="TINYINT" />
+	 <result column="coedit_flag" property="coeditFlag" jdbcType="TINYINT" />
+  </resultMap>
+
+  <sql id="sql_where_like">
+	<where>
+		<if test="id !=null and id !=''">
+			and id = #{id,jdbcType=BIGINT}
+		</if>
+		<if test="merchantNo !=null and merchantNo !=''">
+			and merchant_no = #{merchantNo,jdbcType=VARCHAR}
+		</if>
+		<if test="tplCode !=null and tplCode !=''">
+			and tpl_code like concat(concat("%",#{tplCode,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="tplName !=null and tplName !=''">
+			and tpl_name like concat(concat("%",#{tplName,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="tplType !=null">
+			and tpl_type = #{tplType,jdbcType=TINYINT}
+		</if>
+		<if test="reportType !=null">
+			and report_type = #{reportType,jdbcType=BIGINT}
+		</if>
+		<if test="isIndex !=null">
+			and is_index = #{isIndex,jdbcType=TINYINT}
+		</if>
+		<if test="isParamMerge !=null">
+			and is_param_merge = #{isParamMerge,jdbcType=TINYINT}
+		</if>
+		<if test="config !=null and config !=''">
+			and config like concat(concat("%",#{config,jdbcType=LONGVARCHAR}),"%") 
+		</if>
+		<if test="frozen !=null and frozen !=''">
+			and frozen like concat(concat("%",#{frozen,jdbcType=LONGVARCHAR}),"%") 
+		</if>
+		<if test="images !=null and images !=''">
+			and images like concat(concat("%",#{images,jdbcType=LONGVARCHAR}),"%") 
+		</if>
+		<if test="viewAuth !=null">
+			and view_auth = #{viewAuth,jdbcType=TINYINT}
+		</if>
+		<if test="designPwd !=null and designPwd !=''">
+			and design_pwd like concat(concat("%",#{designPwd,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="exportEncrypt !=null">
+			and export_encrypt = #{exportEncrypt,jdbcType=TINYINT}
+		</if>
+		<if test="sheetIndex !=null and sheetIndex !=''">
+			and sheet_index like concat(concat("%",#{sheetIndex,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="calcChain !=null and calcChain !=''">
+			and calc_chain like concat(concat("%",#{calcChain,jdbcType=LONGVARCHAR}),"%") 
+		</if>
+		<if test="concurrencyFlag !=null">
+			and concurrency_flag = #{concurrencyFlag,jdbcType=TINYINT}
+		</if>
+		<if test="showToolbar !=null">
+			and show_toolbar = #{showToolbar,jdbcType=TINYINT}
+		</if>
+		<if test="showRowHeader !=null">
+			and show_row_header = #{showRowHeader,jdbcType=TINYINT}
+		</if>
+		<if test="showColHeader !=null">
+			and show_col_header = #{showColHeader,jdbcType=TINYINT}
+		</if>
+		<if test="showGridlines !=null">
+			and show_gridlines = #{showGridlines,jdbcType=TINYINT}
+		</if>
+		<if test="creator !=null">
+			and creator = #{creator,jdbcType=BIGINT}
+		</if>
+		<if test="createTime !=null">
+		</if>
+		<if test="updater !=null">
+			and updater = #{updater,jdbcType=BIGINT}
+		</if>
+		<if test="updateTime !=null">
+		</if>
+		<if test="delFlag !=null">
+			and del_flag = #{delFlag,jdbcType=TINYINT}
+		</if>
+		<if test="coeditFlag !=null">
+			and coedit_flag = #{coeditFlag,jdbcType=TINYINT}
+		</if>
+	</where>
+  </sql>
+  <!-- 字段集合 -->
+  <sql id="Base_Column_List">
+    id,merchant_no,tpl_code,tpl_name,tpl_type,report_type,is_index,is_param_merge,config,frozen,images,view_auth,design_pwd,export_encrypt,sheet_index,calc_chain,concurrency_flag,show_toolbar,show_row_header,show_col_header,show_gridlines,creator,create_time,updater,update_time,del_flag,coedit_flag
+  </sql>
+
+  <!-- 根据条件模糊查询 -->
+  <select id="searchDataLike" resultMap="BaseResultMap" parameterType="com.springreport.entity.reporttpl.ReportTpl">
+    select 
+    <include refid="Base_Column_List" />
+    from report_tpl 
+    <include refid="sql_where_like" />
+    <if test="orderSql !=null and orderSql !='' ">   
+      order by ${orderSql}
+    </if>
+  </select>
+
+</mapper>

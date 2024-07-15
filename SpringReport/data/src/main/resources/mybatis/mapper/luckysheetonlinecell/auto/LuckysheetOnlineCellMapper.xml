@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 本文件由代码生成器自动完成 -->
+<mapper namespace="com.springreport.mapper.luckysheetonlinecell.LuckysheetOnlineCellMapper" >
+
+  <!-- 字段与实体的映射 -->
+  <resultMap id="BaseResultMap" type="com.springreport.entity.luckysheetonlinecell.LuckysheetOnlineCell">
+     <id column="id" property="id" jdbcType="BIGINT" />
+	 <result column="tpl_id" property="tplId" jdbcType="BIGINT" />
+	 <result column="sheet_id" property="sheetId" jdbcType="BIGINT" />
+	 <result column="coordsx" property="coordsx" jdbcType="INTEGER" />
+	 <result column="coordsy" property="coordsy" jdbcType="INTEGER" />
+	 <result column="cell_data" property="cellData" jdbcType="LONGVARCHAR" />
+	 <result column="cell_value_type" property="cellValueType" jdbcType="TINYINT" />
+	 <result column="creator" property="creator" jdbcType="BIGINT" />
+	 <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+	 <result column="updater" property="updater" jdbcType="BIGINT" />
+	 <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+	 <result column="del_flag" property="delFlag" jdbcType="TINYINT" />
+	 <result column="ct" property="ct" jdbcType="VARCHAR" />
+	 <result column="ff" property="ff" jdbcType="VARCHAR" />
+	 <result column="bg" property="bg" jdbcType="VARCHAR" />
+	 <result column="fc" property="fc" jdbcType="VARCHAR" />
+	 <result column="bl" property="bl" jdbcType="TINYINT" />
+	 <result column="it" property="it" jdbcType="TINYINT" />
+	 <result column="fs" property="fs" jdbcType="INTEGER" />
+	 <result column="cl" property="cl" jdbcType="TINYINT" />
+	 <result column="vt" property="vt" jdbcType="TINYINT" />
+	 <result column="ht" property="ht" jdbcType="TINYINT" />
+  </resultMap>
+
+  <sql id="sql_where_like">
+	<where>
+		<if test="id !=null and id !=''">
+			and id = #{id,jdbcType=BIGINT}
+		</if>
+		<if test="tplId !=null">
+			and tpl_id = #{tplId,jdbcType=BIGINT}
+		</if>
+		<if test="sheetId !=null">
+			and sheet_id = #{sheetId,jdbcType=BIGINT}
+		</if>
+		<if test="coordsx !=null">
+			and coordsx = #{coordsx,jdbcType=INTEGER}
+		</if>
+		<if test="coordsy !=null">
+			and coordsy = #{coordsy,jdbcType=INTEGER}
+		</if>
+		<if test="cellData !=null and cellData !=''">
+			and cell_data like concat(concat("%",#{cellData,jdbcType=LONGVARCHAR}),"%") 
+		</if>
+		<if test="cellValueType !=null">
+			and cell_value_type = #{cellValueType,jdbcType=TINYINT}
+		</if>
+		<if test="creator !=null">
+			and creator = #{creator,jdbcType=BIGINT}
+		</if>
+		<if test="createTime !=null">
+		</if>
+		<if test="updater !=null">
+			and updater = #{updater,jdbcType=BIGINT}
+		</if>
+		<if test="updateTime !=null">
+		</if>
+		<if test="delFlag !=null">
+			and del_flag = #{delFlag,jdbcType=TINYINT}
+		</if>
+		<if test="ct !=null and ct !=''">
+			and ct like concat(concat("%",#{ct,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="ff !=null and ff !=''">
+			and ff like concat(concat("%",#{ff,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="bg !=null and bg !=''">
+			and bg like concat(concat("%",#{bg,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="fc !=null and fc !=''">
+			and fc like concat(concat("%",#{fc,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="bl !=null">
+			and bl = #{bl,jdbcType=TINYINT}
+		</if>
+		<if test="it !=null">
+			and it = #{it,jdbcType=TINYINT}
+		</if>
+		<if test="fs !=null">
+			and fs = #{fs,jdbcType=INTEGER}
+		</if>
+		<if test="cl !=null">
+			and cl = #{cl,jdbcType=TINYINT}
+		</if>
+		<if test="vt !=null">
+			and vt = #{vt,jdbcType=TINYINT}
+		</if>
+		<if test="ht !=null">
+			and ht = #{ht,jdbcType=TINYINT}
+		</if>
+	</where>
+  </sql>
+  <!-- 字段集合 -->
+  <sql id="Base_Column_List">
+    id,tpl_id,sheet_id,coordsx,coordsy,cell_data,cell_value_type,creator,create_time,updater,update_time,del_flag,ct,ff,bg,fc,bl,it,fs,cl,vt,ht
+  </sql>
+
+  <!-- 根据条件模糊查询 -->
+  <select id="searchDataLike" resultMap="BaseResultMap" parameterType="com.springreport.entity.luckysheetonlinecell.LuckysheetOnlineCell">
+    select 
+    <include refid="Base_Column_List" />
+    from luckysheet_online_cell 
+    <include refid="sql_where_like" />
+    <if test="orderSql !=null and orderSql !='' ">   
+      order by ${orderSql}
+    </if>
+  </select>
+
+</mapper>
