@@ -31,7 +31,7 @@ SpringReport项目是从2021年正式开始开发，从2020年就有第一个版
 
 后端：
 
-1. SpringBoot2.7.12
+1. SpringBoot2.7.12/SpringBoot3.2.6
 1. mybatis-plus
 1. RocketMQ；Redis
 
