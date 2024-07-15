@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 本文件由代码生成器自动完成 -->
+<mapper namespace="com.springreport.mapper.luckysheetreportcell.LuckysheetReportCellMapper" >
+
+	<select id="getVariableCells" databaseId="mysql" parameterType="com.springreport.entity.luckysheetreportcell.LuckysheetReportCell" resultType="com.springreport.entity.luckysheetreportcell.LuckysheetReportCell">
+		SELECT
+		*
+		FROM
+		luckysheet_report_cell
+		WHERE
+		tpl_id = #{tplId}
+		AND sheet_id = #{sheetId}
+		AND del_flag = 1
+		AND FIND_IN_SET(#{datasetName},dataset_name)
+		AND cell_value_type in (2,3)
+		ORDER BY 
+		coordsx ASC,
+		coordsy ASC
+	</select>
+	
+</mapper>

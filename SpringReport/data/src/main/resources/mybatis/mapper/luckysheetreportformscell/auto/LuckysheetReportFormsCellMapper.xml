@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 本文件由代码生成器自动完成 -->
+<mapper namespace="com.springreport.mapper.luckysheetreportformscell.LuckysheetReportFormsCellMapper" >
+
+  <!-- 字段与实体的映射 -->
+  <resultMap id="BaseResultMap" type="com.springreport.entity.luckysheetreportformscell.LuckysheetReportFormsCell">
+     <id column="id" property="id" jdbcType="BIGINT" />
+	 <result column="tpl_id" property="tplId" jdbcType="BIGINT" />
+	 <result column="sheet_id" property="sheetId" jdbcType="BIGINT" />
+	 <result column="dataset_name" property="datasetName" jdbcType="VARCHAR" />
+	 <result column="coordsx" property="coordsx" jdbcType="INTEGER" />
+	 <result column="coordsy" property="coordsy" jdbcType="INTEGER" />
+	 <result column="cell_extend" property="cellExtend" jdbcType="TINYINT" />
+	 <result column="cell_value" property="cellValue" jdbcType="LONGVARCHAR" />
+	 <result column="cell_data" property="cellData" jdbcType="LONGVARCHAR" />
+	 <result column="cell_value_type" property="cellValueType" jdbcType="TINYINT" />
+	 <result column="is_merge" property="isMerge" jdbcType="TINYINT" />
+	 <result column="row_span" property="rowSpan" jdbcType="INTEGER" />
+	 <result column="col_span" property="colSpan" jdbcType="INTEGER" />
+	 <result column="cell_attrs" property="cellAttrs" jdbcType="LONGVARCHAR" />
+	 <result column="warning" property="warning" jdbcType="BIT" />
+	 <result column="warning_color" property="warningColor" jdbcType="VARCHAR" />
+	 <result column="threshold" property="threshold" jdbcType="VARCHAR" />
+	 <result column="warning_content" property="warningContent" jdbcType="VARCHAR" />
+	 <result column="is_function" property="isFunction" jdbcType="TINYINT" />
+	 <result column="creator" property="creator" jdbcType="BIGINT" />
+	 <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+	 <result column="updater" property="updater" jdbcType="BIGINT" />
+	 <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+	 <result column="del_flag" property="delFlag" jdbcType="TINYINT" />
+  </resultMap>
+
+  <sql id="sql_where_like">
+	<where>
+		<if test="id !=null and id !=''">
+			and id = #{id,jdbcType=BIGINT}
+		</if>
+		<if test="tplId !=null">
+			and tpl_id = #{tplId,jdbcType=BIGINT}
+		</if>
+		<if test="sheetId !=null">
+			and sheet_id = #{sheetId,jdbcType=BIGINT}
+		</if>
+		<if test="datasetName !=null and datasetName !=''">
+			and dataset_name like concat(concat("%",#{datasetName,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="coordsx !=null">
+			and coordsx = #{coordsx,jdbcType=INTEGER}
+		</if>
+		<if test="coordsy !=null">
+			and coordsy = #{coordsy,jdbcType=INTEGER}
+		</if>
+		<if test="cellExtend !=null">
+			and cell_extend = #{cellExtend,jdbcType=TINYINT}
+		</if>
+		<if test="cellValue !=null and cellValue !=''">
+			and cell_value like concat(concat("%",#{cellValue,jdbcType=LONGVARCHAR}),"%") 
+		</if>
+		<if test="cellData !=null and cellData !=''">
+			and cell_data like concat(concat("%",#{cellData,jdbcType=LONGVARCHAR}),"%") 
+		</if>
+		<if test="cellValueType !=null">
+			and cell_value_type = #{cellValueType,jdbcType=TINYINT}
+		</if>
+		<if test="isMerge !=null">
+			and is_merge = #{isMerge,jdbcType=TINYINT}
+		</if>
+		<if test="rowSpan !=null">
+			and row_span = #{rowSpan,jdbcType=INTEGER}
+		</if>
+		<if test="colSpan !=null">
+			and col_span = #{colSpan,jdbcType=INTEGER}
+		</if>
+		<if test="cellAttrs !=null and cellAttrs !=''">
+			and cell_attrs like concat(concat("%",#{cellAttrs,jdbcType=LONGVARCHAR}),"%") 
+		</if>
+		<if test="warning !=null">
+			and warning = #{warning,jdbcType=INTEGER}
+		</if>
+		<if test="warningColor !=null and warningColor !=''">
+			and warning_color like concat(concat("%",#{warningColor,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="threshold !=null and threshold !=''">
+			and threshold like concat(concat("%",#{threshold,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="warningContent !=null and warningContent !=''">
+			and warning_content like concat(concat("%",#{warningContent,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="isFunction !=null">
+			and is_function = #{isFunction,jdbcType=TINYINT}
+		</if>
+		<if test="creator !=null">
+			and creator = #{creator,jdbcType=BIGINT}
+		</if>
+		<if test="createTime !=null">
+		</if>
+		<if test="updater !=null">
+			and updater = #{updater,jdbcType=BIGINT}
+		</if>
+		<if test="updateTime !=null">
+		</if>
+		<if test="delFlag !=null">
+			and del_flag = #{delFlag,jdbcType=TINYINT}
+		</if>
+	</where>
+  </sql>
+  <!-- 字段集合 -->
+  <sql id="Base_Column_List">
+    id,tpl_id,sheet_id,dataset_name,coordsx,coordsy,cell_extend,cell_value,cell_data,cell_value_type,is_merge,row_span,col_span,cell_attrs,warning,warning_color,threshold,warning_content,is_function,creator,create_time,updater,update_time,del_flag
+  </sql>
+
+  <!-- 根据条件模糊查询 -->
+  <select id="searchDataLike" resultMap="BaseResultMap" parameterType="com.springreport.entity.luckysheetreportformscell.LuckysheetReportFormsCell">
+    select 
+    <include refid="Base_Column_List" />
+    from luckysheet_report_forms_cell 
+    <include refid="sql_where_like" />
+    <if test="orderSql !=null and orderSql !='' ">   
+      order by ${orderSql}
+    </if>
+  </select>
+
+</mapper>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 本文件由代码生成器自动完成 -->
+<mapper namespace="com.springreport.mapper.sysuser.SysUserMapper" >
+
+  <!-- 字段与实体的映射 -->
+  <resultMap id="BaseResultMap" type="com.springreport.entity.sysuser.SysUser">
+     <id column="id" property="id" jdbcType="BIGINT" />
+	 <result column="merchant_no" property="merchantNo" jdbcType="VARCHAR" />
+	 <result column="user_name" property="userName" jdbcType="VARCHAR" />
+	 <result column="user_real_name" property="userRealName" jdbcType="VARCHAR" />
+	 <result column="password" property="password" jdbcType="VARCHAR" />
+	 <result column="user_email" property="userEmail" jdbcType="VARCHAR" />
+	 <result column="user_phone" property="userPhone" jdbcType="VARCHAR" />
+	 <result column="user_mobile" property="userMobile" jdbcType="VARCHAR" />
+	 <result column="user_head_name" property="userHeadName" jdbcType="VARCHAR" />
+	 <result column="user_head" property="userHead" jdbcType="VARCHAR" />
+	 <result column="user_locked" property="userLocked" jdbcType="TINYINT" />
+	 <result column="last_login_time" property="lastLoginTime" jdbcType="BIGINT" />
+	 <result column="attempt" property="attempt" jdbcType="INTEGER" />
+	 <result column="is_admin" property="isAdmin" jdbcType="TINYINT" />
+	 <result column="creator" property="creator" jdbcType="BIGINT" />
+	 <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+	 <result column="updater" property="updater" jdbcType="BIGINT" />
+	 <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+	 <result column="del_flag" property="delFlag" jdbcType="TINYINT" />
+  </resultMap>
+
+  <sql id="sql_where_like">
+	<where>
+		<if test="id !=null and id !=''">
+			and id = #{id,jdbcType=BIGINT}
+		</if>
+		<if test="merchantNo !=null and merchantNo !=''">
+			and merchant_no = #{merchantNo,jdbcType=VARCHAR}
+		</if>
+		<if test="userName !=null and userName !=''">
+			and user_name like concat(concat("%",#{userName,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="userRealName !=null and userRealName !=''">
+			and user_real_name like concat(concat("%",#{userRealName,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="password !=null and password !=''">
+			and password like concat(concat("%",#{password,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="userEmail !=null and userEmail !=''">
+			and user_email like concat(concat("%",#{userEmail,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="userPhone !=null and userPhone !=''">
+			and user_phone like concat(concat("%",#{userPhone,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="userMobile !=null and userMobile !=''">
+			and user_mobile like concat(concat("%",#{userMobile,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="userHeadName !=null and userHeadName !=''">
+			and user_head_name like concat(concat("%",#{userHeadName,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="userHead !=null and userHead !=''">
+			and user_head like concat(concat("%",#{userHead,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="userLocked !=null">
+			and user_locked = #{userLocked,jdbcType=TINYINT}
+		</if>
+		<if test="lastLoginTime !=null">
+			and last_login_time = #{lastLoginTime,jdbcType=BIGINT}
+		</if>
+		<if test="attempt !=null">
+			and attempt = #{attempt,jdbcType=INTEGER}
+		</if>
+		<if test="isAdmin !=null">
+			and is_admin = #{isAdmin,jdbcType=TINYINT}
+		</if>
+		<if test="creator !=null">
+			and creator = #{creator,jdbcType=BIGINT}
+		</if>
+		<if test="createTime !=null">
+		</if>
+		<if test="updater !=null">
+			and updater = #{updater,jdbcType=BIGINT}
+		</if>
+		<if test="updateTime !=null">
+		</if>
+		<if test="delFlag !=null">
+			and del_flag = #{delFlag,jdbcType=TINYINT}
+		</if>
+	</where>
+  </sql>
+  <!-- 字段集合 -->
+  <sql id="Base_Column_List">
+    id,merchant_no,user_name,user_real_name,password,user_email,user_phone,user_mobile,user_head_name,user_head,user_locked,last_login_time,attempt,is_admin,creator,create_time,updater,update_time,del_flag
+  </sql>
+
+  <!-- 根据条件模糊查询 -->
+  <select id="searchDataLike" resultMap="BaseResultMap" parameterType="com.springreport.entity.sysuser.SysUser">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_user 
+    <include refid="sql_where_like" />
+    <if test="orderSql !=null and orderSql !='' ">   
+      order by ${orderSql}
+    </if>
+  </select>
+
+</mapper>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 本文件由代码生成器自动完成 -->
+<mapper namespace="com.springreport.mapper.reporttplsheet.ReportTplSheetMapper" >
+
+  <!-- 字段与实体的映射 -->
+  <resultMap id="BaseResultMap" type="com.springreport.entity.reporttplsheet.ReportTplSheet">
+     <id column="id" property="id" jdbcType="BIGINT" />
+	 <result column="tpl_id" property="tplId" jdbcType="BIGINT" />
+	 <result column="sheet_name" property="sheetName" jdbcType="VARCHAR" />
+	 <result column="sheet_order" property="sheetOrder" jdbcType="INTEGER" />
+	 <result column="config" property="config" jdbcType="LONGVARCHAR" />
+	 <result column="frozen" property="frozen" jdbcType="LONGVARCHAR" />
+	 <result column="images" property="images" jdbcType="LONGVARCHAR" />
+	 <result column="sheet_index" property="sheetIndex" jdbcType="VARCHAR" />
+	 <result column="calc_chain" property="calcChain" jdbcType="LONGVARCHAR" />
+	 <result column="alternateformat_save" property="alternateformatSave" jdbcType="LONGVARCHAR" />
+	 <result column="chart" property="chart" jdbcType="LONGVARCHAR" />
+	 <result column="data_verification" property="dataVerification" jdbcType="LONGVARCHAR" />
+	 <result column="creator" property="creator" jdbcType="BIGINT" />
+	 <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+	 <result column="updater" property="updater" jdbcType="BIGINT" />
+	 <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+	 <result column="del_flag" property="delFlag" jdbcType="TINYINT" />
+	 <result column="xxbt_screenshot" property="xxbtScreenshot" jdbcType="LONGVARCHAR" />
+	 <result column="page_divider" property="pageDivider" jdbcType="LONGVARCHAR" />
+  </resultMap>
+
+  <sql id="sql_where_like">
+	<where>
+		<if test="id !=null and id !=''">
+			and id = #{id,jdbcType=BIGINT}
+		</if>
+		<if test="tplId !=null">
+			and tpl_id = #{tplId,jdbcType=BIGINT}
+		</if>
+		<if test="sheetName !=null and sheetName !=''">
+			and sheet_name like concat(concat("%",#{sheetName,jdbcType=VARCHAR}),"%")
+		</if>
+		<if test="sheetOrder !=null">
+			and sheet_order = #{sheetOrder,jdbcType=INTEGER}
+		</if>
+		<if test="config !=null and config !=''">
+			and config like concat(concat("%",#{config,jdbcType=LONGVARCHAR}),"%")
+		</if>
+		<if test="frozen !=null and frozen !=''">
+			and frozen like concat(concat("%",#{frozen,jdbcType=LONGVARCHAR}),"%")
+		</if>
+		<if test="images !=null and images !=''">
+			and images like concat(concat("%",#{images,jdbcType=LONGVARCHAR}),"%")
+		</if>
+		<if test="sheetIndex !=null and sheetIndex !=''">
+			and sheet_index like concat(concat("%",#{sheetIndex,jdbcType=VARCHAR}),"%")
+		</if>
+		<if test="calcChain !=null and calcChain !=''">
+			and calc_chain like concat(concat("%",#{calcChain,jdbcType=LONGVARCHAR}),"%")
+		</if>
+		<if test="alternateformatSave !=null and alternateformatSave !=''">
+			and alternateformat_save like concat(concat("%",#{alternateformatSave,jdbcType=LONGVARCHAR}),"%")
+		</if>
+		<if test="chart !=null and chart !=''">
+			and chart like concat(concat("%",#{chart,jdbcType=LONGVARCHAR}),"%")
+		</if>
+		<if test="dataVerification !=null and dataVerification !=''">
+			and data_verification like concat(concat("%",#{dataVerification,jdbcType=LONGVARCHAR}),"%")
+		</if>
+		<if test="creator !=null">
+			and creator = #{creator,jdbcType=BIGINT}
+		</if>
+		<if test="createTime !=null">
+		</if>
+		<if test="updater !=null">
+			and updater = #{updater,jdbcType=BIGINT}
+		</if>
+		<if test="updateTime !=null">
+		</if>
+		<if test="delFlag !=null">
+			and del_flag = #{delFlag,jdbcType=TINYINT}
+		</if>
+		<if test="xxbtScreenshot !=null and xxbtScreenshot !=''">
+			and xxbt_screenshot like concat(concat("%",#{xxbtScreenshot,jdbcType=LONGVARCHAR}),"%")
+		</if>
+		<if test="pageDivider !=null and pageDivider !=''">
+			and page_divider like concat(concat("%",#{pageDivider,jdbcType=LONGVARCHAR}),"%")
+		</if>
+	</where>
+  </sql>
+  <!-- 字段集合 -->
+  <sql id="Base_Column_List">
+    id,tpl_id,sheet_name,sheet_order,config,frozen,images,sheet_index,calc_chain,alternateformat_save,chart,data_verification,creator,create_time,updater,update_time,del_flag,xxbt_screenshot,page_divider
+  </sql>
+
+  <!-- 根据条件模糊查询 -->
+  <select id="searchDataLike" resultMap="BaseResultMap" parameterType="com.springreport.entity.reporttplsheet.ReportTplSheet">
+    select 
+    <include refid="Base_Column_List" />
+    from report_tpl_sheet 
+    <include refid="sql_where_like" />
+    <if test="orderSql !=null and orderSql !='' ">   
+      order by ${orderSql}
+    </if>
+  </select>
+
+</mapper>

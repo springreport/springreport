@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 本文件由代码生成器自动完成 -->
+<mapper namespace="com.springreport.mapper.sysapi.SysApiMapper" >
+  <select id="getMenuApis" databaseId="mysql" parameterType="com.springreport.dto.sysmenu.MesGetAuthTreeDto" resultType="com.springreport.dto.sysmenu.MenuTreeDto">
+		SELECT
+		CONCAT('api-',t1.id) AS menuId,
+		t1.api_name AS menuName
+		FROM
+		sys_api t1
+		<if test="authTemplateId != null">
+			JOIN
+			sys_merchant_auth_template_ids t3
+			ON t1.id = t3.auth_id
+			AND t3.template_id = #{authTemplateId}
+			AND t3.auth_type = 2
+			AND t3.del_flag = 1
+		</if>
+		<if test="isAdmin != 1">
+		JOIN
+		sys_role_api t2
+		ON t2.api_id = t1.id
+		AND t2.del_flag = 1
+		</if>
+		WHERE
+		t1.menu_id = #{menuId}
+		AND t1.del_flag = 1
+		<if test="isAdmin != 1">
+		AND t2.role_id = #{roleId}
+		</if>
+	</select>
+</mapper>

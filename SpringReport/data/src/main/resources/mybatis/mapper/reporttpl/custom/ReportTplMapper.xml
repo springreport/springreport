@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 本文件由代码生成器自动完成 -->
+<mapper namespace="com.springreport.mapper.reporttpl.ReportTplMapper" >
+
+  <select id="getTableList" databaseId="mysql" parameterType="com.springreport.entity.reporttpl.ReportTpl" resultType = "com.springreport.dto.reporttpl.ReportTplDto">
+  	SELECT
+	t1.id,
+	t1.tpl_code,
+	t1.tpl_name,
+	t1.tpl_type,
+	t1.design_pwd,
+	t1.view_auth,
+	t1.export_encrypt,
+	t4.report_type_name,
+	GROUP_CONCAT(t3.code) as dataSourceCode,
+	GROUP_CONCAT(t3.name) as dataSourceName
+	FROM
+	report_tpl t1
+	LEFT JOIN
+	report_tpl_datasource t2
+	ON t1.id = t2.tpl_id
+	AND t2.del_flag = '1'
+	LEFT JOIN report_datasource t3
+	ON t2.datasource_id = t3.id
+	LEFT JOIN report_type t4
+	ON t1.report_type = t4.id
+	<where>
+		<if test="merchantNo !=null and merchantNo !=''">
+			and t1.merchant_no = #{merchantNo,jdbcType=VARCHAR}
+		</if>
+		<if test="tplCode !=null and tplCode !=''">
+			and t1.tpl_code like concat(concat("%",#{tplCode,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="tplName !=null and tplName !=''">
+			and t1.tpl_name like concat(concat("%",#{tplName,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="reportType !=null">
+			and t1.report_type = #{reportType,jdbcType=BIGINT}
+		</if>
+		<if test="delFlag !=null">
+			and t1.del_flag = #{delFlag,jdbcType=BIGINT}
+		</if>
+	</where>
+	GROUP BY
+	t1.id
+  </select>
+  
+  
+  <select id="getRoleReports" parameterType="com.springreport.dto.sysrolereport.MesRoleReportDto" resultType="com.springreport.dto.reporttpl.ReportTplDto">
+  	SELECT
+  	DISTINCT
+	t1.*,
+	t4.report_type_name
+	FROM
+	report_tpl t1
+	LEFT JOIN sys_role_sheet t2
+	ON t1.id = t2.report_id
+	AND t2.del_flag = 1
+	LEFT JOIN report_type t4
+	ON t1.report_type = t4.id
+	WHERE
+	t1.view_auth = 2
+	AND t2.role_id = #{roleId}
+	AND t1.del_flag = 1
+	<if test="tplName !=null and tplName !=''">
+		and t1.tpl_name like concat(concat("%",#{tplName,jdbcType=VARCHAR}),"%") 
+	</if>
+	<if test="reportType !=null">
+		and t1.report_type = #{reportType,jdbcType=BIGINT}
+	</if>
+	<if test="merchantNo !=null and merchantNo !=''">
+		and t1.merchant_no = #{merchantNo,jdbcType=VARCHAR}
+	</if>
+	UNION ALL
+	SELECT
+	t1.*,
+	t4.report_type_name
+	FROM
+	report_tpl t1
+	LEFT JOIN report_type t4
+	ON t1.report_type = t4.id
+	WHERE
+	t1.view_auth = 1
+	AND t1.del_flag = 1
+	<if test="tplName !=null and tplName !=''">
+		and t1.tpl_name like concat(concat("%",#{tplName,jdbcType=VARCHAR}),"%") 
+	</if>
+	<if test="reportType !=null">
+		and t1.report_type = #{reportType,jdbcType=BIGINT}
+	</if>
+  </select>
+
+</mapper>

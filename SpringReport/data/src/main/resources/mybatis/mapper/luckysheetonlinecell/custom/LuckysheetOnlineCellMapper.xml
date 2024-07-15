@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 本文件由代码生成器自动完成 -->
+<mapper namespace="com.springreport.mapper.luckysheetonlinecell.LuckysheetOnlineCellMapper" >
+
+  <update id="updateAddr">
+  	UPDATE luckysheet_online_cell 
+	SET coordsx = coordsx + #{rows} 
+	WHERE
+		sheet_id = #{sheetId} 
+		<if test='direction.equals("lefttop") '>
+			AND coordsx >= #{index}
+		</if>
+		<if test='direction.equals("rightbottom") '>
+			AND coordsx > #{index}
+		</if>
+		AND DEL_FLAG = 1
+  </update>
+  <update id="updateAddc">
+  	UPDATE luckysheet_online_cell 
+	SET coordsy = coordsy + #{rows} 
+	WHERE
+		sheet_id = #{sheetId} 
+		<if test='direction.equals("lefttop") '>
+			AND coordsy >= #{index}
+		</if>
+		<if test='direction.equals("rightbottom") '>
+			AND coordsy > #{index}
+		</if>
+		AND DEL_FLAG = 1
+  </update>
+  
+  <update id="updateMinusr">
+  	UPDATE luckysheet_online_cell 
+	SET coordsx = coordsx - #{rows} 
+	WHERE
+	sheet_id = #{sheetId} 
+	AND coordsx > #{index}
+	AND DEL_FLAG = 1
+  </update>
+
+  <update id="updateMinusc">
+  	UPDATE luckysheet_online_cell 
+	SET coordsy = coordsy - #{rows} 
+	WHERE
+	sheet_id = #{sheetId} 
+	AND coordsy > #{index}
+	AND DEL_FLAG = 1
+  </update>
+  
+  <update id="deleteCellsByDelRows">
+  	UPDATE luckysheet_online_cell 
+  	SET del_flag = 2
+  	WHERE
+	sheet_id = #{sheetId} 
+	AND coordsx >= (#{index} - #{rows} + 1)
+	AND (#{index}) >= coordsx 
+	AND DEL_FLAG = 1	
+  </update>
+  <update id="deleteCellsByDelCols">
+  	UPDATE luckysheet_online_cell 
+  	SET del_flag = 2
+  	WHERE
+	sheet_id = #{sheetId} 
+	AND coordsy >= (#{index} - #{rows} + 1)
+	AND (#{index}) >= coordsy 
+	AND DEL_FLAG = 1	
+  </update>
+</mapper>

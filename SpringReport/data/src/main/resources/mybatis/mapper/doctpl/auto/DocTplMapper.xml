@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 本文件由代码生成器自动完成 -->
+<mapper namespace="com.springreport.mapper.doctpl.DocTplMapper" >
+
+  <!-- 字段与实体的映射 -->
+  <resultMap id="BaseResultMap" type="com.springreport.entity.doctpl.DocTpl">
+     <id column="id" property="id" jdbcType="BIGINT" />
+	 <result column="merchant_no" property="merchantNo" jdbcType="VARCHAR" />
+	 <result column="tpl_code" property="tplCode" jdbcType="VARCHAR" />
+	 <result column="tpl_name" property="tplName" jdbcType="VARCHAR" />
+	 <result column="creator" property="creator" jdbcType="BIGINT" />
+	 <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+	 <result column="updater" property="updater" jdbcType="BIGINT" />
+	 <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+	 <result column="del_flag" property="delFlag" jdbcType="TINYINT" />
+  </resultMap>
+
+  <sql id="sql_where_like">
+	<where>
+		<if test="id !=null and id !=''">
+			and id = #{id,jdbcType=BIGINT}
+		</if>
+		<if test="merchantNo !=null and merchantNo !=''">
+			and merchant_no like concat(concat("%",#{merchantNo,jdbcType=VARCHAR}),"%")
+		</if>
+		<if test="tplCode !=null and tplCode !=''">
+			and tpl_code like concat(concat("%",#{tplCode,jdbcType=VARCHAR}),"%")
+		</if>
+		<if test="tplName !=null and tplName !=''">
+			and tpl_name like concat(concat("%",#{tplName,jdbcType=VARCHAR}),"%")
+		</if>
+		<if test="creator !=null">
+			and creator = #{creator,jdbcType=BIGINT}
+		</if>
+		<if test="createTime !=null">
+		</if>
+		<if test="updater !=null">
+			and updater = #{updater,jdbcType=BIGINT}
+		</if>
+		<if test="updateTime !=null">
+		</if>
+		<if test="delFlag !=null">
+			and del_flag = #{delFlag,jdbcType=TINYINT}
+		</if>
+	</where>
+  </sql>
+  <!-- 字段集合 -->
+  <sql id="Base_Column_List">
+    id,merchant_no,tpl_code,tpl_name,creator,create_time,updater,update_time,del_flag
+  </sql>
+
+  <!-- 根据条件模糊查询 -->
+  <select id="searchDataLike" resultMap="BaseResultMap" parameterType="com.springreport.entity.doctpl.DocTpl">
+    select 
+    <include refid="Base_Column_List" />
+    from doc_tpl 
+    <include refid="sql_where_like" />
+    <if test="orderSql !=null and orderSql !='' ">   
+      order by ${orderSql}
+    </if>
+  </select>
+
+</mapper>

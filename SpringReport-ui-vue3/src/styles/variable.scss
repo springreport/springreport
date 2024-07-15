@@ -1,0 +1,149 @@
+/**
+ * 全局主题变量配置
+ */
+
+ // 框架默认主题色
+$base-color-primary: var(--el-color-primary);
+
+
+// 主题色透明
+$base-color-primary-light1: var(--el-color-primary-light-1);
+$base-color-primary-light2: var(--el-color-primary-light-2);
+$base-color-primary-light3: var(--el-color-primary-light-3);
+$base-color-primary-light4: var(--el-color-primary-light-4);
+$base-color-primary-light5: var(--el-color-primary-light-5);
+$base-color-primary-light6: var(--el-color-primary-light-6);
+$base-color-primary-light7: var(--el-color-primary-light-7);
+$base-color-primary-light8: var(--el-color-primary-light-8);
+$base-color-primary-light9: var(--el-color-primary-light-9);
+
+$base-z-index-999: 999;
+$base-z-index-default: 99;
+
+// hover基础样式
+$base-hover-color: #f5f5f5;
+// 中间内容背景
+$base-content-bg-color: #f1f2f5;
+// 标题颜色
+$base-title-color: #fff;
+// 深色背景
+$dark-bg-color: #293246;
+
+// width
+$base-width: 100%;
+$base-tab-width_active: 70px;
+$base-select-width-small: 120px;
+$base-drawer-width: 320px;
+$base-logo-width: 240px;
+// 收起宽度
+$base-unfold-width: 60px;
+// 菜单栏宽度
+$base-menu-width: 232px;
+// 头像宽度
+$base-avatar-widht: 40px;
+
+// height
+$base-height: 100%;
+// 主题配置底部高度
+$base-drawer-footer-height: 60px;
+// 二级菜单标题高度
+$sub-menu__title-height: 50px;
+// logo 高度
+$base-logo-height: 55px;
+// 头像下拉框高度
+$base-avatar-dropdown-height: 50px;
+// 头像高度
+$base-avatar-height: 40px;
+// 底部copyright高度
+$footer-copyright-height: 55px;
+// 内容最低高度
+$app-main-min-height: calc(100vh - 140px);
+
+// top
+// 移动端内容距顶部高度
+$base-main-mobile-top: 110px;
+// 移动端内容无标签距离顶部高度
+$base-main-mobile-no-tag-top: 60px;
+// 纵向布局内容呢距顶部距离
+$base-main-vertical-top: 50px;
+// 内容呢距顶部距离(固定头部,有标签)
+$base-main-fixed-top: 110px;
+// 内容呢距顶部距离(固定头部， 无标签)
+$base-main-vertical-fixed-notag-top: 60px;
+// 内容呢距顶部距离(无固定，无标签)
+$base-main-notag-top: 0;
+
+// 边框配置
+$base-border-width-mini: 1px;
+$base-border-width-small: 3px;
+$base-border-width-default: 5px;
+$base-border-width-big: 10px;
+$base-border-radius: 2px;
+$base-border-radius-circle: 50%;
+$base-border-none: none;
+
+// 字体大小配置
+$base-font-size-small: 12px;
+$base-font-size-default: 14px;
+$base-font-size-big: 16px;
+$base-font-size-bigger: 18px;
+$base-font-size-max: 22px;
+$base-border-color: #dcdfe6;
+
+// icon配置
+$base-icon-width-default: 14px;
+$base-icon-width-small: 12px;
+$base-icon-width-big: 16px;
+$base-icon-width-bigger: 18px;
+$base-icon-width-max: 22px;
+$base-icon-width-super-max: 34px;
+$base-icon-height-super-max: 50px;
+
+// 字体颜色
+$base-font-color: #606266;
+$base-color-6: #666666;
+$base-color-3: #333333;
+$base-color-blue: $base-color-primary;
+$base-color-green: #91cc75;
+$base-color-white: #fff;
+$base-color-black: #000;
+$base-color-yellow: #fac858;
+$base-color-orange: #ff6700;
+$base-color-red: #ee6666;
+$base-color-gray: rgba(0, 0, 0, 0.65);
+
+// paddiing
+$base-main-padding: 20px 30px;
+$base-content-padding: 15px 20px;
+$base-padding: 20px;
+$base-cell-item-padding: 8px 0;
+$base-padding-20-10: 20px 10px;
+$base-padding-10-20: 10px 20px;
+$base-padding-5-15: 5px 15px;
+$base-padding-10: 10px;
+
+// margin
+$base-margin-5: 5px;
+$base-margin-10: 10px;
+$base-margin-15: 15px;
+$base-margin-20: 20px;
+$base-margin-20: 25px;
+
+//默认阴影
+$base-box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+$base-tabs-bar-height: 55px;
+$base-tag-item-height: 34px;
+$base-nav-bar-height: 56px;
+
+//默认动画
+$base-transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1), border 0s,
+  background 0s, color 0s, font-size 0s;
+//默认动画长
+$base-transition-time: 0.3s;
+$base-transition-time-4: 0.4s;
+$base-color: #f45;
+$green-color: #11d86c;
+
+$color-red: red;
+$color-green: green;
+$color-blue: blue;

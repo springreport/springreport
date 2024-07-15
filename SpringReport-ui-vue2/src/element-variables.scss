@@ -1,0 +1,16 @@
+$--color-primary: #17b794;
+// $--border-color-base: #000000;
+// $--color-white: #1c2026;
+// $--color-text-primary: #ffffff;
+// $--color-text-regular: #ffffff;
+// $--color-black: #262c34;
+// $--border-color-light: #000000;
+// $--color-text-placeholder: #ffffff;
+// $--border-color-lighter: #282e3a;
+// $--border-color-extra-light: #000000;
+// $--background-color-base: #262c34;
+
+// /* 改变 icon 字体路径变量，必需 */
+$--font-path: "~element-ui/lib/theme-chalk/fonts";
+
+@import "~element-ui/packages/theme-chalk/src/index";

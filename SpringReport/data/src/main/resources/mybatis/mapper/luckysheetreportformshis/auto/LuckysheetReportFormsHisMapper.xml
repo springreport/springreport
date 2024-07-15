@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 本文件由代码生成器自动完成 -->
+<mapper namespace="com.springreport.mapper.luckysheetreportformshis.LuckysheetReportFormsHisMapper" >
+
+  <!-- 字段与实体的映射 -->
+  <resultMap id="BaseResultMap" type="com.springreport.entity.luckysheetreportformshis.LuckysheetReportFormsHis">
+     <id column="id" property="id" jdbcType="BIGINT" />
+	 <result column="tpl_id" property="tplId" jdbcType="BIGINT" />
+	 <result column="sheet_index" property="sheetIndex" jdbcType="VARCHAR" />
+	 <result column="datasource_id" property="datasourceId" jdbcType="BIGINT" />
+	 <result column="table_name" property="tableName" jdbcType="VARCHAR" />
+	 <result column="basic_data" property="basicData" jdbcType="LONGVARCHAR" />
+	 <result column="report_data" property="reportData" jdbcType="LONGVARCHAR" />
+	 <result column="change_data_before" property="changeDataBefore" jdbcType="LONGVARCHAR" />
+	 <result column="change_data_after" property="changeDataAfter" jdbcType="LONGVARCHAR" />
+	 <result column="operate_ip" property="operateIp" jdbcType="VARCHAR" />
+	 <result column="creator" property="creator" jdbcType="BIGINT" />
+	 <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+	 <result column="updater" property="updater" jdbcType="BIGINT" />
+	 <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+	 <result column="del_flag" property="delFlag" jdbcType="TINYINT" />
+  </resultMap>
+
+  <sql id="sql_where_like">
+	<where>
+		<if test="id !=null and id !=''">
+			and id = #{id,jdbcType=BIGINT}
+		</if>
+		<if test="tplId !=null">
+			and tpl_id = #{tplId,jdbcType=BIGINT}
+		</if>
+		<if test="sheetIndex !=null and sheetIndex !=''">
+			and sheet_index like concat(concat("%",#{sheetIndex,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="datasourceId !=null">
+			and datasource_id = #{datasourceId,jdbcType=BIGINT}
+		</if>
+		<if test="tableName !=null and tableName !=''">
+			and table_name like concat(concat("%",#{tableName,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="basicData !=null and basicData !=''">
+			and basic_data like concat(concat("%",#{basicData,jdbcType=LONGVARCHAR}),"%") 
+		</if>
+		<if test="reportData !=null and reportData !=''">
+			and report_data like concat(concat("%",#{reportData,jdbcType=LONGVARCHAR}),"%") 
+		</if>
+		<if test="changeDataBefore !=null and changeDataBefore !=''">
+			and change_data_before like concat(concat("%",#{changeDataBefore,jdbcType=LONGVARCHAR}),"%") 
+		</if>
+		<if test="changeDataAfter !=null and changeDataAfter !=''">
+			and change_data_after like concat(concat("%",#{changeDataAfter,jdbcType=LONGVARCHAR}),"%") 
+		</if>
+		<if test="operateIp !=null and operateIp !=''">
+			and operate_ip like concat(concat("%",#{operateIp,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="creator !=null">
+			and creator = #{creator,jdbcType=BIGINT}
+		</if>
+		<if test="createTime !=null">
+		</if>
+		<if test="updater !=null">
+			and updater = #{updater,jdbcType=BIGINT}
+		</if>
+		<if test="updateTime !=null">
+		</if>
+		<if test="delFlag !=null">
+			and del_flag = #{delFlag,jdbcType=TINYINT}
+		</if>
+	</where>
+  </sql>
+  <!-- 字段集合 -->
+  <sql id="Base_Column_List">
+    id,tpl_id,sheet_index,datasource_id,table_name,basic_data,report_data,change_data_before,change_data_after,operate_ip,creator,create_time,updater,update_time,del_flag
+  </sql>
+
+  <!-- 根据条件模糊查询 -->
+  <select id="searchDataLike" resultMap="BaseResultMap" parameterType="com.springreport.entity.luckysheetreportformshis.LuckysheetReportFormsHis">
+    select 
+    <include refid="Base_Column_List" />
+    from luckysheet_report_forms_his 
+    <include refid="sql_where_like" />
+    <if test="orderSql !=null and orderSql !='' ">   
+      order by ${orderSql}
+    </if>
+  </select>
+
+</mapper>

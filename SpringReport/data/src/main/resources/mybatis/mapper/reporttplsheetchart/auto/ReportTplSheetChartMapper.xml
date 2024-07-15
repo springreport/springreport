@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 本文件由代码生成器自动完成 -->
+<mapper namespace="com.springreport.mapper.reporttplsheetchart.ReportTplSheetChartMapper" >
+
+  <!-- 字段与实体的映射 -->
+  <resultMap id="BaseResultMap" type="com.springreport.entity.reporttplsheetchart.ReportTplSheetChart">
+     <id column="id" property="id" jdbcType="BIGINT" />
+	 <result column="tpl_id" property="tplId" jdbcType="BIGINT" />
+	 <result column="sheet_id" property="sheetId" jdbcType="BIGINT" />
+	 <result column="chart_id" property="chartId" jdbcType="VARCHAR" />
+	 <result column="title" property="title" jdbcType="VARCHAR" />
+	 <result column="data_type" property="dataType" jdbcType="TINYINT" />
+	 <result column="dataset_id" property="datasetId" jdbcType="BIGINT" />
+	 <result column="dataset_name" property="datasetName" jdbcType="VARCHAR" />
+	 <result column="attr" property="attr" jdbcType="VARCHAR" />
+	 <result column="xaxis_datas" property="xaxisDatas" jdbcType="LONGVARCHAR" />
+	 <result column="creator" property="creator" jdbcType="BIGINT" />
+	 <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+	 <result column="updater" property="updater" jdbcType="BIGINT" />
+	 <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+	 <result column="del_flag" property="delFlag" jdbcType="TINYINT" />
+  </resultMap>
+
+  <sql id="sql_where_like">
+	<where>
+		<if test="id !=null and id !=''">
+			and id = #{id,jdbcType=BIGINT}
+		</if>
+		<if test="tplId !=null">
+			and tpl_id = #{tplId,jdbcType=BIGINT}
+		</if>
+		<if test="sheetId !=null">
+			and sheet_id = #{sheetId,jdbcType=BIGINT}
+		</if>
+		<if test="chartId !=null and chartId !=''">
+			and chart_id = #{chartId,jdbcType=VARCHAR}
+		</if>
+		<if test="title !=null and title !=''">
+			and title like concat(concat("%",#{title,jdbcType=VARCHAR}),"%")
+		</if>
+		<if test="dataType !=null">
+			and data_type = #{dataType,jdbcType=TINYINT}
+		</if>
+		<if test="datasetId !=null">
+			and dataset_id = #{datasetId,jdbcType=BIGINT}
+		</if>
+		<if test="datasetName !=null and datasetName !=''">
+			and dataset_name like concat(concat("%",#{datasetName,jdbcType=VARCHAR}),"%")
+		</if>
+		<if test="attr !=null and attr !=''">
+			and attr like concat(concat("%",#{attr,jdbcType=VARCHAR}),"%")
+		</if>
+		<if test="xaxisDatas !=null and xaxisDatas !=''">
+			and xaxis_datas like concat(concat("%",#{xaxisDatas,jdbcType=LONGVARCHAR}),"%")
+		</if>
+		<if test="creator !=null">
+			and creator = #{creator,jdbcType=BIGINT}
+		</if>
+		<if test="createTime !=null">
+		</if>
+		<if test="updater !=null">
+			and updater = #{updater,jdbcType=BIGINT}
+		</if>
+		<if test="updateTime !=null">
+		</if>
+		<if test="delFlag !=null">
+			and del_flag = #{delFlag,jdbcType=TINYINT}
+		</if>
+	</where>
+  </sql>
+  <!-- 字段集合 -->
+  <sql id="Base_Column_List">
+    id,tpl_id,sheet_id,chart_id,title,data_type,dataset_id,dataset_name,attr,xaxis_datas,creator,create_time,updater,update_time,del_flag
+  </sql>
+
+  <!-- 根据条件模糊查询 -->
+  <select id="searchDataLike" resultMap="BaseResultMap" parameterType="com.springreport.entity.reporttplsheetchart.ReportTplSheetChart">
+    select 
+    <include refid="Base_Column_List" />
+    from report_tpl_sheet_chart 
+    <include refid="sql_where_like" />
+    <if test="orderSql !=null and orderSql !='' ">   
+      order by ${orderSql}
+    </if>
+  </select>
+
+</mapper>

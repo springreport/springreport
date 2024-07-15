@@ -1,0 +1,14 @@
+{
+  "black": {
+    "--borderColorBase": "#000000",
+    "--colorWhite": "#1C2026",
+    "--colorTextPrimary": "#FFFFFF",
+    "--color-text-regular": "#FFFFFF",
+    "--colorBlack": "#262C34",
+    "--border-color-light": "#000000",
+    "--color-text-placeholder": "#FFFFFF",
+    "--borderColorLighter": "#282E3A",
+    "--border-color-extra-light": "#000000",
+    "--backgroundColorBase": "#262C34"
+  }
+}

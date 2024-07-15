@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0     http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+  <localRepository>D:\m2\repository</localRepository>
+
+  <pluginGroups>
+  </pluginGroups>
+  <proxies>
+  </proxies>
+  <servers>
+  </servers>
+
+  <mirrors>
+      <mirror>
+            <id>alimaven</id>
+            <mirrorOf>central</mirrorOf>
+            <name>aliyun maven</name>
+            <url>http://maven.aliyun.com/nexus/content/repositories/central</url>
+        </mirror>
+
+        <mirror>
+            <id>alimaven</id>
+            <name>aliyun maven</name>
+            <url>http://maven.aliyun.com/nexus/content/groups/public</url>
+            <mirrorOf>central</mirrorOf>
+        </mirror>
+
+        <mirror>
+			<id>tencent</id>
+			<mirrorOf>*</mirrorOf>
+			<name>tencent</name>
+			<url>http://mirrors.cloud.tencent.com/nexus/repository/maven-public/</url>
+		</mirror>
+		
+		<repository>
+			<id>163</id>
+			<url>http://mirrors.163.com/maven/repository/maven-public/</url>
+		</repository>
+		
+		<mirror>
+			<id>huaweicloud</id>
+			<mirrorOf>*</mirrorOf>
+			<name>huaweicloud</name>
+			<url>https://mirrors.huaweicloud.com/repository/maven/</url>
+		</mirror>
+
+
+
+  </mirrors>
+
+</settings>

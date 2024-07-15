@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 本文件由代码生成器自动完成 -->
+<mapper namespace="com.springreport.mapper.luckysheethis.LuckysheetHisMapper" >
+	
+  <delete id="delRowDelCells" parameterType="com.alibaba.fastjson.JSONObject">
+	delete
+	from
+	luckysheet_his
+	where
+	sheet_index = #{index}
+  	and list_id = #{listId}
+  	and row_no >= #{start}
+  	and (#{start}+#{len}-1) >= row_no
+  </delete>
+  
+  <delete id="delColDelCells" parameterType="com.alibaba.fastjson.JSONObject">
+	delete
+	from
+	luckysheet_his
+	where
+	sheet_index = #{index}
+  	and list_id = #{listId}
+  	and col_no >= #{start}
+  	and (#{start}+#{len}-1) >= col_no
+  </delete>
+  
+  <update id="delRowUpdate" parameterType="com.alibaba.fastjson.JSONObject">
+  	update
+  	luckysheet_his
+  	set
+  	row_no = row_no - #{len}
+  	where
+  	sheet_index = #{index}
+  	and list_id = #{listId}
+  	and row_no > (#{start}+#{len}-1)
+  </update>
+  
+  <update id="delColUpdate" parameterType="com.alibaba.fastjson.JSONObject">
+  	update
+  	luckysheet_his
+  	set
+  	col_no = col_no - #{len}
+  	where
+  	sheet_index = #{index}
+  	and list_id = #{listId}
+  	and col_no > (#{start}+#{len}-1)
+  </update>
+  
+  <update id="addRowUpdate" parameterType="com.alibaba.fastjson.JSONObject">
+  	update
+  	luckysheet_his
+  	set
+  	row_no = row_no + #{len}
+  	where
+  	sheet_index = #{index}
+  	and list_id = #{listId}
+  	and row_no >= (#{start})
+  </update>
+  <update id="addColUpdate" parameterType="com.alibaba.fastjson.JSONObject">
+  	update
+  	luckysheet_his
+  	set
+  	col_no = col_no + #{len}
+  	where
+  	sheet_index = #{index}
+  	and list_id = #{listId}
+  	and col_no >= (#{start})
+  </update>
+
+</mapper>

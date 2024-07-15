@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 本文件由代码生成器自动完成 -->
+<mapper namespace="com.springreport.mapper.reportformsdatasourceattrs.ReportFormsDatasourceAttrsMapper" >
+
+  <!-- 字段与实体的映射 -->
+  <resultMap id="BaseResultMap" type="com.springreport.entity.reportformsdatasourceattrs.ReportFormsDatasourceAttrs">
+     <id column="id" property="id" jdbcType="BIGINT" />
+	 <result column="report_forms_datasource_id" property="reportFormsDatasourceId" jdbcType="BIGINT" />
+	 <result column="type" property="type" jdbcType="TINYINT" />
+	 <result column="coordsx" property="coordsx" jdbcType="INTEGER" />
+	 <result column="coordsy" property="coordsy" jdbcType="INTEGER" />
+	 <result column="cell_coords" property="cellCoords" jdbcType="VARCHAR" />
+	 <result column="column_name" property="columnName" jdbcType="VARCHAR" />
+	 <result column="id_type" property="idType" jdbcType="TINYINT" />
+	 <result column="creator" property="creator" jdbcType="BIGINT" />
+	 <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+	 <result column="updater" property="updater" jdbcType="BIGINT" />
+	 <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+	 <result column="del_flag" property="delFlag" jdbcType="TINYINT" />
+  </resultMap>
+
+  <sql id="sql_where_like">
+	<where>
+		<if test="id !=null and id !=''">
+			and id = #{id,jdbcType=BIGINT}
+		</if>
+		<if test="reportFormsDatasourceId !=null">
+			and report_forms_datasource_id = #{reportFormsDatasourceId,jdbcType=BIGINT}
+		</if>
+		<if test="type !=null">
+			and type = #{type,jdbcType=TINYINT}
+		</if>
+		<if test="coordsx !=null">
+			and coordsx = #{coordsx,jdbcType=INTEGER}
+		</if>
+		<if test="coordsy !=null">
+			and coordsy = #{coordsy,jdbcType=INTEGER}
+		</if>
+		<if test="cellCoords !=null and cellCoords !=''">
+			and cell_coords like concat(concat("%",#{cellCoords,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="columnName !=null and columnName !=''">
+			and column_name like concat(concat("%",#{columnName,jdbcType=VARCHAR}),"%") 
+		</if>
+		<if test="idType !=null">
+			and id_type = #{idType,jdbcType=TINYINT}
+		</if>
+		<if test="creator !=null">
+			and creator = #{creator,jdbcType=BIGINT}
+		</if>
+		<if test="createTime !=null">
+		</if>
+		<if test="updater !=null">
+			and updater = #{updater,jdbcType=BIGINT}
+		</if>
+		<if test="updateTime !=null">
+		</if>
+		<if test="delFlag !=null">
+			and del_flag = #{delFlag,jdbcType=TINYINT}
+		</if>
+	</where>
+  </sql>
+  <!-- 字段集合 -->
+  <sql id="Base_Column_List">
+    id,report_forms_datasource_id,type,coordsx,coordsy,cell_coords,column_name,id_type,creator,create_time,updater,update_time,del_flag
+  </sql>
+
+  <!-- 根据条件模糊查询 -->
+  <select id="searchDataLike" resultMap="BaseResultMap" parameterType="com.springreport.entity.reportformsdatasourceattrs.ReportFormsDatasourceAttrs">
+    select 
+    <include refid="Base_Column_List" />
+    from report_forms_datasource_attrs 
+    <include refid="sql_where_like" />
+    <if test="orderSql !=null and orderSql !='' ">   
+      order by ${orderSql}
+    </if>
+  </select>
+
+</mapper>

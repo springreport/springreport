@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 本文件由代码生成器自动完成 -->
+<mapper namespace="com.springreport.mapper.luckysheet.LuckysheetMapper" >
+
+  <select id="getMaxOrder" parameterType="com.springreport.entity.luckysheet.Luckysheet" resultType="int">
+  	select
+	MAX(sheet_order)+1
+	from
+	luckysheet
+	where
+	list_id = #{listId}
+	and block_id = #{blockId}
+  </select>
+  
+  <select id="getOneButJsonData" parameterType="com.alibaba.fastjson.JSONObject" resultType="com.springreport.entity.luckysheet.Luckysheet">
+  	select
+  	id,
+  	block_id,
+  	row_col,
+  	sheet_index,
+  	list_id,
+  	status,
+  	sheet_order,
+  	del_flag
+  	from
+	luckysheet
+  	where
+  	del_flag = 1
+  	<if test="list_id !=null and list_id !=''">
+  		and list_id = #{list_id}
+  	</if>
+  	<if test="sheet_index !=null and sheet_index !=''">
+  		and sheet_index = #{sheet_index}
+  	</if>
+  	<if test="block_id !=null and block_id !=''">
+  		and block_id = #{block_id}
+  	</if>
+  </select>
+
+</mapper>

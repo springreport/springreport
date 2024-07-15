@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 本文件由代码生成器自动完成 -->
+<mapper namespace="com.springreport.mapper.reporttpldatasource.ReportTplDatasourceMapper" >
+
+  	<select id="getReportTplDatasources" parameterType="com.springreport.entity.reporttpldatasource.ReportTplDatasource" resultType="com.springreport.dto.reporttpldatasource.ReportTplDatasourceDto">
+  		SELECT
+		t1.id,
+		t1.tpl_id,
+		t1.datasource_id,
+		t2.name as dataSourceName,
+		t2.code as dataSourceCode,
+		t2.api_columns as apiColumns,
+		t2.type
+		FROM
+		report_tpl_datasource t1
+		JOIN
+		report_datasource t2
+		ON t1.datasource_id = t2.id
+		WHERE
+		t1.tpl_id = #{tplId}
+		and t1.del_flag = 1
+		and t2.del_flag = 1
+  	</select>
+</mapper>
