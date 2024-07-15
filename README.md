@@ -61,8 +61,11 @@ SpringReport项目是从2021年正式开始开发，从2020年就有第一个版
 | 5  | 达梦数据库  | 支持  | 提供  |
 | 6  | 人大金仓  | 支持  | 提供  |
 
+## 技术支持
+如果您需要作者的技术支持，请加入微信群或者QQ群联系作者。在这个过程中作者也需要付出时间和精力，所以也会适当的收取一些费用，还请理解。
+
 ## 捐赠SpringReport的研发
-开源不易，如果您认为SpringReport项目可以为您提供帮助，希望您可以捐赠SpringReport的研发工作。
+开源不易，如果你认为SpringReport项目可以为你提供帮助，或者给你带来方便和灵感，或者你认同这个项目，可以为我的付出赞助一下哦！
 <div align=center>  
 	<img src="https://www.springreport.vip/images/qrcode/alipay.jpg" width=300 height=300>  
 	<img src="https://www.springreport.vip/images/qrcode/wechat.jpg" width=300 height=300>  
