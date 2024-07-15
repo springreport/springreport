@@ -51,6 +51,13 @@ SpringReport项目是从2021年正式开始开发，从2020年就有第一个版
 11. 支持多租户模式
 12. 自主研发，拥有自主知识产权
 
+## 依赖项目
+SpringReport依赖另外一个工具类jar包excel2pdf，用于将excel转成pdf，可以从以下地址下载：
+
+github地址：https://github.com/springreport/excel2pdf
+
+gitee地址：https://gitee.com/springreport/excel2pdf
+
 ## 数据库支持
 |序号   | 数据库  | 是否支持  | 是否提供脚本 |
 |---|---|---|---|
