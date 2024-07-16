@@ -42,8 +42,7 @@ import org.jfree.data.general.PieDataset;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-//import com.springreport.excel2pdf.ImageInfo;
-import com.a.a.d;
+import com.springreport.excel2pdf.ImageInfo;
 
 public class JFreeChartUtil {
 
@@ -412,22 +411,17 @@ public class JFreeChartUtil {
 	    categoryAxis.setUpperMargin(0.0);
 	}
 	
-	public static List<d> getChartInfos(JSONArray jsonArray) throws Exception {
-//	public static List<ImageInfo> getChartInfos(JSONArray jsonArray) throws Exception {
-//		List<ImageInfo> result = new ArrayList<ImageInfo>();
-		List<d> result = new ArrayList<d>();
+	public static List<ImageInfo> getChartInfos(JSONArray jsonArray) throws Exception {
+		List<ImageInfo> result = new ArrayList<ImageInfo>();
 		if(!ListUtil.isEmpty(jsonArray))
 		{
 			for (int i = 0; i < jsonArray.size(); i++) {
-//				ImageInfo imageInfo = new ImageInfo();
-				d imageInfo = new d();
+				ImageInfo imageInfo = new ImageInfo();
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				float width = jsonObject.getFloatValue("width");
 				float height = jsonObject.getFloatValue("height");
-//				imageInfo.setWidth(width);
-				imageInfo.c(width);
-//				imageInfo.setHeight(height);
-				imageInfo.d(height);
+				imageInfo.setWidth(width);
+				imageInfo.setHeight(height);
 				JSONObject chartOptions = jsonObject.getJSONObject("chartOptions");
 				JSONObject defaultOption = chartOptions.getJSONObject("defaultOption");
 				String chartAllType = chartOptions.getString("chartAllType");
@@ -475,8 +469,7 @@ public class JFreeChartUtil {
 					}
 				}
 				String base64 = "data:image/png;base64,"+Base64.getEncoder().encodeToString(chartBytes);
-//				imageInfo.setImage(base64);
-				imageInfo.b(base64);
+				imageInfo.setImage(base64);
 				result.add(imageInfo);
 			}
 		}
