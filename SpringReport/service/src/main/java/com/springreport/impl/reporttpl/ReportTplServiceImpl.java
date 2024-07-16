@@ -188,16 +188,11 @@ import com.springreport.enums.ShareTypeEnum;
 import com.springreport.enums.SqlTypeEnum;
 import com.springreport.enums.TplTypeEnum;
 import com.springreport.enums.YesNoEnum;
-//import com.springreport.excel2pdf.Excel2Pdf;
-import com.a.a.b;
-//import com.springreport.excel2pdf.ExcelObject;
-import com.a.a.c;
-//import com.springreport.excel2pdf.PrintSettingsDto;
-import com.a.a.i;
-//import com.springreport.excel2pdf.ResMobileInfos;
-import com.a.a.j;
-//import com.springreport.excel2pdf.TableCell;
-import com.a.a.l;
+import com.springreport.excel2pdf.Excel2Pdf;
+import com.springreport.excel2pdf.ExcelObject;
+import com.springreport.excel2pdf.PrintSettingsDto;
+import com.springreport.excel2pdf.ResMobileInfos;
+import com.springreport.excel2pdf.TableCell;
 import com.springreport.exception.BizException;
 import com.springreport.impl.codeit.MqProcessService;
 
@@ -11532,51 +11527,29 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			FileUtil.createFile(dest);
 			String fileUri = MessageUtil.getValue("file.url.prefix")+date+"/"+filename+"?t="+System.currentTimeMillis();
 			result.put("fileUrl", fileUri);
-//			List<ExcelObject> objects = new ArrayList<ExcelObject>();
-			List<c> objects = new ArrayList<c>();
+			List<ExcelObject> objects = new ArrayList<ExcelObject>();
 			int x = resPreviewData.getSheetDatas().get(0).getStartXAndY().get("x")==null?0:resPreviewData.getSheetDatas().get(0).getStartXAndY().get("x");
 			int y = resPreviewData.getSheetDatas().get(0).getStartXAndY().get("y")==null?0:resPreviewData.getSheetDatas().get(0).getStartXAndY().get("y");
 			int endx = resPreviewData.getSheetDatas().get(0).getMaxXAndY().get("maxX")==null?0:resPreviewData.getSheetDatas().get(0).getMaxXAndY().get("maxX");
 			int endy = resPreviewData.getSheetDatas().get(0).getMaxXAndY().get("maxY")==null?0:resPreviewData.getSheetDatas().get(0).getMaxXAndY().get("maxY");
 			JSONObject colhidden = resPreviewData.getSheetDatas().get(0).getColhidden() == null?new JSONObject():resPreviewData.getSheetDatas().get(0).getColhidden();
 			JSONObject rowhidden = resPreviewData.getSheetDatas().get(0).getRowhidden() == null?new JSONObject():resPreviewData.getSheetDatas().get(0).getRowhidden();
-//			PrintSettingsDto printSettingsDto = new PrintSettingsDto();
-			i printSettingsDto = new i();
+			PrintSettingsDto printSettingsDto = new PrintSettingsDto();
 			if(resPreviewData.getSheetDatas().get(0).getPrintSettings() != null)
 			{
-//				BeanUtils.copyProperties(resPreviewData.getSheetDatas().get(0).getPrintSettings(), printSettingsDto);
-				printSettingsDto.c(resPreviewData.getSheetDatas().get(0).getPrintSettings().getPageType());
-				printSettingsDto.f(resPreviewData.getSheetDatas().get(0).getPrintSettings().getPageLayout());
-				printSettingsDto.g(resPreviewData.getSheetDatas().get(0).getPrintSettings().getPageHeaderShow());
-				printSettingsDto.c(resPreviewData.getSheetDatas().get(0).getPrintSettings().getPageHeaderContent());
-				printSettingsDto.h(resPreviewData.getSheetDatas().get(0).getPrintSettings().getPageHeaderPosition());
-				printSettingsDto.i(resPreviewData.getSheetDatas().get(0).getPrintSettings().getWaterMarkShow());
-				printSettingsDto.j(resPreviewData.getSheetDatas().get(0).getPrintSettings().getWaterMarkType());
-				printSettingsDto.d(resPreviewData.getSheetDatas().get(0).getPrintSettings().getWaterMarkContent());
-				printSettingsDto.e(resPreviewData.getSheetDatas().get(0).getPrintSettings().getWaterMarkImg());
-				printSettingsDto.k(resPreviewData.getSheetDatas().get(0).getPrintSettings().getPageShow());
-				printSettingsDto.l(resPreviewData.getSheetDatas().get(0).getPrintSettings().getPagePosition());
+				BeanUtils.copyProperties(resPreviewData.getSheetDatas().get(0).getPrintSettings(), printSettingsDto);
 			}
-//			printSettingsDto.setAuthor(userInfoDto.getUserName());
-			printSettingsDto.f(userInfoDto.getUserName());
-//			printSettingsDto.setTitle(reportTpl.getTplName());
-			printSettingsDto.g(reportTpl.getTplName());
-//			printSettingsDto.setSubject(resPreviewData.getSheetDatas().get(0).getSheetName());
-			printSettingsDto.h(resPreviewData.getSheetDatas().get(0).getSheetName());
-//			printSettingsDto.setKeyWords("SpringReport_2.1.0");
-			printSettingsDto.i("SpringReport_2.1.0");
-//			printSettingsDto.setHorizontalPage(
-//					resPreviewData.getSheetDatas().get(0).getPrintSettings() == null?2:resPreviewData.getSheetDatas().get(0).getPrintSettings().getHorizontalPage());
-			printSettingsDto.m(
+			printSettingsDto.setAuthor(userInfoDto.getUserName());
+			printSettingsDto.setTitle(reportTpl.getTplName());
+			printSettingsDto.setSubject(resPreviewData.getSheetDatas().get(0).getSheetName());
+			printSettingsDto.setKeyWords("SpringReport_2.1.0");
+			printSettingsDto.setHorizontalPage(
 					resPreviewData.getSheetDatas().get(0).getPrintSettings() == null?2:resPreviewData.getSheetDatas().get(0).getPrintSettings().getHorizontalPage());
-//			printSettingsDto.setPageDivider(resPreviewData.getSheetDatas().get(0).getPageDivider());
-			printSettingsDto.a(resPreviewData.getSheetDatas().get(0).getPageDivider());
-//			objects.add(new ExcelObject("excel",is,x,y,endx,endy,mesGenerateReportDto.getPdfType(),colhidden,rowhidden,resPreviewData.getSheetDatas().get(0).getXxbtScreenshot(),printSettingsDto,mesExportExcel.getImageInfos(),mesExportExcel.getBackImages()));
-			objects.add(new c("excel",is,x,y,endx,endy,mesGenerateReportDto.getPdfType(),colhidden,rowhidden,resPreviewData.getSheetDatas().get(0).getXxbtScreenshot(),printSettingsDto,mesExportExcel.getImageInfos(),mesExportExcel.getBackImages()));
+			printSettingsDto.setPageDivider(resPreviewData.getSheetDatas().get(0).getPageDivider());
+			objects.add(new ExcelObject("excel",is,x,y,endx,endy,mesGenerateReportDto.getPdfType(),colhidden,rowhidden,resPreviewData.getSheetDatas().get(0).getXxbtScreenshot(),printSettingsDto,mesExportExcel.getImageInfos(),mesExportExcel.getBackImages()));
 			FileOutputStream fos = new FileOutputStream(dirPath + date + "/" + filename);
-//			Excel2Pdf pdf = new Excel2Pdf(objects, fos);
-			b pdf = new b(objects, fos);
-			pdf.c();
+			Excel2Pdf pdf = new Excel2Pdf(objects, fos);
+			pdf.convert();
 		}
 		return result;
 	}
@@ -11973,49 +11946,27 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				mesExportExcel.setImageInfos(new HashMap<>());
 				mesExportExcel.setBackImages(new HashMap<>());
 				ByteArrayInputStream is =ReportExcelUtil.getExcelStream(mesExportExcel,resPreviewData.getTplName(),"");
-//				List<ExcelObject> objects = new ArrayList<ExcelObject>();
-				List<c> objects = new ArrayList<c>();
+				List<ExcelObject> objects = new ArrayList<ExcelObject>();
 				int x = resPreviewData.getSheetDatas().get(i).getStartXAndY().get("x")==null?0:resPreviewData.getSheetDatas().get(i).getStartXAndY().get("x");
 				int y = resPreviewData.getSheetDatas().get(i).getStartXAndY().get("y")==null?0:resPreviewData.getSheetDatas().get(i).getStartXAndY().get("y");
 				int endx = resPreviewData.getSheetDatas().get(i).getMaxXAndY().get("maxX")==null?0:resPreviewData.getSheetDatas().get(i).getMaxXAndY().get("maxX");
 				int endy = resPreviewData.getSheetDatas().get(i).getMaxXAndY().get("maxY")==null?0:resPreviewData.getSheetDatas().get(i).getMaxXAndY().get("maxY");
 				JSONObject colhidden = resPreviewData.getSheetDatas().get(i).getColhidden() == null?new JSONObject():resPreviewData.getSheetDatas().get(i).getColhidden();
 				JSONObject rowhidden = resPreviewData.getSheetDatas().get(i).getRowhidden() == null?new JSONObject():resPreviewData.getSheetDatas().get(i).getRowhidden();
-//				PrintSettingsDto printSettingsDto = new PrintSettingsDto();
-				i printSettingsDto = new i();
+				PrintSettingsDto printSettingsDto = new PrintSettingsDto();
 				if(resPreviewData.getSheetDatas().get(i).getPrintSettings() != null)
 				{
-//					BeanUtils.copyProperties(resPreviewData.getSheetDatas().get(i).getPrintSettings(), printSettingsDto);
-					printSettingsDto.c(resPreviewData.getSheetDatas().get(i).getPrintSettings().getPageType());
-					printSettingsDto.f(resPreviewData.getSheetDatas().get(i).getPrintSettings().getPageLayout());
-					printSettingsDto.g(resPreviewData.getSheetDatas().get(i).getPrintSettings().getPageHeaderShow());
-					printSettingsDto.c(resPreviewData.getSheetDatas().get(i).getPrintSettings().getPageHeaderContent());
-					printSettingsDto.h(resPreviewData.getSheetDatas().get(i).getPrintSettings().getPageHeaderPosition());
-					printSettingsDto.i(resPreviewData.getSheetDatas().get(i).getPrintSettings().getWaterMarkShow());
-					printSettingsDto.j(resPreviewData.getSheetDatas().get(i).getPrintSettings().getWaterMarkType());
-					printSettingsDto.d(resPreviewData.getSheetDatas().get(i).getPrintSettings().getWaterMarkContent());
-					printSettingsDto.e(resPreviewData.getSheetDatas().get(i).getPrintSettings().getWaterMarkImg());
-					printSettingsDto.k(resPreviewData.getSheetDatas().get(i).getPrintSettings().getPageShow());
-					printSettingsDto.l(resPreviewData.getSheetDatas().get(i).getPrintSettings().getPagePosition());
+					BeanUtils.copyProperties(resPreviewData.getSheetDatas().get(i).getPrintSettings(), printSettingsDto);
 				}
-//				printSettingsDto.setAuthor(userInfoDto.getUserName());
-				printSettingsDto.f(userInfoDto.getUserName());
-//				printSettingsDto.setTitle(reportTpl.getTplName());
-				printSettingsDto.g(reportTpl.getTplName());
-//				printSettingsDto.setSubject(resPreviewData.getSheetDatas().get(i).getSheetName());
-				printSettingsDto.h(resPreviewData.getSheetDatas().get(i).getSheetName());
-//				printSettingsDto.setKeyWords("SpringReport_2.1.0");
-				printSettingsDto.i("SpringReport_2.1.0");
-//				printSettingsDto.setHorizontalPage(resPreviewData.getSheetDatas().get(i).getPrintSettings()!=null?resPreviewData.getSheetDatas().get(i).getPrintSettings().getHorizontalPage():2);
-				printSettingsDto.m(resPreviewData.getSheetDatas().get(i).getPrintSettings()!=null?resPreviewData.getSheetDatas().get(i).getPrintSettings().getHorizontalPage():2);
-//				printSettingsDto.setPageDivider(resPreviewData.getSheetDatas().get(i).getPageDivider());
-				printSettingsDto.a(resPreviewData.getSheetDatas().get(i).getPageDivider());
-//				objects.add(new ExcelObject("excel",is,x,y,endx,endy,mesGenerateReportDto.getPdfType(),colhidden,rowhidden,resPreviewData.getSheetDatas().get(i).getXxbtScreenshot(),printSettingsDto,mesExportExcel.getImageInfos(),mesExportExcel.getBackImages()));
-				objects.add(new c("excel",is,x,y,endx,endy,mesGenerateReportDto.getPdfType(),colhidden,rowhidden,resPreviewData.getSheetDatas().get(i).getXxbtScreenshot(),printSettingsDto,mesExportExcel.getImageInfos(),mesExportExcel.getBackImages()));
-//				Excel2Pdf pdf = new  Excel2Pdf(objects, null);
-				b pdf = new  b(objects, null);
-//				ResMobileInfos resMobileInfos = pdf.getMobileInfos();
-				j resMobileInfos = pdf.d();
+				printSettingsDto.setAuthor(userInfoDto.getUserName());
+				printSettingsDto.setTitle(reportTpl.getTplName());
+				printSettingsDto.setSubject(resPreviewData.getSheetDatas().get(i).getSheetName());
+				printSettingsDto.setKeyWords("SpringReport_2.1.0");
+				printSettingsDto.setHorizontalPage(resPreviewData.getSheetDatas().get(i).getPrintSettings()!=null?resPreviewData.getSheetDatas().get(i).getPrintSettings().getHorizontalPage():2);
+				printSettingsDto.setPageDivider(resPreviewData.getSheetDatas().get(i).getPageDivider());
+				objects.add(new ExcelObject("excel",is,x,y,endx,endy,mesGenerateReportDto.getPdfType(),colhidden,rowhidden,resPreviewData.getSheetDatas().get(i).getXxbtScreenshot(),printSettingsDto,mesExportExcel.getImageInfos(),mesExportExcel.getBackImages()));
+				Excel2Pdf pdf = new  Excel2Pdf(objects, null);
+				ResMobileInfos resMobileInfos = pdf.getMobileInfos();
 				ResMobileReport resMobileReport = new ResMobileReport();
 				resMobileReport.setSheetIndex(resPreviewData.getSheetDatas().get(i).getSheetIndex());
 				resMobileReport.setSheetName(resPreviewData.getSheetDatas().get(i).getSheetName());
@@ -12057,8 +12008,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 					}
 				}
 				resMobileReport.setChartsOptions(chartsOptions);
-//				String tableHtml = this.buildTables(x,y,endx, endy, resMobileInfos.getTableCells(),resMobileInfos.getMergeCells(),colhidden,rowhidden,resMobileInfos.getEmptyRows(),imgs);
-				String tableHtml = this.buildTables(x,y,endx, endy, resMobileInfos.V(),resMobileInfos.X(),colhidden,rowhidden,resMobileInfos.Y(),imgs);
+				String tableHtml = this.buildTables(x,y,endx, endy, resMobileInfos.getTableCells(),resMobileInfos.getMergeCells(),colhidden,rowhidden,resMobileInfos.getEmptyRows(),imgs);
 				resMobileReport.setImages(imgs);
 				resMobileReport.setTable(tableHtml);
 				resMobileReport.setDrillCells(resPreviewData.getSheetDatas().get(i).getDrillCells());
@@ -12070,25 +12020,20 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		result.setPagination(resPreviewData.getPagination());
 		return result;
 	}
-	private String buildTables(int startx,int starty,int endx,int endy,List<List<l>> tableCells,Set<String> mergeCells,JSONObject colhidden,JSONObject rowhidden,Set<Integer> emptyRows,Map<String, String> imgs) {
-//	private String buildTables(int startx,int starty,int endx,int endy,List<List<TableCell>> tableCells,Set<String> mergeCells,JSONObject colhidden,JSONObject rowhidden,Set<Integer> emptyRows,Map<String, String> imgs) {
+	private String buildTables(int startx,int starty,int endx,int endy,List<List<TableCell>> tableCells,Set<String> mergeCells,JSONObject colhidden,JSONObject rowhidden,Set<Integer> emptyRows,Map<String, String> imgs) {
 		String result = "";
 		if(!ListUtil.isEmpty(tableCells))
 		{
 			Map<Integer, Map<String, String>> emptyCells = this.buildAllEmptyCells(startx,starty,endx,endy,tableCells,mergeCells,colhidden,rowhidden,emptyRows);
 			for (int i = 0; i < tableCells.size(); i++) {
-				List<l> rowCells = tableCells.get(i);
+				List<TableCell> rowCells = tableCells.get(i);
 				for (int j = 0; j < rowCells.size(); j++) {
-//					int x = rowCells.get(j).getX();
-					int x = rowCells.get(j).ac();
-//					int y = rowCells.get(j).getY();
-					int y = rowCells.get(j).ad();
-//					Map<String, String> rowTDs = emptyCells.get(rowCells.get(j).getX());
-					Map<String, String> rowTDs = emptyCells.get(rowCells.get(j).ac());
+					int x = rowCells.get(j).getX();
+					int y = rowCells.get(j).getY();
+					Map<String, String> rowTDs = emptyCells.get(rowCells.get(j).getX());
 					if(rowTDs != null)
 					{
-//						if(colhidden.get(String.valueOf(rowCells.get(j).getY())) == null)
-						if(colhidden.get(String.valueOf(rowCells.get(j).ad())) == null)
+						if(colhidden.get(String.valueOf(rowCells.get(j).getY())) == null)
 						{
 							String td = this.buildCellHtml(rowCells.get(j),imgs);
 							rowTDs.put(x+"-"+y, td);	
@@ -12118,8 +12063,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		return result;
 	}
 	
-	private Map<Integer, Map<String, String>> buildAllEmptyCells(int startx,int starty,int endx,int endy,List<List<l>> tableCells,Set<String> mergeCells,JSONObject colhidden,JSONObject rowhidden,Set<Integer> emptyRows){
-//	private Map<Integer, Map<String, String>> buildAllEmptyCells(int startx,int starty,int endx,int endy,List<List<TableCell>> tableCells,Set<String> mergeCells,JSONObject colhidden,JSONObject rowhidden,Set<Integer> emptyRows){
+	private Map<Integer, Map<String, String>> buildAllEmptyCells(int startx,int starty,int endx,int endy,List<List<TableCell>> tableCells,Set<String> mergeCells,JSONObject colhidden,JSONObject rowhidden,Set<Integer> emptyRows){
 		Map<Integer, Map<String, String>> result = new LinkedHashMap<Integer, Map<String,String>>();
 		for (int i = startx; i <= endx; i++) {
 			if(rowhidden.get(String.valueOf(i)) != null || emptyRows.contains(i))
@@ -12140,61 +12084,31 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		return result;
 	}
 	
-	private String buildCellHtml(l tableCell,Map<String, String> imgs) {
-//	private String buildCellHtml(TableCell tableCell,Map<String, String> imgs) {
+	private String buildCellHtml(TableCell tableCell,Map<String, String> imgs) {
 		StringBuffer td = new StringBuffer();
 		StringBuffer style = new StringBuffer();
-//		String id = tableCell.getX() + "_" + tableCell.getY();
-		String id = tableCell.ac() + "_" + tableCell.ad();
+		String id = tableCell.getX() + "_" + tableCell.getY();
 		td.append("<td id='").append(id).append("'").append(" class='").append(id).append("'");
-//		if (YesNoEnum.YES.getCode().intValue() == tableCell.getIsMerge().intValue()) {
-//			td.append(" rowspan="+tableCell.getRowSpan()+" colspan="+tableCell.getColSpan()+"");
-//		}
-		if (YesNoEnum.YES.getCode().intValue() == tableCell.ae().intValue()) {
-			td.append(" rowspan="+tableCell.Z()+" colspan="+tableCell.aa()+"");
+		if (YesNoEnum.YES.getCode().intValue() == tableCell.getIsMerge().intValue()) {
+			td.append(" rowspan="+tableCell.getRowSpan()+" colspan="+tableCell.getColSpan()+"");
 		}
-//		if(StringUtil.isNotEmpty(tableCell.getBackgroundColor()))
-//		{
-//			td.append(" bgcolor='"+tableCell.getBackgroundColor()+"'");
-//		}
-		if(StringUtil.isNotEmpty(tableCell.ah()))
+		if(StringUtil.isNotEmpty(tableCell.getBackgroundColor()))
 		{
-			td.append(" bgcolor='"+tableCell.ah()+"'");
+			td.append(" bgcolor='"+tableCell.getBackgroundColor()+"'");
 		}
-//		if (StringUtil.isNotEmpty(tableCell.getFontSize())) {
-//			style.append("font-size:"+tableCell.getFontSize()+"pt");
-//		}
-		if (StringUtil.isNotEmpty(tableCell.ak())) {
-			style.append("font-size:"+tableCell.ak()+"pt");
+		if (StringUtil.isNotEmpty(tableCell.getFontSize())) {
+			style.append("font-size:"+tableCell.getFontSize()+"pt");
 		}
-//		if(StringUtil.isNotEmpty(tableCell.getFontColor()))
-//		{
-//			if(StringUtil.isNotEmpty(style.toString()))
-//			{
-//				style.append(";color:"+tableCell.getFontColor());
-//			}else {
-//				style.append("color:"+tableCell.getFontColor());
-//			}
-//		}
-		if(StringUtil.isNotEmpty(tableCell.ai()))
+		if(StringUtil.isNotEmpty(tableCell.getFontColor()))
 		{
 			if(StringUtil.isNotEmpty(style.toString()))
 			{
-				style.append(";color:"+tableCell.ai());
+				style.append(";color:"+tableCell.getFontColor());
 			}else {
-				style.append("color:"+tableCell.ai());
+				style.append("color:"+tableCell.getFontColor());
 			}
 		}
-//		if(tableCell.isBold())
-//		{
-//			if(StringUtil.isNotEmpty(style.toString()))
-//			{
-//				style.append(";font-weight:bold");
-//			}else {
-//				style.append("font-weight:bold");
-//			}
-//		}
-		if(tableCell.aj())
+		if(tableCell.isBold())
 		{
 			if(StringUtil.isNotEmpty(style.toString()))
 			{
@@ -12203,16 +12117,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				style.append("font-weight:bold");
 			}
 		}
-//		if(tableCell.isItalic())
-//		{
-//			if(StringUtil.isNotEmpty(style.toString()))
-//			{
-//				style.append(";font-style:italic");
-//			}else {
-//				style.append("font-style:italic");
-//			}
-//		}
-		if(tableCell.al())
+		if(tableCell.isItalic())
 		{
 			if(StringUtil.isNotEmpty(style.toString()))
 			{
@@ -12221,16 +12126,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				style.append("font-style:italic");
 			}
 		}
-//		if(tableCell.getUnderLine() == 1)
-//		{
-//			if(StringUtil.isNotEmpty(style.toString()))
-//			{
-//				style.append(";text-decoration:underline");
-//			}else {
-//				style.append("text-decoration:none");
-//			}
-//		}
-		if(tableCell.am() == 1)
+		if(tableCell.getUnderLine() == 1)
 		{
 			if(StringUtil.isNotEmpty(style.toString()))
 			{
@@ -12240,26 +12136,13 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			}
 		}
 //		水平对齐方式 0左对齐 1居中对齐 2右对齐
-//		if(tableCell.getHorizontalAlignment().intValue() == 0)
-//		{
-//			td.append(" align='left'");
-//		}else if(tableCell.getHorizontalAlignment().intValue() == 1)
-//		{
-//			td.append(" align='center'");
-//		}else if(tableCell.getHorizontalAlignment().intValue() == 2)
-//		{
-//			td.append(" align='right'");
-//		}else
-//		{
-//			td.append(" align='left'");
-//		}
-		if(tableCell.ag().intValue() == 0)
+		if(tableCell.getHorizontalAlignment().intValue() == 0)
 		{
 			td.append(" align='left'");
-		}else if(tableCell.ag().intValue() == 1)
+		}else if(tableCell.getHorizontalAlignment().intValue() == 1)
 		{
 			td.append(" align='center'");
-		}else if(tableCell.ag().intValue() == 2)
+		}else if(tableCell.getHorizontalAlignment().intValue() == 2)
 		{
 			td.append(" align='right'");
 		}else
@@ -12267,25 +12150,13 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			td.append(" align='left'");
 		}
 //		垂直对齐方式 6下方对齐 5中间对齐 4 顶端对齐
-//		if(tableCell.getVerticalAlignment().intValue() == 5)
-//		{
-//			td.append(" valign='center'");
-//		}else if(tableCell.getVerticalAlignment().intValue() == 4)
-//		{
-//			td.append(" valign='top'");
-//		}else if(tableCell.getVerticalAlignment().intValue() == 6)
-//		{
-//			td.append(" valign='bottom'");
-//		}else {
-//			td.append(" valign='center'");
-//		}
-		if(tableCell.af().intValue() == 5)
+		if(tableCell.getVerticalAlignment().intValue() == 5)
 		{
 			td.append(" valign='center'");
-		}else if(tableCell.af().intValue() == 4)
+		}else if(tableCell.getVerticalAlignment().intValue() == 4)
 		{
 			td.append(" valign='top'");
-		}else if(tableCell.af().intValue() == 6)
+		}else if(tableCell.getVerticalAlignment().intValue() == 6)
 		{
 			td.append(" valign='bottom'");
 		}else {
@@ -12302,8 +12173,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			}
 			
 		}else {
-//			td.append(tableCell.getCellValue());
-			td.append(tableCell.ab());
+			td.append(tableCell.getCellValue());
 		}
 		td.append("</td>");
 		return td.toString();
@@ -12426,42 +12296,21 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 					int endy = resPreviewData.getSheetDatas().get(i).getMaxXAndY().get("maxY")==null?0:resPreviewData.getSheetDatas().get(i).getMaxXAndY().get("maxY");
 					JSONObject colhidden = resPreviewData.getSheetDatas().get(i).getColhidden() == null?new JSONObject():resPreviewData.getSheetDatas().get(i).getColhidden();
 					JSONObject rowhidden = resPreviewData.getSheetDatas().get(i).getRowhidden() == null?new JSONObject():resPreviewData.getSheetDatas().get(i).getRowhidden();
-//					List<ExcelObject> objects = new ArrayList<ExcelObject>();
-					List<c> objects = new ArrayList<c>();
-//					PrintSettingsDto printSettingsDto = new PrintSettingsDto();
-					i printSettingsDto = new i();
+					List<ExcelObject> objects = new ArrayList<ExcelObject>();
+					PrintSettingsDto printSettingsDto = new PrintSettingsDto();
 					if(resPreviewData.getSheetDatas().get(i).getPrintSettings() != null)
 					{
-//						BeanUtils.copyProperties(resPreviewData.getSheetDatas().get(i).getPrintSettings(), printSettingsDto);
-						printSettingsDto.c(resPreviewData.getSheetDatas().get(i).getPrintSettings().getPageType());
-						printSettingsDto.f(resPreviewData.getSheetDatas().get(i).getPrintSettings().getPageLayout());
-						printSettingsDto.g(resPreviewData.getSheetDatas().get(i).getPrintSettings().getPageHeaderShow());
-						printSettingsDto.c(resPreviewData.getSheetDatas().get(i).getPrintSettings().getPageHeaderContent());
-						printSettingsDto.h(resPreviewData.getSheetDatas().get(i).getPrintSettings().getPageHeaderPosition());
-						printSettingsDto.i(resPreviewData.getSheetDatas().get(i).getPrintSettings().getWaterMarkShow());
-						printSettingsDto.j(resPreviewData.getSheetDatas().get(i).getPrintSettings().getWaterMarkType());
-						printSettingsDto.d(resPreviewData.getSheetDatas().get(i).getPrintSettings().getWaterMarkContent());
-						printSettingsDto.e(resPreviewData.getSheetDatas().get(i).getPrintSettings().getWaterMarkImg());
-						printSettingsDto.k(resPreviewData.getSheetDatas().get(i).getPrintSettings().getPageShow());
-						printSettingsDto.l(resPreviewData.getSheetDatas().get(i).getPrintSettings().getPagePosition());
+						BeanUtils.copyProperties(resPreviewData.getSheetDatas().get(i).getPrintSettings(), printSettingsDto);
 					}
-//					printSettingsDto.setTitle(reportTpl.getTplName());
-					printSettingsDto.g(reportTpl.getTplName());
-//					printSettingsDto.setSubject(resPreviewData.getSheetDatas().get(i).getSheetName());
-					printSettingsDto.h(resPreviewData.getSheetDatas().get(i).getSheetName());
-//					printSettingsDto.setKeyWords("SpringReport_2.1.0");
-					printSettingsDto.i("SpringReport_2.1.0");
-//					printSettingsDto.setHorizontalPage(resPreviewData.getSheetDatas().get(i).getPrintSettings() == null?2:resPreviewData.getSheetDatas().get(0).getPrintSettings().getHorizontalPage());
-					printSettingsDto.m(resPreviewData.getSheetDatas().get(i).getPrintSettings() == null?2:resPreviewData.getSheetDatas().get(0).getPrintSettings().getHorizontalPage());
-//					printSettingsDto.setPageDivider(resPreviewData.getSheetDatas().get(i).getPageDivider());
-					printSettingsDto.a(resPreviewData.getSheetDatas().get(i).getPageDivider());
-//					objects.add(new ExcelObject("excel",new ByteArrayInputStream(baos.toByteArray()),x,y,endx,endy,mesGenerateReportDto.getPdfType(),colhidden,rowhidden,i,resPreviewData.getSheetDatas().get(i).getXxbtScreenshot(),printSettingsDto,mesExportExcel.getImageInfos(),mesExportExcel.getBackImages()));
-					objects.add(new c("excel",new ByteArrayInputStream(baos.toByteArray()),x,y,endx,endy,mesGenerateReportDto.getPdfType(),colhidden,rowhidden,i,resPreviewData.getSheetDatas().get(i).getXxbtScreenshot(),printSettingsDto,mesExportExcel.getImageInfos(),mesExportExcel.getBackImages()));
+					printSettingsDto.setTitle(reportTpl.getTplName());
+					printSettingsDto.setSubject(resPreviewData.getSheetDatas().get(i).getSheetName());
+					printSettingsDto.setKeyWords("SpringReport_2.1.0");
+					printSettingsDto.setHorizontalPage(resPreviewData.getSheetDatas().get(i).getPrintSettings() == null?2:resPreviewData.getSheetDatas().get(0).getPrintSettings().getHorizontalPage());
+					printSettingsDto.setPageDivider(resPreviewData.getSheetDatas().get(i).getPageDivider());
+					objects.add(new ExcelObject("excel",new ByteArrayInputStream(baos.toByteArray()),x,y,endx,endy,mesGenerateReportDto.getPdfType(),colhidden,rowhidden,i,resPreviewData.getSheetDatas().get(i).getXxbtScreenshot(),printSettingsDto,mesExportExcel.getImageInfos(),mesExportExcel.getBackImages()));
 					ByteArrayOutputStream pdfbaos = new ByteArrayOutputStream();
-//					Excel2Pdf pdf = new Excel2Pdf(objects, pdfbaos);
-					b pdf = new b(objects, pdfbaos);
-//					pdf.convert();
-					pdf.c();
+					Excel2Pdf pdf = new Excel2Pdf(objects, pdfbaos);
+					pdf.convert();
 					byte[] buffer = pdfbaos.toByteArray();
 					InputStream pdfIs = new ByteArrayInputStream(buffer);
 					EmailAttachementDto pdfattach = new EmailAttachementDto();
@@ -12574,45 +12423,25 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			mesExportExcel.setImageInfos(new HashMap<>());
 			mesExportExcel.setBackImages(new HashMap<>());
 			ByteArrayInputStream is =ReportExcelUtil.getExcelStream(mesExportExcel,reportTpl.getTplName(),"");
-//			List<ExcelObject> objects = new ArrayList<ExcelObject>();
-			List<c> objects = new ArrayList<c>();
+			List<ExcelObject> objects = new ArrayList<ExcelObject>();
 			int x = resPreviewData.getSheetDatas().get(0).getStartXAndY().get("x")==null?0:resPreviewData.getSheetDatas().get(0).getStartXAndY().get("x");
 			int y = resPreviewData.getSheetDatas().get(0).getStartXAndY().get("y")==null?0:resPreviewData.getSheetDatas().get(0).getStartXAndY().get("y");
 			int endx = resPreviewData.getSheetDatas().get(0).getMaxXAndY().get("maxX")==null?0:resPreviewData.getSheetDatas().get(0).getMaxXAndY().get("maxX");
 			int endy = resPreviewData.getSheetDatas().get(0).getMaxXAndY().get("maxY")==null?0:resPreviewData.getSheetDatas().get(0).getMaxXAndY().get("maxY");
 			JSONObject colhidden = resPreviewData.getSheetDatas().get(0).getColhidden() == null?new JSONObject():resPreviewData.getSheetDatas().get(0).getColhidden();
 			JSONObject rowhidden = resPreviewData.getSheetDatas().get(0).getRowhidden() == null?new JSONObject():resPreviewData.getSheetDatas().get(0).getRowhidden();
-//			PrintSettingsDto printSettingsDto = new PrintSettingsDto();
-			i printSettingsDto = new i();
+			PrintSettingsDto printSettingsDto = new PrintSettingsDto();
 			if(resPreviewData.getSheetDatas().get(0).getPrintSettings() != null)
 			{
-//				BeanUtils.copyProperties(resPreviewData.getSheetDatas().get(0).getPrintSettings(), printSettingsDto);
-				printSettingsDto.c(resPreviewData.getSheetDatas().get(0).getPrintSettings().getPageType());
-				printSettingsDto.f(resPreviewData.getSheetDatas().get(0).getPrintSettings().getPageLayout());
-				printSettingsDto.g(resPreviewData.getSheetDatas().get(0).getPrintSettings().getPageHeaderShow());
-				printSettingsDto.c(resPreviewData.getSheetDatas().get(0).getPrintSettings().getPageHeaderContent());
-				printSettingsDto.h(resPreviewData.getSheetDatas().get(0).getPrintSettings().getPageHeaderPosition());
-				printSettingsDto.i(resPreviewData.getSheetDatas().get(0).getPrintSettings().getWaterMarkShow());
-				printSettingsDto.j(resPreviewData.getSheetDatas().get(0).getPrintSettings().getWaterMarkType());
-				printSettingsDto.d(resPreviewData.getSheetDatas().get(0).getPrintSettings().getWaterMarkContent());
-				printSettingsDto.e(resPreviewData.getSheetDatas().get(0).getPrintSettings().getWaterMarkImg());
-				printSettingsDto.k(resPreviewData.getSheetDatas().get(0).getPrintSettings().getPageShow());
-				printSettingsDto.l(resPreviewData.getSheetDatas().get(0).getPrintSettings().getPagePosition());
+				BeanUtils.copyProperties(resPreviewData.getSheetDatas().get(0).getPrintSettings(), printSettingsDto);
 			}
-//			printSettingsDto.setAuthor(userInfoDto.getUserName());
-			printSettingsDto.f(userInfoDto.getUserName());
-//			printSettingsDto.setTitle(reportTpl.getTplName());
-			printSettingsDto.g(reportTpl.getTplName());
-//			printSettingsDto.setSubject(resPreviewData.getSheetDatas().get(0).getSheetName());
-			printSettingsDto.h(resPreviewData.getSheetDatas().get(0).getSheetName());
-//			printSettingsDto.setKeyWords("SpringReport_2.1.0");
-			printSettingsDto.i("SpringReport_2.1.0");
-//			printSettingsDto.setHorizontalPage(resPreviewData.getSheetDatas().get(0).getPrintSettings() == null?2:resPreviewData.getSheetDatas().get(0).getPrintSettings().getHorizontalPage());
-			printSettingsDto.m(resPreviewData.getSheetDatas().get(0).getPrintSettings() == null?2:resPreviewData.getSheetDatas().get(0).getPrintSettings().getHorizontalPage());
-//			printSettingsDto.setPageDivider(resPreviewData.getSheetDatas().get(0).getPageDivider());
-			printSettingsDto.a(resPreviewData.getSheetDatas().get(0).getPageDivider());
-//			objects.add(new ExcelObject("excel",is,x,y,endx,endy,mesGenerateReportDto.getPdfType(),colhidden,rowhidden,resPreviewData.getSheetDatas().get(0).getXxbtScreenshot(),printSettingsDto,mesExportExcel.getImageInfos(),mesExportExcel.getBackImages()));
-			objects.add(new c("excel",is,x,y,endx,endy,mesGenerateReportDto.getPdfType(),colhidden,rowhidden,resPreviewData.getSheetDatas().get(0).getXxbtScreenshot(),printSettingsDto,mesExportExcel.getImageInfos(),mesExportExcel.getBackImages()));
+			printSettingsDto.setAuthor(userInfoDto.getUserName());
+			printSettingsDto.setTitle(reportTpl.getTplName());
+			printSettingsDto.setSubject(resPreviewData.getSheetDatas().get(0).getSheetName());
+			printSettingsDto.setKeyWords("SpringReport_2.1.0");
+			printSettingsDto.setHorizontalPage(resPreviewData.getSheetDatas().get(0).getPrintSettings() == null?2:resPreviewData.getSheetDatas().get(0).getPrintSettings().getHorizontalPage());
+			printSettingsDto.setPageDivider(resPreviewData.getSheetDatas().get(0).getPageDivider());
+			objects.add(new ExcelObject("excel",is,x,y,endx,endy,mesGenerateReportDto.getPdfType(),colhidden,rowhidden,resPreviewData.getSheetDatas().get(0).getXxbtScreenshot(),printSettingsDto,mesExportExcel.getImageInfos(),mesExportExcel.getBackImages()));
 			httpServletResponse.setContentType("application/pdf");
 	    	//设置文件名编码格式
 	        String filename = URLEncoder.encode(resPreviewData.getSheetDatas().get(0).getSheetName(), "UTF-8");
@@ -12620,10 +12449,8 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 	        httpServletResponse.addHeader("filename", filename + ".pdf");
 			ServletOutputStream outputStream = httpServletResponse.getOutputStream();
 			try {
-//				Excel2Pdf pdf = new Excel2Pdf(objects, outputStream);
-				b pdf = new b(objects, outputStream);
-//				pdf.convert();
-				pdf.c();
+				Excel2Pdf pdf = new Excel2Pdf(objects, outputStream);
+				pdf.convert();
 				outputStream.flush();
 	            outputStream.close();
 			} catch (Exception e) {

@@ -4,8 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.alibaba.fastjson.JSONObject;
-//import com.springreport.excel2pdf.ImageInfo;
-import com.a.a.d;
+import com.springreport.excel2pdf.ImageInfo;
 
 import lombok.Data;
 
@@ -39,7 +38,7 @@ public class ResMobileReport {
 	 * @date 2023-06-29 09:33:25 
 	 */  
 //	private List<ImageInfo> imageInfos;
-	private List<d> imageInfos;
+	private List<ImageInfo> imageInfos;
 	
 	/**  
 	 * @Fields chartsOptions : 图表信息
