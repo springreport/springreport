@@ -12,9 +12,9 @@ https://www.springreport.vip/
 #### 作者微信
 
 986539100
-#### 使用文档
+#### 项目文档
 
-https://gitee.com/springreport/SpringReport/wikis/pages
+https://gitee.com/springreport/springreport/wikis/pages
 
 ## 系统简介
 SpringReport是一款企业级的报表系统，支持在线设计报表，并绑定动态数据源，无需写代码即可快速生成想要的报表，可以支持excel报表和word报表两种格式，同时还可以支持excel多人协同编辑，后续考虑实现大屏设计器功能，通过简单的设计器可以生成炫酷的大屏效果。
