@@ -464,11 +464,28 @@ public class WordUtil {
 				
 			}
 		}
-    	for (int i = 0; i < trList.size(); i++) {
-			JSONArray tdList = trList.getJSONObject(i).getJSONArray("tdList");
-			for (int j = 0; j < tdList.size(); j++) {
-				JSONObject cellInfo = tdList.getJSONObject(j);
-				boolean isMerge = cellInfo.getBooleanValue("isMerge");
+//    	for (int i = 0; i < trList.size(); i++) {
+//			JSONArray tdList = trList.getJSONObject(i).getJSONArray("tdList");
+//			for (int j = 0; j < tdList.size(); j++) {
+//				JSONObject cellInfo = tdList.getJSONObject(j);
+//				boolean isMerge = cellInfo.getBooleanValue("isMerge");
+//				if(isMerge) {
+//					continue;
+//				}
+//				int rowspan = cellInfo.getIntValue("rowspan");
+//				int colspan = cellInfo.getIntValue("colspan");
+//				if(colspan > 1) {
+//					for (int k = 0; k < rowspan; k++) {
+//						TableTools.mergeCellsHorizonal(xwpfTable, i+k, j, j+colspan-1);
+//					}
+//				}
+//			}
+//		}
+    	for (int i = trList.size()-1; i >= 0; i--) {
+    		JSONArray tdList = trList.getJSONObject(i).getJSONArray("tdList");
+    		for (int j = tdList.size()-1; j >= 0; j--) {
+    			JSONObject cellInfo = tdList.getJSONObject(j);
+    			boolean isMerge = cellInfo.getBooleanValue("isMerge");
 				if(isMerge) {
 					continue;
 				}
@@ -479,8 +496,8 @@ public class WordUtil {
 						TableTools.mergeCellsHorizonal(xwpfTable, i+k, j, j+colspan-1);
 					}
 				}
-			}
-		}
+    		}
+    	}
     }
     
 	/**
