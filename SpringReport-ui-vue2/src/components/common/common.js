@@ -15,6 +15,7 @@ import commonConstants from './constants'
 import router from '../../router'
 import * as echarts from 'echarts';
 import $ from 'jquery'
+import VChart from '@visactor/vchart';
 
 const commonUtil = {
 
@@ -939,16 +940,87 @@ commonUtil.reInitChart=function(chartsComponents,component){
 
 commonUtil.reLoadChart = function(chartsComponents,component)
 {
-    if(component.options.backgroundColor.colorStops[0].color == null)
-    {
-       component.options.backgroundColor.colorStops[0].color = 'rgba(128, 128, 128, 0.0)';
+    if(component.category == "vchart"){
+        chartsComponents[component.id].release();
+        chartsComponents[component.id] = null;
+        var obj = { dom: component.id}
+        if(component.theme){
+            obj.theme = component.theme
+        }
     }
-    if(component.options.backgroundColor.colorStops[1].color == null)
-    {
-       component.options.backgroundColor.colorStops[1].color = 'rgba(128, 128, 128, 0.0)';
+   
+    commonUtil.chartProcess(component);
+    if(component.category == "vchart"){
+        const vchart = new VChart(component.spec, obj);
+        chartsComponents[component.id] = vchart;
+        // 绘制
+        vchart.renderSync();
     }
-    chartsComponents[component.id].setOption(component.options,true);
+    
 }
+
+//图表中需要特殊处理的部分
+commonUtil.chartProcess = function(component){
+    if(component.type.toLowerCase().indexOf("gauge")>=0){
+        if(component.spec.data.values && component.spec.data.values.length > 0){
+            component.spec.indicator.content.style.text = component.spec.data.values[0][component.spec.valueField];
+            if(component.type.toLowerCase().indexOf("seriesgauge")>=0){
+                component.spec.gauge.categoryField = component.spec.categoryField;
+                component.spec.gauge.valueField = component.spec.valueField;
+                component.spec.gauge.seriesField = component.spec.seriesField;
+            }else{
+                if(component.spec.legends.visible){
+                    component.spec.legends.data = items => {
+                        for (var index = items.length - 1; index >= 0; index--) {
+                            if(items[index].label.indexOf("gaugePointer")>=0 || items[index].label.indexOf("circularProgress")>=0){
+                                items.splice(index,1);
+                            }
+                        }
+                        return items.map(item => {
+                            return item;
+                        });
+                    }
+                }
+            }
+        }
+    }else if(component.type.toLowerCase().indexOf("circularprogress")>=0){
+        component.spec.indicator.content.style.fontSize = component.spec.indicator.title.style.fontSize;
+        component.spec.indicator.content.style.fill = component.spec.indicator.title.style.fill;
+        if(component.spec.data.values && component.spec.data.values.length > 0){
+            if(component.spec.indicator.visible){
+                if(component.spec.indicator.trigger == "none"){
+                    component.spec.indicator.title.field = null;
+                    component.spec.indicator.content.field = null;
+                    component.spec.indicator.title.style.text = component.spec.seriesField?component.spec.data.values[0][component.spec.seriesField]:component.spec.data.values[0][component.spec.categoryField];
+                    component.spec.indicator.content.style.text = component.spec.data.values[0][component.spec.valueField];
+                }else{
+                    // component.spec.indicator.title.text = null;
+                    // component.spec.indicator.content.text = null;
+                    component.spec.indicator.title.field = component.spec.valueField;
+                    component.spec.indicator.content.field = component.spec.seriesField?component.spec.seriesField:component.spec.categoryField;
+                    component.spec.indicator.title.style.text = component.spec.seriesField?component.spec.data.values[0][component.spec.seriesField]:component.spec.data.values[0][component.spec.categoryField];
+                    component.spec.indicator.content.style.text = component.spec.data.values[0][component.spec.valueField];
+                }
+            }
+        }
+    }else if(component.type.toLowerCase().indexOf("liquid")>=0){
+        component.spec.indicator.content.style.fontSize = component.spec.indicator.title.style.fontSize;
+        component.spec.indicator.content.style.fill = component.spec.indicator.title.style.fill;
+        if(component.spec.data.values && component.spec.data.values.length > 0){
+            if(component.spec.indicator.visible){
+                component.spec.indicator.title.style.text = component.spec.categoryField?component.spec.data.values[0][component.spec.categoryField]:"";
+                component.spec.indicator.content.style.text = component.spec.data.values[0][component.spec.valueField];
+            }
+        }
+        
+    }else if(component.type.toLowerCase().indexOf("text")>=0){
+        if(component.spec.valueField && component.spec.data.values && component.spec.data.values.length > 0){
+            component.content = component.spec.data.values[0][component.spec.valueField];
+        }
+       
+    }
+}
+
 commonUtil.dataSourceChange = function(component){
     if(commonConstants.componentsType.text == component.type || commonConstants.componentsType.table == component.type)
       {//文本框和表格
@@ -1984,4 +2056,77 @@ commonUtil.splitText = function(text){
     return data
 }
 
+commonUtil.changeHistogramAmination = function(chartsComponents,component){
+    if(component.amination == ""){
+        component.spec.animationAppear = {};
+    }else if(component.amination == "fadeIn"){
+        component.spec.animationAppear = {
+            type: 'fadeIn',
+            oneByOne: true,
+        }
+    }else if(component.amination == "fadeIn2"){
+        component.spec.animationAppear = {
+            type: 'fadeIn',
+            oneByOne: false,
+        }
+    }else if(component.amination == "scaleIn"){
+        component.spec.animationAppear = {
+            type: 'scaleIn',
+            oneByOne: true,
+        }
+    }else if(component.amination == "scaleIn2"){
+        component.spec.animationAppear = {
+            type: 'scaleIn',
+            oneByOne: false,
+        }
+    }else if(component.amination == "moveIn"){
+        component.spec.animationAppear = {
+            type: 'moveIn',
+            oneByOne: true,
+        }
+    }else if(component.amination == "moveIn2"){
+        component.spec.animationAppear = {
+            type: 'moveIn',
+            oneByOne: false,
+        }
+    }else if(component.amination == "growHeightIn"){
+        component.spec.animationAppear = {
+            type: 'growHeightIn',
+            oneByOne: true,
+        }
+    }else if(component.amination == "growHeightIn2"){
+        component.spec.animationAppear = {
+            type: 'growHeightIn',
+            oneByOne: false,
+        }
+    }else if(component.amination == "growWidthIn"){
+        component.spec.animationAppear = {
+            type: 'growWidthIn',
+            oneByOne: true,
+        }
+    }else if(component.amination == "growWidthIn2"){
+        component.spec.animationAppear = {
+            type: 'growWidthIn',
+            oneByOne: false,
+        }
+    }else if(component.amination == "growCenterIn"){
+        component.spec.animationAppear = {
+            type: 'growCenterIn',
+            oneByOne: true,
+        }
+    }else if(component.amination == "growCenterIn2"){
+        component.spec.animationAppear = {
+            type: 'growCenterIn',
+            oneByOne: false,
+        }
+    }
+    
+    commonUtil.reLoadChart(chartsComponents,component)
+}
+//获取map数据
+commonUtil.getMapData = async function(mapCode){
+    const response = await fetch('https://www.springreport.vip/geoJson/'+mapCode+".json");
+    const geojson = await response.json();
+    return geojson;
+}
 export default commonUtil;

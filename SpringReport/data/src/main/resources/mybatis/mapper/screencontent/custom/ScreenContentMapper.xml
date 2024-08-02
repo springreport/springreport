@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 本文件由代码生成器自动完成 -->
+<mapper namespace="com.springreport.mapper.screencontent.ScreenContentMapper" >
+
+  <select id="getTplContentIds" parameterType="com.springreport.entity.screencontent.ScreenContent" resultType="java.lang.Long">
+	  select
+	  id
+	  from
+	  screen_content
+	  where tpl_id = #{tplId}
+	  and del_flag = 1
+  </select>
+
+</mapper>

@@ -196,6 +196,14 @@ const router = new Router({
             title: "word模板管理",
           },
         },
+        {
+          path: "/screenTpl",
+          name: "screenTpl",
+          component: () => import("@/components/pages/screen/screentpl/ScreenTpl.vue"),
+          meta: {
+            title: "大屏模板管理",
+          },
+        },
       ],
     },
     {
@@ -281,6 +289,22 @@ const router = new Router({
       },
     },
     {
+      path: "/screenDesign",
+      name: "screenDesign",
+      component: () => import("@/components/pages/screen/screendesign/screenDesign.vue"),
+      meta: {
+        title: "大屏设计",
+      },
+    },
+    {
+      path: "/screenView",
+      name: "screenView",
+      component: () => import("@/components/pages/screen/screendesign/screenView.vue"),
+      meta: {
+        title: "大屏查看",
+      },
+    },
+    {
       path: "*",
       redirect: "/404",
     },
@@ -298,9 +322,9 @@ router.beforeEach((to, from, next) => {
   console.log("跳转到:", to.fullPath);
 
   // liren 大屏设计页面 黑色主题
-  // if (to.path === "/screenDesign") {
-  //   setDarkTheme();
-  // }
+  if (to.path === "/screenDesign" || to.path === "/screenView") {
+    setDarkTheme();
+  }
 
   var token = localStorage.getItem("token");
   // if (!token && to.path != '/login') {//登陆认证校验,没登录则跳转/login
