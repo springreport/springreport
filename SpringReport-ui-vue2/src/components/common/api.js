@@ -185,33 +185,8 @@ api.screenDesign = {
   uploadFileApi: "/api/common/upload", //上传图片
   shareUploadFileApi: "/api/common/shareUpload", //上传图片(分享链接用)
   uploadVideoApi: "/api/common/uploadVideo", //上传视频文件
-  apiTestApi: "/api/common/apiTest", //接口测试
-  getCategoryApiResultApi: "/api/common/getCategoryApiResult", //获取柱状图、折线图类目接口返回数据用api
-  getApiResultApi: "/api/common/getApiResult", //获取柱状图、折线图接口返回数据用api
-  getPieApiResultApi: "/api/common/getPieApiResult", //获取饼图接口返回数据用api
-  getPie3dApiResultApi: "/api/common/getPie3dApiResult", //获取3d饼图接口返回数据用api
-  getTableApiResultApi: "/api/common/getTableApiResult", //获取表格接口返回数据用api
-  getTextApiResultApi: "/api/common/getTextApiResult", //获取文本接口返回数据用api
-  getGaugeApiResult: "/api/common/getGaugeApiResult", //获取仪表盘接口返回数据用api
-  getMapApiResult: "/api/common/getMapApiResult", //获取地图接口返回数据用api
-  getMapScatterApiResult: "/api/common/getMapScatterApiResult", //获取散点地图接口返回数据用api
-  getProgressApiResult: "/api/common/getProgressApiResult", //获取进度条接口返回数据用api
-  getTplDatasetColumnsApi: "/api/reportTplDataset/getTplDatasetColumns", //获取数据集
+  getDynamicDatasApi: "/api/screenDesign/getDynamicDatas", //获取动态数据
   deleteDatasetApi: "/api/reportTplDataset/delete", //删除数据集
-  getScreenPieDataBySqlApi: "/api/reportTplDataset/getScreenPieDataBySql", //根据sql获取饼图数据
-  getScreenPie3dDataBySqlApi: "/api/reportTplDataset/getScreenPie3dDataBySql", //根据sql获取3d饼图数据
-  getScreenDataBySqlApi: "/api/reportTplDataset/getScreenDataBySql", //根据sql获取饼图和折线图数据数据
-  getScreenTableDataBySqlApi: "/api/reportTplDataset/getScreenTableDataBySql", //根据sql获取表格数据
-  getScreenTextDataBySqlApi: "/api/reportTplDataset/getScreenTextDataBySql", //根据sql获取文本数据
-  getScreenGaugeDataBySqlApi: "/api/reportTplDataset/getScreenGaugeDataBySql", //根据sql获取仪表盘数据
-  getScreenMapDataBySqlApi: "/api/reportTplDataset/getScreenMapDataBySql", //根据sql获取地图数据
-  getScreenScatterMapDataBySqlApi:
-    "/api/reportTplDataset/getScreenScatterMapDataBySql", //根据sql获取散点地图数据
-  getScreenProgressDataBySqlApi:
-    "/api/reportTplDataset/getScreenProgressDataBySql", //根据sql获取大屏进度条数据
-  getIndicateApiResultApi: "/api/common/getIndicateApiResult", //根据api获取雷达图指标
-  getRadarDataApiResultApi: "/api/common/getRadarDataApiResult", //根据api获取雷达数据
-  getRadarDataBySqlApi: "/api/reportTplDataset/getRadarDataBySql", //根据sql获取雷达图指标
 };
 
 //打印模板页面对应的api

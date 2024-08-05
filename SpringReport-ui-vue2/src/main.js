@@ -64,8 +64,6 @@ import reportForm from './components/component/reportForm/reportForm'
 Vue.use(reportForm)
 import taskReportForm from './components/component/taskReportForm/taskReportForm'
 Vue.use(taskReportForm)
-import componentForm from './components/component/componentForm/componentForm'
-Vue.use(componentForm)
 import cusTable from './components/component/table/custable'
 Vue.use(cusTable)
 import modal from './components/component/modal/modal'
@@ -82,6 +80,73 @@ Vue.prototype.$md5 = md5
 import * as echarts from 'echarts'
 import 'echarts-gl'
 Vue.prototype.$echarts = echarts
+
+//大屏部分相关的引入 start
+import './icons'
+import screenConstants from './components/common/screenConstants'
+Vue.prototype.screenConstants = screenConstants
+import VueDraggableResizable from 'vue-draggable-resizable-gorkys'
+// 可选择导入默认样式
+import 'vue-draggable-resizable-gorkys/dist/VueDraggableResizable.css'
+Vue.component('vue-draggable-resizable', VueDraggableResizable)
+import draggables from './components/component/screen/draggables'
+Vue.use(draggables)
+import Contextmenu from "vue-contextmenujs"
+Vue.use(Contextmenu);
+import componentForm from './components/component/screen/componentForm/componentForm'
+Vue.use(componentForm)
+import vueSeamlessScroll from 'vue-seamless-scroll'
+Vue.use(vueSeamlessScroll)
+import { borderBox1 } from '@jiaminghi/data-view'
+Vue.use(borderBox1)
+import { borderBox2 } from '@jiaminghi/data-view'
+Vue.use(borderBox2)
+import { borderBox3 } from '@jiaminghi/data-view'
+Vue.use(borderBox3)
+import { borderBox4 } from '@jiaminghi/data-view'
+Vue.use(borderBox4)
+import { borderBox5 } from '@jiaminghi/data-view'
+Vue.use(borderBox5)
+import { borderBox6 } from '@jiaminghi/data-view'
+Vue.use(borderBox6)
+import { borderBox7 } from '@jiaminghi/data-view'
+Vue.use(borderBox7)
+import { borderBox8 } from '@jiaminghi/data-view'
+Vue.use(borderBox8)
+import { borderBox9 } from '@jiaminghi/data-view'
+Vue.use(borderBox9)
+import { borderBox10 } from '@jiaminghi/data-view'
+Vue.use(borderBox10)
+import { borderBox11 } from '@jiaminghi/data-view'
+Vue.use(borderBox11)
+import { borderBox12 } from '@jiaminghi/data-view'
+Vue.use(borderBox12)
+import { borderBox13 } from '@jiaminghi/data-view'
+Vue.use(borderBox13)
+import { decoration1 } from '@jiaminghi/data-view'
+Vue.use(decoration1)
+import { decoration2 } from '@jiaminghi/data-view'
+Vue.use(decoration2)
+import { decoration3 } from '@jiaminghi/data-view'
+Vue.use(decoration3)
+import { decoration4 } from '@jiaminghi/data-view'
+Vue.use(decoration4)
+import { decoration5 } from '@jiaminghi/data-view'
+Vue.use(decoration5)
+import { decoration6 } from '@jiaminghi/data-view'
+Vue.use(decoration6)
+import { decoration7 } from '@jiaminghi/data-view'
+Vue.use(decoration7)
+import { decoration8 } from '@jiaminghi/data-view'
+Vue.use(decoration8)
+import { decoration9 } from '@jiaminghi/data-view'
+Vue.use(decoration9)
+import { decoration10 } from '@jiaminghi/data-view'
+Vue.use(decoration10)
+import { decoration11 } from '@jiaminghi/data-view'
+Vue.use(decoration11)
+
+//大屏部分相关的引入 end
 
 // 引入自定义指令
 import directive from './components/common/directive'

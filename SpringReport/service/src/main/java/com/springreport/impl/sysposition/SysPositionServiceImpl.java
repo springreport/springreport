@@ -6,22 +6,11 @@ import com.springreport.api.sysposition.ISysPositionService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
-import org.omg.CosNaming.NamingContextPackage.NotFound;
 import org.springframework.stereotype.Service;
 
-import com.springreport.util.GenerateGeoJsonUtil;
-import com.springreport.util.ListUtil;
-import com.springreport.util.MessageUtil;
-import com.github.pagehelper.PageHelper;
-import com.springreport.base.BaseEntity;
-import com.springreport.base.PageEntity;
-import com.springreport.constants.Constants;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import org.springframework.transaction.annotation.Transactional;
-import com.springreport.enums.DelFlagEnum;
 
  /**  
 * @Description: SysPosition服务实现
