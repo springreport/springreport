@@ -90,7 +90,7 @@
                 <vue-ruler-tool ref='rulerTool' :content-layout="{left:0,top:0}" :is-scale-revise="true" :is-hot-key="false" :step-length="50" :style="{ transformOrigin: '0 0',transform: 'scale('+scaleSelected/100+')', height:'100%', overflow:'hidden'}">
                     <vuedraggable class="wrapper" :sort= "false" :disabled= "true">
                     <div id="draggableDiv"
-                    :style="{transformOrigin: '0% 0%',height: screenProperties.height+'px',width:screenProperties.width+'px',backgroundImage:'url(' + screenProperties.imgUrl + ')',background:screenProperties.background,backgroundSize:'cover',backgroundRepeat:'no-repeat',backgroundPosition:'center'}"
+                    :style="{transformOrigin: '0% 0%',height: screenProperties.height+'px',width:screenProperties.width+'px',background:screenProperties.background,backgroundImage:'url(' + screenProperties.imgUrl + ')',backgroundSize:'cover',backgroundRepeat:'no-repeat',backgroundPosition:'center'}"
                     @click="clickPanel"
                     >
                     <draggables

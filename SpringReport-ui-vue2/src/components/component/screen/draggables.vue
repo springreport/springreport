@@ -35,7 +35,7 @@
         <img v-if="item.imgUrl" :src="item.imgUrl">
       </div>
       <div @contextmenu.prevent="onContextmenu($event, item)" v-if="item.category == screenConstants.category.table && !item.isDelete" >
-        <table-component :component="item" :sendRequest="sendRequest" :chartsComponents="chartsComponents"></table-component>
+        <table-component :component="item" :sendRequest="sendRequest" :chartsComponents="chartsComponents" :ref="item.id"></table-component>
       </div>
       <div @contextmenu.prevent="onContextmenu($event, item)"  v-if="item.category == screenConstants.category.vchart && !item.isDelete" :style="{height:item.h+'px',width:item.w+'px'}">
         <vchart-component  :component="item" :sendRequest="sendRequest" :chartsComponents="chartsComponents"></vchart-component>

@@ -43,7 +43,7 @@
                         </el-select>
                     </el-form-item>
                     </div>
-                    <div v-if="component.type.toLowerCase().indexOf('pie')>=0 || component.type.toLowerCase().indexOf('radar')>=0 || component.type.toLowerCase().indexOf('funnel')>=0 || component.type.toLowerCase().indexOf('gauge')>=0 || component.type.toLowerCase().indexOf('circularprogress')>=0">
+                    <div v-if="component.type.toLowerCase().indexOf('radar')>=0 || component.type.toLowerCase().indexOf('gauge')>=0 || component.type.toLowerCase().indexOf('circularprogress')>=0">
                         <el-form-item label="分类字段">
                         <el-select v-model="component.spec.categoryField" placeholder="请选择" @change="commonUtil.reLoadChart(chartsComponents,component)" style="width:180px" allow-create filterable clearable>
                           <el-option
@@ -66,6 +66,28 @@
                     </el-form-item>
                     <el-form-item label="系列分组">
                         <el-select v-model="component.spec.seriesField" placeholder="请选择" @change="commonUtil.reLoadChart(chartsComponents,component)" style="width:180px" allow-create filterable clearable>
+                          <el-option
+                            v-for="item in component.dynamicDataSettings.dataColumns"
+                            :key="item"
+                            :label="item"
+                            :value="item">
+                          </el-option>
+                        </el-select>
+                    </el-form-item>
+                    </div>
+                    <div v-if="component.type.toLowerCase().indexOf('pie')>=0 || component.type.toLowerCase().indexOf('funnel')>=0">
+                        <el-form-item label="分类字段">
+                        <el-select v-model="component.spec.categoryField" placeholder="请选择" @change="commonUtil.reLoadChart(chartsComponents,component)" style="width:180px" allow-create filterable clearable>
+                          <el-option
+                            v-for="item in component.dynamicDataSettings.dataColumns"
+                            :key="item"
+                            :label="item"
+                            :value="item">
+                          </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="数值字段">
+                        <el-select v-model="component.spec.valueField" placeholder="请选择" @change="commonUtil.reLoadChart(chartsComponents,component)" style="width:180px" allow-create filterable clearable>
                           <el-option
                             v-for="item in component.dynamicDataSettings.dataColumns"
                             :key="item"

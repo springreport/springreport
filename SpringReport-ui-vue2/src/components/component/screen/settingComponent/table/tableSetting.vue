@@ -73,7 +73,7 @@
                         <input-color-picker :inputWidth="150" :value="component.bodyStyle.oddRowColor" @change="(val)=>{component.bodyStyle.oddRowColor=val;reloadTable(component)}" />
                     </el-form-item>
                     <el-form-item label="偶数行背景色">
-                        <input-color-picker :inputWidth="150" :value="component.bodyStyle.oddRowColor" @change="(val)=>{component.bodyStyle.evenRowColor=val;reloadTable(component)}" />
+                        <input-color-picker :inputWidth="150" :value="component.bodyStyle.evenRowColor" @change="(val)=>{component.bodyStyle.evenRowColor=val;reloadTable(component)}" />
                     </el-form-item>
                     <el-form-item label="行高">
                         <el-input v-model="component.bodyStyle.height" style="width:180px" @change="changeTableLineHeight(component)">

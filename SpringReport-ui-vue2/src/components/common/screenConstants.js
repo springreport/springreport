@@ -2121,7 +2121,7 @@ screenConstants.pieInit = {
         innerRadius:0,
         categoryField: 'type',
         valueField: 'value',
-        seriesField: 'type',
+        // seriesField: 'type',
         background: '',//背景颜色
         title:screenConstants.chartTitleSettings,
         pie: {
@@ -3622,9 +3622,6 @@ screenConstants.mapInit = {
       dataColumns:[],//数据列
   },//动态数据配置
   params: [], // 图表参数
-  clickType: '1', // 点击类型
-  thirdUrl: '', // 第三方跳转链接
-  bindComponent: null, // 绑定组件
   hiddenParamSize:0,//隐藏参数个数
   theme:"",//主题
   amination:"",//动画效果

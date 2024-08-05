@@ -447,7 +447,7 @@
                         <el-switch v-model="component.spec.label.visible" @change="commonUtil.reLoadChart(chartsComponents,component)">
                         </el-switch>
                     </el-form-item>
-                    <el-form-item label="标签位置" v-if="component.spec.label.visible">
+                    <el-form-item label="标签位置" v-if="component.spec.label.visible && component.type.toLowerCase().indexOf('funnel')<0">
                         <el-select v-if="component.type.toLowerCase().indexOf('line')>=0 || component.type.toLowerCase().indexOf('area')>=0 || component.type.toLowerCase().indexOf('histogram')>=0 " v-model="component.spec.label.position" placeholder="请选择" @change="commonUtil.reLoadChart(chartsComponents,component)" style="width:180px">
                           <el-option
                             v-for="item in screenConstants.labelPosition"

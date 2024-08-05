@@ -8,25 +8,25 @@
                 </el-form-item><br>
                 <el-form-item label="左">
                     <el-button type="text" icon="el-icon-minus" @click="minusClick('1')"></el-button>
-                    <el-input  v-model.number="component.x" style="width:65px" placeholder="左">
+                    <el-input  v-model.number="component.x" style="width:65px" placeholder="左" :disabled="component.locked">
                     </el-input>
                     <el-button type="text" icon="el-icon-plus" @click="plusClick('1')"></el-button>
                 </el-form-item>
                 <el-form-item label="上">
                     <el-button type="text" icon="el-icon-minus" @click="minusClick('2')"></el-button>
-                    <el-input  v-model.number="component.y" style="width:65px" placeholder="上"></el-input>
+                    <el-input  v-model.number="component.y" style="width:65px" placeholder="上" :disabled="component.locked"></el-input>
                     <el-button type="text" icon="el-icon-plus" @click="plusClick('2')"></el-button>
                 </el-form-item>
                 <el-form-item label="图表尺寸" class="customLabel">
                 </el-form-item><br>
                 <el-form-item label="宽">
                     <el-button type="text" icon="el-icon-minus" @click="minusClick('3')"></el-button>
-                    <el-input  v-model.number="component.w" style="width:65px" placeholder="宽度"></el-input>
+                    <el-input  v-model.number="component.w" style="width:65px" placeholder="宽度" :disabled="component.locked"></el-input>
                     <el-button type="text" icon="el-icon-plus" @click="plusClick('3')"></el-button>
                 </el-form-item>
                 <el-form-item label="高">
                     <el-button type="text" icon="el-icon-minus" @click="minusClick('4')"></el-button>
-                    <el-input  v-model.number="component.h" style="width:65px" placeholder="高度"></el-input>
+                    <el-input  v-model.number="component.h" style="width:65px" placeholder="高度" :disabled="component.locked"></el-input>
                     <el-button type="text" icon="el-icon-plus" @click="plusClick('4')"></el-button>
                 </el-form-item>
                 <el-form-item label="" class="customLabel">
@@ -65,6 +65,9 @@ export default {
     methods:{
       // type 1 左 2上 3宽 4高
       plusClick(type){
+        if(this.component.locked){
+            return;
+        }
         if(type == '1'){
             this.component.x = this.component.x + 1;
         }else if(type == '2'){
@@ -76,6 +79,9 @@ export default {
         }
       },
       minusClick(type){
+        if(this.component.locked){
+            return;
+        }
         if(type == '1'){
             if(this.component.x > 0){
                 this.component.x = this.component.x - 1;
