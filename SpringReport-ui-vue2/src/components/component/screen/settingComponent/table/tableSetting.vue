@@ -268,7 +268,9 @@ export default {
             if (type == '2') {
                 this.tableColumnForm.name = row.name
                 this.tableColumnForm.key = row.key
-                this.tableColumnForm.width = row.style.width
+                if(this.component.type == "scrollTable"){
+                    this.tableColumnForm.width = row.style.width
+                }
                 this.tableColumnForm.type = type
                 this.tableColumnForm.index = index
             } else {
@@ -284,15 +286,19 @@ export default {
                 if (valid) {
                     if (this.tableColumnForm.type == '1') {
                         var obj = {
-                        name: this.tableColumnForm.name,
-                        key: this.tableColumnForm.key,
-                        style: { width: this.tableColumnForm.width }
+                            name: this.tableColumnForm.name,
+                            key: this.tableColumnForm.key,
+                        }
+                        if(this.component.type == "scrollTable"){
+                            obj.style = { width: this.tableColumnForm.width }
                         }
                         this.component.tableColumn.push(obj)
                     } else {
                         this.component.tableColumn[this.tableColumnForm.index].name = this.tableColumnForm.name
                         this.component.tableColumn[this.tableColumnForm.index].key = this.tableColumnForm.key
-                        this.component.tableColumn[this.tableColumnForm.index].style.width = this.tableColumnForm.width
+                        if(this.component.type == "scrollTable"){
+                            this.component.tableColumn[this.tableColumnForm.index].style.width = this.tableColumnForm.width
+                        }
                     }
                     this.tableColumnForm.name = ''
                     this.tableColumnForm.key = ''
