@@ -2,8 +2,8 @@ package com.springreport.util;
 
 
 import lombok.extern.slf4j.Slf4j;
+
 import org.apache.http.*;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -162,7 +162,10 @@ public class HttpClientUtil {
      * @return
      */
     public static String doPost(String url,Map<String, String> headers,Map<String, Object> param) {
-        // 创建Httpclient对象
+        if(param == null) {
+        	param = new HashMap();
+        }
+    	// 创建Httpclient对象
         CloseableHttpClient httpClient = HttpClients.createDefault();
         CloseableHttpResponse response = null;
         String resultString = "";
@@ -467,9 +470,12 @@ public class HttpClientUtil {
     public static String connectionTest(String url,String requestType,Map<String, Object> params,Map<String, String> headers)
     {
     	String result = null;
+    	if(params == null) {
+    		params = new HashMap<>();
+    	}
     	if(StringUtil.isNullOrEmpty(requestType) || "post".equals(requestType))
     	{//post请求
-    		result = doPost(url,headers,params);
+    		result = doPostJson(url,JSONObject.toJSONString(params),headers);
     	}else {
     		//get请求
     		getConnectionTest(url);
