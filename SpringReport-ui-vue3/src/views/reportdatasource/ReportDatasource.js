@@ -379,6 +379,19 @@ export default {
     changeDatasourceType(){
       if(this.pageData.modalData.type == "4")
       {
+        this.pageData.modalForm[4].show = false;
+        this.pageData.modalForm[4].rules.required = false;
+        this.pageData.modalForm[5].show = false;
+        this.pageData.modalForm[5].rules.required = false;
+        this.pageData.modalForm[6].show = true;
+        this.pageData.modalForm[6].rules.required = true;
+        this.pageData.modalForm[7].show = true;
+        this.pageData.modalForm[8].show = true;
+        this.pageData.modalForm[8].rules.required = true;
+        this.pageData.modalForm[9].show = true;
+        this.pageData.modalForm[10].show = true;
+        this.pageData.modalForm[11].show = true;
+      }else{
         if(this.pageData.modalData.type == "9")
         {
           this.pageData.modalForm[4].rules.required = false;
@@ -389,19 +402,6 @@ export default {
         }
         this.pageData.modalForm[4].show = true;
         this.pageData.modalForm[5].show = true;
-        this.pageData.modalForm[6].show = true;
-        this.pageData.modalForm[6].rules.required = true;
-        this.pageData.modalForm[7].show = true;
-        this.pageData.modalForm[8].show = true;
-        this.pageData.modalForm[8].rules.required = true;
-        this.pageData.modalForm[9].show = true;
-        this.pageData.modalForm[10].show = true;
-        this.pageData.modalForm[11].show = true;
-      }else{
-        this.pageData.modalForm[4].show = true;
-        this.pageData.modalForm[4].rules.required = true;
-        this.pageData.modalForm[5].show = true;
-        this.pageData.modalForm[5].rules.required = true;
         this.pageData.modalForm[6].show = false;
         this.pageData.modalForm[6].rules.required = false;
         this.pageData.modalForm[7].show = false;

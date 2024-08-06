@@ -4,6 +4,7 @@ import './config/permission';
 
 // element
 import 'element-plus/theme-chalk/display.css';
+import '@/assets/index.css'
 import App from './App.vue';
 const app = createApp(App);
 
@@ -47,50 +48,33 @@ import commonConstants from './components/common/constants'
 app.config.globalProperties.commonConstants = commonConstants;
 import apis from './components/common/api'
 app.config.globalProperties.apis = apis;
-import componentForm from './components/componentForm/componentForm';
+import * as echarts from 'echarts';
+import 'echarts-gl';
+app.config.globalProperties.$echarts = echarts
+//大屏部分相关的引入 start
+// import './icons'
+import screenConstants from './components/common/screenConstants'
+app.config.globalProperties.screenConstants = screenConstants;
+import componentForm from './components/screen/componentForm/componentForm';
 app.use(componentForm);
 import Vue3DraggableResizable from 'vue3-draggable-resizable'
 //default styles
 import 'vue3-draggable-resizable/dist/Vue3DraggableResizable.css'
 app.use(Vue3DraggableResizable)
-import * as echarts from 'echarts';
-import 'echarts-gl';
-app.config.globalProperties.$echarts = echarts
-import '@/assets/index.css'
-//echarts主题
-import  'echarts/theme/azul.js'
-import  'echarts/theme/bee-inspired.js'
-import  'echarts/theme/blue.js'
-import  'echarts/theme/caravan.js'
-import  'echarts/theme/carp.js'
-import  'echarts/theme/cool.js'
-import  'echarts/theme/dark-blue.js'
-import  'echarts/theme/dark-bold.js'
-import  'echarts/theme/dark-digerati.js'
-import  'echarts/theme/dark-fresh-cut.js'
-import  'echarts/theme/dark-mushroom.js'
-import  'echarts/theme/eduardo.js'
-import  'echarts/theme/forest.js'
-import  'echarts/theme/fresh-cut.js'
-import  'echarts/theme/fruit.js'
-import  'echarts/theme/gray.js'
-import  'echarts/theme/green.js'
-import  'echarts/theme/helianthus.js'
-import  'echarts/theme/infographic.js'
-import  'echarts/theme/inspired.js'
-import  'echarts/theme/jazz.js'
-import  'echarts/theme/london.js'
-import  'echarts/theme/macarons2.js'
-import  'echarts/theme/mint.js'
-import  'echarts/theme/red.js'
-import  'echarts/theme/red-velvet.js'
-import  'echarts/theme/roma.js'
-import  'echarts/theme/royal.js'
-import  'echarts/theme/sakura.js'
-import  'echarts/theme/shine.js'
-import  'echarts/theme/tech-blue.js'
-import  'echarts/theme/vintage.js'
 
+import draggables from './components/screen/draggables'
+app.use(draggables)
+
+import '@imengyu/vue3-context-menu/lib/vue3-context-menu.css'
+import ContextMenu from '@imengyu/vue3-context-menu'
+app.use(ContextMenu);
+import vue3SeamlessScroll from 'vue3-seamless-scroll';
+app.use(vue3SeamlessScroll)
+
+import DataVVue3 from '@kjgl77/datav-vue3'
+app.use(DataVVue3)
+
+//大屏部分相关的引入 end
 // 引入自定义指令
 import directive from './components/common/directive';
 // 注册自定义指令
