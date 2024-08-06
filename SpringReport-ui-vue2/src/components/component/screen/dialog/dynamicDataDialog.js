@@ -1,1 +1,336 @@
-import _0x525de1 from"\u0073\u0071\u006c\u002d\u0066\u006f\u0072\u006d\u0061\u0074\u0074\u0065\u0072";import"\u0063\u006f\u0064\u0065\u006d\u0069\u0072\u0072\u006f\u0072\u002f\u006d\u006f\u0064\u0065\u002f\u006a\u0061\u0076\u0061\u0073\u0063\u0072\u0069\u0070\u0074\u002f\u006a\u0061\u0076\u0061\u0073\u0063\u0072\u0069\u0070\u0074\u002e\u006a\u0073";import"\u0063\u006f\u0064\u0065\u006d\u0069\u0072\u0072\u006f\u0072\u002f\u006c\u0069\u0062\u002f\u0063\u006f\u0064\u0065\u006d\u0069\u0072\u0072\u006f\u0072\u002e\u0063\u0073\u0073";import"\u0063\u006f\u0064\u0065\u006d\u0069\u0072\u0072\u006f\u0072\u002f\u0061\u0064\u0064\u006f\u006e\u002f\u0068\u0069\u006e\u0074\u002f\u0073\u0068\u006f\u0077\u002d\u0068\u0069\u006e\u0074\u002e\u0063\u0073\u0073";import"\u0063\u006f\u0064\u0065\u006d\u0069\u0072\u0072\u006f\u0072\u002f\u0074\u0068\u0065\u006d\u0065\u002f\u0065\u0063\u006c\u0069\u0070\u0073\u0065\u002e\u0063\u0073\u0073";import"\u0063\u006f\u0064\u0065\u006d\u0069\u0072\u0072\u006f\u0072\u002f\u0074\u0068\u0065\u006d\u0065\u002f\u006d\u0061\u0074\u0065\u0072\u0069\u0061\u006c\u002d\u0070\u0061\u006c\u0065\u006e\u0069\u0067\u0068\u0074\u002e\u0063\u0073\u0073";import"\u0063\u006f\u0064\u0065\u006d\u0069\u0072\u0072\u006f\u0072\u002f\u0061\u0064\u0064\u006f\u006e\u002f\u0066\u006f\u006c\u0064\u002f\u0066\u006f\u006c\u0064\u0067\u0075\u0074\u0074\u0065\u0072\u002e\u0063\u0073\u0073";import"\u0063\u006f\u0064\u0065\u006d\u0069\u0072\u0072\u006f\u0072\u002f\u0061\u0064\u0064\u006f\u006e\u002f\u0066\u006f\u006c\u0064\u002f\u0066\u006f\u006c\u0064\u0063\u006f\u0064\u0065\u002e\u006a\u0073";import"\u0063\u006f\u0064\u0065\u006d\u0069\u0072\u0072\u006f\u0072\u002f\u0061\u0064\u0064\u006f\u006e\u002f\u0066\u006f\u006c\u0064\u002f\u0066\u006f\u006c\u0064\u0067\u0075\u0074\u0074\u0065\u0072\u002e\u006a\u0073";import"\u0063\u006f\u0064\u0065\u006d\u0069\u0072\u0072\u006f\u0072\u002f\u0061\u0064\u0064\u006f\u006e\u002f\u0066\u006f\u006c\u0064\u002f\u0078\u006d\u006c\u002d\u0066\u006f\u006c\u0064\u002e\u006a\u0073";import"\u0063\u006f\u0064\u0065\u006d\u0069\u0072\u0072\u006f\u0072\u002f\u0061\u0064\u0064\u006f\u006e\u002f\u0066\u006f\u006c\u0064\u002f\u0069\u006e\u0064\u0065\u006e\u0074\u002d\u0066\u006f\u006c\u0064\u002e\u006a\u0073";import'codemirror/addon/fold/brace-fold';import'codemirror/addon/fold/markdown-fold.js';import'codemirror/addon/fold/comment-fold.js';import"\u0063\u006f\u0064\u0065\u006d\u0069\u0072\u0072\u006f\u0072\u002f\u0061\u0064\u0064\u006f\u006e\u002f\u0073\u0065\u006c\u0065\u0063\u0074\u0069\u006f\u006e\u002f\u0061\u0063\u0074\u0069\u0076\u0065\u002d\u006c\u0069\u006e\u0065";import'codemirror/addon/hint/sql-hint.js';export default{"\u0070\u0072\u006f\u0070\u0073":{'component':{"\u0074\u0079\u0070\u0065":Object,"\u0064\u0065\u0066\u0061\u0075\u006c\u0074":()=>({})},"\u0063\u0068\u0061\u0072\u0074\u0073\u0043\u006f\u006d\u0070\u006f\u006e\u0065\u006e\u0074\u0073":{'type':Object,'default':()=>({})},'dynamicDialogVisiable':{'type':Boolean,'default':![]}},"\u0064\u0061\u0074\u0061"(){return{'cmOptions':{},'dataSetForm':{'dataSetId':'',"\u0063\u006f\u006c\u0075\u006d\u006e":null,'isMulti':![]},"\u0061\u0064\u0064\u0044\u0061\u0074\u0061\u0073\u0065\u0074\u0073\u0044\u0069\u0061\u006c\u006f\u0067\u0056\u0069\u0073\u0069\u0061\u0062\u006c\u0065":![],'dataSets':[],"\u0064\u0061\u0074\u0061\u0043\u006f\u006c\u0075\u006d\u006e":[],"\u0073\u0071\u006c\u0046\u006f\u0072\u006d":{'id':"",'datasetName':'',"\u0064\u0061\u0074\u0061\u0073\u006f\u0075\u0072\u0063\u0065\u0049\u0064":'','sqlType':0x1},'dataSource':[],'sqlColumnTableData':{'tableData':[],'tablePage':{"\u0063\u0075\u0072\u0072\u0065\u006e\u0074\u0050\u0061\u0067\u0065":0x1,"\u0070\u0061\u0067\u0065\u0053\u0069\u007a\u0065":0xa,"\u0070\u0061\u0067\u0065\u0054\u006f\u0074\u0061\u006c":0x0,'pageSizeRange':[0xe178d^0xe1788,0x2b612^0x2b618,0x9c62d^0x9c639,0x22e11^0x22e23]}},'showDatasetsDialog':![],"\u0064\u0061\u0074\u0061\u0073\u006f\u0075\u0072\u0063\u0065\u0054\u0079\u0070\u0065":"\u0031"};},'mounted'(){this["\u0063\u006d\u004f\u0070\u0074\u0069\u006f\u006e\u0073"]=this["\u0063\u006f\u006d\u006d\u006f\u006e\u0043\u006f\u006e\u0073\u0074\u0061\u006e\u0074\u0073"]['cmOptions'];this['cmOptions']['theme']='erlang-dark';this["\u0069\u006e\u0069\u0074"]();},"\u006d\u0065\u0074\u0068\u006f\u0064\u0073":{'init'(){this["\u0067\u0065\u0074\u0044\u0061\u0074\u0061\u0053\u0065\u0074\u0073"]();},"\u0067\u0065\u0074\u0044\u0061\u0074\u0061\u0053\u0065\u0074\u0073"(){let _0x23b957=this["\u0024\u0072\u006f\u0075\u0074\u0065"]["\u0071\u0075\u0065\u0072\u0079"]["\u0074\u0070\u006c\u0049\u0064"];let _0xb0581={'url':this['apis']["\u0072\u0065\u0070\u006f\u0072\u0074\u0044\u0065\u0073\u0069\u0067\u006e"]['getDataSetsApi'],"\u0070\u0061\u0072\u0061\u006d\u0073":{'tplId':_0x23b957},"\u0072\u0065\u006d\u006f\u0076\u0065\u0045\u006d\u0070\u0074\u0079":![]};var _0x45d51c=this;this['commonUtil']["\u0064\u006f\u0050\u006f\u0073\u0074"](_0xb0581)["\u0074\u0068\u0065\u006e"](_0x460ac2=>{if(_0x460ac2['code']=="002".split("").reverse().join("")){_0x45d51c["\u0064\u0061\u0074\u0061\u0053\u0065\u0074\u0073"]=_0x460ac2["\u0072\u0065\u0073\u0070\u006f\u006e\u0073\u0065\u0044\u0061\u0074\u0061"];_0x45d51c["\u0064\u0061\u0074\u0061\u0053\u0065\u0074\u0046\u006f\u0072\u006d"]['dataSetId']=_0x45d51c['component']["\u0064\u0079\u006e\u0061\u006d\u0069\u0063\u0044\u0061\u0074\u0061\u0053\u0065\u0074\u0074\u0069\u006e\u0067\u0073"]['datasetId'];_0x45d51c["\u0064\u0061\u0074\u0061\u0053\u0065\u0074\u0046\u006f\u0072\u006d"]['column']=_0x45d51c["\u0063\u006f\u006d\u0070\u006f\u006e\u0065\u006e\u0074"]["\u0064\u0079\u006e\u0061\u006d\u0069\u0063\u0044\u0061\u0074\u0061\u0053\u0065\u0074\u0074\u0069\u006e\u0067\u0073"]["\u0064\u0061\u0074\u0061\u0043\u006f\u006c\u0075\u006d\u006e\u0073"];}});},'closeDynamicDataDialog'(){this["\u0024\u0065\u006d\u0069\u0074"]("elbaisiVgolaiDcimanyd:etadpu".split("").reverse().join(""),![]);},'showAddDatasetDialog'(){this["\u0061\u0064\u0064\u0044\u0061\u0074\u0061\u0073\u0065\u0074\u0073\u0044\u0069\u0061\u006c\u006f\u0067\u0056\u0069\u0073\u0069\u0061\u0062\u006c\u0065"]=!![];this["\u0067\u0065\u0074\u0053\u0063\u0072\u0065\u0065\u006e\u0054\u0070\u006c\u0044\u0061\u0074\u0065\u0053\u006f\u0075\u0072\u0063\u0065"]();},'getScreenTplDateSource'(){let _0x304ad3=this['$route']['query']['tplId'];let _0x3d9d63={"\u0075\u0072\u006c":this["\u0061\u0070\u0069\u0073"]['reportDesign']['getReportTplDateSourceApi'],'params':{"\u0074\u0070\u006c\u0049\u0064":_0x304ad3},"\u0072\u0065\u006d\u006f\u0076\u0065\u0045\u006d\u0070\u0074\u0079":![]};this["\u0063\u006f\u006d\u006d\u006f\u006e\u0055\u0074\u0069\u006c"]["\u0064\u006f\u0050\u006f\u0073\u0074"](_0x3d9d63)["\u0074\u0068\u0065\u006e"](_0x9b58ca=>{if(_0x9b58ca['code']=='200'){this['dataSource']=_0x9b58ca['responseData'];this["\u0063\u0068\u0061\u006e\u0067\u0065\u0044\u0061\u0074\u0061\u0073\u006f\u0075\u0072\u0063\u0065"]();}});},'changeDatasource'(){this["\u0073\u0071\u006c\u0043\u006f\u006c\u0075\u006d\u006e\u0054\u0061\u0062\u006c\u0065\u0044\u0061\u0074\u0061"]["\u0074\u0061\u0062\u006c\u0065\u0044\u0061\u0074\u0061"]=[];for(let _0x4226d5=0x37f5f^0x37f5f;_0x4226d5<this["\u0064\u0061\u0074\u0061\u0053\u006f\u0075\u0072\u0063\u0065"]["\u006c\u0065\u006e\u0067\u0074\u0068"];_0x4226d5++){const _0x8d833=this["\u0064\u0061\u0074\u0061\u0053\u006f\u0075\u0072\u0063\u0065"][_0x4226d5];if(this["\u0073\u0071\u006c\u0046\u006f\u0072\u006d"]['datasourceId']==_0x8d833['datasourceId']){if(_0x8d833['type']=="\u0034"){this['datasourceType']="\u0032";if(_0x8d833['apiColumns']){const _0x1234b2=JSON['parse'](_0x8d833["\u0061\u0070\u0069\u0043\u006f\u006c\u0075\u006d\u006e\u0073"]);if(_0x1234b2['length']>(0x97412^0x97412)){for(let _0x5840a5=0x5d4df^0x5d4df;_0x5840a5<_0x1234b2['length'];_0x5840a5++){const _0x101ce1=_0x1234b2[_0x5840a5];var _0x76ccf4={'columnName':_0x101ce1['propName'],'name':_0x101ce1['propCode']};this['sqlColumnTableData']['tableData']['push'](_0x76ccf4);}}}}else{this['datasourceType']='1';}break;}}},'addDataSet'(){let _0x573cb9=this['$route']['query']["\u0074\u0070\u006c\u0049\u0064"];let _0x35330c={};if(this['datasourceType']=='1'){let _0x1bbd06=this['$refs']['codeMirror']['codemirror']['getValue']();if(!_0x1bbd06['trim']()){this['commonUtil']["\u0073\u0068\u006f\u0077\u004d\u0065\u0073\u0073\u0061\u0067\u0065"]({'message':"\u0073\u0071\u006c\u8bed\u53e5\u4e0d\u80fd\u4e3a\u7a7a",'type':this['commonConstants']['messageType']['error']});return;}_0x35330c={'url':this['apis']['reportDesign']['addDataSetApi'],'params':{'id':this['sqlForm']['id'],'tplId':_0x573cb9,'datasetType':0x1,'sqlType':0x1,"\u0074\u0070\u006c\u0053\u0071\u006c":_0x1bbd06,'datasourceId':this['sqlForm']['datasourceId'],'datasetName':this['sqlForm']['datasetName']},'removeEmpty':![]};}else{_0x35330c={'url':this["\u0061\u0070\u0069\u0073"]["\u0072\u0065\u0070\u006f\u0072\u0074\u0044\u0065\u0073\u0069\u0067\u006e"]['addDataSetApi'],'params':{'id':this['sqlForm']["\u0069\u0064"],'tplId':_0x573cb9,"\u0064\u0061\u0074\u0061\u0073\u0065\u0074\u0054\u0079\u0070\u0065":0x2,'datasourceId':this['sqlForm']['datasourceId'],"\u0064\u0061\u0074\u0061\u0073\u0065\u0074\u004e\u0061\u006d\u0065":this['sqlForm']['datasetName']},'removeEmpty':![]};}this['$refs']['sqlRef']['validate'](_0xc83315=>{if(_0xc83315){this['commonUtil']["\u0064\u006f\u0050\u006f\u0073\u0074"](_0x35330c)["\u0074\u0068\u0065\u006e"](_0x4dd042=>{if(_0x4dd042['code']=='200'){this['addDatasetsDialogVisiable']=![];this['getDataSets']();}});}else{return;}});},'changeDataset'(){if(this["\u0064\u0061\u0074\u0061\u0053\u0065\u0074\u0046\u006f\u0072\u006d"]['dataSetId']){this['getDatasetColumn'](this['dataSetForm']['dataSetId']);}else{this['dataColumn']=[];}},'getDatasetColumn'(_0x3622ed){let _0xd29257={'url':this['apis']['reportDesign']['getDataSetColumnsApi'],'params':{'id':_0x3622ed},'removeEmpty':![]};this['dataSetForm']['column']=[];var _0x3df97a=this;this['commonUtil']["\u0064\u006f\u0050\u006f\u0073\u0074"](_0xd29257)['then'](_0x24bd29=>{if(_0x24bd29['code']=="002".split("").reverse().join("")){_0x3df97a['dataColumn']=_0x24bd29['responseData'];}});},'execSql'(){this['$refs']["\u0073\u0071\u006c\u0052\u0065\u0066"]['validate'](_0x3c4fd7=>{if(_0x3c4fd7){let _0x3febba={'url':this['apis']['reportDesign']['execSqlApi'],'params':{'tplSql':this['$refs']["\u0063\u006f\u0064\u0065\u004d\u0069\u0072\u0072\u006f\u0072"]['codemirror']['getValue'](),"\u0064\u0061\u0074\u0061\u0073\u006f\u0075\u0072\u0063\u0065\u0049\u0064":this['sqlForm']['datasourceId'],'sqlType':0x1},'removeEmpty':![]};this['commonUtil']['doPost'](_0x3febba)['then'](_0x156397=>{if(_0x156397['code']=='200'){this['sqlColumnTableData']["\u0074\u0061\u0062\u006c\u0065\u0044\u0061\u0074\u0061"]=_0x156397['responseData'];this['sqlColumnTableData']['tablePage']['pageTotal']=_0x156397['responseData']["\u006c\u0065\u006e\u0067\u0074\u0068"];}});}});},'closeAddDataSet'(){this['addDatasetsDialogVisiable']=![];if(this['datasourceType']==(0x60734^0x60735)){this['$refs']['codeMirror']["\u0063\u006f\u0064\u0065\u006d\u0069\u0072\u0072\u006f\u0072"]['setValue']('');}this['$refs']['sqlRef']['resetFields']();this['commonUtil']['clearObj'](this['sqlForm']);},'formatSql'(){let _0x489b02="".split("").reverse().join("");_0x489b02=this['$refs']['codeMirror']['codemirror']['getValue']();this["\u0024\u0072\u0065\u0066\u0073"]['codeMirror']['codemirror']['setValue'](_0x525de1['format'](_0x489b02));},'handleCurrentChange':function(_0x4d5d6a){this["\u0073\u0071\u006c\u0043\u006f\u006c\u0075\u006d\u006e\u0054\u0061\u0062\u006c\u0065\u0044\u0061\u0074\u0061"]['tablePage']['currentPage']=_0x4d5d6a;},"\u0068\u0061\u006e\u0064\u006c\u0065\u0053\u0069\u007a\u0065\u0043\u0068\u0061\u006e\u0067\u0065":function(_0x496a97){this['sqlColumnTableData']['tablePage']["\u0070\u0061\u0067\u0065\u0053\u0069\u007a\u0065"]=_0x496a97;},"\u0064\u0061\u0074\u0061\u0073\u0065\u0074\u0045\u0064\u0069\u0074\u0044\u0069\u0061\u006c\u006f\u0067"(){this["\u0073\u0068\u006f\u0077\u0044\u0061\u0074\u0061\u0073\u0065\u0074\u0073\u0044\u0069\u0061\u006c\u006f\u0067"]=!![];},'dataSetConfirm'(){var _0x5420e3=this;this['$refs']['dataSetForm']['validate'](_0x4a7b7e=>{if(_0x4a7b7e){var _0x835f31={"\u0064\u0061\u0074\u0061\u0053\u0065\u0074\u0049\u0064":_0x5420e3['dataSetForm']['dataSetId'],'dataColumns':_0x5420e3["\u0064\u0061\u0074\u0061\u0053\u0065\u0074\u0046\u006f\u0072\u006d"]['column'],"\u0072\u0065\u0071\u0075\u0065\u0073\u0074\u004b\u0065\u0079":_0x5420e3['commonUtil']["\u0067\u0065\u0074\u0055\u0075\u0069\u0064"](),'sqlType':"\u0031"};var _0x47d977=_0x5420e3['commonUtil']['getComponentParams'](_0x5420e3['component']['params']);_0x835f31['params']=Object['assign']({},_0x47d977,_0x5420e3['$route']['query']);let _0x4cc2c3={"\u0075\u0072\u006c":_0x5420e3['apis']['screenDesign']['getDynamicDatasApi'],'params':_0x835f31,'removeEmpty':![]};_0x5420e3["\u0063\u006f\u006d\u006d\u006f\u006e\u0055\u0074\u0069\u006c"]["\u0064\u006f\u0050\u006f\u0073\u0074"](_0x4cc2c3)['then'](_0x3d8c5f=>{if(_0x3d8c5f['code']=="002".split("").reverse().join("")){_0x5420e3['processDynamicData'](_0x3d8c5f);}});}else{return![];}});},'processDynamicData'(_0x58fee2){this['component']['spec']["\u0064\u0061\u0074\u0061"]['values']=_0x58fee2['responseData'];this['component']['dynamicDataSettings']['datasetId']=this['dataSetForm']['dataSetId'];this['component']['dynamicDataSettings']['dataColumns']=this["\u0064\u0061\u0074\u0061\u0053\u0065\u0074\u0046\u006f\u0072\u006d"]['column'];this['commonUtil']["\u0072\u0065\u004c\u006f\u0061\u0064\u0043\u0068\u0061\u0072\u0074"](this["\u0063\u0068\u0061\u0072\u0074\u0073\u0043\u006f\u006d\u0070\u006f\u006e\u0065\u006e\u0074\u0073"],this['component']);if(this['component']['type']=="\u0070\u0061\u0067\u0065\u0054\u0061\u0062\u006c\u0065"&&Array['isArray'](this['component']['spec']['data']['values'])){this['component']['spec']["\u0064\u0061\u0074\u0061"]["\u0074\u006f\u0074\u0061\u006c"]=this['component']['spec']['data']['values']['length'];}this['closeDynamicDataDialog']();},'editDatasets'(_0x5effcb,_0x4352cb){this['addDatasetsDialogVisiable']=!![];this['getScreenTplDateSource']();this["\u0073\u0071\u006c\u0046\u006f\u0072\u006d"]['datasetName']=_0x4352cb['datasetName'];this["\u0073\u0071\u006c\u0046\u006f\u0072\u006d"]['datasourceId']=_0x4352cb['datasourceId'];this['sqlForm']['id']=_0x4352cb['id'];if(_0x4352cb['datasetType']==(0x19306^0x19307)){this['datasourceType']=0xeb7ef^0xeb7ee;this['$nextTick'](()=>{this['$refs']['codeMirror']['codemirror']['setValue'](_0x4352cb['tplSql']);this['execSql']();});}else{this['datasourceType']=0x2;}},"\u0064\u0065\u006c\u0065\u0074\u0065\u0044\u0061\u0074\u0061\u0073\u0065\u0074\u0073"(_0x3724fa,_0x55b020){let _0x2fbfea={'url':this['apis']['screenDesign']['deleteDatasetApi'],'messageContent':this['commonUtil']["\u0067\u0065\u0074\u004d\u0065\u0073\u0073\u0061\u0067\u0065\u0046\u0072\u006f\u006d\u004c\u0069\u0073\u0074"]("eteled.mrifnoc".split("").reverse().join(""),null),'callback':this['getDataSets'],"\u0070\u0061\u0072\u0061\u006d\u0073":{'id':_0x55b020["\u0069\u0064"]},'type':"\u0067\u0065\u0074"};this["\u0063\u006f\u006d\u006d\u006f\u006e\u0055\u0074\u0069\u006c"]['showConfirm'](_0x2fbfea);}}};
+import sqlFormatter from "sql-formatter";
+import "codemirror/mode/javascript/javascript.js";
+import "codemirror/lib/codemirror.css";
+import "codemirror/addon/hint/show-hint.css";
+import "codemirror/theme/eclipse.css";
+import "codemirror/theme/material-palenight.css";
+import "codemirror/addon/fold/foldgutter.css";
+import "codemirror/addon/fold/foldcode.js";
+import "codemirror/addon/fold/foldgutter.js";
+import "codemirror/addon/fold/xml-fold.js";
+import "codemirror/addon/fold/indent-fold.js";
+import "codemirror/addon/fold/brace-fold";
+import "codemirror/addon/fold/markdown-fold.js";
+import "codemirror/addon/fold/comment-fold.js";
+import "codemirror/addon/selection/active-line";
+import "codemirror/addon/hint/sql-hint.js";
+export default {
+  props: {
+    component: {
+      type: Object,
+      default: () => ({}),
+    },
+    chartsComponents: {
+      type: Object,
+      default: () => ({}),
+    },
+    dynamicDialogVisiable: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  data() {
+    return {
+      cmOptions: {},
+      dataSetForm: {
+        //数据集表单
+        dataSetId: "", //选中的数据集id
+        column: null, //选中的数据列z
+        isMulti: false,
+      },
+      addDatasetsDialogVisiable: false,
+      dataSets: [], //数据集
+      dataColumn: [], //数据列
+      sqlForm: {
+        id: "",
+        datasetName: "", //数据集名称
+        datasourceId: "", //数据源id
+        sqlType: 1,
+      }, //sql表单
+      dataSource: [],
+      //sql解析对应的列表格数据
+      sqlColumnTableData: {
+        tableData: [],
+        tablePage: {
+          currentPage: 1,
+          pageSize: 10,
+          pageTotal: 0,
+          pageSizeRange: [5, 10, 20, 50],
+        },
+      },
+      showDatasetsDialog: false,
+      datasourceType: "1", //1 sql 2 api
+    };
+  },
+  mounted() {
+    this.cmOptions = this.commonConstants.cmOptions;
+    this.cmOptions.theme = "erlang-dark";
+    this.init();
+  },
+  methods: {
+    init() {
+      this.getDataSets();
+    },
+    //获取数据集
+    getDataSets() {
+      let tplId = this.$route.query.tplId; //tplId
+      let obj = {
+        url: this.apis.reportDesign.getDataSetsApi,
+        params: { tplId: tplId },
+        removeEmpty: false,
+      };
+      var that = this;
+      this.commonUtil.doPost(obj).then((response) => {
+        if (response.code == "200") {
+          that.dataSets = response.responseData;
+          that.dataSetForm.dataSetId = that.component.dynamicDataSettings.datasetId;
+          that.dataSetForm.column = that.component.dynamicDataSettings.dataColumns;
+        }
+      });
+    },
+    closeDynamicDataDialog() {
+      this.$emit("update:dynamicDialogVisiable", false);
+    },
+    showAddDatasetDialog() {
+      this.addDatasetsDialogVisiable = true;
+      this.getScreenTplDateSource();
+    },
+    //获取模板关联的数据源
+    getScreenTplDateSource() {
+      let tplId = this.$route.query.tplId; //tplId
+      let obj = {
+        url: this.apis.reportDesign.getReportTplDateSourceApi,
+        params: { tplId: tplId },
+        removeEmpty: false,
+      };
+      this.commonUtil.doPost(obj).then((response) => {
+        if (response.code == "200") {
+          this.dataSource = response.responseData;
+          this.changeDatasource();
+        }
+      });
+    },
+    // 选择数据源修改
+    changeDatasource() {
+      this.sqlColumnTableData.tableData = [];
+      for (let index = 0; index < this.dataSource.length; index++) {
+        const element = this.dataSource[index];
+        if (this.sqlForm.datasourceId == element.datasourceId) {
+          if (element.type == "4") {
+            this.datasourceType = "2";
+            if (element.apiColumns) {
+              const columns = JSON.parse(element.apiColumns);
+              if (columns.length > 0) {
+                for (let index = 0; index < columns.length; index++) {
+                  const element = columns[index];
+                  var obj = {
+                    columnName: element.propName,
+                    name: element.propCode,
+                  };
+                  this.sqlColumnTableData.tableData.push(obj);
+                }
+              }
+            }
+          } else {
+            this.datasourceType = "1";
+          }
+          break;
+        }
+      }
+    },
+    addDataSet() {
+      let tplId = this.$route.query.tplId; //tplId
+      let obj = {};
+      if (this.datasourceType == "1") {
+        let tplSql = this.$refs.codeMirror.codemirror.getValue();
+        if (!tplSql.trim()) {
+          this.commonUtil.showMessage({
+            message: "sql语句不能为空",
+            type: this.commonConstants.messageType.error,
+          });
+          return;
+        }
+        obj = {
+          url: this.apis.reportDesign.addDataSetApi,
+          params: {
+            id: this.sqlForm.id,
+            tplId: tplId,
+            datasetType: 1,
+            sqlType: 1,
+            tplSql: tplSql,
+            datasourceId: this.sqlForm.datasourceId,
+            datasetName: this.sqlForm.datasetName,
+          },
+          removeEmpty: false,
+        };
+      } else {
+        obj = {
+          url: this.apis.reportDesign.addDataSetApi,
+          params: {
+            id: this.sqlForm.id,
+            tplId: tplId,
+            datasetType: 2,
+            datasourceId: this.sqlForm.datasourceId,
+            datasetName: this.sqlForm.datasetName,
+          },
+          removeEmpty: false,
+        };
+      }
+      this.$refs["sqlRef"].validate((valid) => {
+        if (valid) {
+          this.commonUtil.doPost(obj).then((response) => {
+            if (response.code == "200") {
+              this.addDatasetsDialogVisiable = false;
+              this.getDataSets();
+            }
+          });
+        } else {
+          return;
+        }
+      });
+    },
+    //修改数据集，获取数据集对应的列
+    changeDataset() {
+      if (this.dataSetForm.dataSetId) {
+        this.getDatasetColumn(this.dataSetForm.dataSetId);
+      } else {
+        this.dataColumn = [];
+      }
+    },
+    getDatasetColumn(dataSetId) {
+      let obj = {
+        url: this.apis.reportDesign.getDataSetColumnsApi,
+        params: { id: dataSetId },
+        removeEmpty: false,
+      };
+      this.dataSetForm.column = [];
+      var that = this;
+      this.commonUtil.doPost(obj).then((response) => {
+        if (response.code == "200") {
+          that.dataColumn = response.responseData;
+        }
+      });
+    },
+    execSql() {
+      this.$refs["sqlRef"].validate((valid) => {
+        if (valid) {
+          let obj = {
+            url: this.apis.reportDesign.execSqlApi,
+            params: {
+              tplSql: this.$refs.codeMirror.codemirror.getValue(),
+              datasourceId: this.sqlForm.datasourceId,
+              sqlType: 1,
+            },
+            removeEmpty: false,
+          };
+          this.commonUtil.doPost(obj).then((response) => {
+            if (response.code == "200") {
+              this.sqlColumnTableData.tableData = response.responseData;
+              this.sqlColumnTableData.tablePage.pageTotal =
+                response.responseData.length;
+            }
+          });
+        }
+      });
+    },
+    //关闭添加数据源
+    closeAddDataSet() {
+      this.addDatasetsDialogVisiable = false;
+      if (this.datasourceType == 1) {
+        this.$refs.codeMirror.codemirror.setValue("");
+      }
+      this.$refs["sqlRef"].resetFields(); //校验重置
+      this.commonUtil.clearObj(this.sqlForm); //清空modalData
+    },
+    formatSql() {
+      //sql格式化
+      let sqlContent = "";
+      sqlContent = this.$refs.codeMirror.codemirror.getValue();
+      this.$refs.codeMirror.codemirror.setValue(
+        sqlFormatter.format(sqlContent)
+      );
+    },
+    //sql语句列表修改当前页触发事件
+    handleCurrentChange: function (val) {
+      this.sqlColumnTableData.tablePage.currentPage = val;
+    },
+    //sql语句列表修改当每页显示条数触发事件
+    handleSizeChange: function (val) {
+      this.sqlColumnTableData.tablePage.pageSize = val;
+    },
+    datasetEditDialog() {
+      this.showDatasetsDialog = true;
+    },
+    //确认绑定数据集
+    dataSetConfirm() {
+      var that = this;
+      this.$refs["dataSetForm"].validate((valid) => {
+        if (valid) {
+          var params = {
+            dataSetId: that.dataSetForm.dataSetId,
+            dataColumns: that.dataSetForm.column,
+            requestKey: that.commonUtil.getUuid(),
+            sqlType: "1",
+          };
+          var componentParams = that.commonUtil.getComponentParams(
+            that.component.params
+          );
+          params.params = Object.assign({}, componentParams,that.$route.query);
+          let obj = {
+            url: that.apis.screenDesign.getDynamicDatasApi,
+            params: params,
+            removeEmpty: false,
+          };
+          that.commonUtil.doPost(obj).then((response) => {
+            if (response.code == "200") {
+              that.processDynamicData(response);
+            }
+          });
+        } else {
+          return false;
+        }
+      });
+    },
+    processDynamicData(response) {
+      this.component.spec.data.values = response.responseData;
+      this.component.dynamicDataSettings.datasetId = this.dataSetForm.dataSetId;
+      this.component.dynamicDataSettings.dataColumns = this.dataSetForm.column;
+      this.commonUtil.reLoadChart(this.chartsComponents, this.component);
+      if(this.component.type == "pageTable" && Array.isArray(this.component.spec.data.values)){
+        this.component.spec.data.total = this.component.spec.data.values.length;
+      }
+      this.closeDynamicDataDialog();
+    },
+    editDatasets(index, item) {
+      this.addDatasetsDialogVisiable = true;
+      this.getScreenTplDateSource();
+      this.sqlForm.datasetName = item.datasetName;
+      this.sqlForm.datasourceId = item.datasourceId;
+      this.sqlForm.id = item.id;
+      if (item.datasetType == 1) {
+        this.datasourceType = 1;
+        this.$nextTick(() => {
+          this.$refs.codeMirror.codemirror.setValue(item.tplSql);
+          this.execSql();
+        });
+      } else {
+        this.datasourceType = 2;
+      }
+    },
+    //删除数据集
+    deleteDatasets(index, item) {
+      let obj = {
+        url: this.apis.screenDesign.deleteDatasetApi,
+        messageContent: this.commonUtil.getMessageFromList(
+          "confirm.delete",
+          null
+        ),
+        callback: this.getDataSets,
+        params: { id: item.id },
+        type: "get",
+      };
+      //弹出删除确认框
+      this.commonUtil.showConfirm(obj);
+    },
+  },
+};
