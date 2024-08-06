@@ -1,1 +1,131 @@
-import{allThemeMap}from"\u0040\u0076\u0069\u0073\u0061\u0063\u0074\u006f\u0072\u002f\u0076\u0063\u0068\u0061\u0072\u0074\u002d\u0074\u0068\u0065\u006d\u0065";import _0x59d95d from"\u0040\u0076\u0069\u0073\u0061\u0063\u0074\u006f\u0072\u002f\u0076\u0063\u0068\u0061\u0072\u0074\u002d\u0074\u0068\u0065\u006d\u0065\u002f\u0070\u0075\u0062\u006c\u0069\u0063\u002f\u0076\u0065\u004f\u0044\u0065\u0073\u0069\u0067\u006e\u004c\u0069\u0067\u0068\u0074\u002e\u006a\u0073\u006f\u006e";import _0x405ad7 from"\u0040\u0076\u0069\u0073\u0061\u0063\u0074\u006f\u0072\u002f\u0076\u0063\u0068\u0061\u0072\u0074\u002d\u0074\u0068\u0065\u006d\u0065\u002f\u0070\u0075\u0062\u006c\u0069\u0063\u002f\u0076\u0065\u004f\u0044\u0065\u0073\u0069\u0067\u006e\u004c\u0069\u0067\u0068\u0074\u0046\u0069\u006e\u0061\u006e\u0063\u0065\u002e\u006a\u0073\u006f\u006e";import _0x3edb0f from"\u0040\u0076\u0069\u0073\u0061\u0063\u0074\u006f\u0072\u002f\u0076\u0063\u0068\u0061\u0072\u0074\u002d\u0074\u0068\u0065\u006d\u0065\u002f\u0070\u0075\u0062\u006c\u0069\u0063\u002f\u0076\u0065\u004f\u0044\u0065\u0073\u0069\u0067\u006e\u004c\u0069\u0067\u0068\u0074\u0047\u006f\u0076\u0065\u0072\u006e\u006d\u0065\u006e\u0074\u002e\u006a\u0073\u006f\u006e";import _0x6df2b8 from"\u0040\u0076\u0069\u0073\u0061\u0063\u0074\u006f\u0072\u002f\u0076\u0063\u0068\u0061\u0072\u0074\u002d\u0074\u0068\u0065\u006d\u0065\u002f\u0070\u0075\u0062\u006c\u0069\u0063\u002f\u0076\u0065\u004f\u0044\u0065\u0073\u0069\u0067\u006e\u004c\u0069\u0067\u0068\u0074\u0043\u006f\u006e\u0073\u0075\u006d\u0065\u0072\u002e\u006a\u0073\u006f\u006e";import _0x5dd489 from"\u0040\u0076\u0069\u0073\u0061\u0063\u0074\u006f\u0072\u002f\u0076\u0063\u0068\u0061\u0072\u0074\u002d\u0074\u0068\u0065\u006d\u0065\u002f\u0070\u0075\u0062\u006c\u0069\u0063\u002f\u0076\u0065\u004f\u0044\u0065\u0073\u0069\u0067\u006e\u004c\u0069\u0067\u0068\u0074\u0041\u0075\u0074\u006f\u006d\u006f\u0062\u0069\u006c\u0065\u002e\u006a\u0073\u006f\u006e";import _0x6bd6b3 from"\u0040\u0076\u0069\u0073\u0061\u0063\u0074\u006f\u0072\u002f\u0076\u0063\u0068\u0061\u0072\u0074\u002d\u0074\u0068\u0065\u006d\u0065\u002f\u0070\u0075\u0062\u006c\u0069\u0063\u002f\u0076\u0065\u004f\u0044\u0065\u0073\u0069\u0067\u006e\u004c\u0069\u0067\u0068\u0074\u0043\u0075\u006c\u0074\u0075\u0072\u0061\u006c\u0054\u006f\u0075\u0072\u0069\u0073\u006d\u002e\u006a\u0073\u006f\u006e";import _0x54767e from"\u0040\u0076\u0069\u0073\u0061\u0063\u0074\u006f\u0072\u002f\u0076\u0063\u0068\u0061\u0072\u0074\u002d\u0074\u0068\u0065\u006d\u0065\u002f\u0070\u0075\u0062\u006c\u0069\u0063\u002f\u0076\u0065\u004f\u0044\u0065\u0073\u0069\u0067\u006e\u004c\u0069\u0067\u0068\u0074\u004d\u0065\u0064\u0069\u0063\u0061\u006c\u002e\u006a\u0073\u006f\u006e";import _0x1d88b6 from"\u0040\u0076\u0069\u0073\u0061\u0063\u0074\u006f\u0072\u002f\u0076\u0063\u0068\u0061\u0072\u0074\u002d\u0074\u0068\u0065\u006d\u0065\u002f\u0070\u0075\u0062\u006c\u0069\u0063\u002f\u0076\u0065\u004f\u0044\u0065\u0073\u0069\u0067\u006e\u004c\u0069\u0067\u0068\u0074\u004e\u0065\u0077\u0045\u006e\u0065\u0072\u0067\u0079\u002e\u006a\u0073\u006f\u006e";import _0x5cc91d from"\u0040\u0076\u0069\u0073\u0061\u0063\u0074\u006f\u0072\u002f\u0076\u0063\u0068\u0061\u0072\u0074\u002d\u0074\u0068\u0065\u006d\u0065\u002f\u0070\u0075\u0062\u006c\u0069\u0063\u002f\u0076\u0065\u004f\u0044\u0065\u0073\u0069\u0067\u006e\u0044\u0061\u0072\u006b\u002e\u006a\u0073\u006f\u006e";import _0x57884d from'@visactor/vchart-theme/public/veODesignDarkFinance.json';import _0x35abeb from"\u0040\u0076\u0069\u0073\u0061\u0063\u0074\u006f\u0072\u002f\u0076\u0063\u0068\u0061\u0072\u0074\u002d\u0074\u0068\u0065\u006d\u0065\u002f\u0070\u0075\u0062\u006c\u0069\u0063\u002f\u0076\u0065\u004f\u0044\u0065\u0073\u0069\u0067\u006e\u0044\u0061\u0072\u006b\u0047\u006f\u0076\u0065\u0072\u006e\u006d\u0065\u006e\u0074\u002e\u006a\u0073\u006f\u006e";import _0x27d364 from"\u0040\u0076\u0069\u0073\u0061\u0063\u0074\u006f\u0072\u002f\u0076\u0063\u0068\u0061\u0072\u0074\u002d\u0074\u0068\u0065\u006d\u0065\u002f\u0070\u0075\u0062\u006c\u0069\u0063\u002f\u0076\u0065\u004f\u0044\u0065\u0073\u0069\u0067\u006e\u0044\u0061\u0072\u006b\u0043\u006f\u006e\u0073\u0075\u006d\u0065\u0072\u002e\u006a\u0073\u006f\u006e";import _0x2e0ecb from'@visactor/vchart-theme/public/veODesignDarkAutomobile.json';import _0x178982 from'@visactor/vchart-theme/public/veODesignDarkCulturalTourism.json';import _0x43d75e from"\u0040\u0076\u0069\u0073\u0061\u0063\u0074\u006f\u0072\u002f\u0076\u0063\u0068\u0061\u0072\u0074\u002d\u0074\u0068\u0065\u006d\u0065\u002f\u0070\u0075\u0062\u006c\u0069\u0063\u002f\u0076\u0065\u004f\u0044\u0065\u0073\u0069\u0067\u006e\u0044\u0061\u0072\u006b\u004d\u0065\u0064\u0069\u0063\u0061\u006c\u002e\u006a\u0073\u006f\u006e";import _0x2cb2d1 from"\u0040\u0076\u0069\u0073\u0061\u0063\u0074\u006f\u0072\u002f\u0076\u0063\u0068\u0061\u0072\u0074\u002d\u0074\u0068\u0065\u006d\u0065\u002f\u0070\u0075\u0062\u006c\u0069\u0063\u002f\u0076\u0065\u004f\u0044\u0065\u0073\u0069\u0067\u006e\u0044\u0061\u0072\u006b\u004e\u0065\u0077\u0045\u006e\u0065\u0072\u0067\u0079\u002e\u006a\u0073\u006f\u006e";import _0x4b6401 from"\u0040\u0076\u0069\u0073\u0061\u0063\u0074\u006f\u0072\u002f\u0076\u0063\u0068\u0061\u0072\u0074";import{registerLiquidChart}from"\u0040\u0076\u0069\u0073\u0061\u0063\u0074\u006f\u0072\u002f\u0076\u0063\u0068\u0061\u0072\u0074";export default{'data'(){return{'screenProperties':{"\u006e\u0061\u006d\u0065":'','id':'','width':0x780,"\u0068\u0065\u0069\u0067\u0068\u0074":0x438,'imgUrl':'','background':"\u0023\u0030\u0044\u0032\u0039\u0034\u0032","\u0074\u0079\u0070\u0065":"\u0070\u0061\u006e\u0065\u006c","\u0063\u0061\u0074\u0065\u0067\u006f\u0072\u0079":'panel'},'components':[],"\u0063\u0068\u0061\u0072\u0074\u0073\u0043\u006f\u006d\u0070\u006f\u006e\u0065\u006e\u0074\u0073":{},"\u0073\u0065\u006e\u0064\u0052\u0065\u0071\u0075\u0065\u0073\u0074":![]};},"\u006d\u006f\u0075\u006e\u0074\u0065\u0064"(){if(this['$route']['query']['sendRequest']==(0xa5225^0xa5224)){this['sendRequest']=!![];}else{this['sendRequest']=![];}registerLiquidChart();allThemeMap['forEach']((_0x221b99,_0x53295f)=>{_0x4b6401["\u0054\u0068\u0065\u006d\u0065\u004d\u0061\u006e\u0061\u0067\u0065\u0072"]["\u0072\u0065\u0067\u0069\u0073\u0074\u0065\u0072\u0054\u0068\u0065\u006d\u0065"](_0x53295f,_0x221b99);});_0x4b6401['ThemeManager']['registerTheme']("thgiLngiseDOev".split("").reverse().join(""),_0x59d95d);_0x4b6401['ThemeManager']["\u0072\u0065\u0067\u0069\u0073\u0074\u0065\u0072\u0054\u0068\u0065\u006d\u0065"]("ecnaniFthgiLngiseDOev".split("").reverse().join(""),_0x405ad7);_0x4b6401['ThemeManager']["\u0072\u0065\u0067\u0069\u0073\u0074\u0065\u0072\u0054\u0068\u0065\u006d\u0065"]("tnemnrevoGthgiLngiseDOev".split("").reverse().join(""),_0x3edb0f);_0x4b6401['ThemeManager']["\u0072\u0065\u0067\u0069\u0073\u0074\u0065\u0072\u0054\u0068\u0065\u006d\u0065"]("\u0076\u0065\u004f\u0044\u0065\u0073\u0069\u0067\u006e\u004c\u0069\u0067\u0068\u0074\u0043\u006f\u006e\u0073\u0075\u006d\u0065\u0072",_0x6df2b8);_0x4b6401["\u0054\u0068\u0065\u006d\u0065\u004d\u0061\u006e\u0061\u0067\u0065\u0072"]['registerTheme']("\u0076\u0065\u004f\u0044\u0065\u0073\u0069\u0067\u006e\u004c\u0069\u0067\u0068\u0074\u0041\u0075\u0074\u006f\u006d\u006f\u0062\u0069\u006c\u0065",_0x5dd489);_0x4b6401["\u0054\u0068\u0065\u006d\u0065\u004d\u0061\u006e\u0061\u0067\u0065\u0072"]['registerTheme']("\u0076\u0065\u004f\u0044\u0065\u0073\u0069\u0067\u006e\u004c\u0069\u0067\u0068\u0074\u0043\u0075\u006c\u0074\u0075\u0072\u0061\u006c\u0054\u006f\u0075\u0072\u0069\u0073\u006d",_0x6bd6b3);_0x4b6401['ThemeManager']['registerTheme']("\u0076\u0065\u004f\u0044\u0065\u0073\u0069\u0067\u006e\u004c\u0069\u0067\u0068\u0074\u004d\u0065\u0064\u0069\u0063\u0061\u006c",_0x54767e);_0x4b6401["\u0054\u0068\u0065\u006d\u0065\u004d\u0061\u006e\u0061\u0067\u0065\u0072"]['registerTheme']("ygrenEweNthgiLngiseDOev".split("").reverse().join(""),_0x1d88b6);_0x4b6401['ThemeManager']['registerTheme']("kraDngiseDOev".split("").reverse().join(""),_0x5cc91d);_0x4b6401["\u0054\u0068\u0065\u006d\u0065\u004d\u0061\u006e\u0061\u0067\u0065\u0072"]["\u0072\u0065\u0067\u0069\u0073\u0074\u0065\u0072\u0054\u0068\u0065\u006d\u0065"]('veODesignDarkFinance',_0x57884d);_0x4b6401["\u0054\u0068\u0065\u006d\u0065\u004d\u0061\u006e\u0061\u0067\u0065\u0072"]['registerTheme']("tnemnrevoGkraDngiseDOev".split("").reverse().join(""),_0x35abeb);_0x4b6401["\u0054\u0068\u0065\u006d\u0065\u004d\u0061\u006e\u0061\u0067\u0065\u0072"]['registerTheme']("remusnoCkraDngiseDOev".split("").reverse().join(""),_0x27d364);_0x4b6401["\u0054\u0068\u0065\u006d\u0065\u004d\u0061\u006e\u0061\u0067\u0065\u0072"]["\u0072\u0065\u0067\u0069\u0073\u0074\u0065\u0072\u0054\u0068\u0065\u006d\u0065"]('veODesignDarkAutomobile',_0x2e0ecb);_0x4b6401["\u0054\u0068\u0065\u006d\u0065\u004d\u0061\u006e\u0061\u0067\u0065\u0072"]["\u0072\u0065\u0067\u0069\u0073\u0074\u0065\u0072\u0054\u0068\u0065\u006d\u0065"]("msiruoTlarutluCkraDngiseDOev".split("").reverse().join(""),_0x178982);_0x4b6401['ThemeManager']["\u0072\u0065\u0067\u0069\u0073\u0074\u0065\u0072\u0054\u0068\u0065\u006d\u0065"]("lacideMkraDngiseDOev".split("").reverse().join(""),_0x43d75e);_0x4b6401["\u0054\u0068\u0065\u006d\u0065\u004d\u0061\u006e\u0061\u0067\u0065\u0072"]['registerTheme']("ygrenEweNkraDngiseDOev".split("").reverse().join(""),_0x2cb2d1);this["\u0067\u0065\u0074\u0053\u0063\u0072\u0065\u0065\u006e\u0044\u0065\u0073\u0069\u0067\u006e"]();},'methods':{"\u0067\u0065\u0074\u0053\u0063\u0072\u0065\u0065\u006e\u0044\u0065\u0073\u0069\u0067\u006e"(){const _0x36ba3=this["\u0024\u0072\u006f\u0075\u0074\u0065"]['query']["\u0074\u0070\u006c\u0049\u0064"];const _0x10099b={'params':{"\u0069\u0064":_0x36ba3},"\u0075\u0072\u006c":this['apis']['screenTpl']['getScreenDesignApi']};var _0x397e3d=this;this["\u0063\u006f\u006d\u006d\u006f\u006e\u0055\u0074\u0069\u006c"]["\u0064\u006f\u0050\u006f\u0073\u0074"](_0x10099b)['then'](_0x40a972=>{if(_0x40a972["\u0063\u006f\u0064\u0065"]==="\u0032\u0030\u0030"){_0x397e3d["\u0073\u0063\u0072\u0065\u0065\u006e\u0050\u0072\u006f\u0070\u0065\u0072\u0074\u0069\u0065\u0073"]["\u006e\u0061\u006d\u0065"]=_0x40a972['responseData']["\u0074\u0070\u006c\u004e\u0061\u006d\u0065"];_0x397e3d['screenProperties']['id']=_0x40a972["\u0072\u0065\u0073\u0070\u006f\u006e\u0073\u0065\u0044\u0061\u0074\u0061"]['id'];_0x397e3d["\u0073\u0063\u0072\u0065\u0065\u006e\u0050\u0072\u006f\u0070\u0065\u0072\u0074\u0069\u0065\u0073"]['width']=_0x40a972['responseData']['width'];_0x397e3d["\u0073\u0063\u0072\u0065\u0065\u006e\u0050\u0072\u006f\u0070\u0065\u0072\u0074\u0069\u0065\u0073"]["\u0068\u0065\u0069\u0067\u0068\u0074"]=_0x40a972['responseData']['height'];_0x397e3d["\u0073\u0063\u0072\u0065\u0065\u006e\u0050\u0072\u006f\u0070\u0065\u0072\u0074\u0069\u0065\u0073"]['imgUrl']=_0x40a972["\u0072\u0065\u0073\u0070\u006f\u006e\u0073\u0065\u0044\u0061\u0074\u0061"]["\u0069\u006d\u0067\u0055\u0072\u006c"];_0x397e3d['screenProperties']['background']=_0x40a972['responseData']['background'];_0x397e3d['screenProperties']['imgType']=_0x40a972["\u0072\u0065\u0073\u0070\u006f\u006e\u0073\u0065\u0044\u0061\u0074\u0061"]['imgType'];_0x397e3d['screenProperties']['imgName']=_0x40a972['responseData']['imgName'];_0x397e3d['activated']=_0x397e3d['screenProperties'];if(_0x40a972['responseData']['components']!=null&&_0x40a972['responseData']['components']['length']>(0x986cf^0x986cf)){for(let _0x1ce9db=0xf1020^0xf1020;_0x1ce9db<_0x40a972['responseData']['components']['length'];_0x1ce9db++){const _0x5831a7=_0x40a972['responseData']['components'][_0x1ce9db];const _0x5d6973=JSON['parse'](_0x5831a7['content']);_0x5d6973['locked']=!![];_0x397e3d['components']['push'](_0x5d6973);}_0x397e3d["\u0024\u006e\u0065\u0078\u0074\u0054\u0069\u0063\u006b"](()=>{_0x397e3d['initComponent']();});}}});},async'initComponent'(){for(let _0x5adfca=0xe9ae4^0xe9ae4;_0x5adfca<this['components']['length'];_0x5adfca++){const _0x12e406=this['components'][_0x5adfca];if(_0x12e406['category']==this['screenConstants']['category']['vchart']){if(_0x12e406['type']['toLowerCase']()['indexOf']("pam".split("").reverse().join(""))>=(0x81a4b^0x81a4b)){let _0x42b82f=_0x12e406['spec']["\u006d\u0061\u0070"];if(!_0x4b6401["\u0067\u0065\u0074\u004d\u0061\u0070"](_0x42b82f)){const _0x4e9dc9=await this['commonUtil']["\u0067\u0065\u0074\u004d\u0061\u0070\u0044\u0061\u0074\u0061"](_0x42b82f);_0x4b6401['registerMap'](_0x42b82f,_0x4e9dc9);}}const _0x28960a=new _0x4b6401(_0x12e406['spec'],{"\u0064\u006f\u006d":_0x12e406['id']});_0x28960a['renderSync']();this['chartsComponents'][_0x12e406['id']]=_0x28960a;}else if(_0x12e406['category']==this['screenConstants']["\u0063\u0061\u0074\u0065\u0067\u006f\u0072\u0079"]['text']){if(_0x12e406['type']==this['screenConstants']['type']["\u0064\u0061\u0074\u0065"]){_0x12e406['content']="".split("").reverse().join("");setInterval(()=>{const _0x51593c=this;setTimeout(function(){_0x51593c["\u0072\u0065\u0066\u0072\u0065\u0073\u0068\u0054\u0069\u006d\u0065"](_0x12e406);},0x5e90e^0x5e90e);},0xbab07^0xba8ef);}}}},'refreshTime'(_0x63c4ff){_0x63c4ff['content']=this['commonUtil']['getCurrentDate'](_0x63c4ff);}}};
+import { allThemeMap } from '@visactor/vchart-theme';
+import veODesignLight from '@visactor/vchart-theme/public/veODesignLight.json';
+import veODesignLightFinance from '@visactor/vchart-theme/public/veODesignLightFinance.json';
+import veODesignLightGovernment from '@visactor/vchart-theme/public/veODesignLightGovernment.json';
+import veODesignLightConsumer from '@visactor/vchart-theme/public/veODesignLightConsumer.json';
+import veODesignLightAutomobile from '@visactor/vchart-theme/public/veODesignLightAutomobile.json';
+import veODesignLightCulturalTourism from '@visactor/vchart-theme/public/veODesignLightCulturalTourism.json';
+import veODesignLightMedical from '@visactor/vchart-theme/public/veODesignLightMedical.json';
+import veODesignLightNewEnergy from '@visactor/vchart-theme/public/veODesignLightNewEnergy.json';
+import veODesignDark from '@visactor/vchart-theme/public/veODesignDark.json';
+import veODesignDarkFinance from '@visactor/vchart-theme/public/veODesignDarkFinance.json';
+import veODesignDarkGovernment from '@visactor/vchart-theme/public/veODesignDarkGovernment.json';
+import veODesignDarkConsumer from '@visactor/vchart-theme/public/veODesignDarkConsumer.json';
+import veODesignDarkAutomobile from '@visactor/vchart-theme/public/veODesignDarkAutomobile.json';
+import veODesignDarkCulturalTourism from '@visactor/vchart-theme/public/veODesignDarkCulturalTourism.json';
+import veODesignDarkMedical from '@visactor/vchart-theme/public/veODesignDarkMedical.json';
+import veODesignDarkNewEnergy from '@visactor/vchart-theme/public/veODesignDarkNewEnergy.json';
+import VChart from '@visactor/vchart';
+import { registerLiquidChart } from '@visactor/vchart';
+export default {
+    data() {
+        return {
+            screenProperties: {// 大屏属性
+                name: '', // 名称
+                id: '',
+                width: 1920,
+                height: 1080,
+                imgUrl: '',
+                background: '#0D2942',
+                type: 'panel',
+                category:'panel',
+            },
+            components:[],//组件
+            chartsComponents:{},//图表 key id，value：charts
+            sendRequest:false
+        }
+    },
+    mounted(){
+        if(this.$route.query.sendRequest == 1){
+            this.sendRequest = true;
+        }else{
+            this.sendRequest = false;
+        }
+        registerLiquidChart();
+        allThemeMap.forEach((theme, name) => {
+            VChart.ThemeManager.registerTheme(name, theme);
+        });
+        VChart.ThemeManager.registerTheme('veODesignLight', veODesignLight);
+        VChart.ThemeManager.registerTheme('veODesignLightFinance', veODesignLightFinance);
+        VChart.ThemeManager.registerTheme('veODesignLightGovernment', veODesignLightGovernment);
+        VChart.ThemeManager.registerTheme('veODesignLightConsumer', veODesignLightConsumer);
+        VChart.ThemeManager.registerTheme('veODesignLightAutomobile', veODesignLightAutomobile);
+        VChart.ThemeManager.registerTheme('veODesignLightCulturalTourism', veODesignLightCulturalTourism);
+        VChart.ThemeManager.registerTheme('veODesignLightMedical', veODesignLightMedical);
+        VChart.ThemeManager.registerTheme('veODesignLightNewEnergy', veODesignLightNewEnergy);
+        VChart.ThemeManager.registerTheme('veODesignDark', veODesignDark);
+        VChart.ThemeManager.registerTheme('veODesignDarkFinance', veODesignDarkFinance);
+        VChart.ThemeManager.registerTheme('veODesignDarkGovernment', veODesignDarkGovernment);
+        VChart.ThemeManager.registerTheme('veODesignDarkConsumer', veODesignDarkConsumer);
+        VChart.ThemeManager.registerTheme('veODesignDarkAutomobile', veODesignDarkAutomobile);
+        VChart.ThemeManager.registerTheme('veODesignDarkCulturalTourism', veODesignDarkCulturalTourism);
+        VChart.ThemeManager.registerTheme('veODesignDarkMedical', veODesignDarkMedical);
+        VChart.ThemeManager.registerTheme('veODesignDarkNewEnergy', veODesignDarkNewEnergy);
+        this.getScreenDesign();
+    },
+    methods: {
+        //获取大屏设计信息
+        getScreenDesign() {
+            const tplId = this.$route.query.tplId
+            const obj = {
+                params: { id: tplId },
+                url: this.apis.screenTpl.getScreenDesignApi
+            }
+            var that = this;
+            this.commonUtil.doPost(obj).then(response => {
+                if (response.code === '200') {
+                  that.screenProperties.name = response.responseData.tplName
+                  that.screenProperties.id = response.responseData.id
+                  that.screenProperties.width = response.responseData.width
+                  that.screenProperties.height = response.responseData.height
+                  that.screenProperties.imgUrl = response.responseData.imgUrl
+                  that.screenProperties.background = response.responseData.background
+                  that.screenProperties.imgType = response.responseData.imgType
+                  that.screenProperties.imgName = response.responseData.imgName
+                  that.activated = that.screenProperties
+                  if (response.responseData.components != null && response.responseData.components.length > 0) {
+                    for (let index = 0; index < response.responseData.components.length; index++) {
+                      const element = response.responseData.components[index]
+                      const component = JSON.parse(element.content)
+                      component.locked = true;
+                      that.components.push(component)
+                    }
+                    that.$nextTick(() => {
+                        that.initComponent();
+                    })
+                  }
+                }
+              })
+        },
+        //组件初始化
+        async initComponent(){
+            for (let index = 0; index < this.components.length; index++) {
+                const element = this.components[index];
+                if(element.category == this.screenConstants.category.vchart){
+                    if(element.type.toLowerCase().indexOf("map") >= 0){
+                        let mapCode = element.spec.map;
+                        if(!VChart.getMap(mapCode)){
+                            const geojson = await this.commonUtil.getMapData(mapCode);
+                            VChart.registerMap(mapCode, geojson);
+                        }
+                    }
+                    const vchart = new VChart(element.spec, { dom: element.id});
+                    // 绘制
+                    vchart.renderSync();
+                    this.chartsComponents[element.id] = vchart;
+                }else if(element.category == this.screenConstants.category.text){
+                    if(element.type == this.screenConstants.type.date){
+                        element.content = ''
+                        setInterval(() => {
+                            const self = this
+                            setTimeout(function() { self.refreshTime(element) }, 0)
+                        }, 1000)
+                    }
+                }
+            }
+        },
+        refreshTime(component) {
+            component.content = this.commonUtil.getCurrentDate(component)
+        }
+    }
+}
