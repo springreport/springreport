@@ -1,4 +1,4 @@
 .el-form-item__content .el-select__wrapper{
-    min-width:170px !important;
+    min-width:100px !important;
     max-width:200px !important;
 }

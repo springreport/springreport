@@ -3,17 +3,17 @@
     <div>
         <el-collapse>
             <el-collapse-item title="表格设置" >
-                <el-form class="demo-form-inline" :inline="true" :model="component" label-position="left" size="mini" ref="settingForm">
+                <el-form class="demo-form-inline" :inline="true" :model="component" label-position="left" size="small" ref="settingForm">
                  
                    <el-form-item label="数据列设置" class="customLabel">
-                    </el-form-item><el-button type="primary" @click="showAddTableColumn('1')" size="mini">新增<i class="el-icon-plus el-icon--right"></i></el-button><br>
-                    <el-table :data="component.tableColumn" border style="width: 100%" size="mini" :cell-style="{color:'#fff'}">
+                    </el-form-item><el-button type="primary" @click="showAddTableColumn('1')" size="small">新增<i class="icon-plus el-icon--right"></i></el-button><br>
+                    <el-table :data="component.tableColumn" border style="width: 100%" size="small" :cell-style="{color:'#fff'}">
                         <el-table-column prop="name" label="名称" />
                         <el-table-column prop="key" label="属性" />
-                        <el-table-column label="操作">
-                        <template slot-scope="scope">
-                            <el-button type="text" size="small" @click="showAddTableColumn('2',scope.row,scope.$index)">编辑</el-button>
-                            <el-button type="text" size="small" @click="deleteTableColumn(scope.$index)">删除</el-button>
+                        <el-table-column label="操作" width="90">
+                        <template #default="scope">
+                            <el-button link type="primary" size="small" @click="showAddTableColumn('2',scope.row,scope.$index)">编辑</el-button>
+                            <el-button link type="primary" size="small" @click="deleteTableColumn(scope.$index)">删除</el-button>
                         </template>
                         </el-table-column>
                     </el-table>
@@ -25,7 +25,7 @@
                     </el-form-item><br>
                     <el-form-item v-if="component.style.showIndex" label="序号列宽度" >
                         <el-input v-model="component.style.indexWidth" style="width:170px" @change="reloadTable(component)">
-                        <template slot="append">%</template>
+                        <template #append>%</template>
                         </el-input>
                     </el-form-item>
                     <el-form-item label="显示边框">
@@ -33,7 +33,7 @@
                     </el-form-item>
                     <el-form-item v-if="component.style.isBorder" label="边框宽度">
                         <el-input v-model="component.style.borderWidth" style="width:180px" @change="reloadTable(component)">
-                        <template slot="append">px</template>
+                        <template #append>px</template>
                         </el-input>
                     </el-form-item>
                     <el-form-item  label="边框颜色" v-if="component.style.isBorder">
@@ -43,7 +43,7 @@
                     </el-form-item><br>
                     <el-form-item label="高度">
                         <el-input v-model="component.headStyle.height" style="width:180px">
-                        <template slot="append">px</template>
+                        <template #append>px</template>
                         </el-input>
                     </el-form-item>
                     <el-form-item label="背景颜色">
@@ -54,7 +54,7 @@
                     </el-form-item>
                     <el-form-item label="字体大小">
                         <el-input v-model.number="component.headStyle.fontSize" style="width:180px">
-                        <template slot="append">pt</template>
+                        <template #append>pt</template>
                         </el-input>
                     </el-form-item>
                     <el-form-item label="是否加粗">
@@ -76,8 +76,8 @@
                         <input-color-picker :inputWidth="150" :value="component.bodyStyle.evenRowColor" @change="(val)=>{component.bodyStyle.evenRowColor=val;reloadTable(component)}" />
                     </el-form-item>
                     <el-form-item label="行高">
-                        <el-input v-model="component.bodyStyle.height" style="width:180px" @change="changeTableLineHeight(component)">
-                        <template slot="append">px</template>
+                        <el-input v-model.number="component.bodyStyle.height" style="width:180px" @change="changeTableLineHeight(component)">
+                        <template #append>px</template>
                         </el-input>
                     </el-form-item>
 
@@ -86,7 +86,7 @@
                     </el-form-item>
                     <el-form-item label="字体大小">
                         <el-input v-model.number="component.bodyStyle.fontSize"  style="width:180px" @change="reloadTable(component)">
-                        <template slot="append">pt</template>
+                        <template #append>pt</template>
                         </el-input>
                     </el-form-item>
                     <el-form-item label="是否加粗" >
@@ -106,7 +106,7 @@
                     </el-form-item>
                     <el-form-item label="滚动最小条数">
                         <el-input v-model="component.options.limitMoveNum" style="width:152px" @change="reloadTable(component)">
-                        <template slot="append">行</template>
+                        <template #append>行</template>
                         </el-input>
                     </el-form-item>
                     <el-form-item label="鼠标悬停">
@@ -114,7 +114,7 @@
                     </el-form-item>
                     <el-form-item label="停顿时间">
                         <el-input v-model="component.options.waitTime" style="width:180px">
-                        <template slot="append">ms</template>
+                        <template #append>ms</template>
                         </el-input>
                     </el-form-item>
                     </div>
@@ -147,7 +147,7 @@
                         </el-form-item>
                         <el-form-item label="字体大小">
                             <el-input v-model.number="component.headStyle.fontSize" style="width:180px">
-                            <template slot="append">pt</template>
+                            <template #append>pt</template>
                             </el-input>
                         </el-form-item>
                         <el-form-item label="是否加粗">
@@ -170,7 +170,7 @@
                         </el-form-item>
                         <el-form-item label="字体大小">
                             <el-input v-model.number="component.rowStyle.fontSize" style="width:180px">
-                            <template slot="append">pt</template>
+                            <template #append>pt</template>
                             </el-input>
                         </el-form-item>
                         <el-form-item label="是否加粗">
@@ -198,12 +198,12 @@
         </el-collapse>
         <el-dialog
         title="表格数据列"
-        :visible.sync="tableColumnDialogVisiable"
+        v-model="tableColumnDialogVisiable"
         :close-on-click-modal="false"
         width="500px"
         @close="closeTableColumnDialog"
         >
-        <el-form ref="tableColumnForm" class="demo-form-inline" :model="tableColumnForm" label-position="left" label-width="100px" size="mini">
+        <el-form ref="tableColumnForm" class="demo-form-inline" :model="tableColumnForm" label-position="left" label-width="100px" size="small">
             <el-form-item label="列名称" prop="name" :rules="filter_rules(&quot;列名称&quot;,{required:true})">
             <el-input v-model="tableColumnForm.name" />
             </el-form-item>
@@ -212,14 +212,16 @@
             </el-form-item>
             <el-form-item label="列宽" prop="width" :rules="filter_rules(&quot;列宽&quot;,{required:true})" v-if="component.type == 'scrollTable'">
             <el-input v-model="tableColumnForm.width">
-                <template slot="append">%</template>
+                <template #append>%</template>
             </el-input>
             </el-form-item>
         </el-form>
-        <span slot="footer" class="dialog-footer">
+        <template #footer>
+        <span  class="dialog-footer">
             <el-button @click="closeTableColumnDialog">取 消</el-button>
             <el-button type="primary" @click="addTableColomn">确 定</el-button>
         </span>
+        </template>
         </el-dialog>
     </div>
 </template>
@@ -260,7 +262,7 @@ export default {
             this.reloadTable(component)
         },
         reloadTable(component){
-            this.$parent.$parent.$parent.$refs["draggable"].$refs[component.id][0].$refs[component.id].reset()
+            // this.$parent.$parent.$parent.$refs["draggable"].$refs[component.id][0].$refs[component.id].reset()
         },
          // type 类型 1新增 2编辑
         showAddTableColumn(type, row, index) {
@@ -327,16 +329,44 @@ export default {
 .el-form-item{
   margin-bottom:5px !important
 }
-::v-deep .el-form-item__label-wrap{
+:deep(.el-form-item__label-wrap){
     margin-left:0px !important
 }
-::v-deep .el-color-picker__trigger{
+:deep(.el-color-picker__trigger){
     /* top:-12px */
 }
-::v-deep .customLabel{
+:deep(.customLabel){
     font-weight: bold;
 }
-::v-deep .customLabel .el-form-item__label{
+:deep(.customLabel .el-form-item__label){
     color:#15a585 !important;
+}
+
+:deep(.el-input__inner),
+:deep(.el-textarea__inner) {
+  background-color: var(--colorWhite);
+  color: var(--colorTextPrimary);
+  border: 1px solid var(--borderColorBase);
+}
+
+:deep(.el-select-dropdown) {
+   border: 1px solid var(--borderColorBase) !important;
+   background-color: var(--colorWhite) !important;
+ }
+
+ :deep(.el-select__selected-item){
+    color:var(--colorTextPrimary) !important;
+  
+}
+
+:deep(.el-select--small .el-select__wrapper){
+    background-color: var(--colorWhite) !important;
+    box-shadow: 0 0 0 1px black inset;
+}
+
+:deep(.el-input--small .el-input__wrapper){
+    /* padding: 0px 0px; */
+    background-color: var(--colorWhite);
+    box-shadow: 0 0 0 1px black inset;
 }
 </style>

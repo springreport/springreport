@@ -332,7 +332,7 @@
                     <el-collapse v-if="chartxAxisData && chartxAxisData.length > 0">
                         <el-collapse-item v-for="(o,index) in chartxAxisData" :key="index">
                             <template #title>
-                                图标属性{{index+1}}
+                                图表属性{{index+1}}
                                  <el-button class="right-block-el-icon-edit" title="编辑" type="primary" icon="icon-edit" circle size="small" @click.stop="editxAxisData(o,index)"></el-button>
                                  <el-button class="right-el-icon-delete" type="danger" title="删除" icon="icon-delete" circle size="small" @click.stop="deletexAxisData(index)"></el-button>
                             </template>

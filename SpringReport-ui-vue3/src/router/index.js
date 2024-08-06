@@ -96,6 +96,22 @@ export const constantRoutes = [
     },
   },
   {
+    path: '/screenDesign',
+    name: 'screenDesign',
+    component: () => import('@/views/screen/screendesign/screenDesign.vue'),
+    meta: {
+      title: '大屏设计',
+    },
+  },
+  {
+    path: '/screenView',
+    name: 'screenView',
+    component: () => import('@/views/screen/screendesign/screenView.vue'),
+    meta: {
+      title: '大屏查看',
+    },
+  },
+  {
     path: '/',
     component: Layout,
     redirect: '/index',
@@ -280,6 +296,15 @@ export const constantRoutes = [
         component: () => import('@/views/doctpl/DocTpl.vue'),
         meta: {
           title: 'word模板管理',
+          icon: 'icon-word',
+        },
+      },
+      {
+        path: '/screenTpl',
+        name: 'screenTpl',
+        component: () => import('@/views/screen/screentpl/ScreenTpl.vue'),
+        meta: {
+          title: '大屏模板管理',
           icon: 'icon-word',
         },
       },

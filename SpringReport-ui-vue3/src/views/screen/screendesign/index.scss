@@ -1,0 +1,230 @@
+:deep(.el-tooltip__popper.is-dark) {
+  background: #2681ff !important;
+  color: #ffffff !important;
+}
+
+:deep(.el-input__inner),
+:deep(.el-textarea__inner) {
+  // background-color: var(--colorWhite);
+  // color: var(--colorTextPrimary);
+  // border: 1px solid var(--borderColorBase);
+}
+
+:deep(.el-form-item__label) {
+  color: var(--colorTextPrimary);
+}
+
+:deep(.el-input-group__append),
+:deep(.el-input-group__prepend) {
+  background-color: var(--backgroundColorBase);
+  box-shadow: 0 0 0 1px black inset;
+}
+
+:deep(.el-input-group__append) {
+  border-left: 0;
+}
+
+:deep(.el-input-group__prepend) {
+  border-right: 0;
+}
+
+:deep(.el-input-number__decrease),
+:deep(.el-input-number__increase) {
+  background-color: var(--backgroundColorBase);
+  color: var(--colorTextPrimary);
+}
+
+:deep(.el-input-number.is-controls-right .el-input-number__increase) {
+  border-bottom: 1px solid var(--borderColorBase);
+}
+
+:deep(.el-input-number__increase) {
+  border-left: 1px solid var(--borderColorBase);
+}
+
+:deep(.el-input-number.is-controls-right .el-input-number__decrease) {
+  border-left: 1px solid var(--borderColorBase);
+}
+
+:deep(.el-table th.el-table__cell),
+:deep(.el-table th),
+:deep(.el-table tr) {
+  background-color: var(--colorWhite);
+}
+:deep(.el-table__empty-block){
+  background-color: var(--colorBlack);
+}
+
+:deep(.el-table td),
+:deep(.el-table th.is-leaf) {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+:deep(.el-table--border td),
+:deep(.el-table--border th),
+:deep(
+  .el-table__body-wrapper
+  .el-table--border.is-scrolling-left
+  ~ .el-table__fixed) {
+  border-right: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+:deep(.el-table--border),
+:deep(.el-table--group) {
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+:deep(.el-table--border) {
+  border-right: none;
+  border-bottom: none;
+}
+
+:deep(.el-table thead) {
+  background-color: var(--colorWhite);
+  color: var(--colorTextPrimary);
+}
+
+:deep(
+  .el-table--enable-row-hover
+  .el-table__body
+  tr:hover
+  > td.el-table__cell) {
+  background-color: var(--colorBlack);
+}
+
+:deep(.el-table--enable-row-hover .el-table__body tr:hover > td) {
+  background-color: var(--colorBlack);
+}
+
+:deep(.el-tree) {
+  background-color: var(--colorWhite);
+}
+
+:deep(.el-alert) {
+  background-color: var(--colorWhite);
+}
+
+:deep(.el-message-box) {
+  background-color: var(--colorWhite);
+}
+
+:deep(.el-notification ){
+  background-color: var(--colorWhite);
+}
+
+:deep(.el-dialog) {
+  background: var(--colorWhite);
+}
+:deep(.el-dialog__title) {
+  color: rgb(255, 255, 255);
+}
+
+:deep(.el-card) {
+  background-color: var(--colorWhite);
+}
+
+:deep(.cell) {
+  // color: rgb(255, 255, 255);
+}
+
+:deep(.el-collapse-item__header) {
+  color: rgb(255, 255, 255);
+  background-color: #1a1a1a;
+  border-bottom: 1px solid var(--borderColorLighter);
+  height: 42px;
+  line-height: 42px;
+  border-top: 1px solid var(--borderColorLighter);
+}
+:deep(.el-collapse-item__wrap) {
+  background-color: var(--colorWhite);
+  border-bottom: 0;
+}
+:deep(.el-collapse) {
+  border-top: 0;
+  border-bottom: 1px solid var(--borderColorLighter);
+}
+:deep(.el-collapse-item__content) {
+  background-color: #1a1a1a;
+  padding: 12px;
+}
+
+// :deep(.el-select-dropdown) {
+//   border: 1px solid var(--borderColorBase) !important;
+//   background-color: var(--colorWhite) !important;
+// }
+
+// :deep(.el-select__selected-item){
+//   color:var(--colorTextPrimary) !important;
+  
+// }
+
+// :deep(.el-select--small .el-select__wrapper){
+//   background-color: var(--colorWhite) !important;
+// }
+
+:deep(.el-popper[x-placement^="bottom"] .popper__arrow::after) {
+  border-bottom-color: var(--colorWhite);
+}
+
+:deep(.el-select-dropdown__item.hover),
+:deep(.el-select-dropdown__item:hover) {
+  background-color: var(--colorBlack);
+}
+
+:deep(.el-select-dropdown__item.hover),
+:deep(.el-select-dropdown__item:hover) {
+  background-color: var(--colorBlack);
+}
+
+:deep(.el-popper[x-placement^="top"] .popper__arrow) {
+  border-top-color: var(--borderColorBase);
+}
+
+:deep(.el-popper[x-placement^=top] .popper__arrow:after){
+  border-top-color: var(--borderColorBase);
+}
+
+:deep(.el-dialog__body){
+  // background-color: var(--colorBlack);
+}
+
+:deep(.el-tabs){
+  background-color: var(--colorBlack);
+}
+
+:deep(.el-tabs__header){
+  background-color: var(--colorBlack);
+}
+:deep(.el-tab-pane){
+  background-color: var(--colorBlack) !important;
+}
+
+:deep(.btn-prev){
+  background-color: var(--colorBlack) !important;
+  color:white
+}
+:deep(.btn-next){
+  background-color: var(--colorBlack) !important;
+  color:white
+}
+
+:deep(.el-pager li){
+  background-color: var(--colorBlack) !important;
+  color:white
+}
+:deep(.el-pager .active){
+  background-color: var(--colorBlack) !important;
+  color:#409eff
+}
+
+:deep(.el-input--small .el-input__wrapper){
+  // padding: 0px 0px;
+  // background-color: var(--colorWhite);
+}
+:deep(.el-form--inline .el-form-item) {
+  margin-right:5px !important
+}
+:deep(.el-textarea__inner),:deep(.el-input__inner){
+  border:0px
+}
+// .el-input__wrapper
