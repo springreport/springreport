@@ -10,7 +10,7 @@ public class MesReportDatasourceDto {
 	/**
 	 * 数据源类型
 	 */
-	List<String> datasourceType;
+	List<Integer> datasourceType;
 	
 	/**  
 	 * @Fields merchantNo : 商户号
