@@ -1,8 +1,41 @@
 package com.springreport.util;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigInteger;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
+import javax.imageio.ImageIO;
+
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.util.Units;
+import org.apache.poi.xddf.usermodel.chart.AxisCrossBetween;
+import org.apache.poi.xddf.usermodel.chart.AxisCrosses;
+import org.apache.poi.xddf.usermodel.chart.AxisPosition;
+import org.apache.poi.xddf.usermodel.chart.BarDirection;
+import org.apache.poi.xddf.usermodel.chart.ChartTypes;
+import org.apache.poi.xddf.usermodel.chart.LegendPosition;
+import org.apache.poi.xddf.usermodel.chart.XDDFBarChartData;
+import org.apache.poi.xddf.usermodel.chart.XDDFCategoryAxis;
+import org.apache.poi.xddf.usermodel.chart.XDDFCategoryDataSource;
+import org.apache.poi.xddf.usermodel.chart.XDDFChartData;
+import org.apache.poi.xddf.usermodel.chart.XDDFChartLegend;
+import org.apache.poi.xddf.usermodel.chart.XDDFDataSource;
+import org.apache.poi.xddf.usermodel.chart.XDDFDataSourcesFactory;
+import org.apache.poi.xddf.usermodel.chart.XDDFLineChartData;
+import org.apache.poi.xddf.usermodel.chart.XDDFNumericalDataSource;
+import org.apache.poi.xddf.usermodel.chart.XDDFPie3DChartData;
+import org.apache.poi.xddf.usermodel.chart.XDDFPieChartData;
+import org.apache.poi.xddf.usermodel.chart.XDDFValueAxis;
 import org.apache.poi.xwpf.model.XWPFHeaderFooterPolicy;
 import org.apache.poi.xwpf.usermodel.LineSpacingRule;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
@@ -10,6 +43,7 @@ import org.apache.poi.xwpf.usermodel.TableRowAlign;
 import org.apache.poi.xwpf.usermodel.UnderlinePatterns;
 import org.apache.poi.xwpf.usermodel.VerticalAlign;
 import org.apache.poi.xwpf.usermodel.XWPFAbstractNum;
+import org.apache.poi.xwpf.usermodel.XWPFChart;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFHeader;
 import org.apache.poi.xwpf.usermodel.XWPFNumbering;
@@ -21,12 +55,11 @@ import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell.XWPFVertAlign;
 import org.apache.xmlbeans.impl.xb.xmlschema.SpaceAttribute;
+import org.openxmlformats.schemas.drawingml.x2006.chart.CTPieSer;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTAbstractNum;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTBody;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTBorder;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTDecimalNumber;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTEmpty;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTFonts;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTLvl;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTOnOff;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTP;
@@ -49,13 +82,16 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.STPageOrientation;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STStyleType;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTblLayoutType;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.deepoove.poi.data.Texts;
 import com.deepoove.poi.data.style.Style;
 import com.deepoove.poi.util.TableTools;
+import com.springreport.base.DocChartSettingDto;
 import com.springreport.enums.TitleLevelEnum;
+import com.springreport.enums.YesNoEnum;
 
 public class WordUtil {
 
@@ -769,6 +805,51 @@ public class WordUtil {
     	}
     }
     
+    /**  
+     * @MethodName: addImage
+     * @Description: 添加图片
+     * @author caiyang
+     * @param document
+     * @param content void
+     * @date 2024-08-07 11:18:34 
+     */ 
+    public static void addImage(XWPFParagraph paragraph,JSONObject content) {
+    	InputStream in;
+    	try {
+    		BufferedImage image;
+    		URL url = new URL(content.getString("value"));
+    		in = url.openStream();
+    		image = ImageIO.read(url);
+    		XWPFRun run = paragraph.createRun();
+    		run.addPicture(in, org.apache.poi.xwpf.usermodel.Document.PICTURE_TYPE_PNG, "",
+    		Units.pixelToEMU(content.getIntValue("width")), Units.pixelToEMU(content.getIntValue("height")));
+    		String rowFlex = content.getString("rowFlex");//对齐方式
+			if (StringUtil.isNotEmpty(rowFlex)) {
+				switch (rowFlex) {
+				case "left":
+					paragraph.setAlignment(ParagraphAlignment.LEFT);
+					break;
+				case "center":
+					paragraph.setAlignment(ParagraphAlignment.CENTER);
+					break;
+				case "right":
+					paragraph.setAlignment(ParagraphAlignment.RIGHT);
+					break;
+				case "alignment":
+					paragraph.setAlignment(ParagraphAlignment.BOTH);
+					break;
+				default:
+					paragraph.setAlignment(ParagraphAlignment.LEFT);
+					break;
+				}
+			} else {
+				paragraph.setAlignment(ParagraphAlignment.LEFT);
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+    }
+    
 	private static BigInteger getNewDecimalNumberingId(XWPFDocument document, BigInteger abstractNumID,String listStyle) {
 		CTAbstractNum cTAbstractNum = CTAbstractNum.Factory.newInstance();
 		cTAbstractNum.setAbstractNumId(abstractNumID);
@@ -845,4 +926,422 @@ public class WordUtil {
         }
         return styleStr;
     }
+    
+    /**  
+     * @MethodName: addChart
+     * @Description: 添加图表
+     * @author caiyang
+     * @param paragraph
+     * @param content void
+     * @throws Exception 
+     * @date 2024-08-08 10:11:54 
+     */ 
+    public static void addChart(XWPFDocument document,XWPFParagraph paragraph,JSONObject content,Map<String, Object> dynamicData,boolean isTemplate,DocChartSettingDto docChartSettingDto) throws Exception {
+    	switch (docChartSettingDto.getChartType()) {
+		case "pie":
+			addPieChart(document,paragraph, content, dynamicData,isTemplate,docChartSettingDto);
+			break;
+		case "histogram":
+			addHistogramChart(document,paragraph, content, dynamicData,isTemplate,docChartSettingDto,false);
+			break;
+		case "horizontalHistogram":
+			addHistogramChart(document,paragraph, content, dynamicData,isTemplate,docChartSettingDto,true);
+			break;
+		case "line":
+			addLineChart(document,paragraph, content, dynamicData,isTemplate,docChartSettingDto);
+			break;
+		default:
+			break;
+		}
+    	String rowFlex = content.getString("rowFlex");//对齐方式
+    	if (StringUtil.isNotEmpty(rowFlex)) {
+			switch (rowFlex) {
+			case "left":
+				paragraph.setAlignment(ParagraphAlignment.LEFT);
+				break;
+			case "center":
+				paragraph.setAlignment(ParagraphAlignment.CENTER);
+				break;
+			case "right":
+				paragraph.setAlignment(ParagraphAlignment.RIGHT);
+				break;
+			case "alignment":
+				paragraph.setAlignment(ParagraphAlignment.BOTH);
+				break;
+			default:
+				paragraph.setAlignment(ParagraphAlignment.LEFT);
+				break;
+			}
+		} else {
+			paragraph.setAlignment(ParagraphAlignment.LEFT);
+		}
+    }
+    
+    /**  
+     * @MethodName: addPieChart
+     * @Description: 添加饼图
+     * @author caiyang void
+     * @throws IOException 
+     * @throws InvalidFormatException 
+     * @date 2024-08-08 10:16:17 
+     */ 
+    private static void addPieChart(XWPFDocument document,XWPFParagraph paragraph,JSONObject content,Map<String, Object> dynamicData,boolean isTemplate,DocChartSettingDto docChartSettingDto) throws Exception {
+    	XWPFRun xwpfRun = paragraph.createRun();
+    	//1.创建chart图表对象
+    	XWPFChart chart = document.createChart(xwpfRun,Units.pixelToEMU(content.getIntValue("width")), Units.pixelToEMU(content.getIntValue("height")));
+    	// 2.图表相关设置
+    	if(docChartSettingDto.getShowChartName().intValue() == YesNoEnum.YES.getCode().intValue()) {
+    		chart.setTitleText(docChartSettingDto.getChartName()); // 图表标题
+    	}
+        chart.setTitleOverlay(false); // 图例是否覆盖标题
+        // 3.图例设置
+        XDDFChartLegend legend = chart.getOrAddLegend();
+        legend.setPosition(LegendPosition.BOTTOM); // 图例位置:上下左右
+        // 4.X轴(分类轴)相关设置:饼图中的图例显示
+        String[] xAxisData = null;
+        List<Map<String, Object>> datas = null;
+        if(isTemplate) {
+        	xAxisData = new String[] {
+                    "oxygen","silicon","aluminum","iron","calcium","sodium",
+                    "potassium","others",
+            };
+        }else {
+        	datas = (List<Map<String, Object>>) dynamicData.get(docChartSettingDto.getDatasetName());
+        	String categoryField = JSON.parseArray(docChartSettingDto.getCategoryField()).getString(0);
+        	List<String> categories = new ArrayList<>();
+        	for (int i = 0; i < datas.size(); i++) {
+        		Object obj = datas.get(i).get(categoryField);
+        		categories.add(String.valueOf(obj));
+			}
+        	xAxisData = categories.stream().toArray(String[]::new);
+        }
+        
+        XDDFCategoryDataSource xAxisSource = XDDFDataSourcesFactory.fromArray(xAxisData); // 设置分类数据
+
+        // 5.Y轴(值轴)相关设置:饼图中的圆形显示
+        Double[] yAxisData = null;
+        if(isTemplate) {
+        	yAxisData = new Double[]{
+            		46.60, 27.72, 8.13, 5.0, 3.63, 2.83,
+                    2.59, 3.5
+            };
+        }else {
+        	String valueField = docChartSettingDto.getValueField();
+        	List<Double> values = new ArrayList<>();
+        	for (int i = 0; i < datas.size(); i++) {
+        		Object obj = datas.get(i).get(valueField);
+        		values.add(Double.parseDouble(String.valueOf(obj)));
+        	}
+        	yAxisData = values.stream().toArray(Double[]::new);
+        }
+        XDDFNumericalDataSource<Double> yAxisSource = XDDFDataSourcesFactory.fromArray(yAxisData); // 设置值数据
+        // 6.创建饼图对象,饼状图不需要X,Y轴,只需要数据集即可
+        XDDFPieChartData pieChart = (XDDFPieChartData) chart.createData(ChartTypes.PIE, null, null);
+        // 7.加载饼图数据集
+        XDDFPieChartData.Series pieSeries = (XDDFPieChartData.Series) pieChart.addSeries(xAxisSource, yAxisSource);
+//        pieSeries.setTitle("", null); // 系列提示标题
+        CTPieSer ctPieSer = pieSeries.getCTPieSer();
+        showCateName(ctPieSer, false);
+        showVal(ctPieSer, true);
+        showPercent(ctPieSer, false);
+        showLegendKey(ctPieSer, false);
+        showSerName(ctPieSer, false);
+        // 8.绘制饼图
+        chart.plot(pieChart);
+        // 9.设置替换文字，格式是{{数据集名称}}，根据该内容给chart动态赋值
+        xwpfRun.getCTR().getDrawingArray(0).getInlineArray(0).getDocPr().setDescr("{{"+docChartSettingDto.getDatasetName()+"_"+docChartSettingDto.getChartType()+"}}");
+    }
+    
+    /**  
+     * @MethodName: addHistogramChart
+     * @Description: 柱状图
+     * @author caiyang
+     * @param document
+     * @param paragraph
+     * @param content
+     * @param dynamicData
+     * @param isTemplate
+     * @param docChartSettingDto
+     * @throws Exception void
+     * @date 2024-08-10 08:16:03 
+     */ 
+    public static void addHistogramChart(XWPFDocument document,XWPFParagraph paragraph,JSONObject content,Map<String, Object> dynamicData,boolean isTemplate,DocChartSettingDto docChartSettingDto,boolean isBar) throws Exception{
+    	XWPFRun xwpfRun = paragraph.createRun();
+    	//创建chart图表对象
+    	XWPFChart chart = document.createChart(xwpfRun,Units.pixelToEMU(content.getIntValue("width")), Units.pixelToEMU(content.getIntValue("height")));
+    	//图表相关设置
+    	if(docChartSettingDto.getShowChartName().intValue() == YesNoEnum.YES.getCode().intValue()) {
+    		chart.setTitleText(docChartSettingDto.getChartName()); // 图表标题
+    	}
+    	chart.setTitleOverlay(false); // 图例是否覆盖标题
+    	
+        //x轴 y轴设置
+        XDDFCategoryAxis xAxis = chart.createCategoryAxis(AxisPosition.BOTTOM);
+        XDDFValueAxis yAxis = chart.createValueAxis(AxisPosition.LEFT);
+        yAxis.setCrosses(AxisCrosses.AUTO_ZERO);
+        yAxis.setCrossBetween(AxisCrossBetween.BETWEEN);
+        
+        String[] categories = null;//x轴标签数据
+        String[] seriesData = null;//分类数据
+        XDDFDataSource<String> categoryDS = null;
+        List<XDDFNumericalDataSource<Double>> valueDS = new ArrayList<>();
+        //数据处理
+        if(isTemplate) {
+        	if(isBar) {
+        		categories = new String[] { "北京", "天津", "重庆","深圳", "广州", "山东" };
+            	seriesData = new String[] { };
+        	}else {
+        		categories = new String[] { "Nail polish", "Eyebrow pencil", "Rouge" };
+            	seriesData = new String[] { "Africa", "EU", "China", "USA" };
+        	}
+        	
+			
+			Double[] valuesA = new Double[] { 4229d, 3932d, 5221d };
+			if(isBar) {
+				valuesA = new Double[] { 3080d, 2880d, 880d, 780d, 680d, 580d };
+			}
+			Double[] valuesB = new Double[] { 4376d, 3987d, 3574d };
+			Double[] valuesC = new Double[] { 3054d, 5067d, 7004d };
+			Double[] valuesD = new Double[] { 12814d, 13012d, 11624d };
+			categoryDS = XDDFDataSourcesFactory.fromArray(categories);
+		    
+		    XDDFNumericalDataSource<Double> s = XDDFDataSourcesFactory.fromArray(valuesA);
+            valueDS.add(s);
+            if(!isBar) {
+            	XDDFNumericalDataSource<Double> s1 = XDDFDataSourcesFactory.fromArray(valuesB);
+                valueDS.add(s1);
+                XDDFNumericalDataSource<Double> s2 = XDDFDataSourcesFactory.fromArray(valuesC);
+                valueDS.add(s2);
+                XDDFNumericalDataSource<Double> s3 = XDDFDataSourcesFactory.fromArray(valuesD);
+                valueDS.add(s3);
+            }
+        }else {
+        	Map<String, Object> dataMap = processDatas(dynamicData, docChartSettingDto);
+        	categoryDS = XDDFDataSourcesFactory.fromArray((String[]) dataMap.get("categories"));
+        	valueDS = (List<XDDFNumericalDataSource<Double>>) dataMap.get("valueDS");
+        	seriesData = (String[]) dataMap.get("seriesData");
+        	
+        }
+        XDDFChartData data = chart.createData(ChartTypes.BAR, xAxis, yAxis);
+        if(isBar) {
+        	 ((XDDFBarChartData) data).setBarDirection(BarDirection.BAR);
+        }else {
+        	 ((XDDFBarChartData) data).setBarDirection(BarDirection.COL);
+        }
+        int i = 0;
+        for (XDDFNumericalDataSource<Double> value : valueDS) {
+            XDDFChartData.Series series = data.addSeries(categoryDS, value);
+            if(valueDS.size() > 1) {
+            	series.setTitle(seriesData[i], null);
+            }else {
+            	series.setTitle("", null);
+            }
+            chart.getCTChart().getPlotArea().getBarChartArray(0).getSerArray(i).addNewDLbls().addNewShowVal().setVal(true);
+            chart.getCTChart().getPlotArea().getBarChartArray(0).getSerArray(i).getDLbls().addNewShowLegendKey().setVal(false);
+            chart.getCTChart().getPlotArea().getBarChartArray(0).getSerArray(i).getDLbls().addNewShowCatName().setVal(false);
+            chart.getCTChart().getPlotArea().getBarChartArray(0).getSerArray(i).getDLbls().addNewShowSerName().setVal(false);
+            i++;
+        }
+        // 图例设置
+        if(valueDS.size() > 1) {
+        	XDDFChartLegend legend = chart.getOrAddLegend();
+            legend.setPosition(LegendPosition.BOTTOM); // 图例位置:上下左右
+        }else {
+        	((XDDFBarChartData) data).setVaryColors(false);
+        }
+        chart.plot(data);
+        // 设置替换文字，格式是{{数据集名称}}，根据该内容给chart动态赋值
+        xwpfRun.getCTR().getDrawingArray(0).getInlineArray(0).getDocPr().setDescr("{{"+docChartSettingDto.getDatasetName()+"_"+docChartSettingDto.getChartType()+"}}");
+    }
+    
+    public static void addLineChart(XWPFDocument document,XWPFParagraph paragraph,JSONObject content,Map<String, Object> dynamicData,boolean isTemplate,DocChartSettingDto docChartSettingDto) throws Exception{
+    	XWPFRun xwpfRun = paragraph.createRun();
+    	//创建chart图表对象
+    	XWPFChart chart = document.createChart(xwpfRun,Units.pixelToEMU(content.getIntValue("width")), Units.pixelToEMU(content.getIntValue("height")));
+    	//图表相关设置
+    	if(docChartSettingDto.getShowChartName().intValue() == YesNoEnum.YES.getCode().intValue()) {
+    		chart.setTitleText(docChartSettingDto.getChartName()); // 图表标题
+    	}
+    	chart.setTitleOverlay(false); // 图例是否覆盖标题
+    	
+        //x轴 y轴设置
+        XDDFCategoryAxis xAxis = chart.createCategoryAxis(AxisPosition.BOTTOM);
+        XDDFValueAxis yAxis = chart.createValueAxis(AxisPosition.LEFT);
+        yAxis.setCrosses(AxisCrosses.AUTO_ZERO);
+        yAxis.setCrossBetween(AxisCrossBetween.BETWEEN);
+        
+        String[] categories = null;//x轴标签数据
+        String[] seriesData = null;//分类数据
+        XDDFDataSource<String> categoryDS = null;
+        List<XDDFNumericalDataSource<Double>> valueDS = new ArrayList<>();
+        //数据处理
+        if(isTemplate) {
+        	categories = new String[] { "2:00", "4:00", "6:00","8:00", "10:00", "12:00", "14:00", "16:00","18:00" };
+            seriesData = new String[] { };
+        	
+			
+			Double[] valuesA = new Double[] { 8d, 9d, 11d, 14d, 16d, 17d, 17d, 16d, 15d };
+			categoryDS = XDDFDataSourcesFactory.fromArray(categories);
+		    
+		    XDDFNumericalDataSource<Double> s = XDDFDataSourcesFactory.fromArray(valuesA);
+            valueDS.add(s);
+        }else {
+        	Map<String, Object> dataMap = processDatas(dynamicData, docChartSettingDto);
+        	categoryDS = XDDFDataSourcesFactory.fromArray((String[]) dataMap.get("categories"));
+        	valueDS = (List<XDDFNumericalDataSource<Double>>) dataMap.get("valueDS");
+        	seriesData = (String[]) dataMap.get("seriesData");
+        	
+        }
+        XDDFChartData data = chart.createData(ChartTypes.LINE, xAxis, yAxis);
+        int i = 0;
+        for (XDDFNumericalDataSource<Double> value : valueDS) {
+            XDDFChartData.Series series = data.addSeries(categoryDS, value);
+            if(valueDS.size() > 1) {
+            	series.setTitle(seriesData[i], null);
+            }else {
+            	series.setTitle("", null);
+            }
+            chart.getCTChart().getPlotArea().getLineChartArray(0).getSerArray(i).addNewDLbls().addNewShowVal().setVal(true);
+            chart.getCTChart().getPlotArea().getLineChartArray(0).getSerArray(i).getDLbls().addNewShowLegendKey().setVal(false);
+            chart.getCTChart().getPlotArea().getLineChartArray(0).getSerArray(i).getDLbls().addNewShowCatName().setVal(false);
+            chart.getCTChart().getPlotArea().getLineChartArray(0).getSerArray(i).getDLbls().addNewShowSerName().setVal(false);
+            i++;
+        }
+        // 图例设置
+        if(valueDS.size() > 1) {
+        	XDDFChartLegend legend = chart.getOrAddLegend();
+            legend.setPosition(LegendPosition.BOTTOM); // 图例位置:上下左右
+        }else {
+        	((XDDFLineChartData) data).setVaryColors(false);
+        }
+        chart.plot(data);
+        // 设置替换文字，格式是{{数据集名称}}，根据该内容给chart动态赋值
+        xwpfRun.getCTR().getDrawingArray(0).getInlineArray(0).getDocPr().setDescr("{{"+docChartSettingDto.getDatasetName()+"_"+docChartSettingDto.getChartType()+"}}");
+    }
+    
+    private static Map<String, Object> processDatas(Map<String, Object> dynamicData,DocChartSettingDto docChartSettingDto){
+    	Map<String, Object> result = new HashMap<String, Object>();
+    	List<Map<String, Object>> datas = (List<Map<String, Object>>) dynamicData.get(docChartSettingDto.getDatasetName());
+    	List<List<Map<String, Object>>> bindDatas = new ArrayList<>();
+    	bindDatas.add(datas);
+    	bindDatas = groupDatas(bindDatas, docChartSettingDto);
+    	List<String> categories = new ArrayList<>();//x轴标签数据
+    	List<String> seriesData = new ArrayList<>();//分类数据
+        List<XDDFNumericalDataSource<Double>> valueDS = new ArrayList<>();
+        Map<Integer, List<Double>> valuesMap = new LinkedHashMap<>();
+        JSONArray properties = JSON.parseArray(docChartSettingDto.getCategoryField());
+    	if(ListUtil.isNotEmpty(bindDatas)) {
+    		for (int i = 0; i < bindDatas.size(); i++) {
+    			categories.add(String.valueOf(bindDatas.get(i).get(0).get(properties.get(0))));
+    			for (int j = 0; j < bindDatas.get(i).size(); j++) {
+    				if(i == 0 && StringUtil.isNotEmpty(docChartSettingDto.getSeriesField())) {
+    					seriesData.add(String.valueOf(bindDatas.get(i).get(j).get(docChartSettingDto.getSeriesField())));
+    				}
+    				List<Double> values = null;
+					if(!valuesMap.containsKey(j)) {
+						 values = new ArrayList<>();
+						 valuesMap.put(j, values);
+					}else {
+						values = valuesMap.get(j);
+					}
+					values.add(Double.parseDouble(String.valueOf(bindDatas.get(i).get(j).get(docChartSettingDto.getValueField()))));
+				}
+    		}
+    	}
+    	valuesMap.forEach((key,value) -> {
+    		XDDFNumericalDataSource<Double> s = XDDFDataSourcesFactory.fromArray(value.stream().toArray(Double[]::new));
+    		valueDS.add(s);
+        });
+    	result.put("categories", categories.stream().toArray(String[]::new));
+    	result.put("seriesData", seriesData.stream().toArray(String[]::new));
+    	result.put("valueDS", valueDS);
+    	return result;
+    }
+    
+    private static List<List<Map<String, Object>>> groupDatas(List<List<Map<String, Object>>> bindDatas,DocChartSettingDto docChartSettingDto){
+    	List<List<Map<String, Object>>> datas = null;
+    	JSONArray properties = JSON.parseArray(docChartSettingDto.getCategoryField());
+    	if(properties.size() == 1) {
+    		properties.add("SpringReport");
+    	}
+    	for (int t = 0; t < properties.size()-1; t++) {
+    		datas = new ArrayList<List<Map<String,Object>>>();
+    		for (int i = 0; i < bindDatas.size(); i++) {
+    			Map<String, List<Map<String, Object>>> dataMap = new LinkedHashMap<String, List<Map<String, Object>>>();
+    			for (int j = 0; j < bindDatas.get(i).size(); j++) {
+    				Map<String, Object> map = bindDatas.get(i).get(j);
+    				String value = String.valueOf(map.get(properties.get(t)));
+    				List<Map<String, Object>> rowList=null;
+					if (dataMap.containsKey(value)) {
+						rowList = dataMap.get(value);
+					}else {
+						rowList = new ArrayList<Map<String,Object>>();
+						dataMap.put(value, rowList);
+					}
+					rowList.add(map);
+    			}
+    			Iterator<Entry<String, List<Map<String, Object>>>> entries = dataMap.entrySet().iterator();
+				while(entries.hasNext()){
+					datas.add(entries.next().getValue());
+				}
+    		}
+    		bindDatas = datas;
+    	}
+    	return bindDatas;
+    }
+    
+    private static void showCateName(CTPieSer series, boolean val) {
+    	if(series.getDLbls() == null) {
+    		series.addNewDLbls();
+    	}
+ 	   if (series.getDLbls().isSetShowCatName()) {
+ 	     series.getDLbls().getShowCatName().setVal(val);
+ 	   } else {
+ 	     series.getDLbls().addNewShowCatName().setVal(val);
+ 	   }
+ 	 }
+
+ 	 // 控制值是否显示
+    private static void showVal(CTPieSer series, boolean val) {
+ 		if(series.getDLbls() == null) {
+    		series.addNewDLbls();
+    	}
+ 	   if (series.getDLbls().isSetShowVal()) {
+ 	     series.getDLbls().getShowVal().setVal(val);
+ 	   } else {
+ 	     series.getDLbls().addNewShowVal().setVal(val);
+ 	   }
+ 	 }
+ 	 
+    private static void showPercent(CTPieSer series, boolean val) {
+ 		if(series.getDLbls() == null) {
+    		series.addNewDLbls();
+    	}
+ 		   if (series.getDLbls().isSetShowPercent()) {
+ 		     series.getDLbls().getShowPercent().setVal(val);
+ 		   } else {
+ 		     series.getDLbls().addNewShowPercent().setVal(val);
+ 		   }
+ 		 }
+
+ 	 // 控制值系列名称是否显示
+    private static void showSerName(CTPieSer series, boolean val) {
+ 		if(series.getDLbls() == null) {
+    		series.addNewDLbls();
+    	}
+ 	   if (series.getDLbls().isSetShowSerName()) {
+ 	     series.getDLbls().getShowSerName().setVal(val);
+ 	   } else {
+ 	     series.getDLbls().addNewShowSerName().setVal(val);
+ 	   }
+ 	 }
+
+ 	 // 控制图例标识是否显示
+    private static void showLegendKey(CTPieSer series, boolean val) {
+ 	   if (series.getDLbls().isSetShowLegendKey()) {
+ 	     series.getDLbls().getShowLegendKey().setVal(val);
+ 	   } else {
+ 	     series.getDLbls().addNewShowLegendKey().setVal(val);
+ 	   }
+ 	 }
 }
