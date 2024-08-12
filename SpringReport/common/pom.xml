@@ -6,4 +6,14 @@
     <version>2.1.0</version>
   </parent>
   <artifactId>common</artifactId>
+  <dependencies>
+	   <dependency>
+            <groupId>com.aspose</groupId>
+            <artifactId>aspose-words</artifactId>
+            <version>15.8.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/aspose-words-15.8.0-jdk16.jar</systemPath>
+        </dependency>
+		
+	</dependencies>
 </project>

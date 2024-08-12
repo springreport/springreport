@@ -1,12 +1,14 @@
 package com.springreport.impl.doctpl;
 
 import com.springreport.entity.doctpl.DocTpl;
+import com.springreport.entity.doctplcharts.DocTplCharts;
 import com.springreport.entity.doctplsettings.DocTplSettings;
 import com.springreport.entity.reportdatasource.ReportDatasource;
 import com.springreport.entity.reporttpldataset.ReportTplDataset;
 import com.springreport.entity.reporttpldatasource.ReportTplDatasource;
 import com.springreport.mapper.doctpl.DocTplMapper;
 import com.springreport.api.doctpl.IDocTplService;
+import com.springreport.api.doctplcharts.IDocTplChartsService;
 import com.springreport.api.doctplsettings.IDocTplSettingsService;
 import com.springreport.api.reportdatasource.IReportDatasourceService;
 import com.springreport.api.reporttpldataset.IReportTplDatasetService;
@@ -40,6 +42,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.springreport.util.AsposeUtil;
 import com.springreport.util.DateUtil;
 import com.springreport.util.FileUtil;
 import com.springreport.util.HttpClientUtil;
@@ -54,6 +57,7 @@ import com.springreport.util.WordUtil;
 
 import com.github.pagehelper.PageHelper;
 import com.springreport.base.BaseEntity;
+import com.springreport.base.DocChartSettingDto;
 import com.springreport.base.PageEntity;
 import com.springreport.base.TDengineConnection;
 import com.springreport.constants.StatusCode;
@@ -76,6 +80,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
@@ -109,6 +114,9 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 	
 	@Autowired
 	private IReportTplDatasetService iReportTplDatasetService;
+	
+	@Autowired
+	private IDocTplChartsService iDocTplChartsService;
 	
 	@Value("${file.path}")
     private String dirPath;
@@ -394,6 +402,16 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 		if (docTpl != null) {
 			result.setTplName(docTpl.getTplName());
 		}
+		result.setChartUrlPrefix(MessageUtil.getValue("chart.url.prefix"));
+		//获取图表信息
+		QueryWrapper<DocTplCharts> chartsWrapper = new QueryWrapper<>();
+		chartsWrapper.eq("tpl_id", model.getTplId());
+		chartsWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+		List<DocTplCharts> docTplCharts = this.iDocTplChartsService.list(chartsWrapper);
+		if(docTplCharts == null) {
+			docTplCharts = new ArrayList<>();
+		}
+		result.setDocTplCharts(docTplCharts);;
 		return result;
 	}
 
@@ -408,13 +426,23 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 	 * @date 2024-05-03 04:10:18 
 	 */
 	@Override
-	public BaseEntity saveDocTplSettings(DocTplSettings model) {
+	public BaseEntity saveDocTplSettings(DocTplSettingsDto model) {
 		BaseEntity result = new BaseEntity();
+		DocTplSettings docTplSettings = new DocTplSettings();
+		BeanUtils.copyProperties(model, docTplSettings);
 		UpdateWrapper<DocTplSettings> updateWrapper = new UpdateWrapper<>();
 		updateWrapper.eq("tpl_id", model.getTplId());
 		updateWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
-		this.iDocTplSettingsService.update(model, updateWrapper);
+		this.iDocTplSettingsService.update(docTplSettings, updateWrapper);
 		result.setStatusMsg(MessageUtil.getValue("info.save"));
+		//先删除模板的所有图表信息，再新增
+		QueryWrapper<DocTplCharts> chartsWrapper = new QueryWrapper<>();
+		chartsWrapper.eq("tpl_id", model.getTplId());
+		chartsWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+		this.iDocTplChartsService.remove(chartsWrapper);
+		if(ListUtil.isNotEmpty(model.getDocTplCharts())) {
+			this.iDocTplChartsService.saveBatch(model.getDocTplCharts());
+		}
 		return result;
 	}
 	
@@ -451,7 +479,7 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
         String filename = URLEncoder.encode(docTpl.getTplName(), "UTF-8");
         httpServletResponse.addHeader("Content-Disposition", "attachment;filename=" +filename + ".docx");
         httpServletResponse.addHeader("filename", filename + ".docx");
-		ByteArrayOutputStream baos = this.getDocTplStream(model);
+		ByteArrayOutputStream baos = this.getDocTplStream(model,null,true);
 		byte[] bytes = baos.toByteArray();
 		httpServletResponse.setHeader("Content-Length", String.valueOf(bytes.length));
         BufferedOutputStream bos = null;
@@ -528,7 +556,7 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 		FileOutputStream docxFileOutputStream = null;
 		FileOutputStream pdfFileOutputStream = null;
 		try {
-			baos = this.getDocTplStream(model);
+			baos = this.getDocTplStream(model,data,false);
 			ZipSecureFile.setMinInflateRatio(-1.0d);
 			inputStream = new ByteArrayInputStream(baos.toByteArray());
 			String date = DateUtil.getNow(DateUtil.FORMAT_LONOGRAM);
@@ -570,17 +598,14 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 			docxFileOutputStream.flush();
 			docxFileOutputStream.close();
 			
-//			PdfOptions pdfOptions = PdfOptions.create();
 //			pdfFileOutputStream = new FileOutputStream(dirPath + date + "/" + pdfName);
 //			// word转pdf
-//			PdfConverter.getInstance().convert(template.getXWPFDocument(), pdfFileOutputStream, pdfOptions);
-			pdfFileOutputStream = new FileOutputStream(dirPath + date + "/" + pdfName);
-//			// word转pdf
-			InputStream in = new FileInputStream(dirPath + date + "/" + docxName);
-			WordprocessingMLPackage pkg = Docx4J.load(in);
-			
-            pkg.setFontMapper(fontMapper);
-            Docx4J.toPDF(pkg, pdfFileOutputStream);
+//			InputStream in = new FileInputStream(dirPath + date + "/" + docxName);
+//			WordprocessingMLPackage pkg = Docx4J.load(in);
+//			
+//            pkg.setFontMapper(fontMapper);
+//            Docx4J.toPDF(pkg, pdfFileOutputStream);
+			AsposeUtil.wordToPdf(dirPath + date + "/" + docxName, dirPath + date + "/" + pdfName);
 			String docxUrl = MessageUtil.getValue("file.url.prefix")+date+"/"+docxName+"?t="+System.currentTimeMillis();
 			String pdfUrl = MessageUtil.getValue("file.url.prefix")+date+"/"+pdfName+"?t="+System.currentTimeMillis();
 			result.put("docxUrl", docxUrl);
@@ -612,9 +637,17 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 		return result;
 	}
 	
-	private ByteArrayOutputStream getDocTplStream(DocTplSettings model) {
+	private ByteArrayOutputStream getDocTplStream(DocTplSettings model,Map<String, Object> dynamicData,boolean isTemplate) {
 		ByteArrayOutputStream baos = null;
 		XWPFDocument doc = new XWPFDocument();
+		QueryWrapper<DocTplCharts> chartsWrapper = new QueryWrapper<>();
+		chartsWrapper.eq("tpl_id", model.getTplId());
+		chartsWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+		List<DocTplCharts> docTplCharts = this.iDocTplChartsService.list(chartsWrapper);
+		Map<String, List<DocTplCharts>> docTplChartsMap = null;
+		if(ListUtil.isNotEmpty(docTplCharts)) {
+			docTplChartsMap = docTplCharts.stream().collect(Collectors.groupingBy(DocTplCharts::getChartUrl));
+		}
 		try {
 			//添加自定义标题
 //			for (int i = 1; i <= 6; i++) {
@@ -714,6 +747,28 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 						break;
 					case "list":
 						WordUtil.addList(doc, content);
+						break;
+					case "image":
+						String chartUrlPrefix = MessageUtil.getValue("chart.url.prefix");
+						String url = content.getString("value");
+						if(url.contains(chartUrlPrefix)) {
+							//图表
+							if(!StringUtil.isEmptyMap(docTplChartsMap)) {
+								if(docTplChartsMap.containsKey(url)) {
+									DocTplCharts tplCharts = docTplChartsMap.get(url).get(0);
+									DocChartSettingDto docChartSettingDto = new DocChartSettingDto();
+									BeanUtils.copyProperties(tplCharts, docChartSettingDto);
+									WordUtil.addChart(doc,paragraph, content,dynamicData,isTemplate,docChartSettingDto);
+								}else {
+									WordUtil.addImage(paragraph, content);
+								}
+							}else {
+								WordUtil.addImage(paragraph, content);
+							}
+						}else {
+							//图片
+							WordUtil.addImage(paragraph, content);
+						}
 						break;
 					default:
 						if(content.getString("value").startsWith("\n") || 
@@ -849,6 +904,7 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 		if(DatasetTypeEnum.SQL.getCode().intValue() == reportTplDataset.getDatasetType().intValue()) {
 			//sql查询，如果数据集名称是以_v或者_V结尾的，则说明是列表数据，并且是竖向扩展，
 			//如果数据集名称是以_h或者_H结尾的，则说明是列表数据，并且是横向扩展
+			//如果数据集名称是以_l结尾的，则说明是列表数据，将列表数据直接返回
 			//其余则认为是对象数据
 			if(datasetName.toLowerCase().endsWith("_v")) {
 				List<String> vertical = paramsType.get("vertical");
@@ -866,6 +922,12 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 				}
 				horizontal.add(datasetName);
 				return datas;
+			}else if(datasetName.toLowerCase().endsWith("_l")){
+				if(ListUtil.isNotEmpty(datas)) {
+					return datas;	
+				}else {
+					return null;
+				}
 			}else {
 				if(ListUtil.isNotEmpty(datas)) {
 					return datas.get(0);	

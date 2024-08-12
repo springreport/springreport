@@ -265,6 +265,9 @@
           </div>
           <div class="menu-divider"></div>
           <div class="menu-item">
+            <div class="menu-item__chart">
+              <i title="图表"></i>
+            </div>
             <div class="menu-item__table">
               <i title="表格"></i>
             </div>
@@ -707,13 +710,21 @@
                   </span>
               </el-dialog>
               <modal
-        ref="commonModal"
-        :modalConfig="modalConfig"
-        :modalForm="modalForm"
-        :modalData="modalData"
-        :modalHandles="modalHandles"
-        @closeModal="closeModal()"
-      ></modal>
+              ref="commonModal"
+              :modalConfig="modalConfig"
+              :modalForm="modalForm"
+              :modalData="modalData"
+              :modalHandles="modalHandles"
+              @closeModal="closeModal()"
+            ></modal>
+            <modal
+            ref="chartModalRef"
+            :modalConfig="chartModalConfig"
+            :modalForm="chartModalForm"
+            :modalData="chartModalData"
+            :modalHandles="chartModalHandles"
+            @closeModal="closeChartModal()"
+          ></modal>
   </div>
 </template>
 

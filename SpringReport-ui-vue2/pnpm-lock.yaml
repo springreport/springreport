@@ -74,6 +74,9 @@ importers:
       moment:
         specifier: ^2.24.0
         version: 2.30.1
+      nodejs-snowflake:
+        specifier: ^2.0.1
+        version: 2.0.1
       regenerator-runtime:
         specifier: ^0.14.1
         version: 0.14.1
@@ -83,6 +86,9 @@ importers:
       script-loader:
         specifier: 0.7.2
         version: 0.7.2
+      snowflake-id:
+        specifier: ^1.1.0
+        version: 1.1.0
       sql-formatter:
         specifier: ^2.3.3
         version: 2.3.4
@@ -5179,6 +5185,9 @@ packages:
   node-releases@2.0.14:
     resolution: {integrity: sha512-y10wOWt8yZpqXmOgRo77WaHEmhYQYGNA6y421PKsKYWEK8aW+cqAphborZDhqfyKrbZEN92CN1X2KbafY2s7Yw==}
 
+  nodejs-snowflake@2.0.1:
+    resolution: {integrity: sha512-zMfDorNNsJm1OWWx/OUUGVT0bQ3TwC2ti4URD8UjnpffVLtLpy3eBDIaV5TnLs91YrRhwBD6L0StqU6YtnZt9A==}
+
   nopt@7.2.1:
     resolution: {integrity: sha512-taM24ViiimT/XntxbPyJQzCG+p4EKOpgD3mxFwW38mGjVUrfERQOeY4EDHjdnptttfHuHQXFx+lTP08Q+mLa/w==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
@@ -6501,6 +6510,9 @@ packages:
   snapdragon@0.8.2:
     resolution: {integrity: sha512-FtyOnWN/wCHTVXOMwvSv26d+ko5vWlIDD6zoUJ7LW8vh+ZBC8QdljveRP+crNrtBwioEUWy/4dMtbBjA4ioNlg==}
     engines: {node: '>=0.10.0'}
+
+  snowflake-id@1.1.0:
+    resolution: {integrity: sha512-aBOppRJ/HIe4PxkIxK5QMO4+X9pO6ejjE1i1gXgGXCEd312vtBZnvOfc2D7W2MKhVhyld7a7AwrO5ZIl297KbA==}
 
   sockjs-client@1.6.1:
     resolution: {integrity: sha512-2g0tjOR+fRs0amxENLi/q5TiJTqY+WXFOzb5UwXndlK6TO3U/mirZznpx6w34HVMoc3g7cY24yC/ZMIYnDlfkw==}
@@ -8536,9 +8548,7 @@ snapshots:
       source-map: 0.6.1
       string-length: 2.0.0
     transitivePeerDependencies:
-      - bufferutil
       - supports-color
-      - utf-8-validate
 
   '@jest/source-map@24.9.0':
     dependencies:
@@ -13060,9 +13070,7 @@ snapshots:
       pretty-format: 24.9.0
       throat: 4.1.0
     transitivePeerDependencies:
-      - bufferutil
       - supports-color
-      - utf-8-validate
 
   jest-leak-detector@24.9.0:
     dependencies:
@@ -14033,6 +14041,8 @@ snapshots:
       - supports-color
 
   node-releases@2.0.14: {}
+
+  nodejs-snowflake@2.0.1: {}
 
   nopt@7.2.1:
     dependencies:
@@ -15516,6 +15526,10 @@ snapshots:
       use: 3.1.1
     transitivePeerDependencies:
       - supports-color
+
+  snowflake-id@1.1.0:
+    dependencies:
+      babel-runtime: 6.26.0
 
   sockjs-client@1.6.1(supports-color@6.1.0):
     dependencies:

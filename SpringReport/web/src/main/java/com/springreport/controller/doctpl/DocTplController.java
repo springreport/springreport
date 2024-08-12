@@ -19,6 +19,7 @@ import com.springreport.base.BaseEntity;
 import com.springreport.base.Response;
 import com.springreport.constants.Constants;
 import com.springreport.dto.doctpl.DocTplDto;
+import com.springreport.dto.doctpl.DocTplSettingsDto;
 import com.springreport.dto.reporttpl.MesGenerateReportDto;
 import com.springreport.entity.doctpl.DocTpl;
 import com.springreport.entity.doctplsettings.DocTplSettings;
@@ -169,7 +170,7 @@ public class DocTplController extends BaseController {
 	@RequestMapping(value = "/saveDocTplSettings",method = RequestMethod.POST)
 	@RequiresPermissions(value = {"docTpl_save"})
 	@Check({"tplId:required#模板ID"})
-	public Response saveDocTplSettings(@RequestBody DocTplSettings model) {
+	public Response saveDocTplSettings(@RequestBody DocTplSettingsDto model) {
 		BaseEntity result = this.iDocTplService.saveDocTplSettings(model);
 		return Response.success(result.getStatusMsg());
 	}
