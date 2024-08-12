@@ -6241,6 +6241,12 @@ commonConstants.dictionary={
       '4': '最小值',
       '5': '计数'
     },
+    chartType: {
+        'pie': '饼图',
+        'histogram': '柱状图',
+        'horizontalHistogram': '条形图',
+        'line': '折线图'
+    },
 }
 
 /**

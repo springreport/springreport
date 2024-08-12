@@ -904,6 +904,7 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 		if(DatasetTypeEnum.SQL.getCode().intValue() == reportTplDataset.getDatasetType().intValue()) {
 			//sql查询，如果数据集名称是以_v或者_V结尾的，则说明是列表数据，并且是竖向扩展，
 			//如果数据集名称是以_h或者_H结尾的，则说明是列表数据，并且是横向扩展
+			//如果数据集名称是以_l结尾的，则说明是列表数据，将列表数据直接返回
 			//其余则认为是对象数据
 			if(datasetName.toLowerCase().endsWith("_v")) {
 				List<String> vertical = paramsType.get("vertical");

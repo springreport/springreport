@@ -37,6 +37,7 @@ import "codemirror/addon/fold/foldcode.js";
 import "codemirror/addon/fold/foldgutter.js";
 import "codemirror/addon/fold/indent-fold.js";
 import "codemirror/addon/fold/markdown-fold.js";
+import Axios from 'axios'
 export default {
   components: {
     codemirror,
@@ -153,6 +154,51 @@ export default {
         {label:'确认',type:'primary',handle:()=>this.confimModal()}
       ],
       sqlText:"",
+      chartModalConfig:{ 
+        title: "图表设置", //弹窗标题,值为:新增，查看，编辑
+        show: false, //弹框显示
+        formEditDisabled:false,//编辑弹窗是否可编辑
+        width:'800px',//弹出框宽度
+        modalRef:"modalRef",//modal标识
+        type:"1"//类型 1超链接 2水印
+      },
+      chartModalForm:[
+        {type:'Input',label:'图表标题',prop:'chartName',rules:{required:true},width:"200px"},
+        {type:'Select',label:'显示标题',prop:'showChartName',rules:{required:true},options:this.selectUtil.yesNo,width:"200px"},
+        {type:'Select',label:'图表类型',prop:'chartType',rules:{required:true},props:{label:"label",value:"value"},options:this.selectUtil.docChartType,change:this.changeChartType,width:"200px"},
+        {type:'Select',label:'数据集',prop:'datasetId',rules:{required:true},props:{label:"datasetName",value:"id"},change:this.changeDatasets,width:"200px"},
+        {type:'Select',label:'分组字段',prop:'categoryField',rules:{required:true},props:{label:"name",value:"name"},multiple:true,width:"200px"},
+        {type:'Select',label:'数值字段',prop:'valueField',rules:{required:true},props:{label:"name",value:"name"},width:"200px"},
+        {type:'Select',label:'系列字段',prop:'seriesField',rules:{required:false},props:{label:"name",value:"name"},width:"200px"},
+        {type:'Table',label:'已添加图表',tableCols:[],tableHandles:[],isPagination:false,isIndex:true},
+      ],
+      chartModalData : {//modal页面数据
+        chartName:"",//图表名称
+        showChartName:1,
+        chartType:"",//图表类型
+        datasetId:null,//数据集id
+        datasetName:"",//数据集名称
+        categoryField:null,
+        valueField:null,
+        seriesField:null,
+      },
+      chartModalHandles:[
+        {label:'关闭',type:'default',handle:()=>this.closeChartModal()},
+        {label:'确认',type:'primary',handle:()=>this.confimChartModal()}
+      ],
+      tableCols:[
+        {label:'图表名称',prop:'chartName',align:'center',overflow:true},
+        {label:'图表类型',prop:'chartType',align:'center',overflow:true,formatter:this.commonUtil.getTableCodeName,codeType:'chartType'},
+        {label:'数据集',prop:'datasetName',align:'center',overflow:true},
+        {label:'分组字段',prop:'categoryField',align:'center',overflow:true},
+        {label:'数据字段',prop:'valueField',align:'center',overflow:true},
+        {label:'系列字段',prop:'seriesField',align:'center',overflow:true},
+        {label:'操作',prop:'operation',align:'center',type:'button',btnList:[
+          {label:'删除',type:'primary',auth:'ignore',handle:(row,index)=>this.deleteChart(row,index)},
+        ]}
+      ],
+      docTplCharts:[],//文档图表
+      chartUrlPrefix:"https://www.springreport.vip/images/chart/",//图表图片的前缀
     }
   },
   methods: {
@@ -169,6 +215,10 @@ export default {
       this.commonUtil.doPost(param).then(response => {
         if (response.code == '200') {
             that.tplName = response.responseData.tplName;
+            if(response.responseData.chartUrlPrefix){
+              that.chartUrlPrefix = response.responseData.chartUrlPrefix;
+            }
+            that.docTplCharts = response.responseData.docTplCharts;
             that.initEditor(response.responseData);
             //设置纸张大小并回显
             that.instance.command.executePaperSize(response.responseData.width,response.responseData.height);
@@ -210,7 +260,7 @@ export default {
     doPostCallback(){
       this.loading = false;
     },
-    initEditor(responseData){
+    async initEditor(responseData){
       const isApple =
       typeof navigator !== 'undefined' && /Mac OS X/.test(navigator.userAgent)
       // 初始化编辑器
@@ -221,6 +271,14 @@ export default {
             "footer": JSON.parse(responseData.footer)
         }
       )
+      const contextMenuList = await this.instance.register.getContextMenuList()
+      // 修改内部右键菜单示例
+      contextMenuList.forEach(menu => {
+        // 通过菜单key找到菜单项后进行属性修改
+        if (menu.key === "imageChange") {
+          menu.when = () => false
+        }
+      })
         var that = this;
         //保存
         const saveDom = document.querySelector('.menu-item__save')
@@ -562,22 +620,7 @@ export default {
         }
         imageFileDom.onchange = function () {
           const file = imageFileDom.files[0]
-          const fileReader = new FileReader()
-          fileReader.readAsDataURL(file)
-          fileReader.onload = function () {
-            // 计算宽高
-            const image = new Image()
-            const value = fileReader.result
-            image.src = value
-            image.onload = function () {
-              that.instance.command.executeImage({
-                value,
-                width: image.width,
-                height: image.height
-              })
-              imageFileDom.value = ''
-            }
-          }
+          that.uploadFile(file,imageFileDom)
         }
         const hyperlinkDom = document.querySelector(
           '.menu-item__hyperlink'
@@ -1144,6 +1187,15 @@ export default {
         // this.instance.listener.saved = function (payload) {
         //   console.log('elementList: ', payload)
         // }
+        //图表
+        const chartDom = document.querySelector('.menu-item__chart')
+        chartDom.title = `图表`
+        chartDom.onclick = function () {
+          that.chartModalConfig.show = true;
+          that.chartModalForm[7].tableCols = that.tableCols;
+          that.chartModalForm[7].tableData = that.docTplCharts;
+          console.log('chart')
+        }
     },
     debounce(func, delay) {
       let timer
@@ -1181,7 +1233,6 @@ export default {
     },
     //保存模板数据
     saveTpl(){
-      console.log(this.instance.command.getValue())
       const tplId = this.$route.query.tplId// tplId
       let tplSettings = this.instance.command.getValue();
       let options = this.instance.command.getOptions();
@@ -1194,6 +1245,7 @@ export default {
           footer:JSON.stringify(tplSettings.data.footer),
           paperDirection:paperDirection,
           watermark:JSON.stringify(tplSettings.watermark),
+          docTplCharts:this.docTplCharts
         },
         removeEmpty:false,
         url:this.apis.docTpl.saveDocTplSettingsApi,
@@ -1476,6 +1528,7 @@ export default {
       this.commonUtil.doPost(obj).then(response => {
         if (response.code == '200') {
           this.datasets = response.responseData
+          this.chartModalForm[3].options = response.responseData
         }
       })
     },
@@ -1556,9 +1609,14 @@ export default {
         params: { id: element.id },
         removeEmpty: false
       }
+      var that = this;
       this.commonUtil.doPost(obj).then(response => {
         element.columns = response.responseData;
-        this.dataSetAttrs = element.columns;
+        that.dataSetAttrs = element.columns;
+        that.chartModalForm[4].options = element.columns;
+        that.chartModalForm[5].options = element.columns;
+        that.chartModalForm[6].options = element.columns;
+        that.$refs['chartModalRef'].$forceUpdate();
       })
     },
     // 获取api接口默认参数的返回值
@@ -1650,6 +1708,116 @@ export default {
     deleteDataSetCallback(){
       this.getDataSets();
     },
+    uploadFile(file,imageFileDom) {
+      const param = new FormData() // 创建form对象
+      param.append('file', file) // 通过append向form对象添加数据
+      const config = {
+        headers: { 'Content-Type': 'multipart/form-data',
+          'Authorization': localStorage.getItem(this.commonConstants.sessionItem.authorization) }
+      }
+      var that = this
+      let options = this.instance.command.getOptions();
+      let paperDirection = options.paperDirection;
+      let pageWidth = options.width;
+      let pageHeight = options.height;
+      if(paperDirection == "horizontal"){
+        pageWidth = options.height;
+        pageHeight = options.width;
+      }
+      Axios.post(this.apis.screenDesign.uploadFileApi, param, config)
+        .then(res => {
+          let width = 0;
+          let height = 0;
+          width = res.data.responseData.width>pageWidth?pageWidth:res.data.responseData.width;
+          height = res.data.responseData.height>pageHeight?pageHeight:res.data.responseData.height;
+
+          that.instance.command.executeImage({
+            value:res.data.responseData.fileUri,
+            width: width,
+            height: height
+          })
+          imageFileDom.value = ''
+        })
+    },
+    confimChartModal(){
+      var that = this;
+      this.$refs['chartModalRef'].$refs['modalFormRef'].validate((valid) => {
+        if(valid){
+          const timestamp = new Date().getTime();
+          let chartUrl = that.chartUrlPrefix+that.chartModalData.chartType+".png?t="+timestamp;
+          const tplId = that.$route.query.tplId// tplId
+          that.instance.command.executeImage({
+            value:chartUrl,
+            width: 520,
+            height: 250,
+          })
+          let chartObj = {
+            chartName:that.chartModalData.chartName,
+            chartType:that.chartModalData.chartType,
+            datasetName:that.chartModalData.datasetName,
+            categoryField:that.chartModalData.categoryField,
+            valueField:that.chartModalData.valueField,
+            chartUrl:chartUrl,
+            tplId:tplId,
+            datasetId:that.chartModalData.datasetId,
+            datasetName:that.chartModalData.datasetName,
+            seriesField:that.chartModalData.seriesField
+          }
+          that.docTplCharts.push(chartObj);
+          that.closeChartModal();
+        }else{
+          return false;
+        }
+      });
+      
+    },
+    closeChartModal(){
+      this.$refs['chartModalRef'].$refs['modalFormRef'].resetFields();//校验重置
+      this.commonUtil.clearObj(this.chartModalData);//清空modalData
+      this.chartModalForm[4].options = [];
+      this.chartModalForm[5].options = [];
+      this.chartModalForm[6].options = [];
+      this.chartModalConfig.show = false;
+      this.$refs['chartModalRef'].$forceUpdate();
+      this.changeChartType();
+    },
+    changeDatasets(datasetId){
+      if(datasetId){
+        for (let index = 0; index < this.datasets.length; index++) {
+          const element = this.datasets[index];
+          if(element.id == datasetId){
+            if(!element.columns || element.columns.length == 0){
+              this.getDatasetColumns(element);
+            }else{
+              this.chartModalForm[4].options = element.columns;
+              this.chartModalForm[5].options = element.columns;
+              this.chartModalForm[6].options = element.columns;
+            }
+            this.chartModalData.datasetName = element.datasetName;
+            break;
+          }
+        }
+      }else{
+        this.chartModalForm[4].options = [];
+        this.chartModalForm[5].options = [];
+        this.chartModalForm[6].options = [];
+        this.chartModalData.categoryField = null;
+        this.chartModalData.valueField = null;
+      }
+      // await this.getDatasetColumns(o);
+    },
+    changeChartType(){
+      if(this.chartModalData.chartType == "pie" || this.chartModalData.chartType == "pie3d"){
+        this.chartModalForm[6].rules.required = false;
+        this.chartModalForm[6].show = false;
+      }else{
+        this.chartModalForm[6].rules.required = false;
+        this.chartModalForm[6].show = true;
+      }
+    },
+    deleteChart(row,index){
+      this.docTplCharts.splice(index,1)
+    }
   },
 //使用mounted的原因是因为在mounted中dom已经加载完毕，否则会报错，找不到getAttribute这个方法
   mounted() {

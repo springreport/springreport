@@ -903,4 +903,11 @@ selectUtil.fontSize =[
     {value:28,label:"28"},
     {value:30,label:"30"}
 ]
+
+selectUtil.docChartType =[
+    {value:"pie",label:"饼图"},
+    {value:"histogram",label:"柱状图"},
+    {value:"horizontalHistogram",label:"条形图"},
+    {value:"line",label:"折线图"},
+]
 export default selectUtil;
