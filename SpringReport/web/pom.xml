@@ -22,6 +22,7 @@
 				<version>${spring-boot.version}</version>
 				<configuration>
 	                <includeSystemScope>true</includeSystemScope>
+	                <fork>true</fork>
 	            </configuration> 
 				<executions>
 					<execution>
