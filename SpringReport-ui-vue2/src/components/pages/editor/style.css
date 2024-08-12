@@ -399,6 +399,14 @@
   background-image: url('./assets/images/table.svg');
 }
 
+::v-deep .menu-item__chart {
+  position: relative;
+}
+
+::v-deep .menu-item__chart i {
+  background-image: url('./assets/images/chart.svg');
+}
+
 ::v-deep .menu-item .menu-item__table__collapse {
   width: 270px;
   height: 310px;
