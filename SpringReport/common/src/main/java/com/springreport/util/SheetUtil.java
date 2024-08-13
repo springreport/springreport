@@ -116,4 +116,119 @@ public class SheetUtil {
 	        int column = cellReference.getCol() + 1;
 	        return new int[]{row, column};
 	    }
+	    
+	    /**  
+	     * @MethodName: calculateFormula
+	     * @Description: 计算公式
+	     * @author caiyang
+	     * @param formula 公式
+	     * @param num 移动的行数或者列数
+	     * @param type 1横向 2纵向
+	     * @return String
+	     * @date 2024-08-13 11:57:48 
+	     */ 
+	    public static String calculateFormula(String formula,int num,int type) {
+	    	 // 定义一个字符串缓冲区，用来存储修改后的公式
+	        StringBuffer sb = new StringBuffer();
+	 
+	        // 定义一个正则表达式，用来匹配公式中的列引用，如A1，B2等
+	        String regex = "([A-Z]+)(\\d+)";
+	 
+	        // 定义一个模式，用来编译正则表达式
+	        Pattern pattern = Pattern.compile(regex);
+	 
+	        // 定义一个匹配器，用来匹配公式
+	        Matcher matcher = pattern.matcher(formula);
+	        // 遍历公式中的每一个匹配项
+	        while (matcher.find()) {
+	        	// 获取匹配项的内容，如A1，B2等
+	            String match = matcher.group();
+	            // 获取匹配项中的列引用，如A，B等
+	            String colRef = matcher.group(1);
+	            // 获取匹配项中的行引用，如1，2等
+	            String rowRef = matcher.group(2);
+	            if(type == 1) {
+	            	//横向扩展
+	            	int colNumRef = colNameToNumber(colRef);
+	            	// 将列数字加上移动的位置，得到新的列数字
+	                int newColNumRef = colNumRef + num;
+	                // 将新的列数字转换为列引用，如1为A，2为B等
+	                String newColRef = colNumberToName(newColNumRef);
+	                // 将新的列引用和原来的行引用拼接起来，得到新的匹配项，如A1变为F1，B2变为G2等
+	                String newMatch = newColRef + rowRef;
+	                // 将原来的匹配项替换为新的匹配项
+	                matcher.appendReplacement(sb, newMatch);
+	            }else {
+	            	//纵向扩展
+	            	String newRowref = String.valueOf(Integer.parseInt(rowRef)+num);
+	            	//将原来的列引用和新的行拼接起来，得到新的匹配项，如A1变为A3
+	            	String newMatch = colRef+newRowref;
+	            	// 将原来的匹配项替换为新的匹配项
+	                matcher.appendReplacement(sb, newMatch);
+	            }
+	        }
+	       // 将剩余的部分添加到字符串缓冲区
+	        matcher.appendTail(sb);
+	 
+	        // 返回修改后的公式
+	        return sb.toString();
+	    }
+	    
+	    /**
+	     * 自定义的方法，用来将列引用转换为数字，如A为1，B为2等
+	     * @param colName  列引用
+	     * @return
+	     */
+	    public static int colNameToNumber(String colName) {
+	        // 定义一个变量，用来存储列数字
+	        int colNum = 0;
+	 
+	        // 遍历列引用中的每一个字符
+	        for (int i = 0; i < colName.length(); i++) {
+	            // 获取当前字符，如A，B等
+	            char c = colName.charAt(i);
+	 
+	            // 将当前字符转换为数字，如A为1，B为2等
+	            int n = c - 'A' + 1;
+	 
+	            // 将列数字乘以26，再加上当前字符的数字，得到新的列数字
+	            colNum = colNum * 26 + n;
+	        }
+	 
+	        // 返回列数字
+	        return colNum;
+	    }
+
+		
+		/**
+	     * 自定义的方法，用来将数字转换为列引用，如1为A，2为B等
+	     * @param colNum
+	     * @return
+	     */
+	    public static String colNumberToName(int colNum) {
+	        // 定义一个字符串缓冲区，用来存储列引用
+	        StringBuffer sb = new StringBuffer();
+	 
+	        // 当列数字大于0时，循环执行
+	        while (colNum > 0) {
+	            // 将列数字减去1，得到新的列数字
+	            colNum--;
+	 
+	            // 将列数字除以26，得到商和余数
+	            int quotient = colNum / 26;
+	            int remainder = colNum % 26;
+	 
+	            // 将余数转换为字符，如0为A，1为B等
+	            char c = (char) (remainder + 'A');
+	 
+	            // 将字符插入到字符串缓冲区的最前面
+	            sb.insert(0, c);
+	 
+	            // 将商赋值给列数字，继续循环
+	            colNum = quotient;
+	        }
+	 
+	        // 返回列引用
+	        return sb.toString();
+	    }
 }
