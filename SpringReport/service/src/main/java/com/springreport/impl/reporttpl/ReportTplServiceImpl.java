@@ -4485,6 +4485,15 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		}
 		if(YesNoEnum.YES.getCode().intValue() == luckySheetBindData.getIsFunction().intValue())
 		{
+			if(luckySheetBindData.getIsRelyCell().intValue() == 1 && "list".equals(luckySheetBindData.getLastAggregateType())) {
+				if(luckySheetBindData.getLastCoordsx() == null) {
+					String formula = SheetUtil.calculateFormula(String.valueOf(cellConfig.get("f")),0, 2);
+					cellConfig.put("f", formula);
+				}else {
+					String formula = SheetUtil.calculateFormula(String.valueOf(cellConfig.get("f")),luckySheetBindData.getRowSpan(), 2);
+					cellConfig.put("f", formula);
+				}
+			}
 			JSONObject jsonObject = new JSONObject();
 			jsonObject.put("r", rowAndCol.get("maxX"));
 			jsonObject.put("c", rowAndCol.get("maxY"));
@@ -7808,6 +7817,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				relyBindData.setRelyCoordsx(luckySheetBindData.getCoordsx());
 				relyBindData.setRelyCoordsy(luckySheetBindData.getCoordsy());
 				relyBindData.setLastCellExtend(luckySheetBindData.getLastCellExtend());
+				relyBindData.setLastAggregateType(luckySheetBindData.getAggregateType());;
 				this.processBindData(relyBindData, maxCoordinate, cellDatas, hyperlinks, dataRowLen, dataColLen, rowlen, columnlen, mergeMap, 
 						objectMapper, maxXAndY, borderInfo, borderConfig, borderInfos, calcChain, configRowLen, configColumnLen, images, 
 						cellBindData,usedCells,dicts,nowFunction,functionCellFormat,null,dataVerification,null,rowhidden,colhidden,null,null,subtotalCellDatas,subtotalRows,null);

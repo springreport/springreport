@@ -95,4 +95,11 @@ public class UserInfoDto implements Serializable{
 	 */  
 	private Integer isSystemMerchant;
 	
+	/**  
+	 * @Fields deptId : 部门id
+	 * @author caiyang
+	 * @date 2024-08-14 11:35:54 
+	 */  
+	private Long deptId;
+	
 }
