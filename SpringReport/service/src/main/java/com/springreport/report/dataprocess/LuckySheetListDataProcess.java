@@ -198,6 +198,7 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 				}
 				if(CellExtendEnum.CROSS.getCode().intValue() == variableCells.get(i).getCellExtend().intValue())
 				{
+					bindData.setOriginalData(data);;
 					bindData = aggregates.get(AggregateTypeEnum.CROSS.getCode()).aggregate(variableCells.get(i),bindData,cellBindData);
 				}else {
 					bindData = aggregates.get(variableCells.get(i).getAggregateType()).aggregate(variableCells.get(i),bindData,cellBindData);

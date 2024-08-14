@@ -482,4 +482,11 @@ public class LuckySheetBindData {
     
     /** lastIsConditions - 上一个单元格数据是否有单元格过滤条件 1是 2否 */
     private Integer lastIsConditions = YesNoEnum.NO.getCode();
+    
+    /**  
+     * @Fields originalData : 原始数据
+     * @author caiyang
+     * @date 2024-08-13 04:03:22 
+     */  
+    private List<Map<String, Object>> originalData;
 }
