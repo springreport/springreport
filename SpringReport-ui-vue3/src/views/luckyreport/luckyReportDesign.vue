@@ -84,7 +84,7 @@
                             <el-option label="汇总" value="summary"></el-option>
                           </el-select>
                       </el-form-item>
-                      <el-form-item label="分组属性" v-show="cellForm.aggregateType=='group' || cellForm.aggregateType=='groupSummary'">
+                      <el-form-item label="分组属性" v-show="cellForm.aggregateType=='group' || cellForm.aggregateType=='groupSummary' || cellForm.cellExtend==4" :disabled="attrDisabled">
                         <el-input v-model="cellForm.groupProperty" style="width:125px" size="small" placeholder="多个用,分隔" @input="changeCellAttr('groupProperty')" :disabled="attrDisabled"></el-input>
                     </el-form-item>
                       <el-form-item label="分组单元格是否合一" size="small" v-show="cellForm.aggregateType=='group' || cellForm.aggregateType=='groupSummary'">
