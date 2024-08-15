@@ -60,6 +60,7 @@ import com.springreport.base.BaseEntity;
 import com.springreport.base.DocChartSettingDto;
 import com.springreport.base.PageEntity;
 import com.springreport.base.TDengineConnection;
+import com.springreport.base.UserInfoDto;
 import com.springreport.constants.StatusCode;
 import com.springreport.dto.doctpl.DocTplDto;
 import com.springreport.dto.doctpl.DocTplSettingsDto;
@@ -501,7 +502,7 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 	 * @date 2024-05-07 09:29:59 
 	 */
 	@Override
-	public Map<String, Object> previewDoc(MesGenerateReportDto model) throws SQLException, Exception {
+	public Map<String, Object> previewDoc(MesGenerateReportDto model,UserInfoDto userInfoDto) throws SQLException, Exception {
 		DocTpl docTpl = this.getById(model.getTplId());
 		if (docTpl == null) {
 			throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.notexist", new String[] {"报表模板"}));
@@ -515,7 +516,7 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 		List<Map<String, String>> reportSqls = new ArrayList<>();
 		if(ListUtil.isNotEmpty(datasets)) {
 			for (int i = 0; i < datasets.size(); i++) {
-				Object datasetData = this.getDatasetDatas(model, datasets.get(i), reportSqls,paramsType);
+				Object datasetData = this.getDatasetDatas(model, datasets.get(i), reportSqls,paramsType,userInfoDto);
 				data.put(datasets.get(i).getDatasetName(), datasetData);
 			}
 		}
@@ -825,7 +826,7 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 	 * @throws Exception Object
 	 * @date 2024-05-07 04:42:27 
 	 */ 
-	private Object getDatasetDatas(MesGenerateReportDto mesGenerateReportDto,ReportDatasetDto reportTplDataset,List<Map<String, String>> reportSqls,Map<String, List<String>> paramsType) throws Exception {
+	private Object getDatasetDatas(MesGenerateReportDto mesGenerateReportDto,ReportDatasetDto reportTplDataset,List<Map<String, String>> reportSqls,Map<String, List<String>> paramsType,UserInfoDto userInfoDto) throws Exception {
 		Map<String, String> sqlMap = new HashMap<>();
 		List<Map<String, Object>> datas = null;
 		Map<String, Object> searchInfo = null;
@@ -839,7 +840,7 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 		Map<String, Object> params = null;
 		if(searchInfo != null)
 		{
-			params = ParamUtil.getViewParams((JSONArray) searchInfo.get("params"));
+			params = ParamUtil.getViewParams((JSONArray) searchInfo.get("params"),userInfoDto);
 		}
 		if(DatasetTypeEnum.SQL.getCode().intValue() == reportTplDataset.getDatasetType().intValue()) {
 			Object data = this.iReportTplDatasetService.getDatasetDatasource(reportDatasource);

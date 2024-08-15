@@ -9,10 +9,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.springreport.annotation.LoginUser;
 import com.springreport.annotation.MethodLog;
 import com.springreport.api.screendesign.IScreenDesignService;
 import com.springreport.base.BaseController;
 import com.springreport.base.Response;
+import com.springreport.base.UserInfoDto;
 import com.springreport.constants.Constants;
 import com.springreport.dto.screendesign.MesGetDynamicData;
 
@@ -39,9 +41,9 @@ public class ScreenDesignController extends BaseController{
 	 */ 
 	@RequestMapping(value = "/getDynamicDatas",method = RequestMethod.POST)
 	@MethodLog(module="ScreenDesign",remark="获取动态数据",operateType=Constants.OPERATE_TYPE_SEARCH)
-	public Response getDynamicDatas(@RequestBody MesGetDynamicData mesGetDynamicData) throws Exception
+	public Response getDynamicDatas(@RequestBody MesGetDynamicData mesGetDynamicData,@LoginUser UserInfoDto userInfoDto) throws Exception
 	{
-		List<Map<String, Object>> result = this.iScreenDesignService.getDynamicDatas(mesGetDynamicData);
+		List<Map<String, Object>> result = this.iScreenDesignService.getDynamicDatas(mesGetDynamicData,userInfoDto);
 		return Response.success(result);
 	}
 }

@@ -4,9 +4,10 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
-
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.springreport.base.UserInfoDto;
 import com.springreport.constants.Constants;
 import com.springreport.enums.ParamTypeEnum;
 
@@ -25,7 +26,7 @@ public class ParamUtil {
 	* @return
 	 * @throws ParseException 
 	*/
-	public static Map<String, Object> getViewParams(JSONArray jsonArray) throws ParseException
+	public static Map<String, Object> getViewParams(JSONArray jsonArray,UserInfoDto userInfoDto) throws ParseException
 	{
 		Map<String, Object> result = new HashMap<String, Object>();
 		if(jsonArray != null)
@@ -35,7 +36,7 @@ public class ParamUtil {
 				boolean isDefault = param.getBooleanValue("isDefault");
 				String key = param.getString("paramCode");
 				if(isDefault)
-				{
+				{//报表定时任务用
 					String paramType = param.getString("paramType");
 					if(ParamTypeEnum.VARCHAR.getCode().equals(paramType) || ParamTypeEnum.NUMBER.getCode().equals(paramType)
 						|| ParamTypeEnum.SELECT.getCode().equals(paramType))
@@ -74,6 +75,34 @@ public class ParamUtil {
 					result.put(key, value);
 				}
 				
+			}
+		}
+		//系统变量
+		if(userInfoDto != null) {
+			JSONObject jsonObject = JSON.parseObject(JSON.toJSONString(userInfoDto));
+			for (int i = 0; i < Constants.SYSTEM_PARAM.length; i++) {
+				Object value = jsonObject.get(Constants.SYSTEM_PARAM[i]);
+				result.put(Constants.SYSTEM_PARAM[i], value);
+			}
+		}
+		return result;
+	}
+	
+	/**  
+	 * @MethodName: getSystemParam
+	 * @Description: 获取系统变量
+	 * @author caiyang
+	 * @param userInfoDto
+	 * @return Map<String,Object>
+	 * @date 2024-08-15 05:37:47 
+	 */ 
+	public static Map<String, Object> getSystemParam(UserInfoDto userInfoDto){
+		Map<String, Object> result = new HashMap<String, Object>();
+		if(userInfoDto != null) {
+			JSONObject jsonObject = JSON.parseObject(JSON.toJSONString(userInfoDto));
+			for (int i = 0; i < Constants.SYSTEM_PARAM.length; i++) {
+				Object value = jsonObject.get(Constants.SYSTEM_PARAM[i]);
+				result.put(Constants.SYSTEM_PARAM[i], value);
 			}
 		}
 		return result;

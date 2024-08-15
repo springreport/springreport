@@ -14,6 +14,13 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/aspose-words-15.8.0-jdk16.jar</systemPath>
         </dependency>
-		
 	</dependencies>
+	<build>
+	    <resources>
+			 <resource>
+                <directory>${project.basedir}/lib</directory>
+                <targetPath>BOOT-INF/lib/</targetPath>
+            </resource>
+		</resources>
+	</build>
 </project>

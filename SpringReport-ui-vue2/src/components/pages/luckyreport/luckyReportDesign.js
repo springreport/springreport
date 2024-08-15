@@ -4120,6 +4120,21 @@ export default {
       uploadFileClick(type){
         this.uploadType = type;
         $('#uploadBtn').click() // 触发父容器中的保存模板按钮事件
+      },
+      doCopy(item){
+        let text = item.value;
+        if(item.type == "number"){
+          text = '<if test="'+item.value+'!=null' + '"> \n' 
+          text = text + "  and " + item.column + "=#{"+item.value+"} \n" + "</if>"
+        }else{
+          text = '<if test="'+item.value+'!=null and ' + item.value + "!=''" + '">\n' 
+          text = text + "  and " + item.column + "=#{"+item.value+"} \n" + "</if>"
+        }
+        const input = document.getElementById('clipboradInput'); // 承载复制内容
+        input.value = text; // 修改文本框的内容
+        input.select(); // 选中文本
+        document.execCommand('copy'); // 执行浏览器复制命令
+        this.$message.success('复制成功')
       }
   },
   watch:{

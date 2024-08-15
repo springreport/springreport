@@ -50,6 +50,8 @@ public class JWTUtil {
 					.withClaim("userId", userInfoDto.getUserId())
 					.withClaim("roleId", userInfoDto.getRoleId())
 					.withClaim("roleName", userInfoDto.getRoleName())
+					.withClaim("merchantNo", userInfoDto.getMerchantNo())
+					.withClaim("deptId", userInfoDto.getDeptId())
 					.build();
 			verifier.verify(token);
 			return StatusCode.SUCCESS;
@@ -101,6 +103,7 @@ public class JWTUtil {
 				.withClaim("merchantNo", userInfoDto.getMerchantNo())
 				.withClaim("merchantMode", userInfoDto.getMerchantMode())
 				.withClaim("isSystemMerchant", userInfoDto.getIsSystemMerchant())
+				.withClaim("deptId", userInfoDto.getDeptId())
 				.withExpiresAt(date)
 				.sign(algorithm);
 	}
@@ -130,6 +133,8 @@ public class JWTUtil {
 			userInfoDto.setMerchantNo(merchantNo);
 			Integer isSystemMerchant = jwt.getClaim("isSystemMerchant").asInt();
 			userInfoDto.setIsSystemMerchant(isSystemMerchant);
+			Long deptId = jwt.getClaim("deptId").asLong();
+			userInfoDto.setDeptId(deptId);
 			return userInfoDto;
 		} catch (Exception e) {
 			return new UserInfoDto();

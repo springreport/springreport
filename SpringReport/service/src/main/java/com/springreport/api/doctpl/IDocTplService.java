@@ -10,6 +10,7 @@ import com.springreport.entity.doctpl.DocTpl;
 import com.springreport.entity.doctplsettings.DocTplSettings;
 import com.springreport.base.BaseEntity;
 import com.springreport.base.PageEntity;
+import com.springreport.base.UserInfoDto;
 import com.springreport.dto.doctpl.DocTplDto;
 import com.springreport.dto.doctpl.DocTplSettingsDto;
 import com.springreport.dto.reporttpl.MesGenerateReportDto;
@@ -113,5 +114,5 @@ public interface IDocTplService extends IService<DocTpl> {
 	 * @throws SQLException 
 	 * @date 2024-05-07 09:25:55 
 	 */ 
-	Map<String, Object> previewDoc(MesGenerateReportDto model) throws SQLException, Exception;
+	Map<String, Object> previewDoc(MesGenerateReportDto model,UserInfoDto userInfoDto) throws SQLException, Exception;
 }

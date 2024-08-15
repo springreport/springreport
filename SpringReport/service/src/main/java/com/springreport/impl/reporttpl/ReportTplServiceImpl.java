@@ -928,13 +928,13 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 	 * @throws ParseException Map<String,Object>
 	 * @date 2023-08-10 10:54:40 
 	 */ 
-	private Map<String, Object> getViewParams(List<Map<String, Object>> datasetParams) throws ParseException
+	private Map<String, Object> getViewParams(List<Map<String, Object>> datasetParams,UserInfoDto userInfoDto) throws ParseException
 	{
 		Map<String, Object> result = new HashMap<String, Object>();
 		if(!ListUtil.isEmpty(datasetParams))
 		{
 			for (int i = 0; i < datasetParams.size(); i++) {
-				Map<String, Object> params = ParamUtil.getViewParams((JSONArray)datasetParams.get(i).get("params"));
+				Map<String, Object> params = ParamUtil.getViewParams((JSONArray)datasetParams.get(i).get("params"),userInfoDto);
 				result.putAll(params);
 			}
 		}
@@ -2433,7 +2433,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		Map<String, JSONObject> imgCells = new HashMap<>();
 		Map<String, Integer> mergePagination = new HashMap<String, Integer>();
 		List<Map<String, Object>> datasetsParams = this.getDatasetParamInfo(mesGenerateReportDto);
-		Map<String, Object> viewParams = this.getViewParams(datasetsParams);
+		Map<String, Object> viewParams = this.getViewParams(datasetsParams,userInfoDto);
 		Map<String, LuckySheetBindData> blockBindDatas = new HashMap<String, LuckySheetBindData>();//循环块对应绑定的数据，可能会有多个数据集的情况，用来记录
 		Map<String, Object> subtotalCellDatas = new HashMap<>();//小计单元格数据
 		Map<String, Object> subtotalCellMap = new HashMap<>();//需要小计的原始单元格
@@ -2589,7 +2589,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 						Map<String, Object> result = null;
 						if(!datasetDatas.containsKey(usedDataSet.get(i)))
 						{
-							result = this.getDatasetDatas(reportTpl, mesGenerateReportDto, usedDataSet.get(i), isPagination, mergePagination,reportSqls);
+							result = this.getDatasetDatas(reportTpl, mesGenerateReportDto, usedDataSet.get(i), isPagination, mergePagination,reportSqls,userInfoDto);
  							datas = (List<Map<String, Object>>) result.get("datas");
 							datasetDatas.put(usedDataSet.get(i), datas);
 							datasetParamsCache.put(usedDataSet.get(i), (Map<String, Object>) result.get("params"));
@@ -2883,7 +2883,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 	}
 	
 	private Map<String, Object> getDatasetDatas(ReportTpl reportTpl,MesGenerateReportDto mesGenerateReportDto,String datasetName,
-			boolean isPagination,Map<String, Integer> mergePagination,List<Map<String, String>> reportSqls) throws Exception {
+			boolean isPagination,Map<String, Integer> mergePagination,List<Map<String, String>> reportSqls,UserInfoDto userInfoDto) throws Exception {
 		Map<String, String> sqlMap = new HashMap<>();
 		Map<String, Object> resultMap = new HashMap<>();
 		List<Map<String, Object>> datas = null;
@@ -2917,7 +2917,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		Map<String, Object> params = null;
 		if(searchInfo != null)
 		{
-			params = ParamUtil.getViewParams((JSONArray) searchInfo.get("params"));
+			params = ParamUtil.getViewParams((JSONArray) searchInfo.get("params"),userInfoDto);
 		}
 		if(DatasetTypeEnum.SQL.getCode().intValue() == reportTplDataset.getDatasetType().intValue())
 		{

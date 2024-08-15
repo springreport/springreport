@@ -370,9 +370,12 @@
                           <el-select v-model="sqlForm.sqlType" placeholder="选择sql类型" size="small">
                               <el-option v-for="op in selectUtil.sqlType" :label="op.label" :value="op.value" :key="op.value"></el-option>
                           </el-select>
+                          </el-form-item><br>
+                          <el-form-item  label="系统变量">
+                             <p class="column-tag" v-for="(item,index) in commonConstants.systemParam" :key="index" ><i class="el-icon-copy-document" title="复制" @click="doCopy(item)">{{item.label}}({{item.value}})</i></p> 
                           </el-form-item>
                       </el-form>
-
+                    
                   <div style="height:25px;" v-if="datasourceType == 1">
                   <el-tooltip content="该操作将执行sql语句并校验sql语句的正确性，并将查询字段全部显示到下方的表格中" placement="bottom"><el-tag type="success" @click="execSql" size="small" style="cursor:pointer" ><i class="el-icon-caret-right"></i>执行</el-tag></el-tooltip>
                   <el-tooltip content="该操作会将sql语句进行格式化并显示" placement="right"><el-tag @click="formatSql" size="small" style="cursor:pointer"><i class="el-icon-document"></i>格式化</el-tag> </el-tooltip>
@@ -849,6 +852,7 @@
             <el-empty v-if="(!authedRange || authedRange.length == 0) && isCreator" description="暂无授权信息"></el-empty>
             <el-empty v-if="(!authedRange || authedRange.length == 0) && !isCreator" description="暂无操作权限"></el-empty>
         </el-dialog>
+        <textarea id="clipboradInput" value="" style="opacity:0;position:absolute" />
     </div>
 </template>
 

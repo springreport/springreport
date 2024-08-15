@@ -286,4 +286,11 @@ public class Constants {
      * @date 2024-04-21 08:39:53 
      */  
     public static final String DEFAULT_LUCKYSHEET_FONT = "Times New Roman";
+    
+    /**  
+     * @Fields SYSTEM_PARAM : 系统参数 用户id，用户账号，角色id，商户号，部门id
+     * @author caiyang
+     * @date 2024-08-14 06:40:11 
+     */  
+    public static final String[] SYSTEM_PARAM = new String[] {"userId","userName","roleId","merchantNo","deptId"};
 }
