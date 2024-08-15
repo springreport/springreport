@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.springreport.base.BaseController;
 import com.springreport.base.BaseEntity;
 import com.springreport.base.Response;
+import com.springreport.base.UserInfoDto;
 import com.springreport.constants.Constants;
 import com.springreport.dto.doctpl.DocTplDto;
 import com.springreport.dto.doctpl.DocTplSettingsDto;
@@ -24,6 +25,7 @@ import com.springreport.dto.reporttpl.MesGenerateReportDto;
 import com.springreport.entity.doctpl.DocTpl;
 import com.springreport.entity.doctplsettings.DocTplSettings;
 import com.springreport.annotation.Check;
+import com.springreport.annotation.LoginUser;
 import com.springreport.annotation.MethodLog;
 import com.springreport.api.doctpl.IDocTplService;
 
@@ -203,8 +205,8 @@ public class DocTplController extends BaseController {
 	@RequestMapping(value = "/previewDoc",method = RequestMethod.POST)
 	@Check({"tplId:required#模板ID"})
 	@RequiresPermissions(value = {"docTpl_preview","docTpl_view"},logical = Logical.OR)
-	public Response previewDoc(@RequestBody MesGenerateReportDto model) throws Exception{
-		Map<String, Object> result = this.iDocTplService.previewDoc(model);
+	public Response previewDoc(@RequestBody MesGenerateReportDto model,@LoginUser UserInfoDto userInfoDto) throws Exception{
+		Map<String, Object> result = this.iDocTplService.previewDoc(model,userInfoDto);
 		return Response.success(result);
 	}
 }

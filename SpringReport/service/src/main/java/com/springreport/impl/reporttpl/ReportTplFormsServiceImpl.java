@@ -1014,6 +1014,8 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 		List<LuckySheetFormsBindData> sortedBindData = new ArrayList<>();
 		Map<String, JSONObject> extraCustomCellConfigs = new HashMap<>();//额外单元格配置
 		Map<String, Boolean> allowEditConfigs = new HashMap<>();//是否允许单元格进行编辑配置信息
+		Map<String, JSONObject> extendCellOrigin = new HashMap<>();//扩展单元格的坐标与原始单元格坐标的对应关系
+		Map<String, JSONObject> columnStartCoords = new HashMap<>();//列对应的起始坐标
 		if(!ListUtil.isEmpty(allCells))
 		{
 			for (int i = 0; i < allCells.size(); i++) {
@@ -1021,6 +1023,13 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 				if(bindData != null)
 				{
 					sortedBindData.add(bindData);
+				}else {
+					processExtendCellOrigin(extendCellOrigin,allCells.get(i));
+					String originCell = allCells.get(i).getCoordsx() + LuckySheetPropsEnum.COORDINATECONNECTOR.getCode() + allCells.get(i).getCoordsy();
+					JSONObject jsonObject = new JSONObject();
+					jsonObject.put("r", allCells.get(i).getCoordsx());
+					jsonObject.put("c", allCells.get(i).getCoordsy());
+					columnStartCoords.put(originCell, jsonObject);
 				}
 				if(allCells.get(i).getCellAttrs() != null)
 				{
@@ -1051,8 +1060,6 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 		Map<String, Object> columnlen = new HashMap<String, Object>();//列宽
 		Map<String, Integer> maxCoordinate = new HashMap<String, Integer>();//坐标对应的最大值，横坐标 x-+坐标值:纵坐标的值，纵坐标y-+坐标值：横坐标的值，
 		Map<String, Integer> maxXAndY = new HashMap<String, Integer>();
-		Map<String, JSONObject> extendCellOrigin = new HashMap<>();//扩展单元格的坐标与原始单元格坐标的对应关系
-		Map<String, JSONObject> columnStartCoords = new HashMap<>();//列对应的起始坐标
 		List<JSONObject> calcChain = new ArrayList<>();//计算链
 		List<JSONObject> images = new ArrayList<>();
 		JSONObject drillCells = new JSONObject();//下钻报表单元格
@@ -3698,6 +3705,31 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 		jsonObject.put("r", luckySheetBindData.getCoordsx());
 		jsonObject.put("c", luckySheetBindData.getCoordsy());
 		Map<String, Object> cellData = luckySheetBindData.getCellData();
+		if(cellData.get("v") != null)
+		{
+			Map<String, Object> v = (Map<String, Object>) cellData.get("v");
+			Object bg = v.get("bg");
+			if(bg != null)
+			{
+				jsonObject.put("bg", bg);
+			}
+			Object ps = v.get("ps");
+			if(ps != null)
+			{
+				jsonObject.put("ps", ps);
+			}
+		}
+		
+		extendCellOrigin.put(cellFlag, jsonObject);
+	}
+	
+	private void processExtendCellOrigin(Map<String, JSONObject> extendCellOrigin,LuckysheetReportFormsCell luckysheetReportFormsCell)
+	{
+		String cellFlag = luckysheetReportFormsCell.getCoordsx() + LuckySheetPropsEnum.COORDINATECONNECTOR.getCode() + luckysheetReportFormsCell.getCoordsy();
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("r", luckysheetReportFormsCell.getCoordsx());
+		jsonObject.put("c", luckysheetReportFormsCell.getCoordsy());
+		Map<String, Object> cellData = JSON.parseObject(luckysheetReportFormsCell.getCellData(), Map.class);
 		if(cellData.get("v") != null)
 		{
 			Map<String, Object> v = (Map<String, Object>) cellData.get("v");

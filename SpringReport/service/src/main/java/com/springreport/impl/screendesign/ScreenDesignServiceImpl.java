@@ -17,6 +17,7 @@ import com.springreport.api.reportdatasource.IReportDatasourceService;
 import com.springreport.api.reporttpldataset.IReportTplDatasetService;
 import com.springreport.api.screendesign.IScreenDesignService;
 import com.springreport.base.TDengineConnection;
+import com.springreport.base.UserInfoDto;
 import com.springreport.dto.screendesign.MesGetDynamicData;
 import com.springreport.entity.reportdatasource.ReportDatasource;
 import com.springreport.entity.reporttpldataset.ReportTplDataset;
@@ -28,6 +29,7 @@ import com.springreport.util.InfluxDBConnection;
 import com.springreport.util.JdbcUtils;
 import com.springreport.util.ListUtil;
 import com.springreport.util.Md5Util;
+import com.springreport.util.ParamUtil;
 import com.springreport.util.RedisUtil;
 import com.springreport.util.ReportDataUtil;
 import com.springreport.util.StringUtil;
@@ -60,33 +62,34 @@ public class ScreenDesignServiceImpl implements IScreenDesignService{
 	 * @date 2024-07-10 07:31:08 
 	 */
 	@Override
-	public List<Map<String, Object>> getDynamicDatas(MesGetDynamicData mesGetDynamicData) throws Exception{
+	public List<Map<String, Object>> getDynamicDatas(MesGetDynamicData mesGetDynamicData,UserInfoDto userInfoDto) throws Exception{
 		List<Map<String, Object>> result = new ArrayList<>();
 		if(mesGetDynamicData.getDataSetId() != null && ListUtil.isNotEmpty(mesGetDynamicData.getDataColumns())) {
-			result = this.getDatasetDatas(mesGetDynamicData);
+			result = this.getDatasetDatas(mesGetDynamicData,userInfoDto);
 		}
 		return result;
 	}
 	
-	private List<Map<String, Object>> getDatasetDatas(MesGetDynamicData mesGetDynamicData) throws Exception{
+	private List<Map<String, Object>> getDatasetDatas(MesGetDynamicData mesGetDynamicData,UserInfoDto userInfoDto) throws Exception{
 		List<Map<String, Object>> datas = null;
-		if(YesNoEnum.YES.getCode().intValue() == mesGetDynamicData.getInitPage().intValue()) {
-			String paramString = JSON.toJSONString(mesGetDynamicData.getParams());
-			String key = mesGetDynamicData.getRequestKey() + "_" + mesGetDynamicData.getDataSetId()+"_"+Md5Util.generateMd5(paramString);
-			Object redisData = redisUtil.get(key);
-			if(redisData == null) {
-				datas = this.getDatas(mesGetDynamicData);
-				redisUtil.set(key, JSON.toJSONString(redisData), 600);
-			}else {
-				datas = (List<Map<String, Object>>) JSON.parse(redisData.toString());
-			}
-		}else {
-			datas = this.getDatas(mesGetDynamicData);
-		}
+//		if(YesNoEnum.YES.getCode().intValue() == mesGetDynamicData.getInitPage().intValue()) {
+//			String paramString = JSON.toJSONString(mesGetDynamicData.getParams());
+//			String key = mesGetDynamicData.getRequestKey() + "_" + mesGetDynamicData.getDataSetId()+"_"+Md5Util.generateMd5(paramString);
+//			Object redisData = redisUtil.get(key);
+//			if(redisData == null) {
+//				datas = this.getDatas(mesGetDynamicData,userInfoDto);
+//				redisUtil.set(key, JSON.toJSONString(redisData), 600);
+//			}else {
+//				datas = (List<Map<String, Object>>) JSON.parse(redisData.toString());
+//			}
+//		}else {
+//			datas = this.getDatas(mesGetDynamicData,userInfoDto);
+//		}
+		datas = this.getDatas(mesGetDynamicData,userInfoDto);
 		return datas;
 	}
 	
-	private List<Map<String, Object>> getDatas(MesGetDynamicData mesGetDynamicData) throws Exception{
+	private List<Map<String, Object>> getDatas(MesGetDynamicData mesGetDynamicData,UserInfoDto userInfoDto) throws Exception{
 		List<Map<String, Object>> datas = null;
 		//获取数据源
 		Map<String, Object> dataSetAndDatasource = this.iReportTplDatasetService.getTplDatasetAndDatasource(mesGetDynamicData.getDataSetId());
@@ -108,6 +111,8 @@ public class ScreenDesignServiceImpl implements IScreenDesignService{
 			tDengineConnection = (TDengineConnection) data;
 		}
 		Map<String, Object> params = mesGetDynamicData.getParams();
+		Map<String, Object> systemParams =ParamUtil.getSystemParam(userInfoDto);
+		params.putAll(systemParams);
 		ReportTplDataset reportTplDataset = (ReportTplDataset) dataSetAndDatasource.get("tplDataSet");
 		if(DatasetTypeEnum.SQL.getCode().intValue() == reportTplDataset.getDatasetType().intValue()) {
 			String sql = reportTplDataset.getTplSql();

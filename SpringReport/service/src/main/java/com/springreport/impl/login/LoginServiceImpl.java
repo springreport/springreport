@@ -22,6 +22,7 @@ import com.springreport.api.sysmerchantauthtemplateids.ISysMerchantAuthTemplateI
 import com.springreport.api.sysrole.ISysRoleService;
 import com.springreport.api.sysroleapi.ISysRoleApiService;
 import com.springreport.api.sysuser.ISysUserService;
+import com.springreport.api.sysuserdept.ISysUserDeptService;
 import com.springreport.api.sysuserrole.ISysUserRoleService;
 import com.springreport.base.UserInfoDto;
 import com.springreport.constants.StatusCode;
@@ -31,6 +32,7 @@ import com.springreport.entity.sysmerchant.SysMerchant;
 import com.springreport.entity.sysmerchantauthtemplateids.SysMerchantAuthTemplateIds;
 import com.springreport.entity.sysrole.SysRole;
 import com.springreport.entity.sysuser.SysUser;
+import com.springreport.entity.sysuserdept.SysUserDept;
 import com.springreport.entity.sysuserrole.SysUserRole;
 import com.springreport.enums.DelFlagEnum;
 import com.springreport.enums.YesNoEnum;
@@ -79,6 +81,9 @@ public class LoginServiceImpl implements ILoginService{
 	
 	@Autowired
 	private ISysMerchantService iSysMerchantService;
+	
+	@Autowired
+	private ISysUserDeptService iSysUserDeptService;
 	
 	@Value("${merchantmode}")
     private Integer merchantmode;
@@ -240,6 +245,14 @@ public class LoginServiceImpl implements ILoginService{
 					}
 				}
 			}
+		}
+		//获取用户所属部门
+		QueryWrapper<SysUserDept> userDeptQueryWrapper = new QueryWrapper<>();
+		userDeptQueryWrapper.eq("user_id", user.getId());
+		userDeptQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+		SysUserDept sysUserDept = this.iSysUserDeptService.getOne(userDeptQueryWrapper, false);
+		if(sysUserDept != null) {
+			result.setDeptId(sysUserDept.getDeptId());
 		}
 		loginLog.setStatus(YesNoEnum.YES.getCode());
 		this.iLoginLogService.save(loginLog);

@@ -3,6 +3,7 @@ package com.springreport.api.screendesign;
 import java.util.List;
 import java.util.Map;
 
+import com.springreport.base.UserInfoDto;
 import com.springreport.dto.screendesign.MesGetDynamicData;
 
 /**  
@@ -22,5 +23,5 @@ public interface IScreenDesignService {
 	 * @throws Exception 
 	 * @date 2024-07-10 07:30:42 
 	 */ 
-	List<Map<String, Object>> getDynamicDatas(MesGetDynamicData mesGetDynamicData) throws Exception;
+	List<Map<String, Object>> getDynamicDatas(MesGetDynamicData mesGetDynamicData,UserInfoDto userInfoDto) throws Exception;
 }
