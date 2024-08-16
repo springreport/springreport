@@ -4125,10 +4125,10 @@ export default {
         let text = item.value;
         if(item.type == "number"){
           text = '<if test="'+item.value+'!=null' + '"> \n' 
-          text = text + "  and " + item.column + "=#{"+item.value+"} \n" + "</if>"
+          text = text + "  and " + item.column + " = #{"+item.value+"} \n" + "</if>"
         }else{
           text = '<if test="'+item.value+'!=null and ' + item.value + "!=''" + '">\n' 
-          text = text + "  and " + item.column + "=#{"+item.value+"} \n" + "</if>"
+          text = text + "  and " + item.column + " = #{"+item.value+"} \n" + "</if>"
         }
         const input = document.getElementById('clipboradInput'); // 承载复制内容
         input.value = text; // 修改文本框的内容
