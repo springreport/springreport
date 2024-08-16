@@ -372,7 +372,7 @@
                           </el-select>
                           </el-form-item><br>
                           <el-form-item  label="系统变量">
-                             <p class="column-tag" v-for="(item,index) in commonConstants.systemParam" :key="index" ><i class="el-icon-copy-document" title="复制" @click="doCopy(item)">{{item.label}}({{item.value}})</i></p> 
+                             <p class="column-tag" v-for="(item,index) in commonConstants.systemParam" :key="index" ><i class="el-icon-copy-document" title="复制" @click="doCopy(item)"></i>{{item.label}}({{item.value}})</p> 
                           </el-form-item>
                       </el-form>
                     
