@@ -106,4 +106,8 @@ public class ReportTplSheet extends PageEntity {
     /** page_divider - 分页线配置 */
     @TableField("page_divider")
     private String pageDivider;
+    
+    /** conditionformat_save - 条件格式 */
+    @TableField("conditionformat_save")
+    private String conditionformatSave;
 }

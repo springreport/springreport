@@ -6442,4 +6442,12 @@ commonConstants.luckysheetFormsPreviewToolBarConfig = {
       LIST : 'list'
     }
   }
+  commonConstants.systemParam = [
+    {value:"userId",label:"用户id",type:"number",column:"user_id"},
+    {value:"userName",label:"用户账号",type:"String",column:"user_name"},
+    {value:"roleId",label:"角色id",type:"number",column:"role_id"},
+    {value:"merchantNo",label:"商户号",type:"String",column:"merchant_id"},
+    {value:"deptId",label:"部门id",type:"number",column:"dept_id"},
+  
+  ]
 export default commonConstants;

@@ -330,6 +330,9 @@
                           <el-select v-model="sqlForm.sqlType" placeholder="选择sql类型" size="small">
                               <el-option v-for="op in selectUtil.sqlType" :label="op.label" :value="op.value" :key="op.value"></el-option>
                           </el-select>
+                          </el-form-item><br>
+                          <el-form-item  label="系统变量">
+                             <p class="column-tag" v-for="(item,index) in commonConstants.systemParam" :key="index" ><icon-copy @click="doCopy(item)"/>{{item.label}}({{item.value}})</p> 
                           </el-form-item>
                       </el-form>
 
@@ -803,6 +806,7 @@
                 <el-empty v-if="(!authedRange || authedRange.length == 0) && isCreator" description="暂无授权信息"></el-empty>
                 <el-empty v-if="(!authedRange || authedRange.length == 0) && !isCreator" description="暂无操作权限"></el-empty>
             </el-dialog>
+            <textarea id="clipboradInput" value="" style="opacity:0;position:absolute" />
     </div>
 </template>
 

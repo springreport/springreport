@@ -9,7 +9,6 @@
                 </div>
             </el-header>
         </div>
-      <input id="clipboradInput" value="" style="opacity:0;position:absolute" />
       <div style="flex: 1;height:100vh;display:flex">
         <div class="left">
             <div class="left-dataset-title">
@@ -22,7 +21,7 @@
                     <icon-down v-show="o.isActive" theme="outline" size="16" fill="#999" class="el-icon-arrow-right"/>
                     <span class="dataset-name" @click="clickDatasets(o)" :title="o.datasetName">{{o.datasetName}}
                        <el-dropdown>
-                           <icon-copy style="margin-top:4px"/>
+                          <icon-copy style="margin-top:4px"/>
                           <template #dropdown>
                            <el-dropdown-menu>
                             <el-dropdown-item v-on:click="copyAttr(5,o.datasetName)">列表</el-dropdown-item>
@@ -483,6 +482,9 @@
                           <el-select v-model="sqlForm.sqlType" placeholder="选择sql类型" size="small">
                               <el-option v-for="op in selectUtil.sqlType" :label="op.label" :value="op.value" :key="op.value"></el-option>
                           </el-select>
+                          </el-form-item><br>
+                          <el-form-item  label="系统变量">
+                            <p class="column-tag" v-for="(item,index) in commonConstants.systemParam" :key="index" ><icon-copy @click="doCopy(item)"/>{{item.label}}({{item.value}})</p> 
                           </el-form-item>
                       </el-form>
 
@@ -734,6 +736,7 @@
             :modalHandles="chartModalHandles"
             @closeModal="closeChartModal()"
           ></modal>
+          <textarea id="clipboradInput" value="" style="opacity:0;position:absolute" />
   </div>
 </template>
 
