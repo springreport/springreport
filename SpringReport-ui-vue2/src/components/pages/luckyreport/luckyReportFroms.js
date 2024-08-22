@@ -1021,7 +1021,8 @@ export default {
                 let obj = {
                     url:this.apis.reportDesign.execSqlApi,
                     params:{tplId:reportTplId,tplSql:this.$refs.codeMirror.codemirror.getValue(),datasourceId:this.sqlForm.datasourceId,sqlType:this.sqlForm.sqlType,
-                        inParam:this.procedureInParamTableData.tableData?JSON.stringify(this.procedureInParamTableData.tableData):"",outParam:this.procedureOutParamTableData.tableData?JSON.stringify(this.procedureOutParamTableData.tableData):""},
+                        inParam:this.procedureInParamTableData.tableData?JSON.stringify(this.procedureInParamTableData.tableData):"",outParam:this.procedureOutParamTableData.tableData?JSON.stringify(this.procedureOutParamTableData.tableData):"",
+                        sqlParams: this.paramTableData.tableData ? JSON.stringify(this.paramTableData.tableData) : '' },
                     removeEmpty:false,
                 }
                 this.commonUtil.doPost(obj) .then(response=>{

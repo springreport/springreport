@@ -297,7 +297,7 @@ commonConstants.luckysheetFormsPreviewToolBarConfig = {
   // function: false, // '公式'
   frozenMode: true, // '冻结方式'
   sortAndFilter: true, // '排序和筛选'
-  conditionalFormat: false, // '条件格式'
+  conditionalFormat: true, // '条件格式'
   dataVerification: false, // '数据验证'
   splitColumn: false, // '分列'
   screenshot: false, // '截图'
