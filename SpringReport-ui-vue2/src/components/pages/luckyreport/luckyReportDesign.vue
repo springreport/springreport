@@ -138,13 +138,15 @@
                     <el-form-item label="小数位数" size="small" v-show="(cellForm.aggregateType=='summary' || cellForm.aggregateType=='groupSummary' || cellForm.unitTransfer) && cellForm.dataFrom!=4">
                         <el-input v-model="cellForm.digit" style="width:150px"  placeholder="小数位数" @input="changeDigit" :disabled="attrDisabled"></el-input>
                     </el-form-item>
-                    <el-form-item label="是否预警" size="small">
+                    <!-- 2024年8月22日09:59:29注释掉，新增加了条件格式功能，不需要该功能了 -->
+                    <!-- <el-form-item label="是否预警" size="small">
                         <el-switch
                         v-model="cellForm.warning"
                         active-text="是"
                         inactive-text="否" @change="changeIsWarning" :disabled="attrDisabled">
                     </el-switch>
                     </el-form-item>
+                    
                     <el-form-item label="预警规则" v-show="cellForm.warning">
                           <el-select  style="width:150px" placeholder="预警规则" size="small" v-model="cellForm.warningRules" @change="changeCellAttr('warningRules')" :disabled="attrDisabled">
                             <el-option label="大于" value=">"></el-option>
@@ -162,7 +164,7 @@
                     </el-form-item>
                     <el-form-item label="预警内容" size="small" v-show="cellForm.warning">
                         <el-input type="textarea" :rows="4" v-model="cellForm.warningContent" style="width:150px"  placeholder="预警内容" @input="changeWarningContent" :disabled="attrDisabled"></el-input>
-                    </el-form-item>
+                    </el-form-item> -->
                     <el-form-item label="是否数据字典" size="small">
                         <el-switch
                         v-model="cellForm.isDict"
