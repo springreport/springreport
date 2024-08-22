@@ -348,14 +348,14 @@ export default {
                     border: true, // '边框'
                     textWrapMode: true, // '换行方式'
                     textRotateMode: false, // '文本旋转方式'
-	                image:true, // '插入图片'
+	                  image:true, // '插入图片'
                     chart: false, // '图表'（图标隐藏，但是如果配置了chart插件，右击仍然可以新建图表）
                     postil:  true, //'批注'
                     pivotTable: false,  //'数据透视表'
                     function: true, // '公式'
                     frozenMode: true, // '冻结方式'
                     sortAndFilter: false, // '排序和筛选'
-                    conditionalFormat: false, // '条件格式'
+                    conditionalFormat: true, // '条件格式'
                     dataVerification: false, // '数据验证'
                     splitColumn: false, // '分列'
                     screenshot: false, // '截图'
@@ -1663,6 +1663,7 @@ export default {
             result.sheetName = luckysheetfile.name;
             result.sheetOrder = luckysheetfile.order;
             result.pageDivider = luckysheetfile.pageDivider;
+            result.luckysheetConditionformatSave = luckysheetfile.luckysheet_conditionformat_save
             if(this.sheetRangeAuth[luckysheetfile.index]){
                 result.sheetRangeAuth = this.sheetRangeAuth[luckysheetfile.index];
             }
@@ -1714,7 +1715,8 @@ export default {
                                 order:element.sheetOrder,
                                 isPivotTable:false,
                                 pivotTable:null,
-                                pageDivider:element.pageDivider
+                                pageDivider:element.pageDivider,
+                                luckysheet_conditionformat_save:element.luckysheetConditionformatSave,
                             }
                             if(!_this.isCreator)
                             {

@@ -609,7 +609,8 @@ export default {
                                         column:element.maxXAndY.maxY<=60?60:element.maxXAndY.maxY,
                                         row:element.maxXAndY?(element.maxXAndY.maxX<=84?84:element.maxXAndY.maxX):84,
                                         column:element.maxXAndY?(element.maxXAndY.maxY<=60?60:element.maxXAndY.maxY):60,
-                                        pageDivider:element.pageDivider
+                                        pageDivider:element.pageDivider,
+                                        luckysheet_conditionformat_save:element.luckysheetConditionformatSave,
                                     }
                                     var arr = Object.keys(element.nowFunction);
                                     if(arr.length > 0)
