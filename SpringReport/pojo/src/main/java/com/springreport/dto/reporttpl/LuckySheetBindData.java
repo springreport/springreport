@@ -489,4 +489,11 @@ public class LuckySheetBindData {
      * @date 2024-08-13 04:03:22 
      */  
     private List<Map<String, Object>> originalData;
+    
+    /**  
+     * @Fields relyIndex : 依赖数据的index
+     * @author caiyang
+     * @date 2024-08-18 08:24:02 
+     */  
+    private Integer relyIndex;
 }

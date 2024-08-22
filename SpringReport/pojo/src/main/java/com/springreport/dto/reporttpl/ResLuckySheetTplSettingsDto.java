@@ -158,4 +158,11 @@ public class ResLuckySheetTplSettingsDto {
      */  
     private JSONArray pageDivider;
     
+    /**  
+     * @Fields luckysheetConditionformatSave : 条件格式配置
+     * @author caiyang
+     * @date 2024年8月16日18:54:55
+     */  
+    private JSONArray luckysheetConditionformatSave;
+    
 }

@@ -52,7 +52,7 @@ export default {
                     saveAs:false,
                     picture:false,
                     chart:false,
-                    conditionalFormat: false, // '条件格式'
+                    conditionalFormat: true, // '条件格式'
                     splitColumn: false, // '分列'
                     screenshot: false, // '截图'
                     protection:false, // '工作表保护'

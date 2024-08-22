@@ -304,7 +304,7 @@ export default {
                     function: true, // '公式'
                     frozenMode: true, // '冻结方式'
                     sortAndFilter: false, // '排序和筛选'
-                    conditionalFormat: false, // '条件格式'
+                    conditionalFormat: true, // '条件格式'
                     dataVerification: true, // '数据验证'
                     splitColumn: false, // '分列'
                     screenshot: false, // '截图'
@@ -1907,6 +1907,7 @@ export default {
             result.sheetOrder = luckysheetfile.order;
             result.dataVerification = luckysheetfile.dataVerification;
             result.pageDivider = luckysheetfile.pageDivider;
+            result.luckysheetConditionformatSave = luckysheetfile.luckysheet_conditionformat_save
             if(luckysheetfile.chart && luckysheetfile.chart.length > 0){
                 for (let index = 0; index < luckysheetfile.chart.length; index++) {
                   const chart = luckysheetfile.chart[index];
@@ -2122,6 +2123,7 @@ export default {
                                 isPivotTable:false,
                                 pivotTable:null,
                                 luckysheet_alternateformat_save:element.luckysheetAlternateformatSave,
+                                luckysheet_conditionformat_save:element.luckysheetConditionformatSave,
                                 chart:element.chart,
                                 dataVerification:element.dataVerification,
                                 pageDivider:element.pageDivider
@@ -4214,6 +4216,21 @@ export default {
       uploadFileClick(type){
         this.uploadType = type;
         $('#uploadBtn').click() // 触发父容器中的保存模板按钮事件
+      },
+      doCopy(item){
+        let text = item.value;
+        if(item.type == "number"){
+          text = '<if test="'+item.value+'!=null' + '"> \n' 
+          text = text + "  and " + item.column + " = #{"+item.value+"} \n" + "</if>"
+        }else{
+          text = '<if test="'+item.value+'!=null and ' + item.value + "!=''" + '">\n' 
+          text = text + "  and " + item.column + " = #{"+item.value+"} \n" + "</if>"
+        }
+        const input = document.getElementById('clipboradInput'); // 承载复制内容
+        input.value = text; // 修改文本框的内容
+        input.select(); // 选中文本
+        document.execCommand('copy'); // 执行浏览器复制命令
+        this.commonUtil.showMessage({message:"复制成功",type: this.commonConstants.messageType.success})
       }
     },
 }

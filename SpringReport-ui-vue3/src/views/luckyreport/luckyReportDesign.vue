@@ -143,7 +143,8 @@
                     <el-form-item label="小数位数" size="small" v-show="(cellForm.aggregateType=='summary' || cellForm.aggregateType=='groupSummary' || cellForm.unitTransfer) && cellForm.dataFrom!=4">
                         <el-input v-model="cellForm.digit" style="width:150px"  placeholder="小数位数" @input="changeDigit" :disabled="attrDisabled"></el-input>
                     </el-form-item>
-                    <el-form-item label="是否预警" >
+                    <!-- 2024年8月22日09:59:29注释掉，新增加了条件格式功能，不需要该功能了 -->
+                    <!-- <el-form-item label="是否预警" >
                         <el-switch
                         v-model="cellForm.warning"
                         active-text="是"
@@ -167,7 +168,7 @@
                     </el-form-item>
                     <el-form-item label="预警内容" size="small" v-show="cellForm.warning">
                         <el-input type="textarea" :rows="4" v-model="cellForm.warningContent" style="width:150px"  placeholder="预警内容" @input="changeWarningContent" :disabled="attrDisabled"></el-input>
-                    </el-form-item>
+                    </el-form-item> -->
                     <el-form-item label="是否数据字典" >
                         <el-switch
                         v-model="cellForm.isDict"
@@ -375,6 +376,9 @@
                           <el-select v-model="sqlForm.sqlType" placeholder="选择sql类型" size="small">
                               <el-option v-for="op in selectUtil.sqlType" :label="op.label" :value="op.value" :key="op.value"></el-option>
                           </el-select>
+                          </el-form-item><br>
+                          <el-form-item  label="系统变量">
+                             <p class="column-tag" v-for="(item,index) in commonConstants.systemParam" :key="index" ><icon-copy @click="doCopy(item)"/>{{item.label}}({{item.value}})</p> 
                           </el-form-item>
                       </el-form>
 
@@ -871,6 +875,7 @@
                 <el-empty v-if="(!authedRange || authedRange.length == 0) && isCreator" description="暂无授权信息"></el-empty>
                 <el-empty v-if="(!authedRange || authedRange.length == 0) && !isCreator" description="暂无操作权限"></el-empty>
             </el-dialog>
+            <textarea id="clipboradInput" value="" style="opacity:0;position:absolute" />
     </div>
 </template>
 

@@ -1,0 +1,1 @@
+ALTER TABLE report_tpl_sheet ADD COLUMN conditionformat_save text DEFAULT NULL COMMENT '条件格式'; 

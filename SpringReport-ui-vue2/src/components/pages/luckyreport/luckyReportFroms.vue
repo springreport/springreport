@@ -232,7 +232,7 @@
                             <p class="column-tag" style="min-width:220px;max-width:220px">比较类型：{{o.compareType}}</p>
                         </el-collapse-item>
                     </el-collapse>
-                    <el-form-item label="是否预警" size="small">
+                    <!-- <el-form-item label="是否预警" size="small">
                         <el-switch
                         v-model="cellForm.warning"
                         active-text="是"
@@ -256,7 +256,7 @@
                     </el-form-item>
                     <el-form-item label="预警内容" size="small" v-show="cellForm.warning">
                         <el-input type="textarea" :rows="4" v-model="cellForm.warningContent" style="width:150px"  placeholder="预警内容" @input="changeCellAttr('warningContent')" :disabled="attrDisabled"></el-input>
-                    </el-form-item>
+                    </el-form-item> -->
                     <el-form-item label="是否下钻" size="small">
                         <el-switch
                             v-model="cellForm.isDrill"

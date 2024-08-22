@@ -282,7 +282,7 @@ export default {
           function: true, // '公式'
           frozenMode: true, // '冻结方式'
           sortAndFilter: false, // '排序和筛选'
-          conditionalFormat: false, // '条件格式'
+          conditionalFormat: true, // '条件格式'
           dataVerification: true, // '数据验证'
           splitColumn: false, // '分列'
           screenshot: false, // '截图'
@@ -1857,6 +1857,7 @@ export default {
       result.sheetOrder = luckysheetfile.order
       result.dataVerification = luckysheetfile.dataVerification;
       result.pageDivider = luckysheetfile.pageDivider;
+      result.luckysheetConditionformatSave = luckysheetfile.luckysheet_conditionformat_save
       if(luckysheetfile.chart && luckysheetfile.chart.length > 0){
         for (let index = 0; index < luckysheetfile.chart.length; index++) {
           const chart = luckysheetfile.chart[index];
@@ -2070,6 +2071,7 @@ export default {
                 isPivotTable: false,
                 pivotTable: null,
                 luckysheet_alternateformat_save:element.luckysheetAlternateformatSave,
+                luckysheet_conditionformat_save:element.luckysheetConditionformatSave,
                 chart:element.chart,
                 dataVerification:element.dataVerification,
                 pageDivider:element.pageDivider

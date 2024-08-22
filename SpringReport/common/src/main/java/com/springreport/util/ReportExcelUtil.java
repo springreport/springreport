@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -32,10 +34,20 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.ClientAnchor.AnchorType;
+import org.apache.poi.ss.usermodel.ColorScaleFormatting;
+import org.apache.poi.ss.usermodel.ComparisonOperator;
+import org.apache.poi.ss.usermodel.ConditionFilterType;
+import org.apache.poi.ss.usermodel.ConditionalFormattingRule;
 import org.apache.poi.ss.usermodel.DataValidation;
 import org.apache.poi.ss.usermodel.DataValidationConstraint;
 import org.apache.poi.ss.usermodel.DataValidationHelper;
 import org.apache.poi.ss.usermodel.Drawing;
+import org.apache.poi.ss.usermodel.ExtendedColor;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.FontFormatting;
+import org.apache.poi.ss.usermodel.IconMultiStateFormatting.IconSet;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.PatternFormatting;
 import org.apache.poi.ss.usermodel.Picture;
 import org.apache.poi.ss.usermodel.ShapeTypes;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -45,10 +57,15 @@ import org.apache.poi.util.Units;
 import org.apache.poi.xssf.streaming.SXSSFDrawing;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.apache.poi.xssf.usermodel.DefaultIndexedColorMap;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
+import org.apache.poi.xssf.usermodel.XSSFColor;
+import org.apache.poi.xssf.usermodel.XSSFConditionalFormattingRule;
+import org.apache.poi.xssf.usermodel.XSSFDataBarFormatting;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFSheetConditionalFormatting;
 import org.apache.poi.xssf.usermodel.XSSFSimpleShape;
 import org.apache.poi.xssf.usermodel.XSSFTextBox;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -60,6 +77,8 @@ import org.jfree.chart.title.TextTitle;
 import org.jfree.chart.ui.RectangleEdge;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.PieDataset;
+import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTCfRule;
+import org.openxmlformats.schemas.spreadsheetml.x2006.main.STCfType;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -272,6 +291,7 @@ public class ReportExcelUtil {
 					}
                 	drawLineXlsx(sheet,slashes,slashTexts);
                 }
+                processSheetConditionFormat(sheet, mesExportExcel.getSheetConfigs().get(i).getLuckysheetConditionformatSave());
         	}
         }
         if(StringUtil.isNotEmpty(password))
@@ -312,6 +332,167 @@ public class ReportExcelUtil {
                 }
             }
         }
+	}
+	
+	/**  
+	 * @MethodName: processSheetConditionFormat
+	 * @Description: 条件格式处理
+	 * @author caiyang
+	 * @param sheet
+	 * @param conditionFormats void
+	 * @throws Exception 
+	 * @date 2024-08-19 01:16:54 
+	 */ 
+	private static void processSheetConditionFormat(XSSFSheet sheet,JSONArray conditionFormats) throws Exception {
+		if(ListUtil.isNotEmpty(conditionFormats)) {
+			for (int i = 0; i < conditionFormats.size(); i++) {
+				String type = conditionFormats.getJSONObject(i).getString("type");
+				if("default".equals(type)) {
+					String conditionName = conditionFormats.getJSONObject(i).getString("conditionName");
+					JSONArray conditionValue = conditionFormats.getJSONObject(i).getJSONArray("conditionValue");
+					JSONObject format = conditionFormats.getJSONObject(i).getJSONObject("format");
+					for (int j = 0; j < conditionFormats.getJSONObject(i).getJSONArray("cellrange").size(); j++) {
+						JSONArray row = conditionFormats.getJSONObject(i).getJSONArray("cellrange").getJSONObject(j).getJSONArray("row");
+						JSONArray column = conditionFormats.getJSONObject(i).getJSONArray("cellrange").getJSONObject(j).getJSONArray("column");
+						ConditionalFormattingRule rule = null;
+						if("lessThan".equals(conditionName)) {
+							rule = sheet.getSheetConditionalFormatting().createConditionalFormattingRule(ComparisonOperator.LT, conditionValue.getString(0));
+						}else if("greaterThan".equals(conditionName)) {
+							rule = sheet.getSheetConditionalFormatting().createConditionalFormattingRule(ComparisonOperator.GT, conditionValue.getString(0));
+						}else if("equal".equals(conditionName)) {
+							rule = sheet.getSheetConditionalFormatting().createConditionalFormattingRule(ComparisonOperator.EQUAL, conditionValue.getString(0));
+						}else if("betweenness".equals(conditionName)) {
+							rule = sheet.getSheetConditionalFormatting().createConditionalFormattingRule(ComparisonOperator.BETWEEN, conditionValue.getString(0),conditionValue.getString(1));
+						}else if("textContains".equals(conditionName)) {
+							//字符串包含
+							String col = SheetUtil.excelColIndexToStr(column.getIntValue(0)+1);
+							String ruleStr = "NOT(ISERROR(SEARCH(\"" + conditionValue.getString(0) + "\","+(col+(row.getIntValue(0)+1))+")))";
+							rule = sheet.getSheetConditionalFormatting().createConditionalFormattingRule(ruleStr);
+						}else if("occurrenceDate".equals(conditionName)) {
+							//发生日期，暂不支持 TODO
+						}else if("duplicateValue".equals(conditionName)) {
+							//重复值
+							rule = createConditionalFormattingRuleDuplicate(sheet.getSheetConditionalFormatting());
+						}else if("top10".equals(conditionName) || "top10%".equals(conditionName) || "last10%".equals(conditionName)
+							|| "last10".equals(conditionName) || "AboveAverage".equals(conditionName) || "SubAverage".equals(conditionName)) {
+							rule = createConditionalFormattingRuleRank(sheet.getSheetConditionalFormatting(),conditionName,conditionValue);
+						}
+						if(rule != null) {
+							String cellColor = format.getString("cellColor");
+							int[] rgb = null;
+							if(cellColor.contains("rgb")) {
+								rgb = StringUtil.rgbStringToRgb(cellColor);
+							}else {
+								rgb = StringUtil.hexToRgb(cellColor);
+							}
+							PatternFormatting patternFormatting = rule.createPatternFormatting();
+							patternFormatting.setFillBackgroundColor(new XSSFColor(new Color(rgb[0], rgb[1], rgb[2]),new DefaultIndexedColorMap()));
+							FontFormatting fontFormatting = rule.createFontFormatting();
+							String textColor = format.getString("textColor");
+							if(textColor.contains("rgb")) {
+								rgb = StringUtil.rgbStringToRgb(textColor);
+							}else {
+								rgb = StringUtil.hexToRgb(textColor);
+							}
+							fontFormatting.setFontColor(new XSSFColor(new Color(rgb[0], rgb[1], rgb[2]),new DefaultIndexedColorMap()));
+							CellRangeAddress[] regions = {
+								new CellRangeAddress(row.getIntValue(0), row.getIntValue(1), column.getIntValue(0), column.getIntValue(1))
+							};
+							sheet.getSheetConditionalFormatting().addConditionalFormatting(regions,rule);
+						}
+					}
+					
+				}else if("dataBar".equals(type)) {
+					//数据条
+					JSONArray format = conditionFormats.getJSONObject(i).getJSONArray("format");
+					int[] rgb = null;
+					if(format.getString(0).contains("rgb")) {
+						rgb = StringUtil.rgbStringToRgb(format.getString(0));
+					}else {
+						rgb = StringUtil.hexToRgb(format.getString(0));
+					}
+					ConditionalFormattingRule rule = sheet.getSheetConditionalFormatting().createConditionalFormattingRule(new XSSFColor(new Color(rgb[0], rgb[1], rgb[2]),new DefaultIndexedColorMap()));
+					XSSFDataBarFormatting dataBarFormatting = (XSSFDataBarFormatting) rule.getDataBarFormatting();
+					CellRangeAddress[] regions = new CellRangeAddress[conditionFormats.getJSONObject(i).getJSONArray("cellrange").size()];
+					for (int j = 0; j < conditionFormats.getJSONObject(i).getJSONArray("cellrange").size(); j++) {
+						JSONArray row = conditionFormats.getJSONObject(i).getJSONArray("cellrange").getJSONObject(j).getJSONArray("row");
+						JSONArray column = conditionFormats.getJSONObject(i).getJSONArray("cellrange").getJSONObject(j).getJSONArray("column");
+						regions[j] = new CellRangeAddress(row.getIntValue(0), row.getIntValue(1), column.getIntValue(0), column.getIntValue(1));
+					}
+					sheet.getSheetConditionalFormatting().addConditionalFormatting(regions,rule);
+					
+				}else if("colorGradation".equals(type)) {
+					//色阶
+					JSONArray format = conditionFormats.getJSONObject(i).getJSONArray("format");
+					ConditionalFormattingRule rule = sheet.getSheetConditionalFormatting().createConditionalFormattingColorScaleRule();
+					ColorScaleFormatting colorScaleFormatting = rule.getColorScaleFormatting();
+					colorScaleFormatting.setNumControlPoints(format.size());//设置几色阶
+					if(format.size() ==3) {//三色阶
+						//设置最小色阶
+						colorScaleFormatting.getThresholds()[0].setRangeType(org.apache.poi.ss.usermodel.ConditionalFormattingThreshold.RangeType.MIN);
+						// 设置两个颜色递进的形式 此处为百分比
+						colorScaleFormatting.getThresholds()[1].setRangeType(org.apache.poi.ss.usermodel.ConditionalFormattingThreshold.RangeType.PERCENTILE);
+						colorScaleFormatting.getThresholds()[1].setValue(50d);
+						// 设置最大色阶
+						colorScaleFormatting.getThresholds()[2].setRangeType(org.apache.poi.ss.usermodel.ConditionalFormattingThreshold.RangeType.MAX);
+						String color = format.getString(2);
+						if(color.contains("rgb")) {
+							int[] rgb = StringUtil.rgbStringToRgb(color);
+							color = StringUtil.rgb2Hex(rgb[0], rgb[1], rgb[2]);
+						}
+						((ExtendedColor)colorScaleFormatting.getColors()[0]).setARGBHex(color.replaceAll("#", ""));
+						color = format.getString(1);
+						if(color.contains("rgb")) {
+							int[] rgb = StringUtil.rgbStringToRgb(color);
+							color = StringUtil.rgb2Hex(rgb[0], rgb[1], rgb[2]);
+						}
+						((ExtendedColor)colorScaleFormatting.getColors()[1]).setARGBHex(color.replaceAll("#", ""));
+						color = format.getString(0);
+						if(color.contains("rgb")) {
+							int[] rgb = StringUtil.rgbStringToRgb(color);
+							color = StringUtil.rgb2Hex(rgb[0], rgb[1], rgb[2]);
+						}
+						((ExtendedColor)colorScaleFormatting.getColors()[2]).setARGBHex(color.replaceAll("#", ""));
+					}else if(format.size() ==2) {
+						//设置最小色阶
+						colorScaleFormatting.getThresholds()[0].setRangeType(org.apache.poi.ss.usermodel.ConditionalFormattingThreshold.RangeType.MIN);
+						// 设置最大色阶
+						colorScaleFormatting.getThresholds()[1].setRangeType(org.apache.poi.ss.usermodel.ConditionalFormattingThreshold.RangeType.MAX);
+						String color = format.getString(1);
+						if(color.contains("rgb")) {
+							int[] rgb = StringUtil.rgbStringToRgb(color);
+							color = StringUtil.rgb2Hex(rgb[0], rgb[1], rgb[2]);
+						}
+						((ExtendedColor)colorScaleFormatting.getColors()[0]).setARGBHex(color.replaceAll("#", ""));
+						color = format.getString(0);
+						if(color.contains("rgb")) {
+							int[] rgb = StringUtil.rgbStringToRgb(color);
+							color = StringUtil.rgb2Hex(rgb[0], rgb[1], rgb[2]);
+						}
+						((ExtendedColor)colorScaleFormatting.getColors()[1]).setARGBHex(color.replaceAll("#", ""));
+					}
+					CellRangeAddress[] regions = new CellRangeAddress[conditionFormats.getJSONObject(i).getJSONArray("cellrange").size()];
+					for (int j = 0; j < conditionFormats.getJSONObject(i).getJSONArray("cellrange").size(); j++) {
+						JSONArray row = conditionFormats.getJSONObject(i).getJSONArray("cellrange").getJSONObject(j).getJSONArray("row");
+						JSONArray column = conditionFormats.getJSONObject(i).getJSONArray("cellrange").getJSONObject(j).getJSONArray("column");
+						regions[j] = new CellRangeAddress(row.getIntValue(0), row.getIntValue(1), column.getIntValue(0), column.getIntValue(1));
+					}
+					
+					sheet.getSheetConditionalFormatting().addConditionalFormatting(regions,rule);
+				}else if("icons".equals(type)) {
+					//图标集
+					JSONObject format = conditionFormats.getJSONObject(i).getJSONObject("format");
+					ConditionalFormattingRule rule = createConditionalFormattingRuleIconSets(sheet.getSheetConditionalFormatting(),format);
+					CellRangeAddress[] regions = new CellRangeAddress[conditionFormats.getJSONObject(i).getJSONArray("cellrange").size()];
+					for (int j = 0; j < conditionFormats.getJSONObject(i).getJSONArray("cellrange").size(); j++) {
+						JSONArray row = conditionFormats.getJSONObject(i).getJSONArray("cellrange").getJSONObject(j).getJSONArray("row");
+						JSONArray column = conditionFormats.getJSONObject(i).getJSONArray("cellrange").getJSONObject(j).getJSONArray("column");
+						regions[j] = new CellRangeAddress(row.getIntValue(0), row.getIntValue(1), column.getIntValue(0), column.getIntValue(1));
+					}
+					sheet.getSheetConditionalFormatting().addConditionalFormatting(regions,rule);
+				}
+			}
+		}
 	}
 	
 	private static void getSlashLinePositionXlsx(XSSFSheet xssfSheet,int rowIndex,int colIndex,int rs,int cs,String v,List<SlashLinePosition> slashes
@@ -600,6 +781,7 @@ public class ReportExcelUtil {
 //                insertChart(wb, sheet, mesExportExcel.getSheetConfigs().get(i).getChart(),mesExportExcel.getSheetConfigs().get(i).getChartCells());
                 insertChart(wb, sheet, mesExportExcel.getSheetConfigs().get(i).getChart(),mesExportExcel.getSheetConfigs().get(i).getChartCells(),cellUtil);
 //                insertBase64Chart(wb, sheet, mesExportExcel.getSheetConfigs().get(i).getChart(),mesExportExcel.getSheetConfigs().get(i).getChartCells(),cellUtil,mesExportExcel.getChartsBase64());
+                processSheetConditionFormat(sheet, mesExportExcel.getSheetConfigs().get(i).getLuckysheetConditionformatSave());
         	}
         }
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -1145,7 +1327,141 @@ public class ReportExcelUtil {
 				}
 				
 			}
-             
 		}
 	}
+    private static XSSFConditionalFormattingRule createConditionalFormattingRuleDuplicate(XSSFSheetConditionalFormatting sheetCF) throws Exception {
+    	  Field _sheet = XSSFSheetConditionalFormatting.class.getDeclaredField("_sheet");
+    	  _sheet.setAccessible(true);
+    	  XSSFSheet sheet = (XSSFSheet)_sheet.get(sheetCF);
+    	  Constructor constructor = XSSFConditionalFormattingRule.class.getDeclaredConstructor(XSSFSheet.class);
+    	  constructor.setAccessible(true);
+    	  XSSFConditionalFormattingRule rule = (XSSFConditionalFormattingRule)constructor.newInstance(sheet);
+    	  Field _cfRule = XSSFConditionalFormattingRule.class.getDeclaredField("_cfRule");
+    	  _cfRule.setAccessible(true);
+    	  CTCfRule cfRule = (CTCfRule)_cfRule.get(rule);
+    	  cfRule.setType(STCfType.DUPLICATE_VALUES);
+    	  return rule;
+    }
+    
+    private static XSSFConditionalFormattingRule createConditionalFormattingRuleIconSets(XSSFSheetConditionalFormatting sheetCF,JSONObject format) throws Exception {
+  	  Field _sheet = XSSFSheetConditionalFormatting.class.getDeclaredField("_sheet");
+  	  _sheet.setAccessible(true);
+  	  XSSFSheet sheet = (XSSFSheet)_sheet.get(sheetCF);
+  	  Constructor constructor = XSSFConditionalFormattingRule.class.getDeclaredConstructor(XSSFSheet.class);
+  	  constructor.setAccessible(true);
+  	  XSSFConditionalFormattingRule rule = (XSSFConditionalFormattingRule)constructor.newInstance(sheet);
+  	  String top = format.getString("top");
+  	  String leftMin = format.getString("leftMin");
+  	  if("0".equals(top)) {
+  		  if("0".equals(leftMin)) {
+  			rule.createMultiStateFormatting(IconSet.GYR_3_ARROW); 
+  		  }else if("5".equals(leftMin)) {
+  			rule.createMultiStateFormatting(IconSet.GREY_3_ARROWS); 
+  		  }
+  	  } else if("1".equals(top)) {
+  		  if("5".equals(leftMin)) {
+  			rule.createMultiStateFormatting(IconSet.GREY_4_ARROWS); 
+  		  }else if("0".equals(leftMin)){
+  			  //3个三角形不支持，使用三色交通灯GYR_3_TRAFFIC_LIGHTS代替
+  			rule.createMultiStateFormatting(IconSet.GYR_3_TRAFFIC_LIGHTS); 
+  		  }
+  	  }else if("2".equals(top)) {
+  		if("0".equals(leftMin)) {
+  			rule.createMultiStateFormatting(IconSet.GYR_4_ARROWS); 
+  		}else if("5".equals(leftMin)) {
+  			rule.createMultiStateFormatting(IconSet.GREY_5_ARROWS); 	
+  		}
+  	  }else if("3".equals(top)) {
+  		 if("0".equals(leftMin)) {
+  			rule.createMultiStateFormatting(IconSet.GYYYR_5_ARROWS); 
+  		 }
+  	  }else if("4".equals(top)) {
+   		 if("0".equals(leftMin)) {
+   			rule.createMultiStateFormatting(IconSet.GYR_3_TRAFFIC_LIGHTS); 
+   		 }else if("5".equals(leftMin)) {
+   			rule.createMultiStateFormatting(IconSet.GYR_3_TRAFFIC_LIGHTS_BOX); 	
+   		 }
+   	  }else if("5".equals(top)) {
+   		 if("0".equals(leftMin)) {
+   			rule.createMultiStateFormatting(IconSet.GYR_3_SHAPES); 
+   		 }else if("5".equals(leftMin)) {
+    		rule.createMultiStateFormatting(IconSet.GYRB_4_TRAFFIC_LIGHTS); 	
+    	 }
+   	  }else if("6".equals(top)) {
+    	if("0".equals(leftMin)) {
+    	   	rule.createMultiStateFormatting(IconSet.RB_4_TRAFFIC_LIGHTS); 
+    	}else if("5".equals(leftMin)) {
+    	}
+     }else if("7".equals(top)) {
+    	if("0".equals(leftMin)) {
+    	   	rule.createMultiStateFormatting(IconSet.GYR_3_SYMBOLS_CIRCLE); 
+    	}else if("5".equals(leftMin)) {
+    		rule.createMultiStateFormatting(IconSet.GYR_3_SYMBOLS); 
+    	}
+     }else if("8".equals(top)) {
+    	if("0".equals(leftMin)) {
+    	   	rule.createMultiStateFormatting(IconSet.GYR_3_FLAGS); 
+    	}else if("5".equals(leftMin)) {
+    	}
+     }else if("9".equals(top)) {
+    	if("0".equals(leftMin)) {
+    		//3个星星不支持，使用三色交通灯GYR_3_TRAFFIC_LIGHTS代替
+    		rule.createMultiStateFormatting(IconSet.GYR_3_TRAFFIC_LIGHTS); 
+    	}else if("5".equals(leftMin)) {
+    		rule.createMultiStateFormatting(IconSet.RATINGS_4); 
+    	}
+     }else if("10".equals(top)) {
+     	if("0".equals(leftMin)) {
+     		rule.createMultiStateFormatting(IconSet.QUARTERS_5); 
+     	}else if("5".equals(leftMin)) {
+     		rule.createMultiStateFormatting(IconSet.RATINGS_5); 
+     	}
+     }else if("11".equals(top)) {
+     	if("0".equals(leftMin)) {
+     		//5个框不支持，使用QUARTERS_5代替
+     		rule.createMultiStateFormatting(IconSet.QUARTERS_5); 
+     	}else if("5".equals(leftMin)) {
+     	}
+     }
+  	  Field _cfRule = XSSFConditionalFormattingRule.class.getDeclaredField("_cfRule");
+  	  _cfRule.setAccessible(true);
+  	  CTCfRule cfRule = (CTCfRule)_cfRule.get(rule);
+  	  cfRule.setType(STCfType.ICON_SET);
+  	  return rule;
+  }
+    
+    private static XSSFConditionalFormattingRule createConditionalFormattingRuleRank(XSSFSheetConditionalFormatting sheetCF,String conditionName,JSONArray conditionValue) throws Exception {
+    	Field _sheet = XSSFSheetConditionalFormatting.class.getDeclaredField("_sheet");
+  	  _sheet.setAccessible(true);
+  	  XSSFSheet sheet = (XSSFSheet)_sheet.get(sheetCF);
+  	  Constructor constructor = XSSFConditionalFormattingRule.class.getDeclaredConstructor(XSSFSheet.class);
+  	  constructor.setAccessible(true);
+  	  XSSFConditionalFormattingRule rule = (XSSFConditionalFormattingRule)constructor.newInstance(sheet);
+  	  Field _cfRule = XSSFConditionalFormattingRule.class.getDeclaredField("_cfRule");
+  	  _cfRule.setAccessible(true);
+  	  CTCfRule cfRule = (CTCfRule)_cfRule.get(rule);
+  	  if("top10".equals(conditionName)) {
+  		cfRule.setType(STCfType.TOP_10);
+    	cfRule.setRank(conditionValue.getLongValue(0));  
+  	  }else if("top10%".equals(conditionName)) {
+    	cfRule.setType(STCfType.TOP_10);
+        cfRule.setRank(conditionValue.getLongValue(0));  
+        cfRule.setPercent(true);
+      }else if("last10".equals(conditionName)) {
+    	cfRule.setType(STCfType.TOP_10);
+        cfRule.setRank(conditionValue.getLongValue(0));  
+        cfRule.setBottom(true);
+      }else if("last10%".equals(conditionName)) {
+    	cfRule.setType(STCfType.TOP_10);
+        cfRule.setRank(conditionValue.getLongValue(0));  
+        cfRule.setBottom(true);
+        cfRule.setPercent(true);
+      }else if("AboveAverage".equals(conditionName)) {
+    	cfRule.setType(STCfType.ABOVE_AVERAGE);
+      }else if("SubAverage".equals(conditionName)) {
+    	cfRule.setType(STCfType.ABOVE_AVERAGE);
+    	cfRule.setAboveAverage(false);
+      }
+  	  return rule;
+    }
 }

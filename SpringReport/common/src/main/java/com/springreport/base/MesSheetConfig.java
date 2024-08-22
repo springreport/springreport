@@ -157,4 +157,11 @@ public class MesSheetConfig {
 	 * @date 2023-09-04 10:57:41 
 	 */  
 	private JSONObject filter;
+	
+	/**  
+     * @Fields luckysheetConditionformatSave : 条件格式配置
+     * @author caiyang
+     * @date 2024年8月16日18:54:55
+     */  
+    private JSONArray luckysheetConditionformatSave;
 }

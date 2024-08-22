@@ -1760,3 +1760,7 @@ CREATE TABLE `doc_tpl_charts`  (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Dynamic;
 -- 20240812 word新增图表支持 end
+
+-- springreport-20240822 新增单元格条件格式设置 start
+ALTER TABLE report_tpl_sheet ADD COLUMN conditionformat_save text DEFAULT NULL COMMENT '条件格式'; 
+-- springreport-20240822 新增单元格条件格式设置 end

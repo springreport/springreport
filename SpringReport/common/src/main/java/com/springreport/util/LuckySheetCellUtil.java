@@ -538,7 +538,7 @@ public class LuckySheetCellUtil {
 			if(styleMap.get("background") != null)
 			{
 				int[] backgroundXSSFColor = (int[]) styleMap.get("background");
-				cellStyle.setFillForegroundColor(new XSSFColor(new Color(backgroundXSSFColor[0], backgroundXSSFColor[1], backgroundXSSFColor[2]),new DefaultIndexedColorMap()));
+				cellStyle.setFillBackgroundColor(new XSSFColor(new Color(backgroundXSSFColor[0], backgroundXSSFColor[1], backgroundXSSFColor[2]),new DefaultIndexedColorMap()));
 				cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 			}
 			//对齐方式

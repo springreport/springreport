@@ -258,6 +258,9 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 			ReportCellDictsDto cellDictsDto = this.getReportDict(sheets);
 			for (int t = 0; t < sheets.size(); t++) {
 				ResLuckySheetDataDto resLuckySheetDataDto = new ResLuckySheetDataDto();
+				Map<String, JSONArray> cellConditionFormat = new HashMap<>();//动态单元格对应的条件格式
+				Map<String, String> fixedCellsMap = new HashMap<>();//所有的静态单元格
+				Map<String, String> variableCellsMap = new HashMap<>();//所有的动态单元格
 				//获取所有的变量单元格
 				QueryWrapper<LuckysheetReportFormsCell> queryWrapper = new QueryWrapper<>();
 				queryWrapper.eq("tpl_id", reportTpl.getId());
@@ -401,6 +404,7 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 									Map<String, String> map = ListUtil.getNewCellValue(variableCells.get(j).getCellValue(), columnNames, datasetNameIdMap);
 									variableCells.get(j).setCellValue(map.get("cellValue"));
 									variableCells.get(j).setDatasetName(map.get("datasetNames"));
+									variableCellsMap.put(variableCells.get(j).getCoordsx() + "_" + variableCells.get(j).getCoordsy(), variableCells.get(j).getCoordsx() + "_" + variableCells.get(j).getCoordsy());
 								}else {
 									if(StringUtil.isNotEmpty(variableCells.get(j).getDatasetName()))
 									{
@@ -464,28 +468,29 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 							bindData.setCellValueType(CellValueTypeEnum.FIXED.getCode());
 							bindData.setCellValue(fixedCells.get(i).getCellValue());
 							JSONObject cellAttrs = JSONObject.parseObject(fixedCells.get(i).getCellAttrs());
-							boolean warning = cellAttrs.getBooleanValue("warning");
-							bindData.setWarning(warning);
-							String warningRules = cellAttrs.getString("warningRules");
-							if(StringUtil.isNullOrEmpty(warningRules))
-							{
-								warningRules = ">=";
-							}
-							bindData.setWarningRules(warningRules);
-							String threshold = cellAttrs.getString("threshold");
-							if(StringUtil.isNullOrEmpty(threshold))
-							{
-								threshold = "80";
-							}
-							bindData.setThreshold(threshold);
-							String warningColor = cellAttrs.getString("warningColor");
-							if(StringUtil.isNullOrEmpty(warningColor))
-							{
-								warningColor = "#FF0000";
-							}
-							bindData.setWarningColor(warningColor);
-							String warningContent = cellAttrs.getString("warningContent");
-							bindData.setWarningContent(warningContent);
+							//2024年8月22日09:59:29注释掉，新增加了条件格式功能，不需要该功能了
+//							boolean warning = cellAttrs.getBooleanValue("warning");
+//							bindData.setWarning(warning);
+//							String warningRules = cellAttrs.getString("warningRules");
+//							if(StringUtil.isNullOrEmpty(warningRules))
+//							{
+//								warningRules = ">=";
+//							}
+//							bindData.setWarningRules(warningRules);
+//							String threshold = cellAttrs.getString("threshold");
+//							if(StringUtil.isNullOrEmpty(threshold))
+//							{
+//								threshold = "80";
+//							}
+//							bindData.setThreshold(threshold);
+//							String warningColor = cellAttrs.getString("warningColor");
+//							if(StringUtil.isNullOrEmpty(warningColor))
+//							{
+//								warningColor = "#FF0000";
+//							}
+//							bindData.setWarningColor(warningColor);
+//							String warningContent = cellAttrs.getString("warningContent");
+//							bindData.setWarningContent(warningContent);
 							JSONArray cellconditions = cellAttrs.getJSONArray("cellconditions");
 							if(!ListUtil.isEmpty(cellconditions))
 							{
@@ -513,6 +518,32 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 								throw new BizException(StatusCode.FAILURE, "单元格数据解析失败，请检查单元格数据格式是否正确！");
 							}
 							dataSetsBindDatas.add(bindData);
+							fixedCellsMap.put(fixedCells.get(i).getCoordsx() + "_" + fixedCells.get(i).getCoordsy(), fixedCells.get(i).getCoordsx() + "_" + fixedCells.get(i).getCoordsy());
+						}
+					}
+					JSONArray conditionForamt = JSONArray.parseArray(sheets.get(t).getConditionformatSave());
+					if(ListUtil.isNotEmpty(conditionForamt)) {
+						for (int i = 0; i < conditionForamt.size(); i++) {
+							JSONObject formatObj = JSON.parseObject(JSON.toJSONString(conditionForamt.getJSONObject(i)));
+							JSONArray cellRange = conditionForamt.getJSONObject(i).getJSONArray("cellrange");
+							for (int j = 0; j < cellRange.size(); j++) {
+								JSONArray column = cellRange.getJSONObject(j).getJSONArray("column");
+								JSONArray row = cellRange.getJSONObject(j).getJSONArray("row");
+								for (int k = row.getIntValue(0); k <= row.getIntValue(1); k++) {
+									for (int k2 = column.getIntValue(0); k2 <= column.getIntValue(1); k2++) {
+										String key = k+"_"+k2;
+										if(variableCellsMap.containsKey(key)) {
+											if(cellConditionFormat.containsKey(key)) {
+												cellConditionFormat.get(key).add(formatObj);
+											}else {
+												JSONArray conditions = new JSONArray();
+												conditions.add(formatObj);
+												cellConditionFormat.put(k+"_"+k2, conditions);
+											}
+										}
+									}
+								}
+							}
 						}
 					}
 					QueryWrapper<LuckysheetReportFormsCell> allCellsQueryWrapper = new QueryWrapper<>();
@@ -530,7 +561,7 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 					{
 						config = objectMapper.readValue(sheets.get(t).getConfig(), Map.class);
 					}
-					resLuckySheetDataDto = this.buildLuckysheetDatas(allCells, dataSetsBindDatas,config,cellDictsDto.getCellDictsValueLabel(),sheets.get(t).getSheetIndex(),reportTpl.getId(),currentPage > 0,currentPage,pageSize);
+					resLuckySheetDataDto = this.buildLuckysheetDatas(allCells, dataSetsBindDatas,config,cellDictsDto.getCellDictsValueLabel(),sheets.get(t).getSheetIndex(),reportTpl.getId(),currentPage > 0,currentPage,pageSize,cellConditionFormat);
 				}else {
 					//没有数据集查询所有的静态单元格
 					//获取所有固定的单元格,并封装成bindata与动态数据组成一个list
@@ -568,28 +599,29 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 							bindData.setWarningColor(fixedCells.get(i).getWarningColor());
 							bindData.setThreshold(fixedCells.get(i).getThreshold());
 							JSONObject cellAttrs = JSONObject.parseObject(fixedCells.get(i).getCellAttrs());
-							boolean warning = cellAttrs.getBooleanValue("warning");
-							bindData.setWarning(warning);
-							String warningRules = cellAttrs.getString("warningRules");
-							if(StringUtil.isNullOrEmpty(warningRules))
-							{
-								warningRules = ">=";
-							}
-							bindData.setWarningRules(warningRules);
-							String threshold = cellAttrs.getString("threshold");
-							if(StringUtil.isNullOrEmpty(threshold))
-							{
-								threshold = "80";
-							}
-							bindData.setThreshold(threshold);
-							String warningColor = cellAttrs.getString("warningColor");
-							if(StringUtil.isNullOrEmpty(warningColor))
-							{
-								warningColor = "#FF0000";
-							}
-							bindData.setWarningColor(warningColor);
-							String warningContent = cellAttrs.getString("warningContent");
-							bindData.setWarningContent(warningContent);
+							//2024年8月22日09:59:29注释掉，新增加了条件格式功能，不需要该功能了
+//							boolean warning = cellAttrs.getBooleanValue("warning");
+//							bindData.setWarning(warning);
+//							String warningRules = cellAttrs.getString("warningRules");
+//							if(StringUtil.isNullOrEmpty(warningRules))
+//							{
+//								warningRules = ">=";
+//							}
+//							bindData.setWarningRules(warningRules);
+//							String threshold = cellAttrs.getString("threshold");
+//							if(StringUtil.isNullOrEmpty(threshold))
+//							{
+//								threshold = "80";
+//							}
+//							bindData.setThreshold(threshold);
+//							String warningColor = cellAttrs.getString("warningColor");
+//							if(StringUtil.isNullOrEmpty(warningColor))
+//							{
+//								warningColor = "#FF0000";
+//							}
+//							bindData.setWarningColor(warningColor);
+//							String warningContent = cellAttrs.getString("warningContent");
+//							bindData.setWarningContent(warningContent);
 							JSONArray cellconditions = cellAttrs.getJSONArray("cellconditions");
 							if(!ListUtil.isEmpty(cellconditions))
 							{
@@ -618,7 +650,7 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 						{
 							config = objectMapper.readValue(sheets.get(t).getConfig(), Map.class);
 						}
-						resLuckySheetDataDto = this.buildLuckysheetDatas(allCells, dataSetsBindDatas,config,null,null,reportTpl.getId(),currentPage > 0,currentPage,pageSize);
+						resLuckySheetDataDto = this.buildLuckysheetDatas(allCells, dataSetsBindDatas,config,null,null,reportTpl.getId(),currentPage > 0,currentPage,pageSize,null);
 					}
 				}
 				if(resLuckySheetDataDto.getCalcChain() != null && resLuckySheetDataDto.getCalcChain().size() > 0) {
@@ -771,6 +803,13 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 					resLuckySheetDataDto.setImgInfo(image);
 				}
 				resLuckySheetDataDto.setPageDivider(StringUtil.isNotEmpty(sheets.get(t).getPageDivider())?JSON.parseArray(sheets.get(t).getPageDivider()):new JSONArray());
+				if(!StringUtil.isEmptyMap(cellConditionFormat)) {
+					JSONArray luckysheetConditionformatSave = new JSONArray();
+					cellConditionFormat.forEach((key, value) -> {
+						luckysheetConditionformatSave.addAll(value);
+					});
+					resLuckySheetDataDto.setLuckysheetConditionformatSave(luckysheetConditionformatSave);
+				}
 				sheetDatas.add(resLuckySheetDataDto);
 				resPreviewData.setCellDictsLabelValue(cellDictsDto.getCellDictsLabelValue());
 			}
@@ -1006,7 +1045,8 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 	}
 	
 	private ResLuckySheetDataDto buildLuckysheetDatas(List<LuckysheetReportFormsCell> allCells,List<LuckySheetFormsBindData> dataSetsBindDatas,
-			Map<String, Object> config,Map<String, Map<String, String>> cellDictsValueLabel,String sheetIndex,Long tplId,boolean isPagination,int currentPage,int pageSize) throws IOException{
+			Map<String, Object> config,Map<String, Map<String, String>> cellDictsValueLabel,String sheetIndex,Long tplId,boolean isPagination,
+			int currentPage,int pageSize,Map<String, JSONArray> cellConditionFormat) throws IOException{
 		ResLuckySheetDataDto result = new ResLuckySheetDataDto();
 		ObjectMapper objectMapper = new ObjectMapper();
 		Map<String, LuckySheetFormsBindData> binddataMap = CellUtil.luckySheetFormsBindDataCoordinateMap(dataSetsBindDatas);
@@ -1106,14 +1146,14 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 				if(AggregateTypeEnum.SUMMARY.getCode().equals(sortedBindData.get(i).getAggregateType()))
 				{
 					this.processSummaryValue(maxCoordinate, sortedBindData.get(i), cellDatas, rowlen, columnlen,dataRowLen,dataColLen,
-							maxXAndY,borderInfo,borderConfig,borderInfos,extendCellOrigin,columnStartCoords,mergeMap,configRowLen,configColumnLen);
+							maxXAndY,borderInfo,borderConfig,borderInfos,extendCellOrigin,columnStartCoords,mergeMap,configRowLen,configColumnLen,cellConditionFormat);
 				}else if(AggregateTypeEnum.GROUPSUMMARY.getCode().equals(sortedBindData.get(i).getAggregateType())) {
 					this.processGroupSummaryValue(maxCoordinate, sortedBindData.get(i), mergeMap, cellDatas, configRowLen, configColumnLen, rowlen, columnlen, 
-							objectMapper, dataRowLen, dataColLen,maxXAndY,borderInfo,borderConfig,borderInfos,extendCellOrigin,columnStartCoords,drillCells);
+							objectMapper, dataRowLen, dataColLen,maxXAndY,borderInfo,borderConfig,borderInfos,extendCellOrigin,columnStartCoords,drillCells,cellConditionFormat);
 				}else {
 					this.processListGroupValue(maxCoordinate, sortedBindData.get(i), cellDatas, null, dataRowLen, dataColLen, rowlen, columnlen, mergeMap, objectMapper,
 							maxXAndY,borderInfo,borderConfig,borderInfos,calcChain,extendCellOrigin,columnStartCoords,cellDictsValueLabel,sheetIndex,configRowLen,configColumnLen
-							,images,rowhidden,colhidden,drillCells,cacheDatas,keyPattern,replacedData);
+							,images,rowhidden,colhidden,drillCells,cacheDatas,keyPattern,replacedData,cellConditionFormat);
 				}
 			}
 		}
@@ -1222,23 +1262,24 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 				{
 					value = originalValue;
 				}
-				if(luckySheetBindData.getWarning())
-				{
-					if(luckySheetBindData.getWarning() && StringUtil.isNotEmpty(luckySheetBindData.getThreshold()) && CheckUtil.isNumber(luckySheetBindData.getThreshold()))
-					{
-						JSONObject jsonObject = this.processCellWarning(value, luckySheetBindData);
-						if(jsonObject != null)
-						{
-							cellConfig.put(LuckySheetPropsEnum.POSTIL.getCode(), jsonObject);
-							if(StringUtil.isNotEmpty(luckySheetBindData.getWarningColor()))
-							{
-								cellConfig.put(LuckySheetPropsEnum.BACKGROUND.getCode(), luckySheetBindData.getWarningColor());
-							}else {
-								cellConfig.put(LuckySheetPropsEnum.BACKGROUND.getCode(), "#FF0000");
-							}
-						}
-					}
-				}
+				//2024年8月22日09:59:29注释掉，新增加了条件格式功能，不需要该功能了
+//				if(luckySheetBindData.getWarning())
+//				{
+//					if(luckySheetBindData.getWarning() && StringUtil.isNotEmpty(luckySheetBindData.getThreshold()) && CheckUtil.isNumber(luckySheetBindData.getThreshold()))
+//					{
+//						JSONObject jsonObject = this.processCellWarning(value, luckySheetBindData);
+//						if(jsonObject != null)
+//						{
+//							cellConfig.put(LuckySheetPropsEnum.POSTIL.getCode(), jsonObject);
+//							if(StringUtil.isNotEmpty(luckySheetBindData.getWarningColor()))
+//							{
+//								cellConfig.put(LuckySheetPropsEnum.BACKGROUND.getCode(), luckySheetBindData.getWarningColor());
+//							}else {
+//								cellConfig.put(LuckySheetPropsEnum.BACKGROUND.getCode(), "#FF0000");
+//							}
+//						}
+//					}
+//				}
 				if(luckySheetBindData.getUnitTransfer())
 				{
 					value = this.processUnitTransfer(value, luckySheetBindData);
@@ -1596,7 +1637,7 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 			,List<JSONObject> calcChain,Map<String, JSONObject> extendCellOrigin,Map<String, JSONObject> columnStartCoords
 			,Map<String, Map<String, String>> cellDictsValueLabel,String sheetIndex,
 			Map<String, Object> configRowLen,Map<String, Object> configColumnLen, List<JSONObject> images,Object rowhidden,Object colhidden
-			,JSONObject drillCells,Map<String, JSONObject> cacheDatas,String keyPattern,Map<String, Object> replacedData) {
+			,JSONObject drillCells,Map<String, JSONObject> cacheDatas,String keyPattern,Map<String, Object> replacedData,Map<String, JSONArray> cellConditionFormat) {
 		List<List<Map<String, Object>>> datas = null;
 		if(luckySheetBindData.getIsConditions().intValue() == YesNoEnum.YES.getCode())
 		{
@@ -1613,18 +1654,18 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
             {//非扩展单元格处理
             	this.processNotExtendListGroupValue(j, maxCoordinate, luckySheetBindData, cellDatas, hyperlinks, dataRowLen, dataColLen, 
             		rowlen, columnlen, maxXAndY,borderInfo,borderConfig,borderInfos,calcChain,extendCellOrigin,columnStartCoords,cellDictsValueLabel,sheetIndex,
-            		mergeMap,configRowLen,configColumnLen,images,rowhidden,colhidden,drillCells,cacheDatas,keyPattern,replacedData);
+            		mergeMap,configRowLen,configColumnLen,images,rowhidden,colhidden,drillCells,cacheDatas,keyPattern,replacedData,cellConditionFormat);
                 break;
             }else if(CellExtendEnum.VERTICAL.getCode().intValue() == luckySheetBindData.getCellExtend().intValue()){
                 //向下扩展单元格处理
             	this.processVerticalListGroupValue(j, maxCoordinate, luckySheetBindData, cellDatas, hyperlinks, dataRowLen, dataColLen, 
             		rowlen, columnlen,mergeMap, objectMapper,maxXAndY,borderInfo,borderConfig,borderInfos,calcChain,extendCellOrigin,
-            		columnStartCoords,cellDictsValueLabel,sheetIndex,configRowLen,configColumnLen,images,rowhidden,colhidden,drillCells,cacheDatas,keyPattern,replacedData);
+            		columnStartCoords,cellDictsValueLabel,sheetIndex,configRowLen,configColumnLen,images,rowhidden,colhidden,drillCells,cacheDatas,keyPattern,replacedData,cellConditionFormat);
             }else if(CellExtendEnum.HORIZONTAL.getCode().intValue() == luckySheetBindData.getCellExtend().intValue()){
             	//向右扩展单元格处理
             	this.processHorizontalListGroupValue(j, maxCoordinate, luckySheetBindData, cellDatas, hyperlinks, dataRowLen, dataColLen, rowlen, 
             		columnlen, mergeMap, objectMapper,maxXAndY,borderInfo,borderConfig,borderInfos,calcChain,extendCellOrigin,columnStartCoords,
-            		cellDictsValueLabel,sheetIndex,configRowLen,configColumnLen,images,rowhidden,colhidden,drillCells,cacheDatas,keyPattern,replacedData);
+            		cellDictsValueLabel,sheetIndex,configRowLen,configColumnLen,images,rowhidden,colhidden,drillCells,cacheDatas,keyPattern,replacedData,cellConditionFormat);
             }
         }
     
@@ -1652,7 +1693,7 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 			,Map<String, Integer> maxXAndY,Map<String, Object> borderInfo,List<Map<String, Object>> borderConfig,List<Object> borderInfos,List<JSONObject> calcChain,
 			Map<String, JSONObject> extendCellOrigin,Map<String, JSONObject> columnStartCoords,Map<String, Map<String, String>> cellDictsValueLabel,String sheetIndex,
 			Map<String, Map<String, Object>> mergeMap,Map<String, Object> configRowLen,Map<String, Object> configColumnLen, List<JSONObject> images,Object rowhidden,Object colhidden
-			,JSONObject drillCells,Map<String, JSONObject> cacheDatas,String keyPattern,Map<String, Object> replacedData) {
+			,JSONObject drillCells,Map<String, JSONObject> cacheDatas,String keyPattern,Map<String, Object> replacedData,Map<String, JSONArray> cellConditionFormat) {
 		List<List<Map<String, Object>>> bindDatas = null;
 //		Map<String, Object> border = this.getBorderType(borderConfig, luckySheetBindData.getCoordsx(), luckySheetBindData.getCoordsy());//获取该单元格的边框信息
 		List<Map<String, Object>> border = null;
@@ -1740,20 +1781,21 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
         {
         	value = property;
         }
-        if(luckySheetBindData.getWarning() && StringUtil.isNotEmpty(luckySheetBindData.getThreshold()) && CheckUtil.isNumber(luckySheetBindData.getThreshold()))
-    	{
-    		JSONObject jsonObject = this.processCellWarning(value, luckySheetBindData);
-			if(jsonObject != null)
-			{
-				((Map<String, Object>)luckySheetBindData.getCellData().get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.POSTIL.getCode(), jsonObject);
-				if(StringUtil.isNotEmpty(luckySheetBindData.getWarningColor()))
-    			{
-    				((Map<String, Object>)luckySheetBindData.getCellData().get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.BACKGROUND.getCode(), luckySheetBindData.getWarningColor());
-    			}else {
-    				((Map<String, Object>)luckySheetBindData.getCellData().get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.BACKGROUND.getCode(), "#FF0000");
-    			}
-			}
-    	}
+        //2024年8月22日09:59:29注释掉，新增加了条件格式功能，不需要该功能了
+//        if(luckySheetBindData.getWarning() && StringUtil.isNotEmpty(luckySheetBindData.getThreshold()) && CheckUtil.isNumber(luckySheetBindData.getThreshold()))
+//    	{
+//    		JSONObject jsonObject = this.processCellWarning(value, luckySheetBindData);
+//			if(jsonObject != null)
+//			{
+//				((Map<String, Object>)luckySheetBindData.getCellData().get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.POSTIL.getCode(), jsonObject);
+//				if(StringUtil.isNotEmpty(luckySheetBindData.getWarningColor()))
+//    			{
+//    				((Map<String, Object>)luckySheetBindData.getCellData().get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.BACKGROUND.getCode(), luckySheetBindData.getWarningColor());
+//    			}else {
+//    				((Map<String, Object>)luckySheetBindData.getCellData().get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.BACKGROUND.getCode(), "#FF0000");
+//    			}
+//			}
+//    	}
         if(luckySheetBindData.getUnitTransfer())
 		{
 			value = this.processUnitTransfer(value, luckySheetBindData);
@@ -1950,7 +1992,7 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 			, Map<String, Map<String, Object>> mergeMap,ObjectMapper objectMapper,Map<String, Integer> maxXAndY,Map<String, Object> borderInfo,List<Map<String, Object>> borderConfig,List<Object> borderInfos
 			,List<JSONObject> calcChain,Map<String, JSONObject> extendCellOrigin,Map<String, JSONObject> columnStartCoords,Map<String, Map<String, String>> cellDictsValueLabel,String sheetIndex
 			,Map<String, Object> configRowLen,Map<String, Object> configColumnLen, List<JSONObject> images,Object rowhidden,Object colhidden
-			,JSONObject drillCells,Map<String, JSONObject> cacheDatas,String keyPattern,Map<String, Object> replacedData)
+			,JSONObject drillCells,Map<String, JSONObject> cacheDatas,String keyPattern,Map<String, Object> replacedData,Map<String, JSONArray> cellConditionFormat)
 	{
 		List<List<Map<String, Object>>> bindDatas = null;
 		if(luckySheetBindData.getIsConditions().intValue() == YesNoEnum.YES.getCode())
@@ -1986,6 +2028,7 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
         String property = luckySheetBindData.getProperty();
         int setSize = 1;
         boolean isJustProperty = false;
+        this.processConditionFormat(luckySheetBindData, cellConditionFormat, (int)cellData.get(LuckySheetPropsEnum.R.getCode()), (int)cellData.get(LuckySheetPropsEnum.R.getCode()), j == 0);
         if(cellDictsValueLabel.containsKey(cellKey))
         {
         	property = cellDictsValueLabel.get(cellKey).get(bindDatas.get(j).get(0).get(luckySheetBindData.getProperty()));
@@ -2034,24 +2077,26 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
         {
         	value = property;
         }
-        if(luckySheetBindData.getWarning() && StringUtil.isNotEmpty(luckySheetBindData.getThreshold()) && CheckUtil.isNumber(luckySheetBindData.getThreshold()))
-    	{
-    		JSONObject jsonObject = this.processCellWarning(value, luckySheetBindData);
-			if(jsonObject != null)
-			{
-				((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.POSTIL.getCode(), jsonObject);
-				if(StringUtil.isNotEmpty(luckySheetBindData.getWarningColor()))
-    			{
-    				((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.BACKGROUND.getCode(), luckySheetBindData.getWarningColor());
-    			}else {
-    				((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.BACKGROUND.getCode(), "#FF0000");
-    			}
-			}
-    	}
+       //2024年8月22日09:59:29注释掉，新增加了条件格式功能，不需要该功能了
+//        if(luckySheetBindData.getWarning() && StringUtil.isNotEmpty(luckySheetBindData.getThreshold()) && CheckUtil.isNumber(luckySheetBindData.getThreshold()))
+//    	{
+//    		JSONObject jsonObject = this.processCellWarning(value, luckySheetBindData);
+//			if(jsonObject != null)
+//			{
+//				((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.POSTIL.getCode(), jsonObject);
+//				if(StringUtil.isNotEmpty(luckySheetBindData.getWarningColor()))
+//    			{
+//    				((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.BACKGROUND.getCode(), luckySheetBindData.getWarningColor());
+//    			}else {
+//    				((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.BACKGROUND.getCode(), "#FF0000");
+//    			}
+//			}
+//    	}
         if(luckySheetBindData.getUnitTransfer())
 		{
 			value = this.processUnitTransfer(value, luckySheetBindData);
 		}
+        this.processConditionFormat(luckySheetBindData, cellConditionFormat, rowAndCol.get("maxX").intValue(), rowAndCol.get("maxY").intValue(), j == 0);
         String format = LuckysheetUtil.getCellFormat(luckySheetBindData.getCellData());
     	Object v = LuckysheetUtil.formatValue(format, value);
     	((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.CELLVALUE.getCode(), v==null?"":String.valueOf(v));
@@ -2350,7 +2395,7 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 			, Map<String, Map<String, Object>> mergeMap,ObjectMapper objectMapper,Map<String, Integer> maxXAndY,Map<String, Object> borderInfo,List<Map<String, Object>> borderConfig,List<Object> borderInfos
 			,List<JSONObject> calcChain,Map<String, JSONObject> extendCellOrigin,Map<String, JSONObject> columnStartCoords,Map<String, Map<String, String>> cellDictsValueLabel,String sheetIndex
 			,Map<String, Object> configRowLen,Map<String, Object> configColumnLen, List<JSONObject> images,Object rowhidden,Object colhidden
-			,JSONObject drillCells,Map<String, JSONObject> cacheDatas,String keyPattern,Map<String, Object> replacedData)
+			,JSONObject drillCells,Map<String, JSONObject> cacheDatas,String keyPattern,Map<String, Object> replacedData,Map<String, JSONArray> cellConditionFormat)
 	{
 		List<List<Map<String, Object>>> bindDatas = null;
 		if(luckySheetBindData.getIsConditions().intValue() == YesNoEnum.YES.getCode())
@@ -2434,20 +2479,21 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
         {
         	value = property;
         }
-        if(luckySheetBindData.getWarning() && StringUtil.isNotEmpty(luckySheetBindData.getThreshold()) && CheckUtil.isNumber(luckySheetBindData.getThreshold()))
-    	{
-    		JSONObject jsonObject = this.processCellWarning(value, luckySheetBindData);
-			if(jsonObject != null)
-			{
-				((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.POSTIL.getCode(), jsonObject);
-				if(StringUtil.isNotEmpty(luckySheetBindData.getWarningColor()))
-    			{
-    				((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.BACKGROUND.getCode(), luckySheetBindData.getWarningColor());
-    			}else {
-    				((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.BACKGROUND.getCode(), "#FF0000");
-    			}
-			}
-    	}
+      //2024年8月22日09:59:29注释掉，新增加了条件格式功能，不需要该功能了
+//        if(luckySheetBindData.getWarning() && StringUtil.isNotEmpty(luckySheetBindData.getThreshold()) && CheckUtil.isNumber(luckySheetBindData.getThreshold()))
+//    	{
+//    		JSONObject jsonObject = this.processCellWarning(value, luckySheetBindData);
+//			if(jsonObject != null)
+//			{
+//				((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.POSTIL.getCode(), jsonObject);
+//				if(StringUtil.isNotEmpty(luckySheetBindData.getWarningColor()))
+//    			{
+//    				((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.BACKGROUND.getCode(), luckySheetBindData.getWarningColor());
+//    			}else {
+//    				((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.BACKGROUND.getCode(), "#FF0000");
+//    			}
+//			}
+//    	}
         if(luckySheetBindData.getUnitTransfer())
 		{
 			value = this.processUnitTransfer(value, luckySheetBindData);
@@ -2486,6 +2532,7 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
         		columnlen.put(String.valueOf(rowAndCol.get("maxY")), dataColLen);
         	}
         }
+        this.processConditionFormat(luckySheetBindData, cellConditionFormat, rowAndCol.get("maxX"), rowAndCol.get("maxY"), j == 0);
         String key = rowAndCol.get("maxX")+"_"+rowAndCol.get("maxY");
         if(luckySheetBindData.getCellAttrs().getBooleanValue("isDrill") && drillCells != null)
     	{
@@ -2746,7 +2793,8 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 			List<Map<String, Object>> cellDatas,Map<String, Object> rowlen,
 			Map<String, Object> columnlen,Object dataRowLen,Object dataColLen,Map<String, Integer> maxXAndY,
 			Map<String, Object> borderInfo,List<Map<String, Object>> borderConfig,List<Object> borderInfos,Map<String, JSONObject> extendCellOrigin
-			,Map<String, JSONObject> columnStartCoords,Map<String, Map<String, Object>> mergeMap,Map<String, Object> configRowLen,Map<String, Object> configColumnLen) {
+			,Map<String, JSONObject> columnStartCoords,Map<String, Map<String, Object>> mergeMap,Map<String, Object> configRowLen,Map<String, Object> configColumnLen
+			,Map<String, JSONArray> cellConditionFormat) {
 //		Map<String, Object> border = this.getBorderType(borderConfig, luckySheetBindData.getCoordsx(), luckySheetBindData.getCoordsy());//获取该单元格的边框信息
 		List<Map<String, Object>> border = null;
 		if(!borderInfo.containsKey(luckySheetBindData.getCoordsx()+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+luckySheetBindData.getCoordsy()))
@@ -2761,20 +2809,21 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 			luckySheetBindData.setDatas(luckySheetBindData.getFilterDatas());
 		}
         String calculateResult = luckySheetCalculates.get(luckySheetBindData.getCellFunction().intValue()).calculate(luckySheetBindData);
-        if(luckySheetBindData.getWarning() && StringUtil.isNotEmpty(luckySheetBindData.getThreshold()) && CheckUtil.isNumber(luckySheetBindData.getThreshold()))
-    	{
-    		JSONObject jsonObject = this.processCellWarning(calculateResult, luckySheetBindData);
-			if(jsonObject != null)
-			{
-				((Map<String, Object>)luckySheetBindData.getCellData().get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.POSTIL.getCode(), jsonObject);
-				if(StringUtil.isNotEmpty(luckySheetBindData.getWarningColor()))
-    			{
-    				((Map<String, Object>)luckySheetBindData.getCellData().get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.BACKGROUND.getCode(), luckySheetBindData.getWarningColor());
-    			}else {
-    				((Map<String, Object>)luckySheetBindData.getCellData().get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.BACKGROUND.getCode(), "#FF0000");
-    			}
-			}
-    	}
+      //2024年8月22日09:59:29注释掉，新增加了条件格式功能，不需要该功能了
+//        if(luckySheetBindData.getWarning() && StringUtil.isNotEmpty(luckySheetBindData.getThreshold()) && CheckUtil.isNumber(luckySheetBindData.getThreshold()))
+//    	{
+//    		JSONObject jsonObject = this.processCellWarning(calculateResult, luckySheetBindData);
+//			if(jsonObject != null)
+//			{
+//				((Map<String, Object>)luckySheetBindData.getCellData().get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.POSTIL.getCode(), jsonObject);
+//				if(StringUtil.isNotEmpty(luckySheetBindData.getWarningColor()))
+//    			{
+//    				((Map<String, Object>)luckySheetBindData.getCellData().get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.BACKGROUND.getCode(), luckySheetBindData.getWarningColor());
+//    			}else {
+//    				((Map<String, Object>)luckySheetBindData.getCellData().get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.BACKGROUND.getCode(), "#FF0000");
+//    			}
+//			}
+//    	}
         if(luckySheetBindData.getUnitTransfer())
  		{
  			Object resultData  = this.processUnitTransfer(calculateResult, luckySheetBindData);
@@ -2841,6 +2890,7 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 			}
         }
         cellDatas.add(cellData);
+        this.processConditionFormat(luckySheetBindData, cellConditionFormat, rowAndCol.get("maxX"), rowAndCol.get("maxY"), true);
         if(dataRowLen != null)
         {
         	if(rowlen.get(String.valueOf(rowAndCol.get("maxX")))==null)
@@ -2906,7 +2956,7 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 			Map<String, Object> rowlen,Map<String, Object> columnlen,ObjectMapper objectMapper,
 			Object dataRowLen,Object dataColLen,Map<String, Integer> maxXAndY,Map<String, Object> borderInfo,
 			List<Map<String, Object>> borderConfig,List<Object> borderInfos,Map<String, JSONObject> extendCellOrigin,Map<String, JSONObject> columnStartCoords
-			,JSONObject drillCells) {
+			,JSONObject drillCells,Map<String, JSONArray> cellConditionFormat) {
 		//分组聚合
 		List<List<Map<String, Object>>> datas = null;
         if(luckySheetBindData.getIsConditions().intValue() == YesNoEnum.YES.getCode())
@@ -2926,17 +2976,17 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
                 {//不扩展
                     this.processNotExtendGroupSummaryValue(maxCoordinate, luckySheetBindData, rowAndCol, groupSummaryData, datas.get(j), 
                     		cellDatas, dataRowLen, dataColLen, rowlen, columnlen,objectMapper,maxXAndY,borderInfo,borderConfig,borderInfos,
-                    		extendCellOrigin,columnStartCoords,mergeMap,configRowLen,configColumnLen,drillCells);
+                    		extendCellOrigin,columnStartCoords,mergeMap,configRowLen,configColumnLen,drillCells,cellConditionFormat);
                     break;
                 }else if(CellExtendEnum.VERTICAL.getCode().intValue() == luckySheetBindData.getCellExtend().intValue()){
                     //向下扩展
                     this.processVerticalGroupSummaryValue(j, maxCoordinate, luckySheetBindData, rowAndCol, groupSummaryData, datas.get(j), 
                     		cellDatas, dataRowLen, dataColLen, mergeMap, rowlen, columnlen,objectMapper, datas.size(),maxXAndY,borderInfo,
-                    		borderConfig,borderInfos,extendCellOrigin,columnStartCoords,configRowLen,configColumnLen,drillCells);
+                    		borderConfig,borderInfos,extendCellOrigin,columnStartCoords,configRowLen,configColumnLen,drillCells,cellConditionFormat);
                 }else if(CellExtendEnum.HORIZONTAL.getCode().intValue() == luckySheetBindData.getCellExtend().intValue()){
                 	this.processHorizontalGroupSummaryValue(j, maxCoordinate, luckySheetBindData, rowAndCol, groupSummaryData, datas.get(j), 
                 			cellDatas, dataRowLen, dataColLen, mergeMap, rowlen, columnlen, objectMapper, datas.size(),
-                			maxXAndY,borderInfo,borderConfig,borderInfos,extendCellOrigin,columnStartCoords,configRowLen,configColumnLen,drillCells);
+                			maxXAndY,borderInfo,borderConfig,borderInfos,extendCellOrigin,columnStartCoords,configRowLen,configColumnLen,drillCells,cellConditionFormat);
                 }
             }
         }
@@ -2966,7 +3016,7 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 			Map<String, Object> rowlen,Map<String, Object> columnlen,ObjectMapper objectMapper,Map<String, Integer> maxXAndY,
 			Map<String, Object> borderInfo,List<Map<String, Object>> borderConfig,List<Object> borderInfos,Map<String, JSONObject> extendCellOrigin,
 			Map<String, JSONObject> columnStartCoords,Map<String, Map<String, Object>> mergeMap,Map<String, Object> configRowLen,Map<String, Object> configColumnLen
-			,JSONObject drillCells) {
+			,JSONObject drillCells,Map<String, JSONArray> cellConditionFormat) {
 //		Map<String, Object> border = this.getBorderType(borderConfig, luckySheetBindData.getCoordsx(), luckySheetBindData.getCoordsy());//获取该单元格的边框信息
 		List<Map<String, Object>> border = null;
 		if(!borderInfo.containsKey(luckySheetBindData.getCoordsx()+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+luckySheetBindData.getCoordsy()))
@@ -2997,23 +3047,25 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
     		drillInfo.put(LuckySheetPropsEnum.DRILLPARAMS.getCode(), drillParams);
     		drillCells.put(key, drillInfo);
     	}
+        this.processConditionFormat(luckySheetBindData, cellConditionFormat, rowAndCol.get("maxX"), rowAndCol.get("maxY"), true);
         //计算
         groupSummaryData.setDatas(data);
         String value = luckySheetGroupCalculates.get(luckySheetBindData.getCellFunction().intValue()).calculate(groupSummaryData);
-        if(luckySheetBindData.getWarning() && StringUtil.isNotEmpty(luckySheetBindData.getThreshold()) && CheckUtil.isNumber(luckySheetBindData.getThreshold()))
-    	{
-    		JSONObject jsonObject = this.processCellWarning(value, luckySheetBindData);
-			if(jsonObject != null)
-			{
-				((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.POSTIL.getCode(), jsonObject);
-				if(StringUtil.isNotEmpty(luckySheetBindData.getWarningColor()))
-    			{
-    				((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.BACKGROUND.getCode(), luckySheetBindData.getWarningColor());
-    			}else {
-    				((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.BACKGROUND.getCode(), "#FF0000");
-    			}
-			}
-    	}
+       //2024年8月22日09:59:29注释掉，新增加了条件格式功能，不需要该功能了
+//        if(luckySheetBindData.getWarning() && StringUtil.isNotEmpty(luckySheetBindData.getThreshold()) && CheckUtil.isNumber(luckySheetBindData.getThreshold()))
+//    	{
+//    		JSONObject jsonObject = this.processCellWarning(value, luckySheetBindData);
+//			if(jsonObject != null)
+//			{
+//				((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.POSTIL.getCode(), jsonObject);
+//				if(StringUtil.isNotEmpty(luckySheetBindData.getWarningColor()))
+//    			{
+//    				((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.BACKGROUND.getCode(), luckySheetBindData.getWarningColor());
+//    			}else {
+//    				((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.BACKGROUND.getCode(), "#FF0000");
+//    			}
+//			}
+//    	}
         if(luckySheetBindData.getUnitTransfer())
 		{
 			Object resultData  = this.processUnitTransfer(value, luckySheetBindData);
@@ -3147,7 +3199,7 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 			List<Map<String, Object>> data,List<Map<String, Object>> cellDatas,Object dataRowLen,Object dataColLen,Map<String, Map<String, Object>> mergeMap,
 			Map<String, Object> rowlen,Map<String, Object> columnlen,ObjectMapper objectMapper, int dataSize,Map<String, Integer> maxXAndY,
 			Map<String, Object> borderInfo,List<Map<String, Object>> borderConfig,List<Object> borderInfos,Map<String, JSONObject> extendCellOrigin,Map<String, JSONObject> columnStartCoords
-			,Map<String, Object> configRowLen,Map<String, Object> configColumnLen,JSONObject drillCells) {
+			,Map<String, Object> configRowLen,Map<String, Object> configColumnLen,JSONObject drillCells,Map<String, JSONArray> cellConditionFormat) {
 //		Map<String, Object> border = this.getBorderType(borderConfig, luckySheetBindData.getCoordsx(), luckySheetBindData.getCoordsy());//获取该单元格的边框信息
 		List<Map<String, Object>> border = null;
 		if(!borderInfo.containsKey(luckySheetBindData.getCoordsx()+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+luckySheetBindData.getCoordsy()))
@@ -3178,22 +3230,24 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
     		drillInfo.put(LuckySheetPropsEnum.DRILLPARAMS.getCode(), drillParams);
     		drillCells.put(key, drillInfo);
     	}
+        this.processConditionFormat(luckySheetBindData, cellConditionFormat, rowAndCol.get("maxX"), rowAndCol.get("maxY"), j == 0);
         groupSummaryData.setDatas(data);
         String value = luckySheetGroupCalculates.get(luckySheetBindData.getCellFunction().intValue()).calculate(groupSummaryData);
-        if(luckySheetBindData.getWarning() && StringUtil.isNotEmpty(luckySheetBindData.getThreshold()) && CheckUtil.isNumber(luckySheetBindData.getThreshold()))
-    	{
-    		JSONObject jsonObject = this.processCellWarning(value, luckySheetBindData);
-			if(jsonObject != null)
-			{
-				((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.POSTIL.getCode(), jsonObject);
-				if(StringUtil.isNotEmpty(luckySheetBindData.getWarningColor()))
-    			{
-    				((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.BACKGROUND.getCode(), luckySheetBindData.getWarningColor());
-    			}else {
-    				((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.BACKGROUND.getCode(), "#FF0000");
-    			}
-			}
-    	}
+      //2024年8月22日09:59:29注释掉，新增加了条件格式功能，不需要该功能了
+//        if(luckySheetBindData.getWarning() && StringUtil.isNotEmpty(luckySheetBindData.getThreshold()) && CheckUtil.isNumber(luckySheetBindData.getThreshold()))
+//    	{
+//    		JSONObject jsonObject = this.processCellWarning(value, luckySheetBindData);
+//			if(jsonObject != null)
+//			{
+//				((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.POSTIL.getCode(), jsonObject);
+//				if(StringUtil.isNotEmpty(luckySheetBindData.getWarningColor()))
+//    			{
+//    				((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.BACKGROUND.getCode(), luckySheetBindData.getWarningColor());
+//    			}else {
+//    				((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.BACKGROUND.getCode(), "#FF0000");
+//    			}
+//			}
+//    	}
         if(luckySheetBindData.getUnitTransfer())
 		{
 			Object resultData  = this.processUnitTransfer(value, luckySheetBindData);
@@ -3429,7 +3483,7 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 			List<Map<String, Object>> data,List<Map<String, Object>> cellDatas,Object dataRowLen,Object dataColLen,Map<String, Map<String, Object>> mergeMap,
 			Map<String, Object> rowlen,Map<String, Object> columnlen,ObjectMapper objectMapper, int dataSize,Map<String, Integer> maxXAndY,Map<String, Object> borderInfo,List<Map<String, Object>> borderConfig,List<Object> borderInfos
 			,Map<String, JSONObject> extendCellOrigin,Map<String, JSONObject> columnStartCoords,Map<String, Object> configRowLen,Map<String, Object> configColumnLen
-			,JSONObject drillCells)
+			,JSONObject drillCells,Map<String, JSONArray> cellConditionFormat)
 	{
 //		Map<String, Object> border = this.getBorderType(borderConfig, luckySheetBindData.getCoordsx(), luckySheetBindData.getCoordsy());//获取该单元格的边框信息
 		List<Map<String, Object>> border = null;
@@ -3461,22 +3515,24 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
     		drillInfo.put(LuckySheetPropsEnum.DRILLPARAMS.getCode(), drillParams);
     		drillCells.put(key, drillInfo);
     	}
+        this.processConditionFormat(luckySheetBindData, cellConditionFormat, rowAndCol.get("maxX"), rowAndCol.get("maxY"), j == 0);
         groupSummaryData.setDatas(data);
         String value = luckySheetGroupCalculates.get(luckySheetBindData.getCellFunction().intValue()).calculate(groupSummaryData);
-        if(luckySheetBindData.getWarning() && StringUtil.isNotEmpty(luckySheetBindData.getThreshold()) && CheckUtil.isNumber(luckySheetBindData.getThreshold()))
-    	{
-    		JSONObject jsonObject = this.processCellWarning(value, luckySheetBindData);
-			if(jsonObject != null)
-			{
-				((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.POSTIL.getCode(), jsonObject);
-				if(StringUtil.isNotEmpty(luckySheetBindData.getWarningColor()))
-    			{
-    				((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.BACKGROUND.getCode(), luckySheetBindData.getWarningColor());
-    			}else {
-    				((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.BACKGROUND.getCode(), "#FF0000");
-    			}
-			}
-    	}
+      //2024年8月22日09:59:29注释掉，新增加了条件格式功能，不需要该功能了
+//        if(luckySheetBindData.getWarning() && StringUtil.isNotEmpty(luckySheetBindData.getThreshold()) && CheckUtil.isNumber(luckySheetBindData.getThreshold()))
+//    	{
+//    		JSONObject jsonObject = this.processCellWarning(value, luckySheetBindData);
+//			if(jsonObject != null)
+//			{
+//				((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.POSTIL.getCode(), jsonObject);
+//				if(StringUtil.isNotEmpty(luckySheetBindData.getWarningColor()))
+//    			{
+//    				((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.BACKGROUND.getCode(), luckySheetBindData.getWarningColor());
+//    			}else {
+//    				((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.BACKGROUND.getCode(), "#FF0000");
+//    			}
+//			}
+//    	}
         if(luckySheetBindData.getUnitTransfer())
 		{
 			Object resultData  = this.processUnitTransfer(value, luckySheetBindData);
@@ -4102,5 +4158,44 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 			}
 		}
 		return result;
+	}
+	
+	/**  
+	 * @MethodName: processConditionFormat
+	 * @Description: 条件格式处理
+	 * @author caiyang
+	 * @param luckySheetBindData
+	 * @param cellConditionFormat 单元格对应的条件格式
+	 * @param x 计算后的横坐标
+	 * @param y 计算后的纵坐标
+	 * @param extend 扩展方向 1不扩展 2向下扩展 2向右扩展 
+	 * @param isInit 是否是第一个计算的单元格
+	 * void
+	 * @date 2024-08-18 08:56:52 
+	 */ 
+	private void processConditionFormat(LuckySheetFormsBindData luckySheetBindData,Map<String, JSONArray> cellConditionFormat,int x,int y,boolean isInit) {
+		String conditonFormatKey = luckySheetBindData.getCoordsx() + "_" + luckySheetBindData.getCoordsy();
+		if(!StringUtil.isEmptyMap(cellConditionFormat) && cellConditionFormat.containsKey(conditonFormatKey)) {
+			for (int i = 0; i < cellConditionFormat.get(conditonFormatKey).size(); i++) {
+				if(isInit) {
+					JSONArray cellrange = new JSONArray();
+					JSONObject range = new JSONObject();
+					JSONArray row = new JSONArray();
+					row.add(x);
+					row.add(x);
+					JSONArray column = new JSONArray();
+					column.add(y);
+					column.add(y);
+					range.put("row", row);
+					range.put("column", column);
+					cellrange.add(range);
+					cellConditionFormat.get(conditonFormatKey).getJSONObject(i).put("cellrange", cellrange);
+				}else {
+					JSONObject range = cellConditionFormat.get(conditonFormatKey).getJSONObject(i).getJSONArray("cellrange").getJSONObject(0);
+					range.getJSONArray("row").set(1, x);
+					range.getJSONArray("column").set(1, y);
+				}
+			}
+		}
 	}
 }

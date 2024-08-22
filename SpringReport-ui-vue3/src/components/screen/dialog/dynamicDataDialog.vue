@@ -109,6 +109,9 @@
               :key="op.datasourceId"
             ></el-option>
           </el-select>
+        </el-form-item><br>
+        <el-form-item  label="系统变量">
+          <p class="column-tag" v-for="(item,index) in commonConstants.systemParam" :key="index" ><icon-copy @click="doCopy(item)"/>{{item.label}}({{item.value}})</p> 
         </el-form-item>
       </el-form>
       <el-button-group v-if="datasourceType == '1'">
@@ -219,12 +222,33 @@
       </span>
       </template>
     </el-dialog>
+    <textarea id="clipboradInput" value="" style="opacity:0;position:absolute" />
   </div>
 </template>
 <script src="./dynamicDataDialog.js">
 
 </script>
 <style scoped>
+.column-tag{
+    max-width:150px;
+    height: 30px;
+    background: #f7bb61;
+    border-radius: 2px;
+    color: rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: inline-block;
+    padding: 0 10px;
+    height: 32px;
+    line-height: 30px;
+    font-size: 12px;
+    border-radius: 4px;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    border: 1px solid rgba(64,158,255,.2);
+    font-weight: bold;
+}
 :deep(.el-pagination .el-select__wrapper){
   background-color: var(--colorWhite) !important;
 }
