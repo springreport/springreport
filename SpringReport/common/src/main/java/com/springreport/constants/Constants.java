@@ -293,4 +293,32 @@ public class Constants {
      * @date 2024-08-14 06:40:11 
      */  
     public static final String[] SYSTEM_PARAM = new String[] {"userId","userName","roleId","merchantNo","deptId"};
+
+    /**  
+     * @Fields CELL_RULE : 单元格规则
+     * @author caiyang
+     * @date 2024-08-21 10:08:35 
+     */  
+    public static final String CELL_RULE = "{\"conditionRange\":[],\"cellrange\":[{\"column\":[1,1],\"row\":[2,2]}],\"format\":{\"textColor\":\"#9c0006\",\"cellColor\":\"#ffc7ce\"},\"conditionValue\":[\"5\"],\"conditionName\":\"greaterThan\",\"type\":\"default\"}";
+    
+    /**  
+     * @Fields DATA_BAR_RULE : 数据条规则
+     * @author caiyang
+     * @date 2024-08-21 01:17:32 
+     */  
+    public static final String DATA_BAR_RULE = "{\"cellrange\":[{\"column\":[1,1],\"row\":[2,2]}],\"format\":[\"#638ec6\",\"#ffffff\"],\"type\":\"dataBar\"}";
+
+    /**  
+     * @Fields COLORGRADATION_RULE : 色阶数据规则
+     * @author caiyang
+     * @date 2024-08-21 01:48:56 
+     */  
+    public static final String COLORGRADATION_RULE = "{\"cellrange\":[{\"column\":[1,1],\"row\":[2,2]}],\"format\":[\"rgb(99, 190, 123)\",\"rgb(255, 235, 132)\",\"rgb(248, 105, 107)\"],\"type\":\"colorGradation\"}";
+
+    /**  
+     * @Fields ICON_SET_RULE : 图标集规则
+     * @author caiyang
+     * @date 2024-08-21 03:09:18 
+     */  
+    public static final String ICON_SET_RULE = "{\"cellrange\":[{\"column\":[1,1],\"row\":[2,2]}],\"format\":{\"len\":\"3\",\"top\":\"0\",\"leftMin\":\"0\"},\"type\":\"icons\"}";
 }

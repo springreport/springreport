@@ -2,10 +2,12 @@ package com.springreport.util;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +38,10 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 import org.apache.poi.xssf.usermodel.XSSFColor;
+import org.apache.poi.xssf.usermodel.XSSFColorScaleFormatting;
 import org.apache.poi.xssf.usermodel.XSSFComment;
+import org.apache.poi.xssf.usermodel.XSSFConditionalFormatting;
+import org.apache.poi.xssf.usermodel.XSSFConditionalFormattingRule;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
@@ -49,6 +54,7 @@ import org.apache.poi.xssf.usermodel.XSSFShape;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTAutoFilter;
+import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTCfRule;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSON;
@@ -412,6 +418,207 @@ public class DocumentToLuckysheetUtil {
 				 column.add(firstCellCoor[1]-1);
 				 column.add(endCellCoor[1]-1);
 				 filterSelect.put("column", column);
+			 }
+			 //获取条件格式
+			 JSONArray luckysheetConditionformatSave = new JSONArray();//条件格式
+			 int formatNum = sheet.getSheetConditionalFormatting().getNumConditionalFormattings();
+			 if(formatNum > 0) {
+				 for (int j = 0; j < formatNum; j++) {
+					 XSSFConditionalFormatting conditionalFormatting = sheet.getSheetConditionalFormatting().getConditionalFormattingAt(j);
+					 int ruleNum = conditionalFormatting.getNumberOfRules();
+					 if(ruleNum > 0) {
+						 CellRangeAddress[] cellRangeAddress = conditionalFormatting.getFormattingRanges();
+						 JSONArray cellrange = new JSONArray();
+						 for (int k = 0; k < cellRangeAddress.length; k++) {
+							JSONObject range = new JSONObject();
+							JSONArray row = new JSONArray();
+							JSONArray column = new JSONArray();
+							row.add(cellRangeAddress[k].getFirstRow());
+							row.add(cellRangeAddress[k].getLastRow());
+							column.add(cellRangeAddress[k].getFirstColumn());
+							column.add(cellRangeAddress[k].getLastColumn());
+							range.put("row", row);
+							range.put("column", column);
+							cellrange.add(range);
+						 }
+						 JSONArray conditionFormats = new JSONArray();
+						 for (int k = 0; k < ruleNum; k++) {
+							 XSSFConditionalFormattingRule rule = conditionalFormatting.getRule(k);
+							 Class<?> clazz = rule.getClass();
+							 Field field = clazz.getDeclaredField("_cfRule");
+							 field.setAccessible(true);
+							 CTCfRule cfRule = (CTCfRule)field.get(rule);
+							 String ruleType = cfRule.getType().toString();
+							 if("cellIs".equals(ruleType) || "containsText".equals(ruleType) || "duplicateValues".equals(ruleType) 
+								|| "top10".equals(ruleType) || "aboveAverage".equals(ruleType)){
+								 JSONObject cellConditionFormat = JSON.parseObject(Constants.CELL_RULE);
+								 String operator = "";
+								 if(cfRule.getOperator() == null) {
+									 operator = ruleType;
+								 }else {
+									 operator = cfRule.getOperator().toString();
+								 }
+								 if("greaterThan".equals(operator) || "lessThan".equals(operator) || "equal".equals(operator) 
+								 || "between".equals(operator) || "containsText".equals(operator) || "duplicateValues".equals(operator)
+								 || "top10".equals(operator) || "aboveAverage".equals(operator)) {
+									 String cellColor = "#" + rule.getPatternFormatting().getFillBackgroundColorColor().getARGBHex().substring(2);
+									 String textColor = "#" + rule.getFontFormatting().getFontColor().getARGBHex().substring(2);
+									 if("greaterThan".equals(operator)) {
+										 String conditionValue = rule.getFormula1();
+										 cellConditionFormat.put("conditionName", "greaterThan");
+										 cellConditionFormat.getJSONArray("conditionValue").set(0, conditionValue);
+									 }else if("lessThan".equals(operator)) {
+										 String conditionValue = rule.getFormula1();
+										 cellConditionFormat.put("conditionName", "lessThan");
+										 cellConditionFormat.getJSONArray("conditionValue").set(0, conditionValue);
+									 }else if("equal".equals(operator)) {
+										 String conditionValue = rule.getFormula1();
+										 cellConditionFormat.put("conditionName", "equal");
+										 cellConditionFormat.getJSONArray("conditionValue").set(0, conditionValue);
+									 }else if("between".equals(operator)) {
+										 String conditionValue = rule.getFormula1();
+										 cellConditionFormat.put("conditionName", "betweenness");
+										 cellConditionFormat.getJSONArray("conditionValue").set(0, conditionValue);
+										 cellConditionFormat.getJSONArray("conditionValue").add(rule.getFormula2());
+									 }else if("containsText".equals(operator)) {
+										 String conditionValue = cfRule.getText();
+										 cellConditionFormat.put("conditionName", "textContains");
+										 cellConditionFormat.getJSONArray("conditionValue").set(0, conditionValue);
+									 }else if("duplicateValues".equals(operator)) {
+										 cellConditionFormat.put("conditionName", "duplicateValue");
+										 cellConditionFormat.getJSONArray("conditionValue").set(0, "0");
+									 }else if("top10".equals(operator)) {
+										 String conditionValue = String.valueOf(cfRule.getRank());
+										 if(cfRule.getBottom()) {
+											 if(cfRule.getPercent()) {
+												 cellConditionFormat.put("conditionName", "last10%"); 
+											 }else {
+												 cellConditionFormat.put("conditionName", "last10"); 
+											 }
+										 }else {
+											 if(cfRule.getPercent()) {
+												 cellConditionFormat.put("conditionName", "top10%"); 
+											 }else {
+												 cellConditionFormat.put("conditionName", "top10"); 
+											 }
+										 }
+										 cellConditionFormat.getJSONArray("conditionValue").set(0, conditionValue);
+									 }else if("aboveAverage".equals(operator)) {
+										 if(cfRule.getAboveAverage()) {
+											 cellConditionFormat.put("conditionName", "aboveAverage");
+											 cellConditionFormat.getJSONArray("conditionValue").set(0, "aboveAverage");
+										 }else {
+											 cellConditionFormat.put("conditionName", "SubAverage"); 
+											 cellConditionFormat.getJSONArray("conditionValue").set(0, "SubAverage");
+										 }
+										
+									 }
+									 cellConditionFormat.getJSONObject("format").put("textColor", textColor);
+									 cellConditionFormat.getJSONObject("format").put("cellColor", cellColor);
+									 cellConditionFormat.put("cellrange", cellrange);
+									 conditionFormats.add(cellConditionFormat); 
+								 }
+							 }else if("dataBar".equals(ruleType)) {
+								 JSONObject dataBarConditionFormat = JSON.parseObject(Constants.DATA_BAR_RULE);
+								 String color = "#" + rule.getDataBarFormatting().getColor().getARGBHex().substring(2);
+								 dataBarConditionFormat.getJSONArray("format").set(0, color);
+								 dataBarConditionFormat.put("cellrange", cellrange);
+								 conditionFormats.add(dataBarConditionFormat); 
+							 }else if("colorScale".equals(ruleType)) {
+								 JSONObject colorScaleConditionFormat = JSON.parseObject(Constants.COLORGRADATION_RULE);
+								 XSSFColorScaleFormatting colorScaleFormatting = rule.getColorScaleFormatting();
+								 int numControlPoints = colorScaleFormatting.getNumControlPoints();
+								 JSONArray format = new JSONArray();
+								 for (int l = numControlPoints-1; l >= 0; l--) {
+									String color =  "#" + colorScaleFormatting.getColors()[l].getARGBHex().substring(2);
+									int[] rgbs = StringUtil.hexToRgb(color);
+									format.add("rgb("+rgbs[0]+","+rgbs[1]+","+rgbs[2]+")");
+								 }
+								 colorScaleConditionFormat.put("cellrange", cellrange);
+								 colorScaleConditionFormat.put("format", format);
+								 conditionFormats.add(colorScaleConditionFormat); 
+							 }else if("iconSet".equals(ruleType)) {
+								 //部分图标集不支持：3个三角形、3个星形、5个框
+								 JSONObject iconSetConditionFormat = JSON.parseObject(Constants.ICON_SET_RULE);
+								 String iconSet = cfRule.getIconSet().getIconSet().toString();
+								 JSONObject format = new JSONObject();
+								 if("3Arrows".equals(iconSet)) {//三向箭头 彩色
+									 format.put("len", "3");
+									 format.put("top", "0");
+									 format.put("leftMin", "0");
+								 }else if("3ArrowsGray".equals(iconSet)) {//三向箭头 灰色
+									 format.put("len", "3");
+									 format.put("top", "0");
+									 format.put("leftMin", "5");
+								 }else if("4ArrowsGray".equals(iconSet)) {//四向箭头 灰色
+									 format.put("len", "4");
+									 format.put("top", "1");
+									 format.put("leftMin", "5");
+								 }else if("4Arrows".equals(iconSet)) {//四向箭头 彩色
+									 format.put("len", "4");
+									 format.put("top", "2");
+									 format.put("leftMin", "0");
+								 }else if("5ArrowsGray".equals(iconSet)) {//五向箭头 灰色
+									 format.put("len", "5");
+									 format.put("top", "2");
+									 format.put("leftMin", "5");
+								 }else if("5Arrows".equals(iconSet)) {//五向箭头 彩色
+									 format.put("len", "5");
+									 format.put("top", "3");
+									 format.put("leftMin", "0");
+								 }else if("3TrafficLights1".equals(iconSet)) {//三色交通灯 无边框
+									 format.put("len", "3");
+									 format.put("top", "4");
+									 format.put("leftMin", "0");
+								 }else if("3TrafficLights2".equals(iconSet)) {//三色交通灯 有边框
+									 format.put("len", "3");
+									 format.put("top", "4");
+									 format.put("leftMin", "5");
+								 }else if("3Signs".equals(iconSet)) {//三标志
+									 format.put("len", "3");
+									 format.put("top", "5");
+									 format.put("leftMin", "0");
+								 }else if("4TrafficLights".equals(iconSet)) {//四色交通灯
+									 format.put("len", "5");
+									 format.put("top", "5");
+									 format.put("leftMin", "5");
+								 }else if("4RedToBlack".equals(iconSet)) {//绿-红-黑渐变
+									 format.put("len", "4");
+									 format.put("top", "6");
+									 format.put("leftMin", "0");
+								 }else if("3Symbols".equals(iconSet)) {//三个符号 有圆圈
+									 format.put("len", "3");
+									 format.put("top", "7");
+									 format.put("leftMin", "0");
+								 }else if("3Symbols2".equals(iconSet)) {//三个符号 无圆圈
+									 format.put("len", "3");
+									 format.put("top", "7");
+									 format.put("leftMin", "5");
+								 }else if("3Flags".equals(iconSet)) {//三色旗
+									 format.put("len", "3");
+									 format.put("top", "8");
+									 format.put("leftMin", "0");
+								 }else if("4Rating".equals(iconSet)) {//四等级
+									 format.put("len", "4");
+									 format.put("top", "9");
+									 format.put("leftMin", "5");
+								 }else if("5Quarters".equals(iconSet)) {//五象限图
+									 format.put("len", "5");
+									 format.put("top", "10");
+									 format.put("leftMin", "0");
+								 }else if("5Rating".equals(iconSet)) {//五等级
+									 format.put("len", "5");
+									 format.put("top", "10");
+									 format.put("leftMin", "5");
+								 }
+								 iconSetConditionFormat.put("cellrange", cellrange);
+								 iconSetConditionFormat.put("format", format);
+								 conditionFormats.add(iconSetConditionFormat); 
+							 }
+						}
+						luckysheetConditionformatSave.addAll(conditionFormats);
+					 }
+				}
 			 }
              int maxColumn = -1;
              HashMap<String, Object> cellBorders = new LinkedHashMap<>();
@@ -783,6 +990,7 @@ public class DocumentToLuckysheetUtil {
 			 sheetData.put("images", images);
 			 sheetData.put("hyperlink", hyperlinks);
 			 sheetData.put("filter_select", filterSelect);
+			 sheetData.put("luckysheet_conditionformat_save", luckysheetConditionformatSave);
 			 result.add(sheetData);
 		 }
 		 return result;

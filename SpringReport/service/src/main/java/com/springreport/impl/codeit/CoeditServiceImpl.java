@@ -2093,6 +2093,11 @@ public class CoeditServiceImpl extends ServiceImpl<LuckysheetMapper, Luckysheet>
 						JSONObject merge = JSONObject.parseObject(redisCache.getMergeInfo());
 						mesSheetConfig.setMerge(merge);
 					}
+					if(StringUtil.isNotEmpty(redisCache.getLuckysheetConditionformatSave()))
+					{
+						JSONArray luckysheetConditionFormat = JSONObject.parseArray(redisCache.getLuckysheetConditionformatSave());
+						mesSheetConfig.setLuckysheetConditionformatSave(luckysheetConditionFormat);
+					}
 					Map<String, Integer> maxXAndY = new HashMap<>();
 					int maxr = 0;
 					int maxc = 0;

@@ -272,6 +272,13 @@ public class ResLuckySheetDataDto {
 	 * @date 2024-02-26 04:45:47 
 	 */  
 	private JSONArray pageDivider;
+	
+	/**  
+     * @Fields luckysheetConditionformatSave : 条件格式配置
+     * @author caiyang
+     * @date 2024年8月16日18:54:55
+     */  
+    private JSONArray luckysheetConditionformatSave;
 
 	public Map<String, Integer> getMaxXAndY() {
 		if(maxXAndY == null)
