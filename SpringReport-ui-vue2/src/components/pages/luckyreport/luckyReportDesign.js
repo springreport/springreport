@@ -4137,6 +4137,14 @@ export default {
         input.select(); // 选中文本
         document.execCommand('copy'); // 执行浏览器复制命令
         this.$message.success('复制成功')
+      },
+      copyColumn(datasetName, columnName){
+        let text = datasetName + '.${' + columnName + '}';
+        const input = document.getElementById('clipboradInput'); // 承载复制内容
+        input.value = text; // 修改文本框的内容
+        input.select(); // 选中文本
+        document.execCommand('copy'); // 执行浏览器复制命令
+        this.$message.success('复制成功')
       }
   },
   watch:{
