@@ -36,7 +36,7 @@
                 </div>
                 <div class="dataset-box-content" v-if="o.isActive">
                     <vuedraggable class="wrapper" v-model="o.columns" :sort= "false" :disabled= "false" >
-                        <p class="column-tag" v-for="(column,index) in o.columns" :key="index" :title="column.name" @dragend="endDraggable(o.datasetName,column.name)">{{column.name}}</p>
+                        <p class="column-tag" v-for="(column,index) in o.columns" :key="index" :title="column.name" @dragend="endDraggable(o.datasetName,column.name)"><i class="el-icon-copy-document" title="复制" @click="copyColumn(o.datasetName,column.name)"></i>{{column.name}}</p>
                     </vuedraggable>
                     <el-input v-show="o.apiResult" type="textarea" placeholder="" v-model="o.apiResult" rows="6"></el-input>
                 </div>

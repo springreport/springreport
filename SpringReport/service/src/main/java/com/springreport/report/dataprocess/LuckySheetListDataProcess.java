@@ -217,13 +217,14 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 					}
    					blockDatas.put(datasetName, bindData.getDatas());
      				sheetBindData.setBlockDatas(blockDatas);
+     				if(blockBindDatas.containsKey(key))
+    				{
+    					continue;
+    				}else {
+    					blockBindDatas.put(key, bindData);
+    				}
 				}
-				if(blockBindDatas.containsKey(key))
-				{
-					continue;
-				}else {
-					blockBindDatas.put(key, bindData);
-				}
+				
 				if(bindData.getIsSubtotalCalc())
 				{//计算分组计算连的分组数量
 					if(StringUtil.isNotEmpty(bindData.getSubtotalCalc()))
