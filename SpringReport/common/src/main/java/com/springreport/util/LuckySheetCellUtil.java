@@ -177,10 +177,11 @@ public class LuckySheetCellUtil {
 					}
 					Map<String, Object> cellType = (Map<String, Object>) cellValue.get(LuckySheetPropsEnum.CELLTYPE.getCode());
 					String t = "s";
+					String fa = (String)cellType.get("fa");
 					if(cellType != null) {
 						t = String.valueOf(cellType.get(LuckySheetPropsEnum.TYPE.getCode()));
 					}
-					String f = String.valueOf(cellValue.get(LuckySheetPropsEnum.FUNCTION.getCode()) == null ? "" : cellValue.get(LuckySheetPropsEnum.FUNCTION.getCode()));
+ 					String f = String.valueOf(cellValue.get(LuckySheetPropsEnum.FUNCTION.getCode()) == null ? "" : cellValue.get(LuckySheetPropsEnum.FUNCTION.getCode()));
 					if(StringUtil.isNotEmpty(f))
 					{
 						if((f.toLowerCase()).contains((FunctionExpressEnum.NOW.getCode().toLowerCase())))
@@ -225,18 +226,19 @@ public class LuckySheetCellUtil {
 						}else {
 							if(cellValue.get(LuckySheetPropsEnum.CELLVALUE.getCode()) != null)
 							{
-								if(CheckUtil.isNumber(String.valueOf(cellValue.get(LuckySheetPropsEnum.CELLVALUE.getCode()))) 
-									&& !CheckUtil.isIDCardNo(String.valueOf(cellValue.get(LuckySheetPropsEnum.CELLVALUE.getCode()))) && String.valueOf(cellValue.get(LuckySheetPropsEnum.CELLVALUE.getCode())).length() <= 12)
+//								if(CheckUtil.isNumber(String.valueOf(cellValue.get(LuckySheetPropsEnum.CELLVALUE.getCode()))) 
+//									&& !CheckUtil.isIDCardNo(String.valueOf(cellValue.get(LuckySheetPropsEnum.CELLVALUE.getCode()))) && String.valueOf(cellValue.get(LuckySheetPropsEnum.CELLVALUE.getCode())).length() <= 12)
+//								{
+//									cell.setCellValue(Double.parseDouble(String.valueOf(cellValue.get(LuckySheetPropsEnum.CELLVALUE.getCode()))));
+//								}else {
+//									
+//								}
+								XSSFRichTextString richTextString = this.getCheckBoxValue(dataVerification, String.valueOf(cellValue.get(LuckySheetPropsEnum.CELLVALUE.getCode())), key);
+								if(richTextString == null)
 								{
-									cell.setCellValue(Double.parseDouble(String.valueOf(cellValue.get(LuckySheetPropsEnum.CELLVALUE.getCode()))));
+									cell.setCellValue(String.valueOf(cellValue.get(LuckySheetPropsEnum.CELLVALUE.getCode())));
 								}else {
-									XSSFRichTextString richTextString = this.getCheckBoxValue(dataVerification, String.valueOf(cellValue.get(LuckySheetPropsEnum.CELLVALUE.getCode())), key);
-									if(richTextString == null)
-									{
-										cell.setCellValue(String.valueOf(cellValue.get(LuckySheetPropsEnum.CELLVALUE.getCode())));
-									}else {
-										cell.setCellValue(richTextString);
-									}
+									cell.setCellValue(richTextString);
 								}
 							}else {
 								cell.setCellValue("");
@@ -510,6 +512,9 @@ public class LuckySheetCellUtil {
 		}else {
 			cellStyle = (XSSFCellStyle) wb.createCellStyle();
 			String fa = String.valueOf(styleMap.get("dataFormat")==null?"":styleMap.get("dataFormat"));
+			if("##0.00".equals(fa)) {
+				fa = "#,##0.00";
+			}
 			DataFormat format = wb.createDataFormat();
 			cellStyle.setDataFormat(StringUtil.isNullOrEmpty(fa)?format.getFormat("General"):format.getFormat(fa));
 			XSSFFont font = (XSSFFont) wb.createFont();

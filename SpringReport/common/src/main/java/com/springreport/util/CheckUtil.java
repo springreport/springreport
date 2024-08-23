@@ -413,8 +413,26 @@ public class CheckUtil {
 	        }
 	        return true;
 	    }
+	  
+	  public static boolean validate(String formula) {
+	        String regex = "^(\\d+|\\(\\s*\\d+\\s*[\\+\\-\\*/]\\s*\\d+\\s*\\))(\\s*[\\+\\-\\*/]\\s*(\\d+|\\(\\s*\\d+\\s*[\\+\\-\\*/]\\s*\\d+\\s*\\)))*$";
+	        Pattern pattern = Pattern.compile(regex);
+	        return pattern.matcher(formula).matches();
+	    }
+	  private static  String[] operators = {"\\+", "-", "\\*", "/", "%"};
+	  public static boolean containsOperator(String str) {
+		    for (String operator : operators) {
+		        Pattern pattern = Pattern.compile(operator);
+		        Matcher matcher = pattern.matcher(str);
+		        if (matcher.find()) {
+		            return true;
+		        }
+		    }
+		    return false;
+		}
+	  
 	
 	 public static void main(String[] args) {
-		 CheckUtil.checkPassword("caiyangaaa");
+		 System.err.println(CheckUtil.validate("370686199003284617")&&CheckUtil.containsOperator("370686199003284617"));;
 	 }
 }

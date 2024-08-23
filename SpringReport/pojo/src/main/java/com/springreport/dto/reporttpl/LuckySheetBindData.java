@@ -496,4 +496,11 @@ public class LuckySheetBindData {
      * @date 2024-08-18 08:24:02 
      */  
     private Integer relyIndex;
+    
+    /**  
+     * @Fields cellContent : 单元格文本信息(去掉数据集信息)
+     * @author caiyang
+     * @date 2024-08-23 03:33:34 
+     */  
+    private String cellText;
 }

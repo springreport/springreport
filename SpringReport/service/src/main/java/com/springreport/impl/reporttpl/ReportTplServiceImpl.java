@@ -4163,7 +4163,11 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 							            try {
 							            	if(set.size() > 1)
 						                	{
-						                		value = AviatorEvaluator.execute(property);
+							            		if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
+							            			value = AviatorEvaluator.execute(property);
+												}else {
+						    						value = property;
+						    					}
 						                		if(value instanceof Double && (Double.isNaN((double) value) || Double.isInfinite((double) value)))
 						                		{
 						                			value = 0;
@@ -4175,7 +4179,11 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 						        					isImg = true;
 						                		}else if(!isJustProperty)
 						                		{
-						                			value = AviatorEvaluator.execute(property);
+						                			if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
+						                    			value = AviatorEvaluator.execute(property);
+						        					}else {
+						        						value = property;
+						        					}
 						                			if(value instanceof Double && (Double.isNaN((double) value) || Double.isInfinite((double) value)))
 						                    		{
 						                    			value = 0;
@@ -4498,7 +4506,9 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 					isImg = true;
 				}else {
 					try {
-						value = AviatorEvaluator.execute(String.valueOf(originalValue));
+						if(CheckUtil.validate(String.valueOf(originalValue))&&CheckUtil.containsOperator(String.valueOf(originalValue))) {
+							value = AviatorEvaluator.execute(String.valueOf(originalValue));
+						}
 						if(value instanceof Double && (Double.isNaN((double) value) || Double.isInfinite((double) value)))
                 		{
                 			value = 0;
@@ -4532,6 +4542,8 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 						value = this.processUnitTransfer(value, luckySheetBindData);
 					}
 				}
+				String format = LuckysheetUtil.getCellFormat(luckySheetBindData.getCellData());
+				value = LuckysheetUtil.formatValue(format, value);
 				cellConfig.put(LuckySheetPropsEnum.CELLVALUE.getCode(), value);
 			}
 		}
@@ -6638,7 +6650,11 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
             }
             Set<String> set = datas.keySet();
             for (String o : set) {
-            	property = property.replace(o, datas.get(o)==null?"":String.valueOf(datas.get(o)));
+            	if(StringUtil.isNotEmpty(luckySheetBindData.getCellText())) {
+            		property = luckySheetBindData.getCellText().replace("${"+o+"}", datas.get(o)==null?"":String.valueOf(datas.get(o)));
+            	}else {
+            		property = property.replace(o, datas.get(o)==null?"":String.valueOf(datas.get(o)));
+            	}
             	if(set.size() == 1)
             	{
             		if(property.equals("") || property.length() == String.valueOf(datas.get(o)).length())
@@ -6650,7 +6666,11 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
             try {
             	if(set.size() > 1)
             	{
-            		value = AviatorEvaluator.execute(property);
+            		if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
+            			value = AviatorEvaluator.execute(property);
+					}else {
+						value = property;
+					}
             		if(value instanceof Double && (Double.isNaN((double) value) || Double.isInfinite((double) value)))
             		{
             			value = 0;
@@ -6662,7 +6682,11 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
     					isImg = true;
             		}else if(!isJustProperty)
             		{
-            			value = AviatorEvaluator.execute(property);
+            			if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
+                			value = AviatorEvaluator.execute(property);
+    					}else {
+    						value = property;
+    					}
             			if(value instanceof Double && (Double.isNaN((double) value) || Double.isInfinite((double) value)))
                 		{
                 			value = 0;
@@ -7112,7 +7136,11 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         	Map<String, Object> datas = ListUtil.getProperties(luckySheetBindData.getProperty(), bindDatas.get(j).get(0));
             Set<String> set = datas.keySet();
             for (String o : set) {
-            	property = property.replace(o, datas.get(o)==null?"":String.valueOf(datas.get(o)));
+            	if(StringUtil.isNotEmpty(luckySheetBindData.getCellText())) {
+            		property = luckySheetBindData.getCellText().replace("${"+o+"}", datas.get(o)==null?"":String.valueOf(datas.get(o)));
+            	}else {
+            		property = property.replace(o, datas.get(o)==null?"":String.valueOf(datas.get(o)));
+            	}
             	if(set.size() == 1)
             	{
             		if(property.equals("") || property.length() == String.valueOf(datas.get(o)).length())
@@ -7124,7 +7152,11 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
             try {
             	if(set.size() > 1)
             	{
-            		value = AviatorEvaluator.execute(property);
+            		if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
+            			value = AviatorEvaluator.execute(property);
+					}else {
+						value = property;
+					}
             		if(value instanceof Double && (Double.isNaN((double) value) || Double.isInfinite((double) value)))
             		{
             			value = 0;
@@ -7136,7 +7168,11 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
     					isImg = true;
             		}else if(!isJustProperty)
             		{
-            			value = AviatorEvaluator.execute(property);
+            			if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
+                			value = AviatorEvaluator.execute(property);
+    					}else {
+    						value = property;
+    					}
             			if(value instanceof Double && (Double.isNaN((double) value) || Double.isInfinite((double) value)))
                 		{
                 			value = 0;
@@ -8155,7 +8191,11 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         	Map<String, Object> datas = ListUtil.getProperties(luckySheetBindData.getProperty(), bindDatas.get(j).get(0));
             Set<String> set = datas.keySet();
             for (String o : set) {
-            	property = property.replace(o, datas.get(o)==null?"":String.valueOf(datas.get(o)));
+            	if(StringUtil.isNotEmpty(luckySheetBindData.getCellText())) {
+            		property = luckySheetBindData.getCellText().replace("${"+o+"}", datas.get(o)==null?"":String.valueOf(datas.get(o)));
+            	}else {
+            		property = property.replace(o, datas.get(o)==null?"":String.valueOf(datas.get(o)));
+            	}
             	if(set.size() == 1)
             	{
             		if(property.equals("") || property.length() == String.valueOf(datas.get(o)).length())
@@ -8167,7 +8207,11 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
             try {
             	if(set.size() > 1)
             	{
-            		value = AviatorEvaluator.execute(property);
+            		if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
+            			value = AviatorEvaluator.execute(property);
+					}else {
+						value = property;
+					}
             		if(value instanceof Double && (Double.isNaN((double) value) || Double.isInfinite((double) value)))
             		{
             			value = 0;
@@ -8179,7 +8223,11 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
     					isImg = true;
             		}else if(!isJustProperty)
             		{
-            			value = AviatorEvaluator.execute(property);
+            			if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
+                			value = AviatorEvaluator.execute(property);
+    					}else {
+    						value = property;
+    					}
             			if(value instanceof Double && (Double.isNaN((double) value) || Double.isInfinite((double) value)))
                 		{
                 			value = 0;
@@ -8733,7 +8781,11 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
                 try {
                 	if(set.size() > 1)
                 	{
-                		value = AviatorEvaluator.execute(property);
+                		if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
+                			value = AviatorEvaluator.execute(property);
+    					}else {
+    						value = property;
+    					}
                 		if(value instanceof Double && (Double.isNaN((double) value) || Double.isInfinite((double) value)))
                 		{
                 			value = 0;
@@ -8745,7 +8797,11 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         					isImg = true;
                 		}else if(!isJustProperty)
                 		{
-                			value = AviatorEvaluator.execute(property);
+                			if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
+                    			value = AviatorEvaluator.execute(property);
+        					}else {
+        						value = property;
+        					}
                 			if(value instanceof Double && (Double.isNaN((double) value) || Double.isInfinite((double) value)))
                     		{
                     			value = 0;
@@ -9202,7 +9258,11 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
                 try {
                 	if(set.size() > 1)
                 	{
-                		value = AviatorEvaluator.execute(property);
+                		if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
+                			value = AviatorEvaluator.execute(property);
+    					}else {
+    						value = property;
+    					}
                 		if(value instanceof Double && (Double.isNaN((double) value) || Double.isInfinite((double) value)))
                 		{
                 			value = 0;
@@ -9214,7 +9274,11 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         					isImg = true;
                 		}else if(!isJustProperty)
                 		{
-                			value = AviatorEvaluator.execute(property);
+                			if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
+                    			value = AviatorEvaluator.execute(property);
+        					}else {
+        						value = property;
+        					}
                 			if(value instanceof Double && (Double.isNaN((double) value) || Double.isInfinite((double) value)))
                     		{
                     			value = 0;
@@ -9584,7 +9648,11 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
             try {
             	if(set.size() > 1)
             	{
-            		value = AviatorEvaluator.execute(property);
+            		if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
+            			value = AviatorEvaluator.execute(property);
+					}else {
+						value = property;
+					}
             		if(value instanceof Double && (Double.isNaN((double) value) || Double.isInfinite((double) value)))
             		{
             			value = 0;
@@ -9596,7 +9664,11 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
     					isImg = true;
             		}else if(!isJustProperty)
             		{
-            			value = AviatorEvaluator.execute(property);
+            			if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
+                			value = AviatorEvaluator.execute(property);
+    					}else {
+    						value = property;
+    					}
             			if(value instanceof Double && (Double.isNaN((double) value) || Double.isInfinite((double) value)))
                 		{
                 			value = 0;
@@ -9928,7 +10000,11 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
             try {
             	if(set.size() > 1)
             	{
-            		value = AviatorEvaluator.execute(property);
+            		if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
+            			value = AviatorEvaluator.execute(property);
+					}else {
+						value = property;
+					}
             		if(value instanceof Double && (Double.isNaN((double) value) || Double.isInfinite((double) value)))
             		{
             			value = 0;
@@ -9940,7 +10016,11 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
     					isImg = true;
             		}else if(!isJustProperty)
             		{
-            			value = AviatorEvaluator.execute(property);
+            			if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
+                			value = AviatorEvaluator.execute(property);
+    					}else {
+    						value = property;
+    					}
             			if(value instanceof Double && (Double.isNaN((double) value) || Double.isInfinite((double) value)))
                 		{
                 			value = 0;
@@ -11780,7 +11860,11 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 						}
 						Object value = null;
 						try {
-							value = AviatorEvaluator.execute(property);
+							if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
+		            			value = AviatorEvaluator.execute(property);
+							}else {
+	    						value = property;
+	    					}
 							if(value instanceof Double && (Double.isNaN((double) value) || Double.isInfinite((double) value)))
 	                		{
 	                			value = 0;
@@ -11802,7 +11886,11 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 								}
 								Object value = null;
 								try {
-									value = AviatorEvaluator.execute(tempProperty);
+									if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
+				            			value = AviatorEvaluator.execute(property);
+									}else {
+			    						value = property;
+			    					}
 									if(value instanceof Double && (Double.isNaN((double) value) || Double.isInfinite((double) value)))
 			                		{
 			                			value = 0;

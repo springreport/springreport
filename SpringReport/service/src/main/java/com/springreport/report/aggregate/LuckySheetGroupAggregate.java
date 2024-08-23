@@ -40,6 +40,8 @@ public class LuckySheetGroupAggregate extends Aggregate<LuckysheetReportCell,Luc
 			{
 				property = property.replaceAll("\\$", "").replaceAll("\\{", "").replaceAll("}", "");
 			}else {
+				String cellText =  property.replaceAll(datasetNames[0]+".", "");
+				bindData.setCellText(cellText);
 				property = property.replaceAll(datasetNames[0]+".", "").replaceAll("\\$", "").replaceAll("\\{", "").replaceAll("}", "");
 			}	
 		}
