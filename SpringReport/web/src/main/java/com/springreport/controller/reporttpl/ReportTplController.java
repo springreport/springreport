@@ -574,7 +574,7 @@ public class ReportTplController extends BaseController {
 		if (reportTpl == null) {
 			throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.check.notexist", new String[] {"报表模板"}));
 		}
-		ResPreviewData result = this.iReportTplFormsService.previewLuckysheetReportFormsData(mesGenerateReportDto,userInfoDto,reportTpl);
+		ResPreviewData result = this.iReportTplFormsService.previewLuckysheetReportFormsData(mesGenerateReportDto,userInfoDto,reportTpl,true);
 		return Response.success(result);
 	}
 	

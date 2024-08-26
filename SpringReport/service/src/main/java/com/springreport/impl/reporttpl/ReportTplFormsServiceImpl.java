@@ -42,6 +42,7 @@ import com.springreport.base.BaseEntity;
 import com.springreport.base.DataSourceConfig;
 import com.springreport.base.ReportDataColumnDto;
 import com.springreport.base.ReportDataDetailDto;
+import com.springreport.base.TDengineConnection;
 import com.springreport.base.UserInfoDto;
 import com.springreport.constants.Constants;
 import com.springreport.constants.StatusCode;
@@ -98,13 +99,16 @@ import com.springreport.util.CheckUtil;
 import com.springreport.util.CusAccessObjectUtil;
 import com.springreport.util.DateUtil;
 import com.springreport.util.HttpClientUtil;
+import com.springreport.util.InfluxDBConnection;
 import com.springreport.util.JdbcUtils;
 import com.springreport.util.ListUtil;
 import com.springreport.util.LuckysheetUtil;
 import com.springreport.util.MessageUtil;
+import com.springreport.util.ParamUtil;
 import com.springreport.util.RedisUtil;
 import com.springreport.util.ReportDataUtil;
 import com.springreport.util.StringUtil;
+
 
 @Service
 public class ReportTplFormsServiceImpl implements IReportTplFormsService{
@@ -192,8 +196,8 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 	 */  
 	@Override
 	public ResPreviewData previewLuckysheetReportFormsData(MesGenerateReportDto mesGenerateReportDto,
-			UserInfoDto userInfoDto,ReportTpl reportTpl) throws Exception {
-		ResPreviewData result = this.generateLuckySheetReportFormsData(mesGenerateReportDto, true, userInfoDto,reportTpl);
+			UserInfoDto userInfoDto,ReportTpl reportTpl,boolean isPagination) throws Exception {
+		ResPreviewData result = this.generateLuckySheetReportFormsData(mesGenerateReportDto, isPagination, userInfoDto,reportTpl);
 		return result;
 	}
 	
@@ -290,119 +294,16 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 				{
 					List<LuckySheetFormsBindData> dataSetsBindDatas = new ArrayList<>();//所有数据集绑定的数据
 					for (int i = 0; i < usedDataSet.size(); i++) {
-						Map<String, Object> searchInfo = null;
-						if(YesNoEnum.YES.getCode().intValue() == reportTpl.getIsParamMerge().intValue())
-						{
-							searchInfo = mesGenerateReportDto.getSearchData().get(0);
-						}else {
-							searchInfo = this.getDatasetParamInfo(usedDataSet.get(i), mesGenerateReportDto);
-						}	
-						//获取数据源
-						Map<String, Object> dataSetAndDatasource = this.iReportTplDatasetService.getTplDatasetAndDatasource(reportTpl.getId(), usedDataSet.get(i));
-						DataSource dataSource = (DataSource) dataSetAndDatasource.get("dataSource");
-						ReportTplDataset reportTplDataset = (ReportTplDataset) dataSetAndDatasource.get("tplDataSet");
 						List<Map<String, Object>> datas = null;
-						Map<String, Object> params = null;
-						if(searchInfo != null)
+						Map<String, Object> result = null;
+						if(!datasetDatas.containsKey(usedDataSet.get(i)))
 						{
-							params = this.getViewParams((JSONArray) searchInfo.get("params"));
+							result = this.getDatasetDatas(reportTpl, mesGenerateReportDto, usedDataSet.get(i), isPagination, mergePagination,reportSqls,userInfoDto);
+ 							datas = (List<Map<String, Object>>) result.get("datas");
+							datasetDatas.put(usedDataSet.get(i), datas);
+						}else {
+							datas = datasetDatas.get(usedDataSet.get(i));
 						}
-						if(DatasetTypeEnum.SQL.getCode().intValue() == reportTplDataset.getDatasetType().intValue())
-						{
-							String sql = reportTplDataset.getTplSql();
-							if(SqlTypeEnum.SQL.getCode().intValue() == reportTplDataset.getSqlType().intValue())
-							{
-								String countSql = "";
-								sql = JdbcUtils.processSqlParams(sql, params);
-								if(isPagination && YesNoEnum.YES.getCode().intValue() == reportTplDataset.getIsPagination().intValue())
-								{
-									currentPage = Integer.valueOf(String.valueOf(mesGenerateReportDto.getPagination().get("currentPage")));
-									pageSize = Integer.valueOf(String.valueOf(mesGenerateReportDto.getPagination().get("pageCount")));
-									countSql = JdbcUtils.getCountSql(sql);
-									ReportDatasource reportDatasource = this.iReportDatasourceService.getById(reportTplDataset.getDatasourceId());
-									sql = JdbcUtils.getPaginationSql(sql, reportDatasource.getType(), Integer.valueOf(String.valueOf(mesGenerateReportDto.getPagination().get("pageCount"))), Integer.valueOf(String.valueOf(mesGenerateReportDto.getPagination().get("currentPage"))));
-								}
-								//根据sql获取数据
-								datas = ReportDataUtil.getDatasourceDataBySql(dataSource, sql);
-								if(StringUtil.isNotEmpty(countSql))
-								{
-//									Map<String, Integer> dsPagination = new HashMap<String, Integer>();
-									long count = ReportDataUtil.getDataCountBySQL(dataSource, countSql);
-//									dsPagination.put("totalCount", count);
-//									if(count%Integer.valueOf(String.valueOf(params.get("pageCount")))>0)
-//									{
-//										dsPagination.put("totalPage", count/Integer.valueOf(String.valueOf(params.get("pageCount")))+1);
-//									}else {
-//										dsPagination.put("totalPage", count/Integer.valueOf(String.valueOf(params.get("pageCount"))));
-//									}
-									
-//									paginationMap.put(usedDataSet.get(i), dsPagination);
-									Long totalCount = (Long) mergePagination.get("totalCount");
-									Integer pageCount = (Integer) mergePagination.get("pageCount");
-									Integer paramsPageCount = Integer.valueOf(String.valueOf(mesGenerateReportDto.getPagination().get("pageCount")));
-									if(totalCount == null)
-									{
-										mergePagination.put("totalCount", count);
-//										mergePagination.put("totalPage", count/Integer.valueOf(String.valueOf(params.get("pageCount")))+1);
-									}else {
-										if(count > totalCount)
-										{
-											mergePagination.put("totalCount", count);
-//											mergePagination.put("totalPage", count/Integer.valueOf(String.valueOf(params.get("pageCount")))+1);
-										}
-									}
-									if(pageCount == null)
-									{
-										mergePagination.put("pageCount", paramsPageCount);
-									}else {
-										if(paramsPageCount < pageCount)
-										{
-											mergePagination.put("pageCount", paramsPageCount);
-										}
-									}
-								}
-							}else {
-								datas = ReportDataUtil.getDatasourceDataByProcedure(dataSource, sql, params, JSONArray.parseArray(reportTplDataset.getInParam()), JSONArray.parseArray(reportTplDataset.getOutParam()));
-							}
-							Map<String, String> sqlMap = new HashMap<>();
-							sqlMap.put("name", reportTplDataset.getDatasetName());
-							sqlMap.put("sql", sql);
-							reportSqls.add(sqlMap);
-						}else {//api
-							ReportDatasource reportDatasource = this.iReportDatasourceService.getById(reportTplDataset.getDatasourceId());
-							Map<String, String> headers = null;
-							if(StringUtil.isNotEmpty(reportDatasource.getApiRequestHeader()))
-							{
-								JSONArray headersArray = JSONArray.parseArray(reportDatasource.getApiRequestHeader());
-								if(!ListUtil.isEmpty(headersArray))
-								{
-									headers = new HashMap<String, String>();
-									for (int j = 0; j < headersArray.size(); j++) {
-										String headerName = headersArray.getJSONObject(j).getString("headerName");
-										if(mesGenerateReportDto.getApiHeaders() != null && mesGenerateReportDto.getApiHeaders().containsKey(headerName)) {
-											headers.put(headerName, String.valueOf(mesGenerateReportDto.getApiHeaders().get(headerName)));	
-										}else {
-											headers.put(headerName, String.valueOf(headersArray.getJSONObject(j).getString("headerValue")));	
-										}	
-									}
-								}
-							}
-							String result = null;
-							if(reportTplDataset.getIsPagination().intValue() == YesNoEnum.YES.getCode().intValue()) {
-								//分页查询
-								params.put(reportTplDataset.getCurrentPageAttr(), Integer.valueOf(String.valueOf(mesGenerateReportDto.getPagination().get("currentPage"))));
-								params.put(reportTplDataset.getPageCountAttr(), Integer.valueOf(String.valueOf(mesGenerateReportDto.getPagination().get("pageCount"))));
-							}
-							if("post".equals(reportDatasource.getApiRequestType()))
-							{
-								result = HttpClientUtil.doPostJson(reportDatasource.getJdbcUrl(), JSONObject.toJSONString(params), headers);
-							}else {
-								result = HttpClientUtil.doGet(reportDatasource.getJdbcUrl(),headers,params);
-							}
-							Map<String, Object> apiResult = ReportDataUtil.getApiResult(result, reportDatasource.getApiResultType(), reportDatasource.getApiColumnsPrefix(),reportTplDataset.getIsPagination().intValue() == YesNoEnum.YES.getCode().intValue()?reportTplDataset.getTotalAttr():null);
-							datas = (List<Map<String, Object>>) apiResult.get("datas");
-						}
-						datasetDatas.put(usedDataSet.get(i), datas);
 						//获取数据集对应的变量
 						LuckysheetReportFormsCell cell = new LuckysheetReportFormsCell();
 						cell.setTplId(reportTpl.getId());
@@ -4209,5 +4110,256 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 				}
 			}
 		}
+	}
+	
+	private Map<String, Object> getDatasetDatas(ReportTpl reportTpl,MesGenerateReportDto mesGenerateReportDto,String datasetName,
+			boolean isPagination,Map<String, Object> mergePagination,List<Map<String, String>> reportSqls,UserInfoDto userInfoDto) throws Exception {
+		Map<String, String> sqlMap = new HashMap<>();
+		Map<String, Object> resultMap = new HashMap<>();
+		List<Map<String, Object>> datas = null;
+		Map<String, Object> searchInfo = null;
+		if(YesNoEnum.YES.getCode().intValue() == reportTpl.getIsParamMerge().intValue() || YesNoEnum.YES.getCode().intValue() == mesGenerateReportDto.getIsMobile().intValue())
+		{
+			searchInfo = mesGenerateReportDto.getSearchData().get(0);
+		}else {
+			searchInfo = this.getDatasetParamInfo(datasetName, mesGenerateReportDto);
+		}
+		//获取数据源
+		Map<String, Object> dataSetAndDatasource = this.iReportTplDatasetService.getTplDatasetAndDatasource(reportTpl.getId(), datasetName);
+		int type = (int) dataSetAndDatasource.get("type");
+		DataSource dataSource = null;
+		InfluxDBConnection dbConnection = null;
+		TDengineConnection tDengineConnection = null;
+		Object data = dataSetAndDatasource.get("dataSource");
+		String userName = dataSetAndDatasource.get("useName") != null?String.valueOf(dataSetAndDatasource.get("useName")):"";
+		String password = dataSetAndDatasource.get("password") != null?String.valueOf(dataSetAndDatasource.get("password")):"";
+		if(data instanceof DataSource)
+		{
+			dataSource = (DataSource) data;
+		}else if(data instanceof InfluxDBConnection)
+		{
+			dbConnection = (InfluxDBConnection) data;
+		}else if(data instanceof TDengineConnection)
+		{
+			tDengineConnection = (TDengineConnection) data;
+		}
+		ReportTplDataset reportTplDataset = (ReportTplDataset) dataSetAndDatasource.get("tplDataSet");
+		Map<String, Object> params = null;
+		if(searchInfo != null)
+		{
+			params = ParamUtil.getViewParams((JSONArray) searchInfo.get("params"),userInfoDto);
+		}
+		if(DatasetTypeEnum.SQL.getCode().intValue() == reportTplDataset.getDatasetType().intValue())
+		{
+			String sql = reportTplDataset.getTplSql();
+			if(SqlTypeEnum.SQL.getCode().intValue() == reportTplDataset.getSqlType().intValue())
+			{
+				String countSql = "";
+				if(type == 6)
+				{//influxdb
+					sql = JdbcUtils.processSqlParams(sql, params);
+					if(isPagination && YesNoEnum.YES.getCode().intValue() == reportTplDataset.getIsPagination().intValue())
+					{
+						countSql = JdbcUtils.getInfluxdbCountSql(sql);
+						ReportDatasource reportDatasource = this.iReportDatasourceService.getById(reportTplDataset.getDatasourceId());
+						if(YesNoEnum.YES.getCode().intValue() == mesGenerateReportDto.getIsCustomerPage().intValue())
+						{
+							sql = JdbcUtils.getPaginationSql(sql, reportDatasource.getType(), Integer.valueOf(String.valueOf(mesGenerateReportDto.getPagination().get("pageCount"))), mesGenerateReportDto.getStartPage(),mesGenerateReportDto.getEndPage());
+						}else {
+							sql = JdbcUtils.getPaginationSql(sql, reportDatasource.getType(), Integer.valueOf(String.valueOf(mesGenerateReportDto.getPagination().get("pageCount"))), Integer.valueOf(String.valueOf(mesGenerateReportDto.getPagination().get("currentPage"))));
+						}
+					}
+					datas = ReportDataUtil.getInfluxdbData(dbConnection, sql);
+					if(StringUtil.isNotEmpty(countSql))
+					{
+						int count = ReportDataUtil.getInfluxdbDataCountBySQL(dbConnection, countSql);
+						Long totalCount = (Long) mergePagination.get("totalCount");
+						Integer pageCount = (Integer) mergePagination.get("pageCount");
+						Integer paramsPageCount = Integer.valueOf(String.valueOf(mesGenerateReportDto.getPagination().get("pageCount")));
+						if(totalCount == null)
+						{
+							mergePagination.put("totalCount", count);
+//							mergePagination.put("totalPage", count/Integer.valueOf(String.valueOf(params.get("pageCount")))+1);
+						}else {
+							if(count > totalCount)
+							{
+								mergePagination.put("totalCount", count);
+//								mergePagination.put("totalPage", count/Integer.valueOf(String.valueOf(params.get("pageCount")))+1);
+							}
+						}
+						if(pageCount == null)
+						{
+							mergePagination.put("pageCount", pageCount);
+						}else {
+							if(paramsPageCount < pageCount)
+							{
+								mergePagination.put("pageCount", paramsPageCount);
+							}
+						}
+					}
+				}else if(type == 10)
+				{//tdengine
+					sql = JdbcUtils.processSqlParams(sql, params);
+					if(isPagination && YesNoEnum.YES.getCode().intValue() == reportTplDataset.getIsPagination().intValue())
+					{
+						countSql = JdbcUtils.getCountSql(sql);
+						ReportDatasource reportDatasource = this.iReportDatasourceService.getById(reportTplDataset.getDatasourceId());
+						if(YesNoEnum.YES.getCode().intValue() == mesGenerateReportDto.getIsCustomerPage().intValue())
+						{
+							sql = JdbcUtils.getPaginationSql(sql, reportDatasource.getType(), Integer.valueOf(String.valueOf(mesGenerateReportDto.getPagination().get("pageCount"))), mesGenerateReportDto.getStartPage(),mesGenerateReportDto.getEndPage());
+						}else {
+							sql = JdbcUtils.getPaginationSql(sql, reportDatasource.getType(), Integer.valueOf(String.valueOf(mesGenerateReportDto.getPagination().get("pageCount"))), Integer.valueOf(String.valueOf(mesGenerateReportDto.getPagination().get("currentPage"))));
+						}
+					}
+					datas = ReportDataUtil.getDatasourceDataBySql(tDengineConnection.getConnection(), sql);
+					if(StringUtil.isNotEmpty(countSql))
+					{
+						tDengineConnection.buildConnection();
+						int count = ReportDataUtil.getDataCountBySQL(tDengineConnection.getConnection(), countSql);
+						Long totalCount = (Long) mergePagination.get("totalCount");
+						Integer pageCount = (Integer) mergePagination.get("pageCount");
+						Integer paramsPageCount = Integer.valueOf(String.valueOf(mesGenerateReportDto.getPagination().get("pageCount")));
+						if(totalCount == null)
+						{
+							mergePagination.put("totalCount", count);
+						}else {
+							if(count > totalCount)
+							{
+								mergePagination.put("totalCount", count);
+							}
+						}
+						if(pageCount == null)
+						{
+							mergePagination.put("pageCount", paramsPageCount);
+						}else {
+							if(paramsPageCount < pageCount)
+							{
+								mergePagination.put("pageCount", paramsPageCount);
+							}
+						}
+					}
+				}else {
+					sql = JdbcUtils.processSqlParams(sql,params);
+					if(isPagination && YesNoEnum.YES.getCode().intValue() == reportTplDataset.getIsPagination().intValue())
+					{
+						countSql = JdbcUtils.getCountSql(sql);
+						ReportDatasource reportDatasource = this.iReportDatasourceService.getById(reportTplDataset.getDatasourceId());
+						if(YesNoEnum.YES.getCode().intValue() == mesGenerateReportDto.getIsCustomerPage().intValue())
+						{
+							sql = JdbcUtils.getPaginationSql(sql, reportDatasource.getType(), Integer.valueOf(String.valueOf(mesGenerateReportDto.getPagination().get("pageCount"))), mesGenerateReportDto.getStartPage(),mesGenerateReportDto.getEndPage());
+						}else {
+							sql = JdbcUtils.getPaginationSql(sql, reportDatasource.getType(), Integer.valueOf(String.valueOf(mesGenerateReportDto.getPagination().get("pageCount"))), Integer.valueOf(String.valueOf(mesGenerateReportDto.getPagination().get("currentPage"))));
+						}
+					}
+					//根据sql获取数据
+					if(type == 9)
+					{
+						datas = ReportDataUtil.getDatasourceDataBySql(dataSource, sql,userName,password);
+						if(isPagination && YesNoEnum.YES.getCode().intValue() == reportTplDataset.getIsPagination().intValue())
+						{
+							datas = ListUtil.getSubList(datas,Integer.valueOf(String.valueOf(mesGenerateReportDto.getPagination().get("currentPage"))),Integer.valueOf(String.valueOf(mesGenerateReportDto.getPagination().get("pageCount"))));
+						}
+					}else {
+						datas = ReportDataUtil.getDatasourceDataBySql(dataSource, sql);
+					}
+					if(StringUtil.isNotEmpty(countSql))
+					{
+						long count = ReportDataUtil.getDataCountBySQL(dataSource, countSql);
+						Long totalCount = (Long) mergePagination.get("totalCount");
+						Integer pageCount = (Integer) mergePagination.get("pageCount");
+						Integer paramsPageCount = Integer.valueOf(String.valueOf(mesGenerateReportDto.getPagination().get("pageCount")));
+						if(totalCount == null)
+						{
+							mergePagination.put("totalCount", count);
+						}else {
+							if(count > totalCount)
+							{
+								mergePagination.put("totalCount", count);
+							}
+						}
+						if(pageCount == null)
+						{
+							mergePagination.put("pageCount", paramsPageCount);
+						}else {
+							if(paramsPageCount < pageCount)
+							{
+								mergePagination.put("pageCount", paramsPageCount);
+							}
+						}
+					}
+				}
+			}else {
+				datas = ReportDataUtil.getDatasourceDataByProcedure(dataSource, sql, params, JSONArray.parseArray(reportTplDataset.getInParam()), JSONArray.parseArray(reportTplDataset.getOutParam()));
+			}
+			sqlMap.put("name", reportTplDataset.getDatasetName());
+			sqlMap.put("sql", sql);
+			reportSqls.add(sqlMap);
+		}else {//api
+			ReportDatasource reportDatasource = this.iReportDatasourceService.getById(reportTplDataset.getDatasourceId());
+			Map<String, String> headers = null;
+			if(StringUtil.isNotEmpty(reportDatasource.getApiRequestHeader()))
+			{
+				JSONArray headersArray = JSONArray.parseArray(reportDatasource.getApiRequestHeader());
+				if(!ListUtil.isEmpty(headersArray))
+				{
+					headers = new HashMap<String, String>();
+					for (int j = 0; j < headersArray.size(); j++) {
+						String headerName = headersArray.getJSONObject(j).getString("headerName");
+						if(mesGenerateReportDto.getApiHeaders() != null && mesGenerateReportDto.getApiHeaders().containsKey(headerName)) {
+							headers.put(headerName, String.valueOf(mesGenerateReportDto.getApiHeaders().get(headerName)));	
+						}else {
+							headers.put(headerName, String.valueOf(headersArray.getJSONObject(j).getString("headerValue")));	
+						}	
+					}
+				}
+			}
+			String result = null;
+			if(isPagination && reportTplDataset.getIsPagination().intValue() == YesNoEnum.YES.getCode().intValue()) {
+				//分页查询
+				if(YesNoEnum.YES.getCode().intValue() == mesGenerateReportDto.getIsCustomerPage().intValue()) {
+					params.put(reportTplDataset.getCurrentPageAttr(), mesGenerateReportDto.getStartPage());
+					params.put(reportTplDataset.getPageCountAttr(), (mesGenerateReportDto.getEndPage()-mesGenerateReportDto.getStartPage()+1)*Integer.valueOf(String.valueOf(mesGenerateReportDto.getPagination().get("pageCount"))));
+				}else {
+					params.put(reportTplDataset.getCurrentPageAttr(), Integer.valueOf(String.valueOf(mesGenerateReportDto.getPagination().get("currentPage"))));
+					params.put(reportTplDataset.getPageCountAttr(), Integer.valueOf(String.valueOf(mesGenerateReportDto.getPagination().get("pageCount"))));
+				}
+				
+			}
+			if("post".equals(reportDatasource.getApiRequestType()))
+			{
+				result = HttpClientUtil.doPostJson(reportDatasource.getJdbcUrl(), JSONObject.toJSONString(params), headers);
+			}else {
+				result = HttpClientUtil.doGet(reportDatasource.getJdbcUrl(),headers,params);
+			}
+			Map<String, Object> apiResult = ReportDataUtil.getApiResult(result, reportDatasource.getApiResultType(), reportDatasource.getApiColumnsPrefix(),reportTplDataset.getIsPagination().intValue() == YesNoEnum.YES.getCode().intValue()?reportTplDataset.getTotalAttr():null);
+			datas = (List<Map<String, Object>>) apiResult.get("datas");
+			if(reportTplDataset.getIsPagination().intValue() == YesNoEnum.YES.getCode().intValue()) {
+				Long totalCount = (Long) mergePagination.get("totalCount");
+				Integer pageCount = (Integer) mergePagination.get("pageCount");
+				Integer paramsPageCount = Integer.valueOf(String.valueOf(mesGenerateReportDto.getPagination().get("pageCount")));
+				long count = (long) apiResult.get("total");
+				if(totalCount == null)
+				{
+					mergePagination.put("totalCount", count);
+				}else {
+					if(count > totalCount)
+					{
+						mergePagination.put("totalCount", count);
+					}
+				}
+				if(pageCount == null)
+				{
+					mergePagination.put("pageCount", paramsPageCount);
+				}else {
+					if(paramsPageCount < pageCount)
+					{
+						mergePagination.put("pageCount", paramsPageCount);
+					}
+				}
+			}
+		}
+		resultMap.put("datas", datas);
+		resultMap.put("params", params);
+		return resultMap;
 	}
 }

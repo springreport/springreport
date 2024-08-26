@@ -20,7 +20,7 @@ public interface IReportTplFormsService {
 	 * @throws Exception 
 	 * @date 2022-11-17 04:11:17 
 	 */  
-	ResPreviewData previewLuckysheetReportFormsData(MesGenerateReportDto mesGenerateReportDto,UserInfoDto userInfoDto,ReportTpl reportTpl) throws Exception;
+	ResPreviewData previewLuckysheetReportFormsData(MesGenerateReportDto mesGenerateReportDto,UserInfoDto userInfoDto,ReportTpl reportTpl,boolean isPagination) throws Exception;
 	
 	/**  
 	 * @MethodName: reportData
