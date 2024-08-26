@@ -1764,3 +1764,9 @@ CREATE TABLE `doc_tpl_charts`  (
 -- springreport-20240822 新增单元格条件格式设置 start
 ALTER TABLE report_tpl_sheet ADD COLUMN conditionformat_save text DEFAULT NULL COMMENT '条件格式'; 
 -- springreport-20240822 新增单元格条件格式设置 end
+
+-- 20240826 报表api数据集新增分页支持 start
+ALTER TABLE report_tpl_dataset ADD COLUMN current_page_attr varchar(50) DEFAULT NULL COMMENT '当前页码属性'; 
+ALTER TABLE report_tpl_dataset ADD COLUMN page_count_attr varchar(50) DEFAULT NULL COMMENT '每页显示条数属性'; 
+ALTER TABLE report_tpl_dataset ADD COLUMN total_attr varchar(50) DEFAULT NULL COMMENT '数据总条数属性'; 
+-- 20240826 报表api数据集新增分页支持 end
