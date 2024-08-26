@@ -42,7 +42,7 @@
                 <div class="dataset-box-content" v-if="o.isActive">
                     <draggable class="wrapper" v-model="o.columns" :sort= "false" :disabled= "false" item-key="id">
                         <template #item="{element}">
-                        <div class="column-tag" :title="element.name" @dragend="endDraggable(o.datasetName,element.name)">{{element.name}}</div>
+                        <div class="column-tag" :title="element.name" @dragend="endDraggable(o.datasetName,element.name)"><icon-copy @click="copyColumn(o.datasetName,element.name)"/>{{element.name}}</div>
                         </template>
                     </draggable>
                     <el-input v-show="o.apiResult" type="textarea" placeholder="" v-model="o.apiResult" rows="6"></el-input>
@@ -372,7 +372,7 @@
                               <el-option v-for="op in dataSource" :label="op.dataSourceName" :value="op.datasourceId" :key="op.datasourceId"></el-option>
                           </el-select>
                           </el-form-item>
-                          <el-form-item  label="sql类型" prop="sqlType" :rules="filter_rules('选择数据源',{required:true})" v-if="datasourceType == 1">
+                          <el-form-item  label="sql类型" prop="sqlType" :rules="filter_rules('选择sql类型',{required:true})" v-if="datasourceType == 1">
                           <el-select v-model="sqlForm.sqlType" placeholder="选择sql类型" size="small">
                               <el-option v-for="op in selectUtil.sqlType" :label="op.label" :value="op.value" :key="op.value"></el-option>
                           </el-select>
@@ -414,10 +414,10 @@
                   </div>
                   </el-tab-pane>
                   <el-tab-pane label="参数配置" >
-                      <div v-show="sqlForm.sqlType == '1'">
-                      <el-divider content-position="left" v-if="datasourceType == 1">分页参数</el-divider>
+                      <div v-show="sqlForm.sqlType == '1' || datasourceType == 2">
+                      <el-divider content-position="left" v-if="datasourceType == 1 || datasourceType == 2">分页参数</el-divider>
                       <el-form :inline="true" :model="paginationForm" class="demo-form-inline" ref="paginationRef">
-                          <el-form-item label="是否分页"  prop="isPagination" v-if="datasourceType == 1">
+                          <el-form-item label="是否分页"  prop="isPagination" v-if="datasourceType == 1 || datasourceType == 2">
                               <el-select v-model="paginationForm.isPagination" placeholder="是否分页" size="small">
                               <el-option label="是" :value=1></el-option>
                               <el-option label="否" :value=2></el-option>
@@ -433,6 +433,15 @@
                                     :value="item.value">
                                 </el-option>
                                 </el-select>
+                          </el-form-item>
+                          <el-form-item v-if="paginationForm.isPagination == '1' && datasourceType == 2" label="当前页参数属性"  prop="currentPageAttr" :rules="filter_rules('当前页参数属性',{required:true})">
+                                <el-input v-model="paginationForm.currentPageAttr" placeholder="当前页参数属性" size="small"></el-input>
+                          </el-form-item>
+                          <el-form-item v-if="paginationForm.isPagination == '1' && datasourceType == 2" label="每页条数参数属性"  prop="pageCountAttr" :rules="filter_rules('每页条数参数属性',{required:true})">
+                                <el-input v-model="paginationForm.pageCountAttr" placeholder="每页条数参数属性" size="small"></el-input>
+                          </el-form-item>
+                          <el-form-item v-if="paginationForm.isPagination == '1' && datasourceType == 2" label="总条数属性"  prop="totalAttr" :rules="filter_rules('总条数条数属性',{required:true})">
+                                <el-input v-model="paginationForm.totalAttr" placeholder="总条数属性" size="small"></el-input>
                           </el-form-item>
                       </el-form>
                       </div>

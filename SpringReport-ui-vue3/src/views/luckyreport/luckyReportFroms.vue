@@ -42,7 +42,7 @@
                 <div class="dataset-box-content" v-if="o.isActive">
                     <draggable class="wrapper" v-model="o.columns" :sort= "false" :disabled= "false" item-key="id">
                         <template #item="{element}">
-                        <div class="column-tag" :title="element.name" @dragend="endDraggable(o.datasetName,element.name)">{{element.name}}</div>
+                        <div class="column-tag" :title="element.name" @dragend="endDraggable(o.datasetName,element.name)"><icon-copy @click="copyColumn(o.datasetName,element.name)"/>{{element.name}}</div>
                         </template>
                     </draggable>
                     <el-input v-show="o.apiResult" type="textarea" placeholder="" v-model="o.apiResult" rows="6"></el-input>
