@@ -50,7 +50,7 @@ public class ResPreviewData {
 	 * @author caiyang
 	 * @date 2023-01-16 09:59:01 
 	 */  
-	private Map<String, Integer> pagination;
+	private Map<String, Object> pagination;
 	
 	/**  
 	 * @Fields version : 当前更新版本号，防止重复提交覆盖数据

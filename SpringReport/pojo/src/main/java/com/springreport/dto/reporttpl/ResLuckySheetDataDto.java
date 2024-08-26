@@ -55,7 +55,7 @@ public class ResLuckySheetDataDto {
 	 * @author caiyang
 	 * @date 2022-03-31 10:44:16 
 	 */ 
-	private Map<String, Integer> mergePagination;
+	private Map<String, Object> mergePagination;
 	
 	/**  
 	 * @Fields frozen : 冻结信息

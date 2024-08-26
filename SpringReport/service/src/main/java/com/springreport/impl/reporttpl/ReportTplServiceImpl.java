@@ -2444,7 +2444,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		}
 		List<Map<String, String>> reportSqls = new ArrayList<>();
 		Map<String, JSONObject> imgCells = new HashMap<>();
-		Map<String, Integer> mergePagination = new HashMap<String, Integer>();
+		Map<String, Object> mergePagination = new HashMap();
 		List<Map<String, Object>> datasetsParams = this.getDatasetParamInfo(mesGenerateReportDto);
 		Map<String, Object> viewParams = this.getViewParams(datasetsParams,userInfoDto);
 		Map<String, LuckySheetBindData> blockBindDatas = new HashMap<String, LuckySheetBindData>();//循环块对应绑定的数据，可能会有多个数据集的情况，用来记录
@@ -2933,7 +2933,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 	}
 	
 	private Map<String, Object> getDatasetDatas(ReportTpl reportTpl,MesGenerateReportDto mesGenerateReportDto,String datasetName,
-			boolean isPagination,Map<String, Integer> mergePagination,List<Map<String, String>> reportSqls,UserInfoDto userInfoDto) throws Exception {
+			boolean isPagination,Map<String, Object> mergePagination,List<Map<String, String>> reportSqls,UserInfoDto userInfoDto) throws Exception {
 		Map<String, String> sqlMap = new HashMap<>();
 		Map<String, Object> resultMap = new HashMap<>();
 		List<Map<String, Object>> datas = null;
@@ -2993,8 +2993,8 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 					if(StringUtil.isNotEmpty(countSql))
 					{
 						int count = ReportDataUtil.getInfluxdbDataCountBySQL(dbConnection, countSql);
-						Integer totalCount = mergePagination.get("totalCount");
-						Integer pageCount = mergePagination.get("pageCount");
+						Long totalCount = (Long) mergePagination.get("totalCount");
+						Integer pageCount = (Integer) mergePagination.get("pageCount");
 						Integer paramsPageCount = Integer.valueOf(String.valueOf(mesGenerateReportDto.getPagination().get("pageCount")));
 						if(totalCount == null)
 						{
@@ -3036,8 +3036,8 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 					{
 						tDengineConnection.buildConnection();
 						int count = ReportDataUtil.getDataCountBySQL(tDengineConnection.getConnection(), countSql);
-						Integer totalCount = mergePagination.get("totalCount");
-						Integer pageCount = mergePagination.get("pageCount");
+						Long totalCount = (Long) mergePagination.get("totalCount");
+						Integer pageCount = (Integer) mergePagination.get("pageCount");
 						Integer paramsPageCount = Integer.valueOf(String.valueOf(mesGenerateReportDto.getPagination().get("pageCount")));
 						if(totalCount == null)
 						{
@@ -3084,9 +3084,9 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 					}
 					if(StringUtil.isNotEmpty(countSql))
 					{
-						int count = ReportDataUtil.getDataCountBySQL(dataSource, countSql);
-						Integer totalCount = mergePagination.get("totalCount");
-						Integer pageCount = mergePagination.get("pageCount");
+						long count = ReportDataUtil.getDataCountBySQL(dataSource, countSql);
+						Long totalCount = (Long) mergePagination.get("totalCount");
+						Integer pageCount = (Integer) mergePagination.get("pageCount");
 						Integer paramsPageCount = Integer.valueOf(String.valueOf(mesGenerateReportDto.getPagination().get("pageCount")));
 						if(totalCount == null)
 						{
@@ -3134,13 +3134,49 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				}
 			}
 			String result = null;
+			if(reportTplDataset.getIsPagination().intValue() == YesNoEnum.YES.getCode().intValue()) {
+				//分页查询
+				if(YesNoEnum.YES.getCode().intValue() == mesGenerateReportDto.getIsCustomerPage().intValue()) {
+					params.put(reportTplDataset.getCurrentPageAttr(), mesGenerateReportDto.getStartPage());
+					params.put(reportTplDataset.getPageCountAttr(), (mesGenerateReportDto.getEndPage()-mesGenerateReportDto.getStartPage()+1)*Integer.valueOf(String.valueOf(mesGenerateReportDto.getPagination().get("pageCount"))));
+				}else {
+					params.put(reportTplDataset.getCurrentPageAttr(), Integer.valueOf(String.valueOf(mesGenerateReportDto.getPagination().get("currentPage"))));
+					params.put(reportTplDataset.getPageCountAttr(), Integer.valueOf(String.valueOf(mesGenerateReportDto.getPagination().get("pageCount"))));
+				}
+				
+			}
 			if("post".equals(reportDatasource.getApiRequestType()))
 			{
 				result = HttpClientUtil.doPostJson(reportDatasource.getJdbcUrl(), JSONObject.toJSONString(params), headers);
 			}else {
 				result = HttpClientUtil.doGet(reportDatasource.getJdbcUrl(),headers,params);
 			}
-			datas = ReportDataUtil.getApiResult(result, reportDatasource.getApiResultType(), reportDatasource.getApiColumnsPrefix());
+			Map<String, Object> apiResult = ReportDataUtil.getApiResult(result, reportDatasource.getApiResultType(), reportDatasource.getApiColumnsPrefix(),reportTplDataset.getIsPagination().intValue() == YesNoEnum.YES.getCode().intValue()?reportTplDataset.getTotalAttr():null);
+			datas = (List<Map<String, Object>>) apiResult.get("datas");
+			if(reportTplDataset.getIsPagination().intValue() == YesNoEnum.YES.getCode().intValue()) {
+				Long totalCount = (Long) mergePagination.get("totalCount");
+				Integer pageCount = (Integer) mergePagination.get("pageCount");
+				Integer paramsPageCount = Integer.valueOf(String.valueOf(mesGenerateReportDto.getPagination().get("pageCount")));
+				long count = (long) apiResult.get("total");
+				if(totalCount == null)
+				{
+					mergePagination.put("totalCount", count);
+				}else {
+					if(count > totalCount)
+					{
+						mergePagination.put("totalCount", count);
+					}
+				}
+				if(pageCount == null)
+				{
+					mergePagination.put("pageCount", paramsPageCount);
+				}else {
+					if(paramsPageCount < pageCount)
+					{
+						mergePagination.put("pageCount", paramsPageCount);
+					}
+				}
+			}
 		}
 		resultMap.put("datas", datas);
 		resultMap.put("params", params);

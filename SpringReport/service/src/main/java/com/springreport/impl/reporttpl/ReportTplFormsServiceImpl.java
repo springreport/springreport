@@ -248,7 +248,7 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 			sheets = this.iReportTplSheetService.list(sheetQueryWrapper);
 		}
 		Map<String, JSONObject> imgCells = new HashMap<>();
-		Map<String, Integer> mergePagination = new HashMap<String, Integer>();
+		Map<String, Object> mergePagination = new HashMap<String, Object>();
 		int currentPage = -1;
 		int pageSize = -1;
 		List<Map<String, String>> reportSqls = new ArrayList<>();
@@ -327,7 +327,7 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 								if(StringUtil.isNotEmpty(countSql))
 								{
 //									Map<String, Integer> dsPagination = new HashMap<String, Integer>();
-									int count = ReportDataUtil.getDataCountBySQL(dataSource, countSql);
+									long count = ReportDataUtil.getDataCountBySQL(dataSource, countSql);
 //									dsPagination.put("totalCount", count);
 //									if(count%Integer.valueOf(String.valueOf(params.get("pageCount")))>0)
 //									{
@@ -337,8 +337,8 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 //									}
 									
 //									paginationMap.put(usedDataSet.get(i), dsPagination);
-									Integer totalCount = mergePagination.get("totalCount");
-									Integer pageCount = mergePagination.get("pageCount");
+									Long totalCount = (Long) mergePagination.get("totalCount");
+									Integer pageCount = (Integer) mergePagination.get("pageCount");
 									Integer paramsPageCount = Integer.valueOf(String.valueOf(mesGenerateReportDto.getPagination().get("pageCount")));
 									if(totalCount == null)
 									{
@@ -387,8 +387,20 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 									}
 								}
 							}
-							String result = HttpClientUtil.doPostJson(reportDatasource.getJdbcUrl(), JSONObject.toJSONString(params), headers);
-							datas = ReportDataUtil.getApiResult(result, reportDatasource.getApiResultType(), reportDatasource.getApiColumnsPrefix());
+							String result = null;
+							if(reportTplDataset.getIsPagination().intValue() == YesNoEnum.YES.getCode().intValue()) {
+								//分页查询
+								params.put(reportTplDataset.getCurrentPageAttr(), Integer.valueOf(String.valueOf(mesGenerateReportDto.getPagination().get("currentPage"))));
+								params.put(reportTplDataset.getPageCountAttr(), Integer.valueOf(String.valueOf(mesGenerateReportDto.getPagination().get("pageCount"))));
+							}
+							if("post".equals(reportDatasource.getApiRequestType()))
+							{
+								result = HttpClientUtil.doPostJson(reportDatasource.getJdbcUrl(), JSONObject.toJSONString(params), headers);
+							}else {
+								result = HttpClientUtil.doGet(reportDatasource.getJdbcUrl(),headers,params);
+							}
+							Map<String, Object> apiResult = ReportDataUtil.getApiResult(result, reportDatasource.getApiResultType(), reportDatasource.getApiColumnsPrefix(),reportTplDataset.getIsPagination().intValue() == YesNoEnum.YES.getCode().intValue()?reportTplDataset.getTotalAttr():null);
+							datas = (List<Map<String, Object>>) apiResult.get("datas");
 						}
 						datasetDatas.put(usedDataSet.get(i), datas);
 						//获取数据集对应的变量

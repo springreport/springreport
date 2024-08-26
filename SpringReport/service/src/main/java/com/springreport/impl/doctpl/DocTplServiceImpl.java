@@ -898,7 +898,8 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 			}else {
 				result = HttpClientUtil.doGet(reportDatasource.getJdbcUrl(),headers,params);
 			}
-			datas = ReportDataUtil.getApiResult(result, reportDatasource.getApiResultType(), reportDatasource.getApiColumnsPrefix());
+			Map<String, Object> apiResult = ReportDataUtil.getApiResult(result, reportDatasource.getApiResultType(), reportDatasource.getApiColumnsPrefix(),null);
+			datas = (List<Map<String, Object>>) apiResult.get("datas");
 		}
 		String datasetName = reportTplDataset.getDatasetName();
 		//处理数据
