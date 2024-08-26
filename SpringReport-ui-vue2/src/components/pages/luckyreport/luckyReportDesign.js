@@ -106,7 +106,10 @@ export default {
       // 参数表单对应的参数
       paginationForm: {
         isPagination: 2, // 是否分页
-        pageCount: '100'// 每页显示条数，默认为100
+        pageCount: 100,// 每页显示条数，默认为100
+        currentPageAttr:"",//当前页码属性
+        pageCountAttr:"",//每页显示条数属性
+        totalAttr:"",//数据总条数属性
       },
       paramTableData: {
         tableData: [],
@@ -1138,7 +1141,7 @@ export default {
       this.paramTableData.tablePage.currentPage = 1
       this.paramTableData.tablePage.pageTotal = 0
       this.paginationForm.isPagination = 2
-      this.paginationForm.pageCount = '100'
+      this.paginationForm.pageCount = 100
       this.datasourceType = '1'
     },
     // 选择数据源修改
@@ -1373,7 +1376,10 @@ export default {
       this.sqlColumnTableData.tableData = dataSet.columns?dataSet.columns:[];
       this.sqlColumnTableData.tablePage.pageTotal = dataSet.columns?this.sqlColumnTableData.tableData.length:0
       this.paginationForm.isPagination = dataSet.isPagination
-      this.paginationForm.pageCount = '' + dataSet.pageCount
+      this.paginationForm.pageCount = dataSet.pageCount
+      this.paginationForm.currentPageAttr = dataSet.currentPageAttr
+      this.paginationForm.pageCountAttr = dataSet.pageCountAttr
+      this.paginationForm.totalAttr = dataSet.totalAttr
       this.sqlForm.datasetName = dataSet.datasetName
       this.sqlForm.datasourceId = dataSet.datasourceId
       this.sqlForm.id = dataSet.id
@@ -1417,8 +1423,19 @@ export default {
           })
         } else {
           this.paginationForm.isPagination = 2
-          this.paginationForm.pageCount = '100'
+          this.paginationForm.pageCount = 100
         }
+        if (!paginationValidate) {
+          return
+        }
+      }else if(this.datasourceType == '2'){
+        this.$refs['paginationRef'].validate((valid) => {
+          if (valid) {
+
+          } else {
+            paginationValidate = false
+          }
+        })
         if (!paginationValidate) {
           return
         }
@@ -1430,7 +1447,7 @@ export default {
             url: this.apis.reportDesign.addDataSetApi,
             params: { tplId: reportTplId, datasetType: this.datasourceType, sqlType: this.sqlForm.sqlType, tplSql: tplSql, tplParam: this.paramTableData.tableData ? JSON.stringify(this.paramTableData.tableData) : '', datasourceId: this.sqlForm.datasourceId, datasetName: this.sqlForm.datasetName, id: this.sqlForm.id,
               inParam: this.procedureInParamTableData.tableData ? JSON.stringify(this.procedureInParamTableData.tableData) : '', outParam: this.procedureOutParamTableData.tableData ? JSON.stringify(this.procedureOutParamTableData.tableData) : '',
-              isPagination: this.paginationForm.isPagination, pageCount: this.paginationForm.pageCount },
+              isPagination: this.paginationForm.isPagination, pageCount: this.paginationForm.pageCount, currentPageAttr: this.paginationForm.currentPageAttr, pageCountAttr: this.paginationForm.pageCountAttr, totalAttr: this.paginationForm.totalAttr},
             removeEmpty: false
           }
           this.commonUtil.doPost(obj).then(response => {

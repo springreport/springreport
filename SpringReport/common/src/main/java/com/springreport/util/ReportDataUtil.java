@@ -52,10 +52,12 @@ public class ReportDataUtil {
 	 * @author caiyang
 	 * @date 2021-11-18 02:05:43 
 	 */ 
-	public static List<Map<String, Object>> getApiResult(String apiResult,String apiResultType,String apiPrefix)
+	public static Map<String, Object> getApiResult(String apiResult,String apiResultType,String apiPrefix,String totalAttr)
 	{
-		List<Map<String, Object>> result = null;
+		Map<String, Object> result = new HashMap<>();
+		List<Map<String, Object>> list = null;
 		Object resultObj = null;
+		Long total = 0l;
 		if(ResultTypeEnum.OBJECT.getCode().equals(apiResultType))
 		{//返回类型是对象
 			JSONObject jsonObject = JSONObject.parseObject(apiResult);
@@ -71,12 +73,19 @@ public class ReportDataUtil {
 							resultObj = object;
 						}else {
 							jsonObject = JSONObject.parseObject(JSONObject.toJSONString(object));
+							if(StringUtil.isNotEmpty(totalAttr)) {
+								total = jsonObject.getLongValue(totalAttr);
+							}
 						}
+						
 					}else if(object instanceof JSONArray)
 					{
 						if(j == prefixes.length - 1)
 						{
 							resultObj = object;
+							if(StringUtil.isNotEmpty(totalAttr)) {
+								total = jsonObject.getLongValue(totalAttr);
+							}
 						}else {
 							throw new BizException(StatusCode.FAILURE, "不支持的返回值格式。");
 						}
@@ -86,6 +95,9 @@ public class ReportDataUtil {
 				}
 			}else {
 				resultObj = JSONObject.parseObject(apiResult);
+				if(StringUtil.isNotEmpty(totalAttr)) {
+					total = jsonObject.getLongValue(totalAttr);
+				}
 			}
 		}else {//返回类型是对象数组
 			JSONArray jsonArray = JSONArray.parseArray(apiResult);
@@ -98,18 +110,20 @@ public class ReportDataUtil {
 		}
 		if(resultObj instanceof JSONObject)
 		{
-			result = new ArrayList<Map<String,Object>>();
+			list = new ArrayList<Map<String,Object>>();
 			Map<String, Object> map = JSONObject.parseObject(JSONObject.toJSONString(resultObj), Map.class);
-			result.add(map);
+			list.add(map);
 		}else if(resultObj instanceof JSONArray){
 			JSONArray jsonArray = (JSONArray) resultObj;
 			Map<String, Object> map = null;
-			result = new ArrayList<Map<String,Object>>();
+			list = new ArrayList<Map<String,Object>>();
 			for (int i = 0; i < jsonArray.size(); i++) {
 				map = JSONObject.parseObject(JSONObject.toJSONString(jsonArray.get(i)), Map.class);
-				result.add(map);
+				list.add(map);
 			}
 		}
+		result.put("datas", list);
+		result.put("total", total);
 		return result;
 	}
 	
@@ -441,8 +455,8 @@ public class ReportDataUtil {
 	 * @author caiyang
 	 * @date 2021-11-18 02:16:18 
 	 */ 
-	public static int getDataCountBySQL(DataSource dataSource, String sqlText) {
-		int result = 0;
+	public static long getDataCountBySQL(DataSource dataSource, String sqlText) {
+		long result = 0;
 		Connection conn = null;
 	    Statement stmt = null;
 	    ResultSet rs = null;
@@ -451,7 +465,7 @@ public class ReportDataUtil {
 	    	stmt = conn.createStatement();
             rs = stmt.executeQuery(sqlText);
             rs.next();
-            result = rs.getInt(1);
+            result = rs.getLong(1);
         } catch (final SQLException ex) {
         	throw new BizException(StatusCode.FAILURE,"sql语句执行错误，请检查sql语句是否拼写正确或者数据源是否选择正确。错误信息："+ex.getMessage());
         } finally {

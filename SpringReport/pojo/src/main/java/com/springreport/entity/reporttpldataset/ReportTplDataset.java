@@ -106,4 +106,16 @@ public class ReportTplDataset extends PageEntity {
     /** del_flag - 删除标记 1未删除 2已删除 */
     @TableField("del_flag")
     private Integer delFlag;
+    
+    /** current_page_attr - 当前页码属性 */
+    @TableField("current_page_attr")
+    private String currentPageAttr;
+
+    /** page_count_attr - 每页显示条数属性 */
+    @TableField("page_count_attr")
+    private String pageCountAttr;
+
+    /** total_attr - 数据总条数属性 */
+    @TableField("total_attr")
+    private String totalAttr;
 }

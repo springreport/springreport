@@ -27,5 +27,5 @@ public class MobilePreviewDto {
 	 * @author caiyang
 	 * @date 2023-01-16 09:59:01 
 	 */  
-	private Map<String, Integer> pagination;
+	private Map<String, Object> pagination;
 }

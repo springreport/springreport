@@ -165,7 +165,8 @@ public class ScreenDesignServiceImpl implements IScreenDesignService{
 			}else {
 				result = HttpClientUtil.doGet(reportDatasource.getJdbcUrl(),headers,params);
 			}
-			datas = ReportDataUtil.getApiResult(result, reportDatasource.getApiResultType(), reportDatasource.getApiColumnsPrefix());
+			Map<String, Object> apiResult = ReportDataUtil.getApiResult(result, reportDatasource.getApiResultType(), reportDatasource.getApiColumnsPrefix(),null);
+			datas = (List<Map<String, Object>>) apiResult.get("datas");
 		}
 		return datas;
 	}

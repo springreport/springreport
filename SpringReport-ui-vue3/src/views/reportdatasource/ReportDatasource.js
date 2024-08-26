@@ -490,7 +490,8 @@ export default {
           }
           if(this.pageData.isEdit)
           {
-            this.$set(this.pageData.headersTableData,this.pageData.editIndex,obj);
+            this.pageData.headersTableData[this.pageData.editIndex] = obj
+            // this.$set(this.pageData.headersTableData,this.pageData.editIndex,obj);
           }else{
             this.pageData.headersTableData.push(obj);
           }

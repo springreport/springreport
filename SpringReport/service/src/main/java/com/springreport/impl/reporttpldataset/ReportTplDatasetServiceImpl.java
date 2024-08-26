@@ -491,6 +491,9 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 			insertData.setSqlType(reportTplDataset.getSqlType());
 			insertData.setInParam(reportTplDataset.getInParam());
 			insertData.setOutParam(reportTplDataset.getOutParam());
+			insertData.setCurrentPageAttr(reportTplDataset.getCurrentPageAttr());
+			insertData.setPageCountAttr(reportTplDataset.getPageCountAttr());
+			insertData.setTotalAttr(reportTplDataset.getTotalAttr());
 			this.save(insertData);
 			result.setId(insertData.getId());
 		}else {
