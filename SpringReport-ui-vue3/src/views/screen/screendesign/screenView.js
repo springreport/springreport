@@ -109,7 +109,11 @@ export default {
                             VChart.registerMap(mapCode, geojson);
                         }
                     }
-                    const vchart = new VChart(element.spec, { dom: element.id});
+                    var obj = { dom: element.id};
+                    if(element.theme){
+                        obj.theme = element.theme
+                    }
+                    const vchart = new VChart(element.spec, obj);
                     // 绘制
                     vchart.renderSync();
                     this.chartsComponents[element.id] = vchart;
