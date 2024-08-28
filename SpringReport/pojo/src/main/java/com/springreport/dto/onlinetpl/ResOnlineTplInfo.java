@@ -27,4 +27,11 @@ public class ResOnlineTplInfo {
      * @date 2024-03-04 03:03:24 
      */  
     private String creatorName;
+    
+    /**  
+     * @Fields tplName : 文档名称
+     * @author caiyang
+     * @date 2024-08-28 03:37:23 
+     */  
+    private String tplName;
 }

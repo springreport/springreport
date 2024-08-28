@@ -471,6 +471,7 @@ export default {
           this.commonUtil.doPost(obj) .then(response=>{
             if (response.code == "200")
             {
+              document.title = response.responseData.tplName;
               that.isCreator = response.responseData.creator;
               that.creatorName = response.responseData.creatorName;
               that.sheetRangeAuth = response.responseData.sheetRangeAuth;

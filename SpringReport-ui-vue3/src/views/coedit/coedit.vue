@@ -6,7 +6,7 @@
                 <img
                     src="@/assets/img/logoWithName.png"
                     height="30"
-                    style="margin-left:28px"
+                    style="margin-left:8px"
                 />
                 </div>
                 <div class="right df-c">

@@ -581,6 +581,7 @@ export default {
                             this.reportSqls = response.responseData.reportSqls;
                             this.tplType = response.responseData.tplType
                             this.tplName = response.responseData.tplName;
+                            document.title = response.responseData.tplName;
                             this.reportVersion = response.responseData.version;
                             this.sheetOptions.data = []
                             this.sheetDrillCells = {}
