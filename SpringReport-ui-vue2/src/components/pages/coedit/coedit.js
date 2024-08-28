@@ -28,6 +28,16 @@ export default {
                 container: "luckysheet",
                 lang: 'zh',
 				        plugins: ['chart'],
+                fontList:[
+                  {
+                  "fontName":"条形码（barCode128）",
+                  "url":""
+                  },
+                  {
+                    "fontName":"二维码（qrCode）",
+                    "url":""
+                  },
+                ],
                 allowUpdate:true,
                 // updateImageUrl: location.origin + "/luckysheet/api/updateImg",
                 updateUrl: '',
