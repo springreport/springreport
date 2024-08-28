@@ -72,6 +72,16 @@ export default {
                 title:"", //表 头名
                 lang: 'zh', //中文
                 plugins: ['chart'],
+                fontList:[
+                    {
+                    "fontName":"条形码（barCode128）",
+                    "url":""
+                    },
+                    {
+                      "fontName":"二维码（qrCode）",
+                      "url":""
+                    },
+                  ],
                 functionButton: '',
                 forceCalculation:true,
                 index:'0', //工作表索引

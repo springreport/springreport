@@ -84,7 +84,10 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.springreport.base.CellValueDto;
 import com.springreport.base.MesExportExcel;
+import com.springreport.enums.LuckySheetPropsEnum;
 import com.springreport.enums.YesNoEnum;
+import com.springreport.excel2pdf.BarCodeUtil;
+import com.springreport.excel2pdf.QRCodeUtil;
 
 import cn.hutool.core.codec.Base64Decoder;
 import cn.hutool.http.HttpUtil;
@@ -254,7 +257,9 @@ public class ReportExcelUtil {
                 		sheet.setColumnWidth(Integer.parseInt(String.valueOf(entry.getKey())), wid.multiply(excleWid).setScale(0,BigDecimal.ROUND_HALF_UP).intValue());//列宽px值
                 	}
                 }
-                cellUtil.setCellValues(cellDatas,hyperlinks,borderInfos,unProtectCells,mesExportExcel.getSheetConfigs().get(i).getMerge(),mesExportExcel.getSheetConfigs().get(i).getIsCoedit(), dataVerification,xxbtCells,false);
+                JSONArray barCodeCells = new JSONArray();//条形码单元格
+                JSONArray qrCodeCells = new JSONArray();//二维码单元格
+                cellUtil.setCellValues(cellDatas,hyperlinks,borderInfos,unProtectCells,mesExportExcel.getSheetConfigs().get(i).getMerge(),mesExportExcel.getSheetConfigs().get(i).getIsCoedit(), dataVerification,xxbtCells,false,barCodeCells,qrCodeCells);
                 JSONObject rowlenObj = JSONObject.parseObject(JSONObject.toJSONString(rowlen));
                 JSONObject columnlenObj = JSONObject.parseObject(JSONObject.toJSONString(columnlen));
                 setImages(wb,sheet,images,columnlenObj,rowlenObj,rowhidden,colhidden,mesExportExcel.getImageInfos(),mesExportExcel.getBackImages());
@@ -290,6 +295,51 @@ public class ReportExcelUtil {
 						getSlashLinePositionXlsx(sheet,r,c,rs,cs,cellValue,slashes,slashTexts);
 					}
                 	drawLineXlsx(sheet,slashes,slashTexts);
+                }
+                if(ListUtil.isNotEmpty(barCodeCells)) {
+                	for (int j = 0; j < barCodeCells.size(); j++) {
+                		JSONObject cellValue = barCodeCells.getJSONObject(j).getJSONObject(LuckySheetPropsEnum.CELLCONFIG.getCode());
+                		JSONObject mergeCell = cellValue.getJSONObject(LuckySheetPropsEnum.MERGECELLS.getCode());
+                		if(StringUtil.isNotEmpty(cellValue.getString("v"))) {
+                			byte[] barCodeByte = BarCodeUtil.generateBarcodeImage(cellValue.getString("v"), 200, 100);
+                    		if(mergeCell != null) {
+                    			if(mergeCell.containsKey(LuckySheetPropsEnum.ROWSPAN.getCode()) && mergeCell.containsKey(LuckySheetPropsEnum.COLSPAN.getCode())) {
+                    				int firstRow = Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.R.getCode())));
+        							int lastRow = Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.R.getCode()))) + Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.ROWSPAN.getCode()))) - 1;
+        							int firstCol = Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.C.getCode())));
+        							int lastCol = Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.C.getCode()))) + Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.COLSPAN.getCode()))) - 1;
+        							ReportExcelUtil.insertBarcode(wb, sheet, barCodeByte, firstRow, lastRow, firstCol, lastCol);
+                    			}
+                    		}else {
+                    			int r = barCodeCells.getJSONObject(j).getIntValue("r");
+    							int c = barCodeCells.getJSONObject(j).getIntValue("c");
+    							ReportExcelUtil.insertBarcode(wb, sheet, barCodeByte, r, r, c, c);
+                    		}
+                		}
+					}
+                }
+                
+                if(ListUtil.isNotEmpty(qrCodeCells)) {
+                	for (int j = 0; j < qrCodeCells.size(); j++) {
+                		JSONObject cellValue = qrCodeCells.getJSONObject(j).getJSONObject(LuckySheetPropsEnum.CELLCONFIG.getCode());
+                		JSONObject mergeCell = cellValue.getJSONObject(LuckySheetPropsEnum.MERGECELLS.getCode());
+                		if(StringUtil.isNotEmpty(cellValue.getString("v"))) {
+                			byte[] barCodeByte = QRCodeUtil.generateQRCodeImage(cellValue.getString("v"), 256, 256);
+                    		if(mergeCell != null) {
+                    			if(mergeCell.containsKey(LuckySheetPropsEnum.ROWSPAN.getCode()) && mergeCell.containsKey(LuckySheetPropsEnum.COLSPAN.getCode())) {
+                    				int firstRow = Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.R.getCode())));
+        							int lastRow = Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.R.getCode()))) + Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.ROWSPAN.getCode()))) - 1;
+        							int firstCol = Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.C.getCode())));
+        							int lastCol = Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.C.getCode()))) + Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.COLSPAN.getCode()))) - 1;
+        							ReportExcelUtil.insertBarcode(wb, sheet, barCodeByte, firstRow, lastRow, firstCol, lastCol);
+                    			}
+                    		}else {
+                    			int r = qrCodeCells.getJSONObject(j).getIntValue("r");
+    							int c = qrCodeCells.getJSONObject(j).getIntValue("c");
+    							ReportExcelUtil.insertBarcode(wb, sheet, barCodeByte, r, r, c, c);
+                    		}
+                		}
+					}
                 }
                 processSheetConditionFormat(sheet, mesExportExcel.getSheetConfigs().get(i).getLuckysheetConditionformatSave());
         	}
@@ -773,7 +823,9 @@ public class ReportExcelUtil {
                 		sheet.setColumnWidth(Integer.parseInt(String.valueOf(entry.getKey())), wid.multiply(excleWid).setScale(0,BigDecimal.ROUND_HALF_UP).intValue());//列宽px值
                 	}
                 }
-                cellUtil.setCellValues(cellDatas,hyperlinks,borderInfos,null,mesExportExcel.getSheetConfigs().get(i).getMerge(),mesExportExcel.getSheetConfigs().get(i).getIsCoedit(), dataVerification,xxbtCells,true);
+                JSONArray barCodeCells = new JSONArray();//条形码单元格
+                JSONArray qrCodeCells = new JSONArray();//二维码单元格
+                cellUtil.setCellValues(cellDatas,hyperlinks,borderInfos,null,mesExportExcel.getSheetConfigs().get(i).getMerge(),mesExportExcel.getSheetConfigs().get(i).getIsCoedit(), dataVerification,xxbtCells,true,barCodeCells,qrCodeCells);
                 JSONObject rowlenObj = JSONObject.parseObject(JSONObject.toJSONString(rowlen));
                 JSONObject columnlenObj = JSONObject.parseObject(JSONObject.toJSONString(columnlen));
                 setImages(wb,sheet,images,columnlenObj,rowlenObj,rowhidden,colhidden,mesExportExcel.getImageInfos(),mesExportExcel.getBackImages());
@@ -781,6 +833,51 @@ public class ReportExcelUtil {
 //                insertChart(wb, sheet, mesExportExcel.getSheetConfigs().get(i).getChart(),mesExportExcel.getSheetConfigs().get(i).getChartCells());
                 insertChart(wb, sheet, mesExportExcel.getSheetConfigs().get(i).getChart(),mesExportExcel.getSheetConfigs().get(i).getChartCells(),cellUtil);
 //                insertBase64Chart(wb, sheet, mesExportExcel.getSheetConfigs().get(i).getChart(),mesExportExcel.getSheetConfigs().get(i).getChartCells(),cellUtil,mesExportExcel.getChartsBase64());
+                if(ListUtil.isNotEmpty(barCodeCells)) {
+                	for (int j = 0; j < barCodeCells.size(); j++) {
+                		JSONObject cellValue = barCodeCells.getJSONObject(j).getJSONObject(LuckySheetPropsEnum.CELLCONFIG.getCode());
+                		JSONObject mergeCell = cellValue.getJSONObject(LuckySheetPropsEnum.MERGECELLS.getCode());
+                		if(StringUtil.isNotEmpty(cellValue.getString("v"))) {
+                			byte[] barCodeByte = BarCodeUtil.generateBarcodeImage(cellValue.getString("v"), 200, 100);
+                    		if(mergeCell != null) {
+                    			if(mergeCell.containsKey(LuckySheetPropsEnum.ROWSPAN.getCode()) && mergeCell.containsKey(LuckySheetPropsEnum.COLSPAN.getCode())) {
+                    				int firstRow = Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.R.getCode())));
+        							int lastRow = Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.R.getCode()))) + Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.ROWSPAN.getCode()))) - 1;
+        							int firstCol = Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.C.getCode())));
+        							int lastCol = Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.C.getCode()))) + Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.COLSPAN.getCode()))) - 1;
+        							ReportExcelUtil.insertBarcode(wb, sheet, barCodeByte, firstRow, lastRow, firstCol, lastCol);
+                    			}
+                    		}else {
+                    			int r = barCodeCells.getJSONObject(j).getIntValue("r");
+    							int c = barCodeCells.getJSONObject(j).getIntValue("c");
+    							ReportExcelUtil.insertBarcode(wb, sheet, barCodeByte, r, r, c, c);
+                    		}
+                		}
+                		
+					}
+                }
+                if(ListUtil.isNotEmpty(qrCodeCells)) {
+                	for (int j = 0; j < qrCodeCells.size(); j++) {
+                		JSONObject cellValue = qrCodeCells.getJSONObject(j).getJSONObject(LuckySheetPropsEnum.CELLCONFIG.getCode());
+                		JSONObject mergeCell = cellValue.getJSONObject(LuckySheetPropsEnum.MERGECELLS.getCode());
+                		if(StringUtil.isNotEmpty(cellValue.getString("v"))) {
+                			byte[] barCodeByte = QRCodeUtil.generateQRCodeImage(cellValue.getString("v"), 256, 256);
+                    		if(mergeCell != null) {
+                    			if(mergeCell.containsKey(LuckySheetPropsEnum.ROWSPAN.getCode()) && mergeCell.containsKey(LuckySheetPropsEnum.COLSPAN.getCode())) {
+                    				int firstRow = Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.R.getCode())));
+        							int lastRow = Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.R.getCode()))) + Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.ROWSPAN.getCode()))) - 1;
+        							int firstCol = Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.C.getCode())));
+        							int lastCol = Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.C.getCode()))) + Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.COLSPAN.getCode()))) - 1;
+        							ReportExcelUtil.insertBarcode(wb, sheet, barCodeByte, firstRow, lastRow, firstCol, lastCol);
+                    			}
+                    		}else {
+                    			int r = qrCodeCells.getJSONObject(j).getIntValue("r");
+    							int c = qrCodeCells.getJSONObject(j).getIntValue("c");
+    							ReportExcelUtil.insertBarcode(wb, sheet, barCodeByte, r, r, c, c);
+                    		}
+                		}
+					}
+                }
                 processSheetConditionFormat(sheet, mesExportExcel.getSheetConfigs().get(i).getLuckysheetConditionformatSave());
         	}
         }
@@ -1078,6 +1175,25 @@ public class ReportExcelUtil {
         anchor = new XSSFClientAnchor(0, 0, 255, 255, (short) beginColIndex, beginRowIndex, (short) (endColIndex + 1), endRowIndex + 1);
         //插入图片
         drawing.createPicture(anchor, workbook.addPicture(picture, Workbook.PICTURE_TYPE_JPEG));
+    }
+    
+    public static void insertBarcode(XSSFWorkbook workbook, XSSFSheet sheet, byte[] picture, int beginRowIndex, int endRowIndex
+            , int beginColIndex, int endColIndex) {
+        //画图的顶级管理器，一个sheet只能获取一个（一定要注意这点）
+        Drawing drawing = sheet.getDrawingPatriarch();
+        if (drawing == null) {
+            drawing = sheet.createDrawingPatriarch();
+        }
+        //anchor主要用于设置图片的属性
+        ClientAnchor anchor = null;
+        anchor = new XSSFClientAnchor(0, 0, 255, 255, (short) beginColIndex, beginRowIndex, (short) (endColIndex + 1), endRowIndex + 1);
+        anchor.setAnchorType(AnchorType.MOVE_AND_RESIZE);
+        anchor.setDx1(Units.EMU_PER_PIXEL * 5);
+        anchor.setDx2(Units.EMU_PER_PIXEL *(-5));
+        anchor.setDy1(Units.EMU_PER_PIXEL *5);
+        anchor.setDy2(Units.EMU_PER_PIXEL *(-5));
+        //插入图片
+        drawing.createPicture(anchor, workbook.addPicture(picture, Workbook.PICTURE_TYPE_PNG));
     }
     
     /**  
