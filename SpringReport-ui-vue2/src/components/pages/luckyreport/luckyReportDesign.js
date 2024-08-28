@@ -2079,6 +2079,7 @@ export default {
           if (response.responseData && response.responseData.settings) {
             _this.sheetOptions.data = []
             _this.tplName = response.responseData.tplName;
+            document.title = response.responseData.tplName;
             _this.sheetRangeAuth = response.responseData.sheetRangeAuth;
             _this.isCreator = response.responseData.creator;
             _this.creatorName = response.responseData.creatorName;
