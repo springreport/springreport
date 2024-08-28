@@ -526,6 +526,7 @@ public class OnlineTplServiceImpl extends ServiceImpl<OnlineTplMapper, OnlineTpl
 				}
 			}
 			result.setSheetRangeAuth(sheetRangeAuth);
+			result.setTplName(onlineTpl.getTplName());
 		}
 		return result;
 	}
