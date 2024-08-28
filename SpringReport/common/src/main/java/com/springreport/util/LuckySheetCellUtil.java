@@ -119,7 +119,7 @@ public class LuckySheetCellUtil {
 	 * @date 2021-06-09 05:01:36 
 	 */ 
 	public void setCellValues(List<Map<String, Object>> cellDatas,Map<String, Map<String, Object>> hyperlinks,List<Object> borderInfos,Map<String, String> unProtectCells,JSONObject merge,Integer isCoedit,
-			JSONObject dataVerification,JSONArray xxbtCells,boolean isPdfStream)
+			JSONObject dataVerification,JSONArray xxbtCells,boolean isPdfStream,JSONArray barCodeCells,JSONArray qrCodeCells)
 	{
 		JSONObject cellBorders = this.getCellBorderInfo(borderInfos);
 		if(cellDatas != null && cellDatas.size() > 0)
@@ -177,7 +177,6 @@ public class LuckySheetCellUtil {
 					}
 					Map<String, Object> cellType = (Map<String, Object>) cellValue.get(LuckySheetPropsEnum.CELLTYPE.getCode());
 					String t = "s";
-					String fa = (String)cellType.get("fa");
 					if(cellType != null) {
 						t = String.valueOf(cellType.get(LuckySheetPropsEnum.TYPE.getCode()));
 					}
@@ -290,7 +289,15 @@ public class LuckySheetCellUtil {
 						}
 					}
 				}
+				String ff = (String) cellConfig.get("ff");//字体
+				if(barCodeCells != null && StringUtil.isNotEmpty(ff) && ff.contains("barCode128")) {
+					barCodeCells.add(cellData);
+				}else if(qrCodeCells != null && StringUtil.isNotEmpty(ff) && ff.contains("qrCode")) {
+					qrCodeCells.add(cellData);
+				}
+				
 			}
+			
 		}
 		this.setCellBorder(cellBorders);
 		if(YesNoEnum.YES.getCode().intValue() == isCoedit.intValue())
