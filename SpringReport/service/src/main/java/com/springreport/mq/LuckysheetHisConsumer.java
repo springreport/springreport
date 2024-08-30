@@ -858,31 +858,84 @@ public class LuckysheetHisConsumer implements RocketMQListener<String>{
 					result = operate;
 				} else if (changeAfter.containsKey("ct")) {
 					String beforeValue = "General";
-					if (changeBefore.getJSONObject("ct") != null) {
-						beforeValue = changeBefore.getJSONObject("ct").getString("fa");
-					}
 					String afterValue = "General";
-					if (changeAfter.getJSONObject("ct") != null) {
-						afterValue = changeAfter.getJSONObject("ct").getString("fa");
-					}
-					if (!afterValue.equals(beforeValue)) {
-						String afterMsg = "";
-						String beforeMsg = "";
-						if (LuckysheetFormatEnum.getValue(afterValue) != null) {
-							afterMsg = LuckysheetFormatEnum.getValue(afterValue) + "-" + afterValue;
-						} else {
-							afterMsg = "更多格式" + "-" + afterValue;
-						}
-						if (LuckysheetFormatEnum.getValue(beforeValue) != null) {
-							beforeMsg = LuckysheetFormatEnum.getValue(beforeValue) + "-" + beforeValue;
-						} else {
-							beforeMsg = "更多格式" + "-" + beforeValue;
-						}
-						if(isReservse)
-						{
-							result = MessageUtil.getValue("luckysheet.cell.change", new String[] { "格式",afterMsg, beforeMsg });
+					changeAfter.entrySet().removeIf(entry -> entry.getValue() == null);
+					changeBefore.entrySet().removeIf(entry -> entry.getValue() == null);
+					if("inlineStr".equals(changeAfter.getJSONObject("ct").getString("t")))
+					{
+						JSONArray s = changeAfter.getJSONObject("ct").getJSONArray("s");
+						afterValue = JSONArray.toJSONString(s);
+						if(StringUtil.isEmptyMap(changeBefore)) {
+							beforeValue = "空值";
+						}else if("inlineStr".equals(changeBefore.getJSONObject("ct").getString("t"))) {
+							s = changeBefore.getJSONObject("ct").getJSONArray("s");
+							beforeValue = JSONArray.toJSONString(s);
 						}else {
-							result = MessageUtil.getValue("luckysheet.cell.change", new String[] { "格式", beforeMsg, afterMsg });
+							beforeValue = beforeData.getString("v");
+						}
+						if (!afterValue.equals(beforeValue)) {
+							String afterMsg = "";
+							String beforeMsg = "";
+							afterMsg = afterValue;
+							beforeMsg = beforeValue;
+							if(isReservse)
+							{
+								result = MessageUtil.getValue("luckysheet.cell.change", new String[] { "值",afterMsg, beforeMsg });
+							}else {
+								result = MessageUtil.getValue("luckysheet.cell.change", new String[] { "值", beforeMsg, afterMsg });
+							}
+						}
+					}else if("inlineStr".equals(changeBefore.getJSONObject("ct").getString("t"))) {
+						JSONArray s = changeBefore.getJSONObject("ct").getJSONArray("s");
+						beforeValue = JSONArray.toJSONString(s);
+						if(StringUtil.isEmptyMap(changeAfter)) {
+							afterValue = "空值";
+						}else if("inlineStr".equals(changeAfter.getJSONObject("ct").getString("t"))) {
+							s = changeAfter.getJSONObject("ct").getJSONArray("s");
+							afterValue = JSONArray.toJSONString(s);
+						}
+						else {
+							afterValue = newData.getString("v");
+						}
+						if (!afterValue.equals(beforeValue)) {
+							String afterMsg = "";
+							String beforeMsg = "";
+							afterMsg = afterValue;
+							beforeMsg = beforeValue;
+							if(isReservse)
+							{
+								result = MessageUtil.getValue("luckysheet.cell.change", new String[] { "值",afterMsg, beforeMsg });
+							}else {
+								result = MessageUtil.getValue("luckysheet.cell.change", new String[] { "值", beforeMsg, afterMsg });
+							}
+						}
+					}else {
+						if (changeBefore.getJSONObject("ct") != null) {
+							beforeValue = changeBefore.getJSONObject("ct").getString("fa");
+						}
+						
+						if (changeAfter.getJSONObject("ct") != null) {
+							afterValue = changeAfter.getJSONObject("ct").getString("fa");
+						}
+						if (!afterValue.equals(beforeValue)) {
+							String afterMsg = "";
+							String beforeMsg = "";
+							if (LuckysheetFormatEnum.getValue(afterValue) != null) {
+								afterMsg = LuckysheetFormatEnum.getValue(afterValue) + "-" + afterValue;
+							} else {
+								afterMsg = "更多格式" + "-" + afterValue;
+							}
+							if (LuckysheetFormatEnum.getValue(beforeValue) != null) {
+								beforeMsg = LuckysheetFormatEnum.getValue(beforeValue) + "-" + beforeValue;
+							} else {
+								beforeMsg = "更多格式" + "-" + beforeValue;
+							}
+							if(isReservse)
+							{
+								result = MessageUtil.getValue("luckysheet.cell.change", new String[] { "格式",afterMsg, beforeMsg });
+							}else {
+								result = MessageUtil.getValue("luckysheet.cell.change", new String[] { "格式", beforeMsg, afterMsg });
+							}
 						}
 					}
 				}else if (changeAfter.containsKey("mc")) {
