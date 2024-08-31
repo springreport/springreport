@@ -164,7 +164,7 @@ public class ReportTplDatasetController extends BaseController {
 	@RequestMapping(value = "/getReportDatasetsParam",method = RequestMethod.POST)
 	@MethodLog(module="ReportTplDataset",remark="预览获取报表数据集参数",operateType=Constants.OPERATE_TYPE_SEARCH)
 	@Check({"tplId:required#模板id"})
-	@RequiresPermissions(value = {"reportDesign_previewReport","reportTpl_reportView","docTpl_view"},logical = Logical.OR)
+	@RequiresPermissions(value = {"reportDesign_previewReport","reportTpl_reportView","viewReport_view","docTpl_view"},logical = Logical.OR)
 	public Response getReportDatasetsParam(@RequestBody ReportTplDatasetDto reportTplDataset) throws ParseException
 	{
 		Map<String, Object> result = this.iReportTplDatasetService.getReportDatasetsParam(reportTplDataset);
@@ -234,7 +234,7 @@ public class ReportTplDatasetController extends BaseController {
 	@RequestMapping(value = "/getSelectData",method = RequestMethod.POST)
 	@MethodLog(module="ReportTplDataset",remark="获取下拉数据",operateType=Constants.OPERATE_TYPE_SEARCH)
 	@Check({"selectContent:required#查询sql","datasourceId:required#数据源id","params:required#参数"})
-	@RequiresPermissions(value = {"reportDesign_previewReport","reportTpl_reportView"},logical = Logical.OR)
+	@RequiresPermissions(value = {"reportDesign_previewReport","reportTpl_reportView","viewReport_view"},logical = Logical.OR)
 	public Response getSelectData(@RequestBody MesGetRelyOnSelectData mesGetRelyOnSelectData) throws JSQLParserException {
 		List<Map<String, Object>> result = this.iReportTplDatasetService.getSelectData(mesGetRelyOnSelectData);
 		return Response.success(result);
@@ -253,7 +253,7 @@ public class ReportTplDatasetController extends BaseController {
 	@RequestMapping(value = "/getRelyOnData",method = RequestMethod.POST)
 	@MethodLog(module="ReportTplDataset",remark="获取依赖项的下拉数据",operateType=Constants.OPERATE_TYPE_SEARCH)
 	@Check({"selectContent:required#查询sql","datasourceId:required#数据源id","params:required#参数"})
-	@RequiresPermissions(value = {"reportDesign_previewReport","reportTpl_reportView"},logical = Logical.OR)
+	@RequiresPermissions(value = {"reportDesign_previewReport","reportTpl_reportView","viewReport_view"},logical = Logical.OR)
 	public Response getRelyOnSelectData(@RequestBody MesGetRelyOnSelectData mesGetRelyOnSelectData) throws JSQLParserException {
 		List<Map<String, Object>> result = this.iReportTplDatasetService.getRelyOnSelectData(mesGetRelyOnSelectData);
 		return Response.success(result);
@@ -272,7 +272,7 @@ public class ReportTplDatasetController extends BaseController {
 	@RequestMapping(value = "/getTreeSelectData",method = RequestMethod.POST)
 	@MethodLog(module="ReportTplDataset",remark="获取下拉数据",operateType=Constants.OPERATE_TYPE_SEARCH)
 	@Check({"selectContent:required#查询sql","datasourceId:required#数据源id","params:required#参数"})
-	@RequiresPermissions(value = {"reportDesign_previewReport","reportTpl_reportView"},logical = Logical.OR)
+	@RequiresPermissions(value = {"reportDesign_previewReport","reportTpl_reportView","viewReport_view"},logical = Logical.OR)
 	public Response getTreeSelectData(@RequestBody MesGetRelyOnSelectData mesGetRelyOnSelectData) throws JSQLParserException {
 		List<Map<String, Object>> result = this.iReportTplDatasetService.getTreeSelectData(mesGetRelyOnSelectData);
 		return Response.success(result);

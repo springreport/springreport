@@ -117,7 +117,7 @@ public class ReportTplController extends BaseController {
 	@RequestMapping(value = "/getDetail",method = RequestMethod.GET)
 	@MethodLog(module="ReportTpl",remark="获取详细信息",operateType=Constants.OPERATE_TYPE_SEARCH)
 	@Check({"id:required#主键ID"})
-	@RequiresPermissions(value = {"reportTpl_getDetail","reportTpl_update","reportTpl_reportDesign","reportDesign_previewReport","reportTpl_reportView","reportTpl_copy"},logical = Logical.OR)
+	@RequiresPermissions(value = {"reportTpl_getDetail","reportTpl_update","reportTpl_reportDesign","reportDesign_previewReport","reportTpl_reportView","reportTpl_copy","viewReport_view"},logical = Logical.OR)
 	public Response getDetail(@RequestParam Long id) throws Exception
 	{
 		BaseEntity result = iReportTplService.getDetail(id);
@@ -362,7 +362,7 @@ public class ReportTplController extends BaseController {
 	 * @date 2021-06-10 02:34:54 
 	 */ 
 	@RequestMapping(value = "/luckySheetExportExcel",method = RequestMethod.POST)
-	@RequiresPermissions(value = {"reportDesign_previewReport","reportTpl_reportView"},logical = Logical.OR)
+	@RequiresPermissions(value = {"reportDesign_previewReport","reportTpl_reportView","viewReport_view"},logical = Logical.OR)
 	public void luckySheetExportExcel(@RequestBody MesGenerateReportDto mesGenerateReportDto,@LoginUser UserInfoDto userInfoDto) throws Exception {
 		this.iReportTplService.luckySheetExportExcel(mesGenerateReportDto,userInfoDto, httpServletResponse);
 	}
@@ -836,7 +836,7 @@ public class ReportTplController extends BaseController {
 	 * @date 2021-06-10 02:34:54 
 	 */ 
 	@RequestMapping(value = "/getSheetPdfStream",method = RequestMethod.POST)
-	@RequiresPermissions(value = {"reportDesign_previewReport","reportTpl_reportView"},logical = Logical.OR)
+	@RequiresPermissions(value = {"reportDesign_previewReport","reportTpl_reportView","viewReport_view"},logical = Logical.OR)
 	public void getSheetPdfStream(@RequestBody MesGenerateReportDto mesGenerateReportDto,@LoginUser UserInfoDto userInfoDto) throws Exception {
 		this.iReportTplService.getSheetPdfStream(mesGenerateReportDto,userInfoDto, httpServletResponse);
 	}
