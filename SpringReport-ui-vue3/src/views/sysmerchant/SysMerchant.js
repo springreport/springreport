@@ -1,3 +1,4 @@
+import md5 from 'js-md5';
 export default {
   name:'sysMerchant',
   data() {
@@ -182,7 +183,7 @@ export default {
     save(){
       this.$refs['modalRef'].$refs['modalFormRef'].validate((valid) => {
         if (valid) {
-            this.pageData.modalData.password = this.$md5(this.pageData.modalData.password );
+            this.pageData.modalData.password = md5(this.pageData.modalData.password );
             var obj = {
               params:this.pageData.modalData,
               removeEmpty:false,
