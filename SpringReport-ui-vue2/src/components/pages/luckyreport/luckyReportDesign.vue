@@ -1299,4 +1299,8 @@
 .el-divider--horizontal{
     margin: 10px 0
 }
+::v-deep .el-tabs__content .el-tab-pane{
+    height:600px;
+    overflow: auto;
+}
 </style>
