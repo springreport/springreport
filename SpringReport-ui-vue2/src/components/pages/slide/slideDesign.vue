@@ -1,471 +1,50 @@
 <template>
     <div v-loading="loading" :element-loading-text="loadingText" style="height: 100%;display: flex;flex-direction: column">
-      <div style="width: 240px;flex: none;">
-            <el-header class="_header df-c-b">
-                <div class="headerLeft df-c" style="width:100%">
-                <div class="tplname" style="width: 240px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;" :title="tplName">
-                      {{tplName}}
-                    </div>
-                </div>
-            </el-header>
-        </div>
       <div style="flex: 1;height:100vh;display:flex">
         <div class="left">
             <div class="left-dataset-title">
                 <span class="dataset-title">数据集管理</span>
-                <el-button class="addBtn" @click="addDataSets">添加<icon-plus theme="outline" size="16" fill="#FFF" class="el-icon--right"/></el-button>
+                <el-button class="addBtn" @click="addDataSets">添加<i class="el-icon-plus el-icon--right"></i></el-button>
             </div>
             <div v-for="o in datasets" :key="o.id">
                 <div :class="o.isActive?'dataset-box-active':'dataset-box'" style="position:relative">
-                    <icon-right v-show="!o.isActive" theme="outline" size="16" fill="#999" class="el-icon-arrow-down"/>
-                    <icon-down v-show="o.isActive" theme="outline" size="16" fill="#999" class="el-icon-arrow-right"/>
+                    <i :class="o.isActive?'el-icon-arrow-down el-icon-arrow-down_dataset':'el-icon-arrow-right'" @click="clickDatasets(o)"></i>
                     <span class="dataset-name" @click="clickDatasets(o)" :title="o.datasetName">{{o.datasetName}}
                        <el-dropdown>
-                          <icon-copy style="margin-top:4px"/>
-                          <template #dropdown>
-                           <el-dropdown-menu>
-                            <el-dropdown-item v-on:click="copyAttr(5,o.datasetName)">列表</el-dropdown-item>
-                            <el-dropdown-item v-on:click="copyAttr(6,o.datasetName)">区块对</el-dropdown-item>
-                           </el-dropdown-menu>
-                          </template>
+                           <i class="el-icon-copy-document" title="复制"></i>
+                           <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item v-on:click.native="copyAttr(5,o.datasetName)">列表</el-dropdown-item>
+                            <el-dropdown-item v-on:click.native="copyAttr(6,o.datasetName)">区块对</el-dropdown-item>
+                          </el-dropdown-menu>
                           </el-dropdown>
                     </span>
-                    <icon-edit class="el-icon-edit" @click="editDataSet(o)" />
-                    <icon-delete class="el-icon-delete" @click="deleteDataSet(o)" />
+                    <i class="el-icon-edit" @click="editDataSet(o)"></i>
+                    <i class="el-icon-delete" @click="deleteDataSet(o)"></i>
                 </div>
-                <div class="dataset-box-content wrapper" v-if="o.isActive">
-                        <div class="column-tag" v-for="(column,index) in o.columns" :key="index" :title="column.name" >
+                <div class="dataset-box-content" v-if="o.isActive">
+                        <p class="column-tag" v-for="(column,index) in o.columns" :key="index" :title="column.name" >
                           <el-dropdown>
-                          <icon-copy style="margin-top:8px"/>
-                           <!-- <i class="icon-copy" title="复制"></i> -->
-                           <template #dropdown>
-                           <el-dropdown-menu>
-                            <el-dropdown-item v-on:click="copyAttr(1,o.datasetName,column.name)">文本</el-dropdown-item>
-                            <el-dropdown-item v-on:click="copyAttr(2,o.datasetName,column.name)">图片</el-dropdown-item>
-                            <el-dropdown-item v-on:click="copyAttr(3,o.datasetName,column.name)">列表文本</el-dropdown-item>
-                            <el-dropdown-item v-on:click="copyAttr(4,o.datasetName,column.name)">列表图片</el-dropdown-item>
-                            <el-dropdown-item v-on:click="copyAttr(7,o.datasetName,column.name)">区块对文本</el-dropdown-item>
-                            <el-dropdown-item v-on:click="copyAttr(8,o.datasetName,column.name)">区块对图片</el-dropdown-item>
+                           <i class="el-icon-copy-document" title="复制"></i>
+                           <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item v-on:click.native="copyAttr(1,o.datasetName,column.name)">文本</el-dropdown-item>
+                            <el-dropdown-item v-on:click.native="copyAttr(2,o.datasetName,column.name)">图片</el-dropdown-item>
+                            <el-dropdown-item v-on:click.native="copyAttr(3,o.datasetName,column.name)">列表文本</el-dropdown-item>
+                            <el-dropdown-item v-on:click.native="copyAttr(4,o.datasetName,column.name)">列表图片</el-dropdown-item>
+                            <el-dropdown-item v-on:click.native="copyAttr(7,o.datasetName,column.name)">区块对文本</el-dropdown-item>
+                            <el-dropdown-item v-on:click.native="copyAttr(8,o.datasetName,column.name)">区块对图片</el-dropdown-item>
                           </el-dropdown-menu>
-                          </template>
                           </el-dropdown>
                           {{column.name}}
-                        </div>
+                        </p>
                     <el-input v-show="o.apiResult" type="textarea" placeholder="" v-model="o.apiResult" rows="6"></el-input>
                 </div>
-                
             </div>
         </div>
         <div class="center">
-          <div class="menu" editor-component="menu">
-          <div class="menu-item">
-            <div class="menu-item__save" title="保存模板">
-              <i></i>
-            </div>
-            <div class="menu-item__download" title="导出模板">
-              <i></i>
-            </div>
-            <div class="menu-item__preview" title="预览">
-              <i></i>
-            </div>
-            <div class="menu-item__undo">
-              <i></i>
-            </div>
-            <div class="menu-item__redo">
-              <i></i>
-            </div>
-            <div class="menu-item__painter" title="格式刷(双击可连续使用)">
-              <i></i>
-            </div>
-            <div class="menu-item__format" title="清除格式">
-              <i></i>
-            </div>
-          </div>
-          <div class="menu-divider"></div>
-          <div class="menu-item">
-            <div class="menu-item__font">
-              <span class="select" title="字体">微软雅黑</span>
-              <div class="options">
-                <ul>
-                  <li data-family="Microsoft YaHei" style="font-family:'Microsoft YaHei';">微软雅黑</li>
-                  <li data-family="宋体" style="font-family:'宋体';">宋体</li>
-                  <li data-family="黑体" style="font-family:'黑体';">黑体</li>
-                  <li data-family="仿宋" style="font-family:'仿宋';">仿宋</li>
-                  <li data-family="楷体" style="font-family:'楷体';">楷体</li>
-                  <li data-family="等线" style="font-family:'等线';">等线</li>
-                  <li data-family="华文琥珀" style="font-family:'华文琥珀';">华文琥珀</li>
-                  <li data-family="华文楷体" style="font-family:'华文楷体';">华文楷体</li>
-                  <li data-family="华文隶书" style="font-family:'华文隶书';">华文隶书</li>
-                  <li data-family="华文新魏" style="font-family:'华文新魏';">华文新魏</li>
-                  <li data-family="华文行楷" style="font-family:'华文行楷';">华文行楷</li>
-                  <li data-family="华文中宋" style="font-family:'华文中宋';">华文中宋</li>
-                  <li data-family="华文彩云" style="font-family:'华文彩云';">华文彩云</li>
-                  <li data-family="Arial" style="font-family:'Arial';">Arial</li>
-                  <li data-family="Segoe UI" style="font-family:'Segoe UI';">Segoe UI</li>
-                  <li data-family="Ink Free" style="font-family:'Ink Free';">Ink Free</li>
-                  <li data-family="Fantasy" style="font-family:'Fantasy';">Fantasy</li>
-                </ul>
-              </div>
-            </div>
-            <div class="menu-item__size">
-              <span class="select" title="字体">小四</span>
-              <div class="options">
-                <ul>
-                  <li data-size="56">初号</li>
-                  <li data-size="48">小初</li>
-                  <li data-size="34">一号</li>
-                  <li data-size="32">小一</li>
-                  <li data-size="29">二号</li>
-                  <li data-size="24">小二</li>
-                  <li data-size="21">三号</li>
-                  <li data-size="20">小三</li>
-                  <li data-size="18">四号</li>
-                  <li data-size="16">小四</li>
-                  <li data-size="14">五号</li>
-                  <li data-size="12">小五</li>
-                  <li data-size="10">六号</li>
-                  <li data-size="8">小六</li>
-                  <li data-size="7">七号</li>
-                  <li data-size="6">八号</li>
-                </ul>
-              </div>
-            </div>
-            <div class="menu-item__size-add">
-              <i></i>
-            </div>
-            <div class="menu-item__size-minus">
-              <i></i>
-            </div>
-            <div class="menu-item__bold">
-              <i></i>
-            </div>
-            <div class="menu-item__italic">
-              <i></i>
-            </div>
-            <div class="menu-item__underline">
-              <i></i>
-              <span class="select"></span>
-              <div class="options">
-                <ul>
-                  <li data-decoration-style='solid'>
-                    <i></i>
-                  </li>
-                  <li data-decoration-style='double'>
-                    <i></i>
-                  </li>
-                  <li data-decoration-style='dashed'>
-                    <i></i>
-                  </li>
-                  <li data-decoration-style='dotted'>
-                    <i></i>
-                  </li>
-                  <li data-decoration-style='wavy'>
-                    <i></i>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <div class="menu-item__strikeout" title="删除线(Ctrl+Shift+X)">
-              <i></i>
-            </div>
-            <div class="menu-item__superscript">
-              <i></i>
-            </div>
-            <div class="menu-item__subscript">
-              <i></i>
-            </div>
-            <div class="menu-item__color" title="字体颜色">
-              <i></i>
-              <span></span>
-              <input type="color" id="color" />
-            </div>
-            <div class="menu-item__highlight" title="高亮">
-              <i></i>
-              <span></span>
-              <input type="color" id="highlight">
-            </div>
-          </div>
-          <div class="menu-divider"></div>
-          <div class="menu-item">
-            <div class="menu-item__title">
-              <i></i>
-              <span class="select" title="切换标题">正文</span>
-              <div class="options">
-                <ul>
-                  <li style="font-size:16px;">正文</li>
-                  <li data-level="first" style="font-size:26px;">标题1</li>
-                  <li data-level="second" style="font-size:24px;">标题2</li>
-                  <li data-level="third" style="font-size:22px;">标题3</li>
-                  <li data-level="fourth" style="font-size:20px;">标题4</li>
-                  <li data-level="fifth" style="font-size:18px;">标题5</li>
-                  <li data-level="sixth" style="font-size:16px;">标题6</li>
-                </ul>
-              </div>
-            </div>
-            <div class="menu-item__left">
-              <i></i>
-            </div>
-            <div class="menu-item__center">
-              <i></i>
-            </div>
-            <div class="menu-item__right">
-              <i></i>
-            </div>
-            <div class="menu-item__alignment">
-              <i></i>
-            </div>
-            <div class="menu-item__row-margin">
-              <i title="行间距"></i>
-              <div class="options">
-                <ul>
-                  <li data-rowmargin='1'>1</li>
-                  <li data-rowmargin="1.25">1.25</li>
-                  <li data-rowmargin="1.5">1.5</li>
-                  <li data-rowmargin="1.75">1.75</li>
-                  <li data-rowmargin="2">2</li>
-                  <li data-rowmargin="2.5">2.5</li>
-                  <li data-rowmargin="3">3</li>
-                </ul>
-              </div>
-            </div>
-            <div class="menu-item__list">
-              <i></i>
-              <div class="options">
-                <ul>
-                  <li>
-                    <label>取消列表</label>
-                  </li>
-                  <li data-list-type="ol" data-list-style='decimal'>
-                    <label>有序列表：</label>
-                    <ol>
-                      <li>________</li>
-                    </ol>
-                  </li>
-                  <!-- <li data-list-type="ul" data-list-style='checkbox'>
-                    <label>复选框列表：</label>
-                    <ul style="list-style-type: '☑️ ';">
-                      <li>________</li>
-                    </ul>
-                  </li> -->
-                  <li data-list-type="ul" data-list-style='disc'>
-                    <label>实心圆点列表：</label>
-                    <ul style="list-style-type: disc;">
-                      <li>________</li>
-                    </ul>
-                  </li>
-                  <li data-list-type="ul" data-list-style='circle'>
-                    <label>空心圆点列表：</label>
-                    <ul style="list-style-type: circle;">
-                      <li>________</li>
-                    </ul>
-                  </li>
-                  <li data-list-type="ul" data-list-style='square'>
-                    <label>空心方块列表：</label>
-                    <ul style="list-style-type: square;">
-                      <li>________</li>
-                    </ul>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="menu-divider"></div>
-          <div class="menu-item">
-            <div class="menu-item__chart">
-              <i title="图表"></i>
-            </div>
-            <div class="menu-item__table">
-              <i title="表格"></i>
-            </div>
-            <div class="menu-item__table__collapse">
-              <div class="table-close">×</div>
-              <div class="table-title">
-                <span class="table-select">插入</span>
-                <span>表格</span>
-              </div>
-              <div class="table-panel"></div>
-            </div>
-            <div class="menu-item__image">
-              <i title="图片"></i>
-              <input type="file" id="image" accept=".png, .jpg, .jpeg, .svg, .gif">
-            </div>
-            <div class="menu-item__hyperlink">
-              <i title="超链接"></i>
-            </div>
-            <div class="menu-item__separator">
-              <i title="分割线"></i>
-              <div class="options">
-                <ul>
-                  <li data-separator='0,0'>
-                    <i></i>
-                  </li>
-                  <li data-separator="1,1">
-                    <i></i>
-                  </li>
-                  <li data-separator="3,1">
-                    <i></i>
-                  </li>
-                  <li data-separator="4,4">
-                    <i></i>
-                  </li>
-                  <li data-separator="7,3,3,3">
-                    <i></i>
-                  </li>
-                  <li data-separator="6,2,2,2,2,2">
-                    <i></i>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <div class="menu-item__watermark">
-              <i title="水印(添加、删除)"></i>
-              <div class="options">
-                <ul>
-                  <li data-menu="add">添加水印</li>
-                  <li data-menu="delete">删除水印</li>
-                </ul>
-              </div>
-            </div>
-            <!-- <div class="menu-item__codeblock" title="代码块">
-              <i></i>
-            </div>
-            <div class="menu-item__page-break" title="分页符">
-              <i></i>
-            </div> -->
-            <!-- <div class="menu-item__control">
-              <i title="控件"></i>
-              <div class="options">
-                <ul>
-                  <li data-control='text'>文本</li>
-                  <li data-control="select">列举</li>
-                  <li data-control="checkbox">复选框</li>
-                </ul>
-              </div>
-            </div> -->
-            <!-- <div class="menu-item__checkbox" title="复选框">
-              <i></i>
-            </div> -->
-            <!-- <div class="menu-item__latex" title="LateX">
-              <i></i>
-            </div>
-            <div class="menu-item__date">
-              <i title="日期"></i>
-              <div class="options">
-                <ul>
-                  <li data-format="yyyy-MM-dd"></li>
-                  <li data-format="yyyy-MM-dd hh:mm:ss"></li>
-                </ul>
-              </div>
-            </div>
-            <div class="menu-item__block" title="内容块">
-              <i></i>
-            </div> -->
-          </div>
-          <div class="menu-divider"></div>
-          <div class="menu-item">
-            <div class="menu-item__search" data-menu="search">
-              <i></i>
-            </div>
-            <div class="menu-item__search__collapse" data-menu="search">
-              <div class="menu-item__search__collapse__search">
-                <input type="text" />
-                <label class="search-result"></label>
-                <div class="arrow-left">
-                  <i></i>
-                </div>
-                <div class="arrow-right">
-                  <i></i>
-                </div>
-                <span>×</span>
-              </div>
-              <div class="menu-item__search__collapse__replace">
-                <input type="text">
-                <button>替换</button>
-              </div>
-            </div>
-            <div class="menu-item__print" data-menu="print">
-              <i></i>
-            </div>
-          </div>
+            <iframe id="pptIframe" width="100%" height="100%" :src="pptSrc" style="border: none;"></iframe>
         </div>
-        <div class="catalog" editor-component="catalog">
-          <div class="catalog__header">
-            <span>目录</span>
-            <div class="catalog__header__close">
-              <i></i>
-            </div>
-          </div>
-          <div class="catalog__main"></div>
-        </div>
-        <div class="editor"></div>
-        <div class="comment" editor-component="comment"></div>
-        <div class="footer" editor-component="footer">
-          <div>
-            <div class="catalog-mode" title="目录">
-              <i></i>
-            </div>
-            <div class="page-mode">
-              <i title="页面模式(分页、连页)"></i>
-              <div class="options">
-                <ul>
-                  <li data-page-mode="paging" class="active">分页</li>
-                  <li data-page-mode="continuity">连页</li>
-                </ul>
-              </div>
-            </div>
-            <span>可见页码：<span class="page-no-list">1</span></span>
-            <span>页面：<span class="page-no">1</span>/<span class="page-size">1</span></span>
-            <span>字数：<span class="word-count">0</span></span>
-          </div>
-          <!-- <div class="editor-mode" title="编辑模式(编辑、清洁、只读、表单)">编辑模式</div> -->
-          <div>
-            <div class="page-scale-minus" title="缩小(Ctrl+-)">
-              <i></i>
-            </div>
-            <span class="page-scale-percentage" title="显示比例(点击可复原Ctrl+0)">100%</span>
-            <div class="page-scale-add" title="放大(Ctrl+=)">
-              <i></i>
-            </div>
-            <div class="paper-size">
-              <i title="纸张类型"></i>
-              <div class="options">
-                <ul>
-                  <li data-paper-size="794*1123" class="active">A4</li>
-                  <li data-paper-size="1593*2251">A2</li>
-                  <li data-paper-size="1125*1593">A3</li>
-                  <li data-paper-size="565*796">A5</li>
-                  <li data-paper-size="412*488">5号信封</li>
-                  <li data-paper-size="450*866">6号信封</li>
-                  <li data-paper-size="609*862">7号信封</li>
-                  <li data-paper-size="862*1221">9号信封</li>
-                  <li data-paper-size="813*1266">法律用纸</li>
-                  <li data-paper-size="813*1054">信纸</li>
-                </ul>
-              </div>
-            </div>
-            <div class="paper-direction">
-              <i title="纸张方向"></i>
-              <div class="options">
-                <ul>
-                  <li data-paper-direction="vertical" class="active">纵向</li>
-                  <li data-paper-direction="horizontal">横向</li>
-                </ul>
-              </div>
-            </div>
-            <!-- <div class="paper-margin" title="页边距">
-              <i></i>
-            </div> -->
-            <div class="fullscreen" title="全屏显示">
-              <i></i>
-            </div>
-            <!-- <div class="editor-option" title="编辑器设置">
-              <i></i>
-            </div> -->
-          </div>
-        </div>
-      </div>
     </div>
-    <el-dialog title="数据集" v-model="addDatasetsDialogVisiable" width="80%"  top="20px" :close-on-click-modal='false' @close='closeAddDataSet'>
+    <el-dialog title="数据集" :visible.sync="addDatasetsDialogVisiable" width="80%" height="80%" top="20px" :close-on-click-modal='false' @close='closeAddDataSet'>
               <el-tabs type="border-card">
                   <el-tab-pane label="sql语句">
                   <div>
@@ -484,7 +63,7 @@
                           </el-select>
                           </el-form-item><br>
                           <el-form-item  label="系统变量">
-                            <p class="column-tag" v-for="(item,index) in commonConstants.systemParam" :key="index" ><icon-copy @click="doCopy(item)"/>{{item.label}}({{item.value}})</p> 
+                             <p class="column-tag" v-for="(item,index) in commonConstants.systemParam" :key="index" ><i class="el-icon-copy-document" title="复制" @click="doCopy(item)"></i>{{item.label}}({{item.value}})</p> 
                           </el-form-item>
                       </el-form>
 
@@ -493,7 +72,7 @@
                   <el-tooltip content="该操作会将sql语句进行格式化并显示" placement="right"><el-tag @click="formatSql" size="small" style="cursor:pointer"><i class="el-icon-document"></i>格式化</el-tag> </el-tooltip>
                   </div>
                   <div style="height:300px;" v-if="datasourceType == 1">
-                  <codemirror ref="codeMirror"  :options="cmOptions" v-model:value="sqlText"></codemirror>
+                  <codemirror ref="codeMirror"  :options="cmOptions"></codemirror>
                   </div>
                   <div style="height:1px"></div>
                   <div>
@@ -610,7 +189,7 @@
                       <el-table-column prop="isRelyOnParams" label="是否依赖其他参数"  align="center" :formatter="commonUtil.formatterTableValue"></el-table-column>
                       <el-table-column prop="relyOnParams" label="依赖参数"  align="center"></el-table-column>
                       <el-table-column  label="操作"  align="center">
-                           <template #default="scope">
+                          <template slot-scope="scope">
                               <el-button @click="editParam(scope.row)" type="text" size="small">编辑</el-button>
                               <el-button @click="deleteParam(scope.$index)" type="text" size="small">删除</el-button>
                           </template>
@@ -661,7 +240,7 @@
                               <el-table-column prop="paramDefault" label="默认值"  align="center"></el-table-column>
                               <el-table-column prop="paramHidden" label="是否隐藏"  align="center" :formatter="commonUtil.formatterTableValue"></el-table-column>
                               <el-table-column fixed="right" label="操作" width="180" align="center">
-                                   <template #default="scope">
+                                  <template slot-scope="scope">
                                       <el-button @click="editInParam(scope.row)" type="text" size="small">编辑</el-button>
                                       <el-button @click="moveUp(scope.$index,'1')" type="text" size="small">上移</el-button>
                                       <el-button @click="moveDown(scope.$index,'1')" type="text" size="small">下移</el-button>
@@ -700,7 +279,7 @@
                               <el-table-column prop="paramCode" label="参数编码"  align="center"></el-table-column>
                               <el-table-column prop="paramType" label="参数类型"  align="center"></el-table-column>
                               <el-table-column fixed="right" label="操作" width="180" align="center">
-                                   <template #default="scope">
+                                  <template slot-scope="scope">
                                       <el-button @click="editOutParam(scope.row)" type="text" size="small">编辑</el-button>
                                       <el-button @click="moveUp(scope.$index,'2')" type="text" size="small">上移</el-button>
                                       <el-button @click="moveDown(scope.$index,'2')" type="text" size="small">下移</el-button>
@@ -713,12 +292,10 @@
                       </div>
                   </el-tab-pane>
                   </el-tabs>
-                  <template #footer>
-                  <span class="dialog-footer">
+                  <span slot="footer" class="dialog-footer">
                   <el-button @click="closeAddDataSet" size="small">取 消</el-button>
                   <el-button type="primary" @click="addDataSet" size="small">确 定</el-button>
                   </span>
-                  </template>
               </el-dialog>
               <modal
               ref="commonModal"
@@ -728,20 +305,11 @@
               :modalHandles="modalHandles"
               @closeModal="closeModal()"
             ></modal>
-            <modal
-            ref="chartModalRef"
-            :modalConfig="chartModalConfig"
-            :modalForm="chartModalForm"
-            :modalData="chartModalData"
-            :modalHandles="chartModalHandles"
-            @closeModal="closeChartModal()"
-          ></modal>
           <textarea id="clipboradInput" value="" style="opacity:0;position:absolute" />
   </div>
 </template>
 
-<script src="./docDesign.js"></script>
-<style scoped src="./style.css"></style>
+<script src="./slideDesign.js"></script>
 <style scoped lang="scss">
 .pagebox {
     height: 100%;
@@ -876,11 +444,6 @@
     cursor:pointer;
 }
 .el-icon-arrow-down_dataset{
-    position: absolute;
-    left: 5.25%;
-    cursor:pointer;
-}
-.el-icon-arrow-down{
     position: absolute;
     left: 5.25%;
     cursor:pointer;
@@ -1099,14 +662,51 @@
     color: rgba(0, 0, 0, 0.9);
   }
 }
-:deep(.el-avatar){
+::v-deep .el-avatar{
     background:#45c5a9 !important
 }
 
+::v-deep .el-dialog__wrapper {
+   overflow: hidden;
+//    z-index: 2005 !important;
+   pointer-events: none !important;
+}
+
+::v-deep .el-dialog{
+    pointer-events: auto !important;
+    /* background:#d9ebf0 !important; */
+} 
+ ::v-deep .authdialog{
+    margin-top: 50px !important;
+    margin-left: 0px !important;
+    flex-direction: column !important;
+    // overflow: hidden !important;
+    max-height: calc(100% - 90px) !important;
+    top:0 !important;
+    left:0px!important;
+    bottom: 0;
+    pointer-events: auto !important;
+    /* background:#d9ebf0 !important; */
+} 
+.authdialog ::v-deep .el-dialog__body{
+    height: calc(100% - 90px) !important;
+    overflow: auto;
+}
+.authdialog ::v-deep .el-dialog-div{
+     max-height: 60vh;
+     overflow: auto;
+     margin-left: 10px;
+}
+.authdialog ::v-deep .el-dialog-div::-webkit-scrollbar {
+    display: none; /*隐藏滚动条*/
+}
+.authdialog ::v-deep .el-dialog__title{
+    font-weight: bold;
+}
 .el-divider--horizontal{
     margin: 10px 0
 }
-:deep(.el-tabs__content .el-tab-pane){
+::v-deep .el-tabs__content .el-tab-pane{
     height:600px;
     overflow: auto;
 }
