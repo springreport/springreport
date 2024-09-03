@@ -3294,9 +3294,9 @@ export default {
             printSettings.horizontalPageColumn = that.settingFormData.horizontalPageColumn;
             if(printSettings.horizontalPage == 1)
             {
-              luckysheet.addDivider(printSettings.horizontalPageColumn);
+              luckysheet.addLuckysheetDivider(printSettings.horizontalPageColumn);
             }else{
-              luckysheet.addDivider(null);
+              luckysheet.addLuckysheetDivider(null);
             }
             that.closeSettingModal();
             this.$refs['settingRef'].$refs['modalFormRef'].resetFields();
@@ -4133,14 +4133,14 @@ export default {
         }
       },
       showRange(range){
-        luckysheet.addAuthRange([range.range])
+        luckysheet.addLuckysheetAuthRange([range.range])
       },
       closeAuthDialog(){
         this.authdialogVisible = false;
         this.authedRange = [];
         if(this.isCreator)
         {
-          luckysheet.addAuthRange(null)
+          luckysheet.addLuckysheetAuthRange(null)
         }
       },
       //获取使用者授权范围
@@ -4154,7 +4154,7 @@ export default {
         }
         this.sheetAuthedCells = {};
         this.authedRange = [];
-        // luckysheet.addAuthRange();
+        // luckysheet.addLuckysheetAuthRange();
         var that = this;
         this.commonUtil.doPost(obj).then(response => {
           if (response.code == '200') {
@@ -4173,12 +4173,12 @@ export default {
             for(var key in this.sheetRangeAuth[sheetIndex]) {
               range.push(this.sheetRangeAuth[sheetIndex][key].range)
             }
-            luckysheet.addAuthRange(range);
+            luckysheet.addLuckysheetAuthRange(range);
           }else{
-            luckysheet.addAuthRange(null);
+            luckysheet.addLuckysheetAuthRange(null);
           }
         }else{
-          luckysheet.addAuthRange(null);
+          luckysheet.addLuckysheetAuthRange(null);
         }
       },
       sheetActivateAfter(index){
@@ -4188,7 +4188,7 @@ export default {
         {
           this.showSheetAuthedRanges(index);
         }else{
-          luckysheet.addAuthRange(null);
+          luckysheet.addLuckysheetAuthRange(null);
         }
         this.showAuthInfoMsg();
       },

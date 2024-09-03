@@ -646,14 +646,14 @@ export default {
         }
       },
       showRange(range){
-        luckysheet.addAuthRange([range.range])
+        luckysheet.addLuckysheetAuthRange([range.range])
       },
       closeAuthDialog(){
         this.authdialogVisible = false;
         this.authedRange = [];
         if(this.isCreator)
         {
-          luckysheet.addAuthRange(null)
+          luckysheet.addLuckysheetAuthRange(null)
         }
       },
       submitDeleteRangeAuth(range){
@@ -678,7 +678,7 @@ export default {
         {
           this.showSheetAuthedRanges(index);
         }else{
-          luckysheet.addAuthRange(null);
+          luckysheet.addLuckysheetAuthRange(null);
         }
         this.showAuthInfoMsg();
       },
@@ -939,22 +939,22 @@ export default {
               }
             }
             if(noauthrange.length > 0){
-              luckysheet.addNoAuthRange(noauthrange);
+              luckysheet.addLuckysheetNoAuthRange(noauthrange);
             }else{
-              luckysheet.addNoAuthRange(null);
+              luckysheet.addLuckysheetNoAuthRange(null);
             }
             if(range.length > 0){
-              luckysheet.addAuthRange(range);
+              luckysheet.addLuckysheetAuthRange(range);
             }else{
-              luckysheet.addAuthRange(null);
+              luckysheet.addLuckysheetAuthRange(null);
             }
           }else{
-            luckysheet.addAuthRange(null);
-            luckysheet.addNoAuthRange(null);
+            luckysheet.addLuckysheetAuthRange(null);
+            luckysheet.addLuckysheetNoAuthRange(null);
           }
         }else{
-          luckysheet.addAuthRange(null);
-          luckysheet.addNoAuthRange(null);
+          luckysheet.addLuckysheetAuthRange(null);
+          luckysheet.addLuckysheetNoAuthRange(null);
         }
       },
       loadDataAfter(){
@@ -1082,7 +1082,7 @@ export default {
         }
         this.sheetAuthedCells = {};
         this.authedRange = [];
-        // luckysheet.addAuthRange();
+        // luckysheet.addLuckysheetAuthRange();
         var that = this;
         this.commonUtil.doPost(obj).then(response => {
           if (response.code == '200') {

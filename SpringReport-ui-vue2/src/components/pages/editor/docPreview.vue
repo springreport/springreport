@@ -29,7 +29,7 @@
         </reportForm>
         </div>
         <div style="width: 100%;flex: 1;overflow: hidden;">
-          <iframe id="pdfIframe" width="100%" height="100%"></iframe>
+          <iframe id="pdfIframe" width="100%" height="100%" style="border: none;"></iframe>
         </div>
             <div ref="dragArea" class="drag-area" v-if="showReportSql && reportSqls && reportSqls.length > 0">
               <el-tooltip effect="dark" content="显示sql语句" placement="top">
