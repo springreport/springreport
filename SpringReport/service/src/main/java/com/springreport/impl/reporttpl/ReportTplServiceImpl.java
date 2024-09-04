@@ -6685,9 +6685,11 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
             	datas = ListUtil.getProperties(luckySheetBindData.getProperty(), bindDatas.get(j).get(0));	
             }
             Set<String> set = datas.keySet();
+            String cellText = luckySheetBindData.getCellText();
             for (String o : set) {
             	if(StringUtil.isNotEmpty(luckySheetBindData.getCellText())) {
-            		property = luckySheetBindData.getCellText().replace("${"+o+"}", datas.get(o)==null?"":String.valueOf(datas.get(o)));
+            		property = cellText.replace("${"+o+"}", datas.get(o)==null?"":String.valueOf(datas.get(o)));
+            		cellText = property;
             	}else {
             		property = property.replace(o, datas.get(o)==null?"":String.valueOf(datas.get(o)));
             	}
@@ -7171,9 +7173,11 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         }else {
         	Map<String, Object> datas = ListUtil.getProperties(luckySheetBindData.getProperty(), bindDatas.get(j).get(0));
             Set<String> set = datas.keySet();
+            String cellText = luckySheetBindData.getCellText();
             for (String o : set) {
             	if(StringUtil.isNotEmpty(luckySheetBindData.getCellText())) {
-            		property = luckySheetBindData.getCellText().replace("${"+o+"}", datas.get(o)==null?"":String.valueOf(datas.get(o)));
+            		property = cellText.replace("${"+o+"}", datas.get(o)==null?"":String.valueOf(datas.get(o)));
+            		cellText = property;
             	}else {
             		property = property.replace(o, datas.get(o)==null?"":String.valueOf(datas.get(o)));
             	}
@@ -8226,9 +8230,11 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         }else {
         	Map<String, Object> datas = ListUtil.getProperties(luckySheetBindData.getProperty(), bindDatas.get(j).get(0));
             Set<String> set = datas.keySet();
+            String cellText = luckySheetBindData.getCellText();
             for (String o : set) {
             	if(StringUtil.isNotEmpty(luckySheetBindData.getCellText())) {
-            		property = luckySheetBindData.getCellText().replace("${"+o+"}", datas.get(o)==null?"":String.valueOf(datas.get(o)));
+            		property = cellText.replace("${"+o+"}", datas.get(o)==null?"":String.valueOf(datas.get(o)));
+            		cellText = property;
             	}else {
             		property = property.replace(o, datas.get(o)==null?"":String.valueOf(datas.get(o)));
             	}
