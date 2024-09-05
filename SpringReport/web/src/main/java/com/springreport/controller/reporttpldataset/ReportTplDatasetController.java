@@ -91,7 +91,7 @@ public class ReportTplDatasetController extends BaseController {
 	@RequestMapping(value = "/getTplDatasets",method = RequestMethod.POST)
 	@MethodLog(module="ReportTplDataset",remark="获取模板关联的数据集",operateType=Constants.OPERATE_TYPE_SEARCH)
 	@Check({"tplId:required#模板ID"})
-	@RequiresPermissions(value = {"reportTpl_reportDesign","screenTpl_screenDesign"},logical = Logical.OR)
+	@RequiresPermissions(value = {"reportTpl_reportDesign","screenTpl_screenDesign","slidTpl_design","docTpl_design"},logical = Logical.OR)
 	public Response getTplDatasets(@RequestBody ReportTplDataset dataset) throws Exception {
 		List<ReportDatasetDto> result = this.iReportTplDatasetService.getTplDatasets(dataset);
 		return Response.success(result);
@@ -146,7 +146,7 @@ public class ReportTplDatasetController extends BaseController {
 	@RequestMapping(value = "/addTplDataSets",method = RequestMethod.POST)
 	@MethodLog(module="ReportTplDataset",remark="添加模板数据集",operateType=Constants.OPERATE_TYPE_ADD)
 	@Check({"datasetName:required#数据集名称","tplId:required#模板id","datasourceId:required#数据源id"})
-	@RequiresPermissions(value = {"reportDesign_addDataSet","reportDesign_editDataSet","reportForms_addDataSet","reportForms_editDataSet"},logical = Logical.OR)
+	@RequiresPermissions(value = {"reportDesign_addDataSet","reportDesign_editDataSet","reportForms_addDataSet","reportForms_editDataSet","slidTpl_design","docTpl_design"},logical = Logical.OR)
 	public Response addTplDataSets(@RequestBody ReportTplDataset reportTplDataset) throws Exception {
 		ReportDatasetDto result = this.iReportTplDatasetService.addTplDataSets(reportTplDataset);
 		return Response.success(result);
@@ -164,7 +164,7 @@ public class ReportTplDatasetController extends BaseController {
 	@RequestMapping(value = "/getReportDatasetsParam",method = RequestMethod.POST)
 	@MethodLog(module="ReportTplDataset",remark="预览获取报表数据集参数",operateType=Constants.OPERATE_TYPE_SEARCH)
 	@Check({"tplId:required#模板id"})
-	@RequiresPermissions(value = {"reportDesign_previewReport","reportTpl_reportView","viewReport_view","docTpl_view"},logical = Logical.OR)
+	@RequiresPermissions(value = {"reportDesign_previewReport","reportTpl_reportView","viewReport_view","docTpl_view","slide_view"},logical = Logical.OR)
 	public Response getReportDatasetsParam(@RequestBody ReportTplDatasetDto reportTplDataset) throws ParseException
 	{
 		Map<String, Object> result = this.iReportTplDatasetService.getReportDatasetsParam(reportTplDataset);

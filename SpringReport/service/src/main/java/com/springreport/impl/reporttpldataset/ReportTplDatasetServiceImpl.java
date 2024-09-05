@@ -640,7 +640,7 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 			}else {
 				isParamMerge = reportTpl.getIsParamMerge();
 			}
-		}else {
+		}else if(reportTplDataset.getReportType().intValue() == 2) {
 			DocTpl docTpl = this.iDocTplService.getById(reportTplDataset.getTplId());
 			if (docTpl == null) {
 				throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.notexist", new String[] {"报表模板"}));

@@ -176,6 +176,7 @@
                   @click="showSearchClick"
                   size="mini"
                   :title="text"
+                  class="showSearchBtn"
                 ></el-button>
               </el-form-item>
               </span>
@@ -324,6 +325,7 @@
                     @click="showSearchClick"
                     size="mini"
                     :title="text"
+                     class="showSearchBtn"
                     ></el-button>
                 </el-form-item>
                 </span>
@@ -363,6 +365,7 @@
                     @click="showSearchClick"
                     size="mini"
                     :title="text"
+                     class="showSearchBtn"
                     ></el-button>
                 </el-form-item>
           </div>
