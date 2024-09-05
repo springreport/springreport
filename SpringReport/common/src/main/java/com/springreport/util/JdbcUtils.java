@@ -226,11 +226,18 @@ public class JdbcUtils {
 			final Matcher topMatcher = topPattern.matcher(sqlText);
 			if(!topMatcher.find())
 			{
-				final Pattern pattern = Pattern.compile("select", Pattern.CASE_INSENSITIVE);
-				final Matcher matcher = pattern.matcher(sqlText);
-				if (matcher.find()) {
-					sqlText = matcher.replaceFirst("select top 1");
+				Pattern pattern = Pattern.compile("distinct", Pattern.CASE_INSENSITIVE);
+				Matcher matcher = pattern.matcher(sqlText);
+				if(matcher.find()) {
+					
+				}else {
+					pattern = Pattern.compile("select", Pattern.CASE_INSENSITIVE);
+					matcher = pattern.matcher(sqlText);
+					if (matcher.find()) {
+						sqlText = matcher.replaceFirst("select top 1");
+					}
 				}
+				
 			}
 		}else if(DriverClassEnum.ORACLE.getCode().intValue() == dataSourceType)
 		{
