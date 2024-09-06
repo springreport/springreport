@@ -1616,7 +1616,6 @@ export default {
         that.chartModalForm[4].options = element.columns;
         that.chartModalForm[5].options = element.columns;
         that.chartModalForm[6].options = element.columns;
-        that.$refs['chartModalRef'].$forceUpdate();
       })
     },
     // 获取api接口默认参数的返回值

@@ -111,6 +111,22 @@ export const constantRoutes = [
       title: '大屏查看',
     },
   },
+  // {
+  //   path: '/slideDesign',
+  //   name: 'slideDesign',
+  //   component: () => import('@/views/slide/slideDesign.vue'),
+  //   meta: {
+  //     title: 'PPT设计',
+  //   },
+  // },
+  // {
+  //   path: '/slidePreview',
+  //   name: 'slidePreview',
+  //   component: () => import('@/views/slide/slidePreview.vue'),
+  //   meta: {
+  //     title: 'PPT预览',
+  //   },
+  // },
   {
     path: '/',
     component: Layout,
@@ -308,6 +324,15 @@ export const constantRoutes = [
           icon: 'icon-word',
         },
       },
+      // {
+      //   path: '/slideTpl',
+      //   name: 'slideTpl',
+      //   component: () => import('@/views/slidetpl/SlideTpl.vue'),
+      //   meta: {
+      //     title: 'PPT模板管理',
+      //     icon: 'icon-word',
+      //   },
+      // },
     ],
   },
   {
