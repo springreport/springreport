@@ -163,7 +163,8 @@ export default {
         this.$router.replace('/login')
       }else if(command == 'changePwd')
       {
-        this.showChangePwdModal();
+        alert("你小子别改我密码了，想改密码自己下载源码本地部署哦！");
+        // this.showChangePwdModal();
       }
     },
     showChangePwdModal(){
