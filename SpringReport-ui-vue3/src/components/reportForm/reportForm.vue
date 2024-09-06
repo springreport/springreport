@@ -81,7 +81,7 @@
                         </el-dropdown>
                     </div>
                 <el-button v-show="isDrill == 1" style="margin-left:10px" type="primary" icon="icon-back" @click="back" size="small" circle title="返回上级报表"></el-button>
-                <el-button style="margin-left:10px" type="primary" :icon="icon" @click="showSearchClick" size="small" circle :title="text"></el-button>
+                <el-button style="margin-left:10px" type="primary" :icon="icon" @click="showSearchClick" size="small" circle :title="text" class="showSearchBtn"></el-button>
             </div>
             </el-form-item>
             </el-tab-pane>
@@ -155,7 +155,7 @@
                         </el-dropdown>
                     </div>
                     <el-button v-show="isDrill == 1" style="margin-left:10px" type="primary" icon="icon-back" @click="back" size="small" circle title="返回上级报表"></el-button>
-                    <el-button style="margin-left:10px" type="primary" :icon="icon" @click="showSearchClick" size="small" circle :title="text"></el-button>
+                    <el-button style="margin-left:10px" type="primary" :icon="icon" @click="showSearchClick" size="small" circle :title="text" class="showSearchBtn"></el-button>
                 </div>
             </el-form-item>
             </div>
@@ -174,7 +174,7 @@
                         </el-dropdown>
                     </div>
                     <el-button v-show="isDrill == 1" style="margin-left:10px" type="primary" icon="icon-back" @click="back" size="small" circle title="返回上级报表"></el-button>
-                    <el-button style="margin-left:10px" type="primary" :icon="icon" @click="showSearchClick" size="small" circle :title="text"></el-button>
+                    <el-button style="margin-left:10px" type="primary" :icon="icon" @click="showSearchClick" size="small" circle :title="text" class="showSearchBtn"></el-button>
                 </div>
             </el-form-item>
             </div>
