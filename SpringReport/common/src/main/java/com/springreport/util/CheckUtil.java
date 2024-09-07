@@ -415,7 +415,7 @@ public class CheckUtil {
 	    }
 	  
 	  public static boolean validate(String formula) {
-	        String regex = "^(\\d+|\\(\\s*\\d+\\s*[\\+\\-\\*/]\\s*\\d+\\s*\\))(\\s*[\\+\\-\\*/]\\s*(\\d+|\\(\\s*\\d+\\s*[\\+\\-\\*/]\\s*\\d+\\s*\\)))*$";
+	        String regex = "^((\\d+|\\d+[.]?\\d+)|\\(\\s*\\d+\\s*[\\+\\-\\*/]\\s*\\d+\\s*\\))(\\s*[\\+\\-\\*/]\\s*(\\d+|\\(\\s*\\d+\\s*[\\+\\-\\*/]\\s*\\d+\\s*\\)))*$";
 	        Pattern pattern = Pattern.compile(regex);
 	        return pattern.matcher(formula).matches();
 	    }

@@ -9,6 +9,7 @@ import com.googlecode.aviator.AviatorEvaluator;
 import com.springreport.dto.reporttpl.GroupSummaryData;
 import com.springreport.util.CheckUtil;
 import com.springreport.util.ListUtil;
+import com.springreport.util.StringUtil;
 
 /**  
  * @ClassName: GroupAvgCalculate
@@ -25,10 +26,13 @@ public class GroupAvgCalculate extends Calculate<GroupSummaryData>{
 		int size = 0;
 		for (int i = 0; i < bindData.getDatas().size(); i++) {
 			String property = bindData.getProperty();
+			if(StringUtil.isNullOrEmpty(property)) {
+				break;
+			}
 			Object object = null;
 			Map<String, Object> datas = ListUtil.getProperties(bindData.getProperty(), bindData.getDatas().get(i));
 			Set<String> set = datas.keySet();
-			if(set.size() > 1)
+			if(ListUtil.isNotEmpty(set))
 			{
 				for (String o : set) {
 		        	property = property.replace(o, datas.get(o)==null?"":String.valueOf(datas.get(o)));

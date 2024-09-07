@@ -2452,10 +2452,14 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		Map<String, Object> subtotalCellMap = new HashMap<>();//需要小计的原始单元格
 		if(!ListUtil.isEmpty(sheets))
 		{
+			List<Long> sheetIds = new ArrayList<>();
+			for (int i = 0; i < sheets.size(); i++) {
+				sheetIds.add(sheets.get(i).getId());
+			}
 			//获取所有的变量单元格
 			QueryWrapper<LuckysheetReportCell> queryWrapper = new QueryWrapper<LuckysheetReportCell>();
 			queryWrapper.eq("tpl_id", reportTpl.getId());
-//			queryWrapper.eq("sheet_id", sheets.get(t).getId());
+			queryWrapper.in("sheet_id", sheetIds);
 			queryWrapper.eq("cell_value_type", CellValueTypeEnum.VARIABLE.getCode());
 			queryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
 			queryWrapper.orderByAsc("coordsx","coordsy");
@@ -2577,6 +2581,10 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 							bindData.setUnitTransfer(fixedCells.get(i).getUnitTransfer());
 							bindData.setTransferType(fixedCells.get(i).getTransferType());
 							bindData.setMultiple(fixedCells.get(i).getMultiple());
+							bindData.setIsSubtotal(fixedCells.get(i).getIsSubtotal());
+							bindData.setSubtotalCells(fixedCells.get(i).getSubtotalCells());
+							bindData.setIsSubtotalCalc(fixedCells.get(i).getIsSubtotalCalc());
+							bindData.setSheetId(fixedCells.get(i).getSheetId());
 							if(YesNoEnum.YES.getCode().intValue() == fixedCells.get(i).getIsChartCell().intValue())
 							{
 								bindData.setChartId(fixedCells.get(i).getChartIds());
@@ -3903,7 +3911,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		{//固定值
 			this.processFixedValue(maxCoordinate, bindData, mergeMap,configRowLen, configColumnLen, 
 				rowlen, columnlen, cellDatas, hyperlinks,dataRowLen,dataColLen,maxXAndY,borderInfo,borderConfig,borderInfos,calcChain
-				,images,objectMapper,usedCells,nowFunction,chartCells,dataVerification,rowhidden,colhidden,cellConditionFormat);
+				,images,objectMapper,usedCells,nowFunction,chartCells,dataVerification,rowhidden,colhidden,cellConditionFormat,subtotalCellDatas,subtotalRows);
 		}else if(CellValueTypeEnum.BLOCK.getCode().intValue() == bindData.getCellValueType())
 		{
 			this.processBlocks(maxCoordinate, bindData, mergeMap,configRowLen, configColumnLen, 
@@ -4456,7 +4464,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			List<Map<String, Object>> cellDatas,Map<String, Map<String, Object>> hyperlinks,Object dataRowLen,Object dataColLen,Map<String, Integer> maxXAndY,
 			Map<String, Object> borderInfo,List<Map<String, Object>> borderConfig,List<Object> borderInfos,List<JSONObject> calcChain, List<JSONObject> images
 			,ObjectMapper objectMapper,Map<String, String> usedCells,Map<String, Object> nowFunction,JSONObject chartCells,JSONObject dataVerification,Object rowhidden,Object colhidden
-			,Map<String, JSONArray> cellConditionFormat) throws JsonMappingException, JsonProcessingException {
+			,Map<String, JSONArray> cellConditionFormat,Map<String, Object> subtotalCellDatas,Map<String, JSONObject> subtotalRows) throws JsonMappingException, JsonProcessingException {
 //		List<Map<String, Object>> border = this.getBorderType(borderConfig, luckySheetBindData.getCoordsx(), luckySheetBindData.getCoordsy());//获取该单元格的边框信息
 		List<Map<String, Object>> border = null;
 		if(!borderInfo.containsKey(luckySheetBindData.getCoordsx()+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+luckySheetBindData.getCoordsy()))
@@ -4469,8 +4477,10 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		int verticalDataLenth = 1;
 		int horizontalDataLenth = 1;
 		//固定值
+		String calculateSubtotalKey = "";
 		if(luckySheetBindData.getIsRelyCell().intValue() == 1)
 		{
+			calculateSubtotalKey = luckySheetBindData.getSheetId()+"-"+luckySheetBindData.getRelyIndex()+"-"+luckySheetBindData.getCoordsx()+"-"+luckySheetBindData.getCoordsy();
 			if(luckySheetBindData.getLastCoordsx() == null)
 			{
 				rowAndCol = this.getMaxRowAndCol(maxCoordinate, luckySheetBindData.getCoordsx(),luckySheetBindData.getCoordsy(),1,1);
@@ -4500,7 +4510,6 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				horizontalDataLenth = horizontalDataLenth - 1;
 			}
 		}else {
-			
 			if(luckySheetBindData.getRecalculateCoords().intValue() == 1)
 			{
 				int x = this.getMaxRow(maxCoordinate, luckySheetBindData.getCoordsx(), luckySheetBindData.getCoordsy(), 1);
@@ -4528,6 +4537,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				}
 			}
 		}
+		
 		luckySheetBindData.getCellData().put(LuckySheetPropsEnum.R.getCode(), rowAndCol.get("maxX"));
 		luckySheetBindData.getCellData().put(LuckySheetPropsEnum.C.getCode(), rowAndCol.get("maxY"));
 		usedCells.put(rowAndCol.get("maxX")+"_"+rowAndCol.get("maxY"), "1");
@@ -4830,6 +4840,35 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
     	
 		maxXAndY.put("maxX", maxX);
 		maxXAndY.put("maxY", maxY);
+		if(StringUtil.isNotEmpty(calculateSubtotalKey)) {
+			boolean isSubtotal = false;
+			if(subtotalCellDatas.containsKey(calculateSubtotalKey) || subtotalCellDatas.containsKey("next-"+calculateSubtotalKey))
+			{
+				if(subtotalCellDatas.containsKey("next-"+calculateSubtotalKey))
+				{
+					addCalculateSubtotalCell(luckySheetBindData.getRelyIndex(),luckySheetBindData, cellDatas, maxCoordinate, maxXAndY, border, 
+							rowAndCol, objectMapper, borderInfos, borderInfo,calculateSubtotalKey,subtotalCellDatas,subtotalRows,"next-",mergeMap,usedCells);
+					isSubtotal = true;
+				}
+				if(subtotalCellDatas.containsKey(calculateSubtotalKey))
+				{
+					addCalculateSubtotalCell(luckySheetBindData.getRelyIndex(),luckySheetBindData, cellDatas, maxCoordinate, maxXAndY, border, 
+							rowAndCol, objectMapper, borderInfos, borderInfo,calculateSubtotalKey,subtotalCellDatas,subtotalRows,"",mergeMap,usedCells);
+					isSubtotal = true;
+				}
+			}else {
+				String rowKey = luckySheetBindData.getDatasetName()+"-"+luckySheetBindData.getSheetId()+"-"+maxCoordinate.get("y-"+(luckySheetBindData.getCoordsy()));
+				if(subtotalRows!=null && subtotalRows.containsKey(rowKey))
+				{
+					addEmptyCell(luckySheetBindData.getRelyIndex(),luckySheetBindData, cellDatas, maxCoordinate, maxXAndY, border, rowAndCol, objectMapper, borderInfos, borderInfo,subtotalRows,rowKey,mergeMap,usedCells);
+					isSubtotal = true;
+				}
+			}
+			if(isSubtotal && YesNoEnum.YES.getCode().intValue() == luckySheetBindData.getIsFunction().intValue() && luckySheetBindData.getIsRelyCell().intValue() == 1 && "list".equals(luckySheetBindData.getLastAggregateType())) {
+				String formula = SheetUtil.calculateFormula(String.valueOf(cellConfig.get("f")),1, 2);
+				cellConfig.put("f", formula);
+			}
+		}
 		if(luckySheetBindData.getIsRelyCell().intValue() == 1)
 		{
 			if(luckySheetBindData.getRelyCellExtend().intValue() == CellExtendEnum.VERTICAL.getCode().intValue())
@@ -11955,7 +11994,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 									if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
 				            			value = AviatorEvaluator.execute(property);
 									}else {
-			    						value = property;
+			    						value = tempProperty;
 			    					}
 									if(value instanceof Double && (Double.isNaN((double) value) || Double.isInfinite((double) value)))
 			                		{
