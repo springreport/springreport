@@ -295,8 +295,8 @@ export default {
     methods:{
         initLuckySheet(){
             var options = this.sheetOptions;
-            luckysheet.create(options);
             luckysheet.setServerAttr("version","vue3");
+            luckysheet.create(options);
         },
         sheetActivate(){
             var that = this;
@@ -622,6 +622,7 @@ export default {
                                         column:element.maxXAndY?(element.maxXAndY.maxY<=60?60:element.maxXAndY.maxY):60,
                                         pageDivider:element.pageDivider,
                                         luckysheet_conditionformat_save:element.luckysheetConditionformatSave,
+                                        wrapDatas:element.wrapDatas
                                     }
                                     var arr = Object.keys(element.nowFunction);
                                     if(arr.length > 0)

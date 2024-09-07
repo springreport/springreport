@@ -2155,7 +2155,8 @@ export default {
                                 luckysheet_conditionformat_save:element.luckysheetConditionformatSave,
                                 chart:element.chart,
                                 dataVerification:element.dataVerification,
-                                pageDivider:element.pageDivider
+                                pageDivider:element.pageDivider,
+                                wrapDatas:element.wrapDatas
                             }
                             if(!_this.isCreator)
                             {

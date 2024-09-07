@@ -17,8 +17,8 @@
             </div>
             <div v-for="o in datasets" :key="o.id">
                 <div :class="o.isActive?'dataset-box-active':'dataset-box'" style="position:relative">
-                    <icon-right v-show="!o.isActive" theme="outline" size="16" fill="#999" class="el-icon-arrow-down"/>
-                    <icon-down v-show="o.isActive" theme="outline" size="16" fill="#999" class="el-icon-arrow-right"/>
+                    <icon-right v-show="!o.isActive" theme="outline" size="16" fill="#999" class="el-icon-arrow-down"  @click="clickDatasets(o)"/>
+                    <icon-down v-show="o.isActive" theme="outline" size="16" fill="#999" class="el-icon-arrow-right"  @click="clickDatasets(o)"/>
                     <span class="dataset-name" @click="clickDatasets(o)" :title="o.datasetName">{{o.datasetName}}
                        <el-dropdown>
                           <icon-copy style="margin-top:4px"/>
