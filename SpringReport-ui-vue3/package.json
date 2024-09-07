@@ -29,13 +29,11 @@
     "codemirror": "5.x",
     "codemirror-editor-vue3": "^2.1.7",
     "echarts": "^5.1.2",
-    "echarts-gl": "^2.0.9",
     "element-plus": "^2.7.5",
     "js-cookie": "^3.0.1",
     "js-md5": "^0.7.3",
     "lodash": "^4.17.21",
     "lodash-es": "^4.17.21",
-    "mockjs": "^1.1.0",
     "moment": "^2.29.4",
     "nprogress": "^0.2.0",
     "qs": "^6.10.1",
@@ -47,11 +45,9 @@
     "vue-demi": "^0.14.8",
     "vue-i18n": "^9.1.10",
     "vue-router": "^4.0.15",
-    "vue-ruler-tool": "^1.2.4",
     "vue3-count-to": "^1.0.11",
     "vue3-draggable-resizable": "^1.6.5",
     "vue3-marquee": "^4.2.1",
-    "vue3-ruler-tool": "^0.0.1",
     "vue3-seamless-scroll": "^2.0.1",
     "vuedraggable": "^4.1.0",
     "vuex": "^4.0.2"
@@ -72,7 +68,7 @@
     "lint-staged": "^11.1.1",
     "postcss": "^8.3.6",
     "prettier": "^2.3.2",
-    "sass": "^1.37.0",
+    "sass": "^1.77.0",
     "stylelint": "^13.13.1",
     "stylelint-config-prettier": "^8.0.2",
     "stylelint-config-recess-order": "^2.4.0",
@@ -90,17 +86,8 @@
     "vite-plugin-package-config": "^0.1.1",
     "vite-plugin-style-import": "^1.4.1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/hu-snail/vue3-admin-element-template.git"
-  },
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/hu-snail/vue3-admin-element-template/issues"
-  },
-  "homepage": "https://github.com/hu-snail/vue3-admin-element-template",
   "engines": {
-    "node": ">=16"
+    "node": ">=18"
   },
   "vite": {
     "optimizeDeps": {
@@ -132,7 +119,6 @@
         "codemirror/mode/clike/clike.js",
         "codemirror/mode/sql/sql.js",
         "echarts",
-        "echarts-gl",
         "echarts/charts",
         "echarts/components",
         "echarts/core",

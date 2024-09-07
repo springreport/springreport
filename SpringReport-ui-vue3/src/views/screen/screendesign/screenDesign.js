@@ -1,4 +1,4 @@
-import { Vue3RulerTool } from 'vue3-ruler-tool'
+// import { Vue3RulerTool } from 'vue3-ruler-tool'
 import vuedraggable from 'vuedraggable';
 import { allThemeMap } from '@visactor/vchart-theme';
 import veODesignLight from '@visactor/vchart-theme/public/veODesignLight.json';
@@ -50,7 +50,7 @@ export default {
         }
     },
     components: {
-        Vue3RulerTool,
+        // Vue3RulerTool,
         vuedraggable,
         settings
     },
