@@ -8,9 +8,6 @@ import '@/assets/index.css'
 import App from './App.vue';
 const app = createApp(App);
 
-import { VueClipboard } from '@soerenmartius/vue3-clipboard';
-app.use(VueClipboard);
-
 // layout components
 import layoutComp from './layouts/components/export';
 layoutComp(app);
@@ -49,7 +46,6 @@ app.config.globalProperties.commonConstants = commonConstants;
 import apis from './components/common/api'
 app.config.globalProperties.apis = apis;
 import * as echarts from 'echarts';
-import 'echarts-gl';
 app.config.globalProperties.$echarts = echarts
 //大屏部分相关的引入 start
 // import './icons'

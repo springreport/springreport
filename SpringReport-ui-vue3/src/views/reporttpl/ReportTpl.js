@@ -1,4 +1,3 @@
-import { toClipboard } from '@soerenmartius/vue3-clipboard'
 export default {
   name:'reportTpl',
   data() {
