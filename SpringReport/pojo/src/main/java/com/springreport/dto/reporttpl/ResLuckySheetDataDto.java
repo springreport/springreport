@@ -279,6 +279,13 @@ public class ResLuckySheetDataDto {
      * @date 2024年8月16日18:54:55
      */  
     private JSONArray luckysheetConditionformatSave;
+    
+    /**  
+     * @Fields wrapDatas : 自动换行的数据
+     * @author caiyang
+     * @date 2024-09-06 09:09:37 
+     */  
+    private JSONArray wrapDatas;
 
 	public Map<String, Integer> getMaxXAndY() {
 		if(maxXAndY == null)

@@ -618,6 +618,7 @@ export default {
                                         column:element.maxXAndY?(element.maxXAndY.maxY<=60?60:element.maxXAndY.maxY):60,
                                         pageDivider:element.pageDivider,
                                         luckysheet_conditionformat_save:element.luckysheetConditionformatSave,
+                                        wrapDatas:element.wrapDatas
                                     }
                                     var arr = Object.keys(element.nowFunction);
                                     if(arr.length > 0)

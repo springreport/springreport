@@ -33,8 +33,8 @@
             </div>
             <div v-for="o in datasets" :key="o.id">
                 <div :class="o.isActive?'dataset-box-active':'dataset-box'" style="position:relative">
-                    <icon-right v-show="!o.isActive" theme="outline" size="16" fill="#999" class="el-icon-arrow-down"/>
-                    <icon-down v-show="o.isActive" theme="outline" size="16" fill="#999" class="el-icon-arrow-right"/>
+                    <icon-right v-show="!o.isActive" theme="outline" size="16" fill="#999" class="el-icon-arrow-down"  @click="clickDatasets(o)"/>
+                    <icon-down v-show="o.isActive" theme="outline" size="16" fill="#999" class="el-icon-arrow-right"  @click="clickDatasets(o)"/>
                     <span class="dataset-name" @click="clickDatasets(o)">{{o.datasetName}}</span>
                     <icon-edit class="el-icon-edit" @click="editDataSet(o)" v-has="'reportDesign_editDataSet'"/>
                     <icon-delete class="el-icon-delete" @click="deleteDataSet(o)" v-has="'reportDesign_deleteDataSet'"/>
