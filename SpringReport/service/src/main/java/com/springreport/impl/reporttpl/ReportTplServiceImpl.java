@@ -4842,7 +4842,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		maxXAndY.put("maxY", maxY);
 		if(StringUtil.isNotEmpty(calculateSubtotalKey)) {
 			boolean isSubtotal = false;
-			if(subtotalCellDatas != null && subtotalCellDatas.containsKey(calculateSubtotalKey) || subtotalCellDatas.containsKey("next-"+calculateSubtotalKey))
+			if(subtotalCellDatas != null && (subtotalCellDatas.containsKey(calculateSubtotalKey) || subtotalCellDatas.containsKey("next-"+calculateSubtotalKey)))
 			{
 				if(subtotalCellDatas.containsKey("next-"+calculateSubtotalKey))
 				{
