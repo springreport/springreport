@@ -2,6 +2,7 @@ package com.springreport.impl.codeit;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -551,7 +552,8 @@ public class CoeditServiceImpl extends ServiceImpl<LuckysheetMapper, Luckysheet>
             for (int j=0; j<data.size(); j++) {
                 JSONArray arrayList=(JSONArray)data.get(j);
                 int cl = c;
-                for (Object v : arrayList) {
+                for (int k = 0; k < arrayList.size(); k++) {
+                	JSONObject v = arrayList.getJSONObject(k);
                     //获取数据所在块的编号
                     String block_id = JfGridConfigModel.getRange(r, cl,null);
                     boolean isExists = false;
@@ -584,6 +586,7 @@ public class CoeditServiceImpl extends ServiceImpl<LuckysheetMapper, Luckysheet>
                     }
                     //单元格处理，这一步对象已经获取
                     if (v != null) {
+                    	v.remove("customKey");
                         //修改/添加
                         if (isExists) {
                             //已存在的
@@ -1072,7 +1075,10 @@ public class CoeditServiceImpl extends ServiceImpl<LuckysheetMapper, Luckysheet>
             String i = bson.get("i").toString();//	当前sheet的index值
             Integer r = Integer.parseInt(bson.get("r").toString());//	单元格的行号
             Integer c = Integer.parseInt(bson.get("c").toString());//	单元格的列号
-            Object v = bson.get("v");  //	单元格的值 v=null 删除单元格
+            JSONObject v = bson.getJSONObject("v");  //	单元格的值 v=null 删除单元格
+            if(v != null) {
+            	v.remove("customKey");
+            }
             String operate = bson.getString("operate");
             //获取数据所在块的编号
             String block_id = JfGridConfigModel.getRange(r, c,null);
