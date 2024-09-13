@@ -245,6 +245,9 @@ public class MyWebSocketHandler  extends TextWebSocketHandler{
                 }else if (bson.get("t").equals("rv")) {
 //                	if(reportType != 1)
 //                	{
+                	JSONObject customKey = new JSONObject();
+                	customKey.put("ts", DateUtil.getTimeStamp());
+            		bson.put("customKey", customKey);
                 	this.sengMsg(wsUserModel, sendSelf, contentReal, s,bson,session);
 //                	}
                 	if(!isReport)
@@ -282,6 +285,15 @@ public class MyWebSocketHandler  extends TextWebSocketHandler{
                         	if(!isReport)
                         	{
                                  _str = this.iCoeditService.handleUpdate(gridKey, bson,wsUserModel);
+                        	}
+                        	String t = bson.getString("t");
+                        	if("v".equals(t)) {
+                        		JSONObject customKey = new JSONObject();
+                        		customKey.put("ts", DateUtil.getTimeStamp());
+                        		if(bson.getJSONObject("v") == null) {
+                        			bson.put("v", new JSONObject());
+                        		}
+                        		bson.getJSONObject("v").put("customKey", customKey);
                         	}
                             this.sengMsg(wsUserModel, sendSelf, contentReal, s,bson,session);
 
