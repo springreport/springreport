@@ -115,6 +115,9 @@
         <div style="display:none">
             <input id="uploadBtn" type="file" accept="xlsx/*"  @change="loadExcel" />
           </div>
+          <div style="display:none">
+            <input id="uploadAttachmentBtn" type="file" accept="*"  @change="changeAttachment" />
+        </div>
         </div>
         
     </div>

@@ -1,6 +1,7 @@
 package com.springreport.controller.common;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.springreport.annotation.Check;
 import com.springreport.annotation.MethodLog;
 import com.springreport.api.common.ICommonService;
@@ -25,7 +28,9 @@ import com.springreport.dto.common.ApiRequestDto;
 import com.springreport.dto.common.PrintApiRequestDto;
 import com.springreport.enums.RedisPrefixEnum;
 import com.springreport.exception.BizException;
+import com.springreport.util.JsonUtil;
 import com.springreport.util.MessageUtil;
+import com.springreport.util.Pako_GzipUtils;
 import com.springreport.util.RedisUtil;
 import com.springreport.util.StringUtil;
 
@@ -95,9 +100,9 @@ public class CommonController extends BaseController{
 	 * @author caiyang
 	 * @date 2021-07-28 07:52:22 
 	 */ 
-	@RequestMapping("/uploadVideo")
+	@RequestMapping("/uploadFile")
 	public Response uploadVideo(@RequestParam("file") MultipartFile file) throws IOException {
-		Object result = this.iCommonService.uploadVideo(file);
+		Object result = this.iCommonService.uploadFile(file);
 		return Response.success(result);
 	}
 	
@@ -116,6 +121,37 @@ public class CommonController extends BaseController{
 	public Response apiTest(@RequestBody ApiRequestDto apiRequestDto) {
 		Object result = this.iCommonService.apiTest(apiRequestDto);
 		return Response.success(result);
+	}
+	
+	/**  
+	 * @MethodName: parseXlsxByUrl
+	 * @Description: 通过url解析xlsx文件
+	 * @author caiyang
+	 * @return Response
+	 * @throws Exception 
+	 * @date 2024-09-18 10:54:00 
+	 */ 
+	@RequestMapping(value = "/parseXlsxByUrl",method = RequestMethod.POST)
+	@MethodLog(module="common",remark="解析xlsx文件",operateType=Constants.OPERATE_TYPE_SEARCH)
+	public String parseXlsxByUrl(@RequestBody JSONObject model) throws Exception {
+		httpServletResponse.setHeader("Content-Encoding", "gzip");
+		httpServletResponse.setContentType("text/html");
+		String resultStr="";
+		JSONArray result = this.iCommonService.parseXlsxByUrl(model);
+		Response response = new Response();
+		response.setCode("200");
+		response.setResponseData(result);
+		resultStr=JsonUtil.toJson(response);
+		try {
+	         byte dest[]= Pako_GzipUtils.compress2(resultStr);
+	         OutputStream out=httpServletResponse.getOutputStream();
+	         out.write(dest);
+	         out.close();
+	         out.flush();
+	     } catch (Exception e) {
+	        e.printStackTrace();
+	     }
+		return null;
 	}
 	
 	@RequestMapping(value = "/printTestRespose",method = RequestMethod.POST)

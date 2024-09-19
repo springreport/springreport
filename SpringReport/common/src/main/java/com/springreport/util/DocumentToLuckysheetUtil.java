@@ -1,6 +1,7 @@
 package com.springreport.util;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
@@ -84,9 +85,20 @@ public class DocumentToLuckysheetUtil {
 	 * @date 2023-11-09 06:37:58 
 	 */ 
 	public static JSONArray xlsx2Luckysheet(MultipartFile file) throws Exception {
-		 JSONArray result = new JSONArray();
 		 XSSFWorkbook workbook = (XSSFWorkbook) WorkbookFactory.create(file.getInputStream());
-		 int sheetsNum = workbook.getNumberOfSheets();
+		 JSONArray result = parseWorkBook(workbook);
+		 return result;
+	}
+	
+	public static JSONArray xlsx2Luckysheet(InputStream inputStream) throws Exception {
+		XSSFWorkbook workbook = (XSSFWorkbook) WorkbookFactory.create(inputStream);
+		JSONArray result = parseWorkBook(workbook);
+		return result;
+	}
+	
+	private static JSONArray parseWorkBook(XSSFWorkbook workbook) throws Exception {
+		 JSONArray result = new JSONArray();
+		int sheetsNum = workbook.getNumberOfSheets();
 		 XSSFSheet sheet = null;
 		 FormulaEvaluator formulaEvaluator = new XSSFFormulaEvaluator(workbook);
 		 for (int i = 0; i < sheetsNum; i++) {
@@ -620,223 +632,223 @@ public class DocumentToLuckysheetUtil {
 					 }
 				}
 			 }
-             int maxColumn = -1;
-             HashMap<String, Object> cellBorders = new LinkedHashMap<>();
-             for (int rowNum = 0; rowNum <= rowEnd; rowNum++) {
-            	 XSSFRow row = (XSSFRow) sheet.getRow(rowNum);
-            	 if(row == null)
-            	 {
-            		 continue;
-            	 }
-            	 if(row.getZeroHeight())
-            	 {//是否是隐藏行
-            		 configRowhidden.put(String.valueOf(rowNum), 0);
-            	 }else {
-            		 int rowHeight = (int) Math.ceil(row.getHeightInPoints());
-            		 if(rowHeight != 15)
-            		 {
-            			 configRowlen.put(String.valueOf(rowNum), new Long(Math.round(row.getHeightInPoints()/0.75)).intValue());
-            		 }
-            	 }
-            	 for (int j = 0; j < row.getLastCellNum(); j++) {
-            		 if(j > maxColumn)
-            		 {
-            			 if(sheet.isColumnHidden(j))
-            			 {
-            				 configColhidden.put(String.valueOf(j), 0);
-            			 }else {
-            				 int columnWidth = Math.round(sheet.getColumnWidthInPixels(j));
-            				 if(columnWidth != 56)
-            				 {
-            					 configColumnlen.put(String.valueOf(j), new Long(Math.round(sheet.getColumnWidthInPixels(j)/0.875)).intValue());
-            				 }
-            			 }
-            			 maxColumn = j;
-            		 }
-            		 XSSFCell cell = row.getCell(j);
-            		 if(cell != null)
-            		 {
-            			 if(!subMerges.containsKey(rowNum+"_"+j))
-            			 {
-            				 JSONObject cellInfo = new JSONObject();//单元格信息
-            				 cellInfo.put("r", rowNum);
-            				 cellInfo.put("c", j);
-            				 cellInfo.put("id", IdWorker.getId());
-                    		 JSONObject v = new JSONObject();
-                    		 JSONObject ct = new JSONObject();
-                    		 ct.put("t", "g");
-                    		 ct.put("fa", "General");
-                    		 v.put("ct", ct);
-                    		 cellInfo.put("v", v);
-                			 Object value = null;
-                			 XSSFRichTextString xSSFRichTextString = null;
-                    		 if (cell.getCellType() == CellType.NUMERIC) {
-                    			 value = cell.getNumericCellValue();
-                                 DataFormatter formatter = new DataFormatter();
-                                 final CellStyle cellStyle = cell.getCellStyle();
-                                 short format = cell.getCellStyle().getDataFormat();
-                                 if(ExcelDateUtil.isDateFormat(cell))
-                                 {
-                                	 cell.getNumericCellValue();
-                                	 SimpleDateFormat sdf = null;
-                                	 if (format == 20 || format == 32) {  
-                                		 sdf = new SimpleDateFormat("HH:mm");  
-                                	 }else if(format == 14)
-                                	 {
-                                		 sdf = new SimpleDateFormat("yyyy/MM/dd"); 
-                                	 }else if(format == 31)
-                                	 {
-                                		 sdf = new SimpleDateFormat("yyyy年MM月dd日"); 
-                                	 }else if(format == 58)
-                                	 {
-                                		 sdf = new SimpleDateFormat("M月d日"); 
-                                	 }else if(format == 179)
-                                	 {
-                                		 sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm"); 
-                                	 }else if(format == 180)
-                                	 {
-                                		 sdf = new SimpleDateFormat("yyyy-MM-dd"); 
-                                	 }else if(format == 181)
-                                	 {
-                                		 sdf = new SimpleDateFormat("HH:mm:ss"); 
-                                	 }else {
-                                		 sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
-                                	 }
-                                	 value = sdf.format(cell.getDateCellValue());// 日期
-                                 }else {
-                                	 value = formatter.formatRawCellContents(cell.getNumericCellValue(), cellStyle.getDataFormat(), cellStyle.getDataFormatString()); 
-                                 }
-                                 String dataformatString = cellStyle.getDataFormatString();
-                                 ct.put("fa", dataformatString);
-                    		 }else if (cell.getCellType() == CellType.FORMULA) {
-                    			 String dataformatString = "General";
-                    			 try {
-                    				 CellValue evaluate = formulaEvaluator.evaluate(cell);
-                        			 final CellStyle cellStyle = cell.getCellStyle();
-                        			 dataformatString = cellStyle.getDataFormatString();
-                        			 value = evaluate.formatAsString();
+            int maxColumn = -1;
+            HashMap<String, Object> cellBorders = new LinkedHashMap<>();
+            for (int rowNum = 0; rowNum <= rowEnd; rowNum++) {
+           	 XSSFRow row = (XSSFRow) sheet.getRow(rowNum);
+           	 if(row == null)
+           	 {
+           		 continue;
+           	 }
+           	 if(row.getZeroHeight())
+           	 {//是否是隐藏行
+           		 configRowhidden.put(String.valueOf(rowNum), 0);
+           	 }else {
+           		 int rowHeight = (int) Math.ceil(row.getHeightInPoints());
+           		 if(rowHeight != 15)
+           		 {
+           			 configRowlen.put(String.valueOf(rowNum), new Long(Math.round(row.getHeightInPoints()/0.75)).intValue());
+           		 }
+           	 }
+           	 for (int j = 0; j < row.getLastCellNum(); j++) {
+           		 if(j > maxColumn)
+           		 {
+           			 if(sheet.isColumnHidden(j))
+           			 {
+           				 configColhidden.put(String.valueOf(j), 0);
+           			 }else {
+           				 int columnWidth = Math.round(sheet.getColumnWidthInPixels(j));
+           				 if(columnWidth != 56)
+           				 {
+           					 configColumnlen.put(String.valueOf(j), new Long(Math.round(sheet.getColumnWidthInPixels(j)/0.875)).intValue());
+           				 }
+           			 }
+           			 maxColumn = j;
+           		 }
+           		 XSSFCell cell = row.getCell(j);
+           		 if(cell != null)
+           		 {
+           			 if(!subMerges.containsKey(rowNum+"_"+j))
+           			 {
+           				 JSONObject cellInfo = new JSONObject();//单元格信息
+           				 cellInfo.put("r", rowNum);
+           				 cellInfo.put("c", j);
+           				 cellInfo.put("id", IdWorker.getId());
+                   		 JSONObject v = new JSONObject();
+                   		 JSONObject ct = new JSONObject();
+                   		 ct.put("t", "g");
+                   		 ct.put("fa", "General");
+                   		 v.put("ct", ct);
+                   		 cellInfo.put("v", v);
+               			 Object value = null;
+               			 XSSFRichTextString xSSFRichTextString = null;
+                   		 if (cell.getCellType() == CellType.NUMERIC) {
+                   			 value = cell.getNumericCellValue();
+                                DataFormatter formatter = new DataFormatter();
+                                final CellStyle cellStyle = cell.getCellStyle();
+                                short format = cell.getCellStyle().getDataFormat();
+                                if(ExcelDateUtil.isDateFormat(cell))
+                                {
+                               	 cell.getNumericCellValue();
+                               	 SimpleDateFormat sdf = null;
+                               	 if (format == 20 || format == 32) {  
+                               		 sdf = new SimpleDateFormat("HH:mm");  
+                               	 }else if(format == 14)
+                               	 {
+                               		 sdf = new SimpleDateFormat("yyyy/MM/dd"); 
+                               	 }else if(format == 31)
+                               	 {
+                               		 sdf = new SimpleDateFormat("yyyy年MM月dd日"); 
+                               	 }else if(format == 58)
+                               	 {
+                               		 sdf = new SimpleDateFormat("M月d日"); 
+                               	 }else if(format == 179)
+                               	 {
+                               		 sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm"); 
+                               	 }else if(format == 180)
+                               	 {
+                               		 sdf = new SimpleDateFormat("yyyy-MM-dd"); 
+                               	 }else if(format == 181)
+                               	 {
+                               		 sdf = new SimpleDateFormat("HH:mm:ss"); 
+                               	 }else {
+                               		 sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
+                               	 }
+                               	 value = sdf.format(cell.getDateCellValue());// 日期
+                                }else {
+                               	 value = formatter.formatRawCellContents(cell.getNumericCellValue(), cellStyle.getDataFormat(), cellStyle.getDataFormatString()); 
+                                }
+                                String dataformatString = cellStyle.getDataFormatString();
+                                ct.put("fa", dataformatString);
+                   		 }else if (cell.getCellType() == CellType.FORMULA) {
+                   			 String dataformatString = "General";
+                   			 try {
+                   				 CellValue evaluate = formulaEvaluator.evaluate(cell);
+                       			 final CellStyle cellStyle = cell.getCellStyle();
+                       			 dataformatString = cellStyle.getDataFormatString();
+                       			 value = evaluate.formatAsString();
 								} catch (Exception e) {
 									e.printStackTrace();
 								}
-                    			 v.put("f", "="+cell.getCellFormula());
-                				 JSONObject calc = new JSONObject();
-                				 calc.put("r", rowNum);
-                				 calc.put("c", j);
-                				 calc.put("index", sheetIndex);
-                				 calcChain.add(calc);
-                				 ct.put("fa", dataformatString);
-                    		 }
-                    		 else if (cell.getCellType() == CellType.STRING) {
-                				 xSSFRichTextString = cell.getRichStringCellValue();
-                				 if(xSSFRichTextString.numFormattingRuns() == 0)
-                				 {
-                					 value = cell.getStringCellValue();
-                					 xSSFRichTextString = null;
-                				 }
-                				 ct.put("t", "s");
-                        		 ct.put("fa", "@");
-                             }else if (cell.getCellType() == CellType.BOOLEAN) {
-                            	 value = cell.getBooleanCellValue();
-                             } else if (cell.getCellType() == CellType.ERROR) {
-                            	 value = cell.getErrorCellValue();
-                             }
-                			 if(value != null)
-                			 {
-                				 v.put("v", value);
-                				 v.put("m", String.valueOf(value));
-                			 }
-                			 if(cell.getCellStyle().getFillForegroundColorColor() != null)
-                			 {
-                				 String bg = cell.getCellStyle().getFillForegroundColorColor().getARGBHex();//背景颜色
-                    			 if(StringUtil.isNotEmpty(bg))
-                    			 {
-                    				 bg = "#"+bg.substring(2);
-                    				 v.put("bg", bg);
-                    			 } 
-                			 }
-                			 if(xSSFRichTextString == null)
-                			 {
-                    			 XSSFFont font = workbook.getFontAt(cell.getCellStyle().getFontIndex());
-                    			 JSONObject fontStyle = getFontStyle(font);
-                    			 v.putAll(fontStyle);
-                			 }else {
-                				 String cellVal = xSSFRichTextString.getString();
-                				 JSONArray s = new JSONArray();
-                				 int size = xSSFRichTextString.numFormattingRuns();// 该富文本使用的格式的数量
-                				 ct.put("t", "inlineStr");
-                				 int subLength = 0;
-                				 for (int t = 0; t < size; t++) {
-                					 XSSFFont font = xSSFRichTextString.getFontOfFormattingRun(t);
-                					 JSONObject fontStyle = getFontStyle(font);
-                					 fontStyle.put("v", cellVal.substring(subLength, subLength + xSSFRichTextString.getLengthOfFormattingRun(t)));
-                					 subLength = subLength + xSSFRichTextString.getLengthOfFormattingRun(t);
-                					 s.add(fontStyle);
-                				 }
-                				 ct.put("s", s);
-                			 }
-                			 VerticalAlignment verticalAlignment =  cell.getCellStyle().getVerticalAlignment();
-                			 if(verticalAlignment != null)
-                			 {
-                				 if(verticalAlignment.getCode() == VerticalAlignment.BOTTOM.getCode())
-                				 {
-                					 v.put("vt", "2");
-                				 } else if(verticalAlignment.getCode() == VerticalAlignment.TOP.getCode()) {
-                					 v.put("vt", "1");
-                				 }else if(verticalAlignment.getCode() == VerticalAlignment.CENTER.getCode()) {
-                					 v.put("vt", "0");
-                				 }
-                			 }else {
-                				 v.put("vt", "0");
-                			 }
-                			 HorizontalAlignment horizontalAlignment = cell.getCellStyle().getAlignment();
-                			 if(horizontalAlignment != null)
-                			 {
-                				 if(horizontalAlignment.getCode() == HorizontalAlignment.CENTER.getCode())
-                				 {
-                					 v.put("ht", "0");
-                				 }else if(horizontalAlignment.getCode() == HorizontalAlignment.LEFT.getCode())
-                				 {
-                					 v.put("ht", "1");
-                				 }else if(horizontalAlignment.getCode() == HorizontalAlignment.RIGHT.getCode())
-                				 {
-                					 v.put("ht", "2");
-                				 }
-                			 }else {
-                				 v.put("ht", "1");
-                			 }
-                			 if(cell.getCellStyle().getWrapText())
-                			 {
-                				 v.put("tb", "2");
-                			 }else {
-                				 v.put("tb", "0"); 
-                			 }
-                			 if(comments.containsKey(rowNum + "_" + j))
-                			 {
-                				 v.put("ps", comments.get(rowNum + "_" + j));
-                			 }
-                			 XSSFCell lastMergeCell = null;
-                			 if(configMerge.containsKey(rowNum + "_" + j))
-                			 {
-                				 JSONObject merge = configMerge.getJSONObject(rowNum + "_" + j);
-                				 if(merge != null) {
-                					 int rs = merge.getIntValue("rs");
-                					 int cs = merge.getIntValue("cs");
-                					 int r = rowNum+rs-1;
-                					 int c = j+cs-1;
-                					 XSSFRow row1 = (XSSFRow) sheet.getRow(r);
-                					 if(row1 != null) {
-                						 lastMergeCell = row1.getCell(c);
-                					 }
-                				 }
-                			 }
-                			 if(lastMergeCell != null)
-                			 {
-                				 getColumnBorder(cell.getCellStyle(),rowNum,j,cellBorders,lastMergeCell.getCellStyle(),mergeFirstCellBorder);
-                			 }else {
-                				 getColumnBorder(cell.getCellStyle(),rowNum,j,cellBorders,null,mergeFirstCellBorder);
-                			 }
-                			 short rotation = cell.getCellStyle().getRotation();
-                			 switch (rotation) {
+                   			 v.put("f", "="+cell.getCellFormula());
+               				 JSONObject calc = new JSONObject();
+               				 calc.put("r", rowNum);
+               				 calc.put("c", j);
+               				 calc.put("index", sheetIndex);
+               				 calcChain.add(calc);
+               				 ct.put("fa", dataformatString);
+                   		 }
+                   		 else if (cell.getCellType() == CellType.STRING) {
+               				 xSSFRichTextString = cell.getRichStringCellValue();
+               				 if(xSSFRichTextString.numFormattingRuns() == 0)
+               				 {
+               					 value = cell.getStringCellValue();
+               					 xSSFRichTextString = null;
+               				 }
+               				 ct.put("t", "s");
+                       		 ct.put("fa", "@");
+                            }else if (cell.getCellType() == CellType.BOOLEAN) {
+                           	 value = cell.getBooleanCellValue();
+                            } else if (cell.getCellType() == CellType.ERROR) {
+                           	 value = cell.getErrorCellValue();
+                            }
+               			 if(value != null)
+               			 {
+               				 v.put("v", value);
+               				 v.put("m", String.valueOf(value));
+               			 }
+               			 if(cell.getCellStyle().getFillForegroundColorColor() != null)
+               			 {
+               				 String bg = cell.getCellStyle().getFillForegroundColorColor().getARGBHex();//背景颜色
+                   			 if(StringUtil.isNotEmpty(bg))
+                   			 {
+                   				 bg = "#"+bg.substring(2);
+                   				 v.put("bg", bg);
+                   			 } 
+               			 }
+               			 if(xSSFRichTextString == null)
+               			 {
+                   			 XSSFFont font = workbook.getFontAt(cell.getCellStyle().getFontIndex());
+                   			 JSONObject fontStyle = getFontStyle(font);
+                   			 v.putAll(fontStyle);
+               			 }else {
+               				 String cellVal = xSSFRichTextString.getString();
+               				 JSONArray s = new JSONArray();
+               				 int size = xSSFRichTextString.numFormattingRuns();// 该富文本使用的格式的数量
+               				 ct.put("t", "inlineStr");
+               				 int subLength = 0;
+               				 for (int t = 0; t < size; t++) {
+               					 XSSFFont font = xSSFRichTextString.getFontOfFormattingRun(t);
+               					 JSONObject fontStyle = getFontStyle(font);
+               					 fontStyle.put("v", cellVal.substring(subLength, subLength + xSSFRichTextString.getLengthOfFormattingRun(t)));
+               					 subLength = subLength + xSSFRichTextString.getLengthOfFormattingRun(t);
+               					 s.add(fontStyle);
+               				 }
+               				 ct.put("s", s);
+               			 }
+               			 VerticalAlignment verticalAlignment =  cell.getCellStyle().getVerticalAlignment();
+               			 if(verticalAlignment != null)
+               			 {
+               				 if(verticalAlignment.getCode() == VerticalAlignment.BOTTOM.getCode())
+               				 {
+               					 v.put("vt", "2");
+               				 } else if(verticalAlignment.getCode() == VerticalAlignment.TOP.getCode()) {
+               					 v.put("vt", "1");
+               				 }else if(verticalAlignment.getCode() == VerticalAlignment.CENTER.getCode()) {
+               					 v.put("vt", "0");
+               				 }
+               			 }else {
+               				 v.put("vt", "0");
+               			 }
+               			 HorizontalAlignment horizontalAlignment = cell.getCellStyle().getAlignment();
+               			 if(horizontalAlignment != null)
+               			 {
+               				 if(horizontalAlignment.getCode() == HorizontalAlignment.CENTER.getCode())
+               				 {
+               					 v.put("ht", "0");
+               				 }else if(horizontalAlignment.getCode() == HorizontalAlignment.LEFT.getCode())
+               				 {
+               					 v.put("ht", "1");
+               				 }else if(horizontalAlignment.getCode() == HorizontalAlignment.RIGHT.getCode())
+               				 {
+               					 v.put("ht", "2");
+               				 }
+               			 }else {
+               				 v.put("ht", "1");
+               			 }
+               			 if(cell.getCellStyle().getWrapText())
+               			 {
+               				 v.put("tb", "2");
+               			 }else {
+               				 v.put("tb", "0"); 
+               			 }
+               			 if(comments.containsKey(rowNum + "_" + j))
+               			 {
+               				 v.put("ps", comments.get(rowNum + "_" + j));
+               			 }
+               			 XSSFCell lastMergeCell = null;
+               			 if(configMerge.containsKey(rowNum + "_" + j))
+               			 {
+               				 JSONObject merge = configMerge.getJSONObject(rowNum + "_" + j);
+               				 if(merge != null) {
+               					 int rs = merge.getIntValue("rs");
+               					 int cs = merge.getIntValue("cs");
+               					 int r = rowNum+rs-1;
+               					 int c = j+cs-1;
+               					 XSSFRow row1 = (XSSFRow) sheet.getRow(r);
+               					 if(row1 != null) {
+               						 lastMergeCell = row1.getCell(c);
+               					 }
+               				 }
+               			 }
+               			 if(lastMergeCell != null)
+               			 {
+               				 getColumnBorder(cell.getCellStyle(),rowNum,j,cellBorders,lastMergeCell.getCellStyle(),mergeFirstCellBorder);
+               			 }else {
+               				 getColumnBorder(cell.getCellStyle(),rowNum,j,cellBorders,null,mergeFirstCellBorder);
+               			 }
+               			 short rotation = cell.getCellStyle().getRotation();
+               			 switch (rotation) {
 							 case 45:
 								 v.put("tr", "1"); 
 								break;
@@ -855,51 +867,51 @@ public class DocumentToLuckysheetUtil {
 							 default:
 								break;
 							}
-                			cellDatas.add(cellInfo);
-            			 }else {
-            				 String rowCol = subMerges.getString(rowNum+"_"+j);
-            				 if(mergeFirstCellBorder.containsKey(rowCol))
-            				 {
-            					 JSONArray columnBorder = null;
-            					 if(cellBorders.containsKey(j+""))
-            					 {
-            						columnBorder = (JSONArray) cellBorders.get(j+"");
-            					 }else {
-            						columnBorder = new JSONArray();
-            						cellBorders.put(j+"", columnBorder);
-            					 } 
-            					 JSONObject cellBorder = JSON.parseObject(JSON.toJSONString(mergeFirstCellBorder.getJSONObject(rowCol)));
-            					 cellBorder.put("r", rowNum);
-            					 cellBorder.put("c", j);
-            					 if(cellBorder.containsKey("cellBorder")) {
-            						 JSONArray range = new JSONArray();
-                					 JSONArray columnRange = new JSONArray();
-                					 columnRange.add(j);
-                					 columnRange.add(j);
-                					 JSONArray rowRange = new JSONArray();
-                					 rowRange.add(rowNum);
-                					 rowRange.add(rowNum);
-                					 JSONObject rangeObj = new JSONObject();
-                					 rangeObj.put("column", columnRange);
-                					 rangeObj.put("row", rowRange);
-                					 range.add(rangeObj);
-                					 for (int k = 0; k < cellBorder.getJSONArray("cellBorder").size(); k++) {
-                						 cellBorder.getJSONArray("cellBorder").getJSONObject(k).put("range", range);
-    								 }
-            					 }
-            					 columnBorder.add(cellBorder);
-            				 }else {
-            					 getColumnBorder(cell.getCellStyle(),rowNum,j,cellBorders,null,mergeFirstCellBorder); 
-            				 }
-            			 }
-            		 }else {
-            			 getColumnBorder(null,rowNum,j,cellBorders,null,mergeFirstCellBorder);
-            		 }
-            		 
+               			cellDatas.add(cellInfo);
+           			 }else {
+           				 String rowCol = subMerges.getString(rowNum+"_"+j);
+           				 if(mergeFirstCellBorder.containsKey(rowCol))
+           				 {
+           					 JSONArray columnBorder = null;
+           					 if(cellBorders.containsKey(j+""))
+           					 {
+           						columnBorder = (JSONArray) cellBorders.get(j+"");
+           					 }else {
+           						columnBorder = new JSONArray();
+           						cellBorders.put(j+"", columnBorder);
+           					 } 
+           					 JSONObject cellBorder = JSON.parseObject(JSON.toJSONString(mergeFirstCellBorder.getJSONObject(rowCol)));
+           					 cellBorder.put("r", rowNum);
+           					 cellBorder.put("c", j);
+           					 if(cellBorder.containsKey("cellBorder")) {
+           						 JSONArray range = new JSONArray();
+               					 JSONArray columnRange = new JSONArray();
+               					 columnRange.add(j);
+               					 columnRange.add(j);
+               					 JSONArray rowRange = new JSONArray();
+               					 rowRange.add(rowNum);
+               					 rowRange.add(rowNum);
+               					 JSONObject rangeObj = new JSONObject();
+               					 rangeObj.put("column", columnRange);
+               					 rangeObj.put("row", rowRange);
+               					 range.add(rangeObj);
+               					 for (int k = 0; k < cellBorder.getJSONArray("cellBorder").size(); k++) {
+               						 cellBorder.getJSONArray("cellBorder").getJSONObject(k).put("range", range);
+   								 }
+           					 }
+           					 columnBorder.add(cellBorder);
+           				 }else {
+           					 getColumnBorder(cell.getCellStyle(),rowNum,j,cellBorders,null,mergeFirstCellBorder); 
+           				 }
+           			 }
+           		 }else {
+           			 getColumnBorder(null,rowNum,j,cellBorders,null,mergeFirstCellBorder);
+           		 }
+           		 
 				}
-             }
-             getSheetBorderInfo(configBorderInfo,cellBorders);
-             //获取所有图片
+            }
+            getSheetBorderInfo(configBorderInfo,cellBorders);
+            //获取所有图片
 			 XSSFDrawing xSSFDrawing = sheet.getDrawingPatriarch();
 			 if(xSSFDrawing != null)
 			 {
@@ -955,9 +967,9 @@ public class DocumentToLuckysheetUtil {
 					e.printStackTrace();
 				}
 			 }
-             SheetVisibility sheetVisibility = workbook.getSheetVisibility(i);
-             sheetVisibility.name();
-             config.put("merge", configMerge);
+            SheetVisibility sheetVisibility = workbook.getSheetVisibility(i);
+            sheetVisibility.name();
+            config.put("merge", configMerge);
 			 config.put("rowlen", configRowlen);
 			 config.put("columnlen", configColumnlen);
 			 config.put("rowhidden", configRowhidden);
@@ -1374,9 +1386,19 @@ public class DocumentToLuckysheetUtil {
 	 * @date 2024-05-21 03:56:16 
 	 */ 
 	public static JSONArray csv2Luckysheet(MultipartFile file) throws Exception {
+		JSONArray result = parseCsv(file.getInputStream(),file.getOriginalFilename());
+		return result;
+	}
+	
+	public static JSONArray csv2Luckysheet(InputStream inputStream,String fileName) throws Exception {
+		JSONArray result = parseCsv(inputStream,fileName);
+		return result;
+	}
+	
+	private static JSONArray parseCsv(InputStream inputStream,String fileName) throws Exception{
 		JSONArray result = new JSONArray();
 		List<String[]> rows = new ArrayList<>();
-		CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8));
+		CSVReader reader = new CSVReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
 		String[] rowData;
         while ((rowData = reader.readNext()) != null) {
             rows.add(rowData);
@@ -1387,7 +1409,7 @@ public class DocumentToLuckysheetUtil {
         	JSONObject config = new JSONObject();//配置信息
         	JSONArray cellDatas = new JSONArray();
         	String sheetIndex = "Sheet"+UUIDUtil.getUUID();
-			String sheetName = file.getOriginalFilename().replace(".csv", "");
+			String sheetName = fileName.replace(".csv", "");
 			int maxColumn = -1;
         	for (int i = 0; i < rows.size(); i++) {
         		rowData = rows.get(i);

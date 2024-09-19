@@ -202,7 +202,7 @@
         :page-sizes="tablePage.pageSizeRange"
         :current-page="tablePage.currentPage"
         :total="tablePage.pageTotal"
-        :small="true"
+        size="small"
         :hide-on-single-page="false"
       ></el-pagination>
     </section>
