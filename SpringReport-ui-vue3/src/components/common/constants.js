@@ -6339,6 +6339,7 @@ commonConstants.luckysheetPreviewToolBarConfig = {
     pdfSetting:false,
     xxbt:false,
     editAuth:false,
+    attachment:false,
     shareMode:false,
     saveAs:false,
     picture:false,
@@ -6377,6 +6378,7 @@ commonConstants.luckysheetFormsPreviewToolBarConfig = {
     upload:false,
     xxbt:false,
     editAuth:false,
+    attachment:false,
     shareMode:false,
     datasource:false,
     download:false,
@@ -6448,6 +6450,7 @@ commonConstants.luckysheetFormsPreviewToolBarConfig = {
     {value:"roleId",label:"角色id",type:"number",column:"role_id"},
     {value:"merchantNo",label:"商户号",type:"String",column:"merchant_id"},
     {value:"deptId",label:"部门id",type:"number",column:"dept_id"},
-  
   ]
+
+  commonConstants.attachPreviewExt = ["xlsx","docx","pdf","json","csv"];
 export default commonConstants;

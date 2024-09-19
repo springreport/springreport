@@ -254,5 +254,14 @@ public enum RedisPrefixEnum implements BaseCharEnum{
 		public String getName() {
 			return "填报报表单元格数据临时缓存";
 		}
+	},
+	ATTACHMENTCACHE{
+		public String getCode() {
+			return "attachmentCache:";
+		}
+
+		public String getName() {
+			return "附件查看临时缓存";
+		}
 	}
 }

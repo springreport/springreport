@@ -46,6 +46,9 @@
           <div style="display:none">
             <input id="uploadBtn" type="file" accept="xlsx/*"  @change="loadExcel" />
           </div>
+          <div style="display:none">
+            <input id="uploadAttachmentBtn" type="file" accept="*"  @change="changeAttachment" />
+        </div>
           <vuedraggable class="wrapper" :sort="false" style="width:100%;height:100%;overflow:auto;" :disabled="true">
                 <div id="luckysheet" style="width:100%;height:100%;left: 0px;overflow:auto;"></div>
             </vuedraggable>

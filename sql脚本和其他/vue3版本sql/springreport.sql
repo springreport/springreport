@@ -1770,3 +1770,7 @@ ALTER TABLE report_tpl_dataset ADD COLUMN current_page_attr varchar(50) DEFAULT 
 ALTER TABLE report_tpl_dataset ADD COLUMN page_count_attr varchar(50) DEFAULT NULL COMMENT '每页显示条数属性'; 
 ALTER TABLE report_tpl_dataset ADD COLUMN total_attr varchar(50) DEFAULT NULL COMMENT '数据总条数属性'; 
 -- 20240826 报表api数据集新增分页支持 end
+
+-- 20240919 luckysheet_his字段更新 start
+ALTER TABLE luckysheet_his MODIFY COLUMN remark text;
+-- 20240919 luckysheet_his字段更新 end

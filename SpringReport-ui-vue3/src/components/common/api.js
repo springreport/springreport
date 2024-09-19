@@ -186,7 +186,6 @@ api.screenContent={
 api.screenDesign={
     uploadFileApi: "/api/common/upload", //上传图片
     shareUploadFileApi: "/api/common/shareUpload", //上传图片(分享链接用)
-    uploadVideoApi: "/api/common/uploadVideo", //上传视频文件
     getDynamicDatasApi: "/api/screenDesign/getDynamicDatas", //获取动态数据
     deleteDatasetApi: "/api/reportTplDataset/delete", //删除数据集
 }
@@ -347,5 +346,10 @@ api.sysPost = {
     saveDocTplSettingsApi:"/api/docTpl/saveDocTplSettings",//保存文档模板api
     downLoadDocTplApi:"/api/docTpl/downLoadDocTpl",//导出模板
     previewDocApi:"/api/docTpl/previewDoc",//保存文档模板api
+  }
+
+  api.common = {
+    uploadFileApi: "/api/common/uploadFile", 
+    parseXlsxByUrlApi: "/api/common/parseXlsxByUrl", 
   }
 export default api;

@@ -2047,14 +2047,45 @@ commonUtil.uploadImage = function (file) {
                     if (url) {
                         resolve(url); // 给上传的后的地址
                     } else {
-                        reject('image upload error');
+                        reject('file upload error');
                     }
                 } else {
-                    reject('image upload error');
+                    reject('file upload error');
                 }
             }
         };
     });
+}
+
+commonUtil.uploadFile = function (file,obj) {
+    const formData = new FormData();
+    formData.append("file",file);
+    let config = {
+        headers: {'Content-Type': 'multipart/form-data',
+        'Authorization':localStorage.getItem(commonConstants.sessionItem.authorization)}
+    }
+    return new Promise((resolve, reject) => {
+        Axios.post(obj.url, formData, config).then(response => {
+            if(response.status == 200){
+                //请求成功
+                var result = response.data;//请求返回结果
+                if(result.newToken)
+                {
+                    localStorage.setItem(commonConstants.sessionItem.authorization, result.newToken);
+                }
+                if(result.message)
+                {
+                    commonUtil.showMessage({message:result.message,type: result.msgLevel})
+                }
+                if(obj.callback){
+                    obj.callback(result)
+                }
+                resolve(result);
+            }else{
+                commonUtil.showMessage({message:commonUtil.getMessageFromList("error.system",null),type: commonConstants.messageType.error})
+            }
+        })
+    })
 }
 commonUtil.replaceHtml = function (temp, dataarry) {
     return temp.replace(/\$\{([\w]+)\}/g, function (s1, s2) { let s = dataarry[s2]; if (typeof (s) != "undefined") { return s; } else { return s1; } });
@@ -2159,5 +2190,36 @@ commonUtil.getMapData = async function(mapCode){
     const response = await fetch('https://www.springreport.vip/geoJson/'+mapCode+".json");
     const geojson = await response.json();
     return geojson;
+}
+
+//获取url文件后缀
+commonUtil.getFileExt = function(url){
+    let fileType = "";
+    try {
+        let fileUrl = url.split("?")[0];
+        fileType = fileUrl.substring(fileUrl.lastIndexOf(".") + 1);
+        fileType = fileType.toLowerCase();
+    } catch (error) {
+        console.error("url错误，请检查文件url！")
+    }
+   
+    return fileType;
+}
+
+//通过url下载文件
+commonUtil.downloadFileByUrl = async function(url,fileName){
+    try {
+        const res = await fetch(url)
+        const blob = await res.blob()
+        const a = document.createElement('a')
+        const objectURL = URL.createObjectURL(blob)
+        a.href = objectURL
+        a.download = fileName
+        a.click()
+
+        URL.revokeObjectURL(objectURL)
+    } catch (error) {
+        console.error('文件下载失败', error)
+    }
 }
 export default commonUtil;

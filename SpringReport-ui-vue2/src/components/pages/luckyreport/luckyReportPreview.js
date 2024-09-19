@@ -127,6 +127,8 @@ export default {
                     rangeSelect:this.rangeSelect,
                     userChanged:this.userChanged,
                     loadDataAfter:this.loadDataAfter,
+                    uploadAttachment:this.uploadAttachment,
+                    viewAttachment:this.viewAttachment
                 }
             },
             //modal配置 start
@@ -2412,6 +2414,75 @@ export default {
                 that.updateNowFunction();
                 // that.updateCellFormat();
             },100);
-        }
+        },
+        uploadAttachment(){
+          let rangeAxis = luckysheet.getRangeAxis();
+          if(!rangeAxis || rangeAxis.length == 0)
+          {
+            this.commonUtil.showMessage({ message: '请先选择单元格。', type: this.commonConstants.messageType.error })
+            return;
+          }
+          $("#uploadAttachmentBtn").click() //触发父容器中的保存模板按钮事件
+        },
+        viewAttachment(item,r,c){
+          let fileType = this.commonUtil.getFileExt(item.linkAddress);
+          if(fileType){
+            if(this.commonConstants.attachPreviewExt.includes(fileType)){
+              let viewReport = this.$router.resolve({ name:"attachment",query: {url:item.linkAddress,name:item.fileName,fileType:fileType}});
+              window.open(viewReport.href, '_blank');
+            }else{
+              window.open(item.linkAddress, '_blank');
+            }
+          }else{
+            window.open(item.linkAddress, '_blank');
+          }
+        },
+        changeAttachment(evt){
+          this.loading = true;
+          let obj = {
+            url:this.apis.common.uploadFileApi,
+            callback:this.doPostCallback
+          }
+          const files = evt.target.files
+          if (files == null || files.length == 0) {
+            alert('请选择文件')
+            return
+          }
+          // 获取文件名
+          this.commonUtil.uploadFile(files[0],obj).then(response=>{
+            if (response.code == "200")
+            {
+              let range = luckysheet.getRange()[0];
+              let r = range.row[0];
+              let c = range.column[0];
+              let luckysheetfile = luckysheet.getSheet();
+              let cell = luckysheetfile.data[r][c];
+              if(cell == null){
+                  cell = {};
+              }
+              cell.fc = 'rgb(0, 0, 255)';
+              cell.un = 1;
+              cell.v = cell.m = "附件:"+response.responseData.fileName;
+              let item = {
+                  linkType: "attachment",
+                  linkAddress: response.responseData.fileUri,
+                  linkTooltip: "",
+                  fileName:response.responseData.fileName
+              }
+              if(luckysheetfile.hyperlink == null){
+                luckysheetfile.hyperlink = {};
+              }
+              luckysheetfile.hyperlink[r + "_" + c] = item;
+              const sheetIndex = luckysheet.getSheet().index;
+              luckysheet.sendServerMsg("all", sheetIndex,luckysheetfile.hyperlink,{ "k": "hyperlink"},"上传附件："+response.responseData.fileName+"，附件地址："+response.responseData.fileUri);
+              luckysheetfile.data[r][c] = cell;
+              luckysheet.refresh({},"上传附件："+response.responseData.fileName+"，附件地址："+response.responseData.fileUri);
+            }
+          });;
+          evt.target.value = ''
+        },
+        doPostCallback(){
+          this.loading = false;
+        },
     }
 }

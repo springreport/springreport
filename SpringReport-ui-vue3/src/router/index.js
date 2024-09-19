@@ -111,6 +111,14 @@ export const constantRoutes = [
       title: '大屏查看',
     },
   },
+  {
+    path: "/attachment",
+    name: "attachment",
+    component: () => import("@/views/attachment/attachment.vue"),
+    meta: {
+      title: "附件查看",
+    },
+  },
   // {
   //   path: '/slideDesign',
   //   name: 'slideDesign',
