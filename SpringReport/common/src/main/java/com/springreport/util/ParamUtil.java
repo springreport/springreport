@@ -31,10 +31,48 @@ public class ParamUtil {
 		Map<String, Object> result = new HashMap<String, Object>();
 		if(jsonArray != null)
 		{
+			Map<String, JSONObject> prefixMap = new HashMap<String, JSONObject>();
 			for (int i = 0; i < jsonArray.size(); i++) {
 				JSONObject param = jsonArray.getJSONObject(i);
 				boolean isDefault = param.getBooleanValue("isDefault");
 				String key = param.getString("paramCode");
+				String prefix = param.getString("paramPrefix");//参数前缀 api请求才有可能会用到
+				JSONObject paramObj = null;
+				if(StringUtil.isNotEmpty(prefix)) {
+					if(prefixMap.containsKey(prefix)) {
+						paramObj = prefixMap.get(prefix);
+					}else {
+						paramObj = new JSONObject();
+						String[] attrs = prefix.split("\\.");
+						if(attrs.length > 1) {
+							JSONObject temp = null;
+							for (int j = 0; j < attrs.length; j++) {
+								if(j == 0) {
+									if(result.containsKey(attrs[j])) {
+										temp = (JSONObject) result.get(attrs[j]);
+										continue;
+									}
+									JSONObject jsonObject = new JSONObject();
+									result.put(attrs[j], jsonObject);
+									temp = jsonObject;
+								}else if(j == attrs.length - 1) {
+									temp.put(attrs[j], paramObj);
+								}else {
+									if(temp.containsKey(attrs[j])) {
+										temp = (JSONObject) temp.get(attrs[j]);
+										continue;
+									}
+									JSONObject jsonObject = new JSONObject();
+									temp.put(attrs[j], jsonObject);
+									temp = jsonObject;
+								}
+							}
+						}else {
+							result.put(attrs[0], paramObj);
+						}
+						prefixMap.put(prefix, paramObj);
+					}
+				}
 				if(isDefault)
 				{//报表定时任务用
 					String paramType = param.getString("paramType");
@@ -42,17 +80,29 @@ public class ParamUtil {
 						|| ParamTypeEnum.SELECT.getCode().equals(paramType))
 					{
 						Object value = param.get("paramDefault");
-						result.put(key, value);
+						if(paramObj != null) {
+							paramObj.put(key, value);
+						}else {
+							result.put(key, value);
+						}
 					}else if(ParamTypeEnum.MUTISELECT.getCode().equals(paramType)) {
 						JSONArray value = param.getJSONArray("paramDefault");
-						result.put(key, value);
+						if(paramObj != null) {
+							paramObj.put(key, value);
+						}else {
+							result.put(key, value);
+						}
 					}else if(ParamTypeEnum.DATE.getCode().equals(paramType)) {
 						String dateFormat = param.getString("dateFormat");
 						String value = param.getString("dateDefaultValue");
 						if(Constants.CURRENT_DATE.equals(StringUtil.trim(value).toLowerCase()))
 						{
 							String currentDate = DateUtil.getNow(StringUtil.isNotEmpty(dateFormat)?dateFormat:DateUtil.FORMAT_LONOGRAM);
-							result.put(key, currentDate);
+							if(paramObj != null) {
+								paramObj.put(key, currentDate);
+							}else {
+								result.put(key, currentDate);
+							}
 						}else {
 							if(CheckUtil.isNumber(value))
 							{
@@ -60,21 +110,36 @@ public class ParamUtil {
 								if(DateUtil.FORMAT_YEARMONTH.equals(dateFormat))
 								{
 									String date = DateUtil.addMonth(days, DateUtil.getNow(DateUtil.FORMAT_LONOGRAM),DateUtil.FORMAT_YEARMONTH);
-									result.put(key, date);
+									if(paramObj != null) {
+										paramObj.put(key, date);
+									}else {
+										result.put(key, date);
+									}
 								}else {
 									String date = DateUtil.addDays(days, DateUtil.getNow(),StringUtil.isNotEmpty(dateFormat)?dateFormat:DateUtil.FORMAT_LONOGRAM);
-									result.put(key, date);
+									if(paramObj != null) {
+										paramObj.put(key, date);
+									}else {
+										result.put(key, date);
+									}
 								}
 							}else {
-								result.put(key, "");
+								if(paramObj != null) {
+									paramObj.put(key, "");
+								}else {
+									result.put(key, "");
+								}
 							}
 						}
 					}
 				}else {
 					Object value = param.get(key);
-					result.put(key, value);
+					if(paramObj != null) {
+						paramObj.put(key, value);
+					}else {
+						result.put(key, value);
+					}
 				}
-				
 			}
 		}
 		//系统变量

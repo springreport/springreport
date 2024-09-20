@@ -485,6 +485,7 @@ export default {
                             param.paramDefault = result[i].params[m].paramDefault;
                             param.paramType = result[i].params[m].paramType;
                             param.checkStrictly = result[i].params[m].checkStrictly;
+                            param.paramPrefix = result[i].params[m].paramPrefix;
                             if(!tempParams[result[i].params[m].paramCode]){
                                 tempParams[result[i].params[m].paramCode] = result[i].params[m].paramDefault;
                             }

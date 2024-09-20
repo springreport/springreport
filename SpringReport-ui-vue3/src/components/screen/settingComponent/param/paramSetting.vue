@@ -87,6 +87,9 @@
               placeholder="参数编码"
             ></el-input>
           </el-form-item>
+          <el-form-item label="参数前缀"  prop="paramPrefix" :rules="filter_rules('参数前缀',{required:false})">
+              <el-input v-model="paramForm.paramPrefix" placeholder="参数前缀" size="small"></el-input>
+          </el-form-item>
           <el-form-item
             label="参数类型"
             prop="paramType"
@@ -263,12 +266,14 @@ export default {
             paramCode: this.paramForm.paramCode, //参数编码
             paramType: this.paramForm.paramType, //参数类型
             paramDefault: this.paramForm.paramDefault, //默认值
+            paramHidden: this.paramForm.paramHidden, //是否隐藏
             paramRequired: this.paramForm.paramRequired, //是否必选
             selectContent: this.paramForm.selectContent, //下拉选择内容
             selectType: this.paramForm.selectType, //内容来源
             dataSourceId: this.paramForm.dataSourceId, //数据源
             width: this.paramForm.width, //参数组件宽度
             selectData: null, //下拉选择内容
+            paramPrefix:this.paramForm.paramPrefix,//参数前缀  api请求复杂参数用到
           };
           var value = this.commonUtil.getDefaultValue(obj);
           obj[key] = value;
@@ -296,6 +301,7 @@ export default {
               this.component.params[this.editIndex].dataSourceId =
                 this.paramForm.dataSourceId;
               this.component.params[this.editIndex].selectData = null;
+              this.component.params[this.editIndex].paramPrefix = this.paramForm.paramPrefix;
               this.component.params[this.editIndex][key] = value;
               if (this.component.params[this.editIndex].paramType == "select") {
                 this.getSelectData(this.component.params[this.editIndex]);
@@ -338,6 +344,7 @@ export default {
       this.paramForm.selectType = item.selectType;
       this.paramForm.width = item.width;
       this.paramForm.dataSourceId = item.dataSourceId;
+      this.paramForm.paramPrefix = item.paramPrefix;
       this.getHiddenParamSize();
       this.showAddParamDailog();
     },
