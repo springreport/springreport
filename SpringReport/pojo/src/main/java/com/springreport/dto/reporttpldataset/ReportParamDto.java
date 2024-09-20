@@ -138,4 +138,11 @@ public class ReportParamDto extends BaseEntity{
 	 * @date 2024-01-23 04:04:27 
 	 */  
 	private boolean init = false;
+	
+	/**  
+	 * @Fields paramPrefix : api参数前缀
+	 * @author caiyang
+	 * @date 2024-09-19 02:55:48 
+	 */  
+	private String paramPrefix;
 }

@@ -1085,16 +1085,62 @@ commonUtil.getComponentParams = function(componentParams)
 {
     var result = {};
     if(componentParams && componentParams.length>0){
+        let prefixMap = {};
         for (let index = 0; index < componentParams.length; index++) {
             const element = componentParams[index];
+            let prefix = element.paramPrefix;
+            let paramObj = null;
+            if(prefix){
+                if(prefixMap[prefix]){
+                    paramObj = prefixMap[prefix];
+                }else{
+                    paramObj = {};
+                    let attrs = prefix.split(".");
+                    if(attrs.length > 1) {
+                        let temp = null;
+                        for (let j = 0; j < attrs.length; j++) {
+                            if(j == 0) {
+                                if(result[attrs[j]]){
+                                    temp = result[attrs[j]];
+                                    continue;
+                                }
+                                let jsonObject = {};
+                                result[attrs[j]] = jsonObject;
+                                temp = jsonObject;
+                            }else if(j == attrs.length - 1) {
+                                temp[attrs[j]] = paramObj;
+                            }else{
+                                if(temp[attrs[j]]){
+                                    temp = temp[attrs[j]];
+                                    continue;
+                                }
+                                let jsonObject = {};
+                                temp[attrs[j]] = jsonObject;
+                                temp = jsonObject;
+                            }
+                        }
+                    }else{
+                        result[attrs[0]] = paramObj;
+                    }
+                    prefixMap[prefix] = paramObj;
+                }
+            }
             if(element[element.paramCode])
             {
-                result[element.paramCode] = element[element.paramCode];
+                if(paramObj != null){
+                    paramObj[element.paramCode] = element[element.paramCode];
+                }else{
+                    result[element.paramCode] = element[element.paramCode];
+                }
             }else{
                 var defaultValue = commonUtil.getDefaultValue(element);
                 if(defaultValue)
                 {
-                     result[element.paramCode] = defaultValue;
+                    if(paramObj != null){
+                        paramObj[element.paramCode] = defaultValue;
+                    }else{
+                        result[element.paramCode] = defaultValue;
+                    }
                 }
             }
         }

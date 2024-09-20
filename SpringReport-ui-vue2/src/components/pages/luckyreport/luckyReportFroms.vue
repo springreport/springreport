@@ -404,6 +404,9 @@
                           <el-form-item label="参数编码"  prop="paramCode" :rules="filter_rules('参数编码',{required:true})">
                           <el-input v-model="paramForm.paramCode" placeholder="参数编码" size="small"></el-input>
                           </el-form-item>
+                          <el-form-item label="参数前缀" v-if="datasourceType == 2"  prop="paramPrefix" :rules="filter_rules('参数前缀',{required:false})">
+                          <el-input v-model="paramForm.paramPrefix" placeholder="参数前缀" size="small"></el-input>
+                          </el-form-item>
                           <el-form-item label="参数类型" prop="paramType" :rules="filter_rules('参数类型',{required:true})">
                           <el-select v-model="paramForm.paramType" placeholder="参数类型"  size="small">
                               <el-option label="字符串" value="varchar"></el-option>
