@@ -361,7 +361,8 @@ export default {
                 obj.url = this.apis.previewReport.getSharePreviewReportParamApi
             }
             this.searchHandle=[
-                {label:'查询',icon:"icon-search",type:'primary',handle:()=>this.getReportData(),size:'small'},
+                {label:'查询当前页',icon:"icon-search",type:'info',handle:()=>this.getReportData(2,true),size:'small'},
+                {label:'查询全部',icon:"icon-search",type:'primary',handle:()=>this.getReportData(),size:'small'},
                 {label:'重置',icon:"icon-refresh",type:'warning',handle:()=>this.resetSearch(),size:'small'},
                 {label:'导出excel(全部数据)',icon:'icon-excel',type:'success',handle:()=>this.exportExcel(),size:'small'},
                 {label:'PDF预览(全部数据)',icon:'icon-file-pdf-one',type:'warning',handle:()=>this.pdfExport(1),size:'small'},
@@ -552,7 +553,7 @@ export default {
         resetSearch:function(){
             this.getReportParam();
         },
-        getReportData(isInit){
+        getReportData(isInit,isCurrent){
             var that = this;
             this.$refs['reportRef'].$refs['reportFormRef'].validate((valid) => {
                 if (valid) {
@@ -569,6 +570,9 @@ export default {
                     let obj = {
                         url:this.apis.previewReport.getLuckyPreviewReportDataApi,
                         params:{tplId:tplId,searchData:this.searchData.params,pagination:this.pageParam,apiHeaders:apiHeaders},
+                    }
+                    if(isCurrent){
+                        obj.params.sheetIndex = luckysheet.getSheet().index;
                     }
                     let headers = {};
                     if(this.isShare == 1)
@@ -735,7 +739,33 @@ export default {
                                 luckysheet.setServerAttr("reportType",this.tplType);
                             }
                             this.refreshPage = response.responseData.refreshPage;
-                            this.initLuckySheet();
+                            if(!isCurrent){
+                                this.initLuckySheet();
+                            }else{
+                                let luckysheetfile = luckysheet.getSheet();
+                                luckysheetfile.name = obj.name;
+                                luckysheetfile.celldata = obj.celldata;
+                                luckysheetfile.hyperlink = obj.hyperlink;
+                                luckysheetfile.config = obj.config;
+                                luckysheetfile.frozen = obj.frozen;
+                                luckysheetfile.images = obj.images;
+                                luckysheetfile.calcChain = obj.calcChain;
+                                luckysheetfile.index = obj.index;
+                                luckysheetfile.order = obj.order;
+                                luckysheetfile.isPivotTable = obj.isPivotTable;
+                                luckysheetfile.pivotTable = obj.pivotTable;
+                                luckysheetfile.chart = obj.chart;
+                                luckysheetfile.dataVerification = obj.dataVerification;
+                                luckysheetfile.row = obj.row;
+                                luckysheetfile.column = obj.column;
+                                luckysheetfile.pageDivider = obj.pageDivider;
+                                luckysheetfile.luckysheet_conditionformat_save = obj.luckysheet_conditionformat_save;
+                                luckysheetfile.wrapDatas = obj.wrapDatas;
+                                let options = {};
+                                luckysheetfile.data = [];
+                                options.data = [luckysheetfile];
+                                luckysheet.updataSheet(options);
+                            }
                             this.loading = false;
                         }else{
                             this.loading = false;
