@@ -15,6 +15,7 @@ api.login={
     loginApi:"/api/login/doLogin",
     getMerchantModeApi:"/api/login/getMerchantMode",
     getMerchantListApi:"/api/sysMerchant/getMerchantList",
+    getUserInfoByTokenApi:"/api/login/getUserInfoByToken",
 }
 
 //首页接口

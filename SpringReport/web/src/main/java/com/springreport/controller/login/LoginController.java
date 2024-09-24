@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.springreport.annotation.Check;
+import com.springreport.annotation.LoginUser;
 import com.springreport.annotation.MethodLog;
 import com.springreport.api.login.ILoginService;
 import com.springreport.base.BaseController;
@@ -57,6 +58,20 @@ public class LoginController extends BaseController{
 	@RequestMapping(value = "/getMerchantMode",method = RequestMethod.POST)
 	public Response getMerchantMode() {
 		Integer result = this.iLoginService.getMerchantMode();
+		return Response.success(result);
+	}
+	
+	/**  
+	 * @MethodName: getUserInfoByToken
+	 * @Description: 根据token获取用户信息
+	 * @author caiyang
+	 * @param userInfoDto
+	 * @return Response
+	 * @date 2024-09-24 10:10:03 
+	 */ 
+	@RequestMapping(value = "/getUserInfoByToken",method = RequestMethod.POST)
+	public Response getUserInfoByToken(@LoginUser UserInfoDto userInfoDto) {
+		UserInfoDto result = iLoginService.getUserInfoByToken(userInfoDto);
 		return Response.success(result);
 	}
 }
