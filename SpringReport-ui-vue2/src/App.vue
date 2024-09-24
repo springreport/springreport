@@ -9,6 +9,54 @@ import $ from 'jquery'
 export default {
   name: 'App',
   mounted(){
+    
+  },
+  methods:{
+    getUserInfoByToken(){
+      var object = {
+          url: this.apis.login.getUserInfoByTokenApi,
+          params: {},
+          removeEmpty: false,
+        }
+        var that = this;
+        this.commonUtil.doPost(object).then((response) => {
+            if (response.code === '200') {
+               var responseData = response.responseData
+              localStorage.setItem(
+                that.commonConstants.sessionItem.position,
+                responseData.roleName
+              ) // 用户职位
+              localStorage.setItem(
+                that.commonConstants.sessionItem.userName,
+                responseData.userName
+              ) // 用户名
+              localStorage.setItem(
+                that.commonConstants.sessionItem.roleName,
+                responseData.roleName
+              ) // 用户名
+              localStorage.setItem(
+                that.commonConstants.sessionItem.apiList,
+                responseData.apis
+              ) // 接口权限，用于判断页面按钮是否显示
+              localStorage.setItem(
+                that.commonConstants.sessionItem.isSystemMerchant,
+                responseData.isSystemMerchant
+              ) 
+              localStorage.setItem(
+                that.commonConstants.sessionItem.merchantNo,
+                responseData.merchantNo
+              ) 
+              localStorage.setItem(
+                that.commonConstants.sessionItem.isAdmin,
+                responseData.isAdmin
+              )
+              localStorage.setItem(
+                that.commonConstants.sessionItem.userId,
+                responseData.userId
+              )
+            }
+        })
+    }
   },
   watch:{
     '$route': {
@@ -19,6 +67,7 @@ export default {
         if(token)
         {
             localStorage.setItem(this.commonConstants.sessionItem.authorization, token);
+            this.getUserInfoByToken();
         }
       }
     }

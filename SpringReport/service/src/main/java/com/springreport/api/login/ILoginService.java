@@ -32,4 +32,14 @@ public interface ILoginService {
 	 * @date 2023-12-22 06:19:36 
 	 */ 
 	Integer getMerchantMode();
+	
+	/**  
+	 * @MethodName: getUserInfoByToken
+	 * @Description: 根据token获取用户信息
+	 * @author caiyang
+	 * @param userInfoDto
+	 * @return UserInfoDto
+	 * @date 2024-09-24 10:10:56 
+	 */ 
+	UserInfoDto getUserInfoByToken(UserInfoDto userInfoDto);
 }

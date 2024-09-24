@@ -277,5 +277,113 @@ public class LoginServiceImpl implements ILoginService{
 		return this.merchantmode;
 	}
 
+	/**  
+	 * @MethodName: getUserInfoByToken
+	 * @Description: 根据token获取用户信息
+	 * @author caiyang
+	 * @param userInfoDto
+	 * @return
+	 * @see com.springreport.api.login.ILoginService#getUserInfoByToken(com.springreport.base.UserInfoDto)
+	 * @date 2024-09-24 10:16:09 
+	 */
+	@Override
+	public UserInfoDto getUserInfoByToken(UserInfoDto userInfoDto) {
+		UserInfoDto result = new UserInfoDto();
+		result.setUserName(userInfoDto.getUserName());
+		result.setUserRealName(userInfoDto.getUserRealName());
+		result.setRoleName(userInfoDto.getRoleName());
+		result.setMerchantNo(userInfoDto.getMerchantNo());
+		result.setUserId(userInfoDto.getUserId());
+		result.setMerchantMode(this.merchantmode);
+		result.setIsSystemMerchant(userInfoDto.getIsSystemMerchant());
+		List<String> apis = new ArrayList<String>();
+		if(YesNoEnum.YES.getCode().intValue() == userInfoDto.getIsAdmin().intValue())
+		{
+			result.setIsAdmin(YesNoEnum.YES.getCode());
+			result.setRoleName("管理员");
+			if(this.merchantmode == YesNoEnum.YES.getCode())
+			{
+				QueryWrapper<SysMerchant> merchantQueryWrapper = new QueryWrapper<>();
+				merchantQueryWrapper.eq("merchant_no", userInfoDto.getMerchantNo());
+				merchantQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+				SysMerchant sysMerchant = this.iSysMerchantService.getOne(merchantQueryWrapper, false);
+				if(sysMerchant == null)
+				{
+					throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.notexist", new String[] {"租户信息"}));
+				}
+				if(sysMerchant.getStatus().intValue() == YesNoEnum.NO.getCode().intValue())
+				{
+					throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.status.forbidden", new String[] {"租户"}));
+				}
+				if(YesNoEnum.YES.getCode().intValue() == sysMerchant.getIsSystemMerchant().intValue())
+				{
+					QueryWrapper<SysApi> apiQueryWrapper = new QueryWrapper<SysApi>();
+					apiQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+					List<SysApi> sysApis = this.iSysApiService.list(apiQueryWrapper);
+					if(!ListUtil.isEmpty(sysApis))
+					{
+						for (int i = 0; i < sysApis.size(); i++) {
+							apis.add(sysApis.get(i).getApiCode());
+						}
+					}
+					result.setIsSystemMerchant(YesNoEnum.YES.getCode());
+				}else {
+					QueryWrapper<SysMerchantAuthTemplateIds> idsQueryWrapper = new QueryWrapper<>();
+					idsQueryWrapper.eq("template_id", sysMerchant.getAuthTemplate());
+					idsQueryWrapper.eq("auth_type", 2);
+					idsQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+					List<SysMerchantAuthTemplateIds> merchantAuthTemplateIds = this.iSysMerchantAuthTemplateIdsService.list(idsQueryWrapper);
+					if(!ListUtil.isEmpty(merchantAuthTemplateIds))
+					{
+						List<Long> ids = new ArrayList<>();
+						for (int i = 0; i < merchantAuthTemplateIds.size(); i++) {
+							ids.add(merchantAuthTemplateIds.get(i).getAuthId());
+						}
+						QueryWrapper<SysApi> apiQueryWrapper = new QueryWrapper<SysApi>();
+						apiQueryWrapper.in("id", ids);
+						apiQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+						List<SysApi> sysApis = this.iSysApiService.list(apiQueryWrapper);
+						if(!ListUtil.isEmpty(sysApis))
+						{
+							for (int i = 0; i < sysApis.size(); i++) {
+								apis.add(sysApis.get(i).getApiCode());
+							}
+						}
+					}
+					result.setIsSystemMerchant(YesNoEnum.NO.getCode());
+				}
+			}else {
+				QueryWrapper<SysApi> apiQueryWrapper = new QueryWrapper<SysApi>();
+				apiQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+				List<SysApi> sysApis = this.iSysApiService.list(apiQueryWrapper);
+				if(!ListUtil.isEmpty(sysApis))
+				{
+					for (int i = 0; i < sysApis.size(); i++) {
+						apis.add(sysApis.get(i).getApiCode());
+					}
+				}
+			}
+		}else {
+			SysRole sysRole = this.iSysRoleService.getById(userInfoDto.getRoleId());
+			result.setRoleId(sysRole.getId());
+			result.setRoleName(sysRole.getRoleName());
+			//根据角色获取权限
+			JSONObject params = new JSONObject();
+			params.put("roleId", sysRole.getId());
+			if(this.merchantmode == YesNoEnum.YES.getCode()) {
+				params.put("merchantNo", userInfoDto.getMerchantNo());
+			}
+			List<SysApi> sysApis = this.iSysRoleApiService.getApisByRole(params);
+			if(!ListUtil.isEmpty(sysApis))
+			{
+				for (int i = 0; i < sysApis.size(); i++) {
+					apis.add(sysApis.get(i).getApiCode());
+				}
+			}
+		}
+		result.setApis(apis);
+		return result;
+	}
+
 	
 }
