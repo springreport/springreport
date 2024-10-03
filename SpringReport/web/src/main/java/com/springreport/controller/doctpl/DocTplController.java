@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import com.springreport.base.BaseEntity;
 import com.springreport.base.Response;
 import com.springreport.base.UserInfoDto;
 import com.springreport.constants.Constants;
+import com.springreport.dto.doctpl.DocDto;
 import com.springreport.dto.doctpl.DocTplDto;
 import com.springreport.dto.doctpl.DocTplSettingsDto;
 import com.springreport.dto.reporttpl.MesGenerateReportDto;
@@ -207,6 +209,20 @@ public class DocTplController extends BaseController {
 	@RequiresPermissions(value = {"docTpl_preview","docTpl_view"},logical = Logical.OR)
 	public Response previewDoc(@RequestBody MesGenerateReportDto model,@LoginUser UserInfoDto userInfoDto) throws Exception{
 		Map<String, Object> result = this.iDocTplService.previewDoc(model,userInfoDto);
+		return Response.success(result);
+	}
+	
+	/**  
+	 * @MethodName: uploadDocx
+	 * @Description: 上传docx文件
+	 * @author caiyang
+	 * @param file
+	 * @return Response
+	 * @date 2024-09-28 07:15:00 
+	 */ 
+	@RequestMapping("/uploadDocx")
+	public Response uploadDocx(@RequestParam("file") MultipartFile file) throws Exception{
+		DocDto result = this.iDocTplService.uploadDocx(file);
 		return Response.success(result);
 	}
 }

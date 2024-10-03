@@ -5,12 +5,17 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.web.multipart.MultipartFile;
+
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.springreport.entity.doctpl.DocTpl;
 import com.springreport.entity.doctplsettings.DocTplSettings;
 import com.springreport.base.BaseEntity;
 import com.springreport.base.PageEntity;
 import com.springreport.base.UserInfoDto;
+import com.springreport.dto.doctpl.DocDto;
+import com.springreport.dto.doctpl.DocTableDto;
 import com.springreport.dto.doctpl.DocTplDto;
 import com.springreport.dto.doctpl.DocTplSettingsDto;
 import com.springreport.dto.reporttpl.MesGenerateReportDto;
@@ -115,4 +120,15 @@ public interface IDocTplService extends IService<DocTpl> {
 	 * @date 2024-05-07 09:25:55 
 	 */ 
 	Map<String, Object> previewDoc(MesGenerateReportDto model,UserInfoDto userInfoDto) throws SQLException, Exception;
+	
+	/**  
+	 * @MethodName: uploadDocx
+	 * @Description: 上传docx文件并解析
+	 * @author caiyang
+	 * @param file
+	 * @return DocTableDto
+	 * @throws Exception 
+	 * @date 2024-09-28 07:19:54 
+	 */ 
+	DocDto uploadDocx(MultipartFile file) throws Exception;
 }

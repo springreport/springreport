@@ -300,7 +300,7 @@ public class WordUtil {
 					color = StringUtil.rgb2Hex(rgbs[0], rgbs[1], rgbs[2]);
 					run.setColor(color);
 				} catch (Exception e) {
-					
+					e.printStackTrace();
 				}
     		}
     		
@@ -309,17 +309,7 @@ public class WordUtil {
     		run.setItalic(italic);
     	}
     	if(StringUtil.isNotEmpty(highlight)) {
-    		if(highlight.startsWith("#")) {
-    			run.setTextHighlightColor(highlight.replaceAll("#", ""));
-    		}else if(highlight.startsWith("rgb")) {
-    			try {
-					int[] rgbs = StringUtil.rgbStringToRgb(highlight);
-					highlight = StringUtil.rgb2Hex(rgbs[0], rgbs[1], rgbs[2]);
-					run.setTextHighlightColor(highlight);
-				} catch (Exception e) {
-					
-				}
-    		}
+    		run.setTextHighlightColor(getHighlightName(highlight));
     	}
     	if(underline != null && underline) {
     		JSONObject textDecoration = content.getJSONObject("textDecoration");
@@ -344,7 +334,7 @@ public class WordUtil {
 					run.setUnderline(UnderlinePatterns.WAVE);
 					break;
 				default:
-					run.setUnderline(UnderlinePatterns.NONE);
+					run.setUnderline(UnderlinePatterns.SINGLE);
 					break;
 				}
     		}
@@ -601,17 +591,7 @@ public class WordUtil {
             		run.setItalic(italic);
             	}
             	if(StringUtil.isNotEmpty(highlight)) {
-            		if(highlight.startsWith("#")) {
-            			run.setTextHighlightColor(highlight.replaceAll("#", ""));
-            		}else if(highlight.startsWith("rgb")) {
-            			try {
-        					int[] rgbs = StringUtil.rgbStringToRgb(highlight);
-        					highlight = StringUtil.rgb2Hex(rgbs[0], rgbs[1], rgbs[2]);
-        					run.setTextHighlightColor(highlight);
-        				} catch (Exception e) {
-        					
-        				}
-            		}
+            		run.setTextHighlightColor(getHighlightName(highlight));
             	}
             	if(underline != null) {
             		JSONObject textDecoration = content.getJSONObject("textDecoration");
@@ -722,14 +702,17 @@ public class WordUtil {
         CTP ctp = paragraph.getCTP();    
         CTPPr pr = ctp.isSetPPr() ? ctp.getPPr() : ctp.addNewPPr();    
         CTPBdr border = pr.isSetPBdr() ? pr.getPBdr() : pr.addNewPBdr();    
-        CTBorder ct =  border.isSetBottom() ? border.getBottom() : border.addNewBottom();    
+        CTBorder ct =  border.isSetBottom() ? border.getBottom() : border.addNewBottom();   
         if(ListUtil.isEmpty(dashArray)) {
         	ct.setVal(STBorder.Enum.forInt(3));
         }else {
         	int value = dashArray.getIntValue(0);
         	switch (value) {
+		     case 1:
+		        ct.setVal(STBorder.Enum.forInt(6));
+		        break;
 			case 3:
-				ct.setVal(STBorder.Enum.forInt(6));
+				ct.setVal(STBorder.Enum.forInt(22));
 				break;
 			case 4:
 				ct.setVal(STBorder.Enum.forInt(7));
@@ -859,15 +842,19 @@ public class WordUtil {
 			cTLvl.addNewLvlText().setVal("%1.");
 			break;
 		case "checkbox":
+			cTLvl.addNewNumFmt().setVal(STNumberFormat.BULLET);
 			cTLvl.addNewLvlText().setVal("■");
 			break;
 		case "disc":
+			cTLvl.addNewNumFmt().setVal(STNumberFormat.BULLET);
 			cTLvl.addNewLvlText().setVal("●");
 			break;
 		case "circle":
+			cTLvl.addNewNumFmt().setVal(STNumberFormat.BULLET);
 			cTLvl.addNewLvlText().setVal("○");
 			break;
 		case "square":
+			cTLvl.addNewNumFmt().setVal(STNumberFormat.BULLET);
 			cTLvl.addNewLvlText().setVal("□");
 			break;
 		default:
@@ -1341,4 +1328,82 @@ public class WordUtil {
  	     series.getDLbls().addNewShowLegendKey().setVal(val);
  	   }
  	 }
+    
+	/**
+	 * @param color
+	 * @return
+	 * @date 2020年4月7日 下午7:16:39
+	 */
+	private static String getHighlightName(String color) {
+		color = color.replaceAll("\\s+", "");
+		if ("#FFFF00".equals(color)) {
+			return "yellow";//1-黄色
+		} else if ("#00FF00".equals(color)) {
+			return "green";//2-绿色
+		} else if ("#00FFFF".equals(color)) {
+			return "cyan";//3-青色
+		} else if ("#FF00FF".equals(color)) {
+			return "magenta";//4-粉红色
+		} else if ("#0000FF".equals(color)) {
+			return "blue";//5-蓝色
+		} else if ("#FF0000".equals(color)) {
+			return "red";//6-红色
+		} else if ("#000080".equals(color)) {
+			return "darkBlue";//7-深蓝色
+		} else if ("#008080".equals(color)) {
+			return "darkCyan";//8-深青色
+		} else if ("#008000".equals(color)) {
+			return "darkGreen";//9-深绿色
+		} else if ("#800080".equals(color)) {
+			return "darkMagenta";//10-深粉红色，紫色
+		} else if ("#800000".equals(color)) {
+			return "darkRed";//11-深红色
+		} else if ("#808000".equals(color)) {
+			return "darkYellow";//12-深黄色
+		} else if ("#808080".equals(color)) {
+			return "darkGray";//13-深灰色
+		} else if ("#C0C0C0".equals(color)) {
+			return "lightGray";//14-浅灰色
+		} else if ("#000000".equals(color)) {
+			return "black";//15-黑色
+		} else {
+			return "none";//无色
+		}
+	}
+	
+	public static String getHighlightByName(String name) {
+		if ("yellow".equals(name)) {
+			return "#FFFF00";//1-黄色
+		} else if ("green".equals(name)) {
+			return "#00FF00";//2-绿色
+		} else if ("cyan".equals(name)) {
+			return "#00FFFF";//3-青色
+		} else if ("magenta".equals(name)) {
+			return "#FF00FF";//4-粉红色
+		} else if ("blue".equals(name)) {
+			return "#0000FF";//5-蓝色
+		} else if ("red".equals(name)) {
+			return "#FF0000";//6-红色
+		} else if ("darkBlue".equals(name)) {
+			return "#000080";//7-深蓝色
+		} else if ("darkCyan".equals(name)) {
+			return "#008080";//8-深青色
+		} else if ("darkGreen".equals(name)) {
+			return "#008000";//9-深绿色
+		} else if ("darkMagenta".equals(name)) {
+			return "#800080";//10-深粉红色，紫色
+		} else if ("#800000".equals(name)) {
+			return "darkRed";//11-深红色
+		} else if ("darkYellow".equals(name)) {
+			return "#808000";//12-深黄色
+		} else if ("darkGray".equals(name)) {
+			return "#808080";//13-深灰色
+		} else if ("lightGray".equals(name)) {
+			return "#C0C0C0";//14-浅灰色
+		} else if ("black".equals(name)) {
+			return "#000000";//15-黑色
+		} else {
+			return "";//无色
+		}
+	}
 }
