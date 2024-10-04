@@ -35,7 +35,6 @@ const { locale } = reactive({
     () => {
       scroll.value.setScrollTop(0);
       let token = router.currentRoute.value.query.token;
-      console.log(router.currentRoute)
       if(token && !localStorage.getItem("token"))
       {
         localStorage.setItem("token",token);

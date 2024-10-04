@@ -62,6 +62,12 @@
             <div class="menu-item__save" title="保存模板">
               <i></i>
             </div>
+            <div class="menu-item__upload" title="上传">
+              <i></i>
+            </div>
+            <div style="display:none">
+              <input type="file" id="uploadDocxBtn" accept=".docx" @change="uploadDocx">
+              </div>
             <div class="menu-item__download" title="导出模板">
               <i></i>
             </div>
@@ -739,6 +745,21 @@
             :modalHandles="chartModalHandles"
             @closeModal="closeChartModal()"
           ></modal>
+          <el-dialog title="高亮设置" v-model="highlightVisiable" width="50%" height="80%" :close-on-click-modal='false' @close='closehighlightDialog'>
+                <el-form :inline="true" :model="highlightForm" class="demo-form-inline" ref="highlightRef">
+                    <el-form-item label="高亮颜色"  prop="color" key="color" :rules="filter_rules('高亮颜色',{required:true})">
+                        <el-select  placeholder="高亮颜色" size="small" v-model="highlightForm.color">
+                            <el-option v-for="op in selectUtil.highlightcolor" :label="op.label" :value="op.value" :key="op.value"></el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-form>
+                 <template #footer>
+                <span class="dialog-footer">
+                    <el-button @click="closehighlightDialog" size="small">取 消</el-button>
+                    <el-button type="primary" @click="confirmSetHighlight" size="small">确 定</el-button>
+                </span>
+                 </template>
+            </el-dialog>
           <textarea id="clipboradInput" value="" style="opacity:0;position:absolute" />
   </div>
 </template>

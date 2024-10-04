@@ -6442,6 +6442,17 @@ commonConstants.luckysheetFormsPreviewToolBarConfig = {
       BLOCK : 'block',
       TITLE : 'title',
       LIST : 'list'
+    },
+    ListType:{
+      UL:'ul',
+      OL:'ol'
+    },
+    ListStyle:{
+      DISC:"disc",
+      CIRCLE:"circle",
+      SQUARE:"square",
+      DECIMAL:"decimal",
+      CHECKBOX:"checkbox",
     }
   }
   commonConstants.systemParam = [

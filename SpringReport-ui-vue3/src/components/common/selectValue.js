@@ -910,4 +910,23 @@ selectUtil.docChartType =[
     {value:"horizontalHistogram",label:"条形图"},
     {value:"line",label:"折线图"},
 ]
+
+selectUtil.highlightcolor = [
+    {value:"#",label:"无色"},
+    {value:"#FFFF00",label:"黄色"},
+    {value:"#00FF00",label:"绿色"},
+    {value:"#00FFFF",label:"青色"},
+    {value:"#FF00FF",label:"粉红色"},
+    {value:"#0000FF",label:"蓝色"},
+    {value:"#FF0000",label:"红色"},
+    {value:"#000080",label:"深蓝色"},
+    {value:"#008080",label:"深青色"},
+    {value:"#008000",label:"深绿色"},
+    {value:"#800080",label:"紫色"},
+    {value:"#800000",label:"深红色"},
+    {value:"#808000",label:"深黄色"},
+    {value:"#808080",label:"深灰色"},
+    {value:"#C0C0C0",label:"浅灰色"},
+    {value:"#000000",label:"黑色"},
+]
 export default selectUtil;
