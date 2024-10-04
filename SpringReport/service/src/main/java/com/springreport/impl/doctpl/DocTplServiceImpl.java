@@ -7,6 +7,7 @@ import com.springreport.entity.reportdatasource.ReportDatasource;
 import com.springreport.entity.reporttpldataset.ReportTplDataset;
 import com.springreport.entity.reporttpldatasource.ReportTplDatasource;
 import com.springreport.mapper.doctpl.DocTplMapper;
+import com.springreport.api.common.ICommonService;
 import com.springreport.api.doctpl.IDocTplService;
 import com.springreport.api.doctplcharts.IDocTplChartsService;
 import com.springreport.api.doctplsettings.IDocTplSettingsService;
@@ -28,13 +29,30 @@ import com.deepoove.poi.plugin.table.LoopRowTableRenderPolicy;
 
 import org.apache.poi.openxml4j.util.ZipSecureFile;
 import org.apache.poi.wp.usermodel.HeaderFooterType;
+import org.apache.poi.xwpf.usermodel.IBodyElement;
+import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
+import org.apache.poi.xwpf.usermodel.UnderlinePatterns;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFFooter;
 import org.apache.poi.xwpf.usermodel.XWPFHeader;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFPicture;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.apache.poi.xwpf.usermodel.XWPFStyle;
+import org.apache.poi.xwpf.usermodel.XWPFStyles;
+import org.apache.poi.xwpf.usermodel.XWPFTable;
+import org.apache.poi.xwpf.usermodel.XWPFTableCell;
+import org.apache.poi.xwpf.usermodel.XWPFTableRow;
+import org.apache.poi.xwpf.usermodel.XWPFTableCell.XWPFVertAlign;
 import org.docx4j.fonts.IdentityPlusMapper;
 import org.docx4j.fonts.Mapper;
 import org.docx4j.fonts.PhysicalFonts;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTBorder;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTP;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPBdr;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPPr;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTVerticalAlignRun;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -60,18 +78,27 @@ import com.springreport.base.PageEntity;
 import com.springreport.base.TDengineConnection;
 import com.springreport.base.UserInfoDto;
 import com.springreport.constants.StatusCode;
+import com.springreport.dto.doctpl.DocDto;
+import com.springreport.dto.doctpl.DocImageDto;
+import com.springreport.dto.doctpl.DocTableCellDto;
+import com.springreport.dto.doctpl.DocTableDto;
+import com.springreport.dto.doctpl.DocTableRowDto;
+import com.springreport.dto.doctpl.DocTextDto;
 import com.springreport.dto.doctpl.DocTplDto;
 import com.springreport.dto.doctpl.DocTplSettingsDto;
 import com.springreport.dto.reporttpl.MesGenerateReportDto;
 import com.springreport.dto.reporttpldataset.ReportDatasetDto;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.net.URLEncoder;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -81,14 +108,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.springreport.enums.DatasetTypeEnum;
 import com.springreport.enums.DelFlagEnum;
 import com.springreport.enums.SqlTypeEnum;
+import com.springreport.enums.TitleLevelEnum;
 import com.springreport.enums.YesNoEnum;
 import com.springreport.exception.BizException;
 
@@ -116,6 +146,9 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 	
 	@Autowired
 	private IDocTplChartsService iDocTplChartsService;
+	
+	@Autowired
+	private ICommonService iCommonService;
 	
 	@Value("${file.path}")
     private String dirPath;
@@ -988,6 +1021,558 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 					}
 				}else {
 					return null;
+				}
+			}
+		}
+	}
+
+
+	/**  
+	 * @MethodName: uploadDocx
+	 * @Description: 上传docx文件并解析
+	 * @author caiyang
+	 * @param file
+	 * @return
+	 * @throws Exception 
+	 * @see com.springreport.api.doctpl.IDocTplService#uploadDocx(org.springframework.web.multipart.MultipartFile)
+	 * @date 2024-09-28 07:20:18 
+	 */
+	@Override
+	public DocDto uploadDocx(MultipartFile file) throws Exception {
+		DocDto result = new DocDto();
+		XWPFDocument xwpfDocument = new XWPFDocument(file.getInputStream());
+		CTSectPr sectPr = xwpfDocument.getDocument().getBody().getSectPr();
+		if(sectPr != null) {
+			if(sectPr.getPgSz().getOrient()!=null) {
+				if("landscape".equals(String.valueOf(sectPr.getPgSz().getOrient()))) {
+					result.setPaperDirection("horizontal");
+				}
+			}
+			BigInteger w = (BigInteger) sectPr.getPgSz().getW();
+			double width = Math.ceil(w.intValue()  / 20 * 1.33445);
+			BigInteger h = (BigInteger) sectPr.getPgSz().getH();
+			double height = Math.ceil(h.intValue() / 20 * 1.33445);
+			if("horizontal".equals(result.getPaperDirection())) {
+				result.setHeight((int) width);
+				result.setWidth((int) height);
+			}else {
+				result.setHeight((int) height);
+				result.setWidth((int) width);
+			}
+		}
+		List<Object> documentElements = new ArrayList<>();
+		List<Object> headerElements = new ArrayList<>();
+		List<Object> footerElements = new ArrayList<>();
+		List<IBodyElement> bodyElements = xwpfDocument.getBodyElements();
+		Map<BigInteger, JSONObject> listMap = new HashMap<>();
+		List<XWPFHeader> headers = xwpfDocument.getHeaderList();
+		if(ListUtil.isNotEmpty(headers)) {
+			for (int i = 0; i < headers.size(); i++) {
+				XWPFHeader header = headers.get(i);
+				List<XWPFParagraph> paragraphs = header.getParagraphs();
+				if(ListUtil.isNotEmpty(paragraphs)) {
+					for (int j = 0; j < paragraphs.size(); j++) {
+						parseTextParagraph(paragraphs.get(j),headerElements);
+					}
+				}
+			}
+		}
+		List<XWPFFooter> footers = xwpfDocument.getFooterList();
+		if(ListUtil.isNotEmpty(footers)) {
+			for (int i = 0; i < footers.size(); i++) {
+				XWPFFooter footer = footers.get(i);
+				List<XWPFParagraph> paragraphs = footer.getParagraphs();
+				if(ListUtil.isNotEmpty(paragraphs)) {
+					for (int j = 0; j < paragraphs.size(); j++) {
+						parseTextParagraph(paragraphs.get(j),footerElements);
+					}
+				}
+			}
+		}
+		if(ListUtil.isNotEmpty(bodyElements)) {
+			for (int i = 0; i < bodyElements.size(); i++) {
+				IBodyElement iBodyElement = bodyElements.get(i);
+				if(iBodyElement instanceof XWPFParagraph) {
+					parseParagraph((XWPFParagraph) iBodyElement,documentElements,listMap);
+				}else if(iBodyElement instanceof XWPFTable) {
+					parseTable((XWPFTable) iBodyElement,documentElements);
+				}
+				
+			}
+		}
+		xwpfDocument.close();
+		result.setMain(JSON.toJSONString(documentElements));
+		result.setHeader(JSON.toJSONString(headerElements));
+		result.setFooter(JSON.toJSONString(footerElements));
+		return result;
+	}
+	
+	private void parseParagraph(XWPFParagraph paragraph,List<Object> documentElements,Map<BigInteger, JSONObject> listMap) throws Exception{
+		if(paragraph.getNumID() != null) {
+			JSONObject listObj = null;
+			if(listMap.containsKey(paragraph.getNumID())) {
+				listObj = listMap.get(paragraph.getNumID());
+			}else {
+				String listStyle = "decimal";
+				String listType = "ol";
+				if("bullet".equals(paragraph.getNumFmt())) {
+					listStyle = "disc";
+					listType = "ul";
+				}
+				listObj = new JSONObject();
+				listObj.put("value", "");
+				listObj.put("type", "list");
+				listObj.put("listType", listType);
+				listObj.put("listStyle", listStyle);
+				List<Object> valueList = new ArrayList<>();
+				listObj.put("valueList", valueList);
+				listMap.put(paragraph.getNumID(), listObj);
+				documentElements.add(listObj);
+			}
+			parseListParagraph(paragraph, listObj);
+		}else if(paragraph.getStyle() != null) {
+			parseTitleParagraph(paragraph, documentElements);
+		}else {
+			parseTextParagraph(paragraph, documentElements);
+		}
+	}
+	
+	private void parseListParagraph(XWPFParagraph paragraph,JSONObject listObj) {
+		List<Object> valueList = (List<Object>) listObj.get("valueList");
+		List<XWPFRun> runs = paragraph.getRuns();
+		if(ListUtil.isNotEmpty(runs)) {
+			for (int i = 0; i < runs.size(); i++) {
+				DocTextDto docTextDto = new DocTextDto();
+				XWPFRun xwpfRun = runs.get(i);
+				String text = String.valueOf(xwpfRun);
+				if(text.equals("\t")) {
+					docTextDto.setType("tab");
+					if(i == 0 ) {
+						text = "\n" + text ;
+					}
+					docTextDto.setValue(text == null?"":text);
+					valueList.add(docTextDto);
+					continue;
+				}
+				if(i == 0 && !text.startsWith("\n")) {
+					text = "\n" + text ;
+				}
+				docTextDto.setValue(text == null?"":text);
+				if(StringUtil.isNotEmpty(xwpfRun.getColor())) {
+					docTextDto.setColor("#"+xwpfRun.getColor());
+				}
+				if(xwpfRun.isBold()) {
+					docTextDto.setBold(true);
+				}
+				if(xwpfRun.isItalic()) {
+					docTextDto.setItalic(true);
+				}
+				if(xwpfRun.isStrikeThrough()) {
+					docTextDto.setStrikeout(true);
+				}
+				if(xwpfRun.getUnderline().getValue() != UnderlinePatterns.NONE.getValue()) {
+					docTextDto.setUnderline(true);
+				}
+				docTextDto.setSize((int) (xwpfRun.getFontSize()==-1?14:xwpfRun.getFontSize()*1.33445));
+				if(StringUtil.isNotEmpty(xwpfRun.getFontFamily())) {
+					docTextDto.setFont(xwpfRun.getFontFamily());
+				}
+				if(xwpfRun.isHighlighted()) {
+					String color = WordUtil.getHighlightByName(xwpfRun.getTextHighlightColor().toString());
+					if(StringUtil.isNotEmpty(color)) {
+						docTextDto.setHighlight(color);
+					}
+				}
+				valueList.add(docTextDto);
+			}
+		}
+	}
+	
+	private void parseTitleParagraph(XWPFParagraph paragraph,List<Object> documentElements) {
+		boolean isSeperator = isSeperator(paragraph);
+		JSONObject titleParagraph = new JSONObject();
+		titleParagraph.put("value", "");
+		titleParagraph.put("type", "title");
+		List<Object> valueList = new ArrayList<>();
+		titleParagraph.put("valueList", valueList);
+		int titleFontSize = 26;
+		String level = TitleLevelEnum.FIRST.getCode();
+		if("1".equals(paragraph.getStyle())) {
+			titleFontSize = 26;
+			level = TitleLevelEnum.FIRST.getCode();
+		}else if("2".equals(paragraph.getStyle())) {
+			titleFontSize = 24;
+			level = TitleLevelEnum.SECOND.getCode();
+		}else if("3".equals(paragraph.getStyle())) {
+			titleFontSize = 22;
+			level = TitleLevelEnum.THIRD.getCode();
+		}else if("4".equals(paragraph.getStyle())) {
+			titleFontSize = 20;
+			level = TitleLevelEnum.FOURTH.getCode();
+		}else if("5".equals(paragraph.getStyle())) {
+			titleFontSize = 18;
+			level = TitleLevelEnum.FIFTH.getCode();
+		}else if("6".equals(paragraph.getStyle())) {
+			titleFontSize = 16;
+			level = TitleLevelEnum.SIXTH.getCode();
+		}
+		titleParagraph.put("level", level);
+		List<XWPFRun> runs = paragraph.getRuns();
+		if(ListUtil.isNotEmpty(runs)) {
+			for (int i = 0; i < runs.size(); i++) {
+				DocTextDto docTextDto = new DocTextDto();
+				XWPFRun xwpfRun = runs.get(i);
+				String text = String.valueOf(xwpfRun);
+				docTextDto.setValue(text == null?"":text);
+				docTextDto.setBold(true);
+				docTextDto.setSize(titleFontSize);
+				if(paragraph.getAlignment() != null) {
+					if(paragraph.getAlignment().getValue() == ParagraphAlignment.LEFT.getValue()) {
+						docTextDto.setRowFlex("left");
+					}else if(paragraph.getAlignment().getValue() == ParagraphAlignment.RIGHT.getValue()) {
+						docTextDto.setRowFlex("right");
+					}else if(paragraph.getAlignment().getValue() == ParagraphAlignment.CENTER.getValue()) {
+						docTextDto.setRowFlex("center");
+					}else if(paragraph.getAlignment().getValue() == ParagraphAlignment.BOTH.getValue()) {
+						docTextDto.setRowFlex("alignment");
+					}
+				}
+				valueList.add(docTextDto);
+			}
+		}
+		documentElements.add(titleParagraph);
+		if(isSeperator) {
+			DocTextDto docTextDto = new DocTextDto();
+			docTextDto.setType("separator");
+			docTextDto.setRowFlex("left");
+			docTextDto.setValue("\n");
+			CTP ctp = paragraph.getCTP();    
+		    CTPPr pr = ctp.isSetPPr() ? ctp.getPPr() : ctp.addNewPPr();    
+		    CTPBdr border = pr.isSetPBdr() ? pr.getPBdr() : pr.addNewPBdr();    
+		    CTBorder ct =  border.isSetBottom() ? border.getBottom() : border.addNewBottom(); 
+		    int seperatorType = ct.getVal().intValue();
+		    List<Object> dashArray = new ArrayList<>();
+		    switch (seperatorType) {
+			case 3:
+				break;
+			case 6:
+				dashArray.add(1);
+				dashArray.add(1);
+				docTextDto.setDashArray(dashArray);
+				break;
+			case 7:
+				dashArray.add(4);
+				dashArray.add(4);
+				docTextDto.setDashArray(dashArray);
+				break;
+			case 8:
+				dashArray.add(7);
+				dashArray.add(3);
+				dashArray.add(3);
+				dashArray.add(3);
+				docTextDto.setDashArray(dashArray);
+				break;
+			case 9:
+				dashArray.add(6);
+				dashArray.add(2);
+				dashArray.add(2);
+				dashArray.add(2);
+				dashArray.add(2);
+				dashArray.add(2);
+				docTextDto.setDashArray(dashArray);
+				break;
+			case 22:
+				dashArray.add(3);
+				dashArray.add(1);
+				docTextDto.setDashArray(dashArray);
+				break;
+			default:
+				break;
+			}
+			documentElements.add(docTextDto);
+		}
+	}
+	
+	private void parseTextParagraph(XWPFParagraph paragraph,List<Object> documentElements) throws Exception {
+		List<XWPFRun> runs = paragraph.getRuns();
+		boolean isSeperator = isSeperator(paragraph);
+		if(ListUtil.isNotEmpty(runs)) {
+			for (int i = 0; i < runs.size(); i++) {
+				DocTextDto docTextDto = new DocTextDto();
+				XWPFRun xwpfRun = runs.get(i);
+				List<XWPFPicture> pictures = xwpfRun.getEmbeddedPictures();
+				if(ListUtil.isNotEmpty(pictures)) {
+					for (int j = 0; j < pictures.size(); j++) {
+						DocImageDto docImageDto = new DocImageDto();
+						XWPFPicture picture = pictures.get(j);
+						byte[] bytes = picture.getPictureData().getData();
+						BufferedImage image = ImageIO.read(new ByteArrayInputStream(bytes));
+						Map<String, String> pictureInfo = this.iCommonService.upload(bytes, IdWorker.getIdStr()+"."+picture.getPictureData().getFileName().split("\\.")[1]);
+						docImageDto.setValue(pictureInfo.get("fileUri"));
+						docImageDto.setWidth(image.getWidth());
+						docImageDto.setHeight(image.getHeight());
+						if(paragraph.getAlignment() != null) {
+							if(paragraph.getAlignment().getValue() == ParagraphAlignment.LEFT.getValue()) {
+								docImageDto.setRowFlex("left");
+							}else if(paragraph.getAlignment().getValue() == ParagraphAlignment.RIGHT.getValue()) {
+								docImageDto.setRowFlex("right");
+							}else if(paragraph.getAlignment().getValue() == ParagraphAlignment.CENTER.getValue()) {
+								docImageDto.setRowFlex("center");
+							}else if(paragraph.getAlignment().getValue() == ParagraphAlignment.BOTH.getValue()) {
+								docImageDto.setRowFlex("alignment");
+							}
+						}
+						documentElements.add(docImageDto);
+					}
+					continue;
+				}
+				String text = String.valueOf(xwpfRun);
+				if(text.equals("\t")) {
+					if(paragraph.getAlignment() != null) {
+						if(paragraph.getAlignment().getValue() == ParagraphAlignment.LEFT.getValue()) {
+							docTextDto.setRowFlex("left");
+						}else if(paragraph.getAlignment().getValue() == ParagraphAlignment.RIGHT.getValue()) {
+							docTextDto.setRowFlex("right");
+						}else if(paragraph.getAlignment().getValue() == ParagraphAlignment.CENTER.getValue()) {
+							docTextDto.setRowFlex("center");
+						}else if(paragraph.getAlignment().getValue() == ParagraphAlignment.BOTH.getValue()) {
+							docTextDto.setRowFlex("alignment");
+						}
+					}
+					docTextDto.setType("tab");
+					if(i == 0) {
+						text = "\n"+text;
+					}
+					docTextDto.setValue(text == null?"":text);
+					documentElements.add(docTextDto);
+					continue;
+				}
+				if(i == 0) {
+					text = "\n"+text;
+				}
+				String scriptType = getSupSubScriptType(xwpfRun);
+				if(StringUtil.isNotEmpty(scriptType)) {
+					docTextDto.setType(scriptType);
+				}
+				docTextDto.setValue(text == null?"":text);
+				if(StringUtil.isNotEmpty(xwpfRun.getColor())) {
+					docTextDto.setColor("#"+xwpfRun.getColor());
+				}
+				if(xwpfRun.isBold()) {
+					docTextDto.setBold(true);
+				}
+				if(xwpfRun.isItalic()) {
+					docTextDto.setItalic(true);
+				}
+				if(xwpfRun.isStrikeThrough()) {
+					docTextDto.setStrikeout(true);
+				}
+				if(xwpfRun.getUnderline().getValue() != UnderlinePatterns.NONE.getValue()) {
+					docTextDto.setUnderline(true);
+				}
+				docTextDto.setSize((int) (xwpfRun.getFontSize()==-1?14:xwpfRun.getFontSize()*1.33445));
+				if(StringUtil.isNotEmpty(xwpfRun.getFontFamily())) {
+					docTextDto.setFont(xwpfRun.getFontFamily());
+				}
+				if(xwpfRun.isHighlighted()) {
+					String color = WordUtil.getHighlightByName(xwpfRun.getTextHighlightColor().toString());
+					if(StringUtil.isNotEmpty(color)) {
+						docTextDto.setHighlight(color);
+					}
+				}
+				if(paragraph.getAlignment() != null) {
+					if(paragraph.getAlignment().getValue() == ParagraphAlignment.LEFT.getValue()) {
+						docTextDto.setRowFlex("left");
+					}else if(paragraph.getAlignment().getValue() == ParagraphAlignment.RIGHT.getValue()) {
+						docTextDto.setRowFlex("right");
+					}else if(paragraph.getAlignment().getValue() == ParagraphAlignment.CENTER.getValue()) {
+						docTextDto.setRowFlex("center");
+					}else if(paragraph.getAlignment().getValue() == ParagraphAlignment.BOTH.getValue()) {
+						docTextDto.setRowFlex("alignment");
+					}
+				}
+				documentElements.add(docTextDto);
+			}
+		}
+		if(isSeperator) {
+			DocTextDto docTextDto = new DocTextDto();
+			docTextDto.setType("separator");
+			docTextDto.setRowFlex("left");
+			docTextDto.setValue("\n");
+			CTP ctp = paragraph.getCTP();    
+		    CTPPr pr = ctp.isSetPPr() ? ctp.getPPr() : ctp.addNewPPr();    
+		    CTPBdr border = pr.isSetPBdr() ? pr.getPBdr() : pr.addNewPBdr();    
+		    CTBorder ct =  border.isSetBottom() ? border.getBottom() : border.addNewBottom(); 
+		    int seperatorType = ct.getVal().intValue();
+		    List<Object> dashArray = new ArrayList<>();
+		    switch (seperatorType) {
+			case 3:
+				break;
+			case 6:
+				dashArray.add(1);
+				dashArray.add(1);
+				docTextDto.setDashArray(dashArray);
+				break;
+			case 7:
+				dashArray.add(4);
+				dashArray.add(4);
+				docTextDto.setDashArray(dashArray);
+				break;
+			case 8:
+				dashArray.add(7);
+				dashArray.add(3);
+				dashArray.add(3);
+				dashArray.add(3);
+				docTextDto.setDashArray(dashArray);
+				break;
+			case 9:
+				dashArray.add(6);
+				dashArray.add(2);
+				dashArray.add(2);
+				dashArray.add(2);
+				dashArray.add(2);
+				dashArray.add(2);
+				docTextDto.setDashArray(dashArray);
+				break;
+			case 22:
+				dashArray.add(3);
+				dashArray.add(1);
+				docTextDto.setDashArray(dashArray);
+				break;
+			default:
+				break;
+			}
+			documentElements.add(docTextDto);
+		}
+	}
+	
+	private String getSupSubScriptType(XWPFRun run){
+        String result = "";
+        if(run.getCTR()!=null){
+            if(run.getCTR().getRPr()!=null){
+            	if(run.getCTR().getRPr().getVertAlignArray() != null && run.getCTR().getRPr().getVertAlignArray().length>0) {
+            		CTVerticalAlignRun CTVerticalAlignRun = run.getCTR().getRPr().getVertAlignArray()[0];
+            		result = String.valueOf(CTVerticalAlignRun.getVal());
+            	}
+            }
+        }
+        return result;
+    }
+	
+	private boolean isSeperator(XWPFParagraph paragraph) {
+		boolean result = true;
+		CTP ctp = paragraph.getCTP();
+		if(ctp == null) {
+			return false;
+		}
+		CTPPr pr = ctp.getPPr();   
+		if(pr == null) {
+			return false;
+		}
+		CTPBdr border = pr.getPBdr();  
+		if(border == null) {
+			return false;
+		}
+        CTBorder ct =  border.getBottom(); 
+        if(ct == null) {
+			return false;
+		}
+        return result;
+	}
+	
+	private void parseTable(XWPFTable table,List<Object> documentElements) throws Exception{
+		List<JSONObject> colgroup = new ArrayList<>();
+		DocTableDto docTableDto = new DocTableDto();
+		int height = 0;
+		List<XWPFTableRow> rows = table.getRows();
+		Map<String, Object> mergeCells = new HashMap<>();
+		List<DocTableRowDto> docTableRowDtos = new ArrayList<>();
+		for (int i = 0; i < rows.size(); i++) {
+			List<XWPFTableCell> cells = rows.get(i).getTableCells();
+			for (int j = 0; j < cells.size(); j++) {
+				XWPFTableCell cell = cells.get(j);
+				if(cell == null) {
+					continue;
+				}
+				if(cell.getCTTc().getTcPr().getGridSpan() != null) {
+					int colspan = cell.getCTTc().getTcPr().getGridSpan().getVal().intValue();
+					for (int k = 1; k < colspan; k++) {
+						rows.get(i).getTableCells().add(j+k, null);
+					}
+				}
+			}
+		}
+		for (int i = 0; i < rows.size(); i++) {
+			DocTableRowDto docTableRowDto = new DocTableRowDto();
+			height =  height + rows.get(i).getHeight();
+			docTableRowDto.setHeight(rows.get(i).getHeight());
+			List<DocTableCellDto> docTableCellDtos = new ArrayList<>();
+			List<XWPFTableCell> cells = rows.get(i).getTableCells();
+			for (int j = 0; j < cells.size(); j++) {
+				XWPFTableCell cell = cells.get(j);
+				if(cell == null || mergeCells.containsKey(i+"_"+j)) {
+					continue;
+				}
+				DocTableCellDto docTableCellDto = new DocTableCellDto();
+				int colspan = 1;
+				int rowspan = 1;
+				docTableCellDto.setColspan(colspan);
+				docTableCellDto.setRowspan(rowspan);
+				if(cell.getCTTc().getTcPr().getGridSpan() != null) {
+					docTableCellDto.setColspan(cell.getCTTc().getTcPr().getGridSpan().getVal().intValue());
+				}
+				if(i == 0) {
+					int width =  cell.getWidth()/16;
+					width = width / docTableCellDto.getColspan();
+					for (int k = 0; k < docTableCellDto.getColspan(); k++) {
+						JSONObject col = new JSONObject();
+						col.put("width", width);
+						colgroup.add(col);
+					}
+				}
+				if(cell.getCTTc().getTcPr().getVMerge() != null && cell.getCTTc().getTcPr().getVMerge().getVal() != null && "restart".equals(cell.getCTTc().getTcPr().getVMerge().getVal().toString())) {
+					getRowSpan(i, j, docTableCellDto, mergeCells, rows);
+				}
+				List<XWPFParagraph> cellParagraph = cell.getParagraphs();
+				if(ListUtil.isNotEmpty(cellParagraph)) {
+					List<Object> docTextDtos = new ArrayList<>();
+					for (int k = 0; k < cellParagraph.size(); k++) {
+						parseParagraph(cellParagraph.get(k), docTextDtos,new HashMap<>());
+					}
+					docTableCellDto.setValue(docTextDtos);
+				}
+				if(cell.getVerticalAlignment() != null) {
+					if(cell.getVerticalAlignment() == XWPFVertAlign.TOP) {
+						docTableCellDto.setVerticalAlign("top");
+					}else if(cell.getVerticalAlignment() == XWPFVertAlign.BOTTOM) {
+						docTableCellDto.setVerticalAlign("bottom");
+					}else if(cell.getVerticalAlignment() == XWPFVertAlign.CENTER) {
+						docTableCellDto.setVerticalAlign("bottom");
+					}
+				}
+				docTableCellDtos.add(docTableCellDto);
+			}
+			docTableRowDto.setTdList(docTableCellDtos);
+			docTableRowDtos.add(docTableRowDto);
+		}
+		docTableDto.setWidth(table.getWidth());
+		docTableDto.setHeight(height);
+		docTableDto.setTrList(docTableRowDtos);
+		docTableDto.setColgroup(colgroup);
+		documentElements.add(docTableDto);
+	}
+	
+	private void getRowSpan(int r,int c,DocTableCellDto docTableCellDto,Map<String, Object> mergeCells,List<XWPFTableRow> rows) 
+	{
+		for (int i = (r+1); i < rows.size(); i++) {
+			List<XWPFTableCell> cells = rows.get(i).getTableCells();
+			if(c <= (cells.size()-1)) {
+				XWPFTableCell cell = cells.get(c);
+				if(cell.getCTTc().getTcPr().getVMerge() != null && cell.getCTTc().getTcPr().getVMerge().getVal() == null) {
+					docTableCellDto.setRowspan(docTableCellDto.getRowspan() +1);
+					mergeCells.put(i+"_"+c, "1");
+				}else {
+					break;
 				}
 			}
 		}

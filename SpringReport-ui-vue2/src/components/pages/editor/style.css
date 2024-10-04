@@ -186,6 +186,11 @@
   background-image: url('./assets/images/save.svg');
 }
 
+::v-deep .menu-item__upload i {
+  background-image: url('./assets/images/upload.svg');
+}
+
+
 ::v-deep .menu-item__download i {
   background-image: url('./assets/images/download.svg');
 }

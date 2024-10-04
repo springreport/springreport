@@ -5,7 +5,9 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 
 import com.aspose.words.Document;
+import com.aspose.words.EditingLanguage;
 import com.aspose.words.License;
+import com.aspose.words.LoadOptions;
 import com.aspose.words.SaveFormat;
 
 /**
@@ -38,9 +40,11 @@ public class AsposeUtil {
      * @date 2020/12/25 13:51
      */
     public static void wordToPdf(String wordPath, String pdfPath) throws Exception{
-        getLicense();
+//        getLicense();
         File file = new File(pdfPath);
         try (FileOutputStream os = new FileOutputStream(file)) {
+//        	LoadOptions opt = new LoadOptions();
+//        	opt.getLanguagePreferences().setDefaultEditingLanguage(EditingLanguage.CHINESE_PRC);
             Document doc = new Document(wordPath);
             doc.save(os, SaveFormat.PDF);
         }

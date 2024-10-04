@@ -343,6 +343,7 @@ api.docTpl = {
   saveDocTplSettingsApi:"/api/docTpl/saveDocTplSettings",//保存文档模板api
   downLoadDocTplApi:"/api/docTpl/downLoadDocTpl",//导出模板
   previewDocApi:"/api/docTpl/previewDoc",//保存文档模板api
+  uploadDocxApi:"/api/docTpl/uploadDocx",//上传docx文件
 }
 
 api.common = {

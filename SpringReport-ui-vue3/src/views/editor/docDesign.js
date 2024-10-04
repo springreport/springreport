@@ -200,6 +200,10 @@ export default {
       ],
       docTplCharts:[],//文档图表
       chartUrlPrefix:"https://www.springreport.vip/images/chart/",//图表图片的前缀
+      highlightVisiable:false,
+      highlightForm:{
+        color:"",
+      }
     }
   },
   methods: {
@@ -261,6 +265,25 @@ export default {
     doPostCallback(){
       this.loading = false;
     },
+    closehighlightDialog(){
+      this.highlightForm.color = "";
+      this.highlightVisiable = false;
+    },
+    confirmSetHighlight(){
+      var that = this;
+      this.$refs['highlightRef'].validate((valid) => {
+        if (valid) {
+          if(that.highlightForm.color == "#"){
+            that.instance.command.executeHighlight("")
+          }else{
+            that.instance.command.executeHighlight(that.highlightForm.color)
+          }
+          that.closehighlightDialog();
+        } else {
+          return false
+        }
+      })
+    },
     async initEditor(responseData){
       const isApple =
       typeof navigator !== 'undefined' && /Mac OS X/.test(navigator.userAgent)
@@ -287,6 +310,14 @@ export default {
         saveDom.onclick = function () {
           console.log('save')
           that.saveTpl();
+        }
+        //上传word模板
+        const uploadDom = document.querySelector('.menu-item__upload')
+        uploadDom.title = `上传`
+        uploadDom.onclick = function () {
+          console.log('upload')
+          $("#uploadDocxBtn").click()
+          // that.commonUtil.downloadFile(that.apis.docTpl.downLoadDocTplApi,{tplId:tplId},null,{})
         }
         //导出word模板
         const downloadDom = document.querySelector('.menu-item__download')
@@ -465,7 +496,7 @@ export default {
         const highlightSpanDom = highlightDom.querySelector('span')
         highlightDom.onclick = function () {
           console.log('highlight')
-          highlightControlDom?.click()
+          that.highlightVisiable = true;
         }
 
         const titleDom = document.querySelector('.menu-item__title')
@@ -1057,7 +1088,7 @@ export default {
             listDom.classList.add('active')
             const listType = payload.listType
             const listStyle =
-              payload.listType === ListType.OL ? ListStyle.DECIMAL : payload.listType
+              payload.listType === that.commonConstants.editor.ListType.OL ? that.commonConstants.editor.ListStyle.DECIMAL : payload.listType
             const curListDom = listOptionDom.querySelector(
               `[data-list-type='${listType}'][data-list-style='${listStyle}']`
             )
@@ -1741,6 +1772,77 @@ export default {
           })
           imageFileDom.value = ''
         })
+    },
+    uploadDocx(evt){
+      const files = evt.target.files
+      if (files == null || files.length == 0) {
+        alert('请选择文件')
+        return
+      }
+      // 获取文件名
+      const name = files[0].name
+      // 获取文件后缀
+      const suffixArr = name.split('.');
+      const suffix = suffixArr[suffixArr.length - 1]
+      if(suffix != "docx"){
+        this.commonUtil.showMessage({ message: this.commonUtil.getMessageFromList("error.upload.filetype",['docx']), type: this.commonConstants.messageType.error })
+        return;
+      }
+      var that = this
+      const formData = new FormData();
+      formData.append("file",files[0]);
+      formData.append("tplId",this.$route.query.tplId);
+      let config = {
+          headers: {'Content-Type': 'multipart/form-data',
+          'Authorization':localStorage.getItem(that.commonConstants.sessionItem.authorization)}
+      }
+      try {
+        Axios.post(that.apis.docTpl.uploadDocxApi, formData, config)
+      .then(res => {
+          if(res.data.code == "200")
+          {
+            let response = res.data;
+            that.instance.command.executeSetValue({
+                "header":  JSON.parse(response.responseData.header),
+                "main": JSON.parse(response.responseData.main),
+                "footer": JSON.parse(response.responseData.footer)
+            });
+            //设置纸张大小并回显
+            that.instance.command.executePaperSize(response.responseData.width,response.responseData.height);
+            const paperSizeDom = document.querySelector('.paper-size');
+            const paperSizeDomOptionsDom = paperSizeDom.querySelector('.options')
+            let pagers = paperSizeDomOptionsDom.querySelectorAll('li');
+            for (let index = 0; index < pagers.length; index++) {
+              let element = pagers[index];
+              element.classList.remove('active')
+              if(element.dataset.paperSize == (response.responseData.height+"*"+response.responseData.width)||element.dataset.paperSize == (response.responseData.width+"*"+response.responseData.height))
+              {
+                element.classList.add('active')
+              }
+             
+            }
+            //设置纸张方向并回显
+            let pageDirection = response.responseData.paperDirection
+            that.instance.command.executePaperDirection(pageDirection);
+            const paperDirectionDom = document.querySelector('.paper-direction')
+            const paperDirectionDomOptionsDom = paperDirectionDom.querySelector('.options')
+            let pagerDirections = paperDirectionDomOptionsDom.querySelectorAll('li')
+            for (let index = 0; index < pagerDirections.length; index++) {
+              let element = pagerDirections[index];
+              element.classList.remove('active')
+              if(element.dataset.paperDirection ==  pageDirection){
+                element.classList.add('active')
+              }
+            }
+          }else{
+              that.commonUtil.showMessage({message:res.data.message,type: res.data.msgLevel})
+          }
+          evt.target.value = ''
+      })
+      } catch (error) {
+          evt.target.value = ''
+          that.loading = false;
+      }
     },
     confimChartModal(){
       var that = this;
