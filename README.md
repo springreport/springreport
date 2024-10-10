@@ -16,6 +16,11 @@ https://www.springreport.vip/
 
 https://gitee.com/springreport/springreport/wikis/pages
 
+## 注意事项
+ **很多人下载下来项目后，只关注代码，其他内容并没有关注，导致有些内容找不到，比如说sql脚本，依赖的一些其他项目或者jar包等等。
+不管是下载之前还是下载之后，请一定要仔细阅读readme，然后下载下来的都有哪些内容也都需要看一下，不要只看代码，导致自己本地环境搭建有问题。
+阅读readme和了解下载下来的都有哪些东西是玩转开源项目的基础，请大家一定要注意。**
+
 ## 系统简介
 SpringReport是一款企业级的报表系统，支持在线设计报表，并绑定动态数据源，无需写代码即可快速生成想要的报表，可以支持excel报表和word报表两种格式，同时还可以支持excel多人协同编辑，后续考虑实现大屏设计器功能，通过简单的设计器可以生成炫酷的大屏效果。
 
@@ -76,6 +81,8 @@ SpringReport依赖另外一个工具类jar包excel2pdf，用于将excel转成pdf
 github地址：https://github.com/springreport/excel2pdf
 
 gitee地址：https://gitee.com/springreport/excel2pdf
+
+SpringReport还有部分依赖的jar包无法直接通过pom.xml下载，需要单独引入放到自己本地的maven库，这些jar在git中都有，从【sql脚本和其他】文件夹中获取
 
 ## 数据库支持
 |序号   | 数据库  | 是否支持  | 是否提供脚本 |
