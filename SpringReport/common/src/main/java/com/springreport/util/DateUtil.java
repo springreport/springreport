@@ -46,6 +46,12 @@ public class DateUtil {
     
     public static String FORMAT_HOURSMINUTES_2 = "hh:mm";
     
+    public static String FORMAT_HOURSMINUTES_3 = "h:mm";
+    
+    public static String FORMAT_HOURSMINUTESSECONDS = "hh:mm:ss";
+    
+    public static String FORMAT_HOURSMINUTESSECONDS_2 = "h:mm:ss";
+    
     public static String FORMAT_FULL_12 = "yyyy-MM-dd hh:mm a";
     
     public static String FORMAT_DATE = "MM-dd";
@@ -496,6 +502,6 @@ public class DateUtil {
 	    
     public static void main(String[] args) throws ParseException {
     	
-    	System.out.println(DateUtil.addMonth(-1, "2022-01-01"));
+    	System.out.println(DateUtil.date2String(DateUtil.string2Date(String.valueOf("03:15"), DateUtil.FORMAT_HOURSMINUTES), DateUtil.FORMAT_HOURSMINUTES));
     }
 }

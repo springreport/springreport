@@ -160,7 +160,12 @@ public class LuckysheetUtil {
 			{
 				return DateUtil.date2String(DateUtil.string2Date(String.valueOf(value), DateUtil.FORMAT_LONOGRAM), DateUtil.FORMAT_LONOGRAM);
 			}else {
-				return value;
+				if(CheckUtil.isNumeric(String.valueOf(value))) {
+					 Date date = org.apache.poi.ss.usermodel.DateUtil.getJavaDate(Double.parseDouble(String.valueOf(value)));
+					 return DateUtil.date2String(date, DateUtil.FORMAT_LONOGRAM);
+				}else {
+					return value;
+				}
 			}
 		}else if(fa.equals(CellFormatEnum.DATE_2.getCode())) {
 			//日期格式yyyy-MM-dd hh:mm AM/PM
@@ -168,15 +173,133 @@ public class LuckysheetUtil {
 			{
 				return DateUtil.date2String(DateUtil.string2Date(String.valueOf(value), DateUtil.FORMAT_FULL), DateUtil.FORMAT_FULL_12).replace("上午", "AM").replace("下午", "PM");
 			}else {
-				return value;
+				if(CheckUtil.isNumeric(String.valueOf(value))) {
+					 Date date = org.apache.poi.ss.usermodel.DateUtil.getJavaDate(Double.parseDouble(String.valueOf(value)));
+					 return DateUtil.date2String(date, DateUtil.FORMAT_FULL);
+				}else {
+					return value;
+				}
 			}
 		}else if(fa.equals(CellFormatEnum.DATE_3.getCode())) {
 			//日期格式yyyy-MM-dd hh:mm
 			if(CheckUtil.isDate(String.valueOf(value), DateUtil.FORMAT_FULL))
 			{
-				return DateUtil.date2String(DateUtil.string2Date(String.valueOf(value), DateUtil.FORMAT_FULL), DateUtil.FORMAT_WITHOUTSECONDS);
+				return DateUtil.date2String(DateUtil.string2Date(String.valueOf(value), DateUtil.FORMAT_WITHOUTSECONDS), DateUtil.FORMAT_WITHOUTSECONDS);
 			}else {
-				return value;
+				if(CheckUtil.isNumeric(String.valueOf(value))) {
+					 Date date = org.apache.poi.ss.usermodel.DateUtil.getJavaDate(Double.parseDouble(String.valueOf(value)));
+					 return DateUtil.date2String(date, DateUtil.FORMAT_WITHOUTSECONDS);
+				}else {
+					return value;
+				}
+			}
+		}else if(fa.equals(CellFormatEnum.DATE_4.getCode())) {
+			if(CheckUtil.isDate(String.valueOf(value), DateUtil.FORMAT_FULL))
+			{
+				return DateUtil.date2String(DateUtil.string2Date(String.valueOf(value), DateUtil.FORMAT_HOURSMINUTES), DateUtil.FORMAT_HOURSMINUTES);
+			}else {
+				if(CheckUtil.isNumeric(String.valueOf(value))) {
+					 Date date = org.apache.poi.ss.usermodel.DateUtil.getJavaDate(Double.parseDouble(String.valueOf(value)));
+					 return DateUtil.date2String(date, DateUtil.FORMAT_HOURSMINUTES).replace("上午", "AM").replace("下午", "PM");
+				}else {
+					return value;
+				}
+			}
+		}else if(fa.equals(CellFormatEnum.DATE_5.getCode())) {
+			if(CheckUtil.isDate(String.valueOf(value), DateUtil.FORMAT_FULL))
+			{
+				return DateUtil.date2String(DateUtil.string2Date(String.valueOf(value), DateUtil.FORMAT_LONOGRAM_CN_2), DateUtil.FORMAT_LONOGRAM_CN_2);
+			}else {
+				if(CheckUtil.isNumeric(String.valueOf(value))) {
+					 Date date = org.apache.poi.ss.usermodel.DateUtil.getJavaDate(Double.parseDouble(String.valueOf(value)));
+					 return DateUtil.date2String(date, DateUtil.FORMAT_LONOGRAM_CN_2);
+				}else {
+					return value;
+				}
+			}
+		}else if(fa.equals(CellFormatEnum.DATE_6.getCode())) {
+			if(CheckUtil.isDate(String.valueOf(value), DateUtil.FORMAT_LONOGRAM_2))
+			{
+				return DateUtil.date2String(DateUtil.string2Date(String.valueOf(value), DateUtil.FORMAT_LONOGRAM_2), DateUtil.FORMAT_LONOGRAM_2);
+			}else {
+				if(CheckUtil.isNumeric(String.valueOf(value))) {
+					 Date date = org.apache.poi.ss.usermodel.DateUtil.getJavaDate(Double.parseDouble(String.valueOf(value)));
+					 return DateUtil.date2String(date, DateUtil.FORMAT_LONOGRAM_2);
+				}else {
+					return value;
+				}
+			}
+		}else if(fa.equals(CellFormatEnum.DATE_7.getCode())) {
+			if(CheckUtil.isDate(String.valueOf(value), DateUtil.FORMAT_FULL))
+			{
+				return DateUtil.date2String(DateUtil.string2Date(String.valueOf(value), DateUtil.FORMAT_FULL), DateUtil.FORMAT_LONOGRAM_CN_2);
+			}else {
+				if(CheckUtil.isNumeric(String.valueOf(value))) {
+					 Date date = org.apache.poi.ss.usermodel.DateUtil.getJavaDate(Double.parseDouble(String.valueOf(value)));
+					 return DateUtil.date2String(date, DateUtil.FORMAT_LONOGRAM_CN_2);
+				}else {
+					return value;
+				}
+			}
+		}else if(fa.equals(CellFormatEnum.DATE_8.getCode())) {
+			if(CheckUtil.isDate(String.valueOf(value), DateUtil.FORMAT_FULL))
+			{
+				return DateUtil.date2String(DateUtil.string2Date(String.valueOf(value), DateUtil.FORMAT_FULL), DateUtil.FORMAT_DATE);
+			}else {
+				if(CheckUtil.isNumeric(String.valueOf(value))) {
+					 Date date = org.apache.poi.ss.usermodel.DateUtil.getJavaDate(Double.parseDouble(String.valueOf(value)));
+					 return DateUtil.date2String(date, DateUtil.FORMAT_DATE);
+				}else {
+					return value;
+				}
+			}
+		}else if(fa.equals(CellFormatEnum.DATE_9.getCode())) {
+			if(CheckUtil.isDate(String.valueOf(value), DateUtil.FORMAT_FULL))
+			{
+				return DateUtil.date2String(DateUtil.string2Date(String.valueOf(value), DateUtil.FORMAT_FULL), DateUtil.FORMAT_DATE_2);
+			}else {
+				if(CheckUtil.isNumeric(String.valueOf(value))) {
+					 Date date = org.apache.poi.ss.usermodel.DateUtil.getJavaDate(Double.parseDouble(String.valueOf(value)));
+					 return DateUtil.date2String(date, DateUtil.FORMAT_DATE_2);
+				}else {
+					return value;
+				}
+			}
+		}else if(fa.equals(CellFormatEnum.DATE_10.getCode())) {
+			if(CheckUtil.isDate(String.valueOf(value), DateUtil.FORMAT_FULL))
+			{
+				return DateUtil.date2String(DateUtil.string2Date(String.valueOf(value), DateUtil.FORMAT_FULL), DateUtil.FORMAT_DATE_CN);
+			}else {
+				if(CheckUtil.isNumeric(String.valueOf(value))) {
+					 Date date = org.apache.poi.ss.usermodel.DateUtil.getJavaDate(Double.parseDouble(String.valueOf(value)));
+					 return DateUtil.date2String(date, DateUtil.FORMAT_DATE_CN);
+				}else {
+					return value;
+				}
+			}
+		}else if(fa.equals(CellFormatEnum.DATE_11.getCode())) {
+			if(CheckUtil.isDate(String.valueOf(value), DateUtil.FORMAT_FULL))
+			{
+				return DateUtil.date2String(DateUtil.string2Date(String.valueOf(value), DateUtil.FORMAT_FULL), DateUtil.FORMAT_HOURSMINUTESSECONDS_2);
+			}else {
+				if(CheckUtil.isNumeric(String.valueOf(value))) {
+					 Date date = org.apache.poi.ss.usermodel.DateUtil.getJavaDate(Double.parseDouble(String.valueOf(value)));
+					 return DateUtil.date2String(date, DateUtil.FORMAT_HOURSMINUTESSECONDS_2);
+				}else {
+					return value;
+				}
+			}
+		}else if(fa.equals(CellFormatEnum.DATE_12.getCode())) {
+			if(CheckUtil.isDate(String.valueOf(value), DateUtil.FORMAT_FULL))
+			{
+				return DateUtil.date2String(DateUtil.string2Date(String.valueOf(value), DateUtil.FORMAT_FULL), DateUtil.FORMAT_HOURSMINUTES_3);
+			}else {
+				if(CheckUtil.isNumeric(String.valueOf(value))) {
+					 Date date = org.apache.poi.ss.usermodel.DateUtil.getJavaDate(Double.parseDouble(String.valueOf(value)));
+					 return DateUtil.date2String(date, DateUtil.FORMAT_HOURSMINUTES_3);
+				}else {
+					return value;
+				}
 			}
 		}
 		

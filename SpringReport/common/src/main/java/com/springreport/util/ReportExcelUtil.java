@@ -259,7 +259,9 @@ public class ReportExcelUtil {
                 }
                 JSONArray barCodeCells = new JSONArray();//条形码单元格
                 JSONArray qrCodeCells = new JSONArray();//二维码单元格
-                cellUtil.setCellValues(cellDatas,hyperlinks,borderInfos,unProtectCells,mesExportExcel.getSheetConfigs().get(i).getMerge(),mesExportExcel.getSheetConfigs().get(i).getIsCoedit(), dataVerification,xxbtCells,false,barCodeCells,qrCodeCells);
+                Map<Integer, Integer> wrapText = new HashMap<>();
+                cellUtil.setCellValues(cellDatas,hyperlinks,borderInfos,unProtectCells,mesExportExcel.getSheetConfigs().get(i).getMerge(),mesExportExcel.getSheetConfigs().get(i).getIsCoedit(), dataVerification,xxbtCells,false,barCodeCells,qrCodeCells,wrapText);
+                cellUtil.setRowHeight(maxXAndY.get("maxX"), rowlen, rowhidden, wrapText);
                 JSONObject rowlenObj = JSONObject.parseObject(JSONObject.toJSONString(rowlen));
                 JSONObject columnlenObj = JSONObject.parseObject(JSONObject.toJSONString(columnlen));
                 setImages(wb,sheet,images,columnlenObj,rowlenObj,rowhidden,colhidden,mesExportExcel.getImageInfos(),mesExportExcel.getBackImages());
@@ -825,7 +827,10 @@ public class ReportExcelUtil {
                 }
                 JSONArray barCodeCells = new JSONArray();//条形码单元格
                 JSONArray qrCodeCells = new JSONArray();//二维码单元格
-                cellUtil.setCellValues(cellDatas,hyperlinks,borderInfos,null,mesExportExcel.getSheetConfigs().get(i).getMerge(),mesExportExcel.getSheetConfigs().get(i).getIsCoedit(), dataVerification,xxbtCells,true,barCodeCells,qrCodeCells);
+                Map<Integer, Integer> wrapText = new HashMap<>();
+                mesExportExcel.getSheetConfigs().get(i).setWrapText(wrapText);
+                cellUtil.setCellValues(cellDatas,hyperlinks,borderInfos,null,mesExportExcel.getSheetConfigs().get(i).getMerge(),mesExportExcel.getSheetConfigs().get(i).getIsCoedit(), dataVerification,xxbtCells,true,barCodeCells,qrCodeCells,wrapText);
+                cellUtil.setRowHeight(maxXAndY.get("maxX"), rowlen, rowhidden, wrapText);
                 JSONObject rowlenObj = JSONObject.parseObject(JSONObject.toJSONString(rowlen));
                 JSONObject columnlenObj = JSONObject.parseObject(JSONObject.toJSONString(columnlen));
                 setImages(wb,sheet,images,columnlenObj,rowlenObj,rowhidden,colhidden,mesExportExcel.getImageInfos(),mesExportExcel.getBackImages());

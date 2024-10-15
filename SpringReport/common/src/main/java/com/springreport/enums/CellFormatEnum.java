@@ -184,6 +184,78 @@ public enum CellFormatEnum implements BaseCharEnum{
 		public String getName() {
 			return "日期";
 		}
+	},
+	DATE_4{
+		public String getCode() {
+			return "hh:mm AM/PM";
+		}
+		public String getName() {
+			return "日期";
+		}
+	},
+	DATE_5{
+		public String getCode() {
+			return "hh:mm";
+		}
+		public String getName() {
+			return "日期";
+		}
+	},
+	DATE_6{
+		public String getCode() {
+			return "yyyy/MM/dd";
+		}
+		public String getName() {
+			return "日期";
+		}
+	},
+	DATE_7{
+		public String getCode() {
+			return "yyyy\"年\"M\"月\"d\"日\"";
+		}
+		public String getName() {
+			return "日期";
+		}
+	},
+	DATE_8{
+		public String getCode() {
+			return "MM-dd";
+		}
+		public String getName() {
+			return "日期";
+		}
+	},
+	DATE_9{
+		public String getCode() {
+			return "M-d";
+		}
+		public String getName() {
+			return "日期";
+		}
+	},
+	DATE_10{
+		public String getCode() {
+			return "M\"月\"d\"日\"";
+		}
+		public String getName() {
+			return "日期";
+		}
+	},
+	DATE_11{
+		public String getCode() {
+			return "h:mm:ss";
+		}
+		public String getName() {
+			return "日期";
+		}
+	},
+	DATE_12{
+		public String getCode() {
+			return "h:mm";
+		}
+		public String getName() {
+			return "日期";
+		}
 	}
 	
 }

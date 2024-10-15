@@ -164,4 +164,11 @@ public class MesSheetConfig {
      * @date 2024年8月16日18:54:55
      */  
     private JSONArray luckysheetConditionformatSave;
+    
+    /**  
+     * @Fields wrapText : 自动换行的行标记
+     * @author caiyang
+     * @date 2024-10-13 03:50:46 
+     */  
+    private Map<Integer, Integer> wrapText;
 }

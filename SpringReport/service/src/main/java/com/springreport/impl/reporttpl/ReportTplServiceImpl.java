@@ -11893,7 +11893,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			printSettingsDto.setHorizontalPage(
 					resPreviewData.getSheetDatas().get(0).getPrintSettings() == null?2:resPreviewData.getSheetDatas().get(0).getPrintSettings().getHorizontalPage());
 			printSettingsDto.setPageDivider(resPreviewData.getSheetDatas().get(0).getPageDivider());
-			objects.add(new ExcelObject("excel",is,x,y,endx,endy,mesGenerateReportDto.getPdfType(),colhidden,rowhidden,resPreviewData.getSheetDatas().get(0).getXxbtScreenshot(),printSettingsDto,mesExportExcel.getImageInfos(),mesExportExcel.getBackImages()));
+			objects.add(new ExcelObject("excel",is,x,y,endx,endy,mesGenerateReportDto.getPdfType(),colhidden,rowhidden,resPreviewData.getSheetDatas().get(0).getXxbtScreenshot(),printSettingsDto,mesExportExcel.getImageInfos(),mesExportExcel.getBackImages(),mesExportExcel.getSheetConfigs().get(0).getWrapText()));
 			FileOutputStream fos = new FileOutputStream(dirPath + date + "/" + filename);
 			Excel2Pdf pdf = new Excel2Pdf(objects, fos);
 			pdf.convert();
@@ -12320,7 +12320,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				printSettingsDto.setKeyWords("SpringReport_2.1.0");
 				printSettingsDto.setHorizontalPage(resPreviewData.getSheetDatas().get(i).getPrintSettings()!=null?resPreviewData.getSheetDatas().get(i).getPrintSettings().getHorizontalPage():2);
 				printSettingsDto.setPageDivider(resPreviewData.getSheetDatas().get(i).getPageDivider());
-				objects.add(new ExcelObject("excel",is,x,y,endx,endy,mesGenerateReportDto.getPdfType(),colhidden,rowhidden,resPreviewData.getSheetDatas().get(i).getXxbtScreenshot(),printSettingsDto,mesExportExcel.getImageInfos(),mesExportExcel.getBackImages()));
+				objects.add(new ExcelObject("excel",is,x,y,endx,endy,mesGenerateReportDto.getPdfType(),colhidden,rowhidden,resPreviewData.getSheetDatas().get(i).getXxbtScreenshot(),printSettingsDto,mesExportExcel.getImageInfos(),mesExportExcel.getBackImages(),mesExportExcel.getSheetConfigs().get(i).getWrapText()));
 				Excel2Pdf pdf = new  Excel2Pdf(objects, null);
 				ResMobileInfos resMobileInfos = pdf.getMobileInfos();
 				ResMobileReport resMobileReport = new ResMobileReport();
@@ -12797,7 +12797,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			printSettingsDto.setKeyWords("SpringReport_2.1.0");
 			printSettingsDto.setHorizontalPage(resPreviewData.getSheetDatas().get(0).getPrintSettings() == null?2:resPreviewData.getSheetDatas().get(0).getPrintSettings().getHorizontalPage());
 			printSettingsDto.setPageDivider(resPreviewData.getSheetDatas().get(0).getPageDivider());
-			objects.add(new ExcelObject("excel",is,x,y,endx,endy,mesGenerateReportDto.getPdfType(),colhidden,rowhidden,resPreviewData.getSheetDatas().get(0).getXxbtScreenshot(),printSettingsDto,mesExportExcel.getImageInfos(),mesExportExcel.getBackImages()));
+			objects.add(new ExcelObject("excel",is,x,y,endx,endy,mesGenerateReportDto.getPdfType(),colhidden,rowhidden,resPreviewData.getSheetDatas().get(0).getXxbtScreenshot(),printSettingsDto,mesExportExcel.getImageInfos(),mesExportExcel.getBackImages(),mesExportExcel.getSheetConfigs().get(0).getWrapText()));
 			httpServletResponse.setContentType("application/pdf");
 	    	//设置文件名编码格式
 	        String filename = URLEncoder.encode(resPreviewData.getSheetDatas().get(0).getSheetName(), "UTF-8");
