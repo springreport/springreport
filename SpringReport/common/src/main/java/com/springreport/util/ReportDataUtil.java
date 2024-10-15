@@ -142,9 +142,9 @@ public class ReportDataUtil {
 	    ResultSet rs = null;
 	    List<Map<String, Object>> result = null;
 	    try {
+	    	log.error("执行sql："+sqlText);
 	    	conn = dataSource.getConnection();
 	    	stmt = conn.createStatement();
-	    	log.error("执行sql："+sqlText);
             rs = stmt.executeQuery(sqlText);
             final ResultSetMetaData rsMataData = rs.getMetaData();
             final int count = rsMataData.getColumnCount();
@@ -660,14 +660,18 @@ public class ReportDataUtil {
 									break;
 								}
 							}
-	    					if(isAutoKey)
-	    					{
-	    						processInsertSql(columns,sqlParamsMap,tableName);
-	    					}else {
-	    						String whereSql = " ";
+	    					 String whereSql = " ";
 	    						List<Object> whereParams = new ArrayList<>();
 	    						for (int j = 0; j < keys.size(); j++) {
-	    							whereParams.add(keys.get(j).getData());
+	    							if(keys.get(j).getData() == null) {
+	    								whereSql = " ";
+	    								continue;
+	    							}
+	    							if(isAutoKey) {
+	    								whereParams.add(Integer.parseInt(String.valueOf(keys.get(j).getData())));
+	    							}else {
+	    								whereParams.add(keys.get(j).getData());
+	    							}
 	    							if(j == 0)
 	    							{
 	    								whereSql = whereSql + keys.get(j).getColumnName() + " = ?";
@@ -675,25 +679,35 @@ public class ReportDataUtil {
 	    								whereSql = whereSql + " AND " + keys.get(j).getColumnName() + " = ?";
 	    							}
 	    						}
-	    						String selectSql = "select * from " + tableName + " where " + whereSql;
-	    						selectSql = JdbcUtils.preprocessSqlText(selectSql, type,null);
-	    						ps = conn.prepareStatement(selectSql);
-	    						if(!ListUtil.isEmpty(whereParams))
-	    						{
-	    							for (int j = 0; j < whereParams.size(); j++) {
-										ps.setObject(j+1, whereParams.get(j));
-									}
-	    						}
-	    						rs = ps.executeQuery();
-	    						if(!rs.next())
-	    						{//没有数据，新增
-	    							processInsertSql(columns,sqlParamsMap,tableName);
+	    						if(StringUtil.isNotEmpty(whereSql)) {
+	    							String selectSql = "select * from " + tableName + " where " + whereSql;
+		    						selectSql = JdbcUtils.preprocessSqlText(selectSql, type,null);
+		    						ps = conn.prepareStatement(selectSql);
+		    						if(!ListUtil.isEmpty(whereParams))
+		    						{
+		    							for (int j = 0; j < whereParams.size(); j++) {
+											ps.setObject(j+1, whereParams.get(j));
+										}
+		    						}
+		    						rs = ps.executeQuery();
+		    						if(!rs.next())
+		    						{//没有数据，新增
+		    							processInsertSql(columns,sqlParamsMap,tableName);
+		    						}else {
+		    							//有数据，更新
+		    							processUpdateSql(columns,keys,sqlParamsMap,tableName,isAutoKey);
+		    						}
+		    						ps.close();	
 	    						}else {
-	    							//有数据，更新
-	    							processUpdateSql(columns,keys,sqlParamsMap,tableName);
+	    							processInsertSql(columns,sqlParamsMap,tableName);
 	    						}
-	    						ps.close();	
-	    					}
+	    						
+//	    					if(isAutoKey)
+//	    					{
+//	    						processInsertSql(columns,sqlParamsMap,tableName);
+//	    					}else {
+//	    						
+//	    					}
 	    				 }
 	    			}
 	    		}
@@ -773,14 +787,21 @@ public class ReportDataUtil {
 	 * @return void
 	 * @date 2022-11-24 10:55:16 
 	 */  
-	private static void processUpdateSql(List<ReportDataColumnDto> columns,List<ReportDataColumnDto> keys,Map<String, List<List<Object>>> sqlParamsMap,String tableName)
+	private static void processUpdateSql(List<ReportDataColumnDto> columns,List<ReportDataColumnDto> keys,Map<String, List<List<Object>>> sqlParamsMap,String tableName, boolean isAutoKey)
 	{
 		List<Object> params = new ArrayList<>();
 		String columnSql = "";
 		String whereSql = " ";
+		Map<String, String> keysMap = new HashMap<>();
+		for (int j = 0; j < keys.size(); j++) {
+			keysMap.put(keys.get(j).getColumnName(), keys.get(j).getColumnName());
+		}
 		for (int j = 0; j < columns.size(); j++) {
+			if(keysMap.containsKey(columns.get(j).getColumnName())) {
+				continue;
+			}
 			params.add(columns.get(j).getData());
-			if(j == 0)
+			if(StringUtil.isNullOrEmpty(columnSql))
 			{
 				columnSql = columnSql + columns.get(j).getColumnName() + " = ?";
 			}else {
@@ -788,7 +809,11 @@ public class ReportDataUtil {
 			}
 		}
 		for (int j = 0; j < keys.size(); j++) {
-			params.add(keys.get(j).getData());
+			if(isAutoKey) {
+				params.add(Integer.parseInt(String.valueOf(keys.get(j).getData())));
+			}else {
+				params.add(keys.get(j).getData());
+			}
 			if(j == 0)
 			{
 				whereSql = whereSql + keys.get(j).getColumnName() + " = ?";

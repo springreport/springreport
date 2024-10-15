@@ -279,6 +279,8 @@ public class ListUtil {
 						result.put(propertyRatios.get(i).getProperty(), data);
 					}
 				}
+			}else {
+				result.put(str, "");
 			}
 			
 		}

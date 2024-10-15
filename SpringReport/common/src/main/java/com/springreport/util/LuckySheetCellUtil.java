@@ -50,6 +50,7 @@ import com.springreport.enums.BorderTypeEnum;
 import com.springreport.enums.CellFormatEnum;
 import com.springreport.enums.FunctionExpressEnum;
 import com.springreport.enums.LuckySheetPropsEnum;
+import com.springreport.enums.TplTypeEnum;
 import com.springreport.enums.YesNoEnum;
 
 public class LuckySheetCellUtil {
@@ -67,6 +68,19 @@ public class LuckySheetCellUtil {
         this.sheet = sheet;
     }
     
+    private static Map<String, String> numberFormat = new HashMap<>();//数字格式
+    
+    static{
+    	numberFormat.put("##0.00","1");
+    	numberFormat.put("0","1");
+    	numberFormat.put("0.00","1");
+    	numberFormat.put("#,##0","1");
+    	numberFormat.put("#,##0.00","1");
+    	numberFormat.put("#,##0_);(#,##0)","1");
+    	numberFormat.put("#,##0_);[Red](#,##0)","1");
+    	numberFormat.put("#,##0.00_);(#,##0.00)","1");
+	}
+    
     /**  
    	 * @Title: createCells
    	 * @Description: 创建单元格
@@ -83,7 +97,17 @@ public class LuckySheetCellUtil {
    			rowlen = new HashMap<String, Object>();
    		}
    		for (int i = 0; i <= maxX; i++) {
-   			XSSFRow row = sheet.createRow(i);
+   			sheet.createRow(i);
+   		}
+   	}
+   	
+   	public void setRowHeight(int maxX,Map<String, Object> rowlen,JSONObject rowhidden,Map<Integer, Integer> wrapText) {
+   		if(rowlen == null)
+   		{
+   			rowlen = new HashMap<String, Object>();
+   		}
+   		for (int i = 0; i <= maxX; i++) {
+   			XSSFRow row = sheet.getRow(i);
    			if(rowhidden != null && !rowhidden.isEmpty())
    			{
    				if(rowhidden.get(i+"") != null && rowhidden.getIntValue(i+"") == 0)
@@ -91,24 +115,19 @@ public class LuckySheetCellUtil {
    					row.setZeroHeight(true);
    				}
    			}
-   			if(rowlen.get(String.valueOf(i)) != null)
-   			{
-   				try {
-   					row.setHeightInPoints(Float.parseFloat(rowlen.get(String.valueOf(String.valueOf(i))) + "")*3/4);//行高px值
-				} catch (Exception e) {
-					row.setHeightInPoints(sheet.getDefaultRowHeightInPoints());//默认行高
-				}
-   			}else {
-   				row.setHeightInPoints(sheet.getDefaultRowHeightInPoints());//默认行高
+   			if(!wrapText.containsKey(i)) {
+   				if(rowlen.get(String.valueOf(i)) != null)
+   	   			{
+   	   				try {
+   	   					row.setHeightInPoints(Float.parseFloat(rowlen.get(String.valueOf(String.valueOf(i))) + "")*3/4);//行高px值
+   					} catch (Exception e) {
+   						row.setHeightInPoints(sheet.getDefaultRowHeightInPoints());//默认行高
+   					}
+   	   			}
    			}
-   			
-   			
-//   			for (int j = 0; j <= maxY; j++) {
-//   				XSSFCell cell = row.createCell(j);
-////   				cell.setCellType(CellType.STRING);
-//   			}
    		}
    	}
+   	
    	
    	/**  
 	 * @Title: setCellValues
@@ -119,7 +138,7 @@ public class LuckySheetCellUtil {
 	 * @date 2021-06-09 05:01:36 
 	 */ 
 	public void setCellValues(List<Map<String, Object>> cellDatas,Map<String, Map<String, Object>> hyperlinks,List<Object> borderInfos,Map<String, String> unProtectCells,JSONObject merge,Integer isCoedit,
-			JSONObject dataVerification,JSONArray xxbtCells,boolean isPdfStream,JSONArray barCodeCells,JSONArray qrCodeCells)
+			JSONObject dataVerification,JSONArray xxbtCells,boolean isPdfStream,JSONArray barCodeCells,JSONArray qrCodeCells,Map<Integer, Integer> wrapText)
 	{
 		JSONObject cellBorders = this.getCellBorderInfo(borderInfos);
 		if(cellDatas != null && cellDatas.size() > 0)
@@ -172,7 +191,7 @@ public class LuckySheetCellUtil {
 								cellBorders.remove(key);
 							}
 						}
-						CellStyle cellStyle = this.getCellStyle(cellData,cellStyleMap,isLock,borderType);
+						CellStyle cellStyle = this.getCellStyle(cellData,cellStyleMap,isLock,borderType,wrapText);
 						cell.setCellStyle(cellStyle);
 					}
 					Map<String, Object> cellType = (Map<String, Object>) cellValue.get(LuckySheetPropsEnum.CELLTYPE.getCode());
@@ -235,7 +254,23 @@ public class LuckySheetCellUtil {
 								XSSFRichTextString richTextString = this.getCheckBoxValue(dataVerification, String.valueOf(cellValue.get(LuckySheetPropsEnum.CELLVALUE.getCode())), key);
 								if(richTextString == null)
 								{
-									cell.setCellValue(String.valueOf(cellValue.get(LuckySheetPropsEnum.CELLVALUE.getCode())));
+									JSONObject ct = JSONObject.parseObject(JSON.toJSONString(cellConfig.get(LuckySheetPropsEnum.CELLTYPE.getCode())));
+									String dataFormat = ct.getString(LuckySheetPropsEnum.CELLFORMAT.getCode());
+									if("General".equals(dataFormat)) {
+										if(CheckUtil.isNumeric(String.valueOf(cellValue.get(LuckySheetPropsEnum.CELLVALUE.getCode())))) {
+											cell.setCellValue(Double.parseDouble(String.valueOf(cellValue.get(LuckySheetPropsEnum.CELLVALUE.getCode()))));
+										}else {
+											cell.setCellValue(String.valueOf(cellValue.get(LuckySheetPropsEnum.CELLVALUE.getCode())));
+										}
+									}else if(numberFormat.containsKey(dataFormat)) {
+										if(StringUtil.isNotEmpty(String.valueOf(cellValue.get(LuckySheetPropsEnum.CELLVALUE.getCode())))) {
+											cell.setCellValue(Double.parseDouble(String.valueOf(cellValue.get(LuckySheetPropsEnum.CELLVALUE.getCode()))));
+										}else {
+											cell.setCellValue("");
+										}
+									}else {
+										cell.setCellValue(String.valueOf(cellValue.get(LuckySheetPropsEnum.CELLVALUE.getCode())));
+									}
 								}else {
 									cell.setCellValue(richTextString);
 								}
@@ -244,7 +279,16 @@ public class LuckySheetCellUtil {
 							}
 						}
 					}
+					if(cell.getCellType() == CellType.STRING && wrapText.containsKey(r)) {
+						String cellValueString = cell.getStringCellValue();
+						if(StringUtil.isNotEmpty(cellValueString)) {
+							if(cellValueString.length() > wrapText.get(r)) {
+								wrapText.put(r, cellValueString.length());
+							}
+						}
+					}
 				}
+				
 				if(cellValue.get(LuckySheetPropsEnum.POSTIL.getCode()) != null)
 				{
 					JSONObject ps = JSONObject.parseObject(JSONObject.toJSONString(cellValue.get("ps")));
@@ -507,12 +551,19 @@ public class LuckySheetCellUtil {
 		}
 	}
 	
-	private CellStyle getCellStyle(Map<String, Object> cellData,Map<String, XSSFCellStyle> cellStyleMap,boolean isLock,String borderType) {
+	private CellStyle getCellStyle(Map<String, Object> cellData,Map<String, XSSFCellStyle> cellStyleMap,boolean isLock,String borderType,Map<Integer, Integer> wrapText) {
 		Map<String, Object> cellConfig = (Map<String, Object>) cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode());
 		Map<String, Object> styleMap = getCellStyleMap(cellConfig,isLock);
 		styleMap.put("borderType", borderType);
 		String md5Key = Md5Util.generateMd5(JSONObject.toJSONString(styleMap));
 		XSSFCellStyle cellStyle = cellStyleMap.get(md5Key);
+		int r = (int) cellData.get("r");
+		String tb = String.valueOf(styleMap.get("tb"));
+		if("2".equals(tb)) {
+			if(!wrapText.containsKey(r)) {
+				wrapText.put(r, 0);
+			}
+		}
 		if(cellStyle != null)
 		{
 			return cellStyle;
@@ -769,6 +820,10 @@ public class LuckySheetCellUtil {
 				result.put("tr", new Short("0"));
 				break;
 			}
+		}
+		if(cellConfig.containsKey(LuckySheetPropsEnum.TEXTWRAPMODE.getCode())) {
+			String tb = String.valueOf(cellConfig.get(LuckySheetPropsEnum.TEXTWRAPMODE.getCode()));
+			result.put("tb", tb);
 		}
 		result.put("isLock", isLock);
 		try {
