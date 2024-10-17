@@ -1774,3 +1774,7 @@ ALTER TABLE report_tpl_dataset ADD COLUMN total_attr varchar(50) DEFAULT NULL CO
 -- 20240919 luckysheet_his字段更新 start
 ALTER TABLE luckysheet_his MODIFY COLUMN remark text;
 -- 20240919 luckysheet_his字段更新 end
+
+-- 20241017 word模板新增参数合并设置 start
+ALTER TABLE doc_tpl ADD COLUMN param_merge tinyint(4) DEFAULT 1 COMMENT '参数是否合并 1是 2否'; 
+-- 20241017 word模板新增参数合并设置 end

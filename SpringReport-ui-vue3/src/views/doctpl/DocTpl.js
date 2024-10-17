@@ -69,6 +69,7 @@ export default {
 					{type:'Input',label:'模板标识',prop:'tplCode',rules:{required:true,maxLength:40}},
 					{type:'Input',label:'模板名称',prop:'tplName',rules:{required:true,maxLength:40}},
           {type:'Select',label:'数据源',prop:'dataSource',rules:{required:true},multiple:true,props:{label:"code",value:"id"}},
+          {type:'Select',label:'参数是否合并',prop:'paramMerge',rules:{required:true},options:this.selectUtil.yesNo},
         ],
         //modal表单 end
         //modal 数据 start
@@ -76,6 +77,7 @@ export default {
 					tplCode:"",//模板标识 
 					tplName:"",//模板名称 
           dataSource:[],//报表数据源
+          paramMerge:1,
         },
         //modal 数据 end
         //modal 按钮 start

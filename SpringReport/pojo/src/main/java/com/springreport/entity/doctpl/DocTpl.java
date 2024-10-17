@@ -47,6 +47,10 @@ public class DocTpl extends PageEntity {
     @TableField("tpl_name")
     private String tplName;
 
+    /** param_merge - 数据集参数是否合并 1是 2否 */
+    @TableField("param_merge")
+    private Integer paramMerge;
+    
     /** creator - 创建人 */
     @TableField(value = "creator",fill = FieldFill.INSERT)
     private Long creator;

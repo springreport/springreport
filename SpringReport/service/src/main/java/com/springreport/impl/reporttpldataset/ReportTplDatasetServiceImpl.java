@@ -645,6 +645,9 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 			if (docTpl == null) {
 				throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.notexist", new String[] {"报表模板"}));
 			}
+			if(docTpl.getParamMerge().intValue() == YesNoEnum.NO.getCode().intValue()) {
+				isParamMerge = YesNoEnum.NO.getCode();
+			}
 		}
 		//获取所有的数据集
 		QueryWrapper<ReportTplDataset> datasetQueryWrapper = new QueryWrapper<ReportTplDataset>();
@@ -709,7 +712,7 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 									{
 										if(reportDatasource == null)
 										{
-											reportDatasource = iReportDatasourceService.getById(datasets.get(i).getDatasourceId());
+											reportDatasource = iReportDatasourceService.getById(params.get(j).getDatasourceId()!=null?params.get(j).getDatasourceId():datasets.get(i).getDatasourceId());
 										}
 										//数据源配置
 										DataSourceConfig dataSourceConfig = new DataSourceConfig(reportDatasource.getId(), reportDatasource.getDriverClass(), reportDatasource.getJdbcUrl(), reportDatasource.getUserName(), reportDatasource.getPassword(), null);
@@ -726,10 +729,14 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 											params.get(j).setInit(true);
 										}
 									}else {
-										params.get(j).setDatasourceId(datasets.get(i).getDatasourceId());
+										if(params.get(j).getDatasourceId() == null) {
+											params.get(j).setDatasourceId(datasets.get(i).getDatasourceId());
+										}
 									}
 								}else {
-									params.get(j).setDatasourceId(datasets.get(i).getDatasourceId());
+									if(params.get(j).getDatasourceId() == null) {
+										params.get(j).setDatasourceId(datasets.get(i).getDatasourceId());
+									}
 								}
 							}else {
 								if(StringUtil.isNotEmpty(params.get(j).getParamDefault()) || reportTplDataset.isInitSelectData()) {
@@ -790,7 +797,7 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 							{
 								if(reportDatasource == null)
 								{
-									reportDatasource = iReportDatasourceService.getById(datasets.get(i).getDatasourceId());
+									reportDatasource = iReportDatasourceService.getById(params.get(j).getDatasourceId() != null?params.get(j).getDatasourceId():datasets.get(i).getDatasourceId());
 								}
 								//数据源配置
 								DataSourceConfig dataSourceConfig = new DataSourceConfig(reportDatasource.getId(), reportDatasource.getDriverClass(), reportDatasource.getJdbcUrl(), reportDatasource.getUserName(), reportDatasource.getPassword(), null);
@@ -823,7 +830,9 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 									params.get(j).setInit(true);
 								}
 							}else {
-								params.get(j).setDatasourceId(datasets.get(i).getDatasourceId());
+								if(params.get(j).getDatasourceId() == null) {
+									params.get(j).setDatasourceId(datasets.get(i).getDatasourceId());
+								}
 							}
 						}
 						params.get(j).setRules(map);

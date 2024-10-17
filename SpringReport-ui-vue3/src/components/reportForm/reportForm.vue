@@ -46,7 +46,7 @@
                     v-if="item.paramType==='multiTreeSelect'"
                     :size="item.size"
                     v-model="searchData.params[i].params[index][item.paramCode]"
-                    :data="item.selectData"
+                    :data="item.selectData==null?[]:item.selectData"
                     :props="{ parent: 'pid', label: 'name',children: 'children'}"
                     show-checkbox
                     multiple
@@ -59,7 +59,7 @@
                     v-if="item.paramType==='treeSelect'"
                     :size="item.size"
                     v-model="searchData.params[i].params[index][item.paramCode]"
-                    :data="item.selectData"
+                    :data="item.selectData==null?[]:item.selectData"
                     :props="{ parent: 'pid', label: 'name',children: 'children'}"
                     clearable
                     :check-strictly="true"
@@ -121,7 +121,7 @@
                     v-if="item.paramType==='multiTreeSelect'"
                     :size="item.size"
                     v-model="searchData.params[0].params[index][item.paramCode]"
-                    :data="item.selectData"
+                    :data="item.selectData==null?[]:item.selectData"
                     :props="{ parent: 'pid', label: 'name',children: 'children'}"
                     show-checkbox
                     multiple
@@ -134,7 +134,7 @@
                     v-if="item.paramType==='treeSelect'"
                     :size="item.size"
                     v-model="searchData.params[0].params[index][item.paramCode]"
-                    :data="item.selectData"
+                    :data="item.selectData==null?[]:item.selectData"
                     :props="{ parent: 'pid', label: 'name',children: 'children'}"
                     clearable
                     :check-strictly="true"

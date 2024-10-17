@@ -518,6 +518,7 @@ export default {
                         {label:'打印(指定页)',handle:()=>this.showCustomPdfPage(2)}]},)
                     }
                     this.reportForm = result;
+                    console.log(result)
                     this.showReportForm = true;
                     this.isParamMerge = response.responseData.isParamMerge + '';
                     this.isPagination = isPagination;

@@ -25,7 +25,7 @@
             </el-header>
         </div>
         <div style="width: 100%;flex: none;">
-        <reportForm v-if="showReportForm && showSearch" ref="reportRef" :reportName="tplName" :reportForm="reportForm" :searchData="searchData" :searchHandle="searchHandle" :activitiName="activitiName" :showSearch.sync="showSearch" :isParamMerge="'1'" :isDrill="2">
+        <reportForm v-if="showReportForm && showSearch" ref="reportRef" :reportName="tplName" :reportForm="reportForm" :searchData="searchData" :searchHandle="searchHandle" :activitiName="activitiName" :showSearch.sync="showSearch" :isParamMerge="isParamMerge" :isDrill="2">
         </reportForm>
         </div>
         <div style="width: 100%;flex: 1;overflow: hidden;">
