@@ -838,7 +838,11 @@ public class JdbcUtils {
 			Class.forName(dataSourceConfig.getDriverClass());//加载驱动类
 			Connection conn=DriverManager.getConnection(dataSourceConfig.getJdbcUrl(),dataSourceConfig.getUser(),dataSourceConfig.getPassword());//用参数得到连接对象
 			DatabaseMetaData metaData = conn.getMetaData();
-			ResultSet tables = metaData.getTables(conn.getCatalog(), conn.getSchema(), null, new String[]{"TABLE"});
+			String schema = null;
+			if(!DriverClassEnum.SQLSERVER.getName().equals(dataSourceConfig.getDriverClass())) {
+				schema = conn.getSchema();
+			}
+			ResultSet tables = metaData.getTables(conn.getCatalog(), schema, null, new String[]{"TABLE"});
 			while (tables.next()) {
 				Map<String, String> map = new HashMap<>();
 				map.put("name", tables.getString("TABLE_NAME"));
