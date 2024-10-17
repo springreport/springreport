@@ -87,6 +87,7 @@ export default {
                 paramHidden:"",//是否隐藏 1是 2否
                 checkStrictly:"",//父子联动 1是 2否
                 paramPrefix:"",//参数前缀
+                datasourceId:"",//数据源id
             },
             procedureParamForm:{
                 paramName:"",//参数名称
@@ -1313,6 +1314,7 @@ export default {
                         this.paramTableData.tableData[result.index].paramHidden = this.paramForm.paramHidden
                         this.paramTableData.tableData[result.index].checkStrictly = this.paramForm.checkStrictly
                         this.paramTableData.tableData[result.index].paramPrefix = this.paramForm.paramPrefix
+                        this.paramTableData.tableData[result.index].datasourceId = this.paramForm.datasourceId
                     }else{
                     //未添加该参数，则列表中新增一条数据
                     let row = {
@@ -1329,6 +1331,7 @@ export default {
                         paramHidden: this.paramForm.paramHidden,
                         checkStrictly: this.paramForm.checkStrictly == ""?"":this.paramForm.checkStrictly,
                         paramPrefix: this.paramForm.paramPrefix,
+                        datasourceId: this.paramForm.datasourceId,
                     };
                     this.paramTableData.tableData.push(row);
                     }

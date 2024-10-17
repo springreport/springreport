@@ -570,6 +570,11 @@
                               <el-option label="sql语句" value="2"></el-option>
                           </el-select>
                           </el-form-item>
+                          <el-form-item  v-if="(paramForm.paramType == 'select' && paramForm.selectType == '2') || (paramForm.paramType == 'mutiselect' && paramForm.selectType == '2') || paramForm.paramType == 'treeSelect' || paramForm.paramType == 'multiTreeSelect'" label="选择数据源" prop="datasourceId" :rules="filter_rules('选择数据源',{required:true})">
+                          <el-select v-model="paramForm.datasourceId" placeholder="选择数据源" size="small">
+                              <el-option v-for="op in dataSource" :label="op.dataSourceName" :value="op.datasourceId" :key="op.datasourceId"></el-option>
+                          </el-select>
+                          </el-form-item>
                           <el-form-item v-if="(paramForm.paramType == 'select') && paramForm.selectType == '2'" label="是否依赖其他参数" prop="isRelyOnParams" key="isRelyOnParams" :rules="filter_rules('是否依赖其他参数',{required:true})">
                           <el-select v-model="paramForm.isRelyOnParams" placeholder="是否依赖其他参数" size="small">
                               <el-option label="是" value="1"></el-option>

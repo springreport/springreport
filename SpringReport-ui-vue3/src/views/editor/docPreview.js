@@ -31,6 +31,7 @@ export default {
             activitiName:"",
             fileId:"",
             apiHeaders:[],
+            isParamMerge:"2",
         }
     },
     mounted(){
@@ -161,7 +162,12 @@ export default {
                         }
                         that.searchData.params.push(dataSet);
                     }
+                    if(result && result.length > 0)
+                    {
+                        this.activitiName = result[0].datasetName;
+                    }
                     that.reportForm = result;
+                    this.isParamMerge = response.responseData.isParamMerge + '';
                     that.showReportForm = true;
                     that.$nextTick(() => {
                         this.getReportData(1);

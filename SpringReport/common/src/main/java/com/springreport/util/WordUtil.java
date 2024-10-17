@@ -405,17 +405,17 @@ public class WordUtil {
 			}
 		}
     	for (int i = 0; i < rows; i++) {
-    		xwpfTable.getRow(i).setHeight(42*15);
+//    		xwpfTable.getRow(i).setHeight(42*15);
 //    		if(i == 0) {
 //    			xwpfTable.getRow(i).setHeight(42*15);
 //    		}else {
-//    			int height = trList.getJSONObject(i).getIntValue("height");
-//        		float multiple = height/42;
-//        		if(multiple > 5) {
-//        			xwpfTable.getRow(i).setHeight(height*15);
-//        		}else {
-//        			xwpfTable.getRow(i).setHeight(42*15);
-//        		}	
+    			int height = trList.getJSONObject(i).getIntValue("height");
+        		float multiple = height/42;
+        		if(multiple > 4) {
+        			xwpfTable.getRow(i).setHeight(height*15);
+        		}else {
+        			xwpfTable.getRow(i).setHeight(42*15);
+        		}	
 //    		}
 		}
     	setTableWidthFixed(xwpfTable,true);
