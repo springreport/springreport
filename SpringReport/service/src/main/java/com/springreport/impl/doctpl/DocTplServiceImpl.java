@@ -65,6 +65,7 @@ import com.springreport.util.HttpClientUtil;
 import com.springreport.util.InfluxDBConnection;
 import com.springreport.util.JdbcUtils;
 import com.springreport.util.ListUtil;
+import com.springreport.util.Md5Util;
 import com.springreport.util.MessageUtil;
 import com.springreport.util.ParamUtil;
 import com.springreport.util.ReportDataUtil;
@@ -545,9 +546,10 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 		Map<String, Object> data = new HashMap<>();
 		Map<String, List<String>> paramsType = new HashMap<>();//记录参数类型，vertical代表竖向列表参数，horizontal代表横向列表参数
 		List<Map<String, String>> reportSqls = new ArrayList<>();
+		Map<String, String> apiCache = new HashMap<>();//api请求返回结果缓存，同一个api多个数据集的情况下，直接使用缓存数据，防止多次请求
 		if(ListUtil.isNotEmpty(datasets)) {
 			for (int i = 0; i < datasets.size(); i++) {
-				Object datasetData = this.getDatasetDatas(model, datasets.get(i), reportSqls,paramsType,userInfoDto);
+				Object datasetData = this.getDatasetDatas(model, datasets.get(i), reportSqls,paramsType,userInfoDto,apiCache);
 				data.put(datasets.get(i).getDatasetName(), datasetData);
 			}
 		}
@@ -857,7 +859,7 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 	 * @throws Exception Object
 	 * @date 2024-05-07 04:42:27 
 	 */ 
-	private Object getDatasetDatas(MesGenerateReportDto mesGenerateReportDto,ReportDatasetDto reportTplDataset,List<Map<String, String>> reportSqls,Map<String, List<String>> paramsType,UserInfoDto userInfoDto) throws Exception {
+	private Object getDatasetDatas(MesGenerateReportDto mesGenerateReportDto,ReportDatasetDto reportTplDataset,List<Map<String, String>> reportSqls,Map<String, List<String>> paramsType,UserInfoDto userInfoDto,Map<String, String> apiCache) throws Exception {
 		Map<String, String> sqlMap = new HashMap<>();
 		List<Map<String, Object>> datas = null;
 		Map<String, Object> searchInfo = null;
@@ -923,6 +925,18 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 				}
 			}
 			String result = null;
+			String key = Md5Util.generateMd5(reportDatasource.getJdbcUrl()+JSONObject.toJSONString(params));
+			if(apiCache.containsKey(key)) {
+				result = apiCache.get(key);
+			}else {
+				if("post".equals(reportDatasource.getApiRequestType()))
+				{
+					result = HttpClientUtil.doPostJson(reportDatasource.getJdbcUrl(), JSONObject.toJSONString(params), headers);
+				}else {
+					result = HttpClientUtil.doGet(reportDatasource.getJdbcUrl(),headers,params);
+				}
+				apiCache.put(key, result);
+			}
 			if("post".equals(reportDatasource.getApiRequestType()))
 			{
 				result = HttpClientUtil.doPostJson(reportDatasource.getJdbcUrl(), JSONObject.toJSONString(params), headers);
