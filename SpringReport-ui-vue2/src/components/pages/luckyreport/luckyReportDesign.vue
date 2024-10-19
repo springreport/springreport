@@ -358,7 +358,7 @@
             </div>
         </div>
     </div>
-        <el-dialog title="数据集" :visible.sync="addDatasetsDialogVisiable" width="80%" height="80%" top="20px" :close-on-click-modal='false' @close='closeAddDataSet'>
+        <el-dialog title="数据集" :visible.sync="addDatasetsDialogVisiable" width="80%"  top="20px" :close-on-click-modal='false' @close='closeAddDataSet' append-to-body>
               <el-tabs type="border-card">
                   <el-tab-pane label="sql语句">
                   <div>
@@ -384,9 +384,21 @@
                   <div style="height:25px;" v-if="datasourceType == 1">
                   <el-tooltip content="该操作将执行sql语句并校验sql语句的正确性，并将查询字段全部显示到下方的表格中" placement="bottom"><el-tag type="success" @click="execSql" size="small" style="cursor:pointer" ><i class="el-icon-caret-right"></i>执行</el-tag></el-tooltip>
                   <el-tooltip content="该操作会将sql语句进行格式化并显示" placement="right"><el-tag @click="formatSql" size="small" style="cursor:pointer"><i class="el-icon-document"></i>格式化</el-tag> </el-tooltip>
+                  <el-tooltip content="该操作会插入注释标签" placement="right"><el-tag @click="addComment" type="warning" size="small" style="cursor:pointer"><i class="el-icon-circle-plus-outline"></i>添加注释</el-tag> </el-tooltip>
                   </div>
                   <div style="height:300px;" v-if="datasourceType == 1">
-                  <codemirror ref="codeMirror"  :options="cmOptions"></codemirror>
+                    <div style="height:100%;width:75%;float:left;">
+                        <codemirror ref="codeMirror"  :options="cmOptions"></codemirror>
+                    </div>
+                    <div style="height:100%;width:24.5%;float:right;" class="tablecolumn">
+                        <el-tag type="success" size="small" style="cursor:pointer">请选择解析表</el-tag>
+                        <el-select v-model="datasourceTableName" placeholder="请选择解析表" size="mini" @change="getTableColumns" filterable >
+                            <el-option v-for="op in dataSourceTables" :label="op.name" :value="op.value" :key="op.value"></el-option>
+                        </el-select>
+                        <div class="dataset-box-content2" >
+                            <p class="column-tag" v-for="(column,index) in tableColumns" :key="index" :title="column.name"><i class="el-icon-copy-document" title="复制" @click="copyColumn(null,column.name)"></i>{{column.name}}</p>
+                        </div>
+                    </div>
                   </div>
                   <div style="height:1px"></div>
                   <div>
@@ -1099,6 +1111,20 @@
     padding-left: 5px;
     padding-top: 3px;
 }
+.dataset-box-content2{
+    width: 100%;
+    height:100%;
+    /* background: #A5C3F5; */
+    flex: none;
+    order: 4;
+    flex-grow: 0;
+    max-height:270px;
+    overflow-y: auto;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding-left: 5px;
+    padding-top: 3px;
+    scrollbar-width: none;
+}
 .column-tag{
     max-width:150px;
     height: 30px;
@@ -1313,5 +1339,11 @@
 ::v-deep .el-tabs__content .el-tab-pane{
     height:600px;
     overflow: auto;
+}
+::v-deep .vue-codemirror .CodeMirror {
+  border: 1px solid #eee;
+}
+.tablecolumn{
+    border: 1px solid #eee;
 }
 </style>
