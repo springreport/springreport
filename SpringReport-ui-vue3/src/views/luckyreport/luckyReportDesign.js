@@ -502,6 +502,10 @@ export default {
             attrDisabled:false,//单元格属性是否禁用，没权限的情况下需要禁用，禁止操作
             authedRangeTitle:"",
             uploadType:"xlsx",
+            datasourceTableName:"",
+            dataSourceTables:[],
+            datasourceTableColumns:{},//表对应的列
+            tableColumns:[],
         }
     },
     mounted() {
@@ -1254,6 +1258,7 @@ export default {
                         }
                     }else{
                         this.datasourceType = "1";
+                        this.getDatabaseTables();
                     }
                     break;
                 }
@@ -4272,7 +4277,12 @@ export default {
         this.commonUtil.showMessage({message:"复制成功",type: this.commonConstants.messageType.success})
       },
       copyColumn(datasetName, columnName){
-        let text = datasetName + '.${' + columnName + '}';
+        let text = "";
+        if(datasetName){
+          text = datasetName + '.${' + columnName + '}';
+        }else{
+          text = columnName;
+        }
         const input = document.getElementById('clipboradInput'); // 承载复制内容
         input.value = text; // 修改文本框的内容
         input.select(); // 选中文本
@@ -4342,6 +4352,51 @@ export default {
           }
         });;
         evt.target.value = ''
+      },
+      addComment(){
+        let pos1 = this.$refs.codeMirror.cminstance.getCursor();
+        let pos2 = {};
+        pos2.line = pos1.line;
+        pos2.ch = pos1.ch;
+        this.$refs.codeMirror.cminstance.replaceRange(" <!--  -->",pos2);
+      },
+      //获取数据源的表结构
+      getDatabaseTables(){
+        var obj = {
+            params:{id:this.sqlForm.datasourceId},
+            url:this.apis.reportDatasource.getDatabseTablesApi
+          }
+          var that = this;
+          this.datasourceTableName = "";
+          this.tableColumns = [];
+          this.commonUtil.doPost(obj) .then(response=>{
+            if(response.code == "200")
+            {
+              that.dataSourceTables = response.responseData;
+            }
+          });
+      },
+      //获取表对应的列
+      getTableColumns(){
+        var key = this.sqlForm.datasourceId + "_" + this.datasourceTableName;
+        var columns = this.datasourceTableColumns[key];
+        if(columns)
+        {
+            this.tableColumns = columns;
+        }else{
+            var obj = {
+                params:{datasourceId:this.sqlForm.datasourceId,tplSql:"select * from " + this.datasourceTableName,sqlType:1},
+                url:this.apis.reportDesign.execSqlApi
+              }
+              var that = this;
+              this.commonUtil.doPost(obj) .then(response=>{
+                if(response.code == "200")
+                {
+                  that.datasourceTableColumns[key] = response.responseData;
+                  that.tableColumns = this.datasourceTableColumns[key];
+                }
+              });
+        }
       },
     },
 }
