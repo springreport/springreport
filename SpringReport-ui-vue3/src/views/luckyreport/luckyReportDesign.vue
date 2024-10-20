@@ -386,9 +386,18 @@
                       </el-form>
 
                   <div style="height:25px;" v-if="datasourceType == 1">
-                  <el-tooltip content="该操作将执行sql语句并校验sql语句的正确性，并将查询字段全部显示到下方的表格中" placement="bottom"><el-tag type="success" @click="execSql" size="small" style="cursor:pointer" ><i class="el-icon-caret-right"></i>执行</el-tag></el-tooltip>
-                  <el-tooltip content="该操作会将sql语句进行格式化并显示" placement="right"><el-tag @click="formatSql" size="small" style="cursor:pointer"><i class="el-icon-document"></i>格式化</el-tag> </el-tooltip>
-                  <el-tooltip content="该操作会插入注释标签" placement="right"><el-tag @click="addComment" type="warning" size="small" style="cursor:pointer"><i class="el-icon-circle-plus-outline"></i>添加注释</el-tag> </el-tooltip>
+                  <el-tooltip content="该操作将执行sql语句并校验sql语句的正确性，并将查询字段全部显示到下方的表格中" placement="bottom"><el-tag type="success" @click="execSql" size="small" style="cursor:pointer" ><icon-play/>执行</el-tag></el-tooltip>
+                  <el-tooltip content="该操作会将sql语句进行格式化并显示" placement="right"><el-tag @click="formatSql" size="small" style="cursor:pointer"><icon-align-left-one/>格式化</el-tag> </el-tooltip>
+                  <el-tooltip content="该操作会插入注释标签" placement="right"><el-tag @click="addComment(' <!--  -->')" type="warning" size="small" style="cursor:pointer"><icon-add-one/>添加注释</el-tag> </el-tooltip>
+                  <el-dropdown v-if="paramTableData.tableData && paramTableData.tableData.length > 0">
+                    <el-tag  type="danger" size="small" style="cursor:pointer"><icon-add-one/>添加参数</el-tag>
+                    <template #dropdown>
+                    <el-dropdown-menu >
+                    <el-dropdown-item v-for="(row,index) in paramTableData.tableData" :key="index" v-on:click="getWhereByParam(row)">{{row.paramCode}}</el-dropdown-item>
+                    
+                    </el-dropdown-menu>
+                     </template>
+                    </el-dropdown>
                   </div>
                   <div style="height:300px;" v-if="datasourceType == 1">
                     <div style="height:100%;width:75%;float:left;">
@@ -400,7 +409,21 @@
                             <el-option v-for="op in dataSourceTables" :label="op.name" :value="op.value" :key="op.value"></el-option>
                         </el-select>
                         <div class="dataset-box-content2" >
-                            <div class="column-tag" v-for="(column,index) in tableColumns" :key="index" :title="column.name"><icon-copy @click="copyColumn(null,column.name)"/>{{column.name}}</div>
+                            <!-- <div class="column-tag" v-for="(column,index) in tableColumns" :key="index" :title="column.name"><icon-copy @click="copyColumn(null,column.name)"/>{{column.name}}</div> -->
+                            <div class="column-tag" v-for="(column,index) in tableColumns" :key="index" :title="column.name">
+                                <el-dropdown>
+                                    <icon-add-one style="margin-top:8px"/>
+                                    <template #dropdown>
+                                    <el-dropdown-menu>
+                                        <el-dropdown-item v-on:click="getWhereByColumn(1,column)">仅字段</el-dropdown-item>
+                                        <el-dropdown-item v-on:click="getWhereByColumn(2,column)">表名.字段</el-dropdown-item>
+                                        <el-dropdown-item v-on:click="getWhereByColumn(3,column)">查询条件(=)</el-dropdown-item>
+                                        <el-dropdown-item v-on:click="getWhereByColumn(4,column)">查询条件(in)</el-dropdown-item>
+                                    </el-dropdown-menu>
+                                    </template>
+                                </el-dropdown>
+                                {{column.name}}
+                            </div>
                         </div>
                     </div>
                   </div>
