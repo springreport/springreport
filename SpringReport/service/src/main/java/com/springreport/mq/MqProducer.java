@@ -4,12 +4,14 @@ import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MqProducer {
 
 	@Autowired
+	@Lazy
     private RocketMQTemplate rocketMQTemplate;
 	
 	/**
