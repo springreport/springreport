@@ -180,7 +180,11 @@ export default {
       highlightVisiable:false,
       highlightForm:{
         color:"",
-      }
+      },
+      datasourceTableName:"",
+      dataSourceTables:[],
+      datasourceTableColumns:{},//表对应的列
+      tableColumns:[],
     }
   },
   methods: {
@@ -1505,6 +1509,7 @@ export default {
             }
           } else {
             this.datasourceType = '1'
+            this.getDatabaseTables();
           }
           break
         }
@@ -1913,6 +1918,107 @@ export default {
       input.select(); // 选中文本
       document.execCommand('copy'); // 执行浏览器复制命令
       this.$message.success('复制成功')
+    },
+    copyColumn(datasetName, columnName){
+      let text = "";
+      if(datasetName){
+        text = datasetName + '.${' + columnName + '}';
+      }else{
+        text = columnName;
+      }
+      const input = document.getElementById('clipboradInput'); // 承载复制内容
+      input.value = text; // 修改文本框的内容
+      input.select(); // 选中文本
+      document.execCommand('copy'); // 执行浏览器复制命令
+      this.$message.success('复制成功')
+    },
+    addComment(val){
+      let pos1 = this.$refs.codeMirror.codemirror.getCursor();
+      let pos2 = {};
+      pos2.line = pos1.line;
+      pos2.ch = pos1.ch;
+      this.$refs.codeMirror.codemirror.replaceRange(val,pos2);
+    },
+    //获取数据源的表结构
+    getDatabaseTables(){
+      var obj = {
+          params:{id:this.sqlForm.datasourceId},
+          url:this.apis.reportDatasource.getDatabseTablesApi
+        }
+        var that = this;
+        this.datasourceTableName = "";
+        this.tableColumns = [];
+        this.commonUtil.doPost(obj) .then(response=>{
+          if(response.code == "200")
+          {
+            that.dataSourceTables = response.responseData;
+          }
+        });
+    },
+    //获取表对应的列
+    getTableColumns(){
+      var key = this.sqlForm.datasourceId + "_" + this.datasourceTableName;
+      var columns = this.datasourceTableColumns[key];
+      if(columns)
+      {
+          this.tableColumns = columns;
+      }else{
+          var obj = {
+              params:{datasourceId:this.sqlForm.datasourceId,tplSql:"select * from " + this.datasourceTableName,sqlType:1},
+              url:this.apis.reportDesign.execSqlApi
+            }
+            var that = this;
+            this.commonUtil.doPost(obj) .then(response=>{
+              if(response.code == "200")
+              {
+                that.datasourceTableColumns[key] = response.responseData;
+                that.tableColumns = this.datasourceTableColumns[key];
+              }
+            });
+      }
+    },
+    getWhereByColumn(type,column){
+      let text = "";
+      let columnType = column.dataType.toLowerCase();
+      if(type == 1){
+        text = column.name;
+      }else if(type == 2){
+        text = this.datasourceTableName+"."+column.name;
+      }else if(type == 3){
+        if(columnType.indexOf("varchar")>=0){
+          text = '<if test="'+column.name+'!=null and ' + column.name + "!=''" + '">\n' 
+          text = text + "  and " + column.name + " = #{"+column.name+"} \n" + "</if>"
+        }else if(columnType.indexOf("int")>=0 || columnType.indexOf("number")>=0 || columnType.indexOf("date")>=0 || columnType.indexOf("time")>=0){
+          text = '<if test="'+column.name+'!=null' + '"> \n' 
+          text = text + "  and " + column.name + " = #{"+column.name+"} \n" + "</if>"
+        }else{
+          text = '<if test="'+column.name+'!=null and ' + column.name + "!=''" + '">\n' 
+          text = text + "  and " + column.name + " = #{"+column.name+"} \n" + "</if>"
+        }
+      }else if(type == 4){
+        text = '<if test="'+column.name+'!=null and ' + column.name + ".size() > 0" + '">\n' 
+        text = text + "  and " + column.name + " in\n"
+        text = text + ' <foreach collection="'+column.name + '" open="(" separator="," close=")" item="item" index="index">\n #{item} \n</foreach>\n</if>'
+      }else{
+          text = '<if test="'+column.name+'!=null and ' + column.name + "!=''" + '">\n' 
+          text = text + "  and " + column.name + " = #{"+column.name+"} \n" + "</if>"
+      }
+      this.addComment(text)
+    },
+    getWhereByParam(row){
+      let text = "";
+      if(row.paramType == "varchar" || row.paramType == "select" || row.paramType == "treeSelect"){
+        text = '<if test="'+row.paramCode+'!=null and ' + row.paramCode + "!=''" + '">\n' 
+        text = text + "  and " + row.paramCode + " = #{"+row.paramCode+"} \n" + "</if>"
+      }else if(row.paramType == "number" || row.paramType == "date"){
+        text = '<if test="'+row.paramCode+'!=null' + '"> \n' 
+        text = text + "  and " + row.paramCode + " = #{"+row.paramCode+"} \n" + "</if>"
+      }else if(row.paramType == "mutiselect" || row.paramType == "multiTreeSelect"){
+        text = '<if test="'+row.paramCode+'!=null and ' + row.paramCode + ".size() > 0" + '">\n' 
+        text = text + "  and " + row.paramCode + " in\n"
+        text = text + '   <foreach collection="'+row.paramCode + '" open="(" separator="," close=")" item="item" index="index">\n   #{item} \n  </foreach>\n</if>'
+      }
+      this.addComment(text)
     }
   },
 //使用mounted的原因是因为在mounted中dom已经加载完毕，否则会报错，找不到getAttribute这个方法

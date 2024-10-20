@@ -255,7 +255,10 @@ public class LuckySheetCellUtil {
 								if(richTextString == null)
 								{
 									JSONObject ct = JSONObject.parseObject(JSON.toJSONString(cellConfig.get(LuckySheetPropsEnum.CELLTYPE.getCode())));
-									String dataFormat = ct.getString(LuckySheetPropsEnum.CELLFORMAT.getCode());
+									String dataFormat = null;
+									if(ct != null) {
+										dataFormat = ct.getString(LuckySheetPropsEnum.CELLFORMAT.getCode());
+									}
 									if("General".equals(dataFormat)) {
 										if(CheckUtil.isNumeric(String.valueOf(cellValue.get(LuckySheetPropsEnum.CELLVALUE.getCode())))) {
 											cell.setCellValue(Double.parseDouble(String.valueOf(cellValue.get(LuckySheetPropsEnum.CELLVALUE.getCode()))));
@@ -333,7 +336,7 @@ public class LuckySheetCellUtil {
 						}
 					}
 				}
-				String ff = (String) cellConfig.get("ff");//字体
+				String ff = String.valueOf(cellConfig.get("ff"));//字体
 				if(barCodeCells != null && StringUtil.isNotEmpty(ff) && ff.contains("barCode128")) {
 					barCodeCells.add(cellData);
 				}else if(qrCodeCells != null && StringUtil.isNotEmpty(ff) && ff.contains("qrCode")) {

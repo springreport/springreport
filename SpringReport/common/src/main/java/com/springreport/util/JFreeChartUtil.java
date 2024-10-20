@@ -222,8 +222,6 @@ public class JFreeChartUtil {
 	                BufferedImage.TYPE_INT_RGB,null);
 	          ByteArrayOutputStream os = new ByteArrayOutputStream();
 	          ImageIO.write(bufferedImage, "jpeg", os);
-	          File dest = new File("D:/images/"+ "/" + "test.jpeg");
-	          ChartUtils.saveChartAsJPEG(dest, chart, 400, 250);
 	          return os.toByteArray();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -248,8 +246,6 @@ public class JFreeChartUtil {
 	                BufferedImage.TYPE_INT_RGB,null);
 	          ByteArrayOutputStream os = new ByteArrayOutputStream();
 	          ImageIO.write(bufferedImage, "jpeg", os);
-	          File dest = new File("D:/images/"+ "/" + "test.jpeg");
-	          ChartUtils.saveChartAsJPEG(dest, chart, 400, 250);
 	          return os.toByteArray();
 		} catch (Exception e) {
 			e.printStackTrace();
