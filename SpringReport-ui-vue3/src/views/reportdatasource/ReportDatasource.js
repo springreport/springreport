@@ -508,7 +508,7 @@ export default {
         userName:this.pageData.modalData.userName,
         password:this.pageData.modalData.password,
         apiRequestType:this.pageData.modalData.apiRequestType,
-        apiRequestHeader:this.pageData.modalData.apiRequestHeader
+        apiRequestHeader:JSON.stringify(this.pageData.headersTableData)
       };
       var obj = {
         params:params,

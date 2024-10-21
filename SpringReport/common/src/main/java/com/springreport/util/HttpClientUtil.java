@@ -132,9 +132,9 @@ public class HttpClientUtil {
             // 执行请求
             response = httpclient.execute(httpGet);
             // 判断返回状态是否为200
-            if (response.getStatusLine().getStatusCode() == 200) {
+//            if (response.getStatusLine().getStatusCode() == 200) {
                 resultString = EntityUtils.toString(response.getEntity(), "UTF-8");
-            }
+//            }
         } catch (Exception e) {
             log.error("系统错误:",e);
         } finally {
@@ -478,7 +478,7 @@ public class HttpClientUtil {
     		result = doPostJson(url,JSONObject.toJSONString(params),headers);
     	}else {
     		//get请求
-    		getConnectionTest(url);
+//    		getConnectionTest(url);
     		result = doGet(url,headers,params);
     	}
     	return result;
