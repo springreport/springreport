@@ -16,6 +16,8 @@ https://www.springreport.vip/
 
 https://gitee.com/springreport/springreport/wikis/pages
 
+## 开源不易，如果项目对你有帮助请给个star支持一下！十分感谢！
+
 ## 注意事项
  **很多人下载下来项目后，只关注代码，其他内容并没有关注，导致有些内容找不到，比如说sql脚本，依赖的一些其他项目或者jar包等等。
 不管是下载之前还是下载之后，请一定要仔细阅读readme，然后下载下来的都有哪些内容也都需要看一下，不要只看代码，导致自己本地环境搭建有问题。
