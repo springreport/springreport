@@ -392,6 +392,14 @@
   background-image: url('./assets/images/image.svg');
 }
 
+::v-deep .menu-item__barcode i {
+  background-image: url('./assets/images/barcode.svg');
+}
+
+::v-deep .menu-item__qrcode i {
+  background-image: url('./assets/images/qrcode.svg');
+}
+
 ::v-deep .menu-item__image input {
   display: none;
 }

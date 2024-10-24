@@ -391,6 +391,15 @@
   background-image: url('./assets/images/image.svg');
 }
 
+:deep(.menu-item__barcode i) {
+  background-image: url('./assets/images/barcode.svg');
+}
+
+:deep(.menu-item__qrcode i) {
+  background-image: url('./assets/images/qrcode.svg');
+}
+
+
 :deep(.menu-item__image input) {
   display: none;
 }

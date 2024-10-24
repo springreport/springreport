@@ -6,6 +6,7 @@
         :width="modalConfig.width"
         :close-on-click-modal='false'
         @close="closeModal"
+        append-to-body
         >
         <div class="el-dialog-div">
             <el-form :inline="true" ref="modalFormRef" class="demo-form-inline" :model="modalData" :disabled="modalConfig.formEditDisabled" autocomplete='modalConfig.autocomplete' :label-width="labelWidth" >

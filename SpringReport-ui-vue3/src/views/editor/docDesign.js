@@ -209,6 +209,40 @@ export default {
       dataSourceTables:[],
       datasourceTableColumns:{},//表对应的列
       tableColumns:[],
+      codeModalConfig:{ 
+        title: "条形码/二维码", //弹窗标题,值为:新增，查看，编辑
+        show: false, //弹框显示
+        formEditDisabled:false,//编辑弹窗是否可编辑
+        width:'700px',//弹出框宽度
+        modalRef:"modalRef",//modal标识
+        type:"1"//类型 1超链接 2水印
+      },
+      codeModalForm:[
+        {type:'Input',label:'名称',prop:'codeName',rules:{required:true}},
+        {type:'Select',label:'数据集',prop:'datasetId',rules:{required:true},props:{label:"datasetName",value:"id"},change:this.changeCodeDatasets},
+        {type:'Select',label:'数据字段',prop:'valueField',rules:{required:true},props:{label:"name",value:"name"}},
+        {type:'Table',label:'已添加数据',tableCols:[],tableHandles:[],isPagination:false,isIndex:true},
+      ],
+      codeModalData : {//modal页面数据
+        codeName:"",//名称
+        datasetId:null,//数据集id
+        datasetName:"",//数据集名称
+        valueField:null,
+        codeType:"1",//1 条形码 2二维码
+      },
+      codeModalHandles:[
+        {label:'关闭',type:'default',handle:()=>this.closeCodeModal()},
+        {label:'确认',type:'primary',handle:()=>this.confirmCodeModal()}
+      ],
+      codeTableCols:[
+        {label:'名称',prop:'codeName',align:'center',overflow:true},
+        {label:'数据集',prop:'datasetName',align:'center',overflow:true},
+        {label:'数据字段',prop:'valueField',align:'center',overflow:true},
+        {label:'操作',prop:'operation',align:'center',type:'button',btnList:[
+          {label:'删除',type:'text',auth:'ignore',handle:(row,index)=>this.deleteCode(row,index)},
+        ]}
+      ],
+      docTplCodes:[],//文档条形码和二维码
     }
   },
   methods: {
@@ -229,6 +263,7 @@ export default {
               that.chartUrlPrefix = response.responseData.chartUrlPrefix;
             }
             that.docTplCharts = response.responseData.docTplCharts;
+            that.docTplCodes = response.responseData.docTplCodes;
             that.initEditor(response.responseData);
             //设置纸张大小并回显
             that.instance.command.executePaperSize(response.responseData.width,response.responseData.height);
@@ -1233,6 +1268,28 @@ export default {
           that.chartModalForm[7].tableData = that.docTplCharts;
           console.log('chart')
         }
+        //二维码
+        const qrCodeDom = document.querySelector('.menu-item__qrcode')
+        qrCodeDom.title = `二维码`
+        qrCodeDom.onclick = function () {
+          that.codeModalForm[3].tableCols = that.codeTableCols;
+          that.codeModalForm[3].tableData = that.docTplCodes;
+          that.codeModalConfig.show = true;
+          that.codeModalConfig.title = "二维码"
+          that.codeModalData.codeType = "2";
+          console.log('qrcode')
+        }
+        //条形码
+        const barCodeDom = document.querySelector('.menu-item__barcode')
+        barCodeDom.title = `条形码`
+        barCodeDom.onclick = function () {
+          that.codeModalForm[3].tableCols = that.codeTableCols;
+          that.codeModalForm[3].tableData = that.docTplCodes;
+          that.codeModalConfig.show = true;
+          that.codeModalConfig.title = "条形码"
+          that.codeModalData.codeType = "1";
+          console.log('barcode')
+        }
     },
     debounce(func, delay) {
       let timer
@@ -1282,7 +1339,8 @@ export default {
           footer:JSON.stringify(tplSettings.data.footer),
           paperDirection:paperDirection,
           watermark:JSON.stringify(tplSettings.watermark),
-          docTplCharts:this.docTplCharts
+          docTplCharts:this.docTplCharts,
+          docTplCodes:this.docTplCodes,
         },
         removeEmpty:false,
         url:this.apis.docTpl.saveDocTplSettingsApi,
@@ -1573,6 +1631,7 @@ export default {
         if (response.code == '200') {
           this.datasets = response.responseData
           this.chartModalForm[3].options = response.responseData
+          this.codeModalForm[1].options = response.responseData
         }
       })
     },
@@ -1647,7 +1706,7 @@ export default {
       }
       this.$forceUpdate()
     },
-    getDatasetColumns(element) {
+    getDatasetColumns(element,type) {
       const obj = {
         url: this.apis.reportDesign.getDataSetColumnsApi,
         params: { id: element.id },
@@ -1657,9 +1716,13 @@ export default {
       this.commonUtil.doPost(obj).then(response => {
         element.columns = response.responseData;
         that.dataSetAttrs = element.columns;
-        that.chartModalForm[4].options = element.columns;
-        that.chartModalForm[5].options = element.columns;
-        that.chartModalForm[6].options = element.columns;
+        if(type == "1"){
+          that.chartModalForm[4].options = element.columns;
+          that.chartModalForm[5].options = element.columns;
+          that.chartModalForm[6].options = element.columns;
+        }else if(type == "2"){
+          that.codeModalForm[2].options = element.columns;
+        }
       })
     },
     // 获取api接口默认参数的返回值
@@ -1901,7 +1964,7 @@ export default {
           const element = this.datasets[index];
           if(element.id == datasetId){
             if(!element.columns || element.columns.length == 0){
-              this.getDatasetColumns(element);
+              this.getDatasetColumns(element,"1");
             }else{
               this.chartModalForm[4].options = element.columns;
               this.chartModalForm[5].options = element.columns;
@@ -2047,7 +2110,68 @@ export default {
         text = text + '   <foreach collection="'+row.paramCode + '" open="(" separator="," close=")" item="item" index="index">\n   #{item} \n  </foreach>\n</if>'
       }
       this.addComment(text)
-    }
+    },
+    closeCodeModal(){
+      this.$refs['codeModalRef'].$refs['modalFormRef'].resetFields();//校验重置
+      this.commonUtil.clearObj(this.codeModalData);//清空modalData
+      this.codeModalForm[2].options = [];
+      this.codeModalConfig.show = false;
+      this.$refs['codeModalRef'].$forceUpdate();
+    },
+    changeCodeDatasets(datasetId){
+      if(datasetId){
+        for (let index = 0; index < this.datasets.length; index++) {
+          const element = this.datasets[index];
+          if(element.id == datasetId){
+            if(!element.columns || element.columns.length == 0){
+              this.getDatasetColumns(element,"2");
+            }else{
+              this.codeModalForm[2].options = element.columns;
+            }
+            this.codeModalData.datasetName = element.datasetName;
+            break;
+          }
+        }
+      }else{
+        this.codeModalForm[3].options = [];
+        this.codeModalData.valueField = null;
+      }
+    },
+    confirmCodeModal(){
+      var that = this;
+      this.$refs['codeModalRef'].$refs['modalFormRef'].validate((valid) => {
+        if(valid){
+          const timestamp = new Date().getTime();
+          let type = "barcode"
+          if(that.codeModalData.codeType == "2"){
+            type = "qrcode";
+          }
+          let chartUrl = that.chartUrlPrefix+type+".png?t="+timestamp;
+          const tplId = that.$route.query.tplId// tplId
+          that.instance.command.executeImage({
+            value:chartUrl,
+            width: that.codeModalData.codeType == "2"?400:354,
+            height: that.codeModalData.codeType == "2"?400:120,
+          })
+          let chartObj = {
+            codeName:that.codeModalData.codeName,
+            codeType:that.codeModalData.codeType,
+            datasetName:that.codeModalData.datasetName,
+            valueField:that.codeModalData.valueField,
+            codeUrl:chartUrl,
+            tplId:tplId,
+            datasetId:that.codeModalData.datasetId,
+          }
+          that.docTplCodes.push(chartObj);
+          that.closeCodeModal();
+        }else{
+          return false;
+        }
+      });
+    },
+    deleteCode(row,index){
+      this.docTplCodes.splice(index,1)
+    },
   },
 //使用mounted的原因是因为在mounted中dom已经加载完毕，否则会报错，找不到getAttribute这个方法
   mounted() {

@@ -94,6 +94,11 @@ public class ReportDatasourceServiceImpl extends ServiceImpl<ReportDatasourceMap
 		model.setDelFlag(DelFlagEnum.UNDEL.getCode());
 		com.github.pagehelper.Page<?> page = PageHelper.startPage(model.getCurrentPage(), model.getPageSize()); //分页条件
 		List<ReportDatasource> list = this.baseMapper.searchDataLike(model);
+		if(ListUtil.isNotEmpty(list)) {
+			for (int i = 0; i < list.size(); i++) {
+				list.get(i).setPassword(null);
+			}
+		}
 		result.setData(list);
 		result.setTotal(page.getTotal());
 		result.setCurrentPage(model.getCurrentPage());

@@ -2,6 +2,7 @@ package com.springreport.impl.doctpl;
 
 import com.springreport.entity.doctpl.DocTpl;
 import com.springreport.entity.doctplcharts.DocTplCharts;
+import com.springreport.entity.doctplcodes.DocTplCodes;
 import com.springreport.entity.doctplsettings.DocTplSettings;
 import com.springreport.entity.reportdatasource.ReportDatasource;
 import com.springreport.entity.reporttpldataset.ReportTplDataset;
@@ -10,6 +11,7 @@ import com.springreport.mapper.doctpl.DocTplMapper;
 import com.springreport.api.common.ICommonService;
 import com.springreport.api.doctpl.IDocTplService;
 import com.springreport.api.doctplcharts.IDocTplChartsService;
+import com.springreport.api.doctplcodes.IDocTplCodesService;
 import com.springreport.api.doctplsettings.IDocTplSettingsService;
 import com.springreport.api.reportdatasource.IReportDatasourceService;
 import com.springreport.api.reporttpldataset.IReportTplDatasetService;
@@ -121,6 +123,8 @@ import com.springreport.enums.DelFlagEnum;
 import com.springreport.enums.SqlTypeEnum;
 import com.springreport.enums.TitleLevelEnum;
 import com.springreport.enums.YesNoEnum;
+import com.springreport.excel2pdf.BarCodeUtil;
+import com.springreport.excel2pdf.QRCodeUtil;
 import com.springreport.exception.BizException;
 
  /**  
@@ -150,6 +154,9 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 	
 	@Autowired
 	private ICommonService iCommonService;
+	
+	@Autowired
+	private IDocTplCodesService iDocTplCodesService;
 	
 	@Value("${file.path}")
     private String dirPath;
@@ -444,7 +451,13 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 		if(docTplCharts == null) {
 			docTplCharts = new ArrayList<>();
 		}
-		result.setDocTplCharts(docTplCharts);;
+		result.setDocTplCharts(docTplCharts);
+		//获取条形码二维码信息
+		QueryWrapper<DocTplCodes> codesQueryWrapper = new QueryWrapper<>();
+		codesQueryWrapper.eq("tpl_id", model.getTplId());
+		codesQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+		List<DocTplCodes> docTplCodes = this.iDocTplCodesService.list(codesQueryWrapper);
+		result.setDocTplCodes(docTplCodes);
 		return result;
 	}
 
@@ -475,6 +488,14 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 		this.iDocTplChartsService.remove(chartsWrapper);
 		if(ListUtil.isNotEmpty(model.getDocTplCharts())) {
 			this.iDocTplChartsService.saveBatch(model.getDocTplCharts());
+		}
+		//先删除模板中所有的条码二维码信息，再新增
+		QueryWrapper<DocTplCodes> codesWrapper = new QueryWrapper<>();
+		codesWrapper.eq("tpl_id", model.getTplId());
+		codesWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+		this.iDocTplCodesService.remove(codesWrapper);
+		if(ListUtil.isNotEmpty(model.getDocTplCodes())) {
+			this.iDocTplCodesService.saveBatch(model.getDocTplCodes());
 		}
 		return result;
 	}
@@ -679,8 +700,21 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 		chartsWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
 		List<DocTplCharts> docTplCharts = this.iDocTplChartsService.list(chartsWrapper);
 		Map<String, List<DocTplCharts>> docTplChartsMap = null;
+		JSONObject docTplChartsObj = null;
 		if(ListUtil.isNotEmpty(docTplCharts)) {
 			docTplChartsMap = docTplCharts.stream().collect(Collectors.groupingBy(DocTplCharts::getChartUrl));
+			docTplChartsObj = JSON.parseObject(JSON.toJSONString(docTplChartsMap));
+		}
+		
+		QueryWrapper<DocTplCodes> codesWrapper = new QueryWrapper<>();
+		codesWrapper.eq("tpl_id", model.getTplId());
+		codesWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+		List<DocTplCodes> docTplCodes = this.iDocTplCodesService.list(codesWrapper);
+		Map<String, List<DocTplCodes>> docTplCodesMap = null;
+		JSONObject docTplCodesObj = null;
+		if(ListUtil.isNotEmpty(docTplCodes)) {
+			docTplCodesMap = docTplCodes.stream().collect(Collectors.groupingBy(DocTplCodes::getCodeUrl));
+			docTplCodesObj = JSON.parseObject(JSON.toJSONString(docTplCodesMap));
 		}
 		try {
 			//添加自定义标题
@@ -767,7 +801,7 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 						WordUtil.addTab(paragraph,null);
 						break;
 					case "table":
-						WordUtil.addTable(doc,content);
+						WordUtil.addTable(doc,content,docTplChartsObj,docTplCodesObj,dynamicData,isTemplate);
 						break;
 					case "superscript":
 						WordUtil.addSubSupScript(paragraph, content, "sup");
@@ -796,7 +830,32 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 								}else {
 									WordUtil.addImage(paragraph, content);
 								}
-							}else {
+							}else if(!StringUtil.isEmptyMap(docTplCodesMap)) {
+								if(docTplCodesMap.containsKey(url) && !isTemplate) {
+									DocTplCodes tplCodes = docTplCodesMap.get(url).get(0);
+									Map<String, Object> data = null;
+									if(dynamicData.get(tplCodes.getDatasetName()) != null) {
+										data = (Map<String, Object>) dynamicData.get(tplCodes.getDatasetName());
+									}
+									int width = content.getIntValue("width");
+									int height = content.getIntValue("height");
+									if(data != null) {
+										Object value = data.get(tplCodes.getValueField());
+										if(value != null) {
+											byte[] codeByte = null;
+											if(tplCodes.getCodeType().intValue() == 1) {
+												codeByte = BarCodeUtil.generateBarcodeImage(String.valueOf(value), width, height);
+											}else {
+												codeByte = QRCodeUtil.generateQRCodeImage(String.valueOf(value), width, height);
+											}
+											WordUtil.addImage(paragraph, content, codeByte);
+										}
+									}
+								}else {
+									WordUtil.addImage(paragraph, content);
+								}
+							}
+							else {
 								WordUtil.addImage(paragraph, content);
 							}
 						}else {
