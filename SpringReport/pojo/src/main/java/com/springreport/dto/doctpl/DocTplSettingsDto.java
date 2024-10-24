@@ -3,6 +3,7 @@ package com.springreport.dto.doctpl;
 import java.util.List;
 
 import com.springreport.entity.doctplcharts.DocTplCharts;
+import com.springreport.entity.doctplcodes.DocTplCodes;
 import com.springreport.entity.doctplsettings.DocTplSettings;
 
 import lombok.Data;
@@ -30,4 +31,11 @@ public class DocTplSettingsDto extends DocTplSettings{
 	 * @date 2024-08-09 09:31:44 
 	 */  
 	private List<DocTplCharts> docTplCharts;
+	
+	/**  
+	 * @Fields docTplCodes : 模板中的二维码和条形码
+	 * @author caiyang
+	 * @date 2024-10-23 10:05:38 
+	 */  
+	private List<DocTplCodes> docTplCodes;
 }

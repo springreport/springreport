@@ -288,6 +288,12 @@
               <i title="图片"></i>
               <input type="file" id="image" accept=".png, .jpg, .jpeg, .svg, .gif">
             </div>
+            <div class="menu-item__barcode">
+              <i title="条形码"></i>
+            </div>
+            <div class="menu-item__qrcode">
+              <i title="二维码"></i>
+            </div>
             <div class="menu-item__hyperlink">
               <i title="超链接"></i>
             </div>
@@ -784,6 +790,14 @@
                     <el-button type="primary" @click="confirmSetHighlight" size="small">确 定</el-button>
                 </span>
             </el-dialog>
+            <modal
+            ref="codeModalRef"
+            :modalConfig="codeModalConfig"
+            :modalForm="codeModalForm"
+            :modalData="codeModalData"
+            :modalHandles="codeModalHandles"
+            @closeModal="closeCodeModal()"
+          ></modal>
           <textarea id="clipboradInput" value="" style="opacity:0;position:absolute" />
   </div>
 </template>

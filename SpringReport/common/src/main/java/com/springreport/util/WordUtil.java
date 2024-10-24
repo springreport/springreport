@@ -1,6 +1,7 @@
 package com.springreport.util;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -70,6 +71,7 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTString;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTStyle;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTbl;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTblBorders;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTblGrid;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTblGridCol;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTblLayoutType;
@@ -80,6 +82,7 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.STNumberFormat;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STPageOrientation;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STStyleType;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTblLayoutType;
+import org.springframework.beans.BeanUtils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -89,6 +92,8 @@ import com.deepoove.poi.util.TableTools;
 import com.springreport.base.DocChartSettingDto;
 import com.springreport.enums.TitleLevelEnum;
 import com.springreport.enums.YesNoEnum;
+import com.springreport.excel2pdf.BarCodeUtil;
+import com.springreport.excel2pdf.QRCodeUtil;
 
 public class WordUtil {
 
@@ -368,9 +373,10 @@ public class WordUtil {
      * @Description: 添加表格
      * @author caiyang
      * @param doc void
+     * @throws Exception 
      * @date 2024-05-05 07:50:03 
      */ 
-    public static void addTable(XWPFDocument doc,JSONObject tableData) {
+    public static void addTable(XWPFDocument doc,JSONObject tableData,JSONObject docTplChartsObj,JSONObject docTplCodesObj,Map<String, Object> dynamicData,boolean isTemplate) throws Exception {
     	int rows = 1;//行数
     	int cols = 1;//列数
     	JSONArray trList = tableData.getJSONArray("trList");
@@ -379,6 +385,19 @@ public class WordUtil {
     	cols = colgroup.size();
     	String rowFlex = tableData.getString("rowFlex");
     	XWPFTable xwpfTable = doc.createTable(rows,cols);
+    	String borderType = tableData.getString("borderType");
+    	if("empty".equals(borderType)) {
+    		//无边框设置
+    		CTTblPr tblPr = xwpfTable.getCTTbl().getTblPr();
+        	if (tblPr == null) tblPr = xwpfTable.getCTTbl().addNewTblPr();
+        	CTTblBorders tblBorders = tblPr.addNewTblBorders();
+        	tblBorders.addNewTop().setVal(STBorder.NONE);
+        	tblBorders.addNewLeft().setVal(STBorder.NONE);
+        	tblBorders.addNewBottom().setVal(STBorder.NONE);
+        	tblBorders.addNewRight().setVal(STBorder.NONE);
+        	tblBorders.addNewInsideH().setVal(STBorder.NONE);
+        	tblBorders.addNewInsideV().setVal(STBorder.NONE);
+    	}
     	if(StringUtil.isNotEmpty(rowFlex)) {
     		switch (rowFlex) {
 			case "left":
@@ -465,7 +484,7 @@ public class WordUtil {
 				if(isMerge) {
 					continue;
 				}else {
-					setCellValue(xwpfTable.getRow(i).getCell(j),cellInfo);
+					setCellValue(xwpfTable.getRow(i).getCell(j),cellInfo,docTplChartsObj,docTplCodesObj,dynamicData,doc,isTemplate);
 				}
     		}
     	}
@@ -517,7 +536,7 @@ public class WordUtil {
         }
     }
     
-    private static void setCellValue(XWPFTableCell cell,JSONObject cellInfo) {
+    private static void setCellValue(XWPFTableCell cell,JSONObject cellInfo,JSONObject docTplChartsObj,JSONObject docTplCodesObj,Map<String, Object> dynamicData,XWPFDocument doc,boolean isTemplate) throws Exception {
     	if(cell == null) {
     		return;
     	}
@@ -545,6 +564,48 @@ public class WordUtil {
             	XWPFRun run = paragraph.createRun();
             	if("tab".equals(type)) {
             		addTab(paragraph,run);
+            	}else if("image".equals(type)){
+            		String chartUrlPrefix = MessageUtil.getValue("chart.url.prefix");
+            		String url = content.getString("value");
+            		if(url.contains(chartUrlPrefix)) {
+            			//图表
+						if(!StringUtil.isEmptyMap(docTplChartsObj)) {
+							if(docTplChartsObj.containsKey(url)) {
+								JSONObject tplCharts = docTplChartsObj.getJSONArray(url).getJSONObject(0);
+								DocChartSettingDto docChartSettingDto = new DocChartSettingDto();
+								BeanUtils.copyProperties(tplCharts, docChartSettingDto);
+								WordUtil.addChart(doc,paragraph, content,dynamicData,isTemplate,docChartSettingDto);
+							}else {
+								WordUtil.addImage(paragraph, content);
+							}
+						}else if(!StringUtil.isEmptyMap(docTplCodesObj)) {
+							if(docTplCodesObj.containsKey(url) && !isTemplate) {
+								JSONObject tplCodes = docTplCodesObj.getJSONArray(url).getJSONObject(0);
+								Map<String, Object> data = null;
+								if(dynamicData.get(tplCodes.getString("datasetName")) != null) {
+									data = (Map<String, Object>) dynamicData.get(tplCodes.getString("datasetName"));
+								}
+								int width = content.getIntValue("width");
+								int height = content.getIntValue("height");
+								if(data != null) {
+									Object datavalue = data.get(tplCodes.getString("valueField"));
+									if(datavalue != null) {
+										byte[] codeByte = null;
+										if(tplCodes.getIntValue("codeType") == 1) {
+											codeByte = BarCodeUtil.generateBarcodeImage(String.valueOf(datavalue), width, height/2);
+										}else {
+											codeByte = QRCodeUtil.generateQRCodeImage(String.valueOf(datavalue), width, height);
+										}
+										WordUtil.addImage(paragraph, content, codeByte);
+									}
+								}
+							}else {
+								WordUtil.addImage(paragraph, content);
+							}
+            		}else {
+            			WordUtil.addImage(paragraph, content);
+            		}
+            	}
             	}else {
             		if(value.contains("\n")) {
                 		if("\n".equals(value)) {
@@ -800,6 +861,40 @@ public class WordUtil {
     		URL url = new URL(content.getString("value"));
     		in = url.openStream();
     		image = ImageIO.read(url);
+    		XWPFRun run = paragraph.createRun();
+    		run.addPicture(in, org.apache.poi.xwpf.usermodel.Document.PICTURE_TYPE_PNG, "",
+    		Units.pixelToEMU(content.getIntValue("width")), Units.pixelToEMU(content.getIntValue("height")));
+    		String rowFlex = content.getString("rowFlex");//对齐方式
+			if (StringUtil.isNotEmpty(rowFlex)) {
+				switch (rowFlex) {
+				case "left":
+					paragraph.setAlignment(ParagraphAlignment.LEFT);
+					break;
+				case "center":
+					paragraph.setAlignment(ParagraphAlignment.CENTER);
+					break;
+				case "right":
+					paragraph.setAlignment(ParagraphAlignment.RIGHT);
+					break;
+				case "alignment":
+					paragraph.setAlignment(ParagraphAlignment.BOTH);
+					break;
+				default:
+					paragraph.setAlignment(ParagraphAlignment.LEFT);
+					break;
+				}
+			} else {
+				paragraph.setAlignment(ParagraphAlignment.LEFT);
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+    }
+    
+    public static void addImage(XWPFParagraph paragraph,JSONObject content,byte[] codeByte) {
+    	InputStream in;
+    	try {
+    		in = new ByteArrayInputStream(codeByte);
     		XWPFRun run = paragraph.createRun();
     		run.addPicture(in, org.apache.poi.xwpf.usermodel.Document.PICTURE_TYPE_PNG, "",
     		Units.pixelToEMU(content.getIntValue("width")), Units.pixelToEMU(content.getIntValue("height")));
