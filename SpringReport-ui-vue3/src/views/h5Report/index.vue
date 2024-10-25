@@ -209,7 +209,7 @@ export default {
               dataSet.params = [];
               for (let m = 0; m < result[i].params.length; m++) {
                 var param = {};
-                if (result[i].params[m].paramType == "mutiselect") {
+                if (result[i].params[m].paramType == "mutiselect" || result[i].params[m].paramType == "multiTreeSelect") {
                   var data = new Array();
                   if (that.isDrillBack == 1) {
                     if (

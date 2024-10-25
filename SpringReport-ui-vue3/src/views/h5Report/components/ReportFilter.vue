@@ -39,6 +39,11 @@
               size="small"
               clearable
               style="width: 100%"
+              @focus="
+                    getSelectData(
+                      item
+                    )
+                  "
             >
               <el-option :label="'请选择'" value=""></el-option>
               <el-option
@@ -76,6 +81,7 @@
               size="small"
               :multiple="true"
               style="width: 100%"
+              @focus="getSelectData(item)"
             >
               <el-option
                 v-for="op in item.selectData"
@@ -94,6 +100,29 @@
               :value-format="(item.dateFormat == 'YYYY-MM-DD' || item.dateFormat == 'yyyy-MM-dd')?'YYYY-MM-DD':item.dateFormat"
               :type="(item.dateFormat == 'YYYY-MM-DD' || item.dateFormat == 'yyyy-MM-dd')?'date':item.dateFormat == 'YYYY-MM'?'month':'datetime'"
             ></el-date-picker>
+            <el-tree-select
+                    v-if="item.paramType==='multiTreeSelect'"
+                    :size="item.size"
+                    v-model="searchData.params[index][item.paramCode]"
+                    :data="item.selectData==null?[]:item.selectData"
+                    :props="{ parent: 'pid', label: 'name',children: 'children'}"
+                    show-checkbox
+                    multiple
+                    check-on-click-node
+                    :check-strictly="item.checkStrictly==1?false:true"
+                    clearable
+                    @focus="getTreeData(item)"
+                />
+                <el-tree-select
+                    v-if="item.paramType==='treeSelect'"
+                    :size="item.size"
+                    v-model="searchData.params[index][item.paramCode]"
+                    :data="item.selectData==null?[]:item.selectData"
+                    :props="{ parent: 'pid', label: 'name',children: 'children'}"
+                    clearable
+                    :check-strictly="true"
+                    @focus="getTreeData(item)"
+                />
           </el-form-item>
         </el-form>
         <div class="drawer__footer df-c">
@@ -147,6 +176,35 @@ export default {
         }
       });
     },
+    getSelectData(item){
+      if(!item.init)
+      {
+        if(item.selectType == "1")
+        {
+          item.selectData = JSON.parse(item.selectContent);
+        }else{
+          var params = {
+            selectContent: item.selectContent,
+            datasourceId: item.datasourceId,
+            params: {},
+          };
+          var obj = {
+            url: "/api/reportTplDataset/getSelectData",
+            params: params,
+          };
+          this.commonUtil.doPost(obj).then((response) => {
+            if (response.code == "200") {
+              item.selectData = response.responseData;
+              if(response.responseData && response.responseData.length > 0)
+              {
+                item.init = true;
+              }
+            }
+          });
+        }
+        
+      }
+    },
     getRelyOnParamys(item, data, modelData) {
       var relyOnValue = "";
       for (let index = 0; index < data.params.length; index++) {
@@ -176,6 +234,30 @@ export default {
         modelData[item.paramCode] = null;
       }
     },
+     getTreeData(item)
+    {
+      if(!item.init)
+      {
+        var params = {
+          selectContent: item.selectContent,
+          datasourceId: item.datasourceId,
+          params: {},
+        };
+        var obj = {
+          url: "/api/reportTplDataset/getTreeSelectData",
+          params: params,
+        };
+        this.commonUtil.doPost(obj).then((response) => {
+          if (response.code == "200") {
+            item.selectData = response.responseData;
+            if(response.responseData && response.responseData.length > 0)
+            {
+              item.init = true;
+            }
+          }
+        });
+      }
+    }
   },
 };
 </script>
