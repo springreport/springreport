@@ -304,7 +304,7 @@ public interface IReportTplService extends IService<ReportTpl> {
 	 * @throws Exception JSONArray
 	 * @date 2023-12-13 10:23:27 
 	 */ 
-	JSONArray uploadReportTpl(MultipartFile file,long tplId,UserInfoDto userInfoDto) throws Exception;
+	JSONArray uploadReportTpl(MultipartFile file,long tplId,int isFormsReport,UserInfoDto userInfoDto) throws Exception;
 	
 	/**  
 	 * @Title: getTplDatasetsColumnNames

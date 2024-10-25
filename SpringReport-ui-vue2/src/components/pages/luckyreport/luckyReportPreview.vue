@@ -166,6 +166,9 @@
                   </div>
               </div>
           </el-dialog>
+          <div style="display:none">
+            <input id="uploadBtn" type="file" accept="xlsx/*"  @change="loadExcel" />
+          </div>
     </div>
 </template>
 <script src="./luckyReportPreview.js"></script>

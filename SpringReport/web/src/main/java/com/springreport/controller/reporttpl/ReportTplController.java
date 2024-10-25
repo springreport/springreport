@@ -898,11 +898,11 @@ public class ReportTplController extends BaseController {
 	 * @date 2023-12-13 10:10:35 
 	 */ 
 	@RequestMapping("/uploadReportTpl")
-	public String uploadReportTpl(@RequestParam("file") MultipartFile file,@RequestParam("tplId") long tplId,@LoginUser UserInfoDto userInfoDto) throws Exception  {
+	public String uploadReportTpl(@RequestParam("file") MultipartFile file,@RequestParam("tplId") long tplId,@RequestParam("isFormsReport") int isFormsReport,@LoginUser UserInfoDto userInfoDto) throws Exception  {
 		httpServletResponse.setHeader("Content-Encoding", "gzip");
 		httpServletResponse.setContentType("text/html");
 		String resultStr="";
-		JSONArray result = this.iReportTplService.uploadReportTpl(file, tplId, userInfoDto);;
+		JSONArray result = this.iReportTplService.uploadReportTpl(file, tplId,isFormsReport, userInfoDto);;
 		Response response = new Response();
 		response.setCode("200");
 		response.setResponseData(result);

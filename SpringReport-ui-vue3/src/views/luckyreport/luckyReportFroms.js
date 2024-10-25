@@ -1992,6 +1992,7 @@ export default {
         const formData = new FormData();
         formData.append("file",files[0]);
         formData.append("tplId",this.$route.query.tplId);
+        formData.append("isFormsReport",2);
         let config = {
             headers: {'Content-Type': 'multipart/form-data',
             'Authorization':localStorage.getItem(that.commonConstants.sessionItem.authorization)}
