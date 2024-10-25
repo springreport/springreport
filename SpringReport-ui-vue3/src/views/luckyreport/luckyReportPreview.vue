@@ -184,6 +184,9 @@
             <div style="display:none">
               <input id="uploadPic" type="file" accept="image/*"  @change="uploadPic" />
             </div>
+            <div style="display:none">
+              <input id="uploadBtn" type="file" accept="xlsx/*"  @change="loadExcel" />
+            </div>
     </el-scrollbar>
 </template>
 <script src="./luckyReportPreview.js"></script>

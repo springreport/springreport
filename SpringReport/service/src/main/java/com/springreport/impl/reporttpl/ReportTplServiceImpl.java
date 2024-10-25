@@ -12844,18 +12844,20 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 	 * @date 2023-12-13 10:23:53 
 	 */
 	@Override
-	public JSONArray uploadReportTpl(MultipartFile file,long tplId, UserInfoDto userInfoDto) throws Exception {
+	public JSONArray uploadReportTpl(MultipartFile file,long tplId,int isFormsReport, UserInfoDto userInfoDto) throws Exception {
 		List<String> names = this.iReportTplSheetService.getAllSheetNames(tplId);
 		JSONArray result = null;
 		if(file.getOriginalFilename().endsWith(".xlsx")) {
-			List<String> sheetNames = DocumentToLuckysheetUtil.getSheetsName(file);
-			if(!ListUtil.isEmpty(sheetNames))
-			{
-				for (int i = 0; i < sheetNames.size(); i++) {
-					for (int j = 0; j < names.size(); j++) {
-						if(sheetNames.get(i).equals(names.get(j)))
-						{
-							throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.exist",new String[] {"sheet名称【"+sheetNames.get(i)+"】"}));
+			if(isFormsReport != 1) {
+				List<String> sheetNames = DocumentToLuckysheetUtil.getSheetsName(file);
+				if(!ListUtil.isEmpty(sheetNames))
+				{
+					for (int i = 0; i < sheetNames.size(); i++) {
+						for (int j = 0; j < names.size(); j++) {
+							if(sheetNames.get(i).equals(names.get(j)))
+							{
+								throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.exist",new String[] {"sheet名称【"+sheetNames.get(i)+"】"}));
+							}
 						}
 					}
 				}

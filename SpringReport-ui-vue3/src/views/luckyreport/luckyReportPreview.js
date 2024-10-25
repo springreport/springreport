@@ -8,6 +8,7 @@
  */
 import { ElMessage, ElMessageBox } from 'element-plus'
 import md5 from 'js-md5';
+import Axios from 'axios';
 export default {
     data() {
         return{
@@ -126,7 +127,8 @@ export default {
                     userChanged:this.userChanged,
                     loadDataAfter:this.loadDataAfter,
                     uploadAttachment:this.uploadAttachment,
-                    viewAttachment:this.viewAttachment
+                    viewAttachment:this.viewAttachment,
+                    uploadFileClick:this.uploadFileClick,
                 }
             },
             //modal配置 start
@@ -518,7 +520,6 @@ export default {
                         {label:'打印(指定页)',handle:()=>this.showCustomPdfPage(2)}]},)
                     }
                     this.reportForm = result;
-                    console.log(result)
                     this.showReportForm = true;
                     this.isParamMerge = response.responseData.isParamMerge + '';
                     this.isPagination = isPagination;
@@ -1144,7 +1145,6 @@ export default {
             this.commonUtil.doPost(obj,headers) .then(response=>{
                 if (response.code == "200")
                 {
-                    console.log(response)
                 }
             });
         },
@@ -2515,6 +2515,102 @@ export default {
           },
           doPostCallback(){
             this.loading = false;
+          },
+          uploadFileClick(type){
+            if(type != "xlsx"){
+                this.commonUtil.showMessage({ message: this.commonUtil.getMessageFromList("error.upload.filetype",['xlsx']), type: this.commonConstants.messageType.error });
+                return;   
+            }
+            this.uploadType = type;
+            $('#uploadBtn').click() // 触发父容器中的保存模板按钮事件
+        },
+        loadExcel(evt) {
+            const files = evt.target.files
+            if (files == null || files.length == 0) {
+              alert('请选择文件')
+              return
+            }
+      
+            // 获取文件名
+            const name = files[0].name
+            // 获取文件后缀
+            const suffixArr = name.split('.');
+            const suffix = suffixArr[suffixArr.length - 1]
+            if(this.uploadType == "xlsx"){
+              if (suffix != 'xlsx') {
+                this.commonUtil.showMessage({ message: this.commonUtil.getMessageFromList("error.upload.filetype",['xlsx']), type: this.commonConstants.messageType.error })
+                return
+              }
+            }else{
+              this.commonUtil.showMessage({ message: this.commonUtil.getMessageFromList("error.upload.filetype",['xlsx']), type: this.commonConstants.messageType.error })
+              return;
+            }
+            
+            this.loadingText="文件上传中，请耐心等待...";
+            this.loading = true;
+            var that = this
+            const formData = new FormData();
+            formData.append("file",files[0]);
+            formData.append("tplId",this.$route.query.tplId);
+            formData.append("isFormsReport",1);
+            let config = {
+                headers: {'Content-Type': 'multipart/form-data',
+                'Authorization':localStorage.getItem(that.commonConstants.sessionItem.authorization)}
+            }
+            try {
+              Axios.post(that.apis.reportTpl.uploadReportTplApi, formData, config)
+            .then(res => {
+                if(res.data.code == "200")
+                {
+                    let sheetDatas = res.data.responseData;
+                    if(sheetDatas && sheetDatas.length > 0)
+                    {
+                        var luckysheetfiles = luckysheet.getLuckysheetfile();
+                        let options = {};
+                        options.data = [];
+                        for (let index = 0; index < sheetDatas.length; index++) {
+                            const element = sheetDatas[index];
+                            for (let index = 0; index < luckysheetfiles.length; index++) {
+                              const luckysheetfile = luckysheetfiles[index];
+                              if(luckysheetfile.name == element.name)
+                              {
+                                luckysheetfile.name = element.name;
+                                luckysheetfile.celldata = element.celldata;
+                                luckysheetfile.hyperlink = element.hyperlink;
+                                luckysheetfile.config = element.config;
+                                luckysheetfile.frozen = element.frozen;
+                                luckysheetfile.images = element.images;
+                                luckysheetfile.calcChain = element.calcChain;
+                                // luckysheetfile.index = element.index;
+                                luckysheetfile.order = element.order;
+                                luckysheetfile.isPivotTable = element.isPivotTable;
+                                luckysheetfile.pivotTable = element.pivotTable;
+                                luckysheetfile.chart = element.chart;
+                                luckysheetfile.dataVerification = element.dataVerification;
+                                luckysheetfile.row = element.row;
+                                luckysheetfile.column = element.column;
+                                luckysheetfile.pageDivider = element.pageDivider;
+                                luckysheetfile.luckysheet_conditionformat_save = element.luckysheet_conditionformat_save;
+                                luckysheetfile.wrapDatas = element.wrapDatas;
+                                luckysheetfile.data = [];
+                                options.data.push(luckysheetfile);
+                              }
+                            }
+                        }
+                        if(options.data && options.data.length > 0){
+                            luckysheet.updataSheet(options);
+                        }
+                    }
+                }else{
+                    that.commonUtil.showMessage({message:res.data.message,type: res.data.msgLevel})
+                }
+                that.loading = false;
+                evt.target.value = ''
+            })
+            } catch (error) {
+                evt.target.value = ''
+                that.loading = false;
+            }
           },
     }
 }
