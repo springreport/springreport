@@ -48,14 +48,6 @@ module.exports = {
           '^/SpringReport/api':'/api'
         }
       },
-      "/img": {
-        target:
-          "https://hospital-platform-1259623856.cos.ap-beijing.myqcloud.com",
-        changeOrigin: true,
-        pathRewrite: {
-          "^/img": "",
-        },
-      },
       "/SpringReport/geoJson": {
         target: "https://www.springreport.vip/geoJson/",
         changeOrigin: true,

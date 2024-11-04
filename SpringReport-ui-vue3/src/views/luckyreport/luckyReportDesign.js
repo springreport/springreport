@@ -95,6 +95,13 @@ export default {
                 paramType:"",//参数类型
                 paramDefault:"",//默认值
                 paramHidden:"",//是否隐藏
+                dateFormat:"",//日期格式
+                componentType:"",//组件类型
+                selectType: '', // 内容来源
+                selectContent: '', // 下拉选择内容
+                checkStrictly:"",//父子联动 1是 2否
+                datasourceId:"",//数据源id
+                isRelyOnParams: '', // 是否依赖其他参数
             },
             procedureOutParamForm:{
                 paramName:"",//参数名称
@@ -1221,6 +1228,8 @@ export default {
             this.commonUtil.clearObj(this.sqlForm);
             this.commonUtil.clearObj(this.paramForm);
             this.commonUtil.clearObj(this.paginationForm);
+            this.commonUtil.clearObj(this.procedureParamForm)
+            this.commonUtil.clearObj(this.procedureOutParamForm)
             this.sqlColumnTableData.tableData = [];
             this.sqlColumnTableData.tablePage.currentPage=1;
             this.sqlColumnTableData.tablePage.pageTotal=0;
@@ -1380,6 +1389,13 @@ export default {
                         this.procedureInParamTableData.tableData[result.index].paramDefault = this.procedureParamForm.paramDefault;
                         this.procedureInParamTableData.tableData[result.index].paramRequired = this.procedureParamForm.paramRequired;
                         this.procedureInParamTableData.tableData[result.index].paramHidden = this.procedureParamForm.paramHidden
+                        this.procedureInParamTableData.tableData[result.index].dateFormat = this.procedureParamForm.dateFormat
+                        this.procedureInParamTableData.tableData[result.index].componentType = this.procedureParamForm.componentType
+                        this.procedureInParamTableData.tableData[result.index].selectType = this.procedureParamForm.selectType
+                        this.procedureInParamTableData.tableData[result.index].selectContent = this.procedureParamForm.selectContent
+                        this.procedureInParamTableData.tableData[result.index].checkStrictly = this.procedureParamForm.checkStrictly
+                        this.procedureInParamTableData.tableData[result.index].datasourceId = this.procedureParamForm.datasourceId
+                        this.procedureInParamTableData.tableData[result.index].isRelyOnParams = this.procedureParamForm.isRelyOnParams
                     }else{
                     //未添加该参数，则列表中新增一条数据
                     let row = {
@@ -1387,7 +1403,14 @@ export default {
                         paramCode:this.procedureParamForm.paramCode,
                         paramType:this.procedureParamForm.paramType,
                         paramDefault:this.procedureParamForm.paramDefault,
-                        paramHidden: this.procedureParamForm.paramHidden
+                        paramHidden: this.procedureParamForm.paramHidden,
+                        dateFormat: this.procedureParamForm.dateFormat,
+                        componentType: this.procedureParamForm.componentType,
+                        selectType: this.procedureParamForm.selectType,
+                        selectContent: this.procedureParamForm.selectContent,
+                        checkStrictly: this.procedureParamForm.checkStrictly,
+                        datasourceId: this.procedureParamForm.datasourceId,
+                        isRelyOnParams: this.procedureParamForm.isRelyOnParams,
                     };
                     this.procedureInParamTableData.tableData.push(row);
                     }
@@ -1405,6 +1428,13 @@ export default {
             this.procedureParamForm.paramType = row.paramType;
             this.procedureParamForm.paramDefault = row.paramDefault;
             this.procedureParamForm.paramHidden = row.paramHidden
+            this.procedureParamForm.dateFormat = row.dateFormat
+            this.procedureParamForm.componentType = row.componentType
+            this.procedureParamForm.selectType = row.selectType
+            this.procedureParamForm.selectContent = row.selectContent
+            this.procedureParamForm.checkStrictly = row.checkStrictly
+            this.procedureParamForm.datasourceId = row.datasourceId
+            this.procedureParamForm.isRelyOnParams = row.isRelyOnParams
         },
         //删除输入参数
         deleteInParam(index){

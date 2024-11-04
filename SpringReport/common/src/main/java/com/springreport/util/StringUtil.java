@@ -527,6 +527,6 @@ public class StringUtil {
 	 
 	        // 格式化数字并输出结果
 	        String formattedNumber = decimalFormat.format(number);
-	        System.out.println(rgb2Hex(255,255,255));
+	        System.out.println("a,b".split(","));
 	}
 }

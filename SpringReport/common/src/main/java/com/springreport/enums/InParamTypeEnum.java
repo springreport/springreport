@@ -84,4 +84,13 @@ public enum InParamTypeEnum implements BaseCharEnum{
 			return "Date";
 		}
 	},
+	DATETIME {
+		public String getCode() {
+			return "DateTime";
+		}
+
+		public String getName() {
+			return "DateTime";
+		}
+	},
 }

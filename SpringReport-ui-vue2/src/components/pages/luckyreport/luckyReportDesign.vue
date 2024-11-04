@@ -131,6 +131,7 @@
                     </el-form-item>
                     <el-form-item label="倍数" size="small" v-show="cellForm.unitTransfer">
                         <el-select v-model="cellForm.multiple" style="width:150px" placeholder="倍数" @change="changeCellAttr('multiple')" :disabled="attrDisabled">
+                        <el-option label="1" value="1"></el-option>
                         <el-option label="10" value="10"></el-option>
                         <el-option label="100" value="100"></el-option>
                         <el-option label="1000" value="1000"></el-option>
@@ -499,9 +500,10 @@
                           </el-form-item>
                           <el-form-item v-if="paramForm.paramType == 'date'" label="日期格式" prop="dateFormat" :rules="filter_rules('日期格式',{required:false})">
                           <el-select v-model="paramForm.dateFormat" placeholder="日期格式"  size="small">
-                              <el-option label="yyyy-MM-dd" value="yyyy-MM-dd"></el-option>
-                              <el-option label="yyyy-MM" value="yyyy-MM"></el-option>
-                              <el-option label="yyyy-MM-dd HH:mm" value="yyyy-MM-dd HH:mm"></el-option>
+                              <el-option label="年" value="yyyy"></el-option>
+                              <el-option label="年-月" value="yyyy-MM"></el-option>
+                              <el-option label="年-月-日" value="yyyy-MM-dd"></el-option>
+                              <el-option label="年-月-日 时:分" value="yyyy-MM-dd HH:mm"></el-option>
                           </el-select>
                           </el-form-item>
                           <el-form-item label="默认值" prop="paramDefault">
@@ -583,7 +585,7 @@
                       </div>
                       <div v-show="sqlForm.sqlType == 2 && datasourceType == 1">
                           <el-divider content-position="left">输入参数</el-divider>
-                          <el-form :inline="true" :model="procedureParamForm" class="demo-form-inline" ref="inParamRef">
+                          <el-form :inline="true" :model="procedureParamForm" class="demo-form-inline" ref="inParamRef" size="small">
                               <el-form-item label="参数名称"  prop="paramName" :rules="filter_rules('参数名称',{required:true})">
                                   <el-input v-model="procedureParamForm.paramName" placeholder="参数名称" ></el-input>
                               </el-form-item>
@@ -599,11 +601,55 @@
                                   <el-option label="Double" value="Double"></el-option>
                                   <el-option label="Float" value="Float"></el-option>
                                   <el-option label="Date" value="Date"></el-option>
+                                  <el-option label="DateTime" value="DateTime"></el-option>
                               </el-select>
                               </el-form-item>
                               <el-form-item label="默认值" prop="paramDefault" :rules="filter_rules('默认值',{required:true})">
                                   <el-input v-model="procedureParamForm.paramDefault" placeholder="默认值"></el-input>
                               </el-form-item>
+                              <el-form-item v-if="procedureParamForm.paramType != 'Date' && procedureParamForm.paramType != 'DateTime'" label="组件类型" prop="componentType" :rules="filter_rules('组件类型',{required:true})">
+                              <el-select v-model="procedureParamForm.componentType" placeholder="组件类型"  >
+                                   <el-option label="输入框" value="input"></el-option>
+                                   <el-option label="下拉单选" value="select"></el-option>
+                                   <el-option label="下拉多选" value="mutiselect"></el-option>
+                                   <el-option label="下拉树(单选)" value="treeSelect"></el-option>
+                                   <el-option label="下拉树(多选)" value="multiTreeSelect"></el-option>
+                              </el-select>
+                              </el-form-item>
+                              <el-form-item v-if="(procedureParamForm.paramType != 'Date' && procedureParamForm.paramType != 'DateTime') && (procedureParamForm.componentType == 'select' || procedureParamForm.componentType == 'mutiselect')" label="选择内容来源" key="selectType" prop="selectType" :rules="filter_rules('选择内容来源',{required:true})">
+                                <el-select v-model="procedureParamForm.selectType" placeholder="选择内容来源"  size="small">
+                                    <el-option label="自定义" value="1"></el-option>
+                                    <el-option label="sql语句" value="2"></el-option>
+                                </el-select>
+                               </el-form-item>
+                               <el-form-item  v-if="(procedureParamForm.paramType != 'Date' && procedureParamForm.paramType != 'DateTime') && ((procedureParamForm.componentType == 'select' && procedureParamForm.selectType == '2') || (procedureParamForm.componentType == 'mutiselect' && procedureParamForm.selectType == '2') || procedureParamForm.componentType == 'treeSelect' || procedureParamForm.componentType == 'multiTreeSelect')" label="选择数据源" prop="datasourceId" :rules="filter_rules('选择数据源',{required:true})">
+                                <el-select v-model="procedureParamForm.datasourceId" placeholder="选择数据源" size="small">
+                                    <el-option v-for="op in dataSource" :label="op.dataSourceName" :value="op.datasourceId" :key="op.datasourceId"></el-option>
+                                </el-select>
+                                </el-form-item>
+                                <el-form-item v-if="(procedureParamForm.paramType != 'Date' && procedureParamForm.paramType != 'DateTime') &&(procedureParamForm.componentType == 'select' && procedureParamForm.selectType == '2')" label="是否依赖其他参数" prop="isRelyOnParams" key="isRelyOnParams" :rules="filter_rules('是否依赖其他参数',{required:true})">
+                                <el-select v-model="procedureParamForm.isRelyOnParams" placeholder="是否依赖其他参数" size="small">
+                                    <el-option label="是" value="1"></el-option>
+                                    <el-option label="否" value="2"></el-option>
+                                </el-select>
+                                </el-form-item>
+                                <el-form-item v-if="(procedureParamForm.paramType != 'Date' && procedureParamForm.paramType != 'DateTime') && (procedureParamForm.componentType == 'multiTreeSelect')" label="父子联动" prop="checkStrictly" key="checkStrictly" :rules="filter_rules('父子联动',{required:true})">
+                                <el-select v-model="procedureParamForm.checkStrictly" placeholder="选择父子联动" size="small">
+                                    <el-option label="是" value="1"></el-option>
+                                    <el-option label="否" value="2"></el-option>
+                                </el-select>
+                                </el-form-item>
+                                <el-form-item v-if="(procedureParamForm.paramType != 'Date' && procedureParamForm.paramType != 'DateTime') && (procedureParamForm.componentType == 'select' || procedureParamForm.componentType == 'mutiselect' || procedureParamForm.componentType == 'treeSelect' || procedureParamForm.componentType == 'multiTreeSelect')" key="selectContent" label="下拉选择内容" prop="selectContent" :rules="filter_rules('下拉选择内容',{required:true})">
+                                <el-input type="textarea" :cols="80" v-model="procedureParamForm.selectContent" placeholder="下拉选择内容" size="small"></el-input>
+                                <div class="sub-title">{{selectContentSuggestion}}</div>
+                                </el-form-item>
+                              <el-form-item v-if="procedureParamForm.paramType == 'Date'" label="日期格式" prop="dateFormat" :rules="filter_rules('日期格式',{required:false})">
+                                <el-select v-model="procedureParamForm.dateFormat" placeholder="日期格式"  size="small">
+                                    <el-option label="年" value="yyyy"></el-option>
+                                    <el-option label="年-月" value="yyyy-MM"></el-option>
+                                    <el-option label="年-月-日" value="yyyy-MM-dd"></el-option>
+                                </el-select>
+                                </el-form-item>
                               <el-form-item label="是否隐藏" prop="paramHidden" :rules="filter_rules('是否隐藏',{required:true})">
                                 <el-select v-model="procedureParamForm.paramHidden" placeholder="是否隐藏" >
                                     <el-option label="是" value="1"></el-option>
@@ -634,7 +680,7 @@
                               <!--表格 end-->
                           </div>
                           <el-divider content-position="left">输出参数</el-divider>
-                          <el-form :inline="true" :model="procedureOutParamForm" class="demo-form-inline" ref="outParamRef">
+                          <el-form :inline="true" :model="procedureOutParamForm" class="demo-form-inline" ref="outParamRef" size="small">
                               <el-form-item label="参数名称"  prop="paramName" :rules="filter_rules('参数名称',{required:true})">
                                   <el-input v-model="procedureOutParamForm.paramName" placeholder="参数名称" ></el-input>
                               </el-form-item>

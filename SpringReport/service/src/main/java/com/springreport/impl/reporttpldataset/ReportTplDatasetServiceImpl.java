@@ -685,6 +685,9 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 							params.get(j).setParamType(ParamTypeEnum.VARCHAR.getCode());
 						}else if(ProcedureParamTypeEnum.DATE.getCode().equals(params.get(j).getParamType())){
 							params.get(j).setParamType(ParamTypeEnum.DATE.getCode());
+						}else if(ProcedureParamTypeEnum.DATETIME.getCode().equals(params.get(j).getParamType())){
+							params.get(j).setParamType(ParamTypeEnum.DATE.getCode());
+							params.get(j).setDateFormat("yyyy-MM-dd HH:mm:ss");
 						}else {
 							params.get(j).setParamType(ParamTypeEnum.NUMBER.getCode());
 						}
@@ -700,10 +703,17 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 							map.put("required", true);
 						}
 						if (ParamTypeEnum.NUMBER.getCode().equals(params.get(j).getParamType())) {
-							map.put("type", ParamTypeEnum.NUMBER.getCode());
+							if(!ParamTypeEnum.SELECT.getCode().equals(params.get(j).getComponentType()) 
+								&& !ParamTypeEnum.MUTISELECT.getCode().equals(params.get(j).getComponentType())
+								&& !ParamTypeEnum.TREESELECT.getCode().equals(params.get(j).getComponentType())
+								&& !ParamTypeEnum.MULTITREESELECT.getCode().equals(params.get(j).getComponentType())) {
+								map.put("type", ParamTypeEnum.NUMBER.getCode());
+							}
 						}
 						if (ParamTypeEnum.SELECT.getCode().equals(params.get(j).getParamType()) 
-								|| ParamTypeEnum.MUTISELECT.getCode().equals(params.get(j).getParamType())) {
+								|| ParamTypeEnum.MUTISELECT.getCode().equals(params.get(j).getParamType()) || 
+								ParamTypeEnum.SELECT.getCode().equals(params.get(j).getComponentType()) 
+								|| ParamTypeEnum.MUTISELECT.getCode().equals(params.get(j).getComponentType())) {
 							if (SelectTypeEnum.SQL.getCode().equals(params.get(j).getSelectType()))
 							{
 								if(params.get(j).getIsRelyOnParams() == null || params.get(j).getIsRelyOnParams().intValue() == YesNoEnum.NO.getCode().intValue())
@@ -761,6 +771,10 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 								}else if("YYYY-MM-DD HH:mm".equals(dateFormat))
 								{
 									dateFormat = DateUtil.FORMAT_WITHOUTSECONDS;
+								}else {
+									if(StringUtil.isNullOrEmpty(dateFormat)) {
+			    						dateFormat = DateUtil.FORMAT_LONOGRAM;
+			    					}
 								}
 								if(Constants.CURRENT_DATE.equals(StringUtil.trim(params.get(j).getParamDefault()).toLowerCase()))
 								{//当前日期
@@ -775,6 +789,10 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 										{
 											String date = DateUtil.addMonth(days, DateUtil.getNow(DateUtil.FORMAT_LONOGRAM),DateUtil.FORMAT_YEARMONTH);
 											params.get(j).setParamDefault(date);
+										}else if(DateUtil.FORMAT_YEAR.equals(dateFormat))
+										{
+											String date = DateUtil.addYear(days, DateUtil.getNow(DateUtil.FORMAT_LONOGRAM),DateUtil.FORMAT_YEARMONTH);
+											params.get(j).setParamDefault(date);
 										}else {
 											String date = DateUtil.addDays(days, DateUtil.getNow(),StringUtil.isNotEmpty(params.get(j).getDateFormat())?dateFormat:DateUtil.FORMAT_LONOGRAM);
 											if(StringUtil.isNullOrEmpty(params.get(j).getDateFormat()))
@@ -784,7 +802,10 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 											params.get(j).setParamDefault(date);
 										}
 									}else {
-										if(!DateUtil.isValidDate(params.get(j).getParamDefault(),params.get(j).getDateFormat()))
+				    					if(StringUtil.isNullOrEmpty(dateFormat)) {
+				    						dateFormat = DateUtil.FORMAT_LONOGRAM;
+				    					}
+										if(!DateUtil.isValidDate(params.get(j).getParamDefault(),dateFormat))
 										{
 											params.get(j).setParamDefault("");
 										}
@@ -792,7 +813,8 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 								}
 							}
 						}
-						else if(ParamTypeEnum.MULTITREESELECT.getCode().equals(params.get(j).getParamType()) || ParamTypeEnum.TREESELECT.getCode().equals(params.get(j).getParamType())) {
+						else if(ParamTypeEnum.MULTITREESELECT.getCode().equals(params.get(j).getParamType()) || ParamTypeEnum.TREESELECT.getCode().equals(params.get(j).getParamType()) || 
+								ParamTypeEnum.MULTITREESELECT.getCode().equals(params.get(j).getComponentType()) || ParamTypeEnum.TREESELECT.getCode().equals(params.get(j).getComponentType())) {
 							if(StringUtil.isNotEmpty(params.get(j).getParamDefault()) || reportTplDataset.isInitSelectData())
 							{
 								if(reportDatasource == null)

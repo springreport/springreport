@@ -384,7 +384,7 @@ export default {
                         let tempParams = {};
                         for(let m = 0;m<result[i].params.length;m++){
                             var param = {};
-                            if(result[i].params[m].paramType == "mutiselect" || result[i].params[m].paramType == "multiTreeSelect")
+                            if(result[i].params[m].paramType == "mutiselect" || result[i].params[m].paramType == "multiTreeSelect" || result[i].params[m].componentType == "mutiselect" || result[i].params[m].componentType == "multiTreeSelect")
                             {
                                 var data = new Array();
                                 if(this.isDrillBack == 1)

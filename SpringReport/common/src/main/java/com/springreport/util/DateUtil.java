@@ -10,6 +10,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import com.springreport.constants.Constants;
+
 /**  
  * @ClassName: DataUtils
  * @Description:日期工具类
@@ -59,6 +61,8 @@ public class DateUtil {
     public static String FORMAT_DATE_2 = "M-d";
     
     public static String FORMAT_DATE_CN = "M月d日";
+    
+    public static String FORMAT_YEAR = "yyyy";
 	
 	 /**  
 	 * @Fields format : 默认日期格式
@@ -321,6 +325,18 @@ public class DateUtil {
 		return enddate;
 	}
 	
+	public static String addYear(int num,String date,String dateFormat) throws ParseException 
+	{
+		SimpleDateFormat format = new SimpleDateFormat(dateFormat);
+		Date currdate = format.parse(date);
+		Calendar ca = Calendar.getInstance();
+		ca.setTime(currdate);
+		ca.add(Calendar.YEAR, num);// num为增加的天数，可以改变的
+		currdate = ca.getTime();
+		String enddate = format.format(currdate);
+		return enddate;
+	}
+	
 	/**  
 	 * @Title: subDays
 	 * @Description: 日期减去天数
@@ -489,6 +505,26 @@ public class DateUtil {
 	    
 	    public static java.sql.Date string2SqlDate(String dateString,String format)
 	    {
+	    	String s = DateUtil.date2String(DateUtil.string2Date(dateString, format),DateUtil.FORMAT_LONOGRAM);
+	        java.sql.Date date = java.sql.Date.valueOf(s);
+	        return date;
+	    }
+	    
+	    public static java.sql.Timestamp string2SqlTimestamp(String dateString,String format)
+	    {
+	    	SimpleDateFormat dateFormatHiddenHour = new SimpleDateFormat(format);
+	    	java.sql.Timestamp date = null;
+	        try {
+	            String s = dateFormatHiddenHour.format(dateFormatHiddenHour.parse(dateString));
+	            date = java.sql.Timestamp.valueOf(s);
+	        } catch (ParseException e) {
+	            e.printStackTrace();
+	        }
+	        return date;
+	    }
+	    
+	    public static java.sql.Date string2SqlTimeStamp(String dateString,String format)
+	    {
 	    	SimpleDateFormat dateFormatHiddenHour = new SimpleDateFormat(format);
 	    	java.sql.Date date = null;
 	        try {
@@ -500,8 +536,40 @@ public class DateUtil {
 	        return date;
 	    }
 	    
+	    public static String getDefaultDate(String defaultValue,String dateFormat) throws ParseException {
+	    	String result = DateUtil.getNow(DateUtil.FORMAT_LONOGRAM);
+	    	if(Constants.CURRENT_DATE.equals(defaultValue.toLowerCase())) {
+	    		//当前日期
+	    		result = DateUtil.getNow(StringUtil.isNotEmpty(dateFormat)?dateFormat:DateUtil.FORMAT_LONOGRAM);
+	    	}else {
+	    		if(CheckUtil.isNumber(defaultValue))
+				{
+					int days = Double.valueOf(defaultValue).intValue();
+					if(DateUtil.FORMAT_YEARMONTH.equals(dateFormat))
+					{
+						result = DateUtil.addMonth(days, DateUtil.getNow(DateUtil.FORMAT_LONOGRAM),DateUtil.FORMAT_YEARMONTH);
+					}else if(DateUtil.FORMAT_YEAR.equals(dateFormat))
+					{
+						result = DateUtil.addYear(days, DateUtil.getNow(DateUtil.FORMAT_LONOGRAM),DateUtil.FORMAT_YEAR);
+					}else {
+						result = DateUtil.addDays(days, DateUtil.getNow(),StringUtil.isNotEmpty(dateFormat)?dateFormat:DateUtil.FORMAT_LONOGRAM);
+					}
+				}else {
+					if(StringUtil.isNullOrEmpty(dateFormat)) {
+						dateFormat = DateUtil.FORMAT_LONOGRAM;
+					}
+					if(!DateUtil.isValidDate(defaultValue,dateFormat))
+					{
+						result = "";;
+					}
+				}
+	    	}
+	    	
+	    	return result;
+	    }
+	    
     public static void main(String[] args) throws ParseException {
     	
-    	System.out.println(DateUtil.date2String(DateUtil.string2Date(String.valueOf("03:15"), DateUtil.FORMAT_HOURSMINUTES), DateUtil.FORMAT_HOURSMINUTES));
+    	System.out.println(DateUtil.string2Date("2023","yyyy"));
     }
 }
