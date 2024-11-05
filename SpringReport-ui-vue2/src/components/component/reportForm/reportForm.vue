@@ -50,7 +50,7 @@
                 <!-- 输入框 -->
                 <el-input
                   v-if="
-                    item.paramType === 'varchar' || item.paramType === 'number'
+                    (item.paramType === 'varchar' || item.paramType === 'number') && (item.componentType != 'select' && item.componentType != 'mutiselect' && item.componentType != 'treeSelect' && item.componentType != 'multiTreeSelect')
                   "
                   v-model="searchData.params[i].params[index][item.paramCode]"
                   :placeholder="'请输入' + item.paramName"
@@ -61,7 +61,7 @@
                 <!-- 下拉框 -->
                 <el-select
                   v-if="
-                    item.paramType === 'select' && item.isRelyOnParams !== 1
+                    (item.paramType === 'select' || item.componentType === 'select') && item.isRelyOnParams !== 1
                   "
                   v-model="searchData.params[i].params[index][item.paramCode]"
                   size="mini"
@@ -82,7 +82,7 @@
                 </el-select>
                 <el-select
                   v-if="
-                    item.paramType === 'select' && item.isRelyOnParams === 1
+                     (item.paramType === 'select' || item.componentType === 'select') && item.isRelyOnParams === 1
                   "
                   v-model="searchData.params[i].params[index][item.paramCode]"
                   clearable
@@ -105,7 +105,7 @@
                 </el-select>
                 <!-- 多选下拉框 -->
                 <el-select
-                  v-if="item.paramType === 'mutiselect'"
+                  v-if="(item.paramType === 'mutiselect' || item.componentType === 'mutiselect')"
                   v-model="searchData.params[i].params[index][item.paramCode]"
                   size="mini"
                   :multiple="true"
@@ -124,16 +124,16 @@
                   v-model="searchData.params[i].params[index][item.paramCode]"
                   :format="item.dateFormat"
                   :value-format="item.dateFormat"
-                  :type="item.dateFormat == 'yyyy-MM-dd'?'date':item.dateFormat == 'yyyy-MM'?'month':'datetime'"
+                  :type="item.dateFormat == 'yyyy-MM-dd'?'date':item.dateFormat == 'yyyy-MM'?'month':item.dateFormat == 'yyyy'?'year':'datetime'"
                 ></el-date-picker>
-                <multiselectNode v-if="item.paramType==='multiTreeSelect'"  :ref="searchData.params[i].params[index][item.paramCode]" 
+                <multiselectNode v-if="item.paramType==='multiTreeSelect' || item.componentType==='multiTreeSelect'"  :ref="searchData.params[i].params[index][item.paramCode]" 
                 v-model="searchData.params[i].params[index][item.paramCode]" 
                 :props="{ parent: 'pid', value: 'id',label: 'name',children: 'children'}" 
                 :options="item.selectData" :lazy="false" 
                 :item="item"
                 :focusMethod="getTreeData" :checkStrictly="item.checkStrictly==1?false:true">
                 </multiselectNode>
-                <selectNode v-if="item.paramType==='treeSelect'"  :ref="searchData.params[i].params[index][item.paramCode]" 
+                <selectNode v-if="item.paramType==='treeSelect' || item.componentType==='treeSelect'"  :ref="searchData.params[i].params[index][item.paramCode]" 
                 v-model="searchData.params[i].params[index][item.paramCode]" 
                 :props="{ parent: 'pid', value: 'id',label: 'name',children: 'children'}" 
                 :options="item.selectData" :item="item" :focusMethod="getTreeData" :lazy="false"  :clearable="true" size="mini">
@@ -200,7 +200,7 @@
                 <!-- 输入框 -->
                 <el-input
                   v-if="
-                    item.paramType === 'varchar' || item.paramType === 'number'
+                    (item.paramType === 'varchar' || item.paramType === 'number') && (item.componentType != 'select' && item.componentType != 'mutiselect' && item.componentType != 'treeSelect' && item.componentType != 'multiTreeSelect')
                   "
                   v-model="searchData.params[0].params[index][item.paramCode]"
                   :placeholder="'请输入' + item.paramName"
@@ -211,7 +211,7 @@
                 <!-- 下拉框 -->
                 <el-select
                   v-if="
-                    item.paramType === 'select' && item.isRelyOnParams !== 1
+                    (item.paramType === 'select' || item.componentType === 'select') && item.isRelyOnParams !== 1
                   "
                   v-model="searchData.params[0].params[index][item.paramCode]"
                   size="mini"
@@ -231,7 +231,7 @@
                 </el-select>
                 <el-select
                   v-if="
-                    item.paramType === 'select' && item.isRelyOnParams === 1
+                    (item.paramType === 'select' || item.componentType === 'select') && item.isRelyOnParams === 1
                   "
                   v-model="searchData.params[0].params[index][item.paramCode]"
                   clearable
@@ -254,7 +254,7 @@
                 </el-select>
                 <!-- 多选下拉框 -->
                 <el-select
-                  v-if="item.paramType === 'mutiselect'"
+                  v-if="(item.paramType === 'mutiselect' || item.componentType === 'mutiselect')"
                   v-model="searchData.params[0].params[index][item.paramCode]"
                   size="mini"
                   :multiple="true"
@@ -273,16 +273,16 @@
                   v-model="searchData.params[0].params[index][item.paramCode]"
                   :format="item.dateFormat"
                   :value-format="item.dateFormat"
-                  :type="item.dateFormat == 'yyyy-MM-dd'?'date':item.dateFormat == 'yyyy-MM'?'month':'datetime'"
+                  :type="item.dateFormat == 'yyyy-MM-dd'?'date':item.dateFormat == 'yyyy-MM'?'month':item.dateFormat == 'yyyy'?'year':'datetime'"
                 ></el-date-picker>
-                <multiselectNode v-if="item.paramType==='multiTreeSelect'"  :ref="searchData.params[0].params[index][item.paramCode]" 
+                <multiselectNode v-if="item.paramType==='multiTreeSelect' || item.componentType==='multiTreeSelect'"  :ref="searchData.params[0].params[index][item.paramCode]" 
                 v-model="searchData.params[0].params[index][item.paramCode]" 
                 :props="{ parent: 'pid', value: 'id',label: 'name',children: 'children'}" 
                 :options="item.selectData" :lazy="false" 
                 :item="item"
                 :focusMethod="getTreeData" :checkStrictly="item.checkStrictly==1?false:true">
                   </multiselectNode>
-                <selectNode v-if="item.paramType==='treeSelect'"  :ref="searchData.params[0].params[index][item.paramCode]" 
+                <selectNode v-if="item.paramType==='treeSelect'|| item.componentType==='treeSelect'"  :ref="searchData.params[0].params[index][item.paramCode]" 
                 v-model="searchData.params[0].params[index][item.paramCode]" 
                 :props="{ parent: 'pid', value: 'id',label: 'name',children: 'children'}" 
                 :options="item.selectData" :lazy="false"  :clearable="true" size="mini"

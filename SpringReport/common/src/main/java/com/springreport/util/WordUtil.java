@@ -794,6 +794,21 @@ public class WordUtil {
         ct.setColor("auto");
     }
     
+    public static void addHyperlink(XWPFParagraph paragraph,JSONObject content) {
+    	JSONArray valueList = content.getJSONArray("valueList");
+    	String url = content.getString("url");
+    	if(ListUtil.isNotEmpty(valueList)) {
+    		XWPFRun run = null;
+    		for (int i = 0; i < valueList.size(); i++) {
+    			JSONObject valueObj = valueList.getJSONObject(i);
+    			String value = valueObj.getString("value");
+    			run = paragraph.createHyperlinkRun(url);
+    			valueObj.put("value", value);
+    			setRunText(run,valueObj,"text");
+    		}
+    	}
+    }
+    
     /**  
      * @MethodName: addList
      * @Description: 添加列表
@@ -802,11 +817,12 @@ public class WordUtil {
      * @param content void
      * @date 2024-05-06 01:36:56 
      */ 
-    public static void addList(XWPFDocument document,JSONObject content) {
+    public static int addList(XWPFDocument document,JSONObject content,int abstractNumID) {
     	String listStyle = content.getString("listStyle");
     	JSONArray valueList = content.getJSONArray("valueList");
     	if(ListUtil.isNotEmpty(valueList)) {
-    		BigInteger numID = getNewDecimalNumberingId(document, BigInteger.valueOf(IdWorker.getId()),listStyle);
+    		BigInteger numID = getNewDecimalNumberingId(document, BigInteger.valueOf(abstractNumID),listStyle);
+    		abstractNumID = abstractNumID + 1;
     		XWPFParagraph paragraph = null;
 //    		paragraph.setNumID(numID);
     		XWPFRun run = null;
@@ -825,25 +841,42 @@ public class WordUtil {
 					type = "text";
 					break;
 				}
-				String[] values = value.split("\n");
-				for (int j = 0; j < values.length; j++) {
-					if(StringUtil.isNotEmpty(values[j])) {
-						if(paragraph == null) {
-							paragraph = document.createParagraph();
-							paragraph.setNumID(numID);
-							paragraph.setNumILvl(BigInteger.valueOf(0));
-						}else if(j != 0) {
-							paragraph = document.createParagraph();
-							paragraph.setNumID(numID);
-							paragraph.setNumILvl(BigInteger.valueOf(0));
+				if("\n".equals(value)) {
+					if(paragraph == null) {
+						paragraph = document.createParagraph();
+						paragraph.setNumID(numID);
+						paragraph.setNumILvl(BigInteger.valueOf(0));
+					}else {
+						paragraph = document.createParagraph();
+						paragraph.setNumID(numID);
+						paragraph.setNumILvl(BigInteger.valueOf(0));
+					}
+					run = paragraph.createRun();  
+					valueObj.put("value", value);
+					setRunText(run,valueObj,type);
+				}else {
+					String[] values = value.split("\n");
+					for (int j = 0; j < values.length; j++) {
+						if(StringUtil.isNotEmpty(values[j])) {
+							if(paragraph == null) {
+								paragraph = document.createParagraph();
+								paragraph.setNumID(numID);
+								paragraph.setNumILvl(BigInteger.valueOf(0));
+							}else if(j != 0) {
+								paragraph = document.createParagraph();
+								paragraph.setNumID(numID);
+								paragraph.setNumILvl(BigInteger.valueOf(0));
+							}
+							run = paragraph.createRun();  
+							valueObj.put("value", values[j]);
+							setRunText(run,valueObj,type);
 						}
-						run = paragraph.createRun();  
-						valueObj.put("value", values[j]);
-						setRunText(run,valueObj,type);
 					}
 				}
+				
 			}
     	}
+    	return abstractNumID;
     }
     
     /**  

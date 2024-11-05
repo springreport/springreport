@@ -136,6 +136,7 @@
                     </el-form-item>
                     <el-form-item label="倍数" size="small" v-show="cellForm.unitTransfer">
                         <el-select v-model="cellForm.multiple" style="width:150px" placeholder="倍数" @change="changeCellAttr('multiple')" :disabled="attrDisabled">
+                        <el-option label="1" value="1"></el-option>
                         <el-option label="10" value="10"></el-option>
                         <el-option label="100" value="100"></el-option>
                         <el-option label="1000" value="1000"></el-option>
@@ -224,6 +225,7 @@
                                 </template>
                                 <p class="column-tag" :title="o.coords" style="min-width:220px;max-width:220px;margin:0">单元格：{{o.coords}}</p>
                                 <p class="column-tag" style="min-width:220px;max-width:220px;margin:0">小计类型：{{commonUtil.getDictionaryValueName('subtotalType',o.type)}}</p>
+                                <p class="column-tag" style="min-width:220px;max-width:220px;margin:0">小数位数：{{o.digit}}</p>
                             </el-collapse-item>
                         </el-collapse>
                         <div class="right-dataset-title" v-show="cellForm.isSubtotal">
@@ -508,9 +510,10 @@
                           </el-form-item>
                           <el-form-item v-if="paramForm.paramType == 'date'" label="日期格式" prop="dateFormat" :rules="filter_rules('日期格式',{required:false})">
                           <el-select v-model="paramForm.dateFormat" placeholder="日期格式"  size="small">
-                              <el-option label="YYYY-MM-DD" value="YYYY-MM-DD"></el-option>
-                              <el-option label="YYYY-MM" value="YYYY-MM"></el-option>
-                              <el-option label="YYYY-MM-DD HH:mm" value="YYYY-MM-DD HH:mm"></el-option>
+                              <el-option label="年" value="YYYY"></el-option>
+                              <el-option label="年-月" value="YYYY-MM"></el-option>
+                              <el-option label="年-月-日" value="YYYY-MM-DD"></el-option>
+                              <el-option label="年-月-日 时:分" value="YYYY-MM-DD HH:mm"></el-option>
                           </el-select>
                           </el-form-item>
                           <el-form-item label="默认值">
@@ -581,8 +584,10 @@
                       <el-table-column prop="relyOnParams" label="依赖参数"  align="center"></el-table-column>
                       <el-table-column  label="操作"  align="center">
                           <template #default="scope">
-                              <el-button @click="editParam(scope.row)" type="primary" size="small">编辑</el-button>
-                              <el-button @click="deleteParam(scope.$index)" type="primary" size="small">删除</el-button>
+                              <el-button @click="editParam(scope.row)" type="primary" text size="small">编辑</el-button>
+                              <el-button @click="moveUp(scope.$index,'3')" type="primary" text size="small">上移</el-button>
+                              <el-button @click="moveDown(scope.$index,'3')" type="primary" text size="small">下移</el-button>
+                              <el-button @click="deleteParam(scope.$index)" type="primary" text size="small">删除</el-button>
                           </template>
                       </el-table-column>
                       </el-table>
@@ -607,11 +612,55 @@
                                   <el-option label="Double" value="Double"></el-option>
                                   <el-option label="Float" value="Float"></el-option>
                                   <el-option label="Date" value="Date"></el-option>
+                                  <el-option label="DateTime" value="DateTime"></el-option>
                               </el-select>
                               </el-form-item>
                               <el-form-item label="默认值" prop="paramDefault" :rules="filter_rules('默认值',{required:true})">
                                   <el-input v-model="procedureParamForm.paramDefault" placeholder="默认值"></el-input>
                               </el-form-item>
+                              <el-form-item v-if="procedureParamForm.paramType != 'Date' && procedureParamForm.paramType != 'DateTime'" label="组件类型" prop="componentType" :rules="filter_rules('组件类型',{required:true})">
+                              <el-select v-model="procedureParamForm.componentType" placeholder="组件类型"  >
+                                   <el-option label="输入框" value="input"></el-option>
+                                   <el-option label="下拉单选" value="select"></el-option>
+                                   <el-option label="下拉多选" value="mutiselect"></el-option>
+                                   <el-option label="下拉树(单选)" value="treeSelect"></el-option>
+                                   <el-option label="下拉树(多选)" value="multiTreeSelect"></el-option>
+                              </el-select>
+                              </el-form-item>
+                              <el-form-item v-if="(procedureParamForm.paramType != 'Date' && procedureParamForm.paramType != 'DateTime') && (procedureParamForm.componentType == 'select' || procedureParamForm.componentType == 'mutiselect')" label="选择内容来源" key="selectType" prop="selectType" :rules="filter_rules('选择内容来源',{required:true})">
+                                <el-select v-model="procedureParamForm.selectType" placeholder="选择内容来源"  size="small">
+                                    <el-option label="自定义" value="1"></el-option>
+                                    <el-option label="sql语句" value="2"></el-option>
+                                </el-select>
+                               </el-form-item>
+                               <el-form-item  v-if="(procedureParamForm.paramType != 'Date' && procedureParamForm.paramType != 'DateTime') && ((procedureParamForm.componentType == 'select' && procedureParamForm.selectType == '2') || (procedureParamForm.componentType == 'mutiselect' && procedureParamForm.selectType == '2') || procedureParamForm.componentType == 'treeSelect' || procedureParamForm.componentType == 'multiTreeSelect')" label="选择数据源" prop="datasourceId" :rules="filter_rules('选择数据源',{required:true})">
+                                <el-select v-model="procedureParamForm.datasourceId" placeholder="选择数据源" size="small">
+                                    <el-option v-for="op in dataSource" :label="op.dataSourceName" :value="op.datasourceId" :key="op.datasourceId"></el-option>
+                                </el-select>
+                                </el-form-item>
+                                <el-form-item v-if="(procedureParamForm.paramType != 'Date' && procedureParamForm.paramType != 'DateTime') &&(procedureParamForm.componentType == 'select' && procedureParamForm.selectType == '2')" label="是否依赖其他参数" prop="isRelyOnParams" key="isRelyOnParams" :rules="filter_rules('是否依赖其他参数',{required:true})">
+                                <el-select v-model="procedureParamForm.isRelyOnParams" placeholder="是否依赖其他参数" size="small">
+                                    <el-option label="是" value="1"></el-option>
+                                    <el-option label="否" value="2"></el-option>
+                                </el-select>
+                                </el-form-item>
+                                <el-form-item v-if="(procedureParamForm.paramType != 'Date' && procedureParamForm.paramType != 'DateTime') && (procedureParamForm.componentType == 'multiTreeSelect')" label="父子联动" prop="checkStrictly" key="checkStrictly" :rules="filter_rules('父子联动',{required:true})">
+                                <el-select v-model="procedureParamForm.checkStrictly" placeholder="选择父子联动" size="small">
+                                    <el-option label="是" value="1"></el-option>
+                                    <el-option label="否" value="2"></el-option>
+                                </el-select>
+                                </el-form-item>
+                                <el-form-item v-if="(procedureParamForm.paramType != 'Date' && procedureParamForm.paramType != 'DateTime') && (procedureParamForm.componentType == 'select' || procedureParamForm.componentType == 'mutiselect' || procedureParamForm.componentType == 'treeSelect' || procedureParamForm.componentType == 'multiTreeSelect')" key="selectContent" label="下拉选择内容" prop="selectContent" :rules="filter_rules('下拉选择内容',{required:true})">
+                                <el-input type="textarea" :cols="80" v-model="procedureParamForm.selectContent" placeholder="下拉选择内容" size="small"></el-input>
+                                <div class="sub-title">{{selectContentSuggestion}}</div>
+                                </el-form-item>
+                              <el-form-item v-if="procedureParamForm.paramType == 'Date'" label="日期格式" prop="dateFormat" :rules="filter_rules('日期格式',{required:false})">
+                                <el-select v-model="procedureParamForm.dateFormat" placeholder="日期格式"  size="small">
+                                    <el-option label="年" value="YYYY"></el-option>
+                                    <el-option label="年-月" value="YYYY-MM"></el-option>
+                                    <el-option label="年-月-日" value="YYYY-MM-DD"></el-option>
+                                </el-select>
+                                </el-form-item>
                               <el-form-item label="是否隐藏" prop="paramHidden" :rules="filter_rules('是否隐藏',{required:true})">
                                 <el-select v-model="procedureParamForm.paramHidden" placeholder="是否隐藏" >
                                     <el-option label="是" value="1"></el-option>
@@ -622,6 +671,10 @@
                               <el-button type="primary" @click="addInParam">添加</el-button>
                               </el-form-item>
                           </el-form>
+                          <el-tag v-if="procedureParamForm.paramType == 'Date' || procedureParamForm.paramType == 'DateTime'" type="warning">注：当参数类型选择日期时，如果想让默认日期是当前日期，则默认值填写current或者CURRENT，如果想让默认日期是当前日期的天几天或者后几天，则填天数，例如前七天则填写-7，后七天则填写7。</el-tag>
+                          <el-tag v-if="procedureParamForm.componentType == 'select' || procedureParamForm.componentType == 'mutiselect'" type="warning">自定义数据格式：[{"value":"value1","name":"name1"},{"value":"value2","name":"name2"}] 注意：两个key必须是value 和 name</el-tag><br v-if="paramForm.paramType == 'select' || paramForm.paramType == 'mutiselect'">
+                          <el-tag v-if="procedureParamForm.componentType == 'select' || procedureParamForm.componentType == 'mutiselect'" type="warning">sql语句格式：select code as value, name as name from table 注意：返回的属性中必须有 value 和 name</el-tag>
+                          <el-tag v-if="procedureParamForm.componentType == 'treeSelect' || procedureParamForm.componentType == 'multiTreeSelect'" type="warning">sql语句格式：select deptId as id, deptName as name,parentId as pid from table 注意：返回的属性中必须有 id,name和pid</el-tag>
                           <div style="height:40%">
                               <!--表格 start-->
                               <el-table :data="procedureInParamTableData.tableData" border style="width: 100%" align="center" size="small" height="230px" :header-cell-style="{background:'#eef1f6',color:'#606266'}">
@@ -632,10 +685,10 @@
                               <el-table-column prop="paramHidden" label="是否隐藏"  align="center" :formatter="commonUtil.formatterTableValue"></el-table-column>
                               <el-table-column fixed="right" label="操作" width="180" align="center">
                                   <template #default="scope">
-                                      <el-button @click="editInParam(scope.row)" type="primary" size="small">编辑</el-button>
-                                      <el-button @click="moveUp(scope.$index,'1')" type="primary" size="small">上移</el-button>
-                                      <el-button @click="moveDown(scope.$index,'1')" type="primary" size="small">下移</el-button>
-                                      <el-button @click="deleteInParam(scope.$index)" type="primary" size="small">删除</el-button>
+                                      <el-button @click="editInParam(scope.row)" type="primary" size="small" text>编辑</el-button>
+                                      <el-button @click="moveUp(scope.$index,'1')" type="primary" size="small" text>上移</el-button>
+                                      <el-button @click="moveDown(scope.$index,'1')" type="primary" size="small" text>下移</el-button>
+                                      <el-button @click="deleteInParam(scope.$index)" type="primary" size="small" text>删除</el-button>
                                   </template>
                               </el-table-column>
                               </el-table>
@@ -827,6 +880,9 @@
                         <el-select  placeholder="小计类型" size="small" v-model="cellSubTotalForm.type">
                             <el-option v-for="op in selectUtil.subtotalType" :label="op.label" :value="op.value" :key="op.value"></el-option>
                         </el-select>
+                    </el-form-item>
+                    <el-form-item label="小数位数" size="small" :rules="filter_rules('小数位数',{required:true})">
+                        <el-input v-model.number="cellSubTotalForm.digit" style="width:150px"  placeholder="小数位数"></el-input>
                     </el-form-item>
                 </el-form>
                 <template #footer>
@@ -1354,5 +1410,9 @@
 }
 .tablecolumn{
     border: 1px solid #eee;
+}
+
+:deep(.el-button.is-text){
+    width:20px
 }
 </style>

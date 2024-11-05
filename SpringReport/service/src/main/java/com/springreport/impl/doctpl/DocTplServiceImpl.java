@@ -769,6 +769,7 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 			}
 			//文档主体内容
 			JSONArray main = JSON.parseArray(model.getMain());
+			int abstractNumID = 1;
 			if(ListUtil.isNotEmpty(main)) {
 				XWPFParagraph paragraph = doc.createParagraph();
 				String lastType = "";
@@ -781,7 +782,8 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 								(!type.equals(lastType) && !"tab".equals(lastType) 
 										&& !"superscript".equals(lastType) 
 										&& !"subscript".equals(lastType)
-										&& !"separator".equals(lastType))) {
+										&& !"separator".equals(lastType)
+										&& !"hyperlink".equals(lastType))) {
 							content.put("value", content.getString("value").replaceFirst("\n", ""));
 							paragraph = doc.createParagraph();
 						}
@@ -814,7 +816,10 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 						WordUtil.addSeparator(paragraph, content);
 						break;
 					case "list":
-						WordUtil.addList(doc, content);
+						abstractNumID = WordUtil.addList(doc, content,abstractNumID);
+						break;
+					case "hyperlink":
+						WordUtil.addHyperlink(paragraph, content);
 						break;
 					case "image":
 						String chartUrlPrefix = MessageUtil.getValue("chart.url.prefix");
@@ -1043,7 +1048,7 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 			}
 		}else {
 			//api查询，根据reportdatasource返回值类型(api_result_type)字段判断，ObjectArray是列表数据，Object是对象数据
-			String apiResultType = reportDatasource.getApiRequestType();
+			String apiResultType = reportDatasource.getApiResultType();
 			if("ObjectArray".equals(apiResultType)) {
 				//列表数据，如果数据集名称是以_v或者_V结尾的，则说明是列表数据，并且是竖向扩展，
 				//如果数据集名称是以_h或者_H结尾的，则说明是列表数据，并且是横向扩展

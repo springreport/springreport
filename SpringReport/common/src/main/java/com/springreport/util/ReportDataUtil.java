@@ -323,10 +323,30 @@ public class ReportDataUtil {
     				}else if(InParamTypeEnum.BIGDECIMAL.getCode().equals(jsonObject.getString("paramType")))
     				{
     					cstm.setBigDecimal(i+1, new BigDecimal(String.valueOf(param)));
-    				}if(InParamTypeEnum.DATE.getCode().equals(jsonObject.getString("paramType")))
+    				}else if(InParamTypeEnum.DATE.getCode().equals(jsonObject.getString("paramType")))
 	    			{
-    					cstm.setDate(i+1, DateUtil.string2SqlDate(String.valueOf(param),DateUtil.FORMAT_LONOGRAM));
-	    			}
+    					String dateFormat = jsonObject.getString("dateFormat");
+    					if(StringUtil.isNullOrEmpty(dateFormat)) {
+    						dateFormat = DateUtil.FORMAT_LONOGRAM;
+    					}
+    					if("YYYY-MM-DD".equals(dateFormat))
+						{
+							dateFormat = DateUtil.FORMAT_LONOGRAM;
+						}else if("YYYY-MM".equals(dateFormat))
+						{
+							dateFormat = DateUtil.FORMAT_YEARMONTH;
+						}else if("YYYY-MM-DD HH:mm".equals(dateFormat))
+						{
+							dateFormat = DateUtil.FORMAT_WITHOUTSECONDS;
+						}else if("YYYY".equals(dateFormat))
+						{
+							dateFormat = DateUtil.FORMAT_YEAR;
+						}
+    					cstm.setDate(i+1, DateUtil.string2SqlDate(String.valueOf(param),dateFormat));
+	    			}else if(InParamTypeEnum.DATETIME.getCode().equals(jsonObject.getString("paramType")))
+    				{
+    					cstm.setTimestamp(i+1, DateUtil.string2SqlTimestamp(String.valueOf(jsonObject.get("paramDefault")),DateUtil.FORMAT_FULL));
+    				}
 	    		}
 	    	}
 	    	if(ListUtil.isEmpty(outParams))

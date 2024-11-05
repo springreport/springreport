@@ -66,7 +66,7 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 	@Override
 	public List<LuckySheetBindData> process(List<LuckysheetReportCell> variableCells, List<Map<String, Object>> data,String datasetName,
 			Map<String, Map<String, List<List<Map<String, Object>>>>> processedCells,Map<String, LuckySheetBindData> blockBindDatas,
-			Map<String, Object> subtotalCellDatas,Map<String, Object> subtotalCellMap,String sheetIndex,Map<String, LuckySheetBindData> cellBindData) {
+			Map<String, Object> subtotalCellDatas,Map<String, Object> subtotalCellMap,String sheetIndex,Map<String, LuckySheetBindData> cellBindData,Map<String, Integer> subTotalDigits) {
 		List<LuckySheetBindData> bindDatas = new ArrayList<LuckySheetBindData>();
 		if(!ListUtil.isEmpty(data))
 		{
@@ -133,6 +133,21 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 				bindData.setSubtotalCalc(variableCells.get(i).getSubtotalCalc());
 				bindData.setSheetIndex(sheetIndex);
 				bindData.setIsChartAttr(variableCells.get(i).getIsChartAttr());
+				if(variableCells.get(i).getIsSubtotal()) {
+					if(StringUtil.isNotEmpty(variableCells.get(i).getSubtotalCells())) {
+						JSONArray subtotalCells = JSON.parseArray(variableCells.get(i).getSubtotalCells());
+						if(ListUtil.isNotEmpty(subtotalCells)) {
+							for (int j = 0; j < subtotalCells.size(); j++) {
+								String coords = subtotalCells.getJSONObject(j).getString("coords");
+								int[] cellCoor = SheetUtil.convertFromExcelCoordinate(coords);
+								int r = cellCoor[0] - 1;
+								int c = cellCoor[1] - 1;
+								String subTotalKey = bindData.getSheetId() + "_" + r + "_" + c; 
+								subTotalDigits.put(subTotalKey, subtotalCells.getJSONObject(j).getInteger("digit"));
+							}
+						}
+					}
+				}
 				try {
 					if(variableCells.get(i).getCellData() != null)
 					{

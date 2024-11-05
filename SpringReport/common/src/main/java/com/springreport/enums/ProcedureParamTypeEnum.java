@@ -82,5 +82,14 @@ public enum ProcedureParamTypeEnum implements BaseCharEnum{
 		public String getName() {
 			return "Date";
 		}
+	},
+	DATETIME {
+		public String getCode() {
+			return "DateTime";
+		}
+
+		public String getName() {
+			return "DateTime";
+		}
 	}
 }

@@ -50,6 +50,7 @@ public class Application extends WebMvcConfigurationSupport{
 	
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
+		System.err.println("success to start up SpringReport service");
 	}
 	
 	/** 
