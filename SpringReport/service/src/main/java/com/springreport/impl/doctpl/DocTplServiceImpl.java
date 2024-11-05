@@ -1048,7 +1048,7 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 			}
 		}else {
 			//api查询，根据reportdatasource返回值类型(api_result_type)字段判断，ObjectArray是列表数据，Object是对象数据
-			String apiResultType = reportDatasource.getApiRequestType();
+			String apiResultType = reportDatasource.getApiResultType();
 			if("ObjectArray".equals(apiResultType)) {
 				//列表数据，如果数据集名称是以_v或者_V结尾的，则说明是列表数据，并且是竖向扩展，
 				//如果数据集名称是以_h或者_H结尾的，则说明是列表数据，并且是横向扩展

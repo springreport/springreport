@@ -457,6 +457,7 @@ export default {
       cellSubTotalForm:{
         coords:"",//坐标
         type:"",//类型 1合计 2平均值 3最大值 4最小值 5计数
+        digit:"2",//小数位数
       },
       subTotalCalcVisiable:false,
       subTotalCalcForm:{
@@ -1370,18 +1371,24 @@ export default {
       if (type == '1') {
         // 输入参数
         this.commonUtil.moveUp(this.procedureInParamTableData.tableData, index)
-      } else {
+      } else if (type == '2'){
         // 输出参数
         this.commonUtil.moveUp(this.procedureOutParamTableData.tableData, index)
+      }else if (type == '3'){
+        // sql参数
+        this.commonUtil.moveUp(this.paramTableData.tableData, index)
       }
     },
     moveDown(index, type) {
       if (type == '1') {
         // 输入参数
         this.commonUtil.moveDown(this.procedureInParamTableData.tableData, index)
-      } else {
+      } else if (type == '2'){
         // 输出参数
         this.commonUtil.moveDown(this.procedureOutParamTableData.tableData, index)
+      }else if (type == '3'){
+        // sql参数
+        this.commonUtil.moveDown(this.paramTableData.tableData, index)
       }
     },
     // 添加输入参数
@@ -3604,10 +3611,12 @@ export default {
             if(that.cellSubTotalForm.index != null){
               that.cellForm.subTotalCells[that.cellSubTotalForm.index].coords = that.cellSubTotalForm.coords;
               that.cellForm.subTotalCells[that.cellSubTotalForm.index].type = that.cellSubTotalForm.type;
+              that.cellForm.subTotalCells[that.cellSubTotalForm.index].digit = that.cellSubTotalForm.digit;
             }else{
               var data = {
                 coords: that.cellSubTotalForm.coords,
                 type: that.cellSubTotalForm.type,
+                digit:that.cellSubTotalForm.digit,
               }
               if(!that.cellForm.subTotalCells)
               {
@@ -3626,6 +3635,7 @@ export default {
         this.cellSubTotalForm.index = index;
         this.cellSubTotalForm.coords = o.coords;
         this.cellSubTotalForm.type = o.type;
+        this.cellSubTotalForm.digit = o.digit;
         this.cellSubTotalVisiable = true;
       },
       deleteSubtotalCell(index){

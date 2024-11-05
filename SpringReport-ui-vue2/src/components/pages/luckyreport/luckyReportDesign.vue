@@ -221,6 +221,7 @@
                             </template>
                             <p class="column-tag" :title="o.coords" style="min-width:220px;max-width:220px">单元格：{{o.coords}}</p>
                             <p class="column-tag" style="min-width:220px;max-width:220px">小计类型：{{commonUtil.getDictionaryValueName('subtotalType',o.type)}}</p>
+                            <p class="column-tag" style="min-width:220px;max-width:220px">小数位数：{{o.digit}}</p>
                         </el-collapse-item>
                     </el-collapse>
                     <div class="right-dataset-title" v-show="cellForm.isSubtotal">
@@ -576,6 +577,8 @@
                       <el-table-column  label="操作"  align="center">
                           <template slot-scope="scope">
                               <el-button @click="editParam(scope.row)" type="text" size="small">编辑</el-button>
+                              <el-button @click="moveUp(scope.$index,'3')" type="text" size="small">上移</el-button>
+                              <el-button @click="moveDown(scope.$index,'3')" type="text" size="small">下移</el-button>
                               <el-button @click="deleteParam(scope.$index)" type="text" size="small">删除</el-button>
                           </template>
                       </el-table-column>
@@ -855,6 +858,9 @@
                         <el-select  placeholder="小计类型" size="small" v-model="cellSubTotalForm.type">
                             <el-option v-for="op in selectUtil.subtotalType" :label="op.label" :value="op.value" :key="op.value"></el-option>
                         </el-select>
+                    </el-form-item>
+                    <el-form-item label="小数位数" size="small" :rules="filter_rules('小数位数',{required:true})">
+                        <el-input v-model.number="cellSubTotalForm.digit" style="width:150px"  placeholder="小数位数"></el-input>
                     </el-form-item>
                 </el-form>
                 <span slot="footer" class="dialog-footer">

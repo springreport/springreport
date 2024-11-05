@@ -225,6 +225,7 @@
                                 </template>
                                 <p class="column-tag" :title="o.coords" style="min-width:220px;max-width:220px;margin:0">单元格：{{o.coords}}</p>
                                 <p class="column-tag" style="min-width:220px;max-width:220px;margin:0">小计类型：{{commonUtil.getDictionaryValueName('subtotalType',o.type)}}</p>
+                                <p class="column-tag" style="min-width:220px;max-width:220px;margin:0">小数位数：{{o.digit}}</p>
                             </el-collapse-item>
                         </el-collapse>
                         <div class="right-dataset-title" v-show="cellForm.isSubtotal">
@@ -583,8 +584,10 @@
                       <el-table-column prop="relyOnParams" label="依赖参数"  align="center"></el-table-column>
                       <el-table-column  label="操作"  align="center">
                           <template #default="scope">
-                              <el-button @click="editParam(scope.row)" type="primary" size="small">编辑</el-button>
-                              <el-button @click="deleteParam(scope.$index)" type="primary" size="small">删除</el-button>
+                              <el-button @click="editParam(scope.row)" type="primary" text size="small">编辑</el-button>
+                              <el-button @click="moveUp(scope.$index,'3')" type="primary" text size="small">上移</el-button>
+                              <el-button @click="moveDown(scope.$index,'3')" type="primary" text size="small">下移</el-button>
+                              <el-button @click="deleteParam(scope.$index)" type="primary" text size="small">删除</el-button>
                           </template>
                       </el-table-column>
                       </el-table>
@@ -877,6 +880,9 @@
                         <el-select  placeholder="小计类型" size="small" v-model="cellSubTotalForm.type">
                             <el-option v-for="op in selectUtil.subtotalType" :label="op.label" :value="op.value" :key="op.value"></el-option>
                         </el-select>
+                    </el-form-item>
+                    <el-form-item label="小数位数" size="small" :rules="filter_rules('小数位数',{required:true})">
+                        <el-input v-model.number="cellSubTotalForm.digit" style="width:150px"  placeholder="小数位数"></el-input>
                     </el-form-item>
                 </el-form>
                 <template #footer>
