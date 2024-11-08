@@ -7,6 +7,7 @@ import com.springreport.entity.doctplsettings.DocTplSettings;
 import com.springreport.entity.reportdatasource.ReportDatasource;
 import com.springreport.entity.reporttpldataset.ReportTplDataset;
 import com.springreport.entity.reporttpldatasource.ReportTplDatasource;
+import com.springreport.entity.reporttype.ReportType;
 import com.springreport.mapper.doctpl.DocTplMapper;
 import com.springreport.api.common.ICommonService;
 import com.springreport.api.doctpl.IDocTplService;
@@ -16,6 +17,7 @@ import com.springreport.api.doctplsettings.IDocTplSettingsService;
 import com.springreport.api.reportdatasource.IReportDatasourceService;
 import com.springreport.api.reporttpldataset.IReportTplDatasetService;
 import com.springreport.api.reporttpldatasource.IReportTplDatasourceService;
+import com.springreport.api.reporttype.IReportTypeService;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -89,6 +91,8 @@ import com.springreport.dto.doctpl.DocTableRowDto;
 import com.springreport.dto.doctpl.DocTextDto;
 import com.springreport.dto.doctpl.DocTplDto;
 import com.springreport.dto.doctpl.DocTplSettingsDto;
+import com.springreport.dto.doctpl.DocTplTreeDto;
+import com.springreport.dto.onlinetpl.OnlineTplTreeDto;
 import com.springreport.dto.reporttpl.MesGenerateReportDto;
 import com.springreport.dto.reporttpldataset.ReportDatasetDto;
 
@@ -167,6 +171,9 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 	@Value("${show.report.sql}")
 	private boolean showReportSql;
 	
+	@Autowired
+	private IReportTypeService iReportTypeService;
+	
 	private static Mapper fontMapper = null;
 	
 	static{
@@ -206,17 +213,38 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 	* @throws 
 	*/ 
 	@Override
-	public PageEntity tablePagingQuery(DocTpl model) {
-		PageEntity result = new PageEntity();
+	public List<DocTplTreeDto> tablePagingQuery(ReportType model) {
+		List<DocTplTreeDto> result = new ArrayList<>();
 		model.setDelFlag(DelFlagEnum.UNDEL.getCode());
-		com.github.pagehelper.Page<?> page = PageHelper.startPage(model.getCurrentPage(), model.getPageSize()); //分页条件
-		List<DocTplDto> list = this.baseMapper.getTableList(model);
-		if(!ListUtil.isEmpty(list))
-		{
+		QueryWrapper<ReportType> typeQueryWrapper = new QueryWrapper<>();
+		if(this.merchantmode == YesNoEnum.YES.getCode()) {
+			typeQueryWrapper.eq("merchant_no", model.getMerchantNo());
+		}
+		typeQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+		typeQueryWrapper.eq("type", 2);
+		List<ReportType> list = this.iReportTypeService.list(typeQueryWrapper);
+		if(ListUtil.isNotEmpty(list)) {
+			DocTplTreeDto docTplTreeDto = null;
 			for (int i = 0; i < list.size(); i++) {
-				if(StringUtil.isNotEmpty(list.get(i).getDatasourceId()))
+				docTplTreeDto = new DocTplTreeDto();
+				docTplTreeDto.setId(list.get(i).getId());
+				docTplTreeDto.setTplCode(list.get(i).getReportTypeName());
+				docTplTreeDto.setTplName(list.get(i).getReportTypeName());
+				docTplTreeDto.setIcon("iconfont icon-wenjianjiakai");
+				docTplTreeDto.setType("1");
+				result.add(docTplTreeDto);
+			}
+		}
+		DocTpl docTpl = new DocTpl();
+		docTpl.setDelFlag(DelFlagEnum.UNDEL.getCode());
+		List<DocTplDto> tpls = this.baseMapper.getTableList(docTpl);
+		if(ListUtil.isNotEmpty(tpls)) {
+			DocTplTreeDto docTplTreeDto = null;
+			for (int i = 0; i < tpls.size(); i++) {
+				docTplTreeDto = new DocTplTreeDto();
+				if(StringUtil.isNotEmpty(tpls.get(i).getDatasourceId()))
 				{
-					String[] datasourceIds = list.get(i).getDatasourceId().split(",");
+					String[] datasourceIds = tpls.get(i).getDatasourceId().split(",");
 					List<String> ids = Arrays.asList(datasourceIds);
 					QueryWrapper<ReportDatasource> queryWrapper = new QueryWrapper<>();
 					queryWrapper.in("id", ids);
@@ -235,20 +263,62 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 								dataSourceCode = dataSourceCode + "," + datasources.get(j).getCode();
 							}
 						}
-						list.get(i).setDataSourceName(dataSourceName);
-						list.get(i).setDataSourceCode(dataSourceCode);
+						tpls.get(i).setDataSourceName(dataSourceName);
+						tpls.get(i).setDataSourceCode(dataSourceCode);
 					}
 				}
+				BeanUtils.copyProperties(tpls.get(i), docTplTreeDto);
+				docTplTreeDto.setIcon("iconfont icon-Word");
+				docTplTreeDto.setType("2");
+				docTplTreeDto.setHasChildren(false);
+				result.add(docTplTreeDto);
 			}
 		}
-		result.setData(list);
-		result.setTotal(page.getTotal());
-		result.setCurrentPage(model.getCurrentPage());
-		result.setPageSize(model.getPageSize());
 		return result;
 	}
 
-
+	public List<DocTplTreeDto> getChildren(DocTpl docTpl) {
+		List<DocTplTreeDto> result = new ArrayList<>();
+		docTpl.setDelFlag(DelFlagEnum.UNDEL.getCode());
+		List<DocTplDto> tpls = this.baseMapper.getTableList(docTpl);
+		if(ListUtil.isNotEmpty(tpls)) {
+			DocTplTreeDto docTplTreeDto = null;
+			for (int i = 0; i < tpls.size(); i++) {
+				docTplTreeDto = new DocTplTreeDto();
+				if(StringUtil.isNotEmpty(tpls.get(i).getDatasourceId()))
+				{
+					String[] datasourceIds = tpls.get(i).getDatasourceId().split(",");
+					List<String> ids = Arrays.asList(datasourceIds);
+					QueryWrapper<ReportDatasource> queryWrapper = new QueryWrapper<>();
+					queryWrapper.in("id", ids);
+					List<ReportDatasource> datasources = this.iReportDatasourceService.list(queryWrapper);
+					if(!ListUtil.isEmpty(datasources))
+					{
+						String dataSourceName = "";
+						String dataSourceCode = "";
+						for (int j = 0; j < datasources.size(); j++) {
+							if(j == 0)
+							{
+								dataSourceName = dataSourceName + datasources.get(j).getName();
+								dataSourceCode = dataSourceCode + datasources.get(j).getCode();
+							}else {
+								dataSourceName = dataSourceName + "," + datasources.get(j).getName();
+								dataSourceCode = dataSourceCode + "," + datasources.get(j).getCode();
+							}
+						}
+						tpls.get(i).setDataSourceName(dataSourceName);
+						tpls.get(i).setDataSourceCode(dataSourceCode);
+					}
+				}
+				BeanUtils.copyProperties(tpls.get(i), docTplTreeDto);
+				docTplTreeDto.setIcon("iconfont icon-Word");
+				docTplTreeDto.setType("2");
+				docTplTreeDto.setHasChildren(false);
+				result.add(docTplTreeDto);
+			}
+		}
+		return result;
+	}
 	/**
 	*<p>Title: getDetail</p>
 	*<p>Description: 获取详情</p>

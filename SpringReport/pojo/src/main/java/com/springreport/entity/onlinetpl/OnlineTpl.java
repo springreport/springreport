@@ -5,6 +5,7 @@
 package com.springreport.entity.onlinetpl;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -90,4 +91,8 @@ public class OnlineTpl extends PageEntity {
     /** del_flag - 删除标记 1未删除 2已删除 */
     @TableField("del_flag")
     private Integer delFlag;
+    
+    /** report_type - 报表类型 */
+    @TableField("report_type")
+    private Long reportType;
 }

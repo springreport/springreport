@@ -1,6 +1,7 @@
 package com.springreport.api.screentpl;
 import java.util.List;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.springreport.entity.reporttype.ReportType;
 import com.springreport.entity.screentpl.ScreenTpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.springreport.base.BaseEntity;
@@ -8,6 +9,7 @@ import com.springreport.base.PageEntity;
 import com.springreport.dto.screentpl.MesScreenTplDto;
 import com.springreport.dto.screentpl.SaveScreenTplDto;
 import com.springreport.dto.screentpl.ScreenTplDto;
+import com.springreport.dto.screentpl.ScreenTplTreeDto;
 
  /**  
 * @Description: ScreenTpl服务接口
@@ -24,7 +26,9 @@ public interface IScreenTplService extends IService<ScreenTpl> {
 	* @return BaseEntity 
 	* @throws 
 	*/ 
-	PageEntity tablePagingQuery(ScreenTpl model);
+	List<ScreenTplTreeDto> tablePagingQuery(ReportType model);
+	
+	List<ScreenTplTreeDto> getChildren(ScreenTpl model);
 
 	/**
 	*<p>Title: getDetail</p>

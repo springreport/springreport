@@ -663,6 +663,10 @@
                               <el-button type="primary" @click="addInParam">添加</el-button>
                               </el-form-item>
                           </el-form>
+                          <el-tag v-if="procedureParamForm.paramType == 'Date' || procedureParamForm.paramType == 'DateTime'" type="warning">注：当参数类型选择日期时，如果想让默认日期是当前日期，则默认值填写current或者CURRENT，如果想让默认日期是当前日期的天几天或者后几天，则填天数，例如前七天则填写-7，后七天则填写7。</el-tag>
+                          <el-tag v-if="procedureParamForm.componentType == 'select' || procedureParamForm.componentType == 'mutiselect'" type="warning">自定义数据格式：[{"value":"value1","name":"name1"},{"value":"value2","name":"name2"}] 注意：两个key必须是value 和 name</el-tag><br v-if="paramForm.paramType == 'select' || paramForm.paramType == 'mutiselect'">
+                          <el-tag v-if="procedureParamForm.componentType == 'select' || procedureParamForm.componentType == 'mutiselect'" type="warning">sql语句格式：select code as value, name as name from table 注意：返回的属性中必须有 value 和 name</el-tag>
+                          <el-tag v-if="procedureParamForm.componentType == 'treeSelect' || procedureParamForm.componentType == 'multiTreeSelect'" type="warning">sql语句格式：select deptId as id, deptName as name,parentId as pid from table 注意：返回的属性中必须有 id,name和pid</el-tag>
                           <div style="height:40%">
                               <!--表格 start-->
                               <el-table :data="procedureInParamTableData.tableData" border style="width: 100%" align="center" size="small" height="230px" :header-cell-style="{background:'#eef1f6',color:'#606266'}">

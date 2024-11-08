@@ -6,10 +6,12 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.springreport.entity.onlinetpl.OnlineTpl;
+import com.springreport.entity.reporttype.ReportType;
 import com.springreport.base.BaseEntity;
 import com.springreport.base.PageEntity;
 import com.springreport.base.UserInfoDto;
 import com.springreport.dto.onlinetpl.MesRangeAuthDto;
+import com.springreport.dto.onlinetpl.OnlineTplTreeDto;
 import com.springreport.dto.onlinetpl.ResOnlineTplInfo;
 import com.springreport.dto.onlinetpl.ResSaveOnlineDocDto;
 import com.springreport.dto.reporttpl.ResSheetsSettingsDto;
@@ -29,7 +31,17 @@ public interface IOnlineTplService extends IService<OnlineTpl> {
 	* @return BaseEntity 
 	* @throws 
 	*/ 
-	PageEntity tablePagingQuery(OnlineTpl model);
+	List<OnlineTplTreeDto> tablePagingQuery(ReportType model);
+	
+	/**  
+	 * @MethodName: getChildren
+	 * @Description: 获取文件夹数据
+	 * @author caiyang
+	 * @param model
+	 * @return List<OnlineTplTreeDto>
+	 * @date 2024-11-05 08:55:31 
+	 */ 
+	List<OnlineTplTreeDto> getChildren(OnlineTpl model);
 
 	/**
 	*<p>Title: getDetail</p>

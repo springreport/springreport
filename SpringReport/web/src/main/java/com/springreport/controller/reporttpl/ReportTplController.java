@@ -32,11 +32,13 @@ import com.springreport.dto.reporttpl.MesLuckysheetsTplDto;
 import com.springreport.dto.reporttpl.MobilePreviewDto;
 import com.springreport.dto.reporttpl.ReportDataDto;
 import com.springreport.dto.reporttpl.ReportTplDto;
+import com.springreport.dto.reporttpl.ReportTplTreeDto;
 import com.springreport.dto.reporttpl.ResPreviewData;
 import com.springreport.dto.reporttpl.ResSheetsSettingsDto;
 import com.springreport.dto.reporttpl.ShareDto;
 import com.springreport.dto.sysrolereport.MesRoleReportDto;
 import com.springreport.entity.reporttpl.ReportTpl;
+import com.springreport.entity.reporttype.ReportType;
 import com.springreport.entity.sysuser.SysUser;
 import com.springreport.entity.sysuserrole.SysUserRole;
 import com.springreport.enums.DelFlagEnum;
@@ -99,11 +101,19 @@ public class ReportTplController extends BaseController {
 	*/ 
 	@RequestMapping(value = "/getTableList",method = RequestMethod.POST)
 	@MethodLog(module="ReportTpl",remark="获取页面表格数据",operateType=Constants.OPERATE_TYPE_SEARCH)
-	@RequiresPermissions(value = {"reportTpl_search"})
-	public Response getTableList(@RequestBody ReportTpl model)
+	@RequiresPermissions(value = {"reportTpl_search","viewReport_Search"})
+	public Response getTableList(@RequestBody ReportType model)
 	{
-		BaseEntity result = new BaseEntity();
-		result = iReportTplService.tablePagingQuery(model);
+		List<ReportTplTreeDto> result = iReportTplService.tablePagingQuery(model);
+		return Response.success(result);
+	}
+	
+	@RequestMapping(value = "/getChildren",method = RequestMethod.POST)
+	@MethodLog(module="ReportTpl",remark="获取页面表格数据",operateType=Constants.OPERATE_TYPE_SEARCH)
+	@RequiresPermissions(value = {"reportTpl_search"})
+	public Response getChildren(@RequestBody ReportTpl model)
+	{
+		List<ReportTplTreeDto> result = iReportTplService.getChildren(model);
 		return Response.success(result);
 	}
 
@@ -462,7 +472,7 @@ public class ReportTplController extends BaseController {
 	{
 		model.setIsAdmin(userInfoDto.getIsAdmin());
 		model.setRoleId(userInfoDto.getRoleId());
-		PageEntity result = this.iReportTplService.getRoleReports(model);
+		List<ReportTplTreeDto> result = this.iReportTplService.getRoleReports(model);
 		return Response.success(result);
 	}
 	

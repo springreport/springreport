@@ -34,6 +34,8 @@
         :defaultSelections="defaultSelections"
         :highlight-current-row="highlightCurrentRow"
         :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+        :lazy="lazy"
+        :load="load"
         ref="cesTable"
       >
         <el-table-column v-if="isSelection" type="selection" align="center"></el-table-column>
@@ -51,6 +53,7 @@
           :fixed="item.fixed"
         >
           <template slot-scope="scope">
+            <i :class="scope.row.icon" style="margin-right: 10px" v-if="item.icon"> </i>
             <!-- html -->
             <span v-if="item.type==='html'" v-html="item.html(scope.row)"></span>
             <!-- 按钮 -->
@@ -212,6 +215,7 @@ export default {
     // 表格型号：mini,medium,small
     size: { type: String, default: 'small' },
     isBorder: { type: Boolean, default: false },
+    lazy: { type: Boolean, default: false },
     defaultExpandAll: { type: Boolean, default: false },
     stripe: { type: Boolean, default: false },
     loading: { type: Boolean, default: false },
@@ -296,6 +300,9 @@ export default {
         }
       )
     },
+     load(tree, treeNode, resolve){
+      this.$emit('load', tree,treeNode,resolve)
+     }
   },
 }
 </script>

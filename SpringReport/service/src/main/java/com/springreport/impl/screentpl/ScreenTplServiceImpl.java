@@ -1,12 +1,15 @@
 package com.springreport.impl.screentpl;
 
+import com.springreport.entity.onlinetpl.OnlineTpl;
 import com.springreport.entity.reporttpldatasource.ReportTplDatasource;
+import com.springreport.entity.reporttype.ReportType;
 import com.springreport.entity.screencontent.ScreenContent;
 import com.springreport.entity.screentpl.ScreenTpl;
 import com.springreport.mapper.screencontent.ScreenContentMapper;
 import com.springreport.mapper.screentpl.ScreenTplMapper;
 import com.springreport.api.reporttpldataset.IReportTplDatasetService;
 import com.springreport.api.reporttpldatasource.IReportTplDatasourceService;
+import com.springreport.api.reporttype.IReportTypeService;
 import com.springreport.api.screencontent.IScreenContentService;
 import com.springreport.api.screentpl.IScreenTplService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -28,9 +31,11 @@ import com.github.pagehelper.PageHelper;
 import com.springreport.base.BaseEntity;
 import com.springreport.base.PageEntity;
 import com.springreport.constants.StatusCode;
+import com.springreport.dto.onlinetpl.OnlineTplTreeDto;
 import com.springreport.dto.screentpl.MesScreenTplDto;
 import com.springreport.dto.screentpl.SaveScreenTplDto;
 import com.springreport.dto.screentpl.ScreenTplDto;
+import com.springreport.dto.screentpl.ScreenTplTreeDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +67,9 @@ public class ScreenTplServiceImpl extends ServiceImpl<ScreenTplMapper, ScreenTpl
 	@Value("${merchantmode}")
     private Integer merchantmode;
 	
+	@Autowired
+	private IReportTypeService iReportTypeService;
+	
 	/** 
 	* @Title: tablePagingQuery 
 	* @Description: 表格分页查询
@@ -71,19 +79,73 @@ public class ScreenTplServiceImpl extends ServiceImpl<ScreenTplMapper, ScreenTpl
 	* @throws 
 	*/ 
 	@Override
-	public PageEntity tablePagingQuery(ScreenTpl model) {
-		PageEntity result = new PageEntity();
+	public List<ScreenTplTreeDto> tablePagingQuery(ReportType model) {
+		List<ScreenTplTreeDto> result = new ArrayList<>();
 		model.setDelFlag(DelFlagEnum.UNDEL.getCode());
-		com.github.pagehelper.Page<?> page = PageHelper.startPage(model.getCurrentPage(), model.getPageSize()); //分页条件
-		List<ScreenTpl> list = this.baseMapper.searchDataLike(model);
-		result.setData(list);
-		result.setTotal(page.getTotal());
-		result.setCurrentPage(model.getCurrentPage());
-		result.setPageSize(model.getPageSize());
+		QueryWrapper<ReportType> queryWrapper = new QueryWrapper<>();
+		if(this.merchantmode == YesNoEnum.YES.getCode()) {
+			queryWrapper.eq("merchant_no", model.getMerchantNo());
+		}
+		queryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+		queryWrapper.eq("type", 4);
+		List<ReportType> list = this.iReportTypeService.list(queryWrapper);
+		if(ListUtil.isNotEmpty(list)) {
+			ScreenTplTreeDto screenTplTreeDto = null;
+			for (int i = 0; i < list.size(); i++) {
+				screenTplTreeDto = new ScreenTplTreeDto();
+				screenTplTreeDto.setId(list.get(i).getId());
+				screenTplTreeDto.setTplCode(list.get(i).getReportTypeName());
+				screenTplTreeDto.setTplName(list.get(i).getReportTypeName());
+				screenTplTreeDto.setIcon("iconfont icon-wenjianjiakai");
+				screenTplTreeDto.setType("1");
+				result.add(screenTplTreeDto);
+			}
+		}
+		QueryWrapper<ScreenTpl> screenTplWrapper = new QueryWrapper<>();
+		if(this.merchantmode == YesNoEnum.YES.getCode()) {
+			screenTplWrapper.eq("merchant_no", model.getMerchantNo());
+		}
+		screenTplWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+		screenTplWrapper.isNull("report_type");
+		List<ScreenTpl> tpls = this.list(screenTplWrapper);
+		if(ListUtil.isNotEmpty(tpls)) {
+			ScreenTplTreeDto screenTplTreeDto = null;
+			for (int i = 0; i < tpls.size(); i++) {
+				screenTplTreeDto = new ScreenTplTreeDto();
+				BeanUtils.copyProperties(tpls.get(i), screenTplTreeDto);
+				screenTplTreeDto.setIcon("iconfont icon-xingzhuang");
+				screenTplTreeDto.setType("2");
+				screenTplTreeDto.setHasChildren(false);
+				result.add(screenTplTreeDto);
+			}
+		}
 		return result;
 	}
 
-
+	@Override
+	public List<ScreenTplTreeDto> getChildren(ScreenTpl model) {
+		List<ScreenTplTreeDto> result = new ArrayList<>();
+		QueryWrapper<ScreenTpl> screenTplWrapper = new QueryWrapper<>();
+		if(this.merchantmode == YesNoEnum.YES.getCode()) {
+			screenTplWrapper.eq("merchant_no", model.getMerchantNo());
+		}
+		screenTplWrapper.eq("report_type", model.getReportType());
+		screenTplWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+		List<ScreenTpl> tpls = this.list(screenTplWrapper);
+		if(ListUtil.isNotEmpty(tpls)) {
+			ScreenTplTreeDto screenTplTreeDto = null;
+			for (int i = 0; i < tpls.size(); i++) {
+				screenTplTreeDto = new ScreenTplTreeDto();
+				BeanUtils.copyProperties(tpls.get(i), screenTplTreeDto);
+				screenTplTreeDto.setIcon("iconfont icon-xingzhuang");
+				screenTplTreeDto.setType("2");
+				screenTplTreeDto.setHasChildren(false);
+				result.add(screenTplTreeDto);
+			}
+		}
+		return result;
+	}
+	
 	/**
 	*<p>Title: getDetail</p>
 	*<p>Description: 获取详情</p>

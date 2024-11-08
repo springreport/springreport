@@ -27,10 +27,12 @@ export default {
           ],
           //查询表单按钮end
           //表格数据start
+          lazy:true,
           tableData:[],
           //表格数据end
           //表格工具栏按钮 start
           tableHandles:[
+            {label:'刷新',type:'primary',handle:()=>this.searchtablelist(),auth:'viewReport_Search'},
           ],
           //表格工具栏按钮 end
           selectList:[],//表格选中的数据
@@ -44,12 +46,12 @@ export default {
           //表格分页信息end
           //表格列表头start
           tableCols:[
-            {label:'报表名称',prop:'tplName',align:'center'},
+            {label:'报表名称',prop:'tplName',align:'left',icon:true},
             {label:'报表类型',prop:'reportTypeName',align:'center'},
             {label:'导出是否加密',prop:'exportEncrypt',align:'center',codeType:'yesNo',formatter:this.commonUtil.getTableCodeName},
             {label:'报表类型',prop:'tplType',align:'center',codeType:'tplType',formatter:this.commonUtil.getTableCodeName,overflow:true},
             {label:'操作',prop:'operation',align:'center',type:'button',fixed:'right',width:200,btnList:[
-              {label:'报表查看(pc)',type:'text',auth:'viewReport_view',handle:(row)=>this.routerTo("luckyReportPreview",row)},
+              {label:'报表查看(pc)',type:'text',auth:'viewReport_view',handle:(row)=>this.routerTo("luckyReportPreview",row),show:(row)=>this.isShowBtn(row)},
               {label:'报表查看(手机)',type:'text',auth:'viewReport_view',show:(row)=>this.isShowShare(row),handle:(row)=>this.routerTo('h5ReportPreview',row)},
             ]}
           ],
@@ -60,7 +62,7 @@ export default {
     activated() {
       this.searchtablelist();
       // this.getReportType();
-      this.getReportTypeTree();
+      // this.getReportTypeTree();
     },
     methods:{
       /**
@@ -71,13 +73,15 @@ export default {
        */    
       searchtablelist(){
         var obj = {
-          url:this.apis.reportTpl.getRoleReportsApi,
+          url:this.apis.reportTpl.listApi,
           params:Object.assign({}, this.pageData.queryData, this.pageData.tablePage),
         }
+        var that = this;
+        that.pageData.tableData = []
         this.commonUtil.getTableList(obj).then(response=>{
-          this.commonUtil.tableAssignment(response,this.pageData.tablePage,this.pageData.tableData);
-          this.$nextTick(() => {
-            this.$refs.custable.$refs.cesTable.doLayout();
+          that.pageData.tableData = response.responseData
+          that.$nextTick(() => {
+            that.$refs.custable.$refs.cesTable.doLayout();
           });
         });
       },
@@ -137,6 +141,25 @@ export default {
           return true
         }else{
           return false
+        }
+      },
+      loadData(tree, treeNode, resolve){
+        var obj = {
+          params:{reportType:tree.id},
+          url:this.apis.reportTpl.getRoleReportsApi
+        }
+        this.commonUtil.doPost(obj) .then(response=>{
+          if (response.code == "200")
+          {
+            resolve(response.responseData)
+          }
+        });
+      },
+      isShowBtn(row){
+        if(row.type == "1"){
+          return false;
+        }else {
+          return true;
         }
       },
     }

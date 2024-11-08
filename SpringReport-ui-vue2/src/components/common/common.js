@@ -515,7 +515,11 @@ commonUtil.getDictionaryValueName = function(type,value)
 {
     if(commonConstants.dictionary[type])
     {
-        return commonConstants.dictionary[type][value];
+        if(commonConstants.dictionary[type][value] == undefined){
+            return "-";
+        }else{
+            return commonConstants.dictionary[type][value];
+        }
     }else{
         return "-";
     }

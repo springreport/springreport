@@ -19,10 +19,12 @@ import com.springreport.base.Response;
 import com.springreport.base.UserInfoDto;
 import com.springreport.constants.Constants;
 import com.springreport.dto.onlinetpl.MesRangeAuthDto;
+import com.springreport.dto.onlinetpl.OnlineTplTreeDto;
 import com.springreport.dto.onlinetpl.ResOnlineTplInfo;
 import com.springreport.dto.onlinetpl.ResSaveOnlineDocDto;
 import com.springreport.dto.reporttpl.ResSheetsSettingsDto;
 import com.springreport.entity.onlinetpl.OnlineTpl;
+import com.springreport.entity.reporttype.ReportType;
 import com.springreport.enums.RedisPrefixEnum;
 import com.springreport.util.RedisUtil;
 import com.alibaba.fastjson.JSONObject;
@@ -64,10 +66,18 @@ public class OnlineTplController extends BaseController {
 	@RequestMapping(value = "/getTableList",method = RequestMethod.POST)
 	@MethodLog(module="OnlineTpl",remark="获取页面表格数据",operateType=Constants.OPERATE_TYPE_SEARCH)
 	@RequiresPermissions(value = {"onlineTpl_search"})
-	public Response getTableList(@RequestBody OnlineTpl model)
+	public Response getTableList(@RequestBody ReportType model)
 	{
-		BaseEntity result = new BaseEntity();
-		result = iOnlineTplService.tablePagingQuery(model);
+		List<OnlineTplTreeDto> result = iOnlineTplService.tablePagingQuery(model);
+		return Response.success(result);
+	}
+	
+	@RequestMapping(value = "/getChildren",method = RequestMethod.POST)
+	@MethodLog(module="OnlineTpl",remark="获取页面表格数据",operateType=Constants.OPERATE_TYPE_SEARCH)
+	@RequiresPermissions(value = {"onlineTpl_search"})
+	public Response getChildren(@RequestBody OnlineTpl model)
+	{
+		List<OnlineTplTreeDto> result = iOnlineTplService.getChildren(model);
 		return Response.success(result);
 	}
 

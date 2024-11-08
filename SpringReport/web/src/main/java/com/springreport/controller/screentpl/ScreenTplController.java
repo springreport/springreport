@@ -21,6 +21,8 @@ import com.springreport.constants.Constants;
 import com.springreport.dto.screentpl.MesScreenTplDto;
 import com.springreport.dto.screentpl.SaveScreenTplDto;
 import com.springreport.dto.screentpl.ScreenTplDto;
+import com.springreport.dto.screentpl.ScreenTplTreeDto;
+import com.springreport.entity.reporttype.ReportType;
 import com.springreport.entity.screentpl.ScreenTpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.springreport.annotation.Check;
@@ -54,11 +56,18 @@ public class ScreenTplController extends BaseController {
 	@RequestMapping(value = "/getTableList",method = RequestMethod.POST)
 	@MethodLog(module="ScreenTpl",remark="获取页面表格数据",operateType=Constants.OPERATE_TYPE_SEARCH)
 	@RequiresPermissions(value = {"screenTpl_search"})
-	public Response getTableList(@RequestBody ScreenTpl model)
+	public Response getTableList(@RequestBody ReportType model)
 	{
-		
-		BaseEntity result = new BaseEntity();
-		result = iScreenTplService.tablePagingQuery(model);
+		List<ScreenTplTreeDto> result = iScreenTplService.tablePagingQuery(model);
+		return Response.success(result);
+	}
+	
+	@RequestMapping(value = "/getChildren",method = RequestMethod.POST)
+	@MethodLog(module="ScreenTpl",remark="获取页面表格数据",operateType=Constants.OPERATE_TYPE_SEARCH)
+	@RequiresPermissions(value = {"screenTpl_search"})
+	public Response getChildren(@RequestBody ScreenTpl model)
+	{
+		List<ScreenTplTreeDto> result = iScreenTplService.getChildren(model);
 		return Response.success(result);
 	}
 

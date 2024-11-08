@@ -21,6 +21,7 @@ import com.springreport.entity.reporttpldataset.ReportTplDataset;
 import com.springreport.entity.reporttpldatasource.ReportTplDatasource;
 import com.springreport.entity.reporttplsheet.ReportTplSheet;
 import com.springreport.entity.reporttplsheetchart.ReportTplSheetChart;
+import com.springreport.entity.reporttype.ReportType;
 import com.springreport.entity.sysrolesheet.SysRoleSheet;
 import com.springreport.entity.sysuser.SysUser;
 import com.springreport.mapper.luckysheetreportcell.LuckysheetReportCellMapper;
@@ -62,6 +63,7 @@ import com.springreport.api.reporttpldataset.IReportTplDatasetService;
 import com.springreport.api.reporttpldatasource.IReportTplDatasourceService;
 import com.springreport.api.reporttplsheet.IReportTplSheetService;
 import com.springreport.api.reporttplsheetchart.IReportTplSheetChartService;
+import com.springreport.api.reporttype.IReportTypeService;
 import com.springreport.api.sysrolesheet.ISysRoleSheetService;
 import com.springreport.api.sysuser.ISysUserService;
 import com.alibaba.fastjson.JSON;
@@ -120,6 +122,7 @@ import com.springreport.base.TDengineConnection;
 import com.springreport.base.UserInfoDto;
 import com.springreport.constants.Constants;
 import com.springreport.constants.StatusCode;
+import com.springreport.dto.onlinetpl.OnlineTplTreeDto;
 import com.springreport.dto.reporttpl.AlternateformatDto;
 import com.springreport.dto.reporttpl.GroupSummaryData;
 import com.springreport.dto.reporttpl.LuckySheetBindData;
@@ -129,6 +132,7 @@ import com.springreport.dto.reporttpl.MesLuckySheetTplDto;
 import com.springreport.dto.reporttpl.MesLuckysheetsTplDto;
 import com.springreport.dto.reporttpl.MobilePreviewDto;
 import com.springreport.dto.reporttpl.ReportTplDto;
+import com.springreport.dto.reporttpl.ReportTplTreeDto;
 import com.springreport.dto.reporttpl.ResLuckySheetDataDto;
 import com.springreport.dto.reporttpl.ResLuckySheetTplSettingsDto;
 import com.springreport.dto.reporttpl.ResMobileReport;
@@ -297,6 +301,9 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 	@Value("${merchantmode}")
     private Integer merchantmode;
 	
+	@Autowired
+	private IReportTypeService iReportTypeService;
+	
 	/**
      * 本地保存路径
      */
@@ -347,14 +354,41 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 	* @throws 
 	*/ 
 	@Override
-	public PageEntity tablePagingQuery(ReportTpl model) {
-		PageEntity result = new PageEntity();
+	public List<ReportTplTreeDto> tablePagingQuery(ReportType model) {
+		List<ReportTplTreeDto> result = new ArrayList<>();
 		model.setDelFlag(DelFlagEnum.UNDEL.getCode());
-		com.github.pagehelper.Page<?> page = PageHelper.startPage(model.getCurrentPage(), model.getPageSize()); //分页条件
+		QueryWrapper<ReportType> queryWrapper = new QueryWrapper<>();
+		if(this.merchantmode == YesNoEnum.YES.getCode()) {
+			queryWrapper.eq("merchant_no", model.getMerchantNo());
+		}
+		queryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+		queryWrapper.eq("type", 1);
+		List<ReportType> list = this.iReportTypeService.list(queryWrapper);
+		if(ListUtil.isNotEmpty(list)) {
+			ReportTplTreeDto reportTplTreeDto = null;
+			for (int i = 0; i < list.size(); i++) {
+				reportTplTreeDto = new ReportTplTreeDto();
+				reportTplTreeDto.setId(list.get(i).getId());
+				reportTplTreeDto.setTplCode(list.get(i).getReportTypeName());
+				reportTplTreeDto.setTplName(list.get(i).getReportTypeName());
+				reportTplTreeDto.setIcon("iconfont icon-wenjianjiakai");
+				reportTplTreeDto.setType("1");
+				result.add(reportTplTreeDto);
+			}
+		}
+		return result;
+	}
+	
+	@Override
+	public List<ReportTplTreeDto> getChildren(ReportTpl model) {
+		List<ReportTplTreeDto> result = new ArrayList<>();
+		model.setDelFlag(DelFlagEnum.UNDEL.getCode());
 		List<ReportTplDto> list = this.baseMapper.getTableList(model);
 		if(!ListUtil.isEmpty(list))
 		{
+			ReportTplTreeDto reportTplTreeDto = null;
 			for (int i = 0; i < list.size(); i++) {
+				reportTplTreeDto = new ReportTplTreeDto();
 				if(StringUtil.isNotEmpty(list.get(i).getDatasourceId()))
 				{
 					String[] datasourceIds = list.get(i).getDatasourceId().split(",");
@@ -380,12 +414,13 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 						list.get(i).setDataSourceCode(dataSourceCode);
 					}
 				}
+				BeanUtils.copyProperties(list.get(i), reportTplTreeDto);
+				reportTplTreeDto.setIcon("iconfont icon-Excel");
+				reportTplTreeDto.setType("2");
+				reportTplTreeDto.setHasChildren(false);
+				result.add(reportTplTreeDto);
 			}
 		}
-		result.setData(list);
-		result.setTotal(page.getTotal());
-		result.setCurrentPage(model.getCurrentPage());
-		result.setPageSize(model.getPageSize());
 		return result;
 	}
 
@@ -10643,21 +10678,28 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 	 * @date 2022-07-06 08:29:07 
 	 */  
 	@Override
-	public PageEntity getRoleReports(MesRoleReportDto model) {
-		PageEntity result = new PageEntity();
+	public List<ReportTplTreeDto> getRoleReports(MesRoleReportDto model) {
+		List<ReportTplTreeDto> result = new ArrayList<>();
 		if(model.getIsAdmin().intValue() == YesNoEnum.YES.getCode().intValue())
 		{//超级管理员，获取全部报表
 			ReportTpl reportTpl = new ReportTpl();
 			BeanUtils.copyProperties(model, reportTpl);
-			result = this.tablePagingQuery(reportTpl);
+			result = this.getChildren(reportTpl);
 		}else {
 			//非超级管理员获取对应角色的报表
-			com.github.pagehelper.Page<?> page = PageHelper.startPage(model.getCurrentPage(), model.getPageSize()); //分页条件
 			List<ReportTplDto> list = this.baseMapper.getRoleReports(model);
-			result.setData(list);
-			result.setTotal(page.getTotal());
-			result.setCurrentPage(model.getCurrentPage());
-			result.setPageSize(model.getPageSize());
+			if(!ListUtil.isEmpty(list))
+			{
+				ReportTplTreeDto reportTplTreeDto = null;
+				for (int i = 0; i < list.size(); i++) {
+					reportTplTreeDto = new ReportTplTreeDto();
+					BeanUtils.copyProperties(list.get(i), reportTplTreeDto);
+					reportTplTreeDto.setIcon("iconfont icon-Excel");
+					reportTplTreeDto.setType("2");
+					reportTplTreeDto.setHasChildren(false);
+					result.add(reportTplTreeDto);
+				}
+			}
 		}
 		return result;
 	}
