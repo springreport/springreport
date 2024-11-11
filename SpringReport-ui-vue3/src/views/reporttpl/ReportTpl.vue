@@ -1,31 +1,33 @@
 <template>
   <div class="container">
-    <div class="left">
+    <!-- <div class="left">
       <el-tree
         :data="pageData.treeData"
         :props="pageData.defaultProps"
         @node-click="handleNodeClick"
         default-expand-all
       ></el-tree>
-    </div>
+    </div> -->
     <div class="_tablepage">
-      <searchForm
+      <!-- <searchForm
         ref="searchRef"
         :searchForm="pageData.searchForm"
         :searchData="pageData.queryData"
         :searchHandle="pageData.searchHandle"
-      ></searchForm>
+      ></searchForm> -->
       <cusTable
-        :isSelection="true"
-        :isIndex="true"
-        :isPagination="true"
+        :isSelection="false"
+        :isIndex="false"
+        :isPagination="false"
         :isHandle="true"
         :tableCols="pageData.tableCols"
         :tableHandles="pageData.tableHandles"
         :tableData="pageData.tableData"
         :tablePage="pageData.tablePage"
+        :lazy='pageData.lazy'
         @handleCurrentChange="searchtablelist()"
         @selectChange="selectChange"
+        @load="loadData"
       ></cusTable>
       <modal
         ref="modalRef"
@@ -59,6 +61,10 @@
         :modalHandles="pageData.shareReportModalHandles"
         @closeModal="closeShareReportModal()"
       ></modal>
+      <modal ref="folderModalRef" :modalConfig='pageData.folderModalConfig' 
+       :modalForm='pageData.folderModalForm' :modalData='pageData.folderModalData' 
+       :modalHandles='pageData.folderModalHandles'
+       @closeModal="closeFolderModal()"></modal>
       <textarea id="clipboradInput" style="opacity:0;position:absolute" />
     </div>
   </div>

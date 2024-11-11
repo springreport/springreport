@@ -70,6 +70,7 @@ api.reportTpl={
     uploadReportTplApi: "/api/reportTpl/uploadReportTpl", //上传excel模板
     getAllTplsApi: "/api/reportTpl/getAllTpls", //获取表格数据api
     getTplAuthApi: "/api/reportTpl/getTplAuth", //获取授权范围
+    getChildrenApi: "/api/reportTpl/getChildren",
 }
 
 //报表设计对应的api
@@ -175,6 +176,7 @@ api.screenTpl={
     getMultiScreenAndTplidsApi:"/api/screenTpl/getMultiScreenAndTplids",//获取多大屏基本信息和关联的大屏id
     getScreensApi:"/api/screenTpl/getScreens",//获取所有大屏api
     doCopyScreenApi:"/api/screenTpl/copyScreen",//复制大屏
+    getChildrenApi: "/api/screenTpl/getChildren", 
 }
 
 //大屏组件对应的api
@@ -272,6 +274,7 @@ api.onlineTpl={
     deleteRangeAuthApi: "/api/onlineTpl/deletRangeAuth",
     getCoeditAuthApi: "/api/onlineTpl/getCoeditAuth", //获取授权范围
     getRangeUsersApi:"/api/reportRangeAuthUser/getRangeUsers",//获取授权用户
+    getChildrenApi:"/api/onlineTpl/getChildren",
 }
 
 api.reportTask = {
@@ -348,6 +351,7 @@ api.sysPost = {
     downLoadDocTplApi:"/api/docTpl/downLoadDocTpl",//导出模板
     previewDocApi:"/api/docTpl/previewDoc",//保存文档模板api
     uploadDocxApi:"/api/docTpl/uploadDocx",//上传docx文件
+    getChildrenApi:"/api/docTpl/getChildren",
   }
 
   api.common = {
