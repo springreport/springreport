@@ -1125,4 +1125,128 @@ CREATE TABLE `test`  (
 INSERT INTO `test` VALUES (1, 'SpringReport', 3, '1', '2024-08-05', '汉族', '山东青岛', '本科', '2024-08-07 00:00:00', 'https://www.springreport.vip/images/2024-11-12/1856253737643884545.png?t=1731400353247');
 INSERT INTO `test` VALUES (1856261232076603393, '111', 1, '1', '2024-11-12', '2', '1', '3', '2024-11-12 17:01:00', NULL);
 
+-- ----------------------------
+-- Table structure for sys_order
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_order`;
+CREATE TABLE `sys_order`  (
+  `order_code` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '订单编号',
+  `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '收货人姓名',
+  `phone` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '联系方式',
+  `address` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '收货地址',
+  `code` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '邮编',
+  `time` datetime(0) NULL DEFAULT NULL COMMENT '下单时间',
+  `total` decimal(10, 2) NULL DEFAULT NULL COMMENT '金额',
+  PRIMARY KEY (`order_code`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_order
+-- ----------------------------
+INSERT INTO `sys_order` VALUES ('OR202204060001', 'SpringReport', '1112221111', '山东省青岛市', '266000', '2022-04-06 10:48:42', 100.00);
+INSERT INTO `sys_order` VALUES ('OR202204060002', 'SpringReport2', '1112221111', '山东省青岛市', '266000', '2022-04-06 10:48:42', 100.00);
+INSERT INTO `sys_order` VALUES ('OR202204060003', 'SpringReport3', '1112221111', '山东省青岛市', '266000', '2022-04-06 10:48:42', 100.00);
+INSERT INTO `sys_order` VALUES ('OR202204060004', 'SpringReport4', '1112221111', '山东省青岛市', '266000', '2022-04-06 10:48:42', 100.00);
+INSERT INTO `sys_order` VALUES ('OR202204060005', 'SpringReport5', '1112221111', '山东省青岛市', '266000', '2022-04-06 10:48:42', 100.00);
+INSERT INTO `sys_order` VALUES ('OR202204060006', 'SpringReport6', '1112221111', '山东省青岛市', '266000', '2022-04-06 10:48:42', 100.00);
+
+-- ----------------------------
+-- Table structure for sys_order_detail
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_order_detail`;
+CREATE TABLE `sys_order_detail`  (
+  `id` int(11) NOT NULL,
+  `order_code` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '订单编码',
+  `goods_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '商品名称',
+  `goods_price` decimal(10, 2) NULL DEFAULT NULL COMMENT '商品单价',
+  `amount` int(11) NULL DEFAULT NULL COMMENT '购买数量',
+  `total` decimal(10, 2) NULL DEFAULT NULL COMMENT '商品总价格',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_order_detail
+-- ----------------------------
+INSERT INTO `sys_order_detail` VALUES (1, 'OR202204060001', '商品1', 10.00, 2, 20.00);
+INSERT INTO `sys_order_detail` VALUES (2, 'OR202204060001', '商品2', 20.00, 2, 40.00);
+INSERT INTO `sys_order_detail` VALUES (3, 'OR202204060001', '商品3', 20.00, 2, 40.00);
+INSERT INTO `sys_order_detail` VALUES (4, 'OR202204060002', '商品4', 10.00, 2, 20.00);
+INSERT INTO `sys_order_detail` VALUES (5, 'OR202204060002', '商品5', 10.00, 2, 20.00);
+INSERT INTO `sys_order_detail` VALUES (6, 'OR202204060003', '商品6', 10.00, 2, 20.00);
+INSERT INTO `sys_order_detail` VALUES (7, 'OR202204060003', '商品7', 10.00, 2, 20.00);
+INSERT INTO `sys_order_detail` VALUES (8, 'OR202204060004', '商品8', 10.00, 2, 20.00);
+INSERT INTO `sys_order_detail` VALUES (9, 'OR202204060005', '商品9', 10.00, 2, 20.00);
+INSERT INTO `sys_order_detail` VALUES (10, 'OR202204060005', '商品10', 10.00, 2, 20.00);
+INSERT INTO `sys_order_detail` VALUES (11, 'OR202204060006', '商品11', 10.00, 2, 20.00);
+
+-- ----------------------------
+-- Table structure for sys_payment_notice
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_payment_notice`;
+CREATE TABLE `sys_payment_notice`  (
+  `payment_code` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '编号',
+  `name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '抬头',
+  `customer_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '客户id',
+  `receiver` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '收货方'
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_payment_notice
+-- ----------------------------
+INSERT INTO `sys_payment_notice` VALUES ('KB.6890451', '深圳XX家装有限公司', 'ZHANG_SAN_091', '丙方');
+INSERT INTO `sys_payment_notice` VALUES ('KB.6890452', '背景XX家装有限公司', 'ZHANG_SAN_092', '丁方方');
+
+-- ----------------------------
+-- Table structure for sys_payment_order
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_payment_order`;
+CREATE TABLE `sys_payment_order`  (
+  `payment_code` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '付款通知书编号',
+  `order_code` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '订单编号',
+  `saler` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '销售代表',
+  `price` int(6) NULL DEFAULT NULL COMMENT '离岸价',
+  `send_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '发货方式',
+  `tax_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '税号',
+  `date` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '日期'
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_payment_order
+-- ----------------------------
+INSERT INTO `sys_payment_order` VALUES ('KB.6890451', 'SN18090', '张三', 5000, '快递', 'T11090', '2024-05-14');
+INSERT INTO `sys_payment_order` VALUES ('KB.6890452', 'SN18091', '李四', 6000, '快递', 'T11091', '2024-05-15');
+
+-- ----------------------------
+-- Table structure for sys_payment_order_detail
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_payment_order_detail`;
+CREATE TABLE `sys_payment_order_detail`  (
+  `payment_code` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '付款通知书编号',
+  `order_code` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '订单编号',
+  `goods_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '货物名称',
+  `desc` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '说明',
+  `price` int(6) NULL DEFAULT NULL COMMENT '单价',
+  `count` int(6) NULL DEFAULT NULL COMMENT '数量',
+  `total` int(8) NULL DEFAULT NULL COMMENT '总计'
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_payment_order_detail
+-- ----------------------------
+INSERT INTO `sys_payment_order_detail` VALUES ('KB.6890451', 'SN18090', '墙纸', '书房+卧室', 400, 4, 1600);
+INSERT INTO `sys_payment_order_detail` VALUES ('KB.6890451', 'SN18090', '油漆', '客厅', 500, 2, 1000);
+
+-- ----------------------------
+-- Procedure structure for testProcedure
+-- ----------------------------
+DROP PROCEDURE IF EXISTS `testProcedure`;
+delimiter ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `testProcedure`(in in_id INT,out out_min_id BIGINT,out total INT)
+begin
+select  min(id) from sys_menu
+where id>in_id  into out_min_id;
+select count(1) from sys_menu into total;
+end
+;;
+delimiter ;
 SET FOREIGN_KEY_CHECKS = 1;
