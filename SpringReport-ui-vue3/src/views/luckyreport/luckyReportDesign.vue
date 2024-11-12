@@ -724,10 +724,10 @@
                               <el-table-column prop="paramType" label="参数类型"  align="center"></el-table-column>
                               <el-table-column fixed="right" label="操作" width="180" align="center">
                                   <template #default="scope">
-                                      <el-button @click="editOutParam(scope.row)" type="primary" size="small">编辑</el-button>
-                                      <el-button @click="moveUp(scope.$index,'2')" type="primary" size="small">上移</el-button>
-                                      <el-button @click="moveDown(scope.$index,'2')" type="primary" size="small">下移</el-button>
-                                      <el-button @click="deleteOutParam(scope.$index)" type="primary" size="small">删除</el-button>
+                                      <el-button @click="editOutParam(scope.row)" type="primary" size="small" text>编辑</el-button>
+                                      <el-button @click="moveUp(scope.$index,'2')" type="primary" size="small" text>上移</el-button>
+                                      <el-button @click="moveDown(scope.$index,'2')" type="primary" size="small" text>下移</el-button>
+                                      <el-button @click="deleteOutParam(scope.$index)" type="primary" size="small" text>删除</el-button>
                                   </template>
                               </el-table-column>
                               </el-table>
