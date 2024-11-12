@@ -6,6 +6,7 @@ import com.springreport.entity.onlinetpl.OnlineTpl;
 import com.springreport.entity.onlinetplsheet.OnlineTplSheet;
 import com.springreport.entity.reportrangeauth.ReportRangeAuth;
 import com.springreport.entity.reportrangeauthuser.ReportRangeAuthUser;
+import com.springreport.entity.reporttype.ReportType;
 import com.springreport.entity.sysuser.SysUser;
 import com.springreport.mapper.luckysheet.LuckysheetMapper;
 import com.springreport.mapper.onlinetpl.OnlineTplMapper;
@@ -15,6 +16,7 @@ import com.springreport.api.onlinetpl.IOnlineTplService;
 import com.springreport.api.onlinetplsheet.IOnlineTplSheetService;
 import com.springreport.api.reportrangeauth.IReportRangeAuthService;
 import com.springreport.api.reportrangeauthuser.IReportRangeAuthUserService;
+import com.springreport.api.reporttype.IReportTypeService;
 import com.springreport.api.sysuser.ISysUserService;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -26,6 +28,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -42,6 +45,7 @@ import com.springreport.base.UserInfoDto;
 import com.springreport.constants.Constants;
 import com.springreport.constants.StatusCode;
 import com.springreport.dto.onlinetpl.MesRangeAuthDto;
+import com.springreport.dto.onlinetpl.OnlineTplTreeDto;
 import com.springreport.dto.onlinetpl.ResOnlineTplInfo;
 import com.springreport.dto.reporttpl.ResLuckySheetTplSettingsDto;
 import com.springreport.dto.reporttpl.ResSheetsSettingsDto;
@@ -96,6 +100,9 @@ public class OnlineTplServiceImpl extends ServiceImpl<OnlineTplMapper, OnlineTpl
 	@Value("${merchantmode}")
     private Integer merchantmode;
 	
+	@Autowired
+	private IReportTypeService iReportTypeService;
+	
 	/** 
 	* @Title: tablePagingQuery 
 	* @Description: 表格分页查询
@@ -105,15 +112,69 @@ public class OnlineTplServiceImpl extends ServiceImpl<OnlineTplMapper, OnlineTpl
 	* @throws 
 	*/ 
 	@Override
-	public PageEntity tablePagingQuery(OnlineTpl model) {
-		PageEntity result = new PageEntity();
+	public List<OnlineTplTreeDto> tablePagingQuery(ReportType model) {
+		List<OnlineTplTreeDto> result = new ArrayList<>();
 		model.setDelFlag(DelFlagEnum.UNDEL.getCode());
-		com.github.pagehelper.Page<?> page = PageHelper.startPage(model.getCurrentPage(), model.getPageSize()); //分页条件
-		List<OnlineTpl> list = this.baseMapper.searchDataLike(model);
-		result.setData(list);
-		result.setTotal(page.getTotal());
-		result.setCurrentPage(model.getCurrentPage());
-		result.setPageSize(model.getPageSize());
+		QueryWrapper<ReportType> queryWrapper = new QueryWrapper<>();
+		if(this.merchantmode == YesNoEnum.YES.getCode()) {
+			queryWrapper.eq("merchant_no", model.getMerchantNo());
+		}
+		queryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+		queryWrapper.eq("type", 3);
+		List<ReportType> list = this.iReportTypeService.list(queryWrapper);
+		if(ListUtil.isNotEmpty(list)) {
+			OnlineTplTreeDto onlineTplTreeDto = null;
+			for (int i = 0; i < list.size(); i++) {
+				onlineTplTreeDto = new OnlineTplTreeDto();
+				onlineTplTreeDto.setId(list.get(i).getId());
+				onlineTplTreeDto.setTplName(list.get(i).getReportTypeName());
+				onlineTplTreeDto.setIcon("iconfont icon-wenjianjiakai");
+				onlineTplTreeDto.setType("1");
+				result.add(onlineTplTreeDto);
+			}
+		}
+		QueryWrapper<OnlineTpl> onlineTplWrapper = new QueryWrapper<>();
+		if(this.merchantmode == YesNoEnum.YES.getCode()) {
+			onlineTplWrapper.eq("merchant_no", model.getMerchantNo());
+		}
+		onlineTplWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+		onlineTplWrapper.isNull("report_type");
+		List<OnlineTpl> tpls = this.list(onlineTplWrapper);
+		if(ListUtil.isNotEmpty(tpls)) {
+			OnlineTplTreeDto onlineTplTreeDto = null;
+			for (int i = 0; i < tpls.size(); i++) {
+				onlineTplTreeDto = new OnlineTplTreeDto();
+				BeanUtils.copyProperties(tpls.get(i), onlineTplTreeDto);
+				onlineTplTreeDto.setIcon("iconfont icon-Excel");
+				onlineTplTreeDto.setType("2");
+				onlineTplTreeDto.setHasChildren(false);
+				result.add(onlineTplTreeDto);
+			}
+		}
+		return result;
+	}
+	
+	@Override
+	public List<OnlineTplTreeDto> getChildren(OnlineTpl model) {
+		List<OnlineTplTreeDto> result = new ArrayList<>();
+		QueryWrapper<OnlineTpl> onlineTplWrapper = new QueryWrapper<>();
+		if(this.merchantmode == YesNoEnum.YES.getCode()) {
+			onlineTplWrapper.eq("merchant_no", model.getMerchantNo());
+		}
+		onlineTplWrapper.eq("report_type", model.getReportType());
+		onlineTplWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+		List<OnlineTpl> tpls = this.list(onlineTplWrapper);
+		if(ListUtil.isNotEmpty(tpls)) {
+			OnlineTplTreeDto onlineTplTreeDto = null;
+			for (int i = 0; i < tpls.size(); i++) {
+				onlineTplTreeDto = new OnlineTplTreeDto();
+				BeanUtils.copyProperties(tpls.get(i), onlineTplTreeDto);
+				onlineTplTreeDto.setIcon("iconfont icon-Excel");
+				onlineTplTreeDto.setType("2");
+				onlineTplTreeDto.setHasChildren(false);
+				result.add(onlineTplTreeDto);
+			}
+		}
 		return result;
 	}
 
@@ -695,4 +756,5 @@ public class OnlineTplServiceImpl extends ServiceImpl<OnlineTplMapper, OnlineTpl
 		}
 		return sheetRangeAuth;
 	}
+
 }

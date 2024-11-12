@@ -32,7 +32,9 @@
         v-loading="loading"
         :defaultSelections="defaultSelections"
         :highlight-current-row="highlightCurrentRow"
-         :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+        :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+        :lazy="lazy"
+        :load="load"
         ref="cesTable"
       >
         <el-table-column v-if="isSelection" type="selection" align="center"></el-table-column>
@@ -50,6 +52,7 @@
           :fixed="item.fixed"
         >
           <template #default="scope">
+            <i :class="scope.row.icon" style="margin-right: 10px" v-if="item.icon"> </i>
             <!-- html -->
             <span v-if="item.type==='html'" v-html="item.html(scope.row)"></span>
             <!-- 按钮 -->
@@ -215,6 +218,7 @@ export default {
     // 表格型号：mini,medium,small
     size: { type: String, default: 'default' },
     isBorder: { type: Boolean, default: true },
+    lazy: { type: Boolean, default: false },
     defaultExpandAll: { type: Boolean, default: false },
     stripe: { type: Boolean, default: false },
     loading: { type: Boolean, default: false },
@@ -288,6 +292,9 @@ export default {
     currentChange(currentRow, oldCurrentRow) {
       this.$emit('currentChange', currentRow);
     },
+    load(tree, treeNode, resolve){
+      this.$emit('load', tree,treeNode,resolve)
+     }
     // celldblclick(row, column, cell, event){
     //   let _this = this;
     //   this.$copyText(row[column.property]).then(function (e) {

@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
  /**  
 * @Description: report_type - 
 * @author 
-* @date 2021-05-25 07:56:26
+* @date 2024-11-05 02:43:59
 * @version V1.0  
  */
 @Data
@@ -52,7 +52,7 @@ public class ReportType extends PageEntity {
     private Date createTime;
 
     /** updater - 更新人 */
-   @TableField(value = "updater",fill = FieldFill.INSERT_UPDATE)
+    @TableField(value = "updater",fill = FieldFill.INSERT_UPDATE)
     private Long updater;
 
     /** update_time - 更新时间 */
@@ -62,4 +62,8 @@ public class ReportType extends PageEntity {
     /** del_flag - 删除标记 1未删除 2已删除 */
     @TableField("del_flag")
     private Integer delFlag;
+
+    /** type - 类型 1excel报表 2word报表 3协同文档 4大屏 */
+    @TableField("type")
+    private Integer type;
 }

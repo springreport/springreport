@@ -84,11 +84,12 @@ public class ReportTypeServiceImpl extends ServiceImpl<ReportTypeMapper, ReportT
 			queryWrapper.eq("merchant_no", model.getMerchantNo());
 		}
 		queryWrapper.eq("report_type_name", model.getReportTypeName());
-		queryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+		queryWrapper.eq("report_type_name", model.getReportTypeName());
+		queryWrapper.eq("type", model.getType());
 		ReportType isExist = this.getOne(queryWrapper,false);
 		if(isExist != null)
 		{
-			throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.exist", new String[] {"该类型"}));
+			throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.exist", new String[] {"该目录"}));
 		}
 		this.save(model);
 		result.setStatusMsg(MessageUtil.getValue("info.insert"));
@@ -113,11 +114,12 @@ public class ReportTypeServiceImpl extends ServiceImpl<ReportTypeMapper, ReportT
 			queryWrapper.eq("merchant_no", model.getMerchantNo());
 		}
 		queryWrapper.eq("report_type_name", model.getReportTypeName());
+		queryWrapper.eq("type", model.getType());
 		queryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
 		ReportType isExist = this.getOne(queryWrapper,false);
 		if(isExist != null)
 		{
-			throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.exist", new String[] {"该类型"}));
+			throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.exist", new String[] {"该目录"}));
 		}
 		this.updateById(model);
 		result.setStatusMsg(MessageUtil.getValue("info.update"));
@@ -181,6 +183,7 @@ public class ReportTypeServiceImpl extends ServiceImpl<ReportTypeMapper, ReportT
 		if(this.merchantmode == YesNoEnum.YES.getCode()) {
 			queryWrapper.eq("merchant_no", reportType.getMerchantNo());
 		}
+		queryWrapper.eq("type", reportType.getType());
 		queryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
 		List<ReportType> result = this.list(queryWrapper);
 		return result;

@@ -1725,10 +1725,10 @@ export default {
                 this.submitBasicData = {};
                 for (let index = 0; index < luckysheetfiles.length; index++) {
                     const luckysheetfile = luckysheetfiles[index];
-                    if(!luckysheetfile.isPivotTable)
+                    const sheetIndex = luckysheetfile.index;
+                    if(!luckysheetfile.isPivotTable && this.extendCellOrigins[sheetIndex])
                     {
                         var cellDatas = this.getCellDatas(luckysheetfile);
-                        const sheetIndex = luckysheetfile.index;
                         this.submitBasicData[sheetIndex] = {};
                         for (let t = 0; t < cellDatas.length; t++) {
                             var wrongMsg = [];
@@ -2570,6 +2570,7 @@ export default {
                         options.data = [];
                         for (let index = 0; index < sheetDatas.length; index++) {
                             const element = sheetDatas[index];
+                            var isExist = false;
                             for (let index = 0; index < luckysheetfiles.length; index++) {
                               const luckysheetfile = luckysheetfiles[index];
                               if(luckysheetfile.name == element.name)
@@ -2594,7 +2595,14 @@ export default {
                                 luckysheetfile.wrapDatas = element.wrapDatas;
                                 luckysheetfile.data = [];
                                 options.data.push(luckysheetfile);
+                                isExist = true;
+                                break;
                               }
+                            }
+                            if(!isExist){
+                                var data = luckysheet.buildGridData(element);
+                                element.data = data;
+                                luckysheet.appendImportSheet(element,false)
                             }
                         }
                         if(options.data && options.data.length > 0){

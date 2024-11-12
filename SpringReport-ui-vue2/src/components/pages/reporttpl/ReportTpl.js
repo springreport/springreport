@@ -23,6 +23,7 @@ export default {
         },
         //查询条件 end
         //查询表单按钮start
+        lazy:true,
         searchHandle:[
           {label:'查询',type:'primary',handle:()=>this.searchtablelist(),auth:'reportTpl_search'},
           {label:'重置',type:'warning',handle:()=>this.resetSearch(),auth:'reportTpl_search'}
@@ -33,8 +34,9 @@ export default {
         //表格数据end
         //表格工具栏按钮 start
         tableHandles:[
-          {label:'新增',type:'primary',handle:()=>this.showModal(this.commonConstants.modalType.insert),auth:'reportTpl_insert'},
-          {label:'批量删除',type:'danger',handle:()=>this.deleteBatch(),auth:'reportTpl_batchDelete'}
+          {label:'新建目录',type:'primary',handle:()=>this.showModal(this.commonConstants.modalType.insert,null,'1'),auth:'reportTpl_folder'},
+          {label:'新建文档',type:'warning',handle:()=>this.showModal(this.commonConstants.modalType.insert,null,'2'),auth:'reportTpl_insert'},
+          {label:'刷新',type:'danger',handle:()=>this.searchtablelist(),auth:'reportTpl_search'},
         ],
         //表格工具栏按钮 end
         selectList:[],//表格选中的数据
@@ -48,31 +50,30 @@ export default {
         //表格分页信息end
         //表格列表头start
         tableCols:[
-					{label:'报表标识',prop:'tplCode',align:'center',overflow:true},
+					{label:'报表标识',prop:'tplCode',align:'left',overflow:true,icon:true},
           {label:'报表名称',prop:'tplName',align:'center',overflow:true},
-          {label:'报表分类',prop:'reportTypeName',align:'center',overflow:true},
           {label:'查看权限',prop:'viewAuth',align:'center',codeType:'viewAuth',formatter:this.commonUtil.getTableCodeName,overflow:true},
           {label:'数据源代码',prop:'dataSourceCode',align:'center',overflow:true},
           {label:'数据源名称',prop:'dataSourceName',align:'center',overflow:true},
           {label:'导出是否加密',prop:'exportEncrypt',align:'center',codeType:'yesNo',formatter:this.commonUtil.getTableCodeName,overflow:true},
           {label:'报表类型',prop:'tplType',align:'center',codeType:'tplType',formatter:this.commonUtil.getTableCodeName,overflow:true},
 					{label:'操作',prop:'operation',align:'center',type:'button',width:400,btnList:[
-						{label:'查看',type:'text',auth:'reportTpl_getDetail',handle:(row)=>this.showModal(this.commonConstants.modalType.detail,row.id)},
-						{label:'编辑',type:'text',auth:'reportTpl_update',handle:(row)=>this.showModal(this.commonConstants.modalType.update,row.id)},
-            {label:'删除',type:'text',auth:'reportTpl_delete',handle:(row)=>this.deleteOne(row.id)},
-            {label:'复制',type:'text',auth:'reportTpl_copy',handle:(row)=>this.copyReport(row)},
-            {label:'报表设计',type:'text',auth:'reportTpl_reportDesign',handle:(row)=>this.routerTo(row.tplType == '1'?'luckyReportDesign':'luckyReportFroms',row)},
+						{label:'查看',type:'text',auth:'reportTpl_getDetail',handle:(row)=>this.showModal(this.commonConstants.modalType.detail,row.id),show:(row)=>this.isShowBtn(row)},
+						{label:'编辑',type:'text',auth:'reportTpl_update',handle:(row)=>this.showModal(this.commonConstants.modalType.update,row.id,row.type)},
+            {label:'删除',type:'text',auth:'reportTpl_delete',handle:(row)=>this.deleteOne(row.id,row.type)},
+            {label:'复制',type:'text',auth:'reportTpl_copy',handle:(row)=>this.copyReport(row),show:(row)=>this.isShowBtn(row)},
+            {label:'报表设计',type:'text',auth:'reportTpl_reportDesign',handle:(row)=>this.routerTo(row.tplType == '1'?'luckyReportDesign':'luckyReportFroms',row),show:(row)=>this.isShowBtn(row)},
             {label:'修改密码',type:'text',auth:'reportTpl_changePwd',show:(row)=>this.isShowChangePwd(row),handle:(row)=>this.showChangePwd(row)},
-            {label:'报表查看(pc)',type:'text',auth:'reportTpl_reportView',handle:(row)=>this.routerTo("luckyReportPreview",row)},
+            {label:'报表查看(pc)',type:'text',auth:'reportTpl_reportView',handle:(row)=>this.routerTo("luckyReportPreview",row),show:(row)=>this.isShowBtn(row)},
             {label:'报表查看(手机)',type:'text',auth:'reportTpl_reportView',show:(row)=>this.isShowShare(row),handle:(row)=>this.routerTo('h5ReportPreview',row)},
-            {label:'报表分享',type:'text',auth:'reportTpl_reportShare',handle:(row)=>this.showShareReport(row)},
+            {label:'报表分享',type:'text',auth:'reportTpl_reportShare',handle:(row)=>this.showShareReport(row),show:(row)=>this.isShowBtn(row)},
             {label:'定时任务',type:'text',auth:'reportTpl_Task',show:(row)=>this.isShowShare(row),handle:(row)=>this.routerToTask(row)},
 					]}
         ],
         //表格列表头end
         //modal配置 start
         modalConfig:{ 
-          title: "新增", //弹窗标题,值为:新增，查看，编辑
+          title: "新增文档", //弹窗标题,值为:新增，查看，编辑
           show: false, //弹框显示
           formEditDisabled:false,//编辑弹窗是否可编辑
           width:'800px',//弹出框宽度
@@ -84,7 +85,7 @@ export default {
         modalForm:[
 					{type:'Input',label:'报表标识',prop:'tplCode',rules:{required:true,maxLength:40}},
           {type:'Input',label:'报表名称',prop:'tplName',rules:{required:true,maxLength:40}},
-          {type:'Select',label:'报表分类',prop:'reportType',rules:{required:true},props:{label:"reportTypeName",value:"id"}},
+          {type:'Select',label:'所属目录',prop:'reportType',rules:{required:true},props:{label:"reportTypeName",value:"id"}},
           {type:'Select',label:'报表数据源',prop:'dataSource',rules:{required:true},multiple:true,props:{label:"code",value:"id"}},
           {type:'Select',label:'查看权限',prop:'viewAuth',rules:{required:true},options:this.selectUtil.viewAuth,change:this.changeViewAuth},
           // {type:'Select',label:'角色配置',prop:'roles',rules:{required:false},multiple:true,width:'520px',props:{label:"roleName",value:"id"}},
@@ -217,6 +218,30 @@ export default {
           {label:'取消',type:'default',handle:()=>this.closeShareReportModal()},
           {label:'获取分享链接',type:'primary',handle:()=>this.getShareUrl()}
         ],
+        folderModalConfig:{ 
+          title: "新增目录", //弹窗标题,值为:新增，查看，编辑
+          show: false, //弹框显示
+          formEditDisabled:false,//编辑弹窗是否可编辑
+          width:'700px',//弹出框宽度
+          modalRef:"modalRef",//modal标识
+          type:"1"//类型 1新增 2编辑 3保存
+        },
+        //modal配置 end
+        //modal表单 start
+        folderModalForm:[
+					{type:'Input',label:'目录名称',prop:'reportTypeName',rules:{required:true,maxLength:50}},
+        ],
+        //modal表单 end
+        //modal 数据 start
+        folderModalData : {//modal页面数据
+					reportTypeName:"",//类型名称
+        },
+        //modal 数据 end
+        //modal 按钮 start
+        folderModalHandles:[
+          {label:'取消',type:'default',handle:()=>this.closeFolderModal()},
+          {label:'提交',type:'primary',handle:()=>this.saveFolder()}
+        ],
       }
     }
   },
@@ -225,7 +250,7 @@ export default {
     this.searchtablelist();
     this.getReportType();
     this.getReportDatasource();
-    this.getReportTypeTree();
+    // this.getReportTypeTree();
     // this.getRoles();
   },
   methods:{
@@ -240,11 +265,14 @@ export default {
         url:this.apis.reportTpl.listApi,
         params:Object.assign({}, this.pageData.queryData, this.pageData.tablePage),
       }
+      var that = this;
+      that.pageData.tableData = []
       this.commonUtil.getTableList(obj).then(response=>{
-        this.commonUtil.tableAssignment(response,this.pageData.tablePage,this.pageData.tableData);
-        this.$nextTick(() => {
-          this.$refs.custable.$refs.cesTable.doLayout();
+        that.pageData.tableData = response.responseData
+        that.$nextTick(() => {
+          that.$refs.custable.$refs.cesTable.doLayout();
         });
+        that.getReportType();
       });
     },
     resetSearch(){
@@ -260,16 +288,28 @@ export default {
      * @return: 
      * @author: caiyang
      */    
-    showModal(type,id){
-      this.commonUtil.showModal(this.pageData.modalConfig,type);
+    showModal(type,id,docType){
+      // this.commonUtil.showModal(this.pageData.modalConfig,type);
+      // if(type != this.commonConstants.modalType.insert)
+      // {
+      //   this.getDetail(id);
+      // }else{
+      //   this.pageData.modalForm[5].disabled = this.commonUtil.undisabled;
+      //   this.showRoleSelect();
+      // }
+      this.commonUtil.showModal(docType=="1"?this.pageData.folderModalConfig:this.pageData.modalConfig,type);
+      if(type == this.commonConstants.modalType.insert){
+        docType=="1"?this.pageData.folderModalConfig.title = "新增目录":this.pageData.modalConfig.title = "新增文档"
+      }else{
+        docType=="1"?this.pageData.folderModalConfig.title = "编辑目录":this.pageData.modalConfig.title = "编辑文档"
+      }
       if(type != this.commonConstants.modalType.insert)
       {
-        this.getDetail(id);
+        this.getDetail(id,docType);
       }else{
         this.pageData.modalForm[5].disabled = this.commonUtil.undisabled;
-        this.showRoleSelect();
+        // this.showRoleSelect();
       }
-      
     },
     /**
      * @description: 获取详细数据
@@ -277,20 +317,21 @@ export default {
      * @return: 
      * @author: caiyang
      */    
-    getDetail(id){
+    getDetail(id,docType){
       var obj = {
-        url:this.apis.reportTpl.getDetailApi,
+        url:docType=="1"?this.apis.reportType.getDetailApi:this.apis.reportTpl.getDetailApi,
         params:{id:id},
       }
       this.commonUtil.doGet(obj).then(response=>{
-        this.commonUtil.coperyProperties(this.pageData.modalData,response.responseData);//数据赋值
+        // this.commonUtil.coperyProperties(this.pageData.modalData,response.responseData);//数据赋值
+        this.commonUtil.coperyProperties(docType=="1"?this.pageData.folderModalData:this.pageData.modalData,response.responseData);//数据赋值
         if(this.pageData.modalData.designPwd)
         {
           this.pageData.modalForm[5].disabled = this.commonUtil.disabled;
         }else{
           this.pageData.modalForm[5].disabled = this.commonUtil.undisabled;
         }
-        this.showRoleSelect();
+        // this.showRoleSelect();
         this.changeTplType();
       });
     },
@@ -304,6 +345,11 @@ export default {
       this.$refs['modalRef'].$refs['modalFormRef'].resetFields();//校验重置
       this.pageData.modalConfig.show = false;//关闭modal
       this.commonUtil.clearObj(this.pageData.modalData);//清空modalData
+    },
+    closeFolderModal(){
+      this.$refs['folderModalRef'].$refs['modalFormRef'].resetFields();//校验重置
+      this.pageData.folderModalConfig.show = false;//关闭modal
+      this.commonUtil.clearObj(this.pageData.folderModalData);//清空modalData
     },
     /**
      * @description: 保存数据
@@ -336,13 +382,40 @@ export default {
         }
       });
     },
+    saveFolder(){
+      this.$refs['folderModalRef'].$refs['modalFormRef'].validate((valid) => {
+        if (valid) {
+           this.pageData.folderModalData.type = 1
+            var obj = {
+              params:this.pageData.folderModalData,
+              removeEmpty:false,
+            }
+            if(this.pageData.folderModalConfig.type == this.commonConstants.modalType.insert)
+            {
+              obj.url = this.apis.reportType.insertApi;
+            }else{
+              obj.url = this.apis.reportType.updateApi
+            }
+            this.commonUtil.doPost(obj) .then(response=>{
+              if (response.code == "200")
+              {
+                this.closeFolderModal();
+                this.searchtablelist();
+                this.getReportType();
+              }
+            });
+        }else{
+            return false;
+        }
+      });
+    },
     /**
      * @description: 删除一条数据
      * @param {id} 数据唯一标识 
      * @return: 
      * @author: caiyang
      */    
-    deleteOne(id){
+    deleteOne(id,type){
       let obj = {
         url:this.apis.reportTpl.deleteOneApi,
         messageContent:this.commonUtil.getMessageFromList("confirm.delete",null),
@@ -350,8 +423,28 @@ export default {
         params:{id:id},
         type:"get",
       }
-      //弹出删除确认框
-      this.commonUtil.showConfirm(obj)
+      if(type == 1){
+        obj.url = this.apis.reportType.deleteOneApi;
+        //删除前确认是否有文件，如果有文件则不允许删除
+        var checkObj = {
+          params:{reportType:id},
+          url:this.apis.reportTpl.getChildrenApi
+        }
+        this.commonUtil.doPost(checkObj) .then(response=>{
+          if (response.code == "200")
+          {
+            if(response.responseData && response.responseData.length > 0){
+              this.commonUtil.showMessage({message:"该目录下有文档，不允许删除！",type: this.commonConstants.messageType.error});
+            }else{
+              //弹出删除确认框
+              this.commonUtil.showConfirm(obj)
+            }
+          }
+        });
+      }else{
+        //弹出删除确认框
+        this.commonUtil.showConfirm(obj)
+      }
     },
     /**
      * @description: 批量删除
@@ -385,7 +478,7 @@ export default {
     //获取报表类型
     getReportType(){
       var obj = {
-        params:{},
+        params:{type:1},
         url:this.apis.reportType.getReportTypeApi
       }
       this.commonUtil.doPost(obj) .then(response=>{
@@ -394,7 +487,7 @@ export default {
           this.pageData.modalForm[2].options = response.responseData;
           this.pageData.copyModalForm[2].options = response.responseData;
           // this.pageData.searchForm[2].options = response.responseData;
-          this.$refs['searchRef'].$forceUpdate();
+          // this.$refs['modalRef'].$forceUpdate();
         }
       });
     },
@@ -617,6 +710,25 @@ export default {
     routerToTask(row){
       this.$store.commit("setParameters",{key:'taskTplId',value:row.id});
       this.$router.push({ name: 'reportTask'})
+    },
+    loadData(tree, treeNode, resolve){
+      var obj = {
+        params:{reportType:tree.id},
+        url:this.apis.reportTpl.getChildrenApi
+      }
+      this.commonUtil.doPost(obj) .then(response=>{
+        if (response.code == "200")
+        {
+          resolve(response.responseData)
+        }
+      });
+    },
+    isShowBtn(row){
+      if(row.type == "1"){
+        return false;
+      }else {
+        return true;
+      }
     },
   }
 };

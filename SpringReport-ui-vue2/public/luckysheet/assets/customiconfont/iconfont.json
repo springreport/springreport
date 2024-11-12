@@ -6,6 +6,41 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "4764837",
+      "name": "大屏",
+      "font_class": "xingzhuang",
+      "unicode": "e68a",
+      "unicode_decimal": 59018
+    },
+    {
+      "icon_id": "6808504",
+      "name": "Word",
+      "font_class": "Word",
+      "unicode": "edd5",
+      "unicode_decimal": 60885
+    },
+    {
+      "icon_id": "34631588",
+      "name": "文件夹开",
+      "font_class": "wenjianjiakai",
+      "unicode": "e6a6",
+      "unicode_decimal": 59046
+    },
+    {
+      "icon_id": "6808495",
+      "name": "Powerpoint",
+      "font_class": "Powerpoint",
+      "unicode": "edd0",
+      "unicode_decimal": 60880
+    },
+    {
+      "icon_id": "6808518",
+      "name": "Excel",
+      "font_class": "Excel",
+      "unicode": "edde",
+      "unicode_decimal": 60894
+    },
+    {
       "icon_id": "2076247",
       "name": "附件",
       "font_class": "fujian",

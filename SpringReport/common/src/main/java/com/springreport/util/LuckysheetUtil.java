@@ -346,6 +346,9 @@ public class LuckysheetUtil {
 	 */  
 	private static String numberTranform(Object value,int digit)
 	{
+		if(value == null) {
+			value = 0;
+		}
 		BigDecimal bigDecimal = new BigDecimal(String.valueOf(value));
 		bigDecimal = bigDecimal.setScale(digit, RoundingMode.HALF_UP);
 		return String.valueOf(bigDecimal);
@@ -1024,9 +1027,9 @@ public class LuckysheetUtil {
 ////		return "-¥" + Math.abs(bigDecimal.longValue());
 //		System.out.println(wanyuanFormat2(a));
 //		System.out.println(strAddComma("456.36"));
-		double data = 8.00;
-        int digit = 2;
-        String numberPercent = getPercent(data, digit);
-        System.out.println(numberPercent);
+//		double data = 8.00;
+//        int digit = 2;
+//        String numberPercent = getPercent(data, digit);
+        System.out.println(LuckysheetUtil.numberTranform(null,2));
 	}
 }

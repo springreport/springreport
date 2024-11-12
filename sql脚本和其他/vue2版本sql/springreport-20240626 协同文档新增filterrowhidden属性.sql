@@ -1,1 +1,0 @@
-ALTER TABLE luckysheet ADD COLUMN filterrowhidden text DEFAULT NULL COMMENT '过滤隐藏行';
