@@ -23,9 +23,6 @@ importers:
       '@vue-office/docx':
         specifier: ^1.6.2
         version: 1.6.2(@vue/composition-api@1.7.2(vue@2.6.10))(vue-demi@0.14.10(@vue/composition-api@1.7.2(vue@2.6.10))(vue@2.6.10))(vue@2.6.10)
-      '@vue-office/excel':
-        specifier: ^1.7.11
-        version: 1.7.11(@vue/composition-api@1.7.2(vue@2.6.10))(vue-demi@0.14.10(@vue/composition-api@1.7.2(vue@2.6.10))(vue@2.6.10))(vue@2.6.10)
       '@vue/composition-api':
         specifier: ^1.7.2
         version: 1.7.2(vue@2.6.10)
@@ -1255,16 +1252,6 @@ packages:
 
   '@vue-office/docx@1.6.2':
     resolution: {integrity: sha512-OHAoUHeY8nHjhWvwDhlPx+/rmRkxmqLpvPgtfCEOZ4H1c1LCdJ6eDbdV3152ww8dcdZ7fgGQu3fmSSaI7JwdpQ==}
-    peerDependencies:
-      '@vue/composition-api': ^1.7.1
-      vue: ^2.0.0 || >=3.0.0
-      vue-demi: ^0.14.6
-    peerDependenciesMeta:
-      '@vue/composition-api':
-        optional: true
-
-  '@vue-office/excel@1.7.11':
-    resolution: {integrity: sha512-LF3R9IV573Sf4qTu6Ik5Ee8UMfkrsZQ6HEQE25/2m1c0CMcHX6KanIy6Cz0b0Q+FrLH3TjIsLTm6oPcqAbDGSA==}
     peerDependencies:
       '@vue/composition-api': ^1.7.1
       vue: ^2.0.0 || >=3.0.0
@@ -9027,13 +9014,6 @@ snapshots:
       eventemitter3: 4.0.7
 
   '@vue-office/docx@1.6.2(@vue/composition-api@1.7.2(vue@2.6.10))(vue-demi@0.14.10(@vue/composition-api@1.7.2(vue@2.6.10))(vue@2.6.10))(vue@2.6.10)':
-    dependencies:
-      vue: 2.6.10
-      vue-demi: 0.14.10(@vue/composition-api@1.7.2(vue@2.6.10))(vue@2.6.10)
-    optionalDependencies:
-      '@vue/composition-api': 1.7.2(vue@2.6.10)
-
-  '@vue-office/excel@1.7.11(@vue/composition-api@1.7.2(vue@2.6.10))(vue-demi@0.14.10(@vue/composition-api@1.7.2(vue@2.6.10))(vue@2.6.10))(vue@2.6.10)':
     dependencies:
       vue: 2.6.10
       vue-demi: 0.14.10(@vue/composition-api@1.7.2(vue@2.6.10))(vue@2.6.10)
