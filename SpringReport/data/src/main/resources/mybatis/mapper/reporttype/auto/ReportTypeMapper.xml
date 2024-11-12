@@ -22,7 +22,7 @@
 			and id = #{id,jdbcType=BIGINT}
 		</if>
 		<if test="merchantNo !=null and merchantNo !=''">
-			and merchant_no like concat(concat("%",#{merchantNo,jdbcType=VARCHAR}),"%")
+			and merchant_no = #{merchantNo,jdbcType=VARCHAR} 
 		</if>
 		<if test="reportTypeName !=null and reportTypeName !=''">
 			and report_type_name = #{reportTypeName,jdbcType=VARCHAR}
