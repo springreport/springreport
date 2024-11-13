@@ -1774,4 +1774,35 @@ select count(1) from sys_menu into total;
 end
 ;;
 delimiter ;
+
+-- ----------------------------
+-- Table structure for test2
+-- ----------------------------
+DROP TABLE IF EXISTS `test2`;
+CREATE TABLE `test2`  (
+  `name1` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
+  `name2` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
+  `name3` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
+  `name4` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
+  `name5` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
+  `name6` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
+  `name7` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of test2
+-- ----------------------------
+INSERT INTO `test2` VALUES ('一级科目1', '对内采购', '饲料厂', '东风1号料', NULL, '10', '20');
+INSERT INTO `test2` VALUES ('一级科目1', '对内采购', '饲料厂', '东风2号料', NULL, '11', '21');
+INSERT INTO `test2` VALUES ('一级科目1', '对内采购', '饲料厂', '东风散装1号料', NULL, '12', '22');
+INSERT INTO `test2` VALUES ('一级科目1', '对内采购', '采购部', '备品备件', NULL, '15', '16');
+INSERT INTO `test2` VALUES ('一级科目1', '对内采购', '采购部', '兽药', '兽药', '20', '21');
+INSERT INTO `test2` VALUES ('一级科目1', '对内采购', '采购部', '兽药', '交易补偿', '20', '21');
+INSERT INTO `test2` VALUES ('一级科目1', '对内采购', '采购部', '外采饲料', '1号料', '30', '31');
+INSERT INTO `test2` VALUES ('一级科目1', '对内采购', '采购部', '外采饲料', '交易补偿', '32', '30');
+INSERT INTO `test2` VALUES ('一级科目1', '对内采购', '采购部', '外采饲料', '2号料', '25', '25');
+INSERT INTO `test2` VALUES ('一级科目1', '对内采购', '饲料厂', '交易补偿', NULL, '30', '29');
+INSERT INTO `test2` VALUES ('一级科目1', '对内采购', '饲料厂', '东风散装2号料', NULL, '20', '22');
+INSERT INTO `test2` VALUES ('一级科目1', '对内采购', '种苗场', 'z型鸭苗', NULL, '10', '20');
+
 SET FOREIGN_KEY_CHECKS = 1;
