@@ -761,7 +761,7 @@ export default {
                                 let options = {};
                                 luckysheetfile.data = [];
                                 options.data = [luckysheetfile];
-                                luckysheet.updataSheet(options);
+                                luckysheet.updataSheet(options,this.sheetOptions.pager);
                             }
                             
                             this.loading = false;
