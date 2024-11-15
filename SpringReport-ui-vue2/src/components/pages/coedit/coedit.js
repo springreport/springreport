@@ -126,10 +126,16 @@ export default {
             attrDisabled:false,//单元格属性是否禁用，没权限的情况下需要禁用，禁止操作
             authedRangeTitle:"",
             uploadType:"xlsx",
+            defaultProps: {
+              children: 'children',
+              label: 'name'
+            },
+            defaultCheckedUsers:[],
         }
     },
     mounted() {
         this.getOnlineTplInfo();
+        this.getUserstree();
         this.getUsers();
     },
     methods: {
@@ -477,6 +483,7 @@ export default {
               that.isCreator = response.responseData.creator;
               that.creatorName = response.responseData.creatorName;
               that.sheetRangeAuth = response.responseData.sheetRangeAuth;
+              console.log(that.sheetRangeAuth)
               var gridKey = that.$route.query.gridKey;
               var isLoadALL = that.$route.query.isLoadALL;
               that.options.gridKey = gridKey;
@@ -497,6 +504,18 @@ export default {
             }
           });
       },
+      getUserstree(){
+        const obj = {
+          url: this.apis.sysUser.getDeptUserTreeApi,
+          params: {},
+          removeEmpty: false
+        }
+        this.commonUtil.doPost(obj).then(response => {
+          if (response.code == '200') {
+            this.authUsers = response.responseData
+          }
+        })
+      },
       getUsers(){
         const obj = {
           url: this.apis.onlineTpl.getRangeUsersApi,
@@ -506,9 +525,9 @@ export default {
         var that = this;
         this.commonUtil.doPost(obj).then(response => {
           if (response.code == '200') {
-            that.authUsers = response.responseData;
-            for (let index = 0; index < that.authUsers.length; index++) {
-              const element = that.authUsers[index];
+            let authUsers = response.responseData;
+            for (let index = 0; index < authUsers.length; index++) {
+              let element = authUsers[index];
               that.authUsersMap[element.id] = element;
             }
           }
@@ -553,13 +572,24 @@ export default {
         for(var key in this.authUsersMap) {
           this.authUsersMap[key].authType = 1;
         }
+        this.$refs.tree.setCheckedKeys([]);
+        this.defaultCheckedUsers = [];
+        this.resetUserAuthType(this.authUsers,1);
       },
       confirmAddAuth(){
-        if(this.addAuthForm.userIds && this.addAuthForm.userIds.length > 0)
+        let checkedKeys = this.$refs.tree.getCheckedKeys()
+        if(checkedKeys && checkedKeys.length > 0)
         {
           const sheetIndex = luckysheet.getSheet().index;
           if(!this.sheetRangeAuth[sheetIndex]){
             this.sheetRangeAuth[sheetIndex] = {};
+          }
+          let userIds = [];
+          for (let index = 0; index < checkedKeys.length; index++) {
+            const element = checkedKeys[index];
+            if(element.indexOf("_dept")<0){
+              userIds.push(element);
+            }
           }
           let rangeAuth = this.sheetRangeAuth[sheetIndex];
           let userAuthType = {};
@@ -568,11 +598,11 @@ export default {
             rangeAxis:this.rangeAxis,
             range:this.range,
             sheetIndex:sheetIndex,
-            userIds:Object.assign([], this.addAuthForm.userIds),
+            userIds:userIds,
             userAuthType:userAuthType
           }
-          for (let index = 0; index < this.addAuthForm.userIds.length; index++) {
-            const element = this.addAuthForm.userIds[index];
+          for (let index = 0; index < userIds.length; index++) {
+            const element = userIds[index];
             if(this.authUsersMap[element]){
               userAuthType[element] = this.authUsersMap[element].authType
             }
@@ -624,11 +654,13 @@ export default {
         this.authdialogVisible = true;
       },
       editRange(range){
+        console.log(range)
         this.rangeAxis = range.rangeAxis;
         this.range = range.range
         this.authTitle = "修改选区【"+range.rangeAxis+"】权限";
         this.addAuthForm.userIds = range.userIds;
         let userAuth = range.userAuth;
+        this.defaultCheckedUsers = range.userIds;
         this.addAuthVisiable = true;
         for (let index = 0; index < range.userIds.length; index++) {
           const element = range.userIds[index];
@@ -636,6 +668,7 @@ export default {
             this.authUsersMap[element].authType = userAuth[element]
           }
         }
+        this.resetUserAuthType(this.authUsers,2);
       },
       deleteRange(range,index){
         this.authedRange.splice(index, 1);
@@ -1196,5 +1229,24 @@ export default {
       doPostCallback(){
         this.loading = false;
       },
+      changeAuthType(data){
+       this.authUsersMap[data.id]['authType'] = data.authType;
+      },
+      resetUserAuthType(authUsers,type){
+        for (let index = 0; index < authUsers.length; index++) {
+          let element = authUsers[index];
+          if(element.id.indexOf('dept')>=0){
+            if(element.children && element.children.length > 0){
+              this.resetUserAuthType(element.children,type);
+            }
+          }else{
+            if(type == 1){
+              element.authType = 1;
+            }else{
+              element.authType = this.authUsersMap[element.id].authType
+            }
+          }
+        }
+      }
     }
 }
