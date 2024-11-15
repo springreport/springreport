@@ -12,13 +12,13 @@
 		LEFT JOIN
 		sys_api t2
 		ON t1.api_id = t2.id
-		AND t2.del_flag = 1
 		WHERE
 		t1.role_id = #{roleId}
 		<if test="merchantNo !=null and merchantNo !=''">
 			and t1.merchant_no = #{merchantNo,jdbcType=VARCHAR}
 		</if>
 		AND t1.del_flag = 1
+		AND t2.del_flag = 1
 	</select>
   
 </mapper>

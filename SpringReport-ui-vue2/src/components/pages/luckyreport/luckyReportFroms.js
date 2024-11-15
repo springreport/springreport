@@ -512,6 +512,11 @@ export default {
             attrDisabled:false,//单元格属性是否禁用，没权限的情况下需要禁用，禁止操作
             authedRangeTitle:"",
             uploadType:"xlsx",
+            defaultProps: {
+              children: 'children',
+              label: 'name'
+            },
+            defaultCheckedUsers:[],
         }
     },
     mounted() {
@@ -3012,10 +3017,20 @@ export default {
         this.addAuthForm.userIds = [];
         this.rangeAxis = null;
         this.range = null;
+        this.$refs.tree.setCheckedKeys([]);
+        this.defaultCheckedUsers = [];
       },
       confirmAddAuth(){
-        if(this.addAuthForm.userIds && this.addAuthForm.userIds.length > 0)
+        let checkedKeys = this.$refs.tree.getCheckedKeys()
+        if(checkedKeys && checkedKeys.length > 0)
         {
+          let userIds = [];
+          for (let index = 0; index < checkedKeys.length; index++) {
+            const element = checkedKeys[index];
+            if(element.indexOf("_dept")<0){
+              userIds.push(element);
+            }
+          }
           const sheetIndex = luckysheet.getSheet().index;
           if(!this.sheetRangeAuth[sheetIndex]){
             this.sheetRangeAuth[sheetIndex] = {};
@@ -3025,7 +3040,7 @@ export default {
             rangeAxis:this.rangeAxis,
             range:this.range,
             sheetIndex:sheetIndex,
-            userIds:Object.assign([], this.addAuthForm.userIds)
+            userIds:userIds
           }
           this.authRangeToArray();
           this.closeAddAuth();
@@ -3057,7 +3072,7 @@ export default {
       },
       getUsers(){
         const obj = {
-          url: this.apis.sysUser.getUsersApi,
+          url: this.apis.sysUser.getDeptUserTreeApi,
           params: {},
           removeEmpty: false
         }
@@ -3287,7 +3302,8 @@ export default {
         this.rangeAxis = range.rangeAxis;
         this.range = range.range
         this.authTitle = "修改选区【"+range.rangeAxis+"】权限";
-        this.addAuthForm.userIds = range.userIds;
+        // this.addAuthForm.userIds = range.userIds;
+        this.defaultCheckedUsers = range.userIds;
         this.addAuthVisiable = true;
       },
       deleteRange(range,index){

@@ -483,7 +483,6 @@ export default {
               that.isCreator = response.responseData.creator;
               that.creatorName = response.responseData.creatorName;
               that.sheetRangeAuth = response.responseData.sheetRangeAuth;
-              console.log(that.sheetRangeAuth)
               var gridKey = that.$route.query.gridKey;
               var isLoadALL = that.$route.query.isLoadALL;
               that.options.gridKey = gridKey;
@@ -654,7 +653,6 @@ export default {
         this.authdialogVisible = true;
       },
       editRange(range){
-        console.log(range)
         this.rangeAxis = range.rangeAxis;
         this.range = range.range
         this.authTitle = "修改选区【"+range.rangeAxis+"】权限";

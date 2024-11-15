@@ -5,6 +5,7 @@ import com.springreport.entity.sysuser.SysUser;
 import com.springreport.base.BaseEntity;
 import com.springreport.base.PageEntity;
 import com.springreport.base.UserInfoDto;
+import com.springreport.dto.coedit.UserTreeDto;
 import com.springreport.dto.sysuser.SysUserDto;
 
  /**  
@@ -99,4 +100,14 @@ public interface ISysUserService extends IService<SysUser> {
 	 * @date 2024-03-02 11:31:16 
 	 */ 
 	List<SysUser> getUsers(SysUserDto sysUserDto,UserInfoDto userInfoDto);
+	
+	/**  
+	 * @MethodName: getDeptUserTree
+	 * @Description: 获取部门用户树
+	 * @author caiyang
+	 * @param model
+	 * @return List<UserTreeDto>
+	 * @date 2024-11-13 05:42:59 
+	 */ 
+	List<UserTreeDto> getDeptUserTree(SysUser model);
 }

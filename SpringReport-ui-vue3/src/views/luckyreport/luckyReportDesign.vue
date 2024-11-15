@@ -936,14 +936,24 @@
             </el-dialog>
             <el-dialog :title="authTitle" v-model="addAuthVisiable" width="650px"  modal-class="addauthdialog"  :modal="true" :close-on-click-modal='false' @close='closeAddAuth'>
                 <el-form :inline="true" :model="addAuthForm" class="demo-form-inline" ref="addAuthRef">
-                    <el-transfer
+                    <!-- <el-transfer
                         v-model="addAuthForm.userIds"
                         :data="authUsers"
                         :titles="['用户信息', '授权用户']"
                         :filterable="true"
                         :props="{key:'id',label:'userName'}"
                     >
-                    </el-transfer>
+                    </el-transfer> -->
+                    <el-tree
+                    :data="authUsers"
+                    show-checkbox
+                    default-expand-all
+                    node-key="id"
+                    ref="tree"
+                    highlight-current
+                    :props="defaultProps"
+                    :default-checked-keys="defaultCheckedUsers">
+                    </el-tree>
                 </el-form>
                 <template #footer>
                 <span class="dialog-footer">

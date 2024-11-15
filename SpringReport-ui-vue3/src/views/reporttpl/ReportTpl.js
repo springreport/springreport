@@ -286,7 +286,20 @@ export default {
      * @author: caiyang
      */    
     showModal(type,id,docType){
-      this.commonUtil.showModal(this.pageData.modalConfig,type);
+      // this.commonUtil.showModal(this.pageData.modalConfig,type);
+      // if(type != this.commonConstants.modalType.insert)
+      // {
+      //   this.getDetail(id,docType);
+      // }else{
+      //   this.pageData.modalForm[5].disabled = this.commonUtil.undisabled;
+      //   // this.showRoleSelect();
+      // }
+      this.commonUtil.showModal(docType=="1"?this.pageData.folderModalConfig:this.pageData.modalConfig,type);
+      if(type == this.commonConstants.modalType.insert){
+        docType=="1"?this.pageData.folderModalConfig.title = "新增目录":this.pageData.modalConfig.title = "新增文档"
+      }else{
+        docType=="1"?this.pageData.folderModalConfig.title = "编辑目录":this.pageData.modalConfig.title = "编辑文档"
+      }
       if(type != this.commonConstants.modalType.insert)
       {
         this.getDetail(id,docType);
@@ -294,7 +307,6 @@ export default {
         this.pageData.modalForm[5].disabled = this.commonUtil.undisabled;
         // this.showRoleSelect();
       }
-      
     },
     /**
      * @description: 获取详细数据

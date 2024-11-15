@@ -3873,7 +3873,6 @@ export default {
         }
         this.commonUtil.doPost(obj).then(response => {
           if (response.code == '200') {
-            console.log(response.responseData)
             this.authUsers = response.responseData
           }
         })

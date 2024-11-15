@@ -294,7 +294,7 @@ export default {
       }
       this.commonUtil.getTableList(obj).then(response=>{
         this.pageData.modalForm[8].options = response.responseData;
-        this.$refs['tree'].$forceUpdate();//在methods中需强制更新，mounted中不需要
+        this.$refs['modalRef'].$forceUpdate();//在methods中需强制更新，mounted中不需要
       });
     },
     //是否超级管理员修改

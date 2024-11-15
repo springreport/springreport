@@ -30,10 +30,14 @@ import com.springreport.base.PageEntity;
 import com.springreport.base.UserInfoDto;
 import com.springreport.constants.Constants;
 import com.springreport.constants.StatusCode;
+import com.springreport.dto.coedit.UserTreeDto;
 import com.springreport.dto.sysuser.SysUserDto;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.transaction.annotation.Transactional;
 import com.springreport.enums.DelFlagEnum;
 import com.springreport.enums.YesNoEnum;
@@ -75,7 +79,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 	public PageEntity tablePagingQuery(SysUserDto model) {
 		PageEntity result = new PageEntity();
 		model.setDelFlag(DelFlagEnum.UNDEL.getCode());
-		com.github.pagehelper.Page<?> page = PageHelper.startPage(model.getCurrentPage(), model.getPageSize()); //分页条件
 		if(model.getDeptId() != null)
 		{
 			List<Long> deptIds = new ArrayList<>();
@@ -90,6 +93,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 			}
 			model.setDeptIds(deptIds);
 		}
+		com.github.pagehelper.Page<?> page = PageHelper.startPage(model.getCurrentPage(), model.getPageSize()); //分页条件
 		List<SysUserDto> list = this.baseMapper.getTableList(model);
 		result.setData(list);
 		result.setTotal(page.getTotal());
@@ -452,5 +456,60 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 		queryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
 		List<SysUser> result = this.list(queryWrapper);
 		return result;
+	}
+
+
+	@Override
+	public List<UserTreeDto> getDeptUserTree(SysUser model) {
+		List<UserTreeDto> resultList = new ArrayList<UserTreeDto>();
+		List<UserTreeDto> list = new ArrayList<UserTreeDto>();
+		QueryWrapper<SysDept> queryWrapper = new QueryWrapper<>();
+		if(this.merchantmode == YesNoEnum.YES.getCode()) {
+			queryWrapper.eq("merchant_no", model.getMerchantNo());
+		}
+		queryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+		List<SysDept> depts = this.iSysDeptService.list(queryWrapper);
+		if(ListUtil.isNotEmpty(depts)) {
+			UserTreeDto userTreeDto = null;
+			for (int i = 0; i < depts.size(); i++) {
+				userTreeDto = new UserTreeDto();
+				userTreeDto.setId(depts.get(i).getId()+"_dept");
+				userTreeDto.setName(depts.get(i).getDeptName());
+				userTreeDto.setParentId(depts.get(i).getParentId()+"_dept");
+				list.add(userTreeDto);
+			}
+		}
+		List<UserTreeDto> users = this.baseMapper.getdeptusers(model);
+		if(ListUtil.isNotEmpty(users)) {
+			for (int i = 0; i < users.size(); i++) {
+				users.get(i).setParentId(users.get(i).getParentId()+"_dept");
+				list.add(users.get(i));
+			}
+		}
+		
+		if(!ListUtil.isEmpty(list))
+		{
+			Map<String, UserTreeDto> entityMap = new HashMap<>();
+			Map<String, List<UserTreeDto>> childrenMap = new HashMap<>();
+			for (UserTreeDto entity : list){
+				entity.setChildren(new ArrayList<>());
+				entityMap.put(entity.getId(),entity);
+				childrenMap.put(entity.getId(), (List<UserTreeDto>) entity.getChildren());
+			}
+			// 组装成数结构列表
+			for (UserTreeDto entity : list){
+				UserTreeDto parentEntity = entityMap.get(entity.getParentId());
+				// 如果查询出的列表里面该节点的没有父节点说明是顶级节点
+				if(parentEntity == null)
+				{
+					// 将顶级节点加入结果集中
+			         resultList.add(entity);
+			         continue;
+				}
+				// 把自己加到父节点对象里面去
+				childrenMap.get(parentEntity.getId()).add(entity);
+			}
+		}
+		return resultList;
 	}
 }

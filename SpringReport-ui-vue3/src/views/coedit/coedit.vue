@@ -60,7 +60,7 @@
             </el-dialog>
             <el-dialog :title="authTitle" v-model="addAuthVisiable" width="850px" custom-class="addauthdialog"  :modal="true" :close-on-click-modal='false' @close='closeAddAuth'>
                     <el-form :inline="true" :model="addAuthForm" class="demo-form-inline" ref="addAuthRef">
-                        <el-transfer
+                        <!-- <el-transfer
                             v-model="addAuthForm.userIds"
                             :data="authUsers"
                             :titles="['用户信息', '授权用户']"
@@ -76,7 +76,26 @@
                           </el-select>
                         </span>
                         </template>
-                        </el-transfer>
+                        </el-transfer> -->
+                        <el-tree
+                        :data="authUsers"
+                        show-checkbox
+                        default-expand-all
+                        node-key="id"
+                        ref="tree"
+                        highlight-current
+                        :props="defaultProps"
+                        :default-checked-keys="defaultCheckedUsers">
+                         <template #default="{ node, data }">
+                            <span>{{ node.label }}</span>
+                            <span v-if="node.key.indexOf('dept')<0">
+                            <el-select  placeholder="请选择" size="small"  v-model="data.authType" style="margin-left: 10px;width:120px;height:20px" @change="changeAuthType(data)">
+                                <el-option label="编辑" :value='1'></el-option>
+                                <el-option label="不可查看" :value='2'></el-option>
+                            </el-select>
+                            </span>
+                        </template>
+                        </el-tree>
                     </el-form>
                      <template #footer>
                     <span class="dialog-footer">

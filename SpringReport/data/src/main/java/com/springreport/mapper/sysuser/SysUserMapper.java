@@ -1,4 +1,5 @@
 package com.springreport.mapper.sysuser;
+import com.springreport.dto.coedit.UserTreeDto;
 import com.springreport.dto.sysuser.SysUserDto;
 import com.springreport.entity.sysuser.SysUser;
 import java.util.List;
@@ -29,4 +30,14 @@ public interface SysUserMapper extends BaseMapper<SysUser>{
      * @date 2021-06-15 02:45:08 
      */ 
     List<SysUserDto> getTableList(final SysUserDto model);
+    
+    /**  
+     * @MethodName: getusers
+     * @Description: 获取用户信息
+     * @author caiyang
+     * @param model
+     * @return List<UserTreeDto>
+     * @date 2024-11-13 05:51:35 
+     */ 
+    List<UserTreeDto> getdeptusers(final SysUser model);
 }

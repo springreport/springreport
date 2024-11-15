@@ -4041,9 +4041,17 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 						{
 							int maxRow = 0;
 							int maxCol = 0;
+							Map<String, Integer> rowAndCol = null;
 							if(m == 0)
 							{
-								Map<String, Integer> rowAndCol = this.getMaxRowAndCol(maxCoordinate, luckysheetReportBlockCells.get(t).getCoordsx(),luckysheetReportBlockCells.get(t).getCoordsy(),1,1);
+								maxRow = this.getMaxRow(maxCoordinate, luckysheetReportBlockCells.get(t).getCoordsx(),luckysheetReportBlockCells.get(t).getCoordsy(),1);
+								if(usedCells.containsKey(maxRow+"_"+luckysheetReportBlockCells.get(t).getCoordsy())) {
+									rowAndCol = this.getMaxRowAndCol(maxCoordinate, luckysheetReportBlockCells.get(t).getCoordsx(),luckysheetReportBlockCells.get(t).getCoordsy(),1,1);
+								}else {
+									rowAndCol = new HashMap<String, Integer>();
+									rowAndCol.put("maxX", maxRow);
+									rowAndCol.put("maxY", luckysheetReportBlockCells.get(t).getCoordsy());
+								}
 								maxRow = rowAndCol.get("maxX");
 								maxCol = rowAndCol.get("maxY");
 								fixedY.put(luckysheetReportBlockCells.get(t).getCoordsx()+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+luckysheetReportBlockCells.get(t).getCoordsy(), rowAndCol.get("maxY"));

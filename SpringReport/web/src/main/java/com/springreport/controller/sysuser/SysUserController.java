@@ -18,6 +18,7 @@ import com.springreport.base.BaseEntity;
 import com.springreport.base.Response;
 import com.springreport.base.UserInfoDto;
 import com.springreport.constants.Constants;
+import com.springreport.dto.coedit.UserTreeDto;
 import com.springreport.dto.sysuser.SysUserDto;
 import com.springreport.entity.sysuser.SysUser;
 
@@ -185,6 +186,13 @@ public class SysUserController extends BaseController {
 	@MethodLog(module="SysUser",remark="获取用户",operateType=Constants.OPERATE_TYPE_UPDATE)
 	public Response getUsers(@RequestBody SysUserDto sysUser,@LoginUser UserInfoDto userInfoDto) {
 		List<SysUser> result = this.iSysUserService.getUsers(sysUser, userInfoDto);
+		return Response.success(result);
+	}
+	
+	@RequestMapping(value = "/getDeptUserTree",method = RequestMethod.POST)
+	@MethodLog(module="SysUser",remark="获取部门用户树",operateType=Constants.OPERATE_TYPE_UPDATE)
+	public Response getDeptUserTree(@RequestBody SysUser model) {
+		List<UserTreeDto> result = this.iSysUserService.getDeptUserTree(model);
 		return Response.success(result);
 	}
 }
