@@ -37,6 +37,7 @@ import org.apache.poi.xddf.usermodel.chart.XDDFNumericalDataSource;
 import org.apache.poi.xddf.usermodel.chart.XDDFPieChartData;
 import org.apache.poi.xddf.usermodel.chart.XDDFValueAxis;
 import org.apache.poi.xwpf.model.XWPFHeaderFooterPolicy;
+import org.apache.poi.xwpf.usermodel.BreakType;
 import org.apache.poi.xwpf.usermodel.LineSpacingRule;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.TableRowAlign;
@@ -807,6 +808,10 @@ public class WordUtil {
     			setRunText(run,valueObj,"text");
     		}
     	}
+    }
+    
+    public static void addPageBreak(XWPFParagraph paragraph) {
+    	paragraph.createRun().addBreak(BreakType.PAGE);
     }
     
     /**  

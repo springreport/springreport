@@ -739,6 +739,13 @@ export default {
             that.instance.command.executeDeleteWatermark()
           }
         }
+        const pageBreakDom = document.querySelector(
+          '.menu-item__page-break'
+        )
+        pageBreakDom.onclick = function () {
+          console.log('pageBreak')
+          that.instance.command.executePageBreak()
+        }
         // const checkboxDom = document.querySelector('.menu-item__checkbox')
         // checkboxDom.onclick = function () {
         //   console.log('checkbox')

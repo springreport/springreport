@@ -1,0 +1,11 @@
+ALTER TABLE `qrtz_blob_triggers` RENAME TO  `QRTZ_BLOB_TRIGGERS` ;
+ALTER TABLE `qrtz_calendars` RENAME TO  `QRTZ_CALENDARS` ;
+ALTER TABLE `qrtz_cron_triggers` RENAME TO  `QRTZ_CRON_TRIGGERS` ;
+ALTER TABLE `qrtz_fired_triggers` RENAME TO  `QRTZ_FIRED_TRIGGERS` ;
+ALTER TABLE `qrtz_job_details` RENAME TO  `QRTZ_JOB_DETAILS` ;
+ALTER TABLE `qrtz_locks` RENAME TO  `QRTZ_LOCKS` ;
+ALTER TABLE `qrtz_paused_trigger_grps` RENAME TO  `QRTZ_PAUSED_TRIGGER_GRPS` ;
+ALTER TABLE `qrtz_scheduler_state` RENAME TO  `QRTZ_SCHEDULER_STATE` ;
+ALTER TABLE `qrtz_simple_triggers` RENAME TO  `QRTZ_SIMPLE_TRIGGERS` ;
+ALTER TABLE `qrtz_simprop_triggers` RENAME TO  `QRTZ_SIMPROP_TRIGGERS` ;
+ALTER TABLE `qrtz_triggers` RENAME TO  `QRTZ_TRIGGERS` ;

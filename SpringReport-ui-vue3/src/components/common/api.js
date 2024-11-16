@@ -124,6 +124,7 @@ api.sysUser={
     resetPwdApi: "/api/sysUser/resetPwd", //重置密码
     changePwdApi:"/api/sysUser/changePwd",//修改密码
     getUsersApi:"/api/sysUser/getUsers",//获取用户
+    getDeptUserTreeApi:"/api/sysUser/getDeptUserTree",//获取部门用户树
 }
 
 //角色管理对应的api
