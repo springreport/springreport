@@ -891,6 +891,9 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 					case "hyperlink":
 						WordUtil.addHyperlink(paragraph, content);
 						break;
+					case "pageBreak":
+						WordUtil.addPageBreak(paragraph);
+						break;
 					case "image":
 						String chartUrlPrefix = MessageUtil.getValue("chart.url.prefix");
 						String url = content.getString("value");
