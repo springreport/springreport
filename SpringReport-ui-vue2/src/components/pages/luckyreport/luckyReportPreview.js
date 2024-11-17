@@ -63,7 +63,7 @@ export default {
                 endPage:null,
                 type:1
             },
-            isShare:false,//是否是分享链接
+            isShare:2,//是否是分享链接
             shareCode:"",
             shareUser:"",
             sheetOptions:{
@@ -231,11 +231,11 @@ export default {
         var shareUser = this.$route.query.shareUser;
         if(shareCode && shareUser)
         {
-            this.isShare = true;
+            this.isShare = 1;
             this.shareCode = shareCode;
             this.shareUser = shareUser;
         }else{
-            this.isShare = false;
+            this.isShare = 2;
             this.shareCode = "";
             this.shareUser = "";
         }
@@ -503,7 +503,7 @@ export default {
                     {
                         this.activitiName = result[0].datasetName;
                     }
-                    if(isPagination && this.tplType == 1)
+                    if(isPagination)
                     {
                         // this.searchHandle.push({label:'分页导出',icon:'el-icon-download',type:'danger',handle:()=>this.exportPageExcel(),size:'mini'});
                         this.searchHandle.push({btnType:'dropDown',label:'分页导出',icon:'iconfont icon-daochuExcel',type:'success',handle:()=>this.pdfExport(),size:'mini',
