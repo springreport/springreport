@@ -327,7 +327,7 @@ public class ReportTplController extends BaseController {
 	@RequestMapping(value = "/previewShareLuckysheetReportData",method = RequestMethod.POST)
 	@MethodLog(module="ReportTpl",remark="分享预览luckysheet报表",operateType=Constants.OPERATE_TYPE_SEARCH)
 	@Check({"tplId:required#模板"})
-	public Response previewShareLuckysheetReportData(@RequestBody MesGenerateReportDto mesGenerateReportDto) throws Exception
+	public String previewShareLuckysheetReportData(@RequestBody MesGenerateReportDto mesGenerateReportDto) throws Exception
 	{
 		String shareCode = this.httpServletRequest.getHeader("shareCode");
 		String shareUser = this.httpServletRequest.getHeader("shareUser");
@@ -360,7 +360,23 @@ public class ReportTplController extends BaseController {
 			}
 		}
 		ResPreviewData result = this.iReportTplService.previewLuckysheetReportData(mesGenerateReportDto,userInfoDto);
-		return Response.success(result);
+		httpServletResponse.setHeader("Content-Encoding", "gzip");
+		httpServletResponse.setContentType("text/html");
+		String resultStr="";
+		Response response = new Response();
+		response.setCode("200");
+		response.setResponseData(result);
+		resultStr=JsonUtil.toJson(response);
+		try {
+	         byte dest[]= Pako_GzipUtils.compress2(resultStr);
+	         OutputStream out=httpServletResponse.getOutputStream();
+	         out.write(dest);
+	         out.close();
+	         out.flush();
+	     } catch (Exception e) {
+	        e.printStackTrace();
+	     }
+		return null;
 	}
 	
 	/**  
