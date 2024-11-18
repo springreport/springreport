@@ -1669,6 +1669,9 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 				int rowspan = 1;
 				docTableCellDto.setColspan(colspan);
 				docTableCellDto.setRowspan(rowspan);
+				if(StringUtil.isNotEmpty(cell.getColor())) {
+					docTableCellDto.setBackgroundColor("#"+cell.getColor());
+				}
 				if(cell.getCTTc().getTcPr().getGridSpan() != null) {
 					docTableCellDto.setColspan(cell.getCTTc().getTcPr().getGridSpan().getVal().intValue());
 				}

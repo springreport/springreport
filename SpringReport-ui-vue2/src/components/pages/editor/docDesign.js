@@ -515,6 +515,17 @@ export default {
           that.highlightVisiable = true;
         }
 
+        const cellcolorControlDom = document.querySelector('#cellcolor')
+        cellcolorControlDom.oninput = function () {
+          that.instance.command.executeTableTdBackgroundColor(cellcolorControlDom.value)
+        }
+        const cellcolorDom = document.querySelector('.menu-item__cellcolor')
+        const cellcolorSpanDom = cellcolorDom.querySelector('span')
+        cellcolorDom.onclick = function () {
+          console.log('cellcolor')
+          cellcolorControlDom.click()
+        }
+
         const titleDom = document.querySelector('.menu-item__title')
         const titleSelectDom = titleDom.querySelector('.select')
         const titleOptionDom = titleDom.querySelector('.options')
@@ -976,6 +987,7 @@ export default {
 
         // 内部事件监听
         this.instance.listener.rangeStyleChange = function (payload) {
+          console.log(payload)
           // 控件类型
           payload.type === that.commonConstants.editor.ElementType.SUBSCRIPT
             ? subscriptDom.classList.add('active')

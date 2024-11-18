@@ -290,13 +290,15 @@
 }
 
 :deep(.menu-item__color),
-:deep(.menu-item__highlight) {
+:deep(.menu-item__highlight),
+:deep(.menu-item__cellcolor) {
   display: flex;
   flex-direction: column;
 }
 
 :deep(.menu-item__color #color),
-:deep(.menu-item__highlight #highlight) {
+:deep(.menu-item__highlight #highlight),
+.menu-item__cellcolor #cellcolor {
   width: 1px;
   height: 1px;
   visibility: hidden;
@@ -318,6 +320,10 @@
 
 :deep(.menu-item__highlight span) {
   background-color: #ffff00;
+}
+
+:deep(.menu-item__cellcolor i) {
+  background-image: url('./assets/images/cellcolor.svg');
 }
 
 :deep(.menu-item .menu-item__title) {

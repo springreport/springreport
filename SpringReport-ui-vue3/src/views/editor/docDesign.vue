@@ -190,6 +190,11 @@
               <span></span>
               <input type="color" id="highlight">
             </div>
+            <div class="menu-item__cellcolor" title="单元格颜色">
+              <i></i>
+              <!-- <span></span> -->
+              <input type="color" id="cellcolor" />
+            </div>
           </div>
           <div class="menu-divider"></div>
           <div class="menu-item">

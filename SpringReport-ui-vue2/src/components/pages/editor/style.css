@@ -291,19 +291,23 @@
 }
 
 ::v-deep .menu-item__color,
-.menu-item__highlight {
+.menu-item__highlight,
+.menu-item__cellcolor {
   display: flex;
   flex-direction: column;
 }
 
 ::v-deep .menu-item__color #color,
-.menu-item__highlight #highlight {
+.menu-item__highlight #highlight,
+.menu-item__cellcolor #cellcolor {
   width: 1px;
   height: 1px;
   visibility: hidden;
   outline: none;
   appearance: none;
 }
+
+
 
 ::v-deep .menu-item__color i {
   background-image: url('./assets/images/color.svg');
@@ -319,6 +323,10 @@
 
 ::v-deep .menu-item__highlight span {
   background-color: #ffff00;
+}
+
+::v-deep .menu-item__cellcolor i {
+  background-image: url('./assets/images/cellcolor.svg');
 }
 
 ::v-deep .menu-item .menu-item__title {
