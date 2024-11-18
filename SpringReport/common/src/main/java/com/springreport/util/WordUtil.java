@@ -541,6 +541,10 @@ public class WordUtil {
     	if(cell == null) {
     		return;
     	}
+    	String backgroundColor = cellInfo.getString("backgroundColor");
+    	if(StringUtil.isNotEmpty(backgroundColor)) {
+    		cell.setColor(backgroundColor.replaceFirst("#", ""));
+    	}
     	JSONArray values = cellInfo.getJSONArray("value");
     	String verticalAlign = cellInfo.getString("verticalAlign");
     	if(ListUtil.isNotEmpty(values)) {

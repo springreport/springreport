@@ -35,4 +35,11 @@ public class DocTableCellDto {
 	 * @date 2024-09-27 09:16:56 
 	 */  
 	private String verticalAlign = "top";
+	
+	/**  
+	 * @Fields backgroundColor : 背景颜色
+	 * @author caiyang
+	 * @date 2024-11-18 09:56:28 
+	 */  
+	private String backgroundColor;
 }
