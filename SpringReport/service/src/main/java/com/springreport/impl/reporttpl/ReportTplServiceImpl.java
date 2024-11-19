@@ -3344,6 +3344,16 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 						{
 							options.remove("axis");
 						}
+						JSONArray radius = new JSONArray();
+						if(chartAllType.contains("default")||chartAllType.contains("split")) {
+							radius.add("0%");
+							radius.add("65%");	
+							serie.put("radius", radius);
+						}else if(chartAllType.contains("ring")) {
+							radius.add("40%");
+							radius.add("65%");	
+							serie.put("radius", radius);
+						}
 						if(!pieSeriesName)
 						{
 							if(StringUtil.isNotEmpty(list.get(i).getSeriesName()))
