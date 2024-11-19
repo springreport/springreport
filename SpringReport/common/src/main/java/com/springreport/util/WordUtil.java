@@ -660,31 +660,35 @@ public class WordUtil {
             		run.setTextHighlightColor(getHighlightName(highlight));
             	}
             	if(underline != null) {
-            		JSONObject textDecoration = content.getJSONObject("textDecoration");
-            		if(textDecoration == null) {
-            			run.setUnderline(UnderlinePatterns.SINGLE);
+            		if(underline) {
+            			JSONObject textDecoration = content.getJSONObject("textDecoration");
+                		if(textDecoration == null) {
+                			run.setUnderline(UnderlinePatterns.SINGLE);
+                		}else {
+                			String style = textDecoration.getString("style");
+                			switch (style) {
+            				case "solid":
+            					run.setUnderline(UnderlinePatterns.SINGLE);
+            					break;
+            				case "double":
+            					run.setUnderline(UnderlinePatterns.DOUBLE);
+            					break;
+            				case "dashed":
+            					run.setUnderline(UnderlinePatterns.DASH);
+            					break;
+            				case "dotted":
+            					run.setUnderline(UnderlinePatterns.DOT_DASH);
+            					break;
+            				case "wavy":
+            					run.setUnderline(UnderlinePatterns.WAVE);
+            					break;
+            				default:
+            					run.setUnderline(UnderlinePatterns.NONE);
+            					break;
+            				}
+                		}
             		}else {
-            			String style = textDecoration.getString("style");
-            			switch (style) {
-        				case "solid":
-        					run.setUnderline(UnderlinePatterns.SINGLE);
-        					break;
-        				case "double":
-        					run.setUnderline(UnderlinePatterns.DOUBLE);
-        					break;
-        				case "dashed":
-        					run.setUnderline(UnderlinePatterns.DASH);
-        					break;
-        				case "dotted":
-        					run.setUnderline(UnderlinePatterns.DOT_DASH);
-        					break;
-        				case "wavy":
-        					run.setUnderline(UnderlinePatterns.WAVE);
-        					break;
-        				default:
-        					run.setUnderline(UnderlinePatterns.NONE);
-        					break;
-        				}
+            			run.setUnderline(UnderlinePatterns.NONE);
             		}
             	}else {
             		run.setUnderline(UnderlinePatterns.NONE);
