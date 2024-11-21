@@ -9,7 +9,9 @@
                             <el-option label="静态数据" value="1"></el-option>
                             <el-option label="动态数据" value="2"></el-option>
                         </el-select>
-                        &nbsp;<el-button link type="primary" @click="editData(component)">数据配置</el-button>
+                    </el-form-item>
+                    <el-form-item label="数据配置">
+                        <el-button link type="primary" @click="editData(component)">数据配置</el-button>
                     </el-form-item>
                     <div v-if="component.type.toLowerCase().indexOf('line')>=0 || component.type.toLowerCase().indexOf('area')>=0 || component.type.toLowerCase().indexOf('histogram')>=0">
                     <el-form-item label="x轴数据">

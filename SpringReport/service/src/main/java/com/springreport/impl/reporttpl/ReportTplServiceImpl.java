@@ -661,7 +661,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 	 * @date 2021-05-25 07:01:49 
 	 */ 
 	@Override
-	public List<List<String>> getTplDatasetsColumnNames(Long tplId,Map<String, String> datasetNameIdMap) throws SQLException{
+	public List<List<String>> getTplDatasetsColumnNames(Long tplId,Map<String, String> datasetNameIdMap,UserInfoDto userInfoDto) throws SQLException{
 		if(datasetNameIdMap == null) {
 			datasetNameIdMap = new HashMap<>();
 		}
@@ -694,7 +694,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 							if(dbConnection == null) {
 								throw new BizException(StatusCode.FAILURE, "influxdb连接失败!");
 							}
-							dataSetColumns = JdbcUtils.parseInfluxdbColumns(dbConnection, datasets.get(i).getTplSql(), reportDatasource.getType(),datasets.get(i).getTplParam());
+							dataSetColumns = JdbcUtils.parseInfluxdbColumns(dbConnection, datasets.get(i).getTplSql(), reportDatasource.getType(),datasets.get(i).getTplParam(),userInfoDto);
 						}else {
 							DataSource dataSource = null;
 							if(reportDatasource.getType().intValue() == 9)
@@ -711,12 +711,12 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 							{
 								if(reportDatasource.getType().intValue() == 9)
 								{
-									dataSetColumns = JdbcUtils.parseMetaDataColumns(dataSource, datasets.get(i).getTplSql(),reportDatasource.getType(),datasets.get(i).getTplParam(),reportDatasource.getUserName(),reportDatasource.getPassword());
+									dataSetColumns = JdbcUtils.parseMetaDataColumns(dataSource, datasets.get(i).getTplSql(),reportDatasource.getType(),datasets.get(i).getTplParam(),reportDatasource.getUserName(),reportDatasource.getPassword(),userInfoDto);
 								}else {
-									dataSetColumns = JdbcUtils.parseMetaDataColumns(dataSource, datasets.get(i).getTplSql(),reportDatasource.getType(),datasets.get(i).getTplParam());
+									dataSetColumns = JdbcUtils.parseMetaDataColumns(dataSource, datasets.get(i).getTplSql(),reportDatasource.getType(),datasets.get(i).getTplParam(),userInfoDto);
 								}
 							}else {
-								dataSetColumns = JdbcUtils.parseProcedureColumns(dataSource, datasets.get(i).getTplSql(), reportDatasource.getType(), JSONArray.parseArray(datasets.get(i).getInParam()), JSONArray.parseArray(datasets.get(i).getOutParam()));
+								dataSetColumns = JdbcUtils.parseProcedureColumns(dataSource, datasets.get(i).getTplSql(), reportDatasource.getType(), JSONArray.parseArray(datasets.get(i).getInParam()), JSONArray.parseArray(datasets.get(i).getOutParam()),userInfoDto);
 							}
 						}
 						
@@ -1031,7 +1031,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		}
 		//获取模板数据集对应的列,用于判断单元格的类型，若columnNames中存在该值，则说明是动态数据，否则是固定值
 		Map<String, String> datasetNameIdMap = new HashMap<String, String>();
-		List<List<String>> columnNames = this.getTplDatasetsColumnNames(mesLuckySheetsTplDto.getTplId(),datasetNameIdMap);
+		List<List<String>> columnNames = this.getTplDatasetsColumnNames(mesLuckySheetsTplDto.getTplId(),datasetNameIdMap,userInfoDto);
 		Map<String, Long> printSettings = new HashMap<>();
 		for (int i = 0; i < mesLuckySheetsTplDto.getConfigs().size(); i++) {
 			MesLuckySheetTplDto mesLuckySheetTplDto = mesLuckySheetsTplDto.getConfigs().get(i);
@@ -2513,7 +2513,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				usedDataSet = new ArrayList<>(hs);
 			}
 			Map<String, String> datasetNameIdMap = new HashMap<String, String>();
-			List<List<String>> columnNames = this.getTplDatasetsColumnNames(reportTpl.getId(),datasetNameIdMap);
+			List<List<String>> columnNames = this.getTplDatasetsColumnNames(reportTpl.getId(),datasetNameIdMap,userInfoDto);
 			//获取所有图表绑定的动态数据集属性
 //			Set<String> chartsAttrs = new HashSet<>();
 //			Map<String, List<String>> chartAttrsMap = new HashMap<String, List<String>>();
@@ -10094,7 +10094,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
                 {
                     maxX = x+dataSize*luckySheetBindData.getRowSpan();
                 }
-                if((y+luckySheetBindData.getColSpan()>maxY))
+                if((y+luckySheetBindData.getColSpan()-1>maxY))
                 {
                     maxY = y+luckySheetBindData.getColSpan();
                 }
@@ -10759,7 +10759,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		}
 		//获取模板数据集对应的列,用于判断单元格的类型，若columnNames中存在该值，则说明是动态数据，否则是固定值
 		Map<String, String> datasetNameIdMap = new HashMap<>();
-		List<List<String>> columnNames = this.getTplDatasetsColumnNames(mesLuckySheetsTplDto.getTplId(),datasetNameIdMap);
+		List<List<String>> columnNames = this.getTplDatasetsColumnNames(mesLuckySheetsTplDto.getTplId(),datasetNameIdMap,userInfoDto);
 		Map<String, Long> printSettings = new HashMap<>();
 		for (int i = 0; i < mesLuckySheetsTplDto.getConfigs().size(); i++) {
 			MesLuckySheetTplDto mesLuckySheetTplDto = mesLuckySheetsTplDto.getConfigs().get(i);

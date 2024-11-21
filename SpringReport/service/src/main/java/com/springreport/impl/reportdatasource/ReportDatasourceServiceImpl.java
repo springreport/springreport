@@ -35,6 +35,7 @@ import com.springreport.base.InfluxDbDataSourceConfig;
 import com.springreport.base.PageEntity;
 import com.springreport.base.TDengineConfig;
 import com.springreport.base.TDengineConnection;
+import com.springreport.base.UserInfoDto;
 import com.springreport.constants.Constants;
 import com.springreport.constants.StatusCode;
 import com.springreport.dto.reportdatasource.ApiTestResultDto;
@@ -298,7 +299,7 @@ public class ReportDatasourceServiceImpl extends ServiceImpl<ReportDatasourceMap
 	 * @throws Exception 
 	*/
 	@Override
-	public List<Map<String, Object>> execSql(MesExecSqlDto mesExecSqlDto) throws Exception {
+	public List<Map<String, Object>> execSql(MesExecSqlDto mesExecSqlDto,UserInfoDto userInfoDto) throws Exception {
 		//获取模板信息
 //		ReportTpl reportTpl = iReportTplService.getById(mesExecSqlDto.getTplId());
 //		if (reportTpl == null) {
@@ -316,11 +317,11 @@ public class ReportDatasourceServiceImpl extends ServiceImpl<ReportDatasourceMap
 			if(dbConnection == null) {
 				throw new BizException(StatusCode.FAILURE, "influxdb连接失败!");
 			}
-			result = JdbcUtils.parseInfluxdbColumns(dbConnection, mesExecSqlDto.getTplSql(), reportDatasource.getType(),mesExecSqlDto.getSqlParams());
+			result = JdbcUtils.parseInfluxdbColumns(dbConnection, mesExecSqlDto.getTplSql(), reportDatasource.getType(),mesExecSqlDto.getSqlParams(),userInfoDto);
 		}else if(reportDatasource.getType().intValue() == 10) {
 			TDengineConfig config = new TDengineConfig(mesExecSqlDto.getDatasourceId(), reportDatasource.getUserName(), reportDatasource.getPassword(), reportDatasource.getJdbcUrl());
 			TDengineConnection tDengineConnection = new TDengineConnection(config.getJdbcUrl(), config.getUsername(), config.getPassword());
-			result = JdbcUtils.parseMetaDataColumns(tDengineConnection.getConnection(), mesExecSqlDto.getTplSql(),reportDatasource.getType(),mesExecSqlDto.getSqlParams());
+			result = JdbcUtils.parseMetaDataColumns(tDengineConnection.getConnection(), mesExecSqlDto.getTplSql(),reportDatasource.getType(),mesExecSqlDto.getSqlParams(),userInfoDto);
 		}else {
 			//获取数据源
 			DataSource dataSource = null;
@@ -337,13 +338,13 @@ public class ReportDatasourceServiceImpl extends ServiceImpl<ReportDatasourceMap
 			{//标准sql
 				if(reportDatasource.getType().intValue() == 9)
 				{
-					result = JdbcUtils.parseMetaDataColumns(dataSource, mesExecSqlDto.getTplSql(),reportDatasource.getType(),mesExecSqlDto.getSqlParams(),reportDatasource.getUserName(),reportDatasource.getPassword());
+					result = JdbcUtils.parseMetaDataColumns(dataSource, mesExecSqlDto.getTplSql(),reportDatasource.getType(),mesExecSqlDto.getSqlParams(),reportDatasource.getUserName(),reportDatasource.getPassword(),userInfoDto);
 				}else {
-					result = JdbcUtils.parseMetaDataColumns(dataSource, mesExecSqlDto.getTplSql(),reportDatasource.getType(),mesExecSqlDto.getSqlParams());
+					result = JdbcUtils.parseMetaDataColumns(dataSource, mesExecSqlDto.getTplSql(),reportDatasource.getType(),mesExecSqlDto.getSqlParams(),userInfoDto);
 				}
 			}else {
 			 //存储过程
-				result = JdbcUtils.parseProcedureColumns(dataSource, mesExecSqlDto.getTplSql(), reportDatasource.getType(), JSONArray.parseArray(mesExecSqlDto.getInParam()), JSONArray.parseArray(mesExecSqlDto.getOutParam()));
+				result = JdbcUtils.parseProcedureColumns(dataSource, mesExecSqlDto.getTplSql(), reportDatasource.getType(), JSONArray.parseArray(mesExecSqlDto.getInParam()), JSONArray.parseArray(mesExecSqlDto.getOutParam()),userInfoDto);
 			}
 		}
 		
@@ -478,7 +479,7 @@ public class ReportDatasourceServiceImpl extends ServiceImpl<ReportDatasourceMap
 	 */  
 	@Override
 	@Async
-	public void cacheDatasetsColumns(List<ReportTplDataset> reportTplDatasets) throws Exception {
+	public void cacheDatasetsColumns(List<ReportTplDataset> reportTplDatasets,UserInfoDto userInfoDto) throws Exception {
 		if(reportTplDatasets != null && reportTplDatasets.size() > 0)
 		{
 			List<Map<String, Object>> columns = null;
@@ -498,11 +499,11 @@ public class ReportDatasourceServiceImpl extends ServiceImpl<ReportDatasourceMap
 								if(dbConnection == null) {
 									throw new BizException(StatusCode.FAILURE, "influxdb连接失败!");
 								}
-								columns = JdbcUtils.parseInfluxdbColumns(dbConnection, reportTplDatasets.get(i).getTplSql(), reportDatasource.getType(),reportTplDatasets.get(i).getTplParam());
+								columns = JdbcUtils.parseInfluxdbColumns(dbConnection, reportTplDatasets.get(i).getTplSql(), reportDatasource.getType(),reportTplDatasets.get(i).getTplParam(),userInfoDto);
 							}else if(reportDatasource.getType().intValue() == 10){
 								TDengineConfig config = new TDengineConfig(reportTplDatasets.get(i).getDatasourceId(), reportDatasource.getUserName(), reportDatasource.getPassword(), reportDatasource.getJdbcUrl());
 								TDengineConnection tDengineConnection = new TDengineConnection(config.getJdbcUrl(), config.getUsername(), config.getPassword());
-								columns = JdbcUtils.parseMetaDataColumns(tDengineConnection.getConnection(), reportTplDatasets.get(i).getTplSql(),reportDatasource.getType(),reportTplDatasets.get(i).getTplParam());
+								columns = JdbcUtils.parseMetaDataColumns(tDengineConnection.getConnection(), reportTplDatasets.get(i).getTplSql(),reportDatasource.getType(),reportTplDatasets.get(i).getTplParam(),userInfoDto);
 							}else {
 								DataSource dataSource = null;
 								if(reportDatasource.getType().intValue() == 9)
@@ -520,12 +521,12 @@ public class ReportDatasourceServiceImpl extends ServiceImpl<ReportDatasourceMap
 								{
 									if(reportDatasource.getType().intValue() == 9)
 									{
-										columns = JdbcUtils.parseMetaDataColumns(dataSource, reportTplDatasets.get(i).getTplSql(),reportDatasource.getType(),reportTplDatasets.get(i).getTplParam(),reportDatasource.getUserName(),reportDatasource.getPassword());
+										columns = JdbcUtils.parseMetaDataColumns(dataSource, reportTplDatasets.get(i).getTplSql(),reportDatasource.getType(),reportTplDatasets.get(i).getTplParam(),reportDatasource.getUserName(),reportDatasource.getPassword(),userInfoDto);
 									}else {
-										columns = JdbcUtils.parseMetaDataColumns(dataSource, reportTplDatasets.get(i).getTplSql(),reportDatasource.getType(),reportTplDatasets.get(i).getTplParam());
+										columns = JdbcUtils.parseMetaDataColumns(dataSource, reportTplDatasets.get(i).getTplSql(),reportDatasource.getType(),reportTplDatasets.get(i).getTplParam(),userInfoDto);
 									}
 								}else {
-									columns = JdbcUtils.parseProcedureColumns(dataSource, reportTplDatasets.get(i).getTplSql(), reportDatasource.getType(), JSONArray.parseArray(reportTplDatasets.get(i).getInParam()), JSONArray.parseArray(reportTplDatasets.get(i).getOutParam()));
+									columns = JdbcUtils.parseProcedureColumns(dataSource, reportTplDatasets.get(i).getTplSql(), reportDatasource.getType(), JSONArray.parseArray(reportTplDatasets.get(i).getInParam()), JSONArray.parseArray(reportTplDatasets.get(i).getOutParam()),userInfoDto);
 								}
 							}
 							redisUtil.set(RedisPrefixEnum.DATASETCOLUMN.getCode()+String.valueOf(reportTplDatasets.get(i).getId()), columns);

@@ -102,6 +102,7 @@ export default {
                 checkStrictly:"",//父子联动 1是 2否
                 datasourceId:"",//数据源id
                 isRelyOnParams: '', // 是否依赖其他参数
+                paramRequired:'',//参数是否必填
             },
             procedureOutParamForm:{
                 paramName:"",//参数名称
@@ -1402,6 +1403,7 @@ export default {
                         this.procedureInParamTableData.tableData[result.index].checkStrictly = this.procedureParamForm.checkStrictly
                         this.procedureInParamTableData.tableData[result.index].datasourceId = this.procedureParamForm.datasourceId
                         this.procedureInParamTableData.tableData[result.index].isRelyOnParams = this.procedureParamForm.isRelyOnParams
+                        this.procedureInParamTableData.tableData[result.index].paramRequired = this.procedureParamForm.paramRequired
                     }else{
                     //未添加该参数，则列表中新增一条数据
                     let row = {
@@ -1417,6 +1419,7 @@ export default {
                         checkStrictly: this.procedureParamForm.checkStrictly,
                         datasourceId: this.procedureParamForm.datasourceId,
                         isRelyOnParams: this.procedureParamForm.isRelyOnParams,
+                        paramRequired: this.procedureParamForm.paramRequired,
                     };
                     this.procedureInParamTableData.tableData.push(row);
                     }
@@ -1441,6 +1444,7 @@ export default {
             this.procedureParamForm.checkStrictly = row.checkStrictly
             this.procedureParamForm.datasourceId = row.datasourceId
             this.procedureParamForm.isRelyOnParams = row.isRelyOnParams
+            this.procedureParamForm.paramRequired = row.paramRequired
         },
         //删除输入参数
         deleteInParam(index){

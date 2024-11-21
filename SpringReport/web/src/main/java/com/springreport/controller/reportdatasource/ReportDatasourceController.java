@@ -17,12 +17,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.springreport.base.BaseController;
 import com.springreport.base.BaseEntity;
 import com.springreport.base.Response;
+import com.springreport.base.UserInfoDto;
 import com.springreport.constants.Constants;
 import com.springreport.dto.reportdatasource.MesGetSelectDataDto;
 import com.springreport.dto.reportdatasource.MesReportDatasourceDto;
 import com.springreport.dto.reporttpldatasource.MesExecSqlDto;
 import com.springreport.entity.reportdatasource.ReportDatasource;
 import com.springreport.annotation.Check;
+import com.springreport.annotation.LoginUser;
 import com.springreport.annotation.MethodLog;
 import com.springreport.api.reportdatasource.IReportDatasourceService;
  /**  
@@ -164,8 +166,8 @@ public class ReportDatasourceController extends BaseController {
 	@MethodLog(module="ReportDatasource",remark="执行解析sql语句",operateType=Constants.OPERATE_TYPE_SEARCH)
 	@Check({"tplSql:required#sql语句","datasourceId:required#数据库id"})
 	@RequiresPermissions(value = {"reportDesign_addDataSet","reportDesign_editDataSet","screenTpl_screenDesign","reportForms_addDataSet","reportForms_editDataSet"},logical = Logical.OR)
-	public Response execSql(@RequestBody MesExecSqlDto mesExecSqlDto) throws Exception {
-		List<Map<String, Object>> result = this.iReportDatasourceService.execSql(mesExecSqlDto);
+	public Response execSql(@RequestBody MesExecSqlDto mesExecSqlDto,@LoginUser UserInfoDto userInfoDto) throws Exception {
+		List<Map<String, Object>> result = this.iReportDatasourceService.execSql(mesExecSqlDto,userInfoDto);
 		return Response.success(result);
 	}
 	

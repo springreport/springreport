@@ -307,10 +307,18 @@ public class ReportDataUtil {
 	    			}
 	    			if(InParamTypeEnum.INT.getCode().equals(jsonObject.getString("paramType")))
 	    			{
-	    				cstm.setInt(i+1, Integer.valueOf(String.valueOf(param)));
+	    				if(StringUtil.isNotEmpty(jsonObject.getString("paramDefault"))) {
+	    					cstm.setInt(i+1, Integer.valueOf(String.valueOf(param)));
+	    				}else {
+	    					cstm.setInt(i+1, 0);
+	    				}
 	    			}else if(InParamTypeEnum.STRING.getCode().equals(jsonObject.getString("paramType")))
     				{
-    					cstm.setString(i+1, String.valueOf(param));
+	    				if(StringUtil.isNotEmpty(jsonObject.getString("paramDefault"))) {
+	    					cstm.setString(i+1, String.valueOf(param));
+	    				}else {
+	    					cstm.setString(i+1, null);
+	    				}
     				}else if(InParamTypeEnum.LONG.getCode().equals(jsonObject.getString("paramType")))
     				{
     					cstm.setLong(i+1, Long.valueOf(String.valueOf(param)));
