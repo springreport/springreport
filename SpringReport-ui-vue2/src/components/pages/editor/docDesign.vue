@@ -20,7 +20,7 @@
                     <i :class="o.isActive?'el-icon-arrow-down el-icon-arrow-down_dataset':'el-icon-arrow-right'" @click="clickDatasets(o)"></i>
                     <span class="dataset-name" @click="clickDatasets(o)" :title="o.datasetName">{{o.datasetName}}
                        <el-dropdown>
-                           <i class="el-icon-copy-document" title="复制"></i>
+                           <i class="el-icon-circle-plus-outline" title="添加"></i>
                            <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item v-on:click.native="copyAttr(5,o.datasetName)">列表</el-dropdown-item>
                             <el-dropdown-item v-on:click.native="copyAttr(6,o.datasetName)">区块对</el-dropdown-item>
@@ -33,7 +33,7 @@
                 <div class="dataset-box-content" v-if="o.isActive">
                         <p class="column-tag" v-for="(column,index) in o.columns" :key="index" :title="column.name" >
                           <el-dropdown>
-                           <i class="el-icon-copy-document" title="复制"></i>
+                           <i class="el-icon-circle-plus-outline" title="添加"></i>
                            <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item v-on:click.native="copyAttr(1,o.datasetName,column.name)">文本</el-dropdown-item>
                             <el-dropdown-item v-on:click.native="copyAttr(2,o.datasetName,column.name)">图片</el-dropdown-item>
@@ -465,9 +465,9 @@
                 </ul>
               </div>
             </div>
-            <!-- <div class="paper-margin" title="页边距">
+            <div class="paper-margin" title="页边距">
               <i></i>
-            </div> -->
+            </div>
             <div class="fullscreen" title="全屏显示">
               <i></i>
             </div>
@@ -805,6 +805,14 @@
             :modalData="codeModalData"
             :modalHandles="codeModalHandles"
             @closeModal="closeCodeModal()"
+          ></modal>
+          <modal
+            ref="paperMarginModalRef"
+            :modalConfig="paperMarginModalConfig"
+            :modalForm="paperMarginModalForm"
+            :modalData="paperMarginModalData"
+            :modalHandles="paperMarginModalHandles"
+            @closeModal="closePaperMarginModal()"
           ></modal>
           <textarea id="clipboradInput" value="" style="opacity:0;position:absolute" />
   </div>

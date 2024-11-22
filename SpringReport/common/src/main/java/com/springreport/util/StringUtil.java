@@ -518,7 +518,15 @@ public class StringUtil {
     	return sequenceNo;
     }
     
-	
+    public static boolean allSameCharacter(String str,String character) {
+        if (str == null || str.length() == 0) {
+            return false;
+        }
+
+        String replaced = str.replaceAll(character, "");
+        return replaced.isEmpty(); // 如果替换后为空，则说明字符相同
+    }
+
 	public static void main(String[] args) throws Exception {
 		 double number = 1;
 		 
@@ -527,6 +535,8 @@ public class StringUtil {
 	 
 	        // 格式化数字并输出结果
 	        String formattedNumber = decimalFormat.format(number);
-	        System.out.println("a,b".split(","));
+	        String value = "\n\n\ncdfadfad\n\n\n\n ";
+	        String [] split = value.split("\n");
+	        System.out.println(value.split("\n").length);
 	}
 }

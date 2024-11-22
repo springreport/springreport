@@ -30,4 +30,11 @@ public class DocTplDto extends DocTpl{
 	 * @date 2023-03-29 02:48:41 
 	 */  
 	private String datasourceId;
+	
+	/**  
+	 * @Fields margins : 页边距
+	 * @author caiyang
+	 * @date 2024-11-22 12:44:18 
+	 */  
+	private String margins = "[]";
 }

@@ -30,9 +30,11 @@ import com.deepoove.poi.config.Configure;
 import com.deepoove.poi.config.ConfigureBuilder;
 import com.deepoove.poi.plugin.table.LoopColumnTableRenderPolicy;
 import com.deepoove.poi.plugin.table.LoopRowTableRenderPolicy;
+import com.deepoove.poi.plugin.toc.TOCRenderPolicy;
 
 import org.apache.poi.openxml4j.util.ZipSecureFile;
 import org.apache.poi.wp.usermodel.HeaderFooterType;
+import org.apache.poi.xwpf.model.XWPFHeaderFooterPolicy;
 import org.apache.poi.xwpf.usermodel.IBodyElement;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.UnderlinePatterns;
@@ -47,16 +49,22 @@ import org.apache.poi.xwpf.usermodel.XWPFStyles;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
+import org.apache.xmlbeans.impl.xb.xmlschema.SpaceAttribute;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell.XWPFVertAlign;
 import org.docx4j.fonts.IdentityPlusMapper;
 import org.docx4j.fonts.Mapper;
 import org.docx4j.fonts.PhysicalFonts;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTBorder;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTFldChar;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTP;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPBdr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTString;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTText;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTVerticalAlignRun;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STFldCharType;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STHdrFtr;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -388,7 +396,7 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 		docTplSettings.setHeader("[]");
 		docTplSettings.setFooter("[]");
 		docTplSettings.setMain("[]");
-		docTplSettings.setMargins("[]");
+		docTplSettings.setMargins("[100,120,100,120]");
 		docTplSettings.setHeight(1123);
 		docTplSettings.setWidth(794);
 		this.iDocTplSettingsService.save(docTplSettings);
@@ -594,7 +602,7 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 			model.setHeader("[]");
 			model.setFooter("[]");
 			model.setMain("[]");
-			model.setMain("[]");
+			model.setMargins("[]");
 			model.setWidth(794);
 			model.setHeight(1123);
 		}
@@ -775,7 +783,6 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 			docTplChartsMap = docTplCharts.stream().collect(Collectors.groupingBy(DocTplCharts::getChartUrl));
 			docTplChartsObj = JSON.parseObject(JSON.toJSONString(docTplChartsMap));
 		}
-		
 		QueryWrapper<DocTplCodes> codesWrapper = new QueryWrapper<>();
 		codesWrapper.eq("tpl_id", model.getTplId());
 		codesWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
@@ -788,11 +795,13 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 		}
 		try {
 			//添加自定义标题
-//			for (int i = 1; i <= 6; i++) {
-//				WordUtil.addCustomHeadingStyle(doc, "标题" + i, i);
-//			}
+			for (int i = 1; i <= 6; i++) {
+				WordUtil.addCustomHeadingStyle(doc, "标题" + i, i);
+			}
 			//设置纸张大小
 			WordUtil.setPaperSize(doc, model.getHeight(), model.getWidth(),model.getPaperDirection());
+			JSONArray margins = JSONArray.parseArray(model.getMargins());
+			WordUtil.setPaperMargins(doc, margins);
 			//设置纸张大小
 			WordUtil.setPaperSize(doc, model.getHeight(), model.getWidth(),model.getPaperDirection());
 			if(StringUtil.isNotEmpty(model.getWatermark())){
@@ -962,7 +971,32 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 					lastType = type;
 				}
 			}
-			
+			 // 创建页脚
+			XWPFFooter pageFooter = doc.createFooter(HeaderFooterType.DEFAULT);//创建一个新的XWPFFooter对象
+		    XWPFParagraph footerParagraph = pageFooter.createParagraph();
+		    footerParagraph.setAlignment(ParagraphAlignment.CENTER);
+		    CTP ctP = footerParagraph.getCTP();
+		    CTPPr ctppr = ctP.addNewPPr();
+		    CTString pst = ctppr.addNewPStyle();
+		    pst.setVal("PageNumber");
+		    
+		    // 添加页码到页脚
+		    XWPFRun footerRun = footerParagraph.createRun();
+		    footerRun.setText("");
+		    footerRun.getCTR().addNewFldChar().setFldCharType(STFldCharType.Enum.forString("begin"));
+		    footerRun.getCTR().addNewInstrText().setStringValue("PAGE \\* MERGEFORMAT");
+		    footerRun.getCTR().addNewInstrText().setSpace(SpaceAttribute.Space.Enum.forString("preserve"));
+		    footerRun.getCTR().addNewFldChar().setFldCharType(STFldCharType.Enum.forString("end"));
+		    footerRun.setText("/");
+		    footerRun.getCTR().addNewFldChar().setFldCharType(STFldCharType.Enum.forString("begin"));
+		    footerRun.getCTR().addNewInstrText().setStringValue("NUMPAGES \\* MERGEFORMAT");
+		    footerRun.getCTR().addNewInstrText().setSpace(SpaceAttribute.Space.Enum.forString("preserve"));
+		    footerRun.getCTR().addNewFldChar().setFldCharType(STFldCharType.Enum.forString("end"));
+		    footerRun.setText("");
+		 
+		    // 将页脚添加到所有的页面
+		    XWPFHeaderFooterPolicy headerFooterPolicy = new XWPFHeaderFooterPolicy(doc);
+		    headerFooterPolicy.createFooter(STHdrFtr.DEFAULT, new XWPFParagraph[]{footerParagraph});
 			baos = new ByteArrayOutputStream();
 			doc.write(baos);
 			baos.flush();
