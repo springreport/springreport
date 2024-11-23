@@ -21,7 +21,7 @@
                     <icon-down v-show="o.isActive" theme="outline" size="16" fill="#999" class="el-icon-arrow-right"  @click="clickDatasets(o)"/>
                     <span class="dataset-name" @click="clickDatasets(o)" :title="o.datasetName">{{o.datasetName}}
                        <el-dropdown>
-                          <icon-copy style="margin-top:4px"/>
+                          <icon-add-one style="margin-top:4px"/>
                           <template #dropdown>
                            <el-dropdown-menu>
                             <el-dropdown-item v-on:click="copyAttr(5,o.datasetName)">列表</el-dropdown-item>
@@ -36,7 +36,7 @@
                 <div class="dataset-box-content wrapper" v-if="o.isActive">
                         <div class="column-tag" v-for="(column,index) in o.columns" :key="index" :title="column.name" >
                           <el-dropdown>
-                          <icon-copy style="margin-top:8px"/>
+                          <icon-add-one style="margin-top:8px"/>
                            <!-- <i class="icon-copy" title="复制"></i> -->
                            <template #dropdown>
                            <el-dropdown-menu>
@@ -472,9 +472,9 @@
                 </ul>
               </div>
             </div>
-            <!-- <div class="paper-margin" title="页边距">
+            <div class="paper-margin" title="页边距">
               <i></i>
-            </div> -->
+            </div>
             <div class="fullscreen" title="全屏显示">
               <i></i>
             </div>
@@ -820,6 +820,14 @@
             :modalData="codeModalData"
             :modalHandles="codeModalHandles"
             @closeModal="closeCodeModal()"
+          ></modal>
+          <modal
+            ref="paperMarginModalRef"
+            :modalConfig="paperMarginModalConfig"
+            :modalForm="paperMarginModalForm"
+            :modalData="paperMarginModalData"
+            :modalHandles="paperMarginModalHandles"
+            @closeModal="closePaperMarginModal()"
           ></modal>
           <textarea id="clipboradInput" value="" style="opacity:0;position:absolute" />
   </div>

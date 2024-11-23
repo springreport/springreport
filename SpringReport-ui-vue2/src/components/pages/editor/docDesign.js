@@ -1930,6 +1930,19 @@ export default {
               }
              
             }
+            //设置纸张方向并回显
+            let pageDirection = response.responseData.paperDirection
+            that.instance.command.executePaperDirection(pageDirection);
+            const paperDirectionDom = document.querySelector('.paper-direction')
+            const paperDirectionDomOptionsDom = paperDirectionDom.querySelector('.options')
+            let pagerDirections = paperDirectionDomOptionsDom.querySelectorAll('li')
+            for (let index = 0; index < pagerDirections.length; index++) {
+              let element = pagerDirections[index];
+              element.classList.remove('active')
+              if(element.dataset.paperDirection ==  pageDirection){
+                element.classList.add('active')
+              }
+            }
           }else{
               that.commonUtil.showMessage({message:res.data.message,type: res.data.msgLevel})
           }
