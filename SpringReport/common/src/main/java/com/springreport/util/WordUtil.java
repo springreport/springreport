@@ -67,6 +67,7 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTP;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPBdr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPPrGeneral;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPageMar;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPageSz;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTString;
@@ -166,7 +167,25 @@ public class WordUtil {
             pageSize.setH(BigInteger.valueOf(h));
             pageSize.setOrient(STPageOrientation.PORTRAIT);
         }
-        
+    }
+    
+    public static void setPaperMargins(XWPFDocument document,JSONArray margins) {
+    	if(ListUtil.isNotEmpty(margins)) {
+    		// 获取CTSectPr，如果没有则创建
+            CTSectPr sectPr = document.getDocument().getBody().addNewSectPr();
+            CTPageMar pageMar = sectPr.addNewPgMar();
+     
+            // 设置上页边距为500 (Twips, 1 Twip = 1/20 点)
+            pageMar.setTop(BigInteger.valueOf((long) (margins.getLongValue(0)*14.4)));
+            // 设置下页边距为500 (Twips)
+            pageMar.setBottom(BigInteger.valueOf((long) (margins.getLongValue(2)*14.4)));
+            // 设置左页边距为720 (Twips)
+            pageMar.setLeft(BigInteger.valueOf((long) (margins.getLongValue(3)*14.4)));
+            // 设置右页边距为720 (Twips)
+            pageMar.setRight(BigInteger.valueOf((long) (margins.getLongValue(1)*14.4)));
+    	}
+    	
+ 
     }
     
     /**  
@@ -259,8 +278,14 @@ public class WordUtil {
     		if("\n".equals(value)) {
     			run.setText("");
     		}else {
-    			String[] textes = value.split("\n");
+    			String[] textes = (value+" ").split("\n");
     			for (int i = 0; i < textes.length; i++) {
+    				if(i == textes.length - 1) {
+    					int lastIndex = textes[i].lastIndexOf(" ");
+    					if (lastIndex != -1) {
+    						textes[i] = textes[i].substring(0, lastIndex);
+    					}
+    				}
     				run.setText(textes[i]);
     				if(i != textes.length - 1) {
     					run.addBreak();	
@@ -431,14 +456,14 @@ public class WordUtil {
 //    		}else {
     			int height = trList.getJSONObject(i).getIntValue("height");
         		float multiple = height/42;
-        		if(multiple > 4) {
+        		if(multiple > 6) {
         			xwpfTable.getRow(i).setHeight(height*15);
         		}else {
         			xwpfTable.getRow(i).setHeight(42*15);
         		}	
 //    		}
 		}
-    	setTableWidthFixed(xwpfTable,true);
+//    	setTableWidthFixed(xwpfTable,true);
     	JSONObject mergeObj = new JSONObject();
     	mergeObj.put("isMerge", true);
     	for (int i = 0; i < rows; i++) {
@@ -533,7 +558,7 @@ public class WordUtil {
         CTTblPr tblPr = table.getCTTbl().getTblPr();
         CTTblLayoutType tblLayout = tblPr.isSetTblLayout() ? tblPr.getTblLayout() : tblPr.addNewTblLayout();
         if(isFixed) {
-        	tblLayout.setType(STTblLayoutType.FIXED);
+        	tblLayout.setType(STTblLayoutType.AUTOFIT);
         }
     }
     

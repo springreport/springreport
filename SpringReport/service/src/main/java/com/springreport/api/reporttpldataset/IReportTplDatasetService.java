@@ -14,6 +14,7 @@ import net.sf.jsqlparser.JSQLParserException;
 
 import com.springreport.base.BaseEntity;
 import com.springreport.base.PageEntity;
+import com.springreport.base.UserInfoDto;
 import com.springreport.dto.reportdatasource.ApiTestResultDto;
 import com.springreport.dto.reporttpldataset.DatasetsParamDto;
 import com.springreport.dto.reporttpldataset.MesGetRelyOnSelectData;
@@ -90,7 +91,7 @@ public interface IReportTplDatasetService extends IService<ReportTplDataset> {
 	 * @throws SQLException 
 	 * @throws Exception 
 	*/
-	List<ReportDatasetDto> getTplDatasets(ReportTplDataset dataset) throws SQLException, Exception;
+	List<ReportDatasetDto> getTplDatasets(ReportTplDataset dataset,UserInfoDto userInfoDto) throws SQLException, Exception;
 	
 	/**  
 	 * @MethodName: getDatasetColumns
@@ -103,7 +104,7 @@ public interface IReportTplDatasetService extends IService<ReportTplDataset> {
 	 * @throws Exception 
 	 * @date 2022-10-12 06:31:31 
 	 */  
-	List<Map<String, Object>> getDatasetColumns(ReportTplDataset dataset) throws SQLException, Exception;
+	List<Map<String, Object>> getDatasetColumns(ReportTplDataset dataset,UserInfoDto userInfoDto) throws SQLException, Exception;
 	
 	/**  
 	 * @MethodName: getApiDefaultRequestResult
@@ -123,7 +124,7 @@ public interface IReportTplDatasetService extends IService<ReportTplDataset> {
 	 * @throws SQLException 
 	 * @throws Exception 
 	*/
-	ReportDatasetDto addTplDataSets(ReportTplDataset reportTplDataset) throws SQLException, Exception;
+	ReportDatasetDto addTplDataSets(ReportTplDataset reportTplDataset,UserInfoDto userInfoDto) throws SQLException, Exception;
 	
 	/**  
 	 * @Title: getTplDatasetAndDatasource
@@ -170,7 +171,7 @@ public interface IReportTplDatasetService extends IService<ReportTplDataset> {
 	 * @throws Exception 
 	 * @date 2021-07-14 05:01:40 
 	 */ 
-	List<Map<String, Object>> getTplDatasetColumns(ReportTplDataset reportTplDataset) throws SQLException, Exception;
+	List<Map<String, Object>> getTplDatasetColumns(ReportTplDataset reportTplDataset,UserInfoDto userInfoDto) throws SQLException, Exception;
 	
 	
 	/**  

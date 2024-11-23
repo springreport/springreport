@@ -204,7 +204,7 @@ export default {
     getReportDatasetsParam() {
       var obj = {
         url: this.apis.previewReport.getPreviewReportParamApi,
-        params: { tplId: this.currentTplId,isMobile:1},
+        params: { tplId: this.currentTplId,isMobile:1,initSelectData:true},
       };
       let headers = {};
       if(this.isShare == 1)

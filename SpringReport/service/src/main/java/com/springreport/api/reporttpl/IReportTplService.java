@@ -319,7 +319,7 @@ public interface IReportTplService extends IService<ReportTpl> {
 	 * @throws SQLException 
 	 * @date 2021-05-25 07:01:49 
 	 */ 
-	List<List<String>> getTplDatasetsColumnNames(Long tplId,Map<String, String> datasetNameIdMap) throws SQLException;
+	List<List<String>> getTplDatasetsColumnNames(Long tplId,Map<String, String> datasetNameIdMap,UserInfoDto userInfoDto) throws SQLException;
 
 	/**  
 	 * @MethodName: getAllTpls

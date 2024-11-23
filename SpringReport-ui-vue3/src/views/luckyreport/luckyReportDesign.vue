@@ -615,9 +615,15 @@
                                   <el-option label="DateTime" value="DateTime"></el-option>
                               </el-select>
                               </el-form-item>
-                              <el-form-item label="默认值" prop="paramDefault" :rules="filter_rules('默认值',{required:true})">
+                              <el-form-item label="默认值" prop="paramDefault" :rules="filter_rules('默认值',{required:false})">
                                   <el-input v-model="procedureParamForm.paramDefault" placeholder="默认值"></el-input>
                               </el-form-item>
+                              <el-form-item label="是否必填" prop="paramRequired" :rules="filter_rules('是否必填',{required:true})">
+                                <el-select v-model="procedureParamForm.paramRequired" placeholder="是否必填" size="small">
+                                    <el-option label="是" value="1"></el-option>
+                                    <el-option label="否" value="2"></el-option>
+                                </el-select>
+                             </el-form-item>
                               <el-form-item v-if="procedureParamForm.paramType != 'Date' && procedureParamForm.paramType != 'DateTime'" label="组件类型" prop="componentType" :rules="filter_rules('组件类型',{required:true})">
                               <el-select v-model="procedureParamForm.componentType" placeholder="组件类型"  >
                                    <el-option label="输入框" value="input"></el-option>

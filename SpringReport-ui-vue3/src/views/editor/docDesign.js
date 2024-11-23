@@ -243,6 +243,30 @@ export default {
         ]}
       ],
       docTplCodes:[],//文档条形码和二维码
+      paperMarginModalConfig:{ 
+        title: "页边距", //弹窗标题,值为:新增，查看，编辑
+        show: false, //弹框显示
+        formEditDisabled:false,//编辑弹窗是否可编辑
+        width:'650px',//弹出框宽度
+        modalRef:"modalRef",//modal标识
+        type:"1"//类型 1超链接 2水印
+      },
+      paperMarginModalForm:[
+        {type:'Input',label:'上边距',prop:'topMargin',rules:{required:true,type:"positiveInt"}},
+        {type:'Input',label:'下边距',prop:'bottomMargin',rules:{required:true,type:"positiveInt"}},
+        {type:'Input',label:'左边距',prop:'leftMargin',rules:{required:true,type:"positiveInt"}},
+        {type:'Input',label:'右边距',prop:'rightMargin',rules:{required:true,type:"positiveInt"}},
+      ],
+      paperMarginModalData : {//modal页面数据
+        topMargin:'100',//上边距
+        rightMargin:'120',//右边距
+        bottomMargin:'100',//下边距
+        leftMargin:'120',//左边距
+      },
+      paperMarginModalHandles:[
+        {label:'关闭',type:'default',handle:()=>this.closePaperMarginModal()},
+        {label:'确认',type:'primary',handle:()=>this.confirmPaperMarginModal()}
+      ],
     }
   },
   methods: {
@@ -297,6 +321,16 @@ export default {
             if(watermark){
               let watermarkObj = JSON.parse(watermark);
               that.instance.command.executeAddWatermark(watermarkObj)
+            }
+            let margins = response.responseData.margins;
+            if(margins != "[]"){
+              margins = JSON.parse(margins);
+              that.instance.command.executeSetPaperMargin([
+                Number(margins[0]),
+                Number(margins[1]),
+                Number(margins[2]),
+                Number(margins[3])
+              ])
             }
         }
       })
@@ -987,6 +1021,16 @@ export default {
             .forEach(child => child.classList.remove('active'))
           li.classList.add('active')
         }
+        // 页面边距
+        const paperMarginDom = document.querySelector('.paper-margin')
+        paperMarginDom.onclick = function () {
+          const [topMargin, rightMargin, bottomMargin, leftMargin] = that.instance.command.getPaperMargin();
+            that.paperMarginModalData.topMargin = topMargin+'';
+            that.paperMarginModalData.rightMargin = rightMargin+'';
+            that.paperMarginModalData.bottomMargin = bottomMargin+'';
+            that.paperMarginModalData.leftMargin = leftMargin+'';
+            that.paperMarginModalConfig.show = true;
+        }
 
         // 全屏
         const fullscreenDom = document.querySelector('.fullscreen')
@@ -1349,6 +1393,7 @@ export default {
       let tplSettings = this.instance.command.getValue();
       let options = this.instance.command.getOptions();
       let paperDirection = options.paperDirection;
+      let paperMargin = this.instance.command.getPaperMargin();
       var obj = {
         params:{tplId:tplId,width:tplSettings.width,height:tplSettings.height,
           margins:JSON.stringify(tplSettings.margins),
@@ -1359,6 +1404,7 @@ export default {
           watermark:JSON.stringify(tplSettings.watermark),
           docTplCharts:this.docTplCharts,
           docTplCodes:this.docTplCodes,
+          margins:JSON.stringify(paperMargin),
         },
         removeEmpty:false,
         url:this.apis.docTpl.saveDocTplSettingsApi,
@@ -1777,7 +1823,8 @@ export default {
       input.value = text; // 修改文本框的内容
       input.select(); // 选中文本
       document.execCommand('copy'); // 执行浏览器复制命令
-      this.commonUtil.showMessage({message:"复制成功",type: this.commonConstants.messageType.success})
+      // this.commonUtil.showMessage({message:"复制成功",type: this.commonConstants.messageType.success})
+      this.instance.command.executePaste();
     },
     confimModal(){
       var that = this;
@@ -2190,6 +2237,25 @@ export default {
     deleteCode(row,index){
       this.docTplCodes.splice(index,1)
     },
+    closePaperMarginModal(){
+      this.paperMarginModalConfig.show = false;
+    },
+    confirmPaperMarginModal(){
+      var that = this;
+      this.$refs['paperMarginModalRef'].$refs['modalFormRef'].validate((valid) => {
+        if(valid){
+          that.closePaperMarginModal();
+          that.instance.command.executeSetPaperMargin([
+            Number(that.paperMarginModalData.topMargin),
+            Number(that.paperMarginModalData.rightMargin),
+            Number(that.paperMarginModalData.bottomMargin),
+            Number(that.paperMarginModalData.leftMargin)
+          ])
+        }else{
+          return false;
+        }
+      });
+    }
   },
 //使用mounted的原因是因为在mounted中dom已经加载完毕，否则会报错，找不到getAttribute这个方法
   mounted() {

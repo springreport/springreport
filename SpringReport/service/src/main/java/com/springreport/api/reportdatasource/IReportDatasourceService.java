@@ -11,6 +11,7 @@ import com.springreport.entity.reportdatasource.ReportDatasource;
 import com.springreport.entity.reporttpldataset.ReportTplDataset;
 import com.springreport.base.BaseEntity;
 import com.springreport.base.PageEntity;
+import com.springreport.base.UserInfoDto;
 import com.springreport.dto.reportdatasource.MesGetSelectDataDto;
 import com.springreport.dto.reportdatasource.MesReportDatasourceDto;
 import com.springreport.dto.reporttpldatasource.MesExecSqlDto;
@@ -93,7 +94,7 @@ public interface IReportDatasourceService extends IService<ReportDatasource> {
 	 * @throws SQLException 
 	 * @throws Exception 
 	*/
-	List<Map<String, Object>> execSql(MesExecSqlDto mesExecSqlDto) throws SQLException, Exception;
+	List<Map<String, Object>> execSql(MesExecSqlDto mesExecSqlDto,UserInfoDto userInfoDto) throws SQLException, Exception;
 	
 	/**  
 	 * @Title: connectionTest
@@ -125,7 +126,7 @@ public interface IReportDatasourceService extends IService<ReportDatasource> {
 	 * @throws Exception 
 	 * @date 2022-10-13 04:54:28 
 	 */  
-	void cacheDatasetsColumns(List<ReportTplDataset> datasets) throws SQLException, Exception;
+	void cacheDatasetsColumns(List<ReportTplDataset> datasets,UserInfoDto userInfoDto) throws SQLException, Exception;
 	
 	/**  
 	 * @MethodName: getDatabseTables

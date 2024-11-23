@@ -284,7 +284,7 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 					usedDataSet = new ArrayList<>(hs);
 				}
 				Map<String, String> datasetNameIdMap = new HashMap<String, String>();
-				List<List<String>> columnNames = this.iReportTplService.getTplDatasetsColumnNames(reportTpl.getId(),datasetNameIdMap);
+				List<List<String>> columnNames = this.iReportTplService.getTplDatasetsColumnNames(reportTpl.getId(),datasetNameIdMap,userInfoDto);
 //				Map<String, Map<String, Integer>> paginationMap = new HashMap<String, Map<String,Integer>>();
 //				Map<String, Integer> mergePagination = new HashMap<String, Integer>();
 				Map<String, List<Map<String, Object>>> datasetDatas = new HashMap<String, List<Map<String,Object>>>();//数据集对应的原始数据
