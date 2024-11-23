@@ -151,6 +151,7 @@ export default {
         {type:'Table',label:'已添加图表',tableCols:[],tableHandles:[],isPagination:false,isIndex:true},
       ],
       chartModalData : {//modal页面数据
+        index:null,
         chartName:"",//图表名称
         showChartName:1,
         chartType:"",//图表类型
@@ -172,6 +173,7 @@ export default {
         {label:'数据字段',prop:'valueField',align:'center',overflow:true},
         {label:'系列字段',prop:'seriesField',align:'center',overflow:true},
         {label:'操作',prop:'operation',align:'center',type:'button',btnList:[
+          {label:'编辑',type:'text',auth:'ignore',handle:(row,index)=>this.editChart(row,index)},
           {label:'删除',type:'text',auth:'ignore',handle:(row,index)=>this.deleteChart(row,index)},
         ]}
       ],
@@ -200,6 +202,7 @@ export default {
         {type:'Table',label:'已添加数据',tableCols:[],tableHandles:[],isPagination:false,isIndex:true},
       ],
       codeModalData : {//modal页面数据
+        index:null,
         codeName:"",//名称
         datasetId:null,//数据集id
         datasetName:"",//数据集名称
@@ -215,6 +218,7 @@ export default {
         {label:'数据集',prop:'datasetName',align:'center',overflow:true},
         {label:'数据字段',prop:'valueField',align:'center',overflow:true},
         {label:'操作',prop:'operation',align:'center',type:'button',btnList:[
+          {label:'编辑',type:'text',auth:'ignore',handle:(row,index)=>this.editCode(row,index)},
           {label:'删除',type:'text',auth:'ignore',handle:(row,index)=>this.deleteCode(row,index)},
         ]}
       ],
@@ -1960,13 +1964,17 @@ export default {
           const timestamp = new Date().getTime();
           let chartUrl = that.chartUrlPrefix+that.chartModalData.chartType+".png?t="+timestamp;
           const tplId = that.$route.query.tplId// tplId
-          that.instance.command.executeImage({
-            value:chartUrl,
-            width: 520,
-            height: 250,
-          })
+          if(that.chartModalData.chartType != that.docTplCharts[that.chartModalData.index].chartType){
+            that.instance.command.executeImage({
+              value:chartUrl,
+              width: 520,
+              height: 250,
+            })
+          }
+          
           let chartObj = {
             chartName:that.chartModalData.chartName,
+            showChartName:that.chartModalData.showChartName,
             chartType:that.chartModalData.chartType,
             datasetName:that.chartModalData.datasetName,
             categoryField:that.chartModalData.categoryField,
@@ -1977,21 +1985,30 @@ export default {
             datasetName:that.chartModalData.datasetName,
             seriesField:that.chartModalData.seriesField
           }
-          that.docTplCharts.push(chartObj);
-          that.closeChartModal();
+          if(that.chartModalData.index != null){
+            // that.docTplCharts[that.chartModalData.index] = chartObj;
+            this.$set(that.docTplCharts,that.chartModalData.index,chartObj);
+            that.closeChartModal(true);
+            
+          }else{
+            that.docTplCharts.push(chartObj);
+            that.closeChartModal(false);
+          }
         }else{
           return false;
         }
       });
       
     },
-    closeChartModal(){
+    closeChartModal(isKeepOpen){
       this.$refs['chartModalRef'].$refs['modalFormRef'].resetFields();//校验重置
       this.commonUtil.clearObj(this.chartModalData);//清空modalData
       this.chartModalForm[4].options = [];
       this.chartModalForm[5].options = [];
       this.chartModalForm[6].options = [];
-      this.chartModalConfig.show = false;
+      if(!isKeepOpen){
+        this.chartModalConfig.show = false;
+      }
       this.$refs['chartModalRef'].$forceUpdate();
       this.changeChartType();
     },
@@ -2148,11 +2165,13 @@ export default {
       }
       this.addComment(text)
     },
-    closeCodeModal(){
+    closeCodeModal(isKeepOpen){
       this.$refs['codeModalRef'].$refs['modalFormRef'].resetFields();//校验重置
       this.commonUtil.clearObj(this.codeModalData);//清空modalData
       this.codeModalForm[2].options = [];
-      this.codeModalConfig.show = false;
+      if(!isKeepOpen){
+        this.codeModalConfig.show = false;
+      }
       this.$refs['codeModalRef'].$forceUpdate();
     },
     changeCodeDatasets(datasetId){
@@ -2185,11 +2204,14 @@ export default {
           }
           let chartUrl = that.chartUrlPrefix+type+".png?t="+timestamp;
           const tplId = that.$route.query.tplId// tplId
-          that.instance.command.executeImage({
-            value:chartUrl,
-            width: that.codeModalData.codeType == "2"?400:354,
-            height: that.codeModalData.codeType == "2"?400:120,
-          })
+          if(this.codeModalData.index != null){
+            that.instance.command.executeImage({
+              value:chartUrl,
+              width: that.codeModalData.codeType == "2"?400:354,
+              height: that.codeModalData.codeType == "2"?400:120,
+            })
+          }
+          
           let chartObj = {
             codeName:that.codeModalData.codeName,
             codeType:that.codeModalData.codeType,
@@ -2199,8 +2221,14 @@ export default {
             tplId:tplId,
             datasetId:that.codeModalData.datasetId,
           }
-          that.docTplCodes.push(chartObj);
-          that.closeCodeModal();
+          if(this.codeModalData.index != null){
+            this.$set(that.docTplCodes,that.codeModalData.index,chartObj);
+            that.closeCodeModal(true);
+          }else{
+            that.docTplCodes.push(chartObj);
+            that.closeCodeModal(false);
+          }
+          
         }else{
           return false;
         }
@@ -2227,6 +2255,33 @@ export default {
           return false;
         }
       });
+    },
+    editChart(row,index){
+      console.log(row)
+      this.chartModalData.chartName = row.chartName;
+      this.chartModalData.showChartName = row.showChartName;
+      this.chartModalData.chartType = row.chartType;
+      this.chartModalData.datasetName = row.datasetName;
+      if(typeof row.categoryField === 'string'){
+        this.chartModalData.categoryField = JSON.parse(row.categoryField);
+      }else{
+        this.chartModalData.categoryField = row.categoryField;
+      }
+      this.chartModalData.valueField = row.valueField;
+      this.chartModalData.datasetId = row.datasetId;
+      this.chartModalData.datasetName = row.datasetName;
+      this.chartModalData.seriesField = row.seriesField;
+      this.chartModalData.index = index;
+      this.changeChartType();
+      this.changeDatasets(row.datasetId);
+    },
+    editCode(row,index){
+      this.codeModalData.codeName = row.codeName;
+      this.codeModalData.codeType = row.codeType;
+      this.codeModalData.valueField = row.valueField;
+      this.codeModalData.datasetId = row.datasetId;
+      this.codeModalData.index = index;
+      this.changeCodeDatasets(row.datasetId);
     }
   },
 //使用mounted的原因是因为在mounted中dom已经加载完毕，否则会报错，找不到getAttribute这个方法
