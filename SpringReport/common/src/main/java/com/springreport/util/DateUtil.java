@@ -567,9 +567,23 @@ public class DateUtil {
 	    	
 	    	return result;
 	    }
+	 
+	/**  
+	 * @MethodName: getLastSixDigits
+	 * @Description: 获取时间戳后六位
+	 * @author caiyang
+	 * @return String
+	 * @date 2024-11-24 07:16:16 
+	 */ 
+	public static String getLastSixDigits() {
+		String timeStampStr = DateUtil.getTimeStamp();
+    	String lastSixDigits = timeStampStr.substring(timeStampStr.length() - 6);
+    	return lastSixDigits;
+	}
 	    
     public static void main(String[] args) throws ParseException {
-    	
-    	System.out.println(DateUtil.string2Date("2023","yyyy"));
+    	String timeStampStr = DateUtil.getTimeStamp();
+    	String lastSixDigits = timeStampStr.substring(timeStampStr.length() - 6);
+    	System.out.println(lastSixDigits);
     }
 }
