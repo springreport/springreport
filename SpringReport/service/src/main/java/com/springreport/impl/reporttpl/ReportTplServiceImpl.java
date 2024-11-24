@@ -11485,33 +11485,26 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 	public BaseEntity copyReport(ReportTplDto model) {
 		BaseEntity result = new BaseEntity();
 		Long tplId = model.getId();
-		QueryWrapper<ReportTpl> queryWrapper = new QueryWrapper<ReportTpl>();
-		queryWrapper.eq("tpl_code", model.getTplCode());
-		queryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
-		ReportTpl isExist = this.getOne(queryWrapper,false);
-		if(isExist != null)
-		{
-			throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.exist", new String[] {"该报表标识"}));
-		}
-		ReportTpl reportTpl = new ReportTpl();
-		BeanUtils.copyProperties(model, reportTpl);
+		ReportTpl reportTpl = this.getById(tplId);
+		String end = DateUtil.getLastSixDigits();
+		reportTpl.setTplCode(reportTpl.getTplCode()+"_copy_"+end);
+		reportTpl.setTplName(reportTpl.getTplName()+"_copy_"+end);
 		reportTpl.setId(null);
-		if(StringUtil.isNotEmpty(reportTpl.getDesignPwd()))
-		{
-			reportTpl.setDesignPwd(Md5Util.generateMd5(reportTpl.getDesignPwd()));
-		}
 		//保存报表
 		this.save(reportTpl);
 		//保存报表关联的数据源
-		List<ReportTplDatasource> datasources = new ArrayList<ReportTplDatasource>();
-		ReportTplDatasource datasource = null;
-		for (int i = 0; i < model.getDataSource().size(); i++) {
-			datasource = new ReportTplDatasource();
-			datasource.setTplId(reportTpl.getId());
-			datasource.setDatasourceId(model.getDataSource().get(i));
-			datasources.add(datasource);
+		QueryWrapper<ReportTplDatasource> tplDatasourceQueryWrapper = new QueryWrapper<>();
+		tplDatasourceQueryWrapper.eq("tpl_id", tplId);
+		tplDatasourceQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+		List<ReportTplDatasource> datasources = this.iReportTplDatasourceService.list(tplDatasourceQueryWrapper);
+		if(ListUtil.isNotEmpty(datasources)) {
+			for (int i = 0; i < datasources.size(); i++) {
+				datasources.get(i).setId(null);
+				datasources.get(i).setTplId(reportTpl.getId());
+			}
+			this.iReportTplDatasourceService.saveBatch(datasources);
 		}
-		this.iReportTplDatasourceService.saveBatch(datasources);
+		
 		//报表数据集查询和保存
 		QueryWrapper<ReportTplDataset> tplDatasetQueryWrapper = new QueryWrapper<>();
 		tplDatasetQueryWrapper.eq("tpl_id", tplId);
@@ -11535,10 +11528,13 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		List<LuckysheetReportFormsCell> insertLuckysheetReportFormsCells = new ArrayList<>();
 		List<ReportFormsDatasource> insertFormsDatasources = new ArrayList<>();
 		List<ReportFormsDatasourceAttrs> insertFormsDatasourceAttrs = new ArrayList<>();
+		List<ReportTplSheetChart> reportTplSheetCharts = new ArrayList<>();
+		List<ReportSheetPdfPrintSetting> reportSheetPdfPrintSettings = new ArrayList<>();
 		if(!ListUtil.isEmpty(reportTplSheets))
 		{
 			for (int i = 0; i < reportTplSheets.size(); i++) {
-				if(model.getTplType().intValue() == 1)
+				Long sheetId = reportTplSheets.get(i).getId();
+				if(reportTpl.getTplType().intValue() == 1)
 				{//展示报表,获取luckysheet_report_cell中的数据和luckysheet_report_block_cell中的数据
 					QueryWrapper<LuckysheetReportCell> reportCellQueryWrapper = new QueryWrapper<>();
 					reportCellQueryWrapper.eq("sheet_id", reportTplSheets.get(i).getId());
@@ -11587,7 +11583,6 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 					}
 				}else {//填报报表
 					//填报单元格信息获取
-					Long sheetId = reportTplSheets.get(i).getId();
 					QueryWrapper<LuckysheetReportFormsCell> formsCellQueryWrapper = new QueryWrapper<>();
 					formsCellQueryWrapper.eq("sheet_id", sheetId);
 					formsCellQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
@@ -11642,6 +11637,32 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 						insertFormsDatasources.addAll(formsDatasources);
 					}
 				}
+				//获取chart配置信息
+				QueryWrapper<ReportTplSheetChart> sheetChartQueryWrapper = new QueryWrapper<>();
+				sheetChartQueryWrapper.eq("tpl_id", tplId);
+				sheetChartQueryWrapper.eq("sheet_id", sheetId);
+				sheetChartQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+				reportTplSheetCharts = this.iReportTplSheetChartService.list(sheetChartQueryWrapper);
+				if(ListUtil.isNotEmpty(reportTplSheetCharts)) {
+					for (int j = 0; j < reportTplSheetCharts.size(); j++) {
+						reportTplSheetCharts.get(j).setId(null);
+						reportTplSheetCharts.get(j).setTplId(reportTpl.getId());
+						reportTplSheetCharts.get(j).setSheetId(reportTplSheets.get(i).getId());
+					}
+				}
+				//获取打印配置信息
+				QueryWrapper<ReportSheetPdfPrintSetting> printSettingQueryWrapper = new QueryWrapper<>();
+				printSettingQueryWrapper.eq("tpl_id", tplId);
+				printSettingQueryWrapper.eq("tpl_sheet_id", sheetId);
+				printSettingQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+				reportSheetPdfPrintSettings = this.iReportSheetPdfPrintSettingService.list(printSettingQueryWrapper);
+				if(ListUtil.isNotEmpty(reportSheetPdfPrintSettings)) {
+					for (int j = 0; j < reportSheetPdfPrintSettings.size(); j++) {
+						reportSheetPdfPrintSettings.get(j).setId(null);
+						reportSheetPdfPrintSettings.get(j).setTplId(reportTpl.getId());
+						reportSheetPdfPrintSettings.get(j).setTplSheetId(reportTplSheets.get(i).getId());
+					}
+				}
 			}
 			this.iReportTplSheetService.saveBatch(reportTplSheets);
 			if(!ListUtil.isEmpty(insertLuckysheetReportCells))
@@ -11663,6 +11684,12 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			if(!ListUtil.isEmpty(insertFormsDatasourceAttrs))
 			{
 				this.iReportFormsDatasourceAttrsService.saveBatch(insertFormsDatasourceAttrs);
+			}
+			if(ListUtil.isNotEmpty(reportSheetPdfPrintSettings)) {
+				this.iReportSheetPdfPrintSettingService.saveBatch(reportSheetPdfPrintSettings);
+			}
+			if(ListUtil.isNotEmpty(reportTplSheetCharts)) {
+				this.iReportTplSheetChartService.saveBatch(reportTplSheetCharts);
 			}
 		}
 		result.setStatusMsg(MessageUtil.getValue("info.copy"));

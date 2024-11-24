@@ -568,17 +568,14 @@ export default {
     },
     //复制报表对话框打开
     copyReport(row){
-      this.pageData.copyModalConfig.show = true;
-      var obj = {
-        url:this.apis.reportTpl.getDetailApi,
+      let obj = {
+        url:this.apis.reportTpl.doCopyReportApi,
+        messageContent:this.commonUtil.getMessageFromList("confirm.copy",null),
+        callback:this.searchtablelist,
         params:{id:row.id},
+        type:"post",
       }
-      this.commonUtil.doGet(obj).then(response=>{
-        this.commonUtil.coperyProperties(this.pageData.copyModalData,response.responseData);//数据赋值
-        this.pageData.copyModalData.designPwd = "";
-        this.pageData.copyModalData.tplCode = "";
-        this.pageData.copyModalData.tplName = "";
-      });
+      this.commonUtil.showConfirm(obj)
     },
     closeCopyModal(){
       this.$refs['copyModalRef'].$refs['modalFormRef'].resetFields();//校验重置
