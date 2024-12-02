@@ -176,22 +176,31 @@ public class JFreeChartUtil {
 	 * @return PieDataset
 	 * @date 2023-04-21 05:43:07 
 	 */  
-	public static JSONObject getPieChartDataset(JSONObject defaultOption) {
+	public static JSONObject getPieChartDataset(JSONObject chartOptions,List<JSONArray> chartData) {
 		JSONObject result = new JSONObject();
 		DefaultPieDataset dataset = new DefaultPieDataset();
-		JSONArray legend = new JSONArray();
+		boolean rangeConfigCheck = chartOptions.getBooleanValue("rangeConfigCheck");
+		JSONArray legend = ExcelChartUtil.getAxesData(chartData,rangeConfigCheck);
 		try {
-			JSONArray series = defaultOption.getJSONArray("series");
-			JSONArray datas = series.getJSONObject(0).getJSONArray("data");
-			if(!ListUtil.isEmpty(datas))
+			if(!ListUtil.isEmpty(chartData))
 			{
-				for (int i = 0; i < datas.size(); i++) {
-					JSONObject data = datas.getJSONObject(i);
-					String name = data.getString("name");
-					String value = data.getString("value");
-					dataset.setValue(name, Double.parseDouble(value));
-					legend.add(name);
+				if(rangeConfigCheck) {
+					JSONArray datas = chartData.get(0);
+					for (int i = 0; i < datas.size(); i++) {
+						JSONObject data = datas.getJSONObject(i);
+						String name = data.getString("type");
+						String value = data.getString("value");
+						dataset.setValue(name, Double.parseDouble(value));
+					}
+				}else {
+					for (int i = 0; i < chartData.size(); i++) {
+						JSONObject data = chartData.get(i).getJSONObject(0);
+						String name = data.getString("type");
+						String value = data.getString("value");
+						dataset.setValue(name, Double.parseDouble(value));
+					}
 				}
+				
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -325,22 +334,21 @@ public class JFreeChartUtil {
           return os.toByteArray();
 	}
 	
-	public static DefaultCategoryDataset getCategoryDataset(JSONObject defaultOption) {
+	public static DefaultCategoryDataset getCategoryDataset(JSONObject chartOptions,List<JSONArray> chartData) {
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 		try {
-			JSONArray series = defaultOption.getJSONArray("series");
-			JSONArray axisNames = defaultOption.getJSONObject("axis").getJSONObject("xAxisDown").getJSONArray("data");
-			if(!ListUtil.isEmpty(series))
-			{
-				for (int t = 0; t < series.size(); t++) {
-					JSONArray datas = series.getJSONObject(t).getJSONArray("data");
-					String seriesName = series.getJSONObject(t).getString("name");
-					if(!ListUtil.isEmpty(datas))
-					{
-						for (int i = 0; i < datas.size(); i++) {
-							for (int j = 0; j < axisNames.size(); j++) {
-								dataset.addValue(datas.getDoubleValue(j), seriesName, axisNames.getString(j));
-							}
+			JSONObject chartLegend = ExcelChartUtil.getLegend(chartOptions,chartData);
+			JSONArray legendData = chartLegend.getJSONArray("data");
+			boolean rangeConfigCheck = chartOptions.getBooleanValue("rangeConfigCheck");
+			if(ListUtil.isNotEmpty(chartData)) {
+				for (int i = 0; i < chartData.size(); i++) {
+					JSONArray datas = chartData.get(i);
+					for (int j = 0; j < datas.size(); j++) {
+						String name = datas.getJSONObject(j).getString("type");
+						if(rangeConfigCheck) {
+							dataset.addValue(datas.getJSONObject(j).getDoubleValue("value"), legendData.getString(i), name);
+						}else {
+							dataset.addValue(datas.getJSONObject(j).getDoubleValue("value"), legendData.getString(j), name);
 						}
 					}
 				}
@@ -407,75 +415,6 @@ public class JFreeChartUtil {
 	    categoryAxis.setUpperMargin(0.0);
 	}
 	
-	public static List<ImageInfo> getChartInfos(JSONArray jsonArray) throws Exception {
-		List<ImageInfo> result = new ArrayList<ImageInfo>();
-		if(!ListUtil.isEmpty(jsonArray))
-		{
-			for (int i = 0; i < jsonArray.size(); i++) {
-				ImageInfo imageInfo = new ImageInfo();
-				JSONObject jsonObject = jsonArray.getJSONObject(i);
-				float width = jsonObject.getFloatValue("width");
-				float height = jsonObject.getFloatValue("height");
-				imageInfo.setWidth(width);
-				imageInfo.setHeight(height);
-				JSONObject chartOptions = jsonObject.getJSONObject("chartOptions");
-				JSONObject defaultOption = chartOptions.getJSONObject("defaultOption");
-				String chartAllType = chartOptions.getString("chartAllType");
-				boolean showTitle = defaultOption.getJSONObject("title").getBooleanValue("show");
-				String title = defaultOption.getJSONObject("title").getString("text");
-				byte[] chartBytes = null;
-				if(chartAllType.contains("pie"))
-				{//饼图
-					JSONObject pieObject = JFreeChartUtil.getPieChartDataset(defaultOption);
-					PieDataset pieDataset = (PieDataset) pieObject.get("dataSet");
-					JSONArray legend = pieObject.getJSONArray("legend");
-					if(pieDataset != null)
-					{
-						
-						if(chartAllType.contains("default")||chartAllType.contains("split"))
-						{
-							String type = chartAllType.split("\\|")[2];
-							chartBytes = JFreeChartUtil.createPieChart(showTitle?title:"", pieDataset, jsonObject.getIntValue("offsetWidth"), jsonObject.getIntValue("offsetHeight"),type,legend);
-						}else if(chartAllType.contains("ring"))
-						{
-							chartBytes = JFreeChartUtil.createRingChart(showTitle?title:"", pieDataset, jsonObject.getIntValue("offsetWidth"), jsonObject.getIntValue("offsetHeight"));
-						}
-					}
-				}else if(chartAllType.contains("line")) {
-					DefaultCategoryDataset dataset = JFreeChartUtil.getCategoryDataset(defaultOption);
-					chartBytes = JFreeChartUtil.createLineChart(showTitle?title:"", dataset, jsonObject.getIntValue("offsetWidth"), jsonObject.getIntValue("offsetHeight"));
-				}else if(chartAllType.contains("area")) {
-					DefaultCategoryDataset dataset = JFreeChartUtil.getCategoryDataset(defaultOption);
-					chartBytes = JFreeChartUtil.createAreaChart(showTitle?title:"", dataset, jsonObject.getIntValue("offsetWidth"), jsonObject.getIntValue("offsetHeight"));
-				}else if(chartAllType.contains("column")) {
-					DefaultCategoryDataset dataset = JFreeChartUtil.getCategoryDataset(defaultOption);
-					if(chartAllType.contains("stack"))
-					{
-						chartBytes = JFreeChartUtil.createStackedBar(showTitle?title:"", dataset, jsonObject.getIntValue("offsetWidth"), jsonObject.getIntValue("offsetHeight"),"column");
-					}else {
-						chartBytes = JFreeChartUtil.creteBarChart(showTitle?title:"", dataset, jsonObject.getIntValue("width"), jsonObject.getIntValue("offsetHeight"),"column");
-					}
-				}else if(chartAllType.contains("bar")) {
-					DefaultCategoryDataset dataset = JFreeChartUtil.getCategoryDataset(defaultOption);
-					if(chartAllType.contains("stack"))
-					{
-						chartBytes = JFreeChartUtil.createStackedBar(showTitle?title:"", dataset, jsonObject.getIntValue("offsetWidth"), jsonObject.getIntValue("offsetHeight"),"bar");
-					}else {
-						chartBytes = JFreeChartUtil.creteBarChart(showTitle?title:"", dataset, jsonObject.getIntValue("offsetWidth"), jsonObject.getIntValue("offsetHeight"),"bar");
-					}
-				}
-				String base64 = "data:image/png;base64,"+Base64.getEncoder().encodeToString(chartBytes);
-				imageInfo.setImage(base64);
-				result.add(imageInfo);
-			}
-		}
-		return result;
-	}
-	
-	public static byte[] creteRadarChart(String title,DefaultCategoryDataset dataset,int width,int height,String type)
-	{
-		return null;
-	}
 	
 	/**  
 	 * @MethodName: getRadarDataset
@@ -485,32 +424,49 @@ public class JFreeChartUtil {
 	 * @return DefaultCategoryDataset
 	 * @date 2023-07-02 03:50:42 
 	 */ 
-	public static JSONObject getRadarDataset(JSONObject defaultOption)
+	public static JSONObject getRadarDataset(JSONObject chartOptions,List<JSONArray> chartData)
 	{
 		JSONObject result = new JSONObject();
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-		JSONArray indicator = defaultOption.getJSONObject("radar").getJSONArray("indicator");
-		JSONArray datas = defaultOption.getJSONArray("series").getJSONObject(0).getJSONArray("data");
+		boolean rangeConfigCheck = chartOptions.getBooleanValue("rangeConfigCheck");
+		JSONObject chartLegend = ExcelChartUtil.getLegend(chartOptions,chartData);
+		JSONArray legend = chartLegend.getJSONArray("data");
 		float maxValue = 0;
-		if(!ListUtil.isEmpty(datas))
-		{
-			for (int i = 0; i < datas.size(); i++) {
-				JSONObject data = datas.getJSONObject(i);
-				String groupName = data.getString("name");
-				JSONArray values = data.getJSONArray("value");
-				if(!ListUtil.isEmpty(values) && values.size() == indicator.size())
-				{
-					for (int j = 0; j < values.size(); j++) {
-						if(values.getFloatValue(j) > maxValue)
-						{
-							maxValue = values.getFloatValue(j);
-						}
-						dataset.addValue(values.getFloatValue(j), groupName, indicator.getJSONObject(j).getString("name"));
+		if(ListUtil.isNotEmpty(chartData)) {
+			for (int i = 0; i < chartData.size(); i++) {
+				JSONArray datas = chartData.get(i);
+				for (int j = 0; j < datas.size(); j++) {
+					String name = datas.getJSONObject(j).getString("type");
+					if(rangeConfigCheck) {
+						dataset.addValue(datas.getJSONObject(j).getFloatValue("value"), legend.getString(i), name);
+					}else {
+						dataset.addValue(datas.getJSONObject(j).getFloatValue("value"), legend.getString(j), name);
 					}
-					
+					if(datas.getJSONObject(j).getDoubleValue("value") > maxValue) {
+						maxValue = datas.getJSONObject(j).getFloatValue("value");
+					}
 				}
 			}
 		}
+//		if(!ListUtil.isEmpty(datas))
+//		{
+//			for (int i = 0; i < datas.size(); i++) {
+//				JSONObject data = datas.getJSONObject(i);
+//				String groupName = data.getString("name");
+//				JSONArray values = data.getJSONArray("value");
+//				if(!ListUtil.isEmpty(values) && values.size() == indicator.size())
+//				{
+//					for (int j = 0; j < values.size(); j++) {
+//						if(values.getFloatValue(j) > maxValue)
+//						{
+//							maxValue = values.getFloatValue(j);
+//						}
+//						dataset.addValue(values.getFloatValue(j), groupName, indicator.getJSONObject(j).getString("name"));
+//					}
+//					
+//				}
+//			}
+//		}
 		result.put("dataSet", dataset);
 		result.put("maxValue", maxValue);
 		return result;

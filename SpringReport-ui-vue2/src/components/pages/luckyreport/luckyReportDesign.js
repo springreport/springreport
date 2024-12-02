@@ -27,13 +27,20 @@ import 'codemirror/addon/selection/active-line'
 import 'codemirror/addon/hint/sql-hint.js'
 import vuedraggable from 'vuedraggable'
 import Axios from 'axios';
+import vchart from '../../component/vchart/vchart.vue'
+import vchartsetting from '../../component/vchart/vchartsetting.vue'
 
 export default {
   components: {
-    vuedraggable
+    vuedraggable,
+    vchart,
+    vchartsetting
   },
   data() {
     return {
+      vchartShow:false,
+      chartOptions:{},
+      chartSettingShow:false,
       users:[],
       headerUsers:[],
       loading:false,
@@ -384,7 +391,10 @@ export default {
           pdfsettingClick:this.pdfsettingClick,
           uploadFileClick:this.uploadFileClick,
           uploadAttachment:this.uploadAttachment,
-          viewAttachment:this.viewAttachment
+          viewAttachment:this.viewAttachment,
+          createVChart:this.createVChart,
+          editVChart:this.editVChart,
+          activeVChart:this.activeVChart,
         }
       },
       settingModalConfig:{ 
@@ -2692,6 +2702,7 @@ export default {
     },
     // 单元格鼠标点击监听事件
     cellMousedown(cell,postion,sheetFile,ctx) {
+      this.chartSettingShow = false;
       var selectedRanges = luckysheet.getRange()
       var r = selectedRanges[0].row[0]
       var c = selectedRanges[0].column[0]
@@ -4407,6 +4418,22 @@ export default {
           text = text + '   <foreach collection="'+row.paramCode + '" open="(" separator="," close=")" item="item" index="index">\n   #{item} \n  </foreach>\n</if>'
         }
         this.addComment(text)
+      },
+      createVChart(){
+        // luckysheet.createChart("echarts|column|default");
+        this.vchartShow = true;
+      },
+      closeAddChartModal(){
+        this.vchartShow = false;
+      },
+      editVChart(chartOptions){
+        this.chartSettingShow = true;
+        this.chartOptions = chartOptions;
+      },
+      activeVChart(chartOptions){
+        if(this.chartSettingShow){
+          this.chartOptions = chartOptions;
+        }
       }
   },
   watch:{

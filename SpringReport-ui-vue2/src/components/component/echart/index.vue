@@ -8,8 +8,7 @@
 </template>
 
 <script>
-var echarts = require("echarts");
-
+import VChart from '@visactor/vchart';
 export default {
   name: "Echart",
   props: {
@@ -45,49 +44,30 @@ export default {
       handler(options) {
         //  this.chart.clear()
         // 设置true清空echart缓存
-        this.chart.setOption(options, true);
+        // this.chart.setOption(options, true);
       },
       deep: true,
     },
   },
   created() {},
-  activated() {
-    // 防止 keep-alive 之后图表变形
-    if (this.chart) {
-      this.chart.resize();
-    }
+  mounted() {
+    
   },
 
   mounted() {
     this.initChart();
-    window.addEventListener("resize", () => {
-      this.chart.resize();
-    });
+    // window.addEventListener("resize", () => {
+    //   this.chart.resize();
+    // });
   },
   beforeDestroy() {
-    clearInterval(this.tootipTimer);
-    this.chart.clear();
+    // clearInterval(this.tootipTimer);
+    // this.chart.clear();
   },
   methods: {
     initChart() {
-      // 初始化echart
-      const that = this;
-      this.chart = echarts.init(this.$el); // 'tdTheme'
-      this.chart.clear();
-      var chartType = this.options.series[0].type;
-      if(chartType && chartType == "wordCloud")
-      {
-        this.options.series[0].textStyle = {
-          color: function() {
-            return 'rgb(' + [
-              Math.round(Math.random() * 160),
-              Math.round(Math.random() * 160),
-              Math.round(Math.random() * 160)
-              ].join(',') + ')';
-          },
-        }
-      }
-      this.chart.setOption(this.options, true,true);
+      const vchart = new VChart(this.options.spec, { dom: this.id});
+      vchart.renderSync();
     },
   },
 };

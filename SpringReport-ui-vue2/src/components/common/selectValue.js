@@ -922,4 +922,16 @@ selectUtil.highlightcolor = [
     {value:"#C0C0C0",label:"浅灰色"},
     {value:"#000000",label:"黑色"},
 ]
+selectUtil.luckyChartType = [
+    {value:"echarts|column|default",label:"柱状图"},
+    {value:"echarts|column|stack",label:"堆叠柱状图"},
+    {value:"echarts|bar|default",label:"条形图"},
+    {value:"echarts|bar|stack",label:"堆叠条形图"},
+    {value:"echarts|line|default",label:"折线图"},
+    {value:"echarts|line|smooth",label:"平滑折线图"},
+    {value:"echarts|area|default",label:"面积图"},
+    {value:"echarts|area|stack",label:"堆叠面积图"},
+    {value:"echarts|pie|default",label:"饼图"},
+    {value:"echarts|radar|default",label:"雷达图"},
+]
 export default selectUtil;

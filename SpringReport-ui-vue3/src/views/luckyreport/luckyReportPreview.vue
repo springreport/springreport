@@ -47,6 +47,12 @@
                   </reportForm>
               </div>
                  <div id="right" style="width:100%;flex:1;overflow: auto;">
+                   <div  class="config-panel" v-if="chartSettingShow">
+                      <div class="config-header">图表设置</div>
+                      <div class="config-box">
+                          <vchartsetting :component="chartOptions" :datasets="datasets" :isPreview="true"></vchartsetting>
+                      </div>
+                  </div>
                     <div id="luckysheet" style="margin:0px;padding:0px;width:100%;height:100%;left: 0px;top: 50px"></div>
                     <div id="print_html" ref="print" style="text-align: center;page-break-after:always"></div>
                     <el-button ref="confirmPrintBtn" id="confirmPrintBtn" v-print="'#print_html'" v-show="false"></el-button>
@@ -338,5 +344,38 @@
 }
 :deep(.el-dialog__title){
     font-weight: bold;
+}
+.config-panel{
+      background: #ffffff;
+      // margin-left: 1px;
+      top: 10px;
+      position: relative;
+      width: 254px;
+      height: 95%;
+      display: flex;
+      flex-direction: column;
+      overflow: auto;
+      z-index: 1999;
+      float: right;
+      .config-header{
+        width: 100%;
+        height: 32px;
+        // background: #2F343D;
+        font-size: 13px;
+        font-weight: 400;
+        color: #000000;
+        line-height: 32px;
+        text-align: center;
+      }
+      .config-box{
+        flex:1;
+        padding: 10px;
+        overflow: auto;
+      }
+
+      /*定义滚动条的宽度*/
+      .config-box::-webkit-scrollbar {
+        width: 0;
+      }
 }
 </style>
