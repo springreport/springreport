@@ -63,9 +63,6 @@
             </div>
             <div class="right-form">
                 <el-form :inline="true" class="demo-form-inline" :model="cellForm" ref="reportCellForm" v-show="tabIndex==1">
-                      <el-form-item label="图表系列名称">
-                        <el-input v-model="cellForm.seriesName" style="width:125px" size="small" placeholder="图表系列名称" @input="changeCellAttr('seriesName')" :disabled="attrDisabled"></el-input>
-                     </el-form-item>
                       <el-form-item label="扩展方向">
                           <el-select  style="width:150px" placeholder="扩展方向" size="small" v-model="cellForm.cellExtend" @change="changeCellExtend" :disabled="attrDisabled">
                             <el-option label="不扩展" :value=1></el-option>
@@ -327,36 +324,13 @@
                              <p class="column-tag" v-if="o.aggregateType == 'group'" :title="o.groupProperty" style="min-width:220px;max-width:220px">分组属性：{{o.groupProperty}}</p>
                          </el-collapse-item>
                      </el-collapse>
-                     <div class="right-dataset-title">
-                        <span class="attr-dataset-title">图表X轴属性</span>
-                        <el-button class="addBtn" @click="addxAxisData">添加<i class="el-icon-plus el-icon--right"></i></el-button>
-                    </div>
-                    <el-collapse v-if="chartxAxisData && chartxAxisData.length > 0">
-                        <el-collapse-item v-for="(o,index) in chartxAxisData" :key="index">
-                            <template slot="title">
-                                图表属性{{index+1}}
-                                 <el-button class="right-block-el-icon-edit" title="编辑" type="primary" icon="el-icon-edit" circle size="mini" @click.stop="editxAxisData(o,index)"></el-button>
-                                 <el-button class="right-el-icon-delete" type="danger" title="删除" icon="el-icon-delete" circle size="mini" @click.stop="deletexAxisData(index)"></el-button>
-                            </template>
-                             <p class="column-tag" style="min-width:220px;max-width:220px">图表：
-                                <el-select  placeholder="图表" size="small" v-model="o.chartId" disabled>
-                                    <el-option v-for="op in sheetCharts" :label="op.title" :value="op.chartId" :key="op.chartId"></el-option>
-                                </el-select>
-                             </p>
-                             <p class="column-tag" style="min-width:220px;max-width:220px">数据来源：<label v-if="o.dataType == 1">自定义</label>
-                             <label v-else>数据集</label></p>
-                             <el-input style="width:220px" v-if="o.dataType == 1" type="textarea" :rows="2"  v-model="o.xAxisDatas" placeholder="x轴数据" size="small" disabled></el-input>
-                             <p class="column-tag" v-if="o.dataType == 2" style="min-width:220px;max-width:220px">数据集：
-                                <el-select  placeholder="数据集" size="small" v-model="o.datasetId" disabled>
-                                    <el-option v-for="op in datasets" :label="op.datasetName" :value="op.id" :key="op.id"></el-option>
-                                </el-select>
-                             </p>
-                             <p class="column-tag" v-if="o.dataType == 2" :title="o.attr" style="min-width:220px;max-width:220px">数据集属性：{{o.attr}}
-                               
-                             </p>
-                        </el-collapse-item>
-                    </el-collapse>
                   </div>
+            </div>
+            <div  class="config-panel" v-if="chartSettingShow">
+                <div class="config-header">图表设置</div>
+                <div class="config-box">
+                    <vchartsetting :component="chartOptions" :datasets="datasets" :isPreview="false"></vchartsetting>
+                </div>
             </div>
         </div>
     </div>
@@ -976,6 +950,7 @@
             <el-empty v-if="(!authedRange || authedRange.length == 0) && isCreator" description="暂无授权信息"></el-empty>
             <el-empty v-if="(!authedRange || authedRange.length == 0) && !isCreator" description="暂无操作权限"></el-empty>
         </el-dialog>
+        <vchart :show.sync="vchartShow" @closeModal="closeAddChartModal()"></vchart>
         <textarea id="clipboradInput" value="" style="opacity:0;position:absolute" />
     </div>
 </template>
@@ -1435,5 +1410,36 @@
 }
 .tablecolumn{
     border: 1px solid #eee;
+}
+.config-panel{
+      background: #ffffff;
+      margin-left: 1px;
+      top:-40px;
+      position: relative;
+      width: 254px;
+      height: 95%;
+      display: flex;
+      flex-direction: column;
+      overflow: auto;
+      .config-header{
+        width: 100%;
+        height: 32px;
+        // background: #2F343D;
+        font-size: 13px;
+        font-weight: 400;
+        color: #000000;
+        line-height: 32px;
+        text-align: center;
+      }
+      .config-box{
+        flex:1;
+        padding: 10px;
+        overflow: auto;
+      }
+
+      /*定义滚动条的宽度*/
+      .config-box::-webkit-scrollbar {
+        width: 0;
+      }
 }
 </style>

@@ -7,10 +7,17 @@
  * @LastEditTime: 2022-08-23 16:40:43
  */
 import Axios from 'axios'
+import vchartsetting from '../../component/vchart/vchartsetting.vue'
 export default {
+    components: {
+        vchartsetting
+      },
     data() {
         return{
+            chartOptions:{},
+            chartSettingShow:false,
             showReportSql:false,
+            datasets:[],
             reportSqls:{},
             reportDialogVisiable:false,
             users:[],
@@ -130,6 +137,8 @@ export default {
                     uploadAttachment:this.uploadAttachment,
                     viewAttachment:this.viewAttachment,
                     uploadFileClick:this.uploadFileClick,
+                    editVChart:this.editVChart,
+                    activeVChart:this.activeVChart,
                 }
             },
             //modal配置 start
@@ -946,6 +955,7 @@ export default {
         },
         //鼠标点击单元格
         cellMousedown:function(cell,postion,sheetFile,ctx){
+            this.chartSettingShow = false;
             var r = postion.r
             var c = postion.c;
             var index = sheetFile.index;
@@ -2619,6 +2629,15 @@ export default {
                 evt.target.value = ''
                 that.loading = false;
             }
+        },
+        editVChart(chartOptions){
+            this.chartSettingShow = true;
+            this.chartOptions = chartOptions;
           },
+          activeVChart(chartOptions){
+            if(this.chartSettingShow){
+              this.chartOptions = chartOptions;
+            }
+          }
     }
 }

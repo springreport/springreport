@@ -97,7 +97,6 @@ import { Tab, Tabs, NavBar, Pagination } from "vant";
 import ReportTable from "./components/ReportTable.vue";
 import ReportChart from "./components/ReportChart.vue";
 import ReportFilter from "./components/ReportFilter.vue";
-
 Vue.use(Tab);
 Vue.use(Tabs);
 Vue.use(NavBar);

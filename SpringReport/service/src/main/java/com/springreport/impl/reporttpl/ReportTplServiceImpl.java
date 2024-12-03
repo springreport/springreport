@@ -3237,468 +3237,171 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 	private void getChartData(JSONObject jsonObject,Map<String, List<Map<String, Object>>> datasetDatas,List<List<String>> columnNames,
 			ReportTplSheet reportTplSheet,MesGenerateReportDto mesGenerateReportDto,int isParamMerge,ReportTpl reportTpl,
 			Map<String, Object> config,JSONObject chartCells,Object rowhidden,Object colhidden,Integer isMobile,
-			Map<String, LuckySheetBindData> cellBindData) throws Exception {
-		String chartId = jsonObject.getString("chart_id");
-		JSONObject options = jsonObject.getJSONObject("chartOptions").getJSONObject("defaultOption");
-		if(isMobile == 1)
-		{//手机端都固定显示标题
-			options.getJSONObject("title").put("show", true);
-		}
-		JSONArray series = options.getJSONArray("series");
-		JSONObject serie = series.getJSONObject(0);
-		JSONArray newSeries = new JSONArray();
-		String chartAllType = jsonObject.getJSONObject("chartOptions").getString("chartAllType");
-		String chartType = chartAllType.split("\\|")[2];
-		boolean isPieChart = chartAllType.contains("pie")?true:false;
-		JSONArray newPieSeriesDatas = new JSONArray();
-		JSONObject pieSeriesData = null;
+			Map<String, LuckySheetBindData> cellBindData) {
+		JSONObject chartOptions = jsonObject.getJSONObject("chartOptions");
+		String chartAllType = chartOptions.getString("chartAllType");
+		String chartId = chartOptions.getString("chart_id");
+		String dataset = chartOptions.getString("dataset");
 		Map<String, Object> configColumnLen = (Map<String, Object>) config.get(LuckySheetPropsEnum.COLUMNLEN.getCode());
 		Map<String, Object> configRowLen = (Map<String, Object>) config.get(LuckySheetPropsEnum.ROWLEN.getCode());
-		if(isPieChart)
-		{
-			pieSeriesData = serie.getJSONArray("data").getJSONObject(0);
-		}
-		QueryWrapper<LuckysheetReportCell> queryWrapper = new QueryWrapper<>();
-		queryWrapper.eq("tpl_id", reportTplSheet.getTplId());
-		queryWrapper.eq("sheet_id", reportTplSheet.getId());
-		queryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
-		queryWrapper.eq("is_chart_attr", YesNoEnum.YES.getCode());
-		queryWrapper.like("chart_ids", chartId);
-		queryWrapper.orderByAsc("coordsx", "coordsy");
-		List<LuckysheetReportCell> list = this.iLuckysheetReportCellService.list(queryWrapper);
-		boolean pieSeriesName = false;
-		List<JSONObject> radarDatas = new ArrayList<JSONObject>();
-		QueryWrapper<ReportTplSheetChart> chartQueryWrapper = new QueryWrapper<>();
-		chartQueryWrapper.eq("chart_id", chartId);
-		chartQueryWrapper.eq("tpl_id", reportTplSheet.getTplId());
-		chartQueryWrapper.eq("sheet_id", reportTplSheet.getId());
-		chartQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
-		ReportTplSheetChart reportTplSheetChart = this.iReportTplSheetChartService.getOne(chartQueryWrapper, false);
-		JSONArray axisData = new JSONArray();
-		if(reportTplSheetChart != null)
-		{
-			if(reportTplSheetChart.getDataType().intValue() == 1)
-			{//自定义数据
-				axisData = JSONArray.parseArray(reportTplSheetChart.getXaxisDatas());
-			}else {
-				//数据集获取数据
-				List<Map<String, Object>> datas = datasetDatas.get(reportTplSheetChart.getDatasetName());
-//				if(ListUtil.isEmpty(datas))
-//				{
-//					Map<String, Object> result = this.getDatasetDatas(reportTpl, mesGenerateReportDto, reportTplSheetChart.getDatasetName(), false, null);
-//					datas = (List<Map<String, Object>>) result.get("datas");
-//				} 
-				if(!ListUtil.isEmpty(datas))
-				{
-					axisData = new JSONArray();
-					for (int i = 0; i < datas.size(); i++) {
-						axisData.add(datas.get(i).get(reportTplSheetChart.getAttr()));
-					}
-				}
+		if(StringUtil.isNotEmpty(dataset)) {
+			List<Map<String, Object>> datas = datasetDatas.get(dataset);
+			String categoryField = chartOptions.getString("categoryField");
+			JSONArray valueField = chartOptions.getJSONArray("valueField");
+			if(valueField == null) {
+				valueField = new JSONArray();
 			}
-		}
-		if(!ListUtil.isEmpty(list))
-		{
-			JSONArray legendData = new JSONArray();
-			Integer startx = null;
-			Integer starty = null;
-			Integer endx = null;
-			Integer endy = null;
-			for (int i = 0; i < list.size(); i++) {
-				int r = list.get(i).getCoordsx();
-				int c = list.get(i).getCoordsy();
- 				if(cellBindData.containsKey(r+"_"+c))
-				{
-					LuckySheetBindData bindData = cellBindData.get(r+"_"+c);
-					if(startx == null || startx.intValue()>bindData.getStartx().intValue())
-					{
-						startx = bindData.getStartx();
-					}
-					if(starty == null || starty.intValue() > bindData.getStarty().intValue())
-					{
- 						starty = bindData.getStarty();
-					}
-					if(endx == null || endx.intValue() < bindData.getEndx().intValue())
-					{
-						endx = bindData.getEndx();
-					}
-					if(endy == null || endy.intValue() < bindData.getEndy().intValue())
-					{
-						endy = bindData.getEndy();
-					}
-					List<String> seriesData = this.processChartData(bindData);
-					JSONObject newSerie = JSONObject.parseObject(JSON.toJSONString(serie));
-					if(chartAllType.contains("line") || chartAllType.contains("column") || chartAllType.contains("area") || chartAllType.contains("bar"))
-					{//线图 面积图 柱状图 
-						if(StringUtil.isNotEmpty(list.get(i).getSeriesName()))
-						{
-							newSerie.put("name", list.get(i).getSeriesName());
-							legendData.add(list.get(i).getSeriesName());
-						}else {
-							newSerie.put("name", bindData.getProperty());
-						}
-						newSerie.put("data", seriesData);
-						newSeries.add(newSerie);
-					}else if(chartAllType.contains("pie")){//饼图
-						if(isMobile == 1)
-						{
-							options.remove("axis");
-						}
-						JSONArray radius = new JSONArray();
-						if(chartAllType.contains("default")||chartAllType.contains("split")) {
-							radius.add("0%");
-							radius.add("65%");	
-							serie.put("radius", radius);
-						}else if(chartAllType.contains("ring")) {
-							radius.add("40%");
-							radius.add("65%");	
-							serie.put("radius", radius);
-						}
-						if(!pieSeriesName)
-						{
-							if(StringUtil.isNotEmpty(list.get(i).getSeriesName()))
-							{
-								serie.put("name", list.get(i).getSeriesName());
-								pieSeriesName = true;
-							}
-						}
-						if(list.size() > 1)
-						{
-							JSONObject newSeiresData = JSONObject.parseObject(JSON.toJSONString(pieSeriesData));
-							newSeiresData.put("value", seriesData.get(0));
-							newPieSeriesDatas.add(newSeiresData);
-						}else {
-							for (int j = 0; j < seriesData.size(); j++) {
-								JSONObject newSeiresData = JSONObject.parseObject(JSON.toJSONString(pieSeriesData));
-								newSeiresData.put("value", seriesData.get(j));
-								newPieSeriesDatas.add(newSeiresData);
-							}
-						}
-					}else if(chartAllType.contains("radar")) {//雷达图
-						if(isMobile == 1)
-						{
-							options.remove("axis");
-						}
-						JSONObject data = new JSONObject();
-						data.put("name", list.get(i).getSeriesName());
-						data.put("value", seriesData);
-						JSONObject label = new JSONObject();
-						JSONObject normal = new JSONObject();
-						normal.put("show", true);
-						normal.put("formatter", "{c}");
-						label.put("normal", normal);
-						data.put("label", label);
-						radarDatas.add(data);
-					}else if(chartAllType.contains("gauge")){//仪表盘
-						if(isMobile == 1)
-						{
-							options.remove("axis");
-						}
-						if(i>0)
-						{
-							break;
-						}
-						JSONObject data = new JSONObject();
-						data.put("name", list.get(i).getSeriesName());
-						data.put("value", seriesData);
-						radarDatas.add(data);
-					}else if(chartAllType.contains("funnel")){//漏斗图
-						if(isMobile == 1)
-						{
-							options.remove("axis");
-						}
-						if(i>0)
-						{
-							break;
-						}
-						JSONArray funnelDatas = new JSONArray();
-						if(!ListUtil.isEmpty(seriesData))
-						{
-							JSONObject funnelData = null;
-							for (int j = 0; j < seriesData.size(); j++) {
-								funnelData = new JSONObject();
-								funnelData.put("value", seriesData.get(j));
-								if(axisData.size() >= seriesData.size())
-								{
-									funnelData.put("name", axisData.get(j));
-								}
-								funnelDatas.add(funnelData);
-							}
-						}
-						newSerie.put("data", funnelDatas);
-						newSerie.put("type", "funnel");
-						newSerie.put("height", "65%");
-						newSeries.add(newSerie);
-					}else if(chartAllType.contains("map") || chartAllType.contains("mapBar")){//地图
-						if(isMobile == 1)
-						{
-							options.remove("axis");
-						}
-						if(i>0)
-						{
-							break;
-						}
-						JSONArray mapDatas = new JSONArray();
-						if(!ListUtil.isEmpty(seriesData))
-						{
-							JSONObject mapData = null;
-							float maxValue = 0;
-							for (int j = 0; j < seriesData.size(); j++) {
-								mapData = new JSONObject();
-								mapData.put("value", seriesData.get(j));
-								if(axisData.size() >= seriesData.size())
-								{
-									mapData.put("name", axisData.get(j));
-								}
-								mapDatas.add(mapData);
-								if(StringUtil.isNotEmpty(seriesData.get(j)) && Float.parseFloat(seriesData.get(j)) > maxValue)
-								{
-									maxValue = Float.parseFloat(seriesData.get(j));
-								}
-							}
-							options.getJSONObject("map").put("min", 0);
-							options.getJSONObject("map").put("max", maxValue);
-							if(YesNoEnum.YES.getCode().intValue() == isMobile.intValue())
-							{
-								options.getJSONObject("visualMap").put("min", 0);
-								options.getJSONObject("visualMap").put("max", maxValue);
-							}
-							newSerie.put("data", mapDatas);
-							newSerie.put("roam",true);
-							newSeries.add(newSerie);
-						}
-						if(chartAllType.contains("mapBar"))
-						{
-							JSONObject serie2 = series.getJSONObject(1);
-							serie2.put("data", mapDatas);
-							newSeries.add(serie2);
-							if(YesNoEnum.YES.getCode().intValue() == isMobile.intValue())
-							{
-								int count = 0;
-								Integer barCount = options.getJSONObject("map").getInteger("mobileBarCount");
-								if(barCount == null || barCount.intValue() < 0)
-								{
-									if(ListUtil.isEmpty(mapDatas))
-									{
-										count = 0;
-									}else {
-										count  = mapDatas.size();
-									}
-								}else {
-									if(!ListUtil.isEmpty(mapDatas))
-									{
-										if(barCount > mapDatas.size())
-										{
-											count =  mapDatas.size();
-										}else {
-											count = barCount;
-										}
-									}
-								}
-								List<String> yData = new ArrayList<>();
-								for (int j = 0; j < count; j++) {
-									yData.add(mapDatas.getJSONObject(j).getString("name"));
-								}
-								JSONObject xAxis = new JSONObject();
-								xAxis.put("show", false);
-								options.put("xAxis", xAxis);
-								JSONObject yAxis = new JSONObject();
-								yAxis.put("type", "category");
-								yAxis.put("inverse", true);
-								yAxis.put("nameGap", 16);
-								JSONObject axisLine = new JSONObject();
-								axisLine.put("show", false);
-								yAxis.put("axisLine", axisLine);
-								JSONObject axisTick = new JSONObject();
-								axisTick.put("show", false);
-								yAxis.put("axisTick", axisTick);
-								yAxis.put("data", yData);
-								options.put("yAxis", yAxis);
-								JSONObject grid = new JSONObject();
-								grid.put("right", 0);
-								grid.put("top", 20);
-								grid.put("width", "20%");
-								options.put("grid", grid);
-								List<Integer> seriesIndex = new ArrayList<Integer>();
-								seriesIndex.add(0);
-								options.getJSONObject("visualMap").put("seriesIndex", seriesIndex);
-								options.getJSONObject("visualMap").put("show", false);
-								newSerie.put("zoom", 0.9);
-								newSerie.put("left", 0);
-							}
-						}
-					}else if(chartAllType.contains("wordCloud")){//词云
-						if(isMobile == 1)
-						{
-							options.remove("axis");
-						}
-						if(i>0)
-						{
-							break;
-						}
-						JSONArray wordCloudDatas = new JSONArray();
-						if(!ListUtil.isEmpty(seriesData))
-						{
-							JSONObject wordCloudData = null;
-							for (int j = 0; j < seriesData.size(); j++) {
-								wordCloudData = new JSONObject();
-								wordCloudData.put("value", seriesData.get(j));
-								if(axisData.size() >= seriesData.size())
-								{
-									wordCloudData.put("name", axisData.get(j));
-								}
-								wordCloudDatas.add(wordCloudData);
-							}
-						}
-						newSerie.put("data", wordCloudDatas);
-						newSerie.put("type", "wordCloud");
-						if(!pieSeriesName)
-						{
-							if(StringUtil.isNotEmpty(list.get(i).getSeriesName()))
-							{
-								newSerie.put("name", list.get(i).getSeriesName());
-								pieSeriesName = true;
+			JSONArray seriesField = chartOptions.getJSONArray("seriesField");
+			if(seriesField == null) {
+				seriesField = new JSONArray();
+			}
+			JSONObject spec = chartOptions.getJSONObject("defaultOption").getJSONObject("spec");
+			if("echarts|column|default".equals(chartAllType) || "echarts|line|default".equals(chartAllType) || "echarts|line|smooth".equals(chartAllType)
+					|| "echarts|area|default".equals(chartAllType)) {
+				JSONArray xField = new JSONArray();
+				xField.add("type");
+				xField.add("seriesField");
+				spec.put("xField", xField);
+				spec.put("yField", "value");
+				spec.put("seriesField", "seriesField");
+			}else if("echarts|column|stack".equals(chartAllType) || "echarts|area|stack".equals(chartAllType)) {
+				spec.put("xField", "type");
+				spec.put("yField", "value");
+				spec.put("seriesField", "seriesField");
+			}else if("echarts|bar|default".equals(chartAllType)) {
+				JSONArray yField = new JSONArray();
+				yField.add("type");
+				yField.add("seriesField");
+				spec.put("xField", "value");
+				spec.put("yField", yField);
+				spec.put("seriesField", "seriesField");
+			}else if("echarts|bar|stack".equals(chartAllType)) {
+				spec.put("xField", "value");
+				spec.put("yField", "type");
+				spec.put("seriesField", "seriesField");
+			}else if("echarts|pie|default".equals(chartAllType)) {
+				spec.put("valueField", "value");
+				spec.put("categoryField", "type");
+			}else if("echarts|radar|default".equals(chartAllType)) {
+				spec.put("valueField", "value");
+				spec.put("categoryField", "type");
+				spec.put("seriesField", "seriesField");
+			}
+			boolean flag = false;
+			if(seriesField.size()>=valueField.size()) {
+				flag = true;
+			}
+			JSONArray chartDatas = new JSONArray();
+			if(ListUtil.isNotEmpty(datas)) {
+				if(ListUtil.isNotEmpty(valueField)) {
+					for (int i = 0; i < valueField.size(); i++) {
+						for (int j = 0; j < datas.size(); j++) {
+							JSONObject chartData = new JSONObject();
+							chartData.put("value", datas.get(j).get(valueField.getString(i)));
+							chartData.put("type", datas.get(j).get(categoryField));
+							if(flag) {
+								chartData.put("seriesField", datas.get(j).get(seriesField.getString(i)));
 							}else {
-								newSerie.put("name", "");
+								chartData.put("seriesField", "系列"+(i+1));
 							}
+							chartDatas.add(chartData);
 						}
-						newSeries.add(newSerie);
-					}else if(chartAllType.contains("liquidFill"))
-					{//水球图
-						if(isMobile == 1)
-						{
-							options.remove("axis");
-						}
-						if(i>0)
-						{
-							break;
-						}
-						JSONArray data = new JSONArray();
-						if(!ListUtil.isEmpty(seriesData))
-						{
-							if(CheckUtil.isNumber(seriesData.get(0)))
-							{
-								data.add(seriesData.get(0));
-							}else {
-								data.add(0);
-							}
-						}else {
-							data.add(0);
-						}
-						newSerie.put("data", data);
-						newSerie.put("name", list.get(i).getSeriesName());
-						newSeries.add(newSerie);
 					}
 				}
 			}
-			if(startx != null)
+			spec.getJSONObject("data").put("values", chartDatas);
+			
+			QueryWrapper<LuckysheetReportCell> queryWrapper = new QueryWrapper<>();
+			queryWrapper.eq("tpl_id", reportTplSheet.getTplId());
+			queryWrapper.eq("sheet_id", reportTplSheet.getId());
+			queryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+			queryWrapper.eq("is_chart_attr", YesNoEnum.YES.getCode());
+			queryWrapper.like("chart_ids", chartId);
+			queryWrapper.orderByAsc("coordsx", "coordsy");
+			List<LuckysheetReportCell> list = this.iLuckysheetReportCellService.list(queryWrapper);
+			if(!ListUtil.isEmpty(list))
 			{
-				String start = SheetUtil.excelColIndexToStr(starty+1)+(startx+1);
-				String end = SheetUtil.excelColIndexToStr(endy+1)+(endx+1);
-				jsonObject.getJSONObject("chartOptions").put("rangeTxt", start+":"+end);
-				JSONArray rangeArray = new JSONArray();
-				JSONObject rangeObject = new JSONObject();
-				JSONArray column = new JSONArray();
-				column.add(starty);
-				column.add(endy);
-				JSONArray column1 = new JSONArray();
-				column1.add(0);
-				column1.add(endy-starty);
-				rangeObject.put("column", column);
-				JSONArray row = new JSONArray();
-				row.add(startx);
-				row.add(endx);
-				JSONArray row1 = new JSONArray();
-				row1.add(0);
-				row1.add(endx-startx);
-				rangeObject.put("row", row);
-				rangeArray.add(rangeObject);
-				jsonObject.getJSONObject("chartOptions").put("rangeArray", rangeArray);
-				JSONObject range = new JSONObject();
-				range.put("range", rangeObject);
-				JSONObject content = new JSONObject();
-				content.put("column", column1);
-				content.put("row", row1);
-				range.put("content", content);
-				jsonObject.getJSONObject("chartOptions").put("rangeSplitArray", range);
-			}
-			jsonObject.getJSONObject("chartOptions").getJSONObject("defaultOption").getJSONObject("legend").put("data", legendData);
-		}
-		if(isPieChart)
-		{
-			serie.put("data", newPieSeriesDatas);
-			if(isMobile == 1)
-			{
-				JSONObject label = new JSONObject();
-				label.put("show", true);
-				label.put("position", "inside");
-				label.put("formatter", "{b}\n{c}({d}%)");
-				serie.put("label", label);
-			}
-			newSeries.add(serie);
-		}
-		if(chartAllType.contains("radar") || chartAllType.contains("gauge"))
-		{
-			serie.put("data", radarDatas);
-			newSeries.add(serie);
-		}
-		jsonObject.getJSONObject("chartOptions").getJSONObject("defaultOption").put("series", newSeries);
-		if(reportTplSheetChart != null)
-		{
-			if(!ListUtil.isEmpty(axisData))
-			{
-				if(isPieChart)
-				{
-					if(newPieSeriesDatas.size()>axisData.size())
+				Integer startx = null;
+				Integer starty = null;
+				Integer endx = null;
+				Integer endy = null;
+				for (int i = 0; i < list.size(); i++) {
+					int r = list.get(i).getCoordsx();
+					int c = list.get(i).getCoordsy();
+	 				if(cellBindData.containsKey(r+"_"+c))
 					{
-						for (int i = 0; i < axisData.size(); i++) {
-							newPieSeriesDatas.getJSONObject(i).put("name", axisData.get(i));
+						LuckySheetBindData bindData = cellBindData.get(r+"_"+c);
+						if(startx == null || startx.intValue()>bindData.getStartx().intValue())
+						{
+							startx = bindData.getStartx();
 						}
-					}else {
-						for (int i = 0; i < newPieSeriesDatas.size(); i++) {
-							newPieSeriesDatas.getJSONObject(i).put("name", axisData.get(i));
+						if(starty == null || starty.intValue() > bindData.getStarty().intValue())
+						{
+	 						starty = bindData.getStarty();
 						}
-					}
-				}else if(chartAllType.contains("line") || chartAllType.contains("column") || chartAllType.contains("area")){
-					jsonObject.getJSONObject("chartOptions").getJSONObject("defaultOption").getJSONObject("axis").getJSONObject("xAxisDown").put("data", axisData);
-				}else if(chartAllType.contains("bar"))
+						if(endx == null || endx.intValue() < bindData.getEndx().intValue())
+						{
+							endx = bindData.getEndx();
+						}
+						if(endy == null || endy.intValue() < bindData.getEndy().intValue())
+						{
+							endy = bindData.getEndy();
+						}
+				}
+				if(startx != null)
 				{
-					jsonObject.getJSONObject("chartOptions").getJSONObject("defaultOption").getJSONObject("axis").getJSONObject("yAxisLeft").put("data", axisData);
-				}else if(chartAllType.contains("radar")) {
-				
-					JSONArray indicators = new JSONArray();
-					for (int i = 0; i < axisData.size(); i++) {
-						JSONObject indicator = new JSONObject();
-						indicator.put("name", axisData.get(i));
-						indicators.add(indicator);
-					}
-					jsonObject.getJSONObject("chartOptions").getJSONObject("defaultOption").getJSONObject("radar").put("indicator", indicators);
+					String start = SheetUtil.excelColIndexToStr(starty+1)+(startx+1);
+					String end = SheetUtil.excelColIndexToStr(endy+1)+(endx+1);
+					jsonObject.getJSONObject("chartOptions").put("rangeTxt", start+":"+end);
+					JSONArray rangeArray = new JSONArray();
+					JSONObject rangeObject = new JSONObject();
+					JSONArray column = new JSONArray();
+					column.add(starty);
+					column.add(endy);
+					JSONArray column1 = new JSONArray();
+					column1.add(0);
+					column1.add(endy-starty);
+					rangeObject.put("column", column);
+					JSONArray row = new JSONArray();
+					row.add(startx);
+					row.add(endx);
+					JSONArray row1 = new JSONArray();
+					row1.add(0);
+					row1.add(endx-startx);
+					rangeObject.put("row", row);
+					rangeArray.add(rangeObject);
+					jsonObject.getJSONObject("chartOptions").put("rangeArray", rangeArray);
+					JSONObject range = new JSONObject();
+					range.put("range", rangeObject);
+					JSONObject content = new JSONObject();
+					content.put("column", column1);
+					content.put("row", row1);
+					range.put("content", content);
+					jsonObject.getJSONObject("chartOptions").put("rangeSplitArray", range);
 				}
 			}
+			//计算位置和宽高
+			JSONObject chartCell = chartCells.getJSONObject(chartId);
+			if(chartCell != null)
+			{
+				int r = chartCell.getIntValue("r");
+				int c = chartCell.getIntValue("c");
+				int rs = chartCell.getIntValue("rs");
+				int cs = chartCell.getIntValue("cs");
+				double top = LuckysheetUtil.calculateTop(configRowLen, r,rowhidden);
+				double left = LuckysheetUtil.calculateLeft(configColumnLen, c,colhidden);
+				double height = LuckysheetUtil.calculateHeight(configRowLen, r, rs);
+				double width = LuckysheetUtil.calculateWidth(configColumnLen, c, cs);
+				jsonObject.put("top", top);
+				jsonObject.put("left", left);
+				jsonObject.put("height", height-42);
+				jsonObject.put("width", width-22);
+				jsonObject.put("offsetHeight", height);
+				jsonObject.put("offsetWidth", width);
+			}
 		}
-		//计算位置和宽高
-		JSONObject chartCell = chartCells.getJSONObject(chartId);
-		if(chartCell != null)
-		{
-			int r = chartCell.getIntValue("r");
-			int c = chartCell.getIntValue("c");
-			int rs = chartCell.getIntValue("rs");
-			int cs = chartCell.getIntValue("cs");
-			double top = LuckysheetUtil.calculateTop(configRowLen, r,rowhidden);
-			double left = LuckysheetUtil.calculateLeft(configColumnLen, c,colhidden);
-			double height = LuckysheetUtil.calculateHeight(configRowLen, r, rs);
-			double width = LuckysheetUtil.calculateWidth(configColumnLen, c, cs);
-			jsonObject.put("top", top);
-			jsonObject.put("left", left);
-			jsonObject.put("height", height-42);
-			jsonObject.put("width", width-22);
-			jsonObject.put("offsetHeight", height);
-			jsonObject.put("offsetWidth", width);
-		}
-		
+	 }
 	}
-	
-	
 	
 	/**  
 	 * @MethodName: processImageDatas
@@ -12438,18 +12141,6 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 					chartsOptions = new ArrayList<>();
 					for (int j = 0; j < resPreviewData.getSheetDatas().get(i).getChart().size(); j++) {
 						JSONObject options = resPreviewData.getSheetDatas().get(i).getChart().getJSONObject(j).getJSONObject("chartOptions").getJSONObject("defaultOption");
-						JSONObject axis = options.getJSONObject("axis");
-						if(axis != null)
-						{
-							JSONObject xAxis = axis.getJSONObject("xAxisDown");
-							xAxis.put("name", "");
-							JSONObject yAxis = axis.getJSONObject("yAxisLeft");
-							yAxis.put("name", "");
-							options.remove("axis");
-							options.put("xAxis", xAxis);
-							options.put("yAxis", yAxis);
-						}
-						
 						chartsOptions.add(options);
 					}
 				}

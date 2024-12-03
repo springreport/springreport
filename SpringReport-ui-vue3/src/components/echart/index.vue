@@ -9,7 +9,7 @@
 
 <script>
 // var echarts = require("echarts");
-
+import VChart from '@visactor/vchart';
 export default {
   name: "Echart",
   props: {
@@ -45,7 +45,7 @@ export default {
       handler(options) {
         //  this.chart.clear()
         // 设置true清空echart缓存
-        this.chart.setOption(options, true);
+        // this.chart.setOption(options, true);
       },
       deep: true,
     },
@@ -60,22 +60,18 @@ export default {
 
   mounted() {
     this.initChart();
-    window.addEventListener("resize", () => {
-      this.chart.resize();
-    });
+    // window.addEventListener("resize", () => {
+    //   this.chart.resize();
+    // });
   },
   beforeDestroy() {
-    clearInterval(this.tootipTimer);
-    this.chart.clear();
+    // clearInterval(this.tootipTimer);
+    // this.chart.clear();
   },
   methods: {
     initChart() {
-      // 初始化echart
-      const that = this;
-      this.chart = this.$echarts.init(this.$el); // 'tdTheme'
-      this.chart.clear();
-
-      this.chart.setOption(this.options, true);
+      const vchart = new VChart(this.options.spec, { dom: this.id});
+      vchart.renderSync();
     },
   },
 };

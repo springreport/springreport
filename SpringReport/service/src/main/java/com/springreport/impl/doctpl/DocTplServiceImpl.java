@@ -850,7 +850,7 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 			JSONArray main = JSON.parseArray(model.getMain());
 			int abstractNumID = 1;
 			if(ListUtil.isNotEmpty(main)) {
-				XWPFParagraph paragraph = doc.createParagraph();
+				XWPFParagraph paragraph = null;
 				String lastType = "";
 				for (int i = 0; i < main.size(); i++) {
 					JSONObject content = main.getJSONObject(i);
@@ -872,40 +872,65 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 								content.put("value", value.replaceFirst("\n", ""));
 							}
 						}
+						if(paragraph == null) {
+							paragraph = doc.createParagraph();
+						}
 						WordUtil.addParagraph(paragraph,content, null);
 						break;
 					case "title":
-						paragraph = doc.createParagraph();
+						if(paragraph == null) {
+							paragraph = doc.createParagraph();
+						}
 						WordUtil.addTitleParagraph(paragraph, content);
 						break;
 					case "tab":
+						if(paragraph == null) {
+							paragraph = doc.createParagraph();
+						}
 						WordUtil.addTab(paragraph,null);
 						break;
 					case "table":
 						WordUtil.addTable(doc,content,docTplChartsObj,docTplCodesObj,dynamicData,isTemplate);
 						break;
 					case "superscript":
+						if(paragraph == null) {
+							paragraph = doc.createParagraph();
+						}
 						WordUtil.addSubSupScript(paragraph, content, "sup");
 						break;
 					case "subscript":
+						if(paragraph == null) {
+							paragraph = doc.createParagraph();
+						}
 						WordUtil.addSubSupScript(paragraph, content, "sub");
 						break;
 					case "separator":
-//						paragraph = doc.createParagraph();
+						if(paragraph == null) {
+							paragraph = doc.createParagraph();
+						}
 						WordUtil.addSeparator(paragraph, content);
 						break;
 					case "list":
 						abstractNumID = WordUtil.addList(doc, content,abstractNumID);
 						break;
 					case "hyperlink":
+						if(paragraph == null) {
+							paragraph = doc.createParagraph();
+						}
 						WordUtil.addHyperlink(paragraph, content);
 						break;
 					case "pageBreak":
+						if(paragraph == null) {
+							paragraph = doc.createParagraph();
+						}
 						WordUtil.addPageBreak(paragraph);
 						break;
 					case "image":
 						String chartUrlPrefix = MessageUtil.getValue("chart.url.prefix");
 						String url = content.getString("value");
+						if(paragraph == null) {
+							paragraph = doc.createParagraph();
+						}
 						if(url.contains(chartUrlPrefix)) {
 							//图表
 							if(!StringUtil.isEmptyMap(docTplChartsMap)) {

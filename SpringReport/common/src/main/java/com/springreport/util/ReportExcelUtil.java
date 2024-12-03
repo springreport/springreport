@@ -960,23 +960,23 @@ public class ReportExcelUtil {
 					cellUtil.mergeCell(r,r+rs-1,c,c+cs-1);
 					XSSFClientAnchor anchor = new XSSFClientAnchor(0, 0, 0, 0,c,r,c+cs,r+rs);
 					anchor.setAnchorType(AnchorType.MOVE_AND_RESIZE);
-					boolean showTitle = defaultOption.getJSONObject("title").getBooleanValue("show");
-					String title = defaultOption.getJSONObject("title").getString("text");
+					boolean showTitle = ExcelChartUtil.getTitleShow(chartOptions);
+					String title = ExcelChartUtil.getTitle(chartOptions);
+					List<JSONArray> chartData = ExcelChartUtil.groupChartData(chartOptions);
 					if(chartAllType.contains("pie"))
 					{//饼图
-						JSONObject pieObject = JFreeChartUtil.getPieChartDataset(defaultOption);
+						JSONObject pieObject = JFreeChartUtil.getPieChartDataset(chartOptions,chartData);
 						PieDataset pieDataset = (PieDataset) pieObject.get("dataSet");
 						JSONArray legend = pieObject.getJSONArray("legend");
+						double innerRadius = defaultOption.getJSONObject("spec").getDoubleValue("innerRadius");
 						if(pieDataset != null)
 						{
 							byte[] chartBytes = null;
-							if(chartAllType.contains("default")||chartAllType.contains("split"))
-							{
+							if(innerRadius > 0) {
+								chartBytes = JFreeChartUtil.createRingChart(showTitle?title:"", pieDataset, jsonObject.getIntValue("offsetWidth"), jsonObject.getIntValue("offsetHeight"));
+							}else {
 								String type = chartAllType.split("\\|")[2];
 								chartBytes = JFreeChartUtil.createPieChart(showTitle?title:"", pieDataset, jsonObject.getIntValue("offsetWidth"), jsonObject.getIntValue("offsetHeight"),type,legend);
-							}else if(chartAllType.contains("ring"))
-							{
-								chartBytes = JFreeChartUtil.createRingChart(showTitle?title:"", pieDataset, jsonObject.getIntValue("offsetWidth"), jsonObject.getIntValue("offsetHeight"));
 							}
 							if(chartBytes != null)
 							{
@@ -984,7 +984,7 @@ public class ReportExcelUtil {
 							}
 						}
 					}else if(chartAllType.contains("line")) {
-						DefaultCategoryDataset dataset = JFreeChartUtil.getCategoryDataset(defaultOption);
+						DefaultCategoryDataset dataset = JFreeChartUtil.getCategoryDataset(chartOptions,chartData);
 						byte[] chartBytes = JFreeChartUtil.createLineChart(showTitle?title:"", dataset, jsonObject.getIntValue("offsetWidth"), jsonObject.getIntValue("offsetHeight"));
 						if(chartBytes != null)
 						{
@@ -992,7 +992,7 @@ public class ReportExcelUtil {
 						}
 					}
 					else if(chartAllType.contains("area")) {
-						DefaultCategoryDataset dataset = JFreeChartUtil.getCategoryDataset(defaultOption);
+						DefaultCategoryDataset dataset = JFreeChartUtil.getCategoryDataset(chartOptions,chartData);
 						byte[] chartBytes = JFreeChartUtil.createAreaChart(showTitle?title:"", dataset, jsonObject.getIntValue("offsetWidth"), jsonObject.getIntValue("offsetHeight"));
 						if(chartBytes != null)
 						{
@@ -1000,7 +1000,7 @@ public class ReportExcelUtil {
 						}
 					}
 					else if(chartAllType.contains("column")) {
-						DefaultCategoryDataset dataset = JFreeChartUtil.getCategoryDataset(defaultOption);
+						DefaultCategoryDataset dataset = JFreeChartUtil.getCategoryDataset(chartOptions,chartData);
 						byte[] chartBytes = null;
 						if(chartAllType.contains("stack"))
 						{
@@ -1013,7 +1013,7 @@ public class ReportExcelUtil {
 							patriarch.createPicture(anchor, wb.addPicture(chartBytes, HSSFWorkbook.PICTURE_TYPE_JPEG));
 						}
 					}else if(chartAllType.contains("bar")) {
-						DefaultCategoryDataset dataset = JFreeChartUtil.getCategoryDataset(defaultOption);
+						DefaultCategoryDataset dataset = JFreeChartUtil.getCategoryDataset(chartOptions,chartData);
 						byte[] chartBytes = null;
 						if(chartAllType.contains("stack"))
 						{
@@ -1026,7 +1026,7 @@ public class ReportExcelUtil {
 							patriarch.createPicture(anchor, wb.addPicture(chartBytes, HSSFWorkbook.PICTURE_TYPE_JPEG));
 						}
 					}else if(chartAllType.contains("radar")) {
-						JSONObject radarData = JFreeChartUtil.getRadarDataset(defaultOption);
+						JSONObject radarData = JFreeChartUtil.getRadarDataset(chartOptions,chartData);
 						DefaultCategoryDataset dataset = (DefaultCategoryDataset) radarData.get("dataSet");
 						float maxValue = (float) radarData.get("maxValue");
 						byte[] chartBytes = null;
@@ -1415,11 +1415,12 @@ public class ReportExcelUtil {
 					int cs = chartCell.getIntValue("cs");
 					XSSFClientAnchor anchor = new XSSFClientAnchor(0, 0, 0, 0,c,r,c+cs,r+rs);
 					anchor.setAnchorType(AnchorType.MOVE_AND_RESIZE);
-					boolean showTitle = defaultOption.getJSONObject("title").getBooleanValue("show");
-					String title = defaultOption.getJSONObject("title").getString("text");
+//					boolean showTitle = defaultOption.getJSONObject("title").getBooleanValue("show");
+//					String title = defaultOption.getJSONObject("title").getString("text");
 					if(chartAllType.contains("pie"))
 					{//饼图
-						if(chartAllType.contains("ring")) {
+						double innerRadius = defaultOption.getJSONObject("spec").getDoubleValue("innerRadius");
+						if(innerRadius>0) {
 							ExcelChartUtil.createDoughnut(sheet, chartCell, chartOptions);
 						}else {
 							ExcelChartUtil.createPie(sheet, chartCell, chartOptions);

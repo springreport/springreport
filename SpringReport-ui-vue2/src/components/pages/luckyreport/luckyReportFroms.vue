@@ -418,6 +418,14 @@
                               <el-option label="下拉树(多选)" value="multiTreeSelect"></el-option>
                           </el-select>
                           </el-form-item>
+                          <el-form-item v-if="paramForm.paramType == 'date'" label="日期格式" prop="dateFormat" :rules="filter_rules('日期格式',{required:false})">
+                          <el-select v-model="paramForm.dateFormat" placeholder="日期格式"  size="small">
+                              <el-option label="年" value="yyyy"></el-option>
+                              <el-option label="年-月" value="yyyy-MM"></el-option>
+                              <el-option label="年-月-日" value="yyyy-MM-dd"></el-option>
+                              <el-option label="年-月-日 时:分" value="yyyy-MM-dd HH:mm"></el-option>
+                          </el-select>
+                          </el-form-item>
                           <el-form-item label="默认值">
                           <el-input v-model="paramForm.paramDefault" placeholder="默认值" size="small"></el-input>
                           </el-form-item>
