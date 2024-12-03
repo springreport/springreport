@@ -1992,7 +1992,7 @@ export default {
           const timestamp = new Date().getTime();
           let chartUrl = that.chartUrlPrefix+that.chartModalData.chartType+".png?t="+timestamp;
           const tplId = that.$route.query.tplId// tplId
-          if(that.chartModalData.chartType != that.docTplCharts[that.chartModalData.index].chartType){
+          if(that.chartModalData.index==null || that.chartModalData.chartType != that.docTplCharts[that.chartModalData.index].chartType){
             that.instance.command.executeImage({
               value:chartUrl,
               width: 520,
