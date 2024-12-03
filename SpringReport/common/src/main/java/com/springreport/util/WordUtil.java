@@ -1157,7 +1157,7 @@ public class WordUtil {
             };
         }else {
         	datas = (List<Map<String, Object>>) dynamicData.get(docChartSettingDto.getDatasetName());
-        	String categoryField = JSON.parseArray(docChartSettingDto.getCategoryField()).getString(0);
+        	String categoryField = docChartSettingDto.getCategoryField();
         	List<String> categories = new ArrayList<>();
         	for (int i = 0; i < datas.size(); i++) {
         		Object obj = datas.get(i).get(categoryField);
@@ -1176,7 +1176,7 @@ public class WordUtil {
                     2.59, 3.5
             };
         }else {
-        	String valueField = docChartSettingDto.getValueField();
+        	String valueField = JSON.parseArray(docChartSettingDto.getValueField()).getString(0);
         	List<Double> values = new ArrayList<>();
         	for (int i = 0; i < datas.size(); i++) {
         		Object obj = datas.get(i).get(valueField);
@@ -1372,20 +1372,17 @@ public class WordUtil {
     private static Map<String, Object> processDatas(Map<String, Object> dynamicData,DocChartSettingDto docChartSettingDto){
     	Map<String, Object> result = new HashMap<String, Object>();
     	List<Map<String, Object>> datas = (List<Map<String, Object>>) dynamicData.get(docChartSettingDto.getDatasetName());
-    	List<List<Map<String, Object>>> bindDatas = new ArrayList<>();
-    	bindDatas.add(datas);
-    	bindDatas = groupDatas(bindDatas, docChartSettingDto);
+    	List<JSONArray> groupDatas = groupDatas(datas, docChartSettingDto);
     	List<String> categories = new ArrayList<>();//x轴标签数据
     	List<String> seriesData = new ArrayList<>();//分类数据
         List<XDDFNumericalDataSource<Double>> valueDS = new ArrayList<>();
         Map<Integer, List<Double>> valuesMap = new LinkedHashMap<>();
-        JSONArray properties = JSON.parseArray(docChartSettingDto.getCategoryField());
-    	if(ListUtil.isNotEmpty(bindDatas)) {
-    		for (int i = 0; i < bindDatas.size(); i++) {
-    			categories.add(String.valueOf(bindDatas.get(i).get(0).get(properties.get(0))));
-    			for (int j = 0; j < bindDatas.get(i).size(); j++) {
-    				if(i == 0 && StringUtil.isNotEmpty(docChartSettingDto.getSeriesField())) {
-    					seriesData.add(String.valueOf(bindDatas.get(i).get(j).get(docChartSettingDto.getSeriesField())));
+    	if(ListUtil.isNotEmpty(groupDatas)) {
+    		for (int i = 0; i < groupDatas.size(); i++) {
+    			categories.add(groupDatas.get(i).getJSONObject(0).getString("type"));
+    			for (int j = 0; j < groupDatas.get(i).size(); j++) {
+    				if(i == 0) {
+    					seriesData.add(groupDatas.get(i).getJSONObject(j).getString("seriesField"));
     				}
     				List<Double> values = null;
 					if(!valuesMap.containsKey(j)) {
@@ -1394,7 +1391,7 @@ public class WordUtil {
 					}else {
 						values = valuesMap.get(j);
 					}
-					values.add(Double.parseDouble(String.valueOf(bindDatas.get(i).get(j).get(docChartSettingDto.getValueField()))));
+					values.add(groupDatas.get(i).getJSONObject(j).getDoubleValue("value"));
 				}
     		}
     	}
@@ -1408,36 +1405,58 @@ public class WordUtil {
     	return result;
     }
     
-    private static List<List<Map<String, Object>>> groupDatas(List<List<Map<String, Object>>> bindDatas,DocChartSettingDto docChartSettingDto){
-    	List<List<Map<String, Object>>> datas = null;
-    	JSONArray properties = JSON.parseArray(docChartSettingDto.getCategoryField());
-    	if(properties.size() == 1) {
-    		properties.add("SpringReport");
-    	}
-    	for (int t = 0; t < properties.size()-1; t++) {
-    		datas = new ArrayList<List<Map<String,Object>>>();
-    		for (int i = 0; i < bindDatas.size(); i++) {
-    			Map<String, List<Map<String, Object>>> dataMap = new LinkedHashMap<String, List<Map<String, Object>>>();
-    			for (int j = 0; j < bindDatas.get(i).size(); j++) {
-    				Map<String, Object> map = bindDatas.get(i).get(j);
-    				String value = String.valueOf(map.get(properties.get(t)));
-    				List<Map<String, Object>> rowList=null;
-					if (dataMap.containsKey(value)) {
-						rowList = dataMap.get(value);
-					}else {
-						rowList = new ArrayList<Map<String,Object>>();
-						dataMap.put(value, rowList);
+    private static List<JSONArray> groupDatas(List<Map<String, Object>> datas,DocChartSettingDto docChartSettingDto){
+    	JSONArray valueField = JSON.parseArray(docChartSettingDto.getValueField());
+    	if(valueField == null) {
+			valueField = new JSONArray();
+		}
+    	JSONArray seriesField = JSON.parseArray(docChartSettingDto.getSeriesField());
+    	if(seriesField == null) {
+    		seriesField = new JSONArray();
+		}
+    	boolean flag = false;
+		if(seriesField.size()>=valueField.size()) {
+			flag = true;
+		}
+		JSONArray chartDatas = new JSONArray();
+		if(ListUtil.isNotEmpty(datas)) {
+			if(ListUtil.isNotEmpty(valueField)) {
+				for (int i = 0; i < valueField.size(); i++) {
+					for (int j = 0; j < datas.size(); j++) {
+						JSONObject chartData = new JSONObject();
+						chartData.put("value", datas.get(j).get(valueField.getString(i)));
+						chartData.put("type", datas.get(j).get(docChartSettingDto.getCategoryField()));
+						if(flag) {
+							chartData.put("seriesField", datas.get(j).get(seriesField.getString(i)));
+						}else {
+							chartData.put("seriesField", "系列"+(i+1));
+						}
+						chartDatas.add(chartData);
 					}
-					rowList.add(map);
-    			}
-    			Iterator<Entry<String, List<Map<String, Object>>>> entries = dataMap.entrySet().iterator();
-				while(entries.hasNext()){
-					datas.add(entries.next().getValue());
 				}
+			}
+		}
+		List<JSONArray> result = new ArrayList<>();
+		if(ListUtil.isNotEmpty(chartDatas)) {
+			Map<String, JSONArray> dataMap = new LinkedHashMap<>();
+    		for (int i = 0; i < chartDatas.size(); i++) {
+    			JSONArray rowList = null;
+    			JSONObject data = chartDatas.getJSONObject(i);
+    			String key = String.valueOf(data.get("type"));
+    			if(dataMap.containsKey(key)) {
+					rowList = dataMap.get(key);
+				}else {
+					rowList = new JSONArray();
+					dataMap.put(key, rowList);
+				}
+    			rowList.add(data);
     		}
-    		bindDatas = datas;
-    	}
-    	return bindDatas;
+    		Iterator<Entry<String, JSONArray>> entries = dataMap.entrySet().iterator();
+    		while(entries.hasNext()){
+    			result.add(entries.next().getValue());
+			}
+		}
+		return result;
     }
     
     private static void showCateName(CTPieSer series, boolean val) {
