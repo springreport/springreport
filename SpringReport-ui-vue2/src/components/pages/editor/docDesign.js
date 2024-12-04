@@ -145,9 +145,9 @@ export default {
         {type:'Select',label:'显示标题',prop:'showChartName',rules:{required:true},options:this.selectUtil.yesNo},
         {type:'Select',label:'图表类型',prop:'chartType',rules:{required:true},props:{label:"label",value:"value"},options:this.selectUtil.docChartType,change:this.changeChartType},
         {type:'Select',label:'数据集',prop:'datasetId',rules:{required:true},props:{label:"datasetName",value:"id"},change:this.changeDatasets},
-        {type:'Select',label:'分组字段',prop:'categoryField',rules:{required:true},props:{label:"name",value:"name"},multiple:true},
-        {type:'Select',label:'数值字段',prop:'valueField',rules:{required:true},props:{label:"name",value:"name"}},
-        {type:'Select',label:'系列字段',prop:'seriesField',rules:{required:false},props:{label:"name",value:"name"}},
+        {type:'Select',label:'分组字段',prop:'categoryField',rules:{required:true},props:{label:"name",value:"name"}},
+        {type:'Select',label:'数值字段',prop:'valueField',rules:{required:true},props:{label:"name",value:"name"},multiple:true},
+        {type:'Select',label:'系列字段',prop:'seriesField',rules:{required:false},props:{label:"name",value:"name"},multiple:true},
         {type:'Table',label:'已添加图表',tableCols:[],tableHandles:[],isPagination:false,isIndex:true},
       ],
       chartModalData : {//modal页面数据
@@ -208,6 +208,7 @@ export default {
         datasetName:"",//数据集名称
         valueField:null,
         codeType:"1",//1 条形码 2二维码
+        codeUrl:"",
       },
       codeModalHandles:[
         {label:'关闭',type:'default',handle:()=>this.closeCodeModal()},
@@ -1962,9 +1963,10 @@ export default {
       this.$refs['chartModalRef'].$refs['modalFormRef'].validate((valid) => {
         if(valid){
           const timestamp = new Date().getTime();
-          let chartUrl = that.chartUrlPrefix+that.chartModalData.chartType+".png?t="+timestamp;
+          let chartUrl = that.chartModalData.chartUrl;
           const tplId = that.$route.query.tplId// tplId
           if(that.chartModalData.index==null || that.chartModalData.chartType != that.docTplCharts[that.chartModalData.index].chartType){
+            chartUrl = that.chartUrlPrefix+that.chartModalData.chartType+".png?t="+timestamp;
             that.instance.command.executeImage({
               value:chartUrl,
               width: 520,
@@ -2202,9 +2204,10 @@ export default {
           if(that.codeModalData.codeType == "2"){
             type = "qrcode";
           }
-          let chartUrl = that.chartUrlPrefix+type+".png?t="+timestamp;
+          let chartUrl = that.codeModalData.codeUrl
           const tplId = that.$route.query.tplId// tplId
-          if(this.codeModalData.index != null){
+          if(this.codeModalData.index == null){
+            chartUrl = that.chartUrlPrefix+type+".png?t="+timestamp;
             that.instance.command.executeImage({
               value:chartUrl,
               width: that.codeModalData.codeType == "2"?400:354,
@@ -2257,20 +2260,24 @@ export default {
       });
     },
     editChart(row,index){
-      console.log(row)
       this.chartModalData.chartName = row.chartName;
       this.chartModalData.showChartName = row.showChartName;
       this.chartModalData.chartType = row.chartType;
       this.chartModalData.datasetName = row.datasetName;
-      if(typeof row.categoryField === 'string'){
-        this.chartModalData.categoryField = JSON.parse(row.categoryField);
+      this.chartModalData.categoryField = row.categoryField;
+      if(typeof row.valueField === 'string'){
+        this.chartModalData.valueField = JSON.parse(row.valueField);
       }else{
-        this.chartModalData.categoryField = row.categoryField;
+        this.chartModalData.valueField = row.valueField;
       }
-      this.chartModalData.valueField = row.valueField;
       this.chartModalData.datasetId = row.datasetId;
       this.chartModalData.datasetName = row.datasetName;
-      this.chartModalData.seriesField = row.seriesField;
+      if(typeof row.seriesField === 'string'){
+        this.chartModalData.seriesField = JSON.parse(row.seriesField);
+      }else{
+        this.chartModalData.seriesField = row.seriesField;
+      }
+      this.chartModalData.chartUrl = row.chartUrl;
       this.chartModalData.index = index;
       this.changeChartType();
       this.changeDatasets(row.datasetId);
@@ -2280,6 +2287,7 @@ export default {
       this.codeModalData.codeType = row.codeType;
       this.codeModalData.valueField = row.valueField;
       this.codeModalData.datasetId = row.datasetId;
+      this.codeModalData.codeUrl = row.codeUrl;
       this.codeModalData.index = index;
       this.changeCodeDatasets(row.datasetId);
     }

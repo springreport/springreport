@@ -947,7 +947,14 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 									DocTplCodes tplCodes = docTplCodesMap.get(url).get(0);
 									Map<String, Object> data = null;
 									if(dynamicData.get(tplCodes.getDatasetName()) != null) {
-										data = (Map<String, Object>) dynamicData.get(tplCodes.getDatasetName());
+										Object obj = dynamicData.get(tplCodes.getDatasetName());
+										if(obj instanceof List) {
+											List<Map<String, Object>> datas = (List<Map<String, Object>>) obj;
+											data = datas.get(0);
+										}else {
+											data = (Map<String, Object>) dynamicData.get(tplCodes.getDatasetName());
+										}
+										
 									}
 									int width = content.getIntValue("width");
 									int height = content.getIntValue("height");
