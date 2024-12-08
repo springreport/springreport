@@ -21,6 +21,7 @@ import com.springreport.api.luckysheetcell.ILuckysheetCellService;
 import com.springreport.api.mqfailedmsg.IMqFailedMsgService;
 import com.springreport.constants.Constants;
 import com.springreport.dto.coedit.MqConfigDto;
+import com.springreport.dto.coedit.MqOperateHisDto;
 import com.springreport.dto.coedit.MqRCOprepationDto;
 import com.springreport.entity.luckysheet.Luckysheet;
 import com.springreport.entity.luckysheetcell.LuckysheetCell;
@@ -676,6 +677,36 @@ public class LuckysheetConsumer implements RocketMQListener<String>{
 						luckysheet.setChart(JSON.toJSONString(charts));
 						this.luckysheetMapper.updateById(luckysheet);
 						break;
+					}
+				}
+			}
+		}else if(MqTypeEnums.DELETECHART.getCode().equals(keyName))
+		{
+			JSONObject _v = JSON.parseObject(JSON.toJSONString(v));
+			String listId = mqConfigDto.getListId();
+			String index = mqConfigDto.getIndex();
+			String blockId = mqConfigDto.getBlockId();
+			Object data = redisUtil.get(RedisPrefixEnum.DOCOMENTDATA.getCode()+listId+"_"+index+"_"+blockId);
+			luckysheet = JSON.parseObject(data.toString(),Luckysheet.class);
+			if(data != null) {
+				luckysheet = JSON.parseObject(data.toString(),Luckysheet.class);
+				String chartStr = luckysheet.getChart();
+				JSONArray charts = null;
+				if(StringUtil.isNotEmpty(chartStr)) {
+					charts = JSON.parseArray(chartStr);
+				}else {
+					charts = new JSONArray();
+				}
+				if(ListUtil.isNotEmpty(charts)) {
+					String vchartId = _v.getString("chart_id");
+					for (int i = 0; i < charts.size(); i++) {
+						String chartId = charts.getJSONObject(i).getString("chart_id");
+						if(chartId.equals(vchartId)) {
+							charts.remove(i);
+							luckysheet.setChart(JSON.toJSONString(charts));
+							this.luckysheetMapper.updateById(luckysheet);
+							break;
+						}
 					}
 				}
 			}

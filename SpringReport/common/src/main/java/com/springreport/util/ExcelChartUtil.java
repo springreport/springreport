@@ -46,6 +46,7 @@ import org.openxmlformats.schemas.drawingml.x2006.main.CTTextBody;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.springreport.enums.YesNoEnum;
 
 /**  
  * @ClassName: ExcelChartUtil
@@ -64,7 +65,7 @@ public class ExcelChartUtil {
 	 * @param chartOptions void
 	 * @date 2024-02-17 09:09:21 
 	 */ 
-	public static void createLineChart(XSSFSheet sheet,JSONObject chartCell,JSONObject chartOptions,boolean smooth,boolean showLabel) {
+	public static void createLineChart(XSSFSheet sheet,JSONObject chartCell,JSONObject chartOptions,boolean smooth,boolean showLabel,int isCoedit) {
 		//创建一个画布
 		XSSFDrawing drawing = sheet.createDrawingPatriarch();
 		int r = chartCell.getIntValue("r");
@@ -117,7 +118,7 @@ public class ExcelChartUtil {
 		XDDFValueAxis leftAxis = chart.createValueAxis(AxisPosition.LEFT);
 		JSONArray axisData = axis.getJSONArray("data");
 		XDDFCategoryDataSource category = XDDFDataSourcesFactory.fromArray(axisData.toArray(new String[axisData.size()]));
-		List<XDDFNumericalDataSource<Double>> datas = getSeriesArea(sheet, chartOptions, axisData.size());
+		List<XDDFNumericalDataSource<Double>> datas = getSeriesArea(sheet, chartOptions, axisData.size(),isCoedit);
 		if(ListUtil.isNotEmpty(datas))
 		{
 			JSONArray legendData = chartLegend.getJSONArray("data");
@@ -155,7 +156,7 @@ public class ExcelChartUtil {
 	 * @param chartOptions void
 	 * @date 2024-02-18 06:39:43 
 	 */ 
-	public static void createAreaChart(XSSFSheet sheet,JSONObject chartCell,JSONObject chartOptions) {
+	public static void createAreaChart(XSSFSheet sheet,JSONObject chartCell,JSONObject chartOptions,int isCoedit) {
 		//创建一个画布
 		XSSFDrawing drawing = sheet.createDrawingPatriarch();
 		int r = chartCell.getIntValue("r");
@@ -208,7 +209,7 @@ public class ExcelChartUtil {
 		XDDFValueAxis leftAxis = chart.createValueAxis(AxisPosition.LEFT);
 		JSONArray axisData = axis.getJSONArray("data");
 		XDDFCategoryDataSource category = XDDFDataSourcesFactory.fromArray(axisData.toArray(new String[axisData.size()]));
-		List<XDDFNumericalDataSource<Double>> datas = getSeriesArea(sheet, chartOptions, axisData.size());
+		List<XDDFNumericalDataSource<Double>> datas = getSeriesArea(sheet, chartOptions, axisData.size(),isCoedit);
 		if(ListUtil.isNotEmpty(datas))
 		{
 			JSONArray legendData = chartLegend.getJSONArray("data");
@@ -233,7 +234,7 @@ public class ExcelChartUtil {
      * @param chartPosition
      * @param pieChart
      */
-    public static void createBar(XSSFSheet sheet,JSONObject chartCell,JSONObject chartOptions,String type,boolean stacked){
+    public static void createBar(XSSFSheet sheet,JSONObject chartCell,JSONObject chartOptions,String type,boolean stacked,int isCoedit){
 		//创建一个画布
 		XSSFDrawing drawing = sheet.createDrawingPatriarch();
 		int r = chartCell.getIntValue("r");
@@ -287,7 +288,7 @@ public class ExcelChartUtil {
 		leftAxis.setCrossBetween(AxisCrossBetween.BETWEEN);
 		JSONArray axisData = axis.getJSONArray("data");
 		XDDFCategoryDataSource category = XDDFDataSourcesFactory.fromArray(axisData.toArray(new String[axisData.size()]));
-		List<XDDFNumericalDataSource<Double>> datas = getSeriesArea(sheet, chartOptions, axisData.size());
+		List<XDDFNumericalDataSource<Double>> datas = getSeriesArea(sheet, chartOptions, axisData.size(),isCoedit);
 		if(ListUtil.isNotEmpty(datas))
 		{
 			JSONArray legendData = chartLegend.getJSONArray("data");
@@ -334,7 +335,7 @@ public class ExcelChartUtil {
      * @param type void
      * @date 2024-02-19 07:47:32 
      */ 
-    public static void createPie(XSSFSheet sheet,JSONObject chartCell,JSONObject chartOptions){
+    public static void createPie(XSSFSheet sheet,JSONObject chartCell,JSONObject chartOptions,int isCoedit){
     	//创建一个画布
     	XSSFDrawing drawing = sheet.createDrawingPatriarch();
 		int r = chartCell.getIntValue("r");
@@ -383,7 +384,7 @@ public class ExcelChartUtil {
 		boolean rangeConfigCheck = chartOptions.getBooleanValue("rangeConfigCheck");
 		JSONArray names = getAxesData(chartData,rangeConfigCheck);
 		XDDFCategoryDataSource category = XDDFDataSourcesFactory.fromArray(names.toArray(new String[names.size()]));
-		List<XDDFNumericalDataSource<Double>> datas = getSeriesArea(sheet, chartOptions, names.size());
+		List<XDDFNumericalDataSource<Double>> datas = getSeriesArea(sheet, chartOptions, names.size(),isCoedit);
 		if(ListUtil.isNotEmpty(datas)) {
 			XDDFPieChartData data = (XDDFPieChartData)chart.createData(ChartTypes.PIE, null, null);
 			XDDFPieChartData.Series series = (XDDFPieChartData.Series)data.addSeries(category, datas.get(0));
@@ -408,7 +409,7 @@ public class ExcelChartUtil {
      * @param chartOptions void
      * @date 2024-02-20 04:42:34 
      */ 
-    public static void createDoughnut(XSSFSheet sheet,JSONObject chartCell,JSONObject chartOptions){
+    public static void createDoughnut(XSSFSheet sheet,JSONObject chartCell,JSONObject chartOptions,int isCoedit){
     	//创建一个画布
     	XSSFDrawing drawing = sheet.createDrawingPatriarch();
 		int r = chartCell.getIntValue("r");
@@ -457,7 +458,7 @@ public class ExcelChartUtil {
 		boolean rangeConfigCheck = chartOptions.getBooleanValue("rangeConfigCheck");
 		JSONArray names = getAxesData(chartData,rangeConfigCheck);
 		XDDFCategoryDataSource category = XDDFDataSourcesFactory.fromArray(names.toArray(new String[names.size()]));
-		List<XDDFNumericalDataSource<Double>> datas = getSeriesArea(sheet, chartOptions, names.size());
+		List<XDDFNumericalDataSource<Double>> datas = getSeriesArea(sheet, chartOptions, names.size(),isCoedit);
 		if(ListUtil.isNotEmpty(datas)) {
 			XDDFDoughnutChartData data = (XDDFDoughnutChartData)chart.createData(ChartTypes.DOUGHNUT, null, null);
 			XDDFDoughnutChartData.Series series = (XDDFDoughnutChartData.Series)data.addSeries(category, datas.get(0));
@@ -484,7 +485,7 @@ public class ExcelChartUtil {
      * @param chartOptions void
      * @date 2024-02-20 06:57:24 
      */ 
-    public static void createRadar(XSSFSheet sheet,JSONObject chartCell,JSONObject chartOptions){
+    public static void createRadar(XSSFSheet sheet,JSONObject chartCell,JSONObject chartOptions,int isCoedit){
     	//创建一个画布
     	XSSFDrawing drawing = sheet.createDrawingPatriarch();
 		int r = chartCell.getIntValue("r");
@@ -539,7 +540,7 @@ public class ExcelChartUtil {
 		JSONObject pieSeries = getLegend(chartOptions, chartData);
 		JSONArray names = pieSeries.getJSONArray("data");
 		XDDFCategoryDataSource category = XDDFDataSourcesFactory.fromArray(indicator.toArray(new String[indicator.size()]));
-		List<XDDFNumericalDataSource<Double>> datas = getSeriesArea(sheet, chartOptions, indicator.size());
+		List<XDDFNumericalDataSource<Double>> datas = getSeriesArea(sheet, chartOptions, indicator.size(),isCoedit);
 		if(ListUtil.isNotEmpty(datas)) {
 			// 网格线
 			XDDFShapeProperties yGridProperties = leftAxis.getOrAddMajorGridProperties();
@@ -661,10 +662,12 @@ public class ExcelChartUtil {
 		return result;
     }
     
-    private static List<XDDFNumericalDataSource<Double>> getSeriesArea(XSSFSheet sheet,JSONObject chartOptions,int axisDataSize){
+    private static List<XDDFNumericalDataSource<Double>> getSeriesArea(XSSFSheet sheet,JSONObject chartOptions,int axisDataSize,int isCoedit){
     	List<XDDFNumericalDataSource<Double>> result = new ArrayList<>();
     	JSONArray rangeArray = chartOptions.getJSONArray("rangeArray");
     	boolean rangeConfigCheck = chartOptions.getBooleanValue("rangeConfigCheck");// transpose(switch row/column)
+    	JSONObject rangeSplitArray = chartOptions.getJSONObject("rangeSplitArray");
+    	String type = rangeSplitArray.getString("type");
     	if(ListUtil.isNotEmpty(rangeArray))
     	{
     		JSONObject rangeObj = rangeArray.getJSONObject(0);
@@ -676,6 +679,16 @@ public class ExcelChartUtil {
     			int edr = row.getIntValue(1);
     			int stc = column.getIntValue(0);
     			int edc = column.getIntValue(1);
+    			if(YesNoEnum.YES.getCode().intValue() == 1) {
+    				if("normal".equals(type)) {
+    					str = str + 1;
+    					stc = stc + 1;
+    				}else if("leftright".equals(type)) {
+    					stc = stc + 1;
+    				}else if("topbottom".equals(type)) {
+    					str = str + 1;
+    				}
+    			}
     			if(axisDataSize < (edc-stc+1))
     			{
     				edc = stc+axisDataSize-1;
@@ -690,6 +703,16 @@ public class ExcelChartUtil {
     			int edr = row.getIntValue(1);
     			int stc = column.getIntValue(0);
     			int edc = column.getIntValue(1);
+    			if(YesNoEnum.YES.getCode().intValue() == 1) {
+    				if("normal".equals(type)) {
+    					str = str + 1;
+    					stc = stc + 1;
+    				}else if("leftright".equals(type)) {
+    					stc = stc + 1;
+    				}else if("topbottom".equals(type)) {
+    					str = str + 1;
+    				}
+    			}
     			if(axisDataSize < (edr-str+1))
     			{
     				edr = str+axisDataSize-1;
