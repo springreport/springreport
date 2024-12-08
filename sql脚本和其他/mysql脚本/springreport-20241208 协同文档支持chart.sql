@@ -1,0 +1,1 @@
+ALTER TABLE luckysheet ADD COLUMN chart longtext DEFAULT NULL COMMENT '图表'; 
