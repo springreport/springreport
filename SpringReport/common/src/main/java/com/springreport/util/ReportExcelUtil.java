@@ -266,7 +266,7 @@ public class ReportExcelUtil {
                 JSONObject columnlenObj = JSONObject.parseObject(JSONObject.toJSONString(columnlen));
                 setImages(wb,sheet,images,columnlenObj,rowlenObj,rowhidden,colhidden,mesExportExcel.getImageInfos(),mesExportExcel.getBackImages());
                 insertUrlImg(wb,sheet,imageDatas);
-                insertChart(wb, sheet, mesExportExcel.getSheetConfigs().get(i).getChart(),mesExportExcel.getSheetConfigs().get(i).getChartCells());
+                insertChart(wb, sheet, mesExportExcel.getSheetConfigs().get(i).getChart(),mesExportExcel.getSheetConfigs().get(i).getChartCells(),mesExportExcel.getSheetConfigs().get(i).getIsCoedit(),rowlenObj,rowhidden,columnlenObj,colhidden);
 //                insertBase64Chart(wb, sheet, mesExportExcel.getSheetConfigs().get(i).getChart(),mesExportExcel.getSheetConfigs().get(i).getChartCells(),cellUtil,mesExportExcel.getChartsBase64());
                 addDataVerification(sheet, dataVerification);
                 if(authority != null && authority.getIntValue("sheet") == 1)
@@ -1396,7 +1396,7 @@ public class ReportExcelUtil {
     	return result;
     }
     
-    public static void insertChart(XSSFWorkbook wb,XSSFSheet sheet,JSONArray jsonArray,JSONObject chartCells) throws IOException
+    public static void insertChart(XSSFWorkbook wb,XSSFSheet sheet,JSONArray jsonArray,JSONObject chartCells,int isCoedit,JSONObject rowlen,JSONObject rowhidden,JSONObject columnlen,JSONObject colhidden) throws IOException
 	{
 		if(!ListUtil.isEmpty(jsonArray))
 		{
@@ -1406,46 +1406,71 @@ public class ReportExcelUtil {
 				JSONObject chartOptions = jsonObject.getJSONObject("chartOptions");
 				JSONObject defaultOption = chartOptions.getJSONObject("defaultOption");
 				String chartAllType = chartOptions.getString("chartAllType");
-				JSONObject chartCell = chartCells.getJSONObject(chartId);
-				if(chartCell != null)
-				{
-					int r = chartCell.getIntValue("r");
-					int rs = chartCell.getIntValue("rs");
-					int c = chartCell.getIntValue("c");
-					int cs = chartCell.getIntValue("cs");
-					XSSFClientAnchor anchor = new XSSFClientAnchor(0, 0, 0, 0,c,r,c+cs,r+rs);
-					anchor.setAnchorType(AnchorType.MOVE_AND_RESIZE);
-//					boolean showTitle = defaultOption.getJSONObject("title").getBooleanValue("show");
-//					String title = defaultOption.getJSONObject("title").getString("text");
-					if(chartAllType.contains("pie"))
-					{//饼图
-						double innerRadius = defaultOption.getJSONObject("spec").getDoubleValue("innerRadius");
-						if(innerRadius>0) {
-							ExcelChartUtil.createDoughnut(sheet, chartCell, chartOptions);
-						}else {
-							ExcelChartUtil.createPie(sheet, chartCell, chartOptions);
-						}
-					}else if(chartAllType.contains("line")) {
-						boolean smooth = false;
-						boolean showLabel = false;
-						if(chartAllType.contains("smooth")) {
-							smooth = true;
-						}
-						if(chartAllType.contains("label")) {
-							showLabel = true;
-						}
-						ExcelChartUtil.createLineChart(sheet, chartCell, chartOptions,smooth,showLabel);
+				JSONObject chartCell = null;
+				int r = 0;
+				int rs = 1;
+				int c = 0;
+				int cs = 1;
+				if(YesNoEnum.YES.getCode().intValue() == isCoedit) {
+					double top = jsonObject.getDoubleValue("top");
+					double left = jsonObject.getDoubleValue("left");
+					double height = jsonObject.getDoubleValue("height");
+					double width = jsonObject.getDoubleValue("width");
+					JSONObject strObj = LuckysheetUtil.calculateRows(top, rowlen, rowhidden);
+				    JSONObject edrObj = LuckysheetUtil.calculateRows(top+height, rowlen, rowhidden);
+				    JSONObject stcObj = LuckysheetUtil.calculateCols(left, columnlen, colhidden);
+				    JSONObject edcObj = LuckysheetUtil.calculateCols(left+width, columnlen, colhidden);
+					r = strObj.getIntValue("r");
+					rs = edrObj.getIntValue("r") - strObj.getIntValue("r") + 1;
+					c = stcObj.getIntValue("c");
+					cs = edcObj.getIntValue("c") - stcObj.getIntValue("c") + 1;
+					chartCell = new JSONObject();
+					chartCell.put("r", r);
+					chartCell.put("rs", rs);
+					chartCell.put("c", c);
+					chartCell.put("cs", cs);
+				}else {
+					chartCell = chartCells.getJSONObject(chartId);
+					if(chartCell != null)
+					{
+						r = chartCell.getIntValue("r");
+						rs = chartCell.getIntValue("rs");
+						c = chartCell.getIntValue("c");
+						cs = chartCell.getIntValue("cs");
 					}
-					else if(chartAllType.contains("area")) {
-						ExcelChartUtil.createAreaChart(sheet, chartCell, chartOptions);
+				}
+				XSSFClientAnchor anchor = new XSSFClientAnchor(0, 0, 0, 0,c,r,c+cs,r+rs);
+				anchor.setAnchorType(AnchorType.MOVE_AND_RESIZE);
+//				boolean showTitle = defaultOption.getJSONObject("title").getBooleanValue("show");
+//				String title = defaultOption.getJSONObject("title").getString("text");
+				if(chartAllType.contains("pie"))
+				{//饼图
+					double innerRadius = defaultOption.getJSONObject("spec").getDoubleValue("innerRadius");
+					if(innerRadius>0) {
+						ExcelChartUtil.createDoughnut(sheet, chartCell, chartOptions,isCoedit);
+					}else {
+						ExcelChartUtil.createPie(sheet, chartCell, chartOptions,isCoedit);
 					}
-					else if(chartAllType.contains("column")) {
-						ExcelChartUtil.createBar(sheet, chartCell, chartOptions, "column", chartAllType.contains("stack"));
-					}else if(chartAllType.contains("bar")) {
-						ExcelChartUtil.createBar(sheet, chartCell, chartOptions, "bar", chartAllType.contains("stack"));
-					}else if(chartAllType.contains("radar")) {
-						ExcelChartUtil.createRadar(sheet, chartCell, chartOptions);
+				}else if(chartAllType.contains("line")) {
+					boolean smooth = false;
+					boolean showLabel = false;
+					if(chartAllType.contains("smooth")) {
+						smooth = true;
 					}
+					if(chartAllType.contains("label")) {
+						showLabel = true;
+					}
+					ExcelChartUtil.createLineChart(sheet, chartCell, chartOptions,smooth,showLabel,isCoedit);
+				}
+				else if(chartAllType.contains("area")) {
+					ExcelChartUtil.createAreaChart(sheet, chartCell, chartOptions,isCoedit);
+				}
+				else if(chartAllType.contains("column")) {
+					ExcelChartUtil.createBar(sheet, chartCell, chartOptions, "column", chartAllType.contains("stack"),isCoedit);
+				}else if(chartAllType.contains("bar")) {
+					ExcelChartUtil.createBar(sheet, chartCell, chartOptions, "bar", chartAllType.contains("stack"),isCoedit);
+				}else if(chartAllType.contains("radar")) {
+					ExcelChartUtil.createRadar(sheet, chartCell, chartOptions,isCoedit);
 				}
 				
 			}

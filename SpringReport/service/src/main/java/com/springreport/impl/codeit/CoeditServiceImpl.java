@@ -2054,6 +2054,11 @@ public class CoeditServiceImpl extends ServiceImpl<LuckysheetMapper, Luckysheet>
 						JSONArray luckysheetConditionFormat = JSONObject.parseArray(redisCache.getLuckysheetConditionformatSave());
 						mesSheetConfig.setLuckysheetConditionformatSave(luckysheetConditionFormat);
 					}
+					if(StringUtil.isNotEmpty(redisCache.getChart()))
+					{
+						JSONArray chart = JSONObject.parseArray(redisCache.getChart());
+						mesSheetConfig.setChart(chart);
+					}
 					Map<String, Integer> maxXAndY = new HashMap<>();
 					int maxr = 0;
 					int maxc = 0;
