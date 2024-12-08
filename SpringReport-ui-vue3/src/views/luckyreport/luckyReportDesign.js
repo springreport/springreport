@@ -561,8 +561,8 @@ export default {
               options.cellRightClickConfig.deleteColumn = false;
               options.cellRightClickConfig.deleteCell = false;
             }
-            luckysheet.create(options);
             luckysheet.setServerAttr("version","vue3");
+            luckysheet.create(options);
             if(charts && charts.length > 0){
               for (let index = 0; index < charts.length; index++) {
                 const element = charts[index];

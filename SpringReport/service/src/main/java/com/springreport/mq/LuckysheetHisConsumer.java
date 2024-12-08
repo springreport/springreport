@@ -576,6 +576,23 @@ public class LuckysheetHisConsumer implements RocketMQListener<String>{
 			{
 				this.iLuckysheetHisService.saveBatch(hises);
 			}
+		}else if(MqTypeEnums.INSERTCHART.getCode().equals(keyName) || MqTypeEnums.MOVECHART.getCode().equals(keyName) || MqTypeEnums.CHANGECHARTRANGE.getCode().equals(keyName)
+				|| MqTypeEnums.UPDATECHART.getCode().equals(keyName) || MqTypeEnums.DELETECHART.getCode().equals(keyName))
+		{
+			String changeAfter = mqOperateHisDto.getChangeAfter()==null?String.valueOf(new JSONArray()):String.valueOf(mqOperateHisDto.getChangeAfter());
+			String changeBefore = (mqOperateHisDto.getChangeBefore()==null||"null".equals(mqOperateHisDto.getChangeBefore()))?String.valueOf(new JSONArray()):String.valueOf(mqOperateHisDto.getChangeBefore());
+			if(!changeAfter.equals(changeBefore))
+			{
+				luckysheetHis.setSheetIndex(mqOperateHisDto.getIndex());
+				luckysheetHis.setListId(mqOperateHisDto.getListId());
+				luckysheetHis.setBson(changeAfter);
+				luckysheetHis.setBeforeJson(changeBefore);
+				luckysheetHis.setChangeDesc("更新图表信息，操作："+mqOperateHisDto.getOperate());
+				luckysheetHis.setRemark(mqOperateHisDto.getOperate());
+				luckysheetHis.setType(1);
+				luckysheetHis.setOperateKey(keyName);
+				this.luckysheetHisMapper.insert(luckysheetHis);
+			}
 		}
 		redisUtil.del(redisKey);
 	}

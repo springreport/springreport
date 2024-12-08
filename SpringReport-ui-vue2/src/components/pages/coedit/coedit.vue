@@ -22,8 +22,15 @@
                 </div>
             </el-header>
         </div>
-        <div class="center" v-loading="loading" :element-loading-text="loadingText">
-            <div id="luckysheet" style="width:100%;height:100%;left: 0px;overflow:auto;"></div>
+        <div v-loading="loading" :element-loading-text="loadingText" style="width: 100%;flex: 1;overflow: auto;">
+            <!-- <div id="luckysheet" style="width:100%;height:100%;left: 0px;overflow:auto;"></div> -->
+            <div  class="config-panel" v-if="chartSettingShow">
+                <div class="config-header">图表设置</div>
+                <div class="config-box">
+                    <vchartsetting :component="chartOptions" :isPreview="false" :isCoedit="true"></vchartsetting>
+                </div>
+            </div>
+             <div id="luckysheet" style="margin:0px;padding:0px;width:100%;height:100%;left: 0px;top: 50px"></div>
             <el-dialog
             :modal="false"
             :close-on-click-modal='false'
@@ -130,7 +137,7 @@
             <input id="uploadAttachmentBtn" type="file" accept="*"  @change="changeAttachment" />
         </div>
         </div>
-        
+        <vchart :show.sync="vchartShow" @closeModal="closeAddChartModal()"></vchart>
     </div>
 </template>
 
@@ -211,35 +218,37 @@
     text-overflow: ellipsis;  /* 显示省略号 */
     white-space: nowrap;  /* 禁止换行 */
 }
-/* ::v-deep .el-divider__text{
-    background:#d9ebf0 !important;
-}
+.config-panel{
+      background: #ffffff;
+      // margin-left: 1px;
+      top: 45px;
+      position: relative;
+      width: 254px;
+      height: 95%;
+      display: flex;
+      flex-direction: column;
+      overflow: auto;
+      z-index: 1999;
+      float: right;
+      .config-header{
+        width: 100%;
+        height: 32px;
+        // background: #2F343D;
+        font-size: 13px;
+        font-weight: 400;
+        color: #000000;
+        line-height: 32px;
+        text-align: center;
+      }
+      .config-box{
+        flex:1;
+        padding: 10px;
+        overflow: auto;
+      }
 
-::v-deep .el-divider{
-    background-color:#17b794
+      /*定义滚动条的宽度*/
+      .config-box::-webkit-scrollbar {
+        width: 0;
+      }
 }
-
-::v-deep .el-descriptions__body{
-    background-color:#d9ebf0
-}
-
-::v-deep .el-descriptions .is-bordered .el-descriptions-item__cell{
-    border:1px solid #c0c4cc
-}
-
-::v-deep .el-descriptions-item__label.is-bordered-label{
-    background:#d9ebf0
-}
-::v-deep .el-pagination button:disabled{
-    background-color:#d9ebf0
-}
-::v-deep .el-pagination .btn-prev, ::v-deep .el-pagination .btn-next{
-    background-color:#d9ebf0
-}
-::v-deep  .el-pager .number{
-    background-color:#d9ebf0
-}
-::v-deep .el-icon-more{
-    background-color:#d9ebf0
-} */
 </style>

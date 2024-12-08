@@ -7,8 +7,12 @@
  * @LastEditTime: 2022-08-08 07:01:47
  */
 import Axios from 'axios';
+import vchart from '../../component/vchart/vchart.vue'
+import vchartsetting from '../../component/vchart/vchartsetting.vue'
 export default {
     components: {
+      vchart,
+      vchartsetting
     },
     data() {
         return{
@@ -61,7 +65,7 @@ export default {
                     history:true,
                     saveAs:false,
                     picture:false,
-                    chart:false,
+                    chart:true,
                     conditionalFormat: true, // '条件格式'
                     splitColumn: false, // '分列'
                     screenshot: false, // '截图'
@@ -103,7 +107,10 @@ export default {
                     downloadClick:this.downloadClick,
                     dragEndBefore:this.dragEndBefore,
                     uploadAttachment:this.uploadAttachment,
-                    viewAttachment:this.viewAttachment
+                    viewAttachment:this.viewAttachment,
+                    createVChart:this.createVChart,
+                    editVChart:this.editVChart,
+                    activeVChart:this.activeVChart,
                 }
             },
             users:[],//当前查看文档的用户
@@ -131,6 +138,9 @@ export default {
               label: 'name'
             },
             defaultCheckedUsers:[],
+            vchartShow:false,
+            chartOptions:{},
+            chartSettingShow:false,
         }
     },
     mounted() {
@@ -197,6 +207,7 @@ export default {
             this.getChangeHistory();
         },
         cellMousedown(cell,postion,sheetFile,ctx){
+          this.chartSettingShow = false;
             var r = postion.r;
             var c = postion.c;
             if(!this.hisDialogTitle)
@@ -1244,6 +1255,22 @@ export default {
               element.authType = this.authUsersMap[element.id].authType
             }
           }
+        }
+      },
+      createVChart(){
+        // luckysheet.createChart("echarts|column|default");
+        this.vchartShow = true;
+      },
+      closeAddChartModal(){
+        this.vchartShow = false;
+      },
+      editVChart(chartOptions){
+        this.chartSettingShow = true;
+        this.chartOptions = chartOptions;
+      },
+      activeVChart(chartOptions){
+        if(this.chartSettingShow){
+          this.chartOptions = chartOptions;
         }
       }
     }

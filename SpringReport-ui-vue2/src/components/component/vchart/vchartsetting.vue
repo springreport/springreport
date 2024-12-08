@@ -8,7 +8,7 @@
                     <div v-if="!isPreview">
                     <el-form-item label="数据设置" class="customLabel">
                     </el-form-item><br>
-                    <el-form-item label="数据集">
+                    <el-form-item label="数据集" v-if="!isCoedit">
                         <el-select v-model="component.dataset" placeholder="请选择" style="width:140px" @change="changeDataset(false)">
                           <el-option
                             v-for="item in datasets"
@@ -18,7 +18,7 @@
                           </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="分组字段">
+                    <el-form-item label="分组字段" v-if="!isCoedit">
                         <el-select v-model="component.categoryField" placeholder="请选择" style="width:140px">
                           <el-option
                             v-for="item in datasetColumns"
@@ -28,7 +28,7 @@
                           </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="数值字段">
+                    <el-form-item label="数值字段" v-if="!isCoedit">
                         <el-select v-model="component.valueField" placeholder="请选择" style="width:140px" multiple>
                           <el-option
                             v-for="item in datasetColumns"
@@ -38,7 +38,7 @@
                           </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="系列字段" v-if="component.chartAllType.indexOf('pie')<=0">
+                    <el-form-item label="系列字段" v-if="component.chartAllType.indexOf('pie')<=0 && !isCoedit">
                         <el-select v-model="component.seriesField" placeholder="请选择" style="width:140px" multiple>
                           <el-option
                             v-for="item in datasetColumns"
@@ -289,6 +289,10 @@ export default {
         isPreview:{
             type:Boolean,
             default:false
+        },
+        isCoedit:{
+            type:Boolean,
+            default:true
         }
     },
     mounted() {

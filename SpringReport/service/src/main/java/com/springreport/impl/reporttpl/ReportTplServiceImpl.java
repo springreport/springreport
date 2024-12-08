@@ -2526,8 +2526,44 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			Map<String, Map<String, List<List<Map<String, Object>>>>> processedCells = new HashMap<>();
 			Map<String, List<Map<String, Object>>> datasetDatas = new HashMap<String, List<Map<String,Object>>>();//数据集对应的原始数据
 			Map<String, Map<String, Object>> datasetParamsCache = new HashMap<>();//数据集对应的参数
+			List<ReportTplDataset> reportTplDatasets = null;
 			for (int t = 0; t < sheets.size(); t++) {
 				ResLuckySheetDataDto resLuckySheetDataDto = new ResLuckySheetDataDto();
+				//获取打印设置
+				QueryWrapper<ReportSheetPdfPrintSetting> pdfPrintQueryWrapper = new QueryWrapper<ReportSheetPdfPrintSetting>();
+				pdfPrintQueryWrapper.eq("tpl_id", reportTpl.getId());
+				pdfPrintQueryWrapper.eq("tpl_sheet_id", sheets.get(t).getId());
+				pdfPrintQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+				ReportSheetPdfPrintSetting printSettings = this.iReportSheetPdfPrintSettingService.getOne(pdfPrintQueryWrapper,false);
+				if(printSettings != null && printSettings.getPageHeaderShow().intValue() == 1) {
+					if(StringUtil.isNotEmpty(printSettings.getPageHeaderContent())) {
+						if(printSettings.getPageHeaderContent().contains(".${")) {
+							boolean flag = true;
+							for (int i = 0; i < usedDataSet.size(); i++) {
+								if(printSettings.getPageHeaderContent().contains(usedDataSet.get(i)+".${")) {
+									flag = false;
+									break;
+								}
+							}
+							if(flag) {
+								if(reportTplDatasets == null) {
+									QueryWrapper<ReportTplDataset> datasetQueryWrapper = new QueryWrapper<>();
+									pdfPrintQueryWrapper.eq("tpl_id", reportTpl.getId());
+									pdfPrintQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+									reportTplDatasets = this.iReportTplDatasetService.list(datasetQueryWrapper);
+								}
+								if(ListUtil.isNotEmpty(reportTplDatasets)) {
+									for (int i = 0; i < reportTplDatasets.size(); i++) {
+										if(printSettings.getPageHeaderContent().contains(reportTplDatasets.get(i).getDatasetName()+".${")) {
+											usedDataSet.add(reportTplDatasets.get(i).getDatasetName());
+											break;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
 				//获取所有的循环块
 				QueryWrapper<LuckysheetReportCell> blockCellQueryWrapper = new QueryWrapper<LuckysheetReportCell>();
 				blockCellQueryWrapper.eq("tpl_id", reportTpl.getId());
@@ -2894,12 +2930,29 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				{
 					resLuckySheetDataDto.setXxbtScreenshot(JSON.parseObject(sheets.get(t).getXxbtScreenshot()));
 				}
-				//获取打印设置
-				QueryWrapper<ReportSheetPdfPrintSetting> pdfPrintQueryWrapper = new QueryWrapper<ReportSheetPdfPrintSetting>();
-				pdfPrintQueryWrapper.eq("tpl_id", reportTpl.getId());
-				pdfPrintQueryWrapper.eq("tpl_sheet_id", sheets.get(t).getId());
-				pdfPrintQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
-				ReportSheetPdfPrintSetting printSettings = this.iReportSheetPdfPrintSettingService.getOne(pdfPrintQueryWrapper);
+				if(printSettings != null && printSettings.getPageHeaderShow().intValue() == 1) {
+					if(StringUtil.isNotEmpty(printSettings.getPageHeaderContent())) {
+						if(printSettings.getPageHeaderContent().contains(".${")) {
+							for (String key : datasetDatas.keySet()) {
+								if(printSettings.getPageHeaderContent().contains(key+".${")) {
+									List<Map<String, Object>> datas = datasetDatas.get(key);
+									if(ListUtil.isNotEmpty(datas)) {
+										for (String property : datas.get(0).keySet()) {
+											if(printSettings.getPageHeaderContent().contains("${"+property+"}")) {
+												Object value = datas.get(0).get(property);
+												if(value == null) {
+													value = "";
+												}
+												printSettings.setPageHeaderContent(printSettings.getPageHeaderContent().replace(key+"."+"${"+property+"}", String.valueOf(value)));
+											}
+										}
+									}
+									break;
+								}
+							}
+						}
+					}
+				}
 				resLuckySheetDataDto.setPrintSettings(printSettings);
 				resLuckySheetDataDto.setBase64Imgs(JSON.parseObject(sheets.get(t).getImages()));
 				if(printSettings != null && printSettings.getHorizontalPage().intValue() == 1)
