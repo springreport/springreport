@@ -331,6 +331,10 @@ public class CoeditServiceImpl extends ServiceImpl<LuckysheetMapper, Luckysheet>
 		{
 			result.put("luckysheet_conditionformat_save", JSON.parseArray(luckysheet.getLuckysheetConditionformatSave()));
 		}
+		if(StringUtil.isNotEmpty(luckysheet.getChart()))
+		{
+			result.put("chart", JSON.parseArray(luckysheet.getChart()));
+		}
 		JSONObject config = new JSONObject();
 		if(StringUtil.isNotEmpty(luckysheet.getMergeInfo()))
 		{
@@ -804,7 +808,7 @@ public class CoeditServiceImpl extends ServiceImpl<LuckysheetMapper, Luckysheet>
                 switch (_e) {
                     case c:
                         //3.9	图表操作 （第一块）
-                        _result = Operation_c(gridKey, bson);
+                        _result = Operation_c(gridKey, bson,blockId,wsUserModel);
                         break;
                     case v:
                         //3.1	单元格操作v  gzip 分片
@@ -907,95 +911,41 @@ public class CoeditServiceImpl extends ServiceImpl<LuckysheetMapper, Luckysheet>
      * @param bson
      * @return
      */
-    public String Operation_c(String gridKey2, JSONObject bson) {
-//        return Operation_c2(gridKey2, bson);
-    	return null;
+    public String Operation_c(String gridKey, JSONObject bson,String blockId,WSUserModel wsUserModel) {
+    	try {
+    		 //当前sheet的index值
+            String i = bson.get("i").toString();
+            String k = bson.get("k").toString();
+            String operate = bson.getString("operate");
+            Object _v = null;//需要替换的值
+            if(bson.get("v") != null) {
+            	_v =  bson.get("v");
+            }
+            if (_v == null) {
+                //没有要修改的值
+                return "";
+            }
+            String keyName = "";
+            if("add".equals(k)) {
+            	keyName = MqTypeEnums.INSERTCHART.getCode();
+            }else if("mr".equals(k)) {
+            	keyName = MqTypeEnums.MOVECHART.getCode();
+            }else if("rangeChange".equals(k)) {
+            	keyName = MqTypeEnums.CHANGECHARTRANGE.getCode();
+            }else if("update".equals(k)) {
+            	keyName = MqTypeEnums.UPDATECHART.getCode();
+            }else if("delete".equals(k)) {
+            	keyName = MqTypeEnums.DELETECHART.getCode();
+            }
+            this.mqProcessService.updateRedisConfigCache(keyName, _v, i, gridKey, blockId,wsUserModel.getToken(),operate);
+            Luckysheet luckysheet = this.getLuckysheet(gridKey, i, blockId);
+            this.mqProcessService.updateSheetConfig(keyName, _v, luckysheet.getId(),i, blockId, gridKey);
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
+		}
+    	return "";
     }
 
-    /**
-     * 图表操作
-     *
-     * @param gridKey2
-     * @param bson
-     * @return
-     */
-//    private String Operation_c2(String gridKey2, JSONObject bson) {
-//        try {
-//            String i = bson.get("i").toString();//	当前sheet的index值
-//            String cid = bson.get("cid").toString();//	Chart图表的id
-//            String op = bson.get("op").toString();//操作选项，有add、xy、wh、del、update。
-//            JSONObject v = null;
-//            if (bson.containsKey("v")) {
-//                v = bson.getJSONObject("v");
-//            }
-//
-//            //1、先获取原数据（第一块）
-//            JSONObject _dbObject = this.getChartByGridKey(gridKey2, i);
-//            if (_dbObject == null) {
-//                return "list_id=" + gridKey2 + ",index=" + i + "的sheet不存在";
-//                //return "gridKey="+gridKey+"的数据表格不存在";
-//            }
-//
-//            //更新操作（第一块）
-//            //Query query = new Query();
-//            //query.addCriteria(Criteria.where("list_id").is(gridKey2).and("index").is(i).and("block_id").is(JfGridConfigModel.FirstBlockID));
-//            JSONObject query=getQuery(gridKey2,i,JfGridConfigModel.FirstBlockID);
-//
-//            //从文档中获取图表对象
-//            JSONObject chart = JfGridFileUtil.getJSONObjectByIndex(_dbObject, "chart");
-//            boolean _result = false;
-//            if (chart == null) {
-//                //不存在 (只处理添加)
-//                if (op.equals("add")) {
-//                    _result = recordDataUpdataHandle.updateJsonbForInsertNull(query, "chart", v, 0, "\"chart\":[]");
-//                }
-//            } else {
-//                //存在
-//                if (op.equals("add")) {
-//                    _result = recordDataUpdataHandle.updateJsonbForElementInsert(query, "chart", v, 0);
-//                } else {
-//                    if (chart instanceof List) {
-//                        List<JSONObject> _list = (List<JSONObject>) chart;
-//                        if (_list != null && _list.size() > 0) {
-//                            //找出位置
-//                            int pos = -1;
-//                            for (int x = 0; x < _list.size(); x++) {
-//                                if (_list.get(x).containsKey("chart_id")) {
-//                                    if (_list.get(x).get("chart_id").equals(cid)) {
-//                                        pos = x;
-//                                        break;
-//                                    }
-//                                }
-//                            }
-//                            if (pos > -1) {
-//                                if (op.equals("xy") || op.equals("wh") || op.equals("update")) {
-//                                    //xy 移动  wh 缩放  更新 update
-//                                    //按照v中的key循环更新jfgridfile[i].chart[v.key1] = v.value1
-//                                    if (v != null) {
-//                                        JSONObject _s = _list.get(pos);
-//                                        _s.putAll(v);
-//                                        _result = recordDataUpdataHandle.updateCellDataListValue(query, "chart", String.valueOf(pos), _s);
-//                                    }
-//                                } else if (op.equals("del")) {
-//                                    _list.remove(pos);
-//                                    _result = recordDataUpdataHandle.updateCellDataListValue(query, "chart", null, chart);
-//                                }
-//                            }
-//                        }
-//                    }
-//
-//                }
-//            }
-//            if (!_result) {
-//                return "更新失败";
-//            }
-//
-//        } catch (Exception ex) {
-//            log.error(ex.getMessage());
-//        }
-//        return "";
-//    }
-    
     /**  
      * @MethodName: getChartByGridKey
      * @Description: 获取图表数据（第一块）

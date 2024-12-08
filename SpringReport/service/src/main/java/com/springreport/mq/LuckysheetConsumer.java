@@ -620,6 +620,65 @@ public class LuckysheetConsumer implements RocketMQListener<String>{
 			queryWrapper.eq("block_id", blockId);
 			queryWrapper.eq("list_id", listId);
 			this.luckysheetCellMapper.delete(queryWrapper);
+		}else if(MqTypeEnums.INSERTCHART.getCode().equals(keyName))
+		{//新增图表
+			JSONObject _v = (JSONObject) v;
+			String listId = mqConfigDto.getListId();
+			String index = mqConfigDto.getIndex();
+			String blockId = mqConfigDto.getBlockId();
+			Object data = redisUtil.get(RedisPrefixEnum.DOCOMENTDATA.getCode()+listId+"_"+index+"_"+blockId);
+			luckysheet = JSON.parseObject(data.toString(),Luckysheet.class);
+			String chartStr = luckysheet.getChart();
+			JSONArray charts = null;
+			if(StringUtil.isNotEmpty(chartStr)) {
+				boolean isExist = false;
+				charts = JSON.parseArray(chartStr);
+				String vchartId = _v.getString("chart_id");
+				for (int i = 0; i < charts.size(); i++) {
+					String chartId = charts.getJSONObject(i).getString("chart_id");
+					if(chartId.equals(vchartId)) {
+						isExist = true;
+						break;
+					}
+				}
+				if(!isExist) {
+					charts.add(_v);
+				}
+			}else {
+				charts = new JSONArray();
+				charts.add(_v);
+			}
+			luckysheet.setChart(JSON.toJSONString(charts));
+			this.luckysheetMapper.updateById(luckysheet);
+		}else if(MqTypeEnums.MOVECHART.getCode().equals(keyName) || MqTypeEnums.CHANGECHARTRANGE.getCode().equals(keyName) || MqTypeEnums.UPDATECHART.getCode().equals(keyName))
+		{//移动图表
+			JSONObject _v = (JSONObject) v;
+			String listId = mqConfigDto.getListId();
+			String index = mqConfigDto.getIndex();
+			String blockId = mqConfigDto.getBlockId();
+			Object data = redisUtil.get(RedisPrefixEnum.DOCOMENTDATA.getCode()+listId+"_"+index+"_"+blockId);
+			luckysheet = JSON.parseObject(data.toString(),Luckysheet.class);
+			String chartStr = luckysheet.getChart();
+			JSONArray charts = null;
+			if(StringUtil.isNotEmpty(chartStr)) {
+				charts = JSON.parseArray(chartStr);
+				String vchartId = _v.getString("chart_id");
+				for (int i = 0; i < charts.size(); i++) {
+					String chartId = charts.getJSONObject(i).getString("chart_id");
+					if(chartId.equals(vchartId)) {
+						if(MqTypeEnums.MOVECHART.getCode().equals(keyName)) {
+							charts.getJSONObject(i).put("left", _v.getDoubleValue("left"));
+							charts.getJSONObject(i).put("top", _v.getDoubleValue("top"));
+							charts.getJSONObject(i).put("width", _v.getDoubleValue("width"));
+							charts.getJSONObject(i).put("height", _v.getDoubleValue("height"));
+						}
+						charts.getJSONObject(i).put("chartOptions", v);
+						luckysheet.setChart(JSON.toJSONString(charts));
+						this.luckysheetMapper.updateById(luckysheet);
+						break;
+					}
+				}
+			}
 		}
 		redisUtil.del(redisKey);
 	

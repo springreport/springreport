@@ -363,4 +363,49 @@ public enum MqTypeEnums implements BaseCharEnum{
 			return "删除文档";
 		}
 	},
+	INSERTCHART{
+		public String getCode() {
+			return "insertChart";
+		}
+
+		public String getName() {
+			return "插入图表";
+		}
+	},
+	MOVECHART{
+		public String getCode() {
+			return "moveChart";
+		}
+
+		public String getName() {
+			return "移动图表位置或者改变图表大小";
+		}
+	},
+	CHANGECHARTRANGE{
+		public String getCode() {
+			return "changeChartRange";
+		}
+
+		public String getName() {
+			return "改变图表选区";
+		}
+	},
+	UPDATECHART{
+		public String getCode() {
+			return "updateChart";
+		}
+
+		public String getName() {
+			return "修改图表设置";
+		}
+	},
+	DELETECHART{
+		public String getCode() {
+			return "deleteChart";
+		}
+
+		public String getName() {
+			return "删除图表";
+		}
+	},
 }
