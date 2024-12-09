@@ -42,7 +42,9 @@ export default {
     
 }
 </script>
-<style scoped>
+<style scoped lang="scss">
+@import "@/element-variables.scss";
+
 .drag-area {
   position: fixed;
   right: 20px;
@@ -51,7 +53,7 @@ export default {
   padding: 5px;
   width: fit-content;
   opacity: 1;
-  background-color: #17b794;
+  background-color: $--color-primary;
   border-radius: 8px;
   box-shadow: 0px 2px 15px 0px rgba(9, 41, 77, 0.15);
   user-select: none;

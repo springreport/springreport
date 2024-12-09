@@ -180,6 +180,8 @@
 </template>
 <script src="./luckyReportPreview.js"></script>
 <style scoped lang="scss">
+@import "@/element-variables.scss";
+
 /*去除页眉页脚*/
   @page{
     size:  auto;   /* auto is the initial value */
@@ -239,7 +241,7 @@
   padding: 5px;
   width: fit-content;
   opacity: 1;
-  background-color: #17b794;
+  background-color: $--color-primary;
   border-radius: 8px;
   box-shadow: 0px 2px 15px 0px rgba(9, 41, 77, 0.15);
   // cursor: move;

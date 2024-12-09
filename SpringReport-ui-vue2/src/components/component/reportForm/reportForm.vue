@@ -559,7 +559,9 @@ export default {
   },
 };
 </script>
-<style lang="less" scoped>
+<style lang="scss" scoped>
+@import "@/element-variables.scss";
+
 span {
   padding: 0px 20px;
   background-color: rgba(208, 208, 208, 0);
@@ -571,8 +573,8 @@ span {
 }
 ::v-deep .el-button--primary {
     color: #FFFFFF;
-    background-color: #17b794;
-    border-color: #17b794
+    background-color: $--color-primary;
+    border-color: $--color-primary;
 }
 ::v-deep .el-form-item{
     margin-bottom:10px !important

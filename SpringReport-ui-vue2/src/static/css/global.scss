@@ -1,9 +1,10 @@
+@import "@/element-variables.scss";
 /* 更改左侧侧边栏 */
 .el-submenu.is-active.is-opened .el-submenu__title {
-  color: #17b794 !important;
+  color: $--color-primary !important;
 }
 .el-submenu.is-active.is-opened .el-submenu__title i {
-  color: #17b794 !important;
+  color: $--color-primary !important;
 }
 .el-menu-item.is-active {
   background: #f0fcf9 !important;
@@ -29,12 +30,12 @@
 .el-tree-node__content:hover {
   background: #f0fcf9 !important;
   border-radius: 3px !important;
-  color: #17b794 !important;
+  color: $--color-primary !important;
 }
 .el-tree-node.is-current > .el-tree-node__content {
   background: #f0fcf9 !important;
   border-radius: 3px !important;
-  color: #17b794 !important;
+  color: $--color-primary !important;
 }
 .el-tree-node__expand-icon {
   color: rgba(0, 0, 0, 0.6) !important;

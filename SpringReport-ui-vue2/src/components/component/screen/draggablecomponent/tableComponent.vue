@@ -128,6 +128,8 @@ export default {
 }
 </script>
 <style scoped lang="scss">
+@import "@/element-variables.scss";
+
 .handle,
 .vdr {
   /* position:static !important; */
@@ -201,11 +203,10 @@ img {
 
 ::v-deep .el-pagination.is-background .btn-prev, ::v-deep .el-pagination.is-background .btn-next, ::v-deep .el-pagination.is-background .el-pager li{
   color:#ffffff !important
-  // #17b794
 }
 
 ::v-deep .el-pagination.is-background .el-pager .active{
-  color:#17b794!important
+  color:$--color-primary !important
 }
 
 ::v-deep .el-table__body-wrapper::-webkit-scrollbar {

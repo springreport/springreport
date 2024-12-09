@@ -1,5 +1,6 @@
 <template>
   <div class="home-page">
+    <a href="">hahahah</a>
     <img src="@/static/img/homePage.png" />
   </div>
 </template>
@@ -18,7 +19,7 @@ export default {
 @import '~@/static/index/icomoon.css';
 @import '~@/static/index/themify-icons.css';
 // @import '~@/static/index/bootstrap.css';
-@import '~@/static/index/style.css';
+@import '~@/static/index/style.scss';
 .home-page {
   width: 100%;
   max-height: 100%;

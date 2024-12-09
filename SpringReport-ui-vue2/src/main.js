@@ -13,9 +13,10 @@ import ElementUI from 'element-ui'
 // import 'element-ui/lib/theme-chalk/index.css'
 // 自定义样式
 import './static/theme/theme-blue/index.css'
-import './static/css/global.css'
+
 import './static/theme/theme-blue/iconfont/iconfont.css'
 import './element-variables.scss'
+import './static/css/global.scss'
 Vue.use(ElementUI)
 
 import App from './App'
