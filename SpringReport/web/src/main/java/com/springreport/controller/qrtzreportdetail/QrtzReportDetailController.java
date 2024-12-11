@@ -16,9 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.springreport.base.BaseController;
 import com.springreport.base.BaseEntity;
 import com.springreport.base.Response;
+import com.springreport.base.UserInfoDto;
 import com.springreport.constants.Constants;
+import com.springreport.dto.qrtzreportdetail.ReqIndexQrtzDto;
 import com.springreport.entity.qrtzreportdetail.QrtzReportDetail;
 import com.springreport.annotation.Check;
+import com.springreport.annotation.LoginUser;
 import com.springreport.annotation.MethodLog;
 import com.springreport.api.qrtzreportdetail.IQrtzReportDetailService;
 
@@ -194,5 +197,22 @@ public class QrtzReportDetailController extends BaseController {
 	{
 		BaseEntity result = iQrtzReportDetailService.resumeTask(id);
 		return Response.success(result.getStatusMsg());
+	}
+	
+	/**  
+	 * @MethodName: getIndexTaskList
+	 * @Description: 获取首页任务列表
+	 * @author caiyang
+	 * @param model
+	 * @param userInfoDto
+	 * @return Response
+	 * @date 2024-12-10 06:52:11 
+	 */ 
+	@RequestMapping(value = "/getIndexTaskList",method = RequestMethod.POST)
+	@MethodLog(module="QrtzReportDetail",remark="获取首页任务列表",operateType=Constants.OPERATE_TYPE_SEARCH)
+	public Response getIndexTaskList(@RequestBody ReqIndexQrtzDto model,@LoginUser UserInfoDto userInfoDto)
+	{
+		BaseEntity result = iQrtzReportDetailService.getIndexTaskList(model,userInfoDto);
+		return Response.success(result);
 	}
 }

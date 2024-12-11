@@ -291,9 +291,9 @@ public class WordUtil {
     					run.addBreak();	
     				}
     			}
-    			if(value.endsWith("\n")) {
-        			run.addBreak();	
-        		}
+//    			if(value.endsWith("\n")) {
+//        			run.addBreak();	
+//        		}
     		}
     		
     	}else {

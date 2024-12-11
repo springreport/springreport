@@ -14,6 +14,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.quartz.CronExpression;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.springreport.util.CheckUtil;
@@ -24,9 +25,12 @@ import com.springreport.util.StringUtil;
 import com.github.pagehelper.PageHelper;
 import com.springreport.base.BaseEntity;
 import com.springreport.base.PageEntity;
+import com.springreport.base.UserInfoDto;
 import com.springreport.constants.Constants;
 import com.springreport.constants.StatusCode;
+import com.springreport.dto.qrtzreportdetail.IndexQrtzDto;
 import com.springreport.dto.qrtzreportdetail.QrtzReportDetailDto;
+import com.springreport.dto.qrtzreportdetail.ReqIndexQrtzDto;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -37,6 +41,7 @@ import java.util.Map;
 import org.springframework.transaction.annotation.Transactional;
 import com.springreport.enums.DelFlagEnum;
 import com.springreport.enums.ParamTypeEnum;
+import com.springreport.enums.YesNoEnum;
 import com.springreport.exception.BizException;
 
  /**  
@@ -50,6 +55,9 @@ public class QrtzReportDetailServiceImpl extends ServiceImpl<QrtzReportDetailMap
   
 	@Autowired
 	private QuartzTaskService quartzTaskService;
+	
+	@Value("${merchantmode}")
+    private Integer merchantmode;
 	
 	private final static String jobHandlerClass = "reportExportTaskHandler";
 	
@@ -454,6 +462,35 @@ public class QrtzReportDetailServiceImpl extends ServiceImpl<QrtzReportDetailMap
 				.build();
 		quartzTaskService.resumeJob(scheduleTask);
 		result.setStatusMsg(MessageUtil.getValue("info.operate.success"));
+		return result;
+	}
+
+
+	/**  
+	 * @MethodName: getIndexTaskList
+	 * @Description: 获取首页任务列表
+	 * @author caiyang
+	 * @param model
+	 * @param userInfoDto
+	 * @return PageEntity
+	 * @date 2024-12-10 06:02:50 
+	 */ 
+	@Override
+	public PageEntity getIndexTaskList(ReqIndexQrtzDto model, UserInfoDto userInfoDto) {
+		PageEntity result = new PageEntity();
+		model.setDelFlag(DelFlagEnum.UNDEL.getCode());
+		if(this.merchantmode.intValue() == YesNoEnum.YES.getCode().intValue()) {
+			model.setMerchantNo(userInfoDto.getMerchantNo());
+		}
+		if(model.getType() == 2) {
+			model.setCreator(userInfoDto.getUserId());
+		}
+		com.github.pagehelper.Page<?> page = PageHelper.startPage(model.getCurrentPage(), model.getPageSize()); //分页条件
+		List<IndexQrtzDto> list = this.baseMapper.getIndexTaskList(model);
+		result.setData(list);
+		result.setTotal(page.getTotal());
+		result.setCurrentPage(model.getCurrentPage());
+		result.setPageSize(model.getPageSize());
 		return result;
 	}
 }
