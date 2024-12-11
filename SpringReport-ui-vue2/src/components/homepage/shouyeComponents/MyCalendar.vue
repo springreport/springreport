@@ -102,6 +102,13 @@ export default {
       for (let i = 1; i <= remainingDaysCount; i++) {
         days.push(endOfMonth.clone().add(i, 'days'))
       }
+      const lastDat = days[days.length - 1].clone()
+      const addDays = 49 - days.length
+      if (addDays > 0) {
+        for (let i = 1; i <= addDays; i++) {
+          days.push(lastDat.clone().add(i, 'days'))
+        }
+      }
 
       return days
     }

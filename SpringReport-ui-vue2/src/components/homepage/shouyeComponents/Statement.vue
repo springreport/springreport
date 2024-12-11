@@ -29,31 +29,31 @@ export default {
           title: 'Excel报表(个)',
           num: 0,
           icon: require('@/static/img/homePage/excel.png'),
-          path:"reportTpl",
+          path: 'reportTpl'
         },
         {
           title: 'Word报表(个)',
           num: 0,
           icon: require('@/static/img/homePage/word.png'),
-          path:"docTpl",
+          path: 'docTpl'
         },
         {
           title: '协同文档(个)',
           num: 0,
           icon: require('@/static/img/homePage/excel.png'),
-          path:"onlineTpl",
+          path: 'onlineTpl'
         },
         {
           title: '大屏模板(个)',
           num: 0,
           icon: require('@/static/img/homePage/screen.png'),
-          path:"screenTpl",
+          path: 'screenTpl'
         },
         {
           title: '数据源(个)',
           num: 0,
           icon: require('@/static/img/homePage/database.png'),
-          path:"reportDatasource",
+          path: 'reportDatasource'
         }
       ]
     }
@@ -62,39 +62,38 @@ export default {
   watch: {},
   created() {},
   mounted() {
-    this.getIndexData();
+    this.getIndexData()
   },
   methods: {
-    getIndexData(){
-       var obj = {
-          params:{},
-          removeEmpty:false,
-          url:this.apis.index.getIndexDataApi
-        }
-        var that = this;
-        this.commonUtil.doPost(obj) .then(response=>{
-          if (response.code == "200")
-          {
-            if(response.responseData){
-              that.statistics[0].num = response.responseData.excelCount;
-              that.statistics[1].num = response.responseData.wordCount;
-              that.statistics[2].num = response.responseData.coeditCount;
-              that.statistics[3].num = response.responseData.screenCount;
-              that.statistics[4].num = response.responseData.datasourceCount;
-            }
+    getIndexData() {
+      var obj = {
+        params: {},
+        removeEmpty: false,
+        url: this.apis.index.getIndexDataApi
+      }
+      var that = this
+      this.commonUtil.doPost(obj).then(response => {
+        if (response.code == '200') {
+          if (response.responseData) {
+            that.statistics[0].num = response.responseData.excelCount
+            that.statistics[1].num = response.responseData.wordCount
+            that.statistics[2].num = response.responseData.coeditCount
+            that.statistics[3].num = response.responseData.screenCount
+            that.statistics[4].num = response.responseData.datasourceCount
           }
-        });
+        }
+      })
     },
-    routerTo(item){
-      this.$router.push({ name: item.path})
+    routerTo(item) {
+      this.$router.push({ name: item.path })
     }
   }
 }
 </script>
 <style lang='scss' scoped>
 .statement {
-  margin-top: -122px;
   width: 100%;
+  margin-top: -20px;
   padding: 18px 26px 21px 26px;
   border-radius: 20px 20px 0px 0px;
   background: #fff;
@@ -122,7 +121,7 @@ export default {
       }
       .label {
         color: #666;
-        text-align: center;
+        text-align: left;
         font-size: 15px;
         font-style: normal;
         font-weight: 400;
@@ -131,7 +130,7 @@ export default {
       }
       .data-num {
         color: #1a1a1a;
-        text-align: center;
+        text-align: left;
         font-size: 24px;
         font-style: normal;
         font-weight: 400;

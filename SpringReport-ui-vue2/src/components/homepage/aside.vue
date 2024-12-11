@@ -17,14 +17,18 @@
       text-color="rgba(0, 0, 0, 0.9)"
       router
     >
-      <template v-for="(menu_one,i) in menuData">
+      <template v-for="(menu_one, i) in menuData">
         <el-submenu :key="i" :index="menu_one.path">
           <template slot="title">
             <i :class="menu_one.icon" />
             <span>{{ menu_one.title }}</span>
           </template>
 
-          <el-menu-item v-for="(menu_two,i) in menu_one.subs" :key="i" :index="menu_two.path">
+          <el-menu-item
+            v-for="(menu_two, i) in menu_one.subs"
+            :key="i"
+            :index="menu_two.path"
+          >
             <!-- <i :class="menu_two.icon" /> -->
             <span>{{ menu_two.title }}</span>
           </el-menu-item>
@@ -32,8 +36,8 @@
       </template>
     </el-menu>
     <div class="collapse-btn df-c" @click="navChangeShow()">
-      <img src="@/static/img/menu-fold.png" height="16" v-show="navShow" />
-      <img src="@/static/img/menu-unfold.png" height="16" v-show="!navShow" />
+      <img v-show="navShow" src="@/static/img/menu-fold.png" height="16">
+      <img v-show="!navShow" src="@/static/img/menu-unfold.png" height="16">
     </div>
   </div>
 </template>
@@ -89,34 +93,59 @@ export default {
         //    {path: "sysRole", icon:"el-icon-s-custom",title:"角色管理"},
         //    {path: "sysMenu", icon:"el-icon-menu",title:"菜单管理"},
         //  ]},
-      ],
+      ]
     }
   },
   computed: {
     onRoutes() {
       // 监听路由,设置默认激活项目
       return this.$route.path.replace('/', '')
-    },
+    }
   },
 
   mounted() {
     this.getMenus()
+    this.checkScreenWidth()
+    const that = this
+    window.addEventListener('resize', this.debounce(function() {
+      that.checkScreenWidth()
+    }, 300))
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.checkScreenWidth)
   },
   methods: {
+    debounce(fn, wait) {
+      let timer
+      return function() {
+        const _this = this
+        const args = arguments
+        if (timer) {
+          clearTimeout(timer)
+        }
+        timer = setTimeout(function() {
+          fn.apply(_this, args)
+        }, wait)
+      }
+    },
     navChangeShow() {
-      //切换左侧导航展示/折叠
+      // 切换左侧导航展示/折叠
       this.navShow = !this.navShow
+      bus.$emit('navShowChange', this.navShow)
+    },
+    checkScreenWidth() {
+      this.navShow = window.innerWidth < 1300
       bus.$emit('navShowChange', this.navShow)
     },
     getMenus() {
       var obj = {
         url: this.apis.index.getIndexMenuApi,
-        params: {},
+        params: {}
       }
       this.commonUtil.doPost(obj).then((response) => {
         this.menuData = response.responseData
       })
-    },
-  },
+    }
+  }
 }
 </script>

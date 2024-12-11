@@ -1,6 +1,6 @@
 <!--  -->
 <template>
-  <div class="task df">
+  <div v-loading="loading" class="task df">
     <div class="task-left">
       <div class="task-title">待办任务</div>
       <MyCalendar v-model="date" />
@@ -21,26 +21,38 @@
 
       <div class="task-list">
         <div v-for="item in taskDatas" :key="item.id" class="task-item">
-          <div class="df-c-b">
-            <div class="task-item-title overflow-text">
-              任务名称：{{item.jobName}}
-            </div>
-            <!-- <div class="status">
+          <!-- <div class="df-c-b">
+
+            <div class="status">
               {{item.triggerState}}
-            </div> -->
+            </div>
+          </div> -->
+          <div class="task-item-title overflow-text">
+            任务名称任务名称任务名称任务名称任务名称任务名称任务名称任务名称任务名称任务名称任务名称任务名称任务名称：{{ item.jobName }}
           </div>
-          <div class="desc">任务状态：{{getTaskStatus(item.triggerState)}}</div>
-          <div class="desc">所属报表：{{item.tplName}}</div>
-          <div class="desc">导出类型：{{getExportTypeName(item.exportType)}}</div>
+          <div class="desc overflow-text">
+            任务状态：{{ getTaskStatus(item.triggerState) }}
+          </div>
+          <div class="desc overflow-text">所属报表：{{ item.tplName }}</div>
+          <div class="desc overflow-text">
+            导出类型：{{ getExportTypeName(item.exportType) }}
+          </div>
           <!-- <div class="desc">时间类型：指定时间</div> -->
-          <div class="desc">下次执行时间：{{getNextFireTime(item.nextFireTime)}}</div>
-          <div class="desc">
-            发送邮箱：{{item.email}}
+          <div class="desc overflow-text">
+            下次执行时间：{{ getNextFireTime(item.nextFireTime) }}
           </div>
+          <div class="desc overflow-text">发送邮箱：{{ item.email }}</div>
         </div>
       </div>
 
-      <el-pagination :page-size="pagination.pageSize" :current-page="pagination.currentPage" small layout="prev, pager, next" :total="pagination.total" @current-change="handleCurrentChange" />
+      <el-pagination
+        :page-size="pagination.pageSize"
+        :current-page="pagination.currentPage"
+        small
+        layout="prev, pager, next"
+        :total="pagination.total"
+        @current-change="handleCurrentChange"
+      />
     </div>
   </div>
 </template>
@@ -48,7 +60,6 @@
 <script>
 import MyCalendar from './MyCalendar'
 import moment from 'moment'
-import { stat } from 'fs'
 export default {
   components: {
     MyCalendar
@@ -59,16 +70,17 @@ export default {
       activeTask: 1,
       taskType: [
         { label: '全部任务', value: 1 },
-        { label: '我创建的', value: 2 },
+        { label: '我创建的', value: 2 }
         // { label: '', value: 3 },
         // { label: '', value: 4 }
       ],
-      taskDatas:[],
+      taskDatas: [],
       pagination: {
         total: 0,
         pageSize: 3,
         currentPage: 1
       },
+      loading: true
     }
   },
   computed: {},
@@ -93,50 +105,55 @@ export default {
       this.getIndexTaskList(this.activeTask)
     },
     getIndexTaskList(type) {
+      this.loading = true
       var obj = {
-        params:{type:type,pageSize:this.pagination.pageSize,currentPage:this.pagination.currentPage},
-        removeEmpty:false,
-        url:this.apis.reportTask.getIndexTaskListApi
+        params: {
+          type: type,
+          pageSize: this.pagination.pageSize,
+          currentPage: this.pagination.currentPage
+        },
+        removeEmpty: false,
+        url: this.apis.reportTask.getIndexTaskListApi
       }
-      var that = this;
-        this.commonUtil.doPost(obj) .then(response=>{
-          if (response.code == "200")
-          {
-            if(response.responseData){
-              that.taskDatas = response.responseData.data;
-              that.pagination.total = response.responseData.total*1
-            }
+      var that = this
+      this.commonUtil.doPost(obj).then((response) => {
+        if (response.code == '200') {
+          if (response.responseData) {
+            that.taskDatas = response.responseData.data
+            that.pagination.total = response.responseData.total * 1
           }
-        });
+        }
+        this.loading = false
+      })
     },
-    getExportTypeName(type){
-      let typeName = "excel";
-      if(type == 2){
-        typeName = "pdf";
-      }else if(type == 2){
-        typeName = "excel和pdf";
+    getExportTypeName(type) {
+      let typeName = 'excel'
+      if (type == 2) {
+        typeName = 'pdf'
+      } else if (type == 2) {
+        typeName = 'excel和pdf'
       }
-      return typeName;
+      return typeName
     },
-    getTaskStatus(state){
-      let name = "等待执行";
-      if(state == "‌WAITING‌"){
-        name = "等待执行";
-      }else if(state == "PAUSED"){
-        name = "暂停";
-      }else if(state == "ACQUIRED" || state == "EXECUTING"){
-        name = "执行中";
-      }else if(state == "BLOCKED"){
-        name = "阻塞";
-      }else if(state == "ERROR"){
-        name = "错误";
-      }else if(state == "COMPLETE"){
-        name = "执行完成";
+    getTaskStatus(state) {
+      let name = '等待执行'
+      if (state == '‌WAITING‌') {
+        name = '等待执行'
+      } else if (state == 'PAUSED') {
+        name = '暂停'
+      } else if (state == 'ACQUIRED' || state == 'EXECUTING') {
+        name = '执行中'
+      } else if (state == 'BLOCKED') {
+        name = '阻塞'
+      } else if (state == 'ERROR') {
+        name = '错误'
+      } else if (state == 'COMPLETE') {
+        name = '执行完成'
       }
-      return name;
+      return name
     },
-    getNextFireTime(timeStamp){
-      return  moment(timeStamp*1).format('YYYY-MM-DD HH:mm:ss');
+    getNextFireTime(timeStamp) {
+      return moment(timeStamp * 1).format('YYYY-MM-DD HH:mm:ss')
     }
   }
 }
@@ -145,20 +162,31 @@ export default {
 @import "@/element-variables.scss";
 
 ::v-deep .el-pager li {
-  font-size: 14px;
   color: #666;
   font-weight: normal;
+  font-size: 14px !important;
+  border: 1px solid transparent;
 }
 ::v-deep .el-pager li.active {
   color: $--color-primary;
   border-radius: 3px;
+  font-size: 14px;
   border: 1px solid $--color-primary;
+}
+::v-deep .el-pagination--small .btn-prev,
+::v-deep .el-pagination--small .btn-next {
+  height: 24px;
+  line-height: 24px;
 }
 .task {
   margin-top: 15px;
   border-radius: 5px;
   background: #fff;
   padding: 16px;
+  display: -webkit-box;
+  .task-left{
+    flex-shrink: 0;
+  }
   .task-title {
     color: #1a1a1a;
     font-family: "PingFang SC";
@@ -172,6 +200,7 @@ export default {
   .line {
     width: 1px;
     height: 524px;
+    flex-shrink: 0;
     background-color: rgba($color: #000000, $alpha: 0.1);
   }
   .task-right {
@@ -180,13 +209,14 @@ export default {
   }
   .task-tab {
     display: flex;
-    width: 265px;
+    // width: 265px;
     height: 59px;
     padding: 0px 16px;
-    justify-content: space-between;
+    // justify-content: space-between;
     align-items: center;
     flex-shrink: 0;
     .tab-item {
+      margin-right: 32px;
       cursor: pointer;
       padding: 8px 16px;
       color: #666;
@@ -212,6 +242,7 @@ export default {
   }
   .task-list {
     padding: 0 16px;
+    height: 524px;
     .task-item {
       padding: 16px 0 4px 0;
       border-bottom: 1px solid #edf0f7;
