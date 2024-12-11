@@ -7,6 +7,7 @@
         v-for="(item, index) in statistics"
         :key="index"
         class="statistics-item df-c-b"
+        @click="routerTo(item)"
       >
         <div>
           <div class="label">{{ item.title }}</div>
@@ -26,28 +27,33 @@ export default {
       statistics: [
         {
           title: 'Excel报表(个)',
-          num: 658,
-          icon: require('@/static/img/homePage/excel.png')
+          num: 0,
+          icon: require('@/static/img/homePage/excel.png'),
+          path:"reportTpl",
         },
         {
           title: 'Word报表(个)',
-          num: 1822,
-          icon: require('@/static/img/homePage/word.png')
+          num: 0,
+          icon: require('@/static/img/homePage/word.png'),
+          path:"docTpl",
         },
         {
-          title: 'PPT模板(个)',
-          num: 451,
-          icon: require('@/static/img/homePage/ppt.png')
+          title: '协同文档(个)',
+          num: 0,
+          icon: require('@/static/img/homePage/excel.png'),
+          path:"onlineTpl",
         },
         {
           title: '大屏模板(个)',
-          num: 45,
-          icon: require('@/static/img/homePage/screen.png')
+          num: 0,
+          icon: require('@/static/img/homePage/screen.png'),
+          path:"screenTpl",
         },
         {
           title: '数据源(个)',
-          num: 786,
-          icon: require('@/static/img/homePage/database.png')
+          num: 0,
+          icon: require('@/static/img/homePage/database.png'),
+          path:"reportDatasource",
         }
       ]
     }
@@ -55,8 +61,34 @@ export default {
   computed: {},
   watch: {},
   created() {},
-  mounted() {},
-  methods: {}
+  mounted() {
+    this.getIndexData();
+  },
+  methods: {
+    getIndexData(){
+       var obj = {
+          params:{},
+          removeEmpty:false,
+          url:this.apis.index.getIndexDataApi
+        }
+        var that = this;
+        this.commonUtil.doPost(obj) .then(response=>{
+          if (response.code == "200")
+          {
+            if(response.responseData){
+              that.statistics[0].num = response.responseData.excelCount;
+              that.statistics[1].num = response.responseData.wordCount;
+              that.statistics[2].num = response.responseData.coeditCount;
+              that.statistics[3].num = response.responseData.screenCount;
+              that.statistics[4].num = response.responseData.datasourceCount;
+            }
+          }
+        });
+    },
+    routerTo(item){
+      this.$router.push({ name: item.path})
+    }
+  }
 }
 </script>
 <style lang='scss' scoped>
@@ -84,6 +116,7 @@ export default {
       box-sizing: border-box;
       border-radius: 6px;
       background: #f3f4f5;
+      cursor: pointer;
       &:last-child {
         margin-right: 0;
       }

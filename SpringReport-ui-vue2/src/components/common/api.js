@@ -19,6 +19,7 @@ api.login = {
 //首页接口
 api.index = {
   getIndexMenuApi: "/api/sysMenu/getIndexMenu", //获取首页菜单
+  getIndexDataApi:"/api/index/getIndexData",
 };
 
 //报表类型controller对应的api
@@ -286,6 +287,7 @@ api.reportTask = {
   runTaskApi:"/api/qrtzReportDetail/runTask",//立即执行
   pauseTaskApi:"/api/qrtzReportDetail/pauseTask",//暂停任务
   resumeTaskApi:"/api/qrtzReportDetail/resumeTask",//恢复任务
+  getIndexTaskListApi:"/api/qrtzReportDetail/getIndexTaskList",//获取首页任务列表
 }
 api.luckysheetHis = {
   listApi: "/api/luckysheetHis/getTableList", //获取表格数据api
@@ -355,4 +357,5 @@ api.common = {
   uploadFileApi: "/api/common/uploadFile", 
   parseXlsxByUrlApi: "/api/common/parseXlsxByUrl", 
 }
+
 export default api;

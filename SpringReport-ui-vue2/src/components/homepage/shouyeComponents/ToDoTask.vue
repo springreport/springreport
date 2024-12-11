@@ -20,20 +20,22 @@
       </div>
 
       <div class="task-list">
-        <div v-for="item in 3" :key="item" class="task-item">
+        <div v-for="item in taskDatas" :key="item.id" class="task-item">
           <div class="df-c-b">
             <div class="task-item-title overflow-text">
-              任务名称任务名称任务名称任务名称任务名称任务名称任务名称任务名称任务名称任务名称任务名称任务名称
+              任务名称：{{item.jobName}}
             </div>
-            <div class="status">
-              已暂停
-            </div>
+            <!-- <div class="status">
+              {{item.triggerState}}
+            </div> -->
           </div>
-          <div class="desc">导出类型：Excel</div>
-          <div class="desc">时间类型：指定时间</div>
-          <div class="desc">任务执行时间：2024-10-30 00:00:00</div>
+          <div class="desc">任务状态：{{getTaskStatus(item.triggerState)}}</div>
+          <div class="desc">所属报表：{{item.tplName}}</div>
+          <div class="desc">导出类型：{{getExportTypeName(item.exportType)}}</div>
+          <!-- <div class="desc">时间类型：指定时间</div> -->
+          <div class="desc">下次执行时间：{{getNextFireTime(item.nextFireTime)}}</div>
           <div class="desc">
-            发送邮箱：mayaghost@163.com；109807790@qq.com
+            发送邮箱：{{item.email}}
           </div>
         </div>
       </div>
@@ -46,6 +48,7 @@
 <script>
 import MyCalendar from './MyCalendar'
 import moment from 'moment'
+import { stat } from 'fs'
 export default {
   components: {
     MyCalendar
@@ -57,37 +60,83 @@ export default {
       taskType: [
         { label: '全部任务', value: 1 },
         { label: '我创建的', value: 2 },
-        { label: '我执行的', value: 3 },
-        { label: '我暂停的', value: 4 }
+        // { label: '', value: 3 },
+        // { label: '', value: 4 }
       ],
+      taskDatas:[],
       pagination: {
-        total: 100,
+        total: 0,
         pageSize: 3,
         currentPage: 1
-      }
+      },
     }
   },
   computed: {},
   watch: {
     date() {
       this.pagination.currentPage = 1
-      this.getData()
     }
   },
   created() {},
-  mounted() {},
+  mounted() {
+    this.getIndexTaskList(1)
+  },
   methods: {
     changeTab(val) {
       this.activeTask = val
       this.pagination.currentPage = 1
-      this.getData()
+      this.pagination.total = 0
+      this.getIndexTaskList(val)
     },
     handleCurrentChange(page) {
       this.pagination.currentPage = page
-      this.getData()
+      this.getIndexTaskList(this.activeTask)
     },
-    getData() {
-
+    getIndexTaskList(type) {
+      var obj = {
+        params:{type:type,pageSize:this.pagination.pageSize,currentPage:this.pagination.currentPage},
+        removeEmpty:false,
+        url:this.apis.reportTask.getIndexTaskListApi
+      }
+      var that = this;
+        this.commonUtil.doPost(obj) .then(response=>{
+          if (response.code == "200")
+          {
+            if(response.responseData){
+              that.taskDatas = response.responseData.data;
+              that.pagination.total = response.responseData.total*1
+            }
+          }
+        });
+    },
+    getExportTypeName(type){
+      let typeName = "excel";
+      if(type == 2){
+        typeName = "pdf";
+      }else if(type == 2){
+        typeName = "excel和pdf";
+      }
+      return typeName;
+    },
+    getTaskStatus(state){
+      let name = "等待执行";
+      if(state == "‌WAITING‌"){
+        name = "等待执行";
+      }else if(state == "PAUSED"){
+        name = "暂停";
+      }else if(state == "ACQUIRED" || state == "EXECUTING"){
+        name = "执行中";
+      }else if(state == "BLOCKED"){
+        name = "阻塞";
+      }else if(state == "ERROR"){
+        name = "错误";
+      }else if(state == "COMPLETE"){
+        name = "执行完成";
+      }
+      return name;
+    },
+    getNextFireTime(timeStamp){
+      return  moment(timeStamp*1).format('YYYY-MM-DD HH:mm:ss');
     }
   }
 }
@@ -131,7 +180,7 @@ export default {
   }
   .task-tab {
     display: flex;
-    width: 465px;
+    width: 265px;
     height: 59px;
     padding: 0px 16px;
     justify-content: space-between;
