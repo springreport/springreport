@@ -6,14 +6,24 @@
           v-show="!navShow"
           src="@/static/img/logoWithName.png"
           height="30px"
-          style="margin-left:28px"
+          style="margin-left: 28px"
         >
-        <img v-show="navShow" src="@/static/img/logo.png" height="24px" style="margin-left:20px">
+        <img
+          v-show="navShow"
+          src="@/static/img/logo.png"
+          height="24px"
+          style="margin-left: 20px"
+        >
       </div>
       <div class="right df-c">
         <div v-if="isSystemMerchant == 1" class="role-name">商户</div>
         <div v-if="isSystemMerchant == 1" class="role-name">
-          <el-select v-model="merchantNo" placeholder="请选择" size="small" @change="changeMerchant">
+          <el-select
+            v-model="merchantNo"
+            placeholder="请选择"
+            size="small"
+            @change="changeMerchant"
+          >
             <el-option
               v-for="item in merchants"
               :key="item.merchantNo"
@@ -23,9 +33,18 @@
           </el-select>
         </div>
         <div class="role-name">{{ roleName }}</div>
-        <el-dropdown class="white font" trigger="click" placement="bottom" @command="handleCommand">
+        <el-dropdown
+          class="white font"
+          trigger="click"
+          placement="bottom"
+          @command="handleCommand"
+        >
           <span class="el-dropdown-link df-c">
-            <img src="@/static/img/user-circle.png" height="20" style="margin-right:8px">
+            <img
+              src="@/static/img/user-circle.png"
+              height="20"
+              style="margin-right: 8px"
+            >
             {{ username }}
             <i class="el-icon-arrow-down el-icon--right" />
           </span>
@@ -35,7 +54,7 @@
           </el-dropdown-menu>
         </el-dropdown>
       </div>
-    <!-- <div class="collapse-btn" @click="navChangeShow" :style="{width:!navShow?'232px':'64px'}"></div> -->
+      <!-- <div class="collapse-btn" @click="navChangeShow" :style="{width:!navShow?'232px':'64px'}"></div> -->
     </el-header>
     <modal
       ref="changePwd"
@@ -65,15 +84,26 @@ export default {
         formEditDisabled: false, // 编辑弹窗是否可编辑
         width: '700px', // 弹出框宽度
         modalRef: 'modalRef', // modal标识
-        type: '1'// 类型 1新增 2编辑 3保存
+        type: '1' // 类型 1新增 2编辑 3保存
       },
       changePwdForm: [
-        { type: 'Password', label: '旧密码', prop: 'oldPwd', rules: { required: true, maxLength: 32 }},
-        { type: 'Password', label: '新密码', prop: 'newPwd', rules: { required: true, maxLength: 32 }}
+        {
+          type: 'Password',
+          label: '旧密码',
+          prop: 'oldPwd',
+          rules: { required: true, maxLength: 32 }
+        },
+        {
+          type: 'Password',
+          label: '新密码',
+          prop: 'newPwd',
+          rules: { required: true, maxLength: 32 }
+        }
       ],
       // modal表单 end
       // modal 数据 start
-      changePwdModalData: { // modal页面数据
+      changePwdModalData: {
+        // modal页面数据
         oldPwd: '',
         newPwd: ''
       },
@@ -156,7 +186,9 @@ export default {
         localStorage.removeItem(this.commonConstants.sessionItem.userName)
         localStorage.removeItem(this.commonConstants.sessionItem.roleName)
         localStorage.removeItem(this.commonConstants.sessionItem.apiList)
-        localStorage.removeItem(this.commonConstants.sessionItem.isSystemMerchant)
+        localStorage.removeItem(
+          this.commonConstants.sessionItem.isSystemMerchant
+        )
         localStorage.removeItem(this.commonConstants.sessionItem.merchantNo)
         localStorage.removeItem(this.commonConstants.sessionItem.userId)
         this.$router.replace('/login')
@@ -169,9 +201,9 @@ export default {
       this.changePwdConfig.show = true
     },
     closePwdModal() {
-      this.changePwdConfig.show = false// 关闭modal
-      this.commonUtil.clearObj(this.changePwdModalData)// 清空modalData
-      this.$refs['changePwd'].$refs['modalFormRef'].resetFields()// 校验重置
+      this.changePwdConfig.show = false // 关闭modal
+      this.commonUtil.clearObj(this.changePwdModalData) // 清空modalData
+      this.$refs['changePwd'].$refs['modalFormRef'].resetFields() // 校验重置
     },
     changePwd() {
       var that = this
@@ -182,16 +214,28 @@ export default {
             removeEmpty: false
           }
           obj.url = that.apis.sysUser.changePwdApi
-          that.commonUtil.doPost(obj).then(response => {
+          that.commonUtil.doPost(obj).then((response) => {
             if (response.code == '200') {
               that.closePwdModal()
-              localStorage.removeItem(that.commonConstants.sessionItem.authorization)
-              localStorage.removeItem(that.commonConstants.sessionItem.position)
-              localStorage.removeItem(that.commonConstants.sessionItem.userName)
-              localStorage.removeItem(that.commonConstants.sessionItem.roleName)
+              localStorage.removeItem(
+                that.commonConstants.sessionItem.authorization
+              )
+              localStorage.removeItem(
+                that.commonConstants.sessionItem.position
+              )
+              localStorage.removeItem(
+                that.commonConstants.sessionItem.userName
+              )
+              localStorage.removeItem(
+                that.commonConstants.sessionItem.roleName
+              )
               localStorage.removeItem(that.commonConstants.sessionItem.apiList)
-              localStorage.removeItem(that.commonConstants.sessionItem.isSystemMerchant)
-              localStorage.removeItem(that.commonConstants.sessionItem.merchantNo)
+              localStorage.removeItem(
+                that.commonConstants.sessionItem.isSystemMerchant
+              )
+              localStorage.removeItem(
+                that.commonConstants.sessionItem.merchantNo
+              )
               localStorage.removeItem(this.commonConstants.sessionItem.userId)
               that.$router.replace('/login')
             }
@@ -207,10 +251,11 @@ export default {
 
 <style lang="scss" scoped>
 ._header {
-  height: 56px !important;
+  height: 64px !important;
   padding: 0px;
   background-color: #fff;
   border-bottom: 1px solid #ccc;
+  box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.05);
   .left {
     img {
       cursor: pointer;

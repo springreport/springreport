@@ -20,7 +20,7 @@
       <template v-for="(menu_one, i) in menuData">
         <el-submenu :key="i" :index="menu_one.path">
           <template slot="title">
-            <i :class="menu_one.icon" />
+            <span class="iconfont" :class="menu_one.icon" />
             <span>{{ menu_one.title }}</span>
           </template>
 
@@ -29,7 +29,7 @@
             :key="i"
             :index="menu_two.path"
           >
-            <!-- <i :class="menu_two.icon" /> -->
+            <span class="iconfont" :class="menu_two.icon" />
             <span>{{ menu_two.title }}</span>
           </el-menu-item>
         </el-submenu>
@@ -42,6 +42,10 @@
   </div>
 </template>
 <style lang="scss" scoped>
+.iconfont{
+  font-size: 20px;
+  margin-right: 8px;
+}
 ._aside {
   position: relative;
   .menu {
@@ -49,7 +53,7 @@
   }
   .menu:not(.el-menu--collapse) {
     //设置才可以有折叠特效
-    width: 232px;
+    width: 228px;
     padding: 0 8px;
     box-sizing: border-box;
   }
