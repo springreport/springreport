@@ -1041,6 +1041,7 @@
               :component="chartOptions"
               :datasets="datasets"
               :is-preview="false"
+              :isCoedit="false"
             />
           </div>
         </div>

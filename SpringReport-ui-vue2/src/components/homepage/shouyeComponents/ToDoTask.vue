@@ -28,7 +28,7 @@
             </div>
           </div> -->
           <div class="task-item-title overflow-text">
-            任务名称任务名称任务名称任务名称任务名称任务名称任务名称任务名称任务名称任务名称任务名称任务名称任务名称：{{ item.jobName }}
+            任务名称：{{ item.jobName }}
           </div>
           <div class="desc overflow-text">
             任务状态：{{ getTaskStatus(item.triggerState) }}
