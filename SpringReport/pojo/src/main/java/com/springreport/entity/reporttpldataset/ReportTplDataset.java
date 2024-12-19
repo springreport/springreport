@@ -118,4 +118,12 @@ public class ReportTplDataset extends PageEntity {
     /** total_attr - 数据总条数属性 */
     @TableField("total_attr")
     private String totalAttr;
+    
+    /**  
+     * @Fields groupId : 分组id
+     * @author caiyang
+     * @date 2024-12-13 05:55:06 
+     */  
+    @TableField("group_id")
+    private Long groupId;
 }

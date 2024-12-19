@@ -9,6 +9,7 @@ import javax.sql.DataSource;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.springreport.entity.reportdatasource.ReportDatasource;
 import com.springreport.entity.reporttpldataset.ReportTplDataset;
+import com.springreport.entity.reporttpldatasetgroup.ReportTplDatasetGroup;
 
 import net.sf.jsqlparser.JSQLParserException;
 
@@ -218,4 +219,14 @@ public interface IReportTplDatasetService extends IService<ReportTplDataset> {
 	 * @date 2024-05-07 12:17:09 
 	 */ 
 	Object getDatasetDatasource(ReportDatasource reportDatasource) throws Exception;
+	
+	/**
+	*<p>Title: getTplGroupDatasets</p>
+	*<p>Description: 获取报表模板关联的数据集(分组)</p>
+	* @author caiyang
+	* @return
+	 * @throws SQLException 
+	 * @throws Exception 
+	*/
+	List<ReportTplDatasetGroup> getTplGroupDatasets(ReportTplDataset dataset,UserInfoDto userInfoDto) throws SQLException, Exception;
 }

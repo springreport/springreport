@@ -4,14 +4,17 @@ import com.springreport.entity.doctpl.DocTpl;
 import com.springreport.entity.reportdatasource.ReportDatasource;
 import com.springreport.entity.reporttpl.ReportTpl;
 import com.springreport.entity.reporttpldataset.ReportTplDataset;
+import com.springreport.entity.reporttpldatasetgroup.ReportTplDatasetGroup;
 import com.springreport.mapper.reporttpldataset.ReportTplDatasetMapper;
 import com.springreport.api.doctpl.IDocTplService;
 import com.springreport.api.reportdatasource.IReportDatasourceService;
 import com.springreport.api.reporttpl.IReportTplService;
 import com.springreport.api.reporttpldataset.IReportTplDatasetService;
+import com.springreport.api.reporttpldatasetgroup.IReportTplDatasetGroupService;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import org.springframework.beans.BeanUtils;
@@ -51,12 +54,14 @@ import com.springreport.dto.reporttpldataset.ReportDatasetDto;
 import com.springreport.dto.reporttpldataset.ReportParamDto;
 import com.springreport.dto.reporttpldataset.ReportTplDatasetDto;
 
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
@@ -95,6 +100,10 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 	@Autowired
 	@Lazy
 	private IDocTplService iDocTplService;
+	
+	@Autowired
+	@Lazy
+	private IReportTplDatasetGroupService iReportTplDatasetGroupService;
 	
 	/** 
 	* @Title: tablePagingQuery 
@@ -495,6 +504,7 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 			insertData.setCurrentPageAttr(reportTplDataset.getCurrentPageAttr());
 			insertData.setPageCountAttr(reportTplDataset.getPageCountAttr());
 			insertData.setTotalAttr(reportTplDataset.getTotalAttr());
+			insertData.setGroupId(reportTplDataset.getGroupId());
 			this.save(insertData);
 			result.setId(insertData.getId());
 		}else {
@@ -1227,5 +1237,66 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 			DataSource dataSource = JdbcUtils.getDataSource(dataSourceConfig);
 			return dataSource;
 		}
+	}
+
+	/**
+	*<p>Title: getTplGroupDatasets</p>
+	*<p>Description: 获取报表模板关联的数据集(分组)</p>
+	* @author caiyang
+	* @return
+	 * @throws SQLException 
+	 * @throws Exception 
+	*/
+	@Override
+	public List<ReportTplDatasetGroup> getTplGroupDatasets(ReportTplDataset dataset, UserInfoDto userInfoDto)
+			throws SQLException, Exception {
+		//版本更新新增数据集分组功能，为了适应新版本，先判断是否存在分组，不存在则先添加一个默认分组
+		QueryWrapper<ReportTplDatasetGroup> groupQueryWrapper = new QueryWrapper<>();
+		groupQueryWrapper.eq("tpl_id", dataset.getTplId());
+		groupQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+		long count = this.iReportTplDatasetGroupService.count();
+		ReportTplDatasetGroup reportTplDatasetGroup = null;
+		if(count == 0) {
+			reportTplDatasetGroup = new ReportTplDatasetGroup();
+			reportTplDatasetGroup.setGroupName("默认分组");
+			reportTplDatasetGroup.setTplId(dataset.getTplId());
+			this.iReportTplDatasetGroupService.save(reportTplDatasetGroup);
+			UpdateWrapper<ReportTplDataset> updateWrapper = new UpdateWrapper<>();
+			updateWrapper.eq("tpl_id", dataset.getTplId());
+			updateWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+			ReportTplDataset update = new ReportTplDataset();
+			update.setGroupId(reportTplDatasetGroup.getId());
+			this.update(update, updateWrapper);
+		}
+		List<ReportTplDatasetGroup> datasetGroups = this.iReportTplDatasetGroupService.list(groupQueryWrapper);
+		
+		List<ReportDatasetDto> datasets = new ArrayList<ReportDatasetDto>();
+		QueryWrapper<ReportTplDataset> queryWrapper = new QueryWrapper<ReportTplDataset>();
+		queryWrapper.eq("tpl_id", dataset.getTplId());
+		queryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+		List<ReportTplDataset> reportTplDatasets = this.list(queryWrapper);
+		if(reportTplDatasets != null && reportTplDatasets.size() > 0)
+		{
+			ReportDatasetDto reportDatasetDto = null;
+			for (int i = 0; i < reportTplDatasets.size(); i++) {
+				reportDatasetDto = new ReportDatasetDto();
+				BeanUtils.copyProperties(reportTplDatasets.get(i), reportDatasetDto);
+				datasets.add(reportDatasetDto);
+			}
+			this.iReportDatasourceService.cacheDatasetsColumns(reportTplDatasets,userInfoDto);
+		}
+		Map<Long, List<ReportDatasetDto>> reportDatasetsMap = null;
+		if(ListUtil.isNotEmpty(datasets)) {
+			reportDatasetsMap = datasets.stream().collect(Collectors.groupingBy(ReportDatasetDto::getGroupId));
+		}
+		if(ListUtil.isNotEmpty(datasetGroups)) {
+			for (int i = 0; i < datasetGroups.size(); i++) {
+				if(reportDatasetsMap != null && reportDatasetsMap.containsKey(datasetGroups.get(i).getId())) {
+					List<ReportDatasetDto> list = reportDatasetsMap.get(datasetGroups.get(i).getId());
+					datasetGroups.get(i).setData(list);
+				}
+			}
+		}
+		return datasetGroups;
 	}
 }

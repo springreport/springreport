@@ -29,6 +29,7 @@ import com.springreport.dto.reporttpldataset.MesScreenGetSqlDataDto;
 import com.springreport.dto.reporttpldataset.ReportDatasetDto;
 import com.springreport.dto.reporttpldataset.ReportTplDatasetDto;
 import com.springreport.entity.reporttpldataset.ReportTplDataset;
+import com.springreport.entity.reporttpldatasetgroup.ReportTplDatasetGroup;
 import com.springreport.enums.RedisPrefixEnum;
 import com.springreport.exception.BizException;
 import com.springreport.util.MessageUtil;
@@ -275,6 +276,22 @@ public class ReportTplDatasetController extends BaseController {
 //	@RequiresPermissions(value = {"reportDesign_previewReport","reportTpl_reportView","viewReport_view"},logical = Logical.OR)
 	public Response getTreeSelectData(@RequestBody MesGetRelyOnSelectData mesGetRelyOnSelectData) throws JSQLParserException {
 		List<Map<String, Object>> result = this.iReportTplDatasetService.getTreeSelectData(mesGetRelyOnSelectData);
+		return Response.success(result);
+	}
+	
+	/** 
+	* @Description: 获取模板关联的数据集（分组）
+	* @param ReportTplDataset 
+	* @return Response 
+	 * @throws Exception 
+	 * @throws 
+	*/ 
+	@RequestMapping(value = "/getTplGroupDatasets",method = RequestMethod.POST)
+	@MethodLog(module="ReportTplDataset",remark="获取模板关联的数据集(分组)",operateType=Constants.OPERATE_TYPE_SEARCH)
+	@Check({"tplId:required#模板ID"})
+	@RequiresPermissions(value = {"reportTpl_reportDesign","screenTpl_screenDesign","slidTpl_design","docTpl_design"},logical = Logical.OR)
+	public Response getTplGroupDatasets(@RequestBody ReportTplDataset dataset,@LoginUser UserInfoDto userInfoDto) throws Exception {
+		List<ReportTplDatasetGroup> result = this.iReportTplDatasetService.getTplGroupDatasets(dataset,userInfoDto);
 		return Response.success(result);
 	}
 }

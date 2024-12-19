@@ -215,7 +215,7 @@ public class WordUtil {
     	JSONArray valueList = content.getJSONArray("valueList");
     	if(ListUtil.isNotEmpty(valueList)) {
     		for (int i = 0; i < valueList.size(); i++) {
-    			addParagraph(paragraph,valueList.getJSONObject(i),headStyle);
+    			addParagraph(paragraph,valueList.getJSONObject(i),headStyle,false);
 			}
     	}
     	
@@ -229,9 +229,9 @@ public class WordUtil {
      * @param content void
      * @date 2024-05-04 08:48:31 
      */ 
-    public static void addParagraph(XWPFParagraph paragraph,JSONObject content,String titleStyle) {
+    public static void addParagraph(XWPFParagraph paragraph,JSONObject content,String titleStyle,boolean ignoreStartn) {
     	XWPFRun run = paragraph.createRun();
-    	setRunText(run,content,"text");
+    	setRunText(run,content,"text",ignoreStartn);
     	String rowFlex = content.getString("rowFlex");//对齐方式
     	Float rowMargin = content.getFloat("rowMargin");//行间距
     	if(StringUtil.isNotEmpty(rowFlex)) {
@@ -264,7 +264,7 @@ public class WordUtil {
     	
     }
     
-    private static void setRunText(XWPFRun run,JSONObject content,String type) {
+    private static void setRunText(XWPFRun run,JSONObject content,String type,boolean ignoreStartn) {
     	String value = content.getString("value");//内容
     	String font = content.getString("font");//字体
      	Double fontSize = content.getDouble("size");//字体大小
@@ -274,6 +274,11 @@ public class WordUtil {
     	String highlight = content.getString("highlight");//高亮
     	Boolean underline = content.getBoolean("underline");//是否下划线
     	Boolean strikeout = content.getBoolean("strikeout");//是否删除线
+    	if(ignoreStartn) {
+    		if(StringUtil.isNotEmpty(value) && value.startsWith("\n")) {
+    			value = value.replaceFirst("\n", "");
+    		}
+    	}
     	if(value.contains("\n")) {
     		if("\n".equals(value)) {
     			run.setText("");
@@ -442,28 +447,8 @@ public class WordUtil {
     	}
     	CTTbl ttbl = xwpfTable.getCTTbl(); 
 	    CTTblGrid tblGrid = ttbl.addNewTblGrid();
-    	for (int i = 0; i < cols; i++) {
-    		CTTblGridCol gridCol = tblGrid.addNewGridCol();
-    		gridCol.setW(new BigInteger(String.valueOf(colgroup.getJSONObject(i).getBigDecimal("width").intValue()*16)));  
-    		for (int j = 0; j < rows; j++) {
-    			xwpfTable.getRow(j).getCell(i).setWidth(String.valueOf(colgroup.getJSONObject(i).getBigDecimal("width").intValue()*16));
-			}
-		}
-    	for (int i = 0; i < rows; i++) {
-//    		xwpfTable.getRow(i).setHeight(42*15);
-//    		if(i == 0) {
-//    			xwpfTable.getRow(i).setHeight(42*15);
-//    		}else {
-    			int height = trList.getJSONObject(i).getIntValue("height");
-        		float multiple = height/42;
-        		if(multiple > 6) {
-        			xwpfTable.getRow(i).setHeight(height*15);
-        		}else {
-        			xwpfTable.getRow(i).setHeight(42*15);
-        		}	
-//    		}
-		}
-//    	setTableWidthFixed(xwpfTable,true);
+    	
+    	setTableWidthFixed(xwpfTable,true);
     	JSONObject mergeObj = new JSONObject();
     	mergeObj.put("isMerge", true);
     	for (int i = 0; i < rows; i++) {
@@ -502,6 +487,7 @@ public class WordUtil {
 				}
 			}
 		}
+    	Map<Integer, Boolean> isDynamicRow = new HashMap<>();
     	for (int i = 0; i < trList.size(); i++) {
     		JSONArray tdList = trList.getJSONObject(i).getJSONArray("tdList");
     		for (int j = 0; j < tdList.size(); j++) {
@@ -512,8 +498,38 @@ public class WordUtil {
 				}else {
 					setCellValue(xwpfTable.getRow(i).getCell(j),cellInfo,docTplChartsObj,docTplCodesObj,dynamicData,doc,isTemplate);
 				}
+				if(!isDynamicRow.containsKey(i)) {
+					String plainText = getCellPlainText(cellInfo);
+					if(StringUtil.isNotEmpty(plainText)) {
+						if((plainText.contains("{{") && plainText.contains("}}")) || (plainText.contains("[") && plainText.contains("]"))) {
+							isDynamicRow.put(i, true);
+						}
+					}
+				}
     		}
     	}
+    	for (int i = 0; i < cols; i++) {
+    		CTTblGridCol gridCol = tblGrid.addNewGridCol();
+    		gridCol.setW(new BigInteger(String.valueOf(colgroup.getJSONObject(i).getBigDecimal("width").intValue()*16)));  
+    		for (int j = 0; j < rows; j++) {
+    			xwpfTable.getRow(j).getCell(i).setWidth(String.valueOf(colgroup.getJSONObject(i).getBigDecimal("width").intValue()*16));
+			}
+		}
+    	for (int i = 0; i < rows; i++) {
+    		int height = trList.getJSONObject(i).getIntValue("height");
+    		if(isDynamicRow.containsKey(i)) {
+            	float multiple = height/42;
+            	xwpfTable.getRow(i).setHeight(42*15);
+//            	if(multiple > 6) {
+//            		xwpfTable.getRow(i).setHeight(height*15);
+//            	}else {
+//            		xwpfTable.getRow(i).setHeight(42*15);
+//            	}
+            	xwpfTable.getRow(i).setHeight(42*15);
+    		}else {
+    			xwpfTable.getRow(i).setHeight(height*15);
+    		}
+		}
     	for (int i = 0; i < trList.size(); i++) {
 			JSONArray tdList = trList.getJSONObject(i).getJSONArray("tdList");
 			for (int j = 0; j < tdList.size(); j++) {
@@ -549,6 +565,19 @@ public class WordUtil {
 				}
     		}
     	}
+    }
+    
+    public static String getCellPlainText(JSONObject cellInfo) {
+    	StringBuffer sb = new StringBuffer();
+    	JSONArray values = cellInfo.getJSONArray("value");
+    	if(ListUtil.isNotEmpty(values)) {
+    		for (int i = 0; i < values.size(); i++) {
+    			JSONObject content = values.getJSONObject(i);
+            	String value = content.getString("value");//内容
+            	sb.append(value);
+			}
+    	}
+    	return sb.toString();
     }
     
 	/**
@@ -781,7 +810,7 @@ public class WordUtil {
      */ 
     public static void addSubSupScript(XWPFParagraph paragraph,JSONObject content,String type) {
     	XWPFRun run = paragraph.createRun();
-    	setRunText(run,content,type);
+    	setRunText(run,content,type,false);
     }
     
     /**  
@@ -838,7 +867,7 @@ public class WordUtil {
     			String value = valueObj.getString("value");
     			run = paragraph.createHyperlinkRun(url);
     			valueObj.put("value", value);
-    			setRunText(run,valueObj,"text");
+    			setRunText(run,valueObj,"text",false);
     		}
     	}
     }
@@ -891,7 +920,7 @@ public class WordUtil {
 					}
 					run = paragraph.createRun();  
 					valueObj.put("value", value);
-					setRunText(run,valueObj,type);
+					setRunText(run,valueObj,type,false);
 				}else {
 					String[] values = value.split("\n");
 					for (int j = 0; j < values.length; j++) {
@@ -907,7 +936,7 @@ public class WordUtil {
 							}
 							run = paragraph.createRun();  
 							valueObj.put("value", values[j]);
-							setRunText(run,valueObj,type);
+							setRunText(run,valueObj,type,false);
 						}
 					}
 				}

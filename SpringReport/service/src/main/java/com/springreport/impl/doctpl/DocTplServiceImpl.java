@@ -823,15 +823,24 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 			JSONArray header = JSON.parseArray(model.getHeader());
 			if(ListUtil.isNotEmpty(header)) {
 				XWPFHeader docHeader = doc.createHeader(HeaderFooterType.DEFAULT);
-				XWPFParagraph paragraph = docHeader.createParagraph();
+				XWPFParagraph paragraph = null;
 				for (int i = 0; i < header.size(); i++) {
 					String type = header.getJSONObject(i).getString("type")==null?"":header.getJSONObject(i).getString("type");
 					switch (type) {
 					case "separator":
+						if(i == 0 || paragraph == null) {
+							paragraph = docHeader.createParagraph();
+						}
 						WordUtil.addSeparator(paragraph, header.getJSONObject(i));
+						if(i == 0) {
+							paragraph = null;
+						}
 						break;
 					default:
-						WordUtil.addParagraph(paragraph, header.getJSONObject(i), null);
+						if(paragraph == null) {
+							paragraph = docHeader.createParagraph();
+						}
+						WordUtil.addParagraph(paragraph, header.getJSONObject(i), null,true);
 						break;
 					}
 				}
@@ -849,15 +858,24 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 			JSONArray footer = JSON.parseArray(model.getFooter());
 			if(ListUtil.isNotEmpty(footer)) {
 				XWPFFooter docFooter = doc.createFooter(HeaderFooterType.DEFAULT);
-				XWPFParagraph paragraph = docFooter.createParagraph();
+				XWPFParagraph paragraph = null;
 				for (int i = 0; i < footer.size(); i++) {
 					String type = footer.getJSONObject(i).getString("type")==null?"":footer.getJSONObject(i).getString("type");
 					switch (type) {
 					case "separator":
+						if(i == 0 || paragraph == null) {
+							paragraph = docFooter.createParagraph();
+						}
 						WordUtil.addSeparator(paragraph, footer.getJSONObject(i));
+						if(i == 0) {
+							paragraph = null;
+						}
 						break;
 					default:
-						WordUtil.addParagraph(paragraph, footer.getJSONObject(i), null);
+						if(paragraph == null) {
+							paragraph = docFooter.createParagraph();
+						}
+						WordUtil.addParagraph(paragraph, footer.getJSONObject(i), null,true);
 						break;
 					}
 				}
@@ -900,7 +918,7 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 						if(paragraph == null) {
 							paragraph = doc.createParagraph();
 						}
-						WordUtil.addParagraph(paragraph,content, null);
+						WordUtil.addParagraph(paragraph,content, null,false);
 						break;
 					case "title":
 						if(paragraph == null) {
@@ -1022,7 +1040,7 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 								content.put("value", value.replaceFirst("\n", ""));
 							}
 						}
-						WordUtil.addParagraph(paragraph,content, null);
+						WordUtil.addParagraph(paragraph,content, null,false);
 						break;
 					}
 					lastType = type;
