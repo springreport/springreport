@@ -421,7 +421,7 @@ export default {
                                 }else{
                                     if(this.$route.query[result[i].params[m].paramCode])
                                     {
-                                        data.push(this.$route.query[result[i].params[m].paramCode]);
+                                        data = this.$route.query[result[i].params[m].paramCode].split(",");
                                     }else{
                                         if(result[i].params[m].paramDefault != null && result[i].params[m].paramDefault != "")
                                         {
