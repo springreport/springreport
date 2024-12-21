@@ -163,9 +163,7 @@
               element-loading-spinner="el-icon-loading"
             >
               <template v-if="displayFields.length">
-
                 <vuedraggable
-
                   v-model="displayFields"
                   class="wrapper"
                   :sort="false"
@@ -175,7 +173,9 @@
                     v-for="fieldItem in displayFields"
                     :key="fieldItem.columnName"
                     class="dataset-item df-c-b"
-                    @dragend="endDraggable(datasetItem.datasetName, fieldItem.name)"
+                    @dragend="
+                      endDraggable(datasetItem.datasetName, fieldItem.name)
+                    "
                   >
                     <div
                       class="set-name overflow-text"
@@ -187,11 +187,11 @@
                     <div class="action-box df-c">
                       <div
                         class="action action-edit"
-                        @click="copyColumn(datasetItem.datasetName, fieldItem.name)"
+                        @click="
+                          copyColumn(datasetItem.datasetName, fieldItem.name)
+                        "
                       />
-                      <div
-                        class="action action-del"
-                      />
+                      <div class="action action-del" />
                     </div>
                   </div>
                 </vuedraggable>
@@ -1215,163 +1215,174 @@
               />
             </el-select>
           </el-form-item>
-          <br>
-          <el-form-item label="系统变量">
-            <p
-              v-for="(item, index) in commonConstants.systemParam"
-              :key="index"
-              class="column-tag"
-            >
-              <i
-                class="el-icon-copy-document"
-                title="复制"
-                @click="doCopy(item)"
-              />{{ item.label }}({{ item.value }})
-            </p>
-          </el-form-item>
+
         </el-form>
 
-        <div v-if="datasourceType == 1" style="height: 25px">
-          <el-tooltip
-            content="该操作将执行sql语句并校验sql语句的正确性，并将查询字段全部显示到下方的表格中"
-            placement="bottom"
-          ><el-tag
-            type="success"
-            size="small"
-            style="cursor: pointer"
-            @click="execSql"
-          ><i class="el-icon-caret-right" />执行</el-tag></el-tooltip>
-          <el-tooltip
-            content="该操作会将sql语句进行格式化并显示"
-            placement="right"
-          ><el-tag
-            size="small"
-            style="cursor: pointer"
-            @click="formatSql"
-          ><i class="el-icon-document" />格式化</el-tag>
-          </el-tooltip>
-          <el-tooltip
-            content="该操作会插入注释标签"
-            placement="right"
-          ><el-tag
-            type="warning"
-            size="small"
-            style="cursor: pointer"
-            @click="addComment(' <!--  -->')"
-          ><i class="el-icon-circle-plus-outline" />添加注释</el-tag>
-          </el-tooltip>
-          <el-dropdown
-            v-if="
-              paramTableData.tableData && paramTableData.tableData.length > 0
-            "
-          >
-            <el-tag
-              type="danger"
-              size="small"
-              style="cursor: pointer"
-            ><i class="el-icon-circle-plus-outline" />添加参数</el-tag>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item
-                v-for="(row, index) in paramTableData.tableData"
-                :key="index"
-                @click.native="getWhereByParam(row)"
-              >{{ row.paramCode }}</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-        </div>
-        <div v-if="datasourceType == 1" style="height: 300px">
-          <div style="height: 100%; width: 75%; float: left">
-            <codemirror ref="codeMirror" :options="cmOptions" />
+        <div class="df" style="width: 100%;">
+          <div class="variable-content">
+            <div class="variable-title">选择变量</div>
+            <div class="variable-warp">
+              <div class="variable-warp-title">系统变量</div>
+              <div class="variable-list df">
+                <div
+                  v-for="(item, index) in commonConstants.systemParam"
+                  :key="index"
+                  :title="item.label"
+                  class="variable-item df-c"
+                >
+                  <div class="overflow-text" style="flex:1;margin-right:8px;">{{ item.label }}({{ item.value }})</div>
+                  <i
+                    class="el-icon-copy-document"
+                    title="复制"
+                    @click="doCopy(item)"
+                  />
+                </div>
+              </div>
+              <div class="variable-warp-title">解析表</div>
+
+              <div class="tablecolumn">
+                <el-select
+                  v-model="datasourceTableName"
+                  placeholder="请选择解析表"
+                  size="mini"
+                  filterable
+                  style="margin-bottom:10px;width: 254px;"
+                  @change="getTableColumns"
+                >
+                  <el-option
+                    v-for="op in dataSourceTables"
+                    :key="op.value"
+                    :label="op.name"
+                    :value="op.value"
+                  />
+                </el-select>
+                <div class="variable-list analysis-list df">
+                  <template v-if="tableColumns.length">
+                    <div
+                      v-for="(column, index) in tableColumns"
+                      :key="index"
+                      class="variable-item df-c"
+                      :title="column.name"
+                    >
+                      <div class="overflow-text" style="flex:1;margin-right:8px;">{{ column.name }}</div>
+                      <el-dropdown>
+                        <i class="el-icon-circle-plus-outline" title="复制" />
+                        <el-dropdown-menu slot="dropdown">
+                          <el-dropdown-item
+                            @click.native="getWhereByColumn(1, column)"
+                          >仅字段</el-dropdown-item>
+                          <el-dropdown-item
+                            @click.native="getWhereByColumn(2, column)"
+                          >表名.字段</el-dropdown-item>
+                          <el-dropdown-item
+                            @click.native="getWhereByColumn(3, column)"
+                          >查询条件(=)</el-dropdown-item>
+                          <el-dropdown-item
+                            @click.native="getWhereByColumn(4, column)"
+                          >查询条件(in)</el-dropdown-item>
+                        </el-dropdown-menu>
+                      </el-dropdown>
+                    </div>
+                  </template>
+                  <el-empty v-else style="margin:0 auto" :image-size="60" description="暂无字段" />
+                </div>
+              </div>
+            </div>
           </div>
-          <div
-            style="height: 100%; width: 24.5%; float: right"
-            class="tablecolumn"
-          >
-            <el-tag
-              type="success"
-              size="small"
-              style="cursor: pointer"
-            >请选择解析表</el-tag>
-            <el-select
-              v-model="datasourceTableName"
-              placeholder="请选择解析表"
-              size="mini"
-              filterable
-              @change="getTableColumns"
-            >
-              <el-option
-                v-for="op in dataSourceTables"
-                :key="op.value"
-                :label="op.name"
-                :value="op.value"
-              />
-            </el-select>
-            <div class="dataset-box-content2">
-              <p
-                v-for="(column, index) in tableColumns"
-                :key="index"
-                class="column-tag"
-                :title="column.name"
+          <div class="sql-content">
+            <div v-if="datasourceType == 1" style="height: 25px">
+              <el-tooltip
+                content="该操作将执行sql语句并校验sql语句的正确性，并将查询字段全部显示到下方的表格中"
+                placement="bottom"
+              ><el-tag
+                type="success"
+                size="small"
+                style="cursor: pointer"
+                @click="execSql"
+              ><i class="el-icon-caret-right" />执行</el-tag></el-tooltip>
+              <el-tooltip
+                content="该操作会将sql语句进行格式化并显示"
+                placement="right"
+              ><el-tag
+                size="small"
+                style="cursor: pointer"
+                @click="formatSql"
+              ><i class="el-icon-document" />格式化</el-tag>
+              </el-tooltip>
+              <el-tooltip
+                content="该操作会插入注释标签"
+                placement="right"
+              ><el-tag
+                type="warning"
+                size="small"
+                style="cursor: pointer"
+                @click="addComment(' <!--  -->')"
+              ><i class="el-icon-circle-plus-outline" />添加注释</el-tag>
+              </el-tooltip>
+              <el-dropdown
+                v-if="
+                  paramTableData.tableData && paramTableData.tableData.length > 0
+                "
               >
-                <el-dropdown>
-                  <i class="el-icon-circle-plus-outline" title="复制" />
-                  <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item
-                      @click.native="getWhereByColumn(1, column)"
-                    >仅字段</el-dropdown-item>
-                    <el-dropdown-item
-                      @click.native="getWhereByColumn(2, column)"
-                    >表名.字段</el-dropdown-item>
-                    <el-dropdown-item
-                      @click.native="getWhereByColumn(3, column)"
-                    >查询条件(=)</el-dropdown-item>
-                    <el-dropdown-item
-                      @click.native="getWhereByColumn(4, column)"
-                    >查询条件(in)</el-dropdown-item>
-                  </el-dropdown-menu>
-                </el-dropdown>
-                {{ column.name }}
-              </p>
+                <el-tag
+                  type="danger"
+                  size="small"
+                  style="cursor: pointer"
+                ><i class="el-icon-circle-plus-outline" />添加参数</el-tag>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item
+                    v-for="(row, index) in paramTableData.tableData"
+                    :key="index"
+                    @click.native="getWhereByParam(row)"
+                  >{{ row.paramCode }}</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </div>
+            <div v-if="datasourceType == 1" style="height: 300px">
+              <div style="height: 100%; width: 100%">
+                <codemirror ref="codeMirror" :options="cmOptions" />
+              </div>
+            </div>
+            <div style="height: 1px" />
+            <div>
+              <!--表格 start-->
+              <el-table
+                :data="
+                  sqlColumnTableData.tableData.slice(
+                    (sqlColumnTableData.tablePage.currentPage - 1) *
+                      sqlColumnTableData.tablePage.pageSize,
+                    sqlColumnTableData.tablePage.currentPage *
+                      sqlColumnTableData.tablePage.pageSize
+                  )
+                "
+                border
+                style="width: 100%"
+                align="center"
+                size="small"
+                height="230px"
+                :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+              >
+                <el-table-column prop="columnName" label="列名" align="center" />
+                <el-table-column prop="name" label="别名" align="center" />
+                <el-table-column prop="dataType" label="数据类型" align="center" />
+                <el-table-column prop="width" label="宽度" align="center" />
+              </el-table>
+              <!--表格 end-->
+              <!--分页 start-->
+              <el-pagination
+                :current-page="sqlColumnTableData.tablePage.currentPage"
+                :page-sizes="sqlColumnTableData.tablePage.pageSizeRange"
+                :page-size="sqlColumnTableData.tablePage.pageSize"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="sqlColumnTableData.tablePage.pageTotal"
+                @current-change="handleCurrentChange"
+                @size-change="handleSizeChange"
+              />
+              <!--分页 end-->
             </div>
           </div>
         </div>
-        <div style="height: 1px" />
-        <div>
-          <!--表格 start-->
-          <el-table
-            :data="
-              sqlColumnTableData.tableData.slice(
-                (sqlColumnTableData.tablePage.currentPage - 1) *
-                  sqlColumnTableData.tablePage.pageSize,
-                sqlColumnTableData.tablePage.currentPage *
-                  sqlColumnTableData.tablePage.pageSize
-              )
-            "
-            border
-            style="width: 100%"
-            align="center"
-            size="small"
-            height="230px"
-            :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-          >
-            <el-table-column prop="columnName" label="列名" align="center" />
-            <el-table-column prop="name" label="别名" align="center" />
-            <el-table-column prop="dataType" label="数据类型" align="center" />
-            <el-table-column prop="width" label="宽度" align="center" />
-          </el-table>
-          <!--表格 end-->
-          <!--分页 start-->
-          <el-pagination
-            :current-page="sqlColumnTableData.tablePage.currentPage"
-            :page-sizes="sqlColumnTableData.tablePage.pageSizeRange"
-            :page-size="sqlColumnTableData.tablePage.pageSize"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="sqlColumnTableData.tablePage.pageTotal"
-            @current-change="handleCurrentChange"
-            @size-change="handleSizeChange"
-          />
-          <!--分页 end-->
-        </div>
+
       </div>
       <div v-show="addDatasetType == 2">
         <div v-show="sqlForm.sqlType == '1' || datasourceType == 2">
@@ -3184,8 +3195,8 @@
       .dataset-item:hover,
       .dataset-item-active {
         background: #fff;
-        color: #17B794;
-        border: 1px solid #17B794;
+        color: #17b794;
+        border: 1px solid #17b794;
         .action-edit {
           background-image: url("~@/static/img/sheet/dataset-copy-active.png") !important;
         }
@@ -3242,6 +3253,72 @@
   }
   ::v-deep .el-radio-button:last-child .el-radio-button__inner {
     border-radius: 0 10px 10px 0;
+  }
+  .variable-content {
+    border: 1px solid #e4e9ed;
+    background: #fafafa;
+    width: 42.5%;
+    margin-right: 24px;
+    flex-shrink: 0;
+    .variable-title {
+      height: 46px;
+      padding: 0 16px;
+      line-height: 46px;
+      color: #1a1a1a;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: bold;
+      border-bottom: 1px solid #EFEBEB;
+    }
+    .variable-warp{
+      padding: 9px 17px;
+      .variable-warp-title{
+        color: #979191;
+        font-size: 12px;
+        font-style: normal;
+        font-weight: bold;
+        line-height: 22px; /* 183.333% */
+        margin-bottom: 12px;
+      }
+      .variable-list{
+        flex-wrap: wrap;
+        .variable-item{
+          width: calc((100% - 18px)/3);
+          box-sizing: border-box;
+          padding: 0 10px;
+          border-radius: 4px;
+          background: #E1F2F0;
+          height: 32px;
+          line-height: 32px;
+          color: #595959;
+          font-size: 12px;
+          margin-right: 9px;
+          transition: all 0.3s;
+          margin-bottom: 12px;
+          cursor: pointer;
+          &:hover{
+            color: #fff;
+            background: #17B794;
+          }
+          &:nth-child(3n){
+            margin-right: 0;
+          }
+        }
+      }
+      .analysis-list{
+        border-radius: 3px;
+        border: 1px solid #C1E0D9;
+        background: #FFF;
+        padding: 8px 10px 0;
+        .variable-item{
+          border-radius: 4px;
+          background: #F1F2F3;
+        }
+      }
+    }
+  }
+  .sql-content{
+    flex: 1;
   }
 }
 
@@ -3450,20 +3527,7 @@
   padding-left: 5px;
   padding-top: 3px;
 }
-.dataset-box-content2 {
-  width: 100%;
-  height: 100%;
-  /* background: #A5C3F5; */
-  flex: none;
-  order: 4;
-  flex-grow: 0;
-  max-height: 270px;
-  overflow-y: auto;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  padding-left: 5px;
-  padding-top: 3px;
-  scrollbar-width: none;
-}
+
 .right-form {
   .column-tag {
     width: 100% !important;
@@ -3799,9 +3863,7 @@
 ::v-deep .vue-codemirror .CodeMirror {
   border: 1px solid #eee;
 }
-.tablecolumn {
-  border: 1px solid #eee;
-}
+
 .config-panel {
   background: #ffffff;
   margin-left: 1px;
