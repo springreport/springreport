@@ -35,7 +35,7 @@ export default {
 }
 </script>
 <style lang='scss' scoped>
-@import "~@/static/index/icomoon.css";
+// @import "~@/static/index/icomoon.css";
 @import "~@/static/index/themify-icons.css";
 // @import '~@/static/index/bootstrap.css';
 @import "~@/static/index/style.scss";

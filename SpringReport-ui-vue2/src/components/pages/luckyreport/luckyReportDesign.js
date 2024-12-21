@@ -29,6 +29,7 @@ import vuedraggable from 'vuedraggable'
 import Axios from 'axios'
 import vchart from '../../component/vchart/vchart.vue'
 import vchartsetting from '../../component/vchart/vchartsetting.vue'
+
 /**
  *editSubtotalCell
 deleteSubtotalCell
@@ -52,10 +53,24 @@ export default {
   },
   data() {
     return {
-      rightOpen: true,
-      leftOpen: true,
+      rightOpen: true, // 左侧展开
+      leftOpen: true, // 右侧展开
       rightFormCollapse: ['generalConfig', 'subtotalCells', 'subtotalAttribute', 'groupSubtotal', 'cellFilter', 'cellHide'],
       rightFormCollapse2: ['generalConfig', 'sheetBlock'],
+      groupSetVisible: false, // 分组设置弹框
+      groupList: [],
+      groupForm: {
+        groupName: undefined
+      },
+      groupHandleVisible: false, // 新增、编辑分组
+      groupHandleLoading: false, // 新增、编辑分组loading
+      addDatasetType: 1, // 数据集类型 sql语句 | 参数配置
+      datasetKeyword: '', // 报表搜索
+      filedKeyword: '', // 检索所选报表内字段
+      dataGroupLoading: false, // 数据集分组loading
+      datasetItemActive: null, // 数据集选中项
+      filedLoading: false, // 字段loading
+
       vchartShow: false,
       chartOptions: {},
       chartSettingShow: false,
@@ -72,7 +87,8 @@ export default {
         datasetName: '',
         datasourceId: '',
         id: '',
-        sqlType: 1
+        sqlType: 1,
+        groupId: ''
       },
       dataSource: [], // 模板数据源
       isParamMerge: true,
@@ -527,9 +543,39 @@ export default {
       defaultCheckedUsers: []
     }
   },
+  computed: {
+    // 被过滤展示的数据集列表
+    displayGroupList() {
+      if (this.datasetKeyword) {
+        return this.groupList.map(group => ({
+          ...group,
+          data: group.data.filter(item => item.datasetName.includes(this.datasetKeyword))
+        })).filter(group => group.data.length > 0) // 只保留有匹配项的组
+      }
+      return this.groupList
+    },
+    // 过滤后的数据集字段列表
+    displayFields() {
+      let dataArr = []
+      this.groupList.forEach(element => {
+        dataArr = dataArr.concat(element.data)
+      })
+      const fileds = this.datasetItemActive ? dataArr.find(item => item.id === this.datasetItemActive)?.columns || [] : []
+      return this.filedKeyword ? fileds.filter(item => item.columnName.includes(this.filedKeyword)) : fileds
+    },
+    // 数据集id对应的名称
+    datasetItem() {
+      let dataArr = []
+      this.groupList.forEach(element => {
+        dataArr = dataArr.concat(element.data)
+      })
+      return dataArr.find(item => item.id === this.datasetItemActive) || {}
+    }
+  },
   mounted() {
     this.isInputPassWord()
     this.getUsers()
+    this.getTplGroupDatasets()
     var that = this
     this.designHeight = document.body.clientHeight - 64 - 10
     window.onresize = function() {
@@ -537,6 +583,98 @@ export default {
     }
   },
   methods: {
+    // 获取分组列表 这个方法用不上 跟getTplGroupDatasets重复了
+    getGroups() {
+      this.dataGroupLoading = true
+      const reportTplId = this.$route.query.tplId// reportTplId
+      const obj = {
+        url: this.apis.reportDesign.getTableListApi,
+        params: { tplId: reportTplId },
+        removeEmpty: false
+      }
+      this.commonUtil.doPost(obj).then(response => {
+        this.groupList = response.responseData
+
+        this.dataGroupLoading = false
+      })
+    },
+    // 获取分组数据集
+    getTplGroupDatasets() {
+      this.dataGroupLoading = true
+      const reportTplId = this.$route.query.tplId// reportTplId
+      const obj = {
+        url: this.apis.reportDesign.getTplGroupDatasetsApi,
+        params: { tplId: reportTplId },
+        removeEmpty: false
+      }
+      this.commonUtil.doPost(obj).then(response => {
+        this.groupList = response.responseData
+        const accarr = this.groupList.map(item => {
+          return {
+            id: item.id,
+            groupName: item.id,
+            data: item.data.map(daset => {
+              return {
+                id: daset.id,
+                name: daset.datasetName
+              }
+            })
+          }
+        })
+        console.log(accarr)
+        this.dataGroupLoading = false
+      })
+    },
+    // 关闭分组设置弹框
+    closeGroupDialog() {
+      this.groupSetVisible = false
+    },
+    // 打开分组编辑、添加弹框
+    openGroupHandleDialog(item) {
+      this.groupHandleVisible = true
+      this.groupForm = {
+        groupName: item ? item.groupName : undefined,
+        id: item ? item.id : undefined
+      }
+    },
+    // 关闭分组编辑、添加弹框
+    closeGroupHandleDialog() {
+      this.groupHandleVisible = false
+    },
+    // 添加或编辑分组
+    addOrEditGroup() {
+      if (!this.groupForm.groupName) {
+        this.$message.error('请输入分组名称')
+        return
+      }
+      this.groupHandleLoading = true
+      const reportTplId = this.$route.query.tplId// reportTplId
+      const obj = {
+        url: this.groupForm.id ? this.apis.reportDesign.updateGroupApi : this.apis.reportDesign.insertGroupApi,
+        params: { tplId: reportTplId, ...this.groupForm },
+        removeEmpty: false
+      }
+      this.commonUtil.doPost(obj).then(response => {
+        this.groupHandleLoading = false
+        if (response.code === '200') {
+          this.getTplGroupDatasets()
+          this.groupHandleVisible = false
+        }
+      })
+    },
+    // 删除分组
+    deleteGroup(dataSet) {
+      const params = {
+        url: this.apis.reportDesign.deleteGroupApi,
+        messageContent: this.commonUtil.getMessageFromList('confirm.delete', null),
+        callback: this.deleteDataSetCallback,
+        params: { id: dataSet.id },
+        type: 'get'
+      }
+      // 弹出删除确认框
+      this.commonUtil.showConfirm(params)
+    },
+
     init(charts) {
       const _this = this
       const reportTplId = this.$route.query.tplId// reportTplId
@@ -1145,6 +1283,7 @@ export default {
     addDataSets() {
       this.addDatasetsDialogVisiable = true
     },
+
     // 获取模板关联的数据源
     getReportTplDateSource() {
       const reportTplId = this.$route.query.tplId// reportTplId
@@ -1467,6 +1606,7 @@ export default {
       this.sqlForm.datasourceId = dataSet.datasourceId
       this.sqlForm.id = dataSet.id
       this.sqlForm.sqlType = dataSet.sqlType
+      this.sqlForm.groupId = dataSet.groupId
       if (dataSet.sqlType == 2) {
         this.procedureInParamTableData.tableData = JSON.parse(dataSet.inParam)
         this.procedureOutParamTableData.tableData = JSON.parse(dataSet.outParam)
@@ -1528,7 +1668,7 @@ export default {
         if (valid) {
           const obj = {
             url: this.apis.reportDesign.addDataSetApi,
-            params: { tplId: reportTplId, datasetType: this.datasourceType, sqlType: this.sqlForm.sqlType, tplSql: tplSql, tplParam: this.paramTableData.tableData ? JSON.stringify(this.paramTableData.tableData) : '', datasourceId: this.sqlForm.datasourceId, datasetName: this.sqlForm.datasetName, id: this.sqlForm.id,
+            params: { tplId: reportTplId, groupId: this.sqlForm.groupId, datasetType: this.datasourceType, sqlType: this.sqlForm.sqlType, tplSql: tplSql, tplParam: this.paramTableData.tableData ? JSON.stringify(this.paramTableData.tableData) : '', datasourceId: this.sqlForm.datasourceId, datasetName: this.sqlForm.datasetName, id: this.sqlForm.id,
               inParam: this.procedureInParamTableData.tableData ? JSON.stringify(this.procedureInParamTableData.tableData) : '', outParam: this.procedureOutParamTableData.tableData ? JSON.stringify(this.procedureOutParamTableData.tableData) : '',
               isPagination: this.paginationForm.isPagination, pageCount: this.paginationForm.pageCount, currentPageAttr: this.paginationForm.currentPageAttr, pageCountAttr: this.paginationForm.pageCountAttr, totalAttr: this.paginationForm.totalAttr },
             removeEmpty: false
@@ -2371,18 +2511,21 @@ export default {
       var that = this
     },
     async clickDatasets(o) {
-      if (o.isActive) {
-        this.$set(o, 'isActive', false)
-      } else {
-        this.$set(o, 'isActive', true)
-        await this.getDatasetColumns(o)
-      }
+      // if (o.isActive) {
+      //   this.$set(o, 'isActive', false)
+      // } else {
+      //   this.$set(o, 'isActive', true)
+      //   await this.getDatasetColumns(o)
+      // }
+      this.datasetItemActive = o.id
+      await this.getDatasetColumns(o)
       if (o.datasetType == '2') {
         this.getApiDefaultRequestResult(o)
       }
       this.$forceUpdate()
     },
     getDatasetColumns(element) {
+      this.filedLoading = true
       const obj = {
         url: this.apis.reportDesign.getDataSetColumnsApi,
         params: { id: element.id },
@@ -2391,6 +2534,7 @@ export default {
       this.commonUtil.doPost(obj).then(response => {
         element.columns = response.responseData
         this.dataSetAttrs = element.columns
+        this.filedLoading = false
       })
     },
     // 获取api接口默认参数的返回值
