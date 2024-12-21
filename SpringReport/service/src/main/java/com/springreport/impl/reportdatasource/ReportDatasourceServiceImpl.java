@@ -163,6 +163,9 @@ public class ReportDatasourceServiceImpl extends ServiceImpl<ReportDatasourceMap
 		}else if(DriverClassEnum.KINGBASE.getCode().intValue() == model.getType().intValue())
 		{
 			model.setDriverClass(DriverClassEnum.KINGBASE.getName());
+		}else if(DriverClassEnum.HIGODB.getCode().intValue() == model.getType().intValue())
+		{
+			model.setDriverClass(DriverClassEnum.HIGODB.getName());
 		}
 		this.save(model);
 		result.setStatusMsg(MessageUtil.getValue("info.insert"));
@@ -213,6 +216,9 @@ public class ReportDatasourceServiceImpl extends ServiceImpl<ReportDatasourceMap
 		}else if(DriverClassEnum.KINGBASE.getCode().intValue() == model.getType().intValue())
 		{
 			model.setDriverClass(DriverClassEnum.KINGBASE.getName());
+		}else if(DriverClassEnum.HIGODB.getCode().intValue() == model.getType().intValue())
+		{
+			model.setDriverClass(DriverClassEnum.HIGODB.getName());
 		}
 		this.updateById(model);
 		result.setStatusMsg(MessageUtil.getValue("info.update"));
@@ -434,6 +440,9 @@ public class ReportDatasourceServiceImpl extends ServiceImpl<ReportDatasourceMap
 			}else if(DriverClassEnum.KINGBASE.getCode().intValue() == reportDatasource.getType().intValue())
 			{
 				reportDatasource.setDriverClass(DriverClassEnum.KINGBASE.getName());
+			}else if(DriverClassEnum.HIGODB.getCode().intValue() == reportDatasource.getType().intValue())
+			{
+				reportDatasource.setDriverClass(DriverClassEnum.HIGODB.getName());
 			}
 			//数据库
 			//数据源配置

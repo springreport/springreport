@@ -337,6 +337,11 @@
 			<artifactId>itext-asian</artifactId>
 			<version>5.2.0</version>
 		</dependency>
+		<dependency>
+		    <groupId>com.highgo</groupId>
+		    <artifactId>HgdbJdbc</artifactId>
+		    <version>6.2.4</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<resources>

@@ -84,7 +84,7 @@ public class ReportTypeServiceImpl extends ServiceImpl<ReportTypeMapper, ReportT
 			queryWrapper.eq("merchant_no", model.getMerchantNo());
 		}
 		queryWrapper.eq("report_type_name", model.getReportTypeName());
-		queryWrapper.eq("report_type_name", model.getReportTypeName());
+		queryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
 		queryWrapper.eq("type", model.getType());
 		ReportType isExist = this.getOne(queryWrapper,false);
 		if(isExist != null)

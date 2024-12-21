@@ -27,7 +27,7 @@ import com.springreport.api.reporttpldatasetgroup.IReportTplDatasetGroupService;
 * @version V1.0  
  */
 @RestController
-@RequestMapping("/api/reportTplDatasetGroup")
+@RequestMapping("/springReport/api/reportTplDatasetGroup")
 public class ReportTplDatasetGroupController extends BaseController {
 
 	/**
