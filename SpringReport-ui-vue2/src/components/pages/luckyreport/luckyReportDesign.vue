@@ -207,67 +207,6 @@
             </div>
           </div>
         </div>
-        <template v-if="false">
-          <div v-for="o in datasets" :key="o.id">
-            <div
-              :class="o.isActive ? 'dataset-box-active' : 'dataset-box'"
-              style="position: relative"
-            >
-              <i
-                :class="
-                  o.isActive
-                    ? 'el-icon-arrow-down el-icon-arrow-down_dataset'
-                    : 'el-icon-arrow-right'
-                "
-                @click="clickDatasets(o)"
-              />
-              <span
-                class="dataset-name"
-                :title="o.datasetName"
-                @click="clickDatasets(o)"
-              >{{ o.datasetName }}</span>
-              <i
-                v-has="'reportDesign_editDataSet'"
-                class="el-icon-edit"
-                @click="editDataSet(o)"
-              />
-              <i
-                v-has="'reportDesign_deleteDataSet'"
-                class="el-icon-delete"
-                @click="deleteDataSet(o)"
-              />
-            </div>
-            <div v-if="o.isActive" class="dataset-box-content">
-              <vuedraggable
-                v-model="o.columns"
-                class="wrapper"
-                :sort="false"
-                :disabled="false"
-              >
-                <p
-                  v-for="(column, index) in o.columns"
-                  :key="index"
-                  class="column-tag"
-                  :title="column.name"
-                  @dragend="endDraggable(o.datasetName, column.name)"
-                >
-                  <i
-                    class="el-icon-copy-document"
-                    title="复制"
-                    @click="copyColumn(o.datasetName, column.name)"
-                  />{{ column.name }}
-                </p>
-              </vuedraggable>
-              <el-input
-                v-show="o.apiResult"
-                v-model="o.apiResult"
-                type="textarea"
-                placeholder=""
-                rows="6"
-              />
-            </div>
-          </div>
-        </template>
       </div>
       <div class="center">
         <div style="display: none">
@@ -3421,53 +3360,12 @@
   line-height: 18px;
   color: #ffffff;
 }
-.dataset-box {
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  align-items: center;
-  padding: 7px 16px;
-  gap: 103px;
-
-  width: 240px;
-  height: 36px;
-
-  background: #ffffff;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  flex: none;
-  order: 0;
-  flex-grow: 0;
-}
 .el-icon-arrow-right {
   position: absolute;
   left: 5.25%;
   cursor: pointer;
 }
-.el-icon-arrow-down_dataset {
-  position: absolute;
-  left: 5.25%;
-  cursor: pointer;
-}
-.dataset-name {
-  width: 140px;
-  height: 22px;
-  font-family: "PingFang SC";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 22px;
-  color: #191919;
-  flex: none;
-  order: 1;
-  flex-grow: 0;
-  max-width: 190px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  padding-right: 50px;
-  cursor: pointer;
-}
+
 .el-icon-edit {
   position: absolute;
   right: 17.3%;
@@ -3539,22 +3437,6 @@
   background-repeat: no-repeat;
 }
 
-.dataset-box-active {
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  align-items: center;
-  padding: 7px 16px;
-  gap: 103px;
-  /* background: #A5C3F5; */
-  width: 240px;
-  height: 36px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  flex: none;
-  order: 0;
-  flex-grow: 0;
-}
 .dataset-box-content {
   width: 240px;
   min-height: 150px;
