@@ -1413,9 +1413,9 @@
             <div v-if="datasourceType == 1 || datasourceType == 2" class="warp-title">分页参数</div>
             <el-form
               ref="paginationRef"
-              :inline="true"
+              label-position="right"
               :model="paginationForm"
-              class="demo-form-inline"
+              class="df-form"
             >
               <el-form-item
                 v-if="datasourceType == 1 || datasourceType == 2"
@@ -1495,9 +1495,9 @@
             <div class="warp-title">字段参数</div>
             <el-form
               ref="paramRef"
-              :inline="true"
+              label-position="right"
               :model="paramForm"
-              class="demo-form-inline"
+              class="df-form"
             >
               <el-form-item
                 label="参数名称"
@@ -3818,6 +3818,24 @@
 ::v-deep .demo-form-inline .el-textarea,
 ::v-deep .demo-form-inline .el-input {
   width: 100% !important;
+}
+.df-form {
+  display: flex;
+  flex-wrap: wrap;
+  ::v-deep .el-form-item {
+    width: 20%;
+    display: flex;
+    &:nth-child(5n) {
+      margin-right: 0;
+    }
+    .el-form-item__label {
+      flex-shrink: 0;
+      width: 80px;
+    }
+    .el-form-item__content {
+      width: calc(100% - 92px);
+    }
+  }
 }
 
 .right-form::-webkit-scrollbar {

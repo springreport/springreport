@@ -183,7 +183,9 @@
             />
           </div>
           <div v-show="setWidthAndHeightOpen" class="cus-collapse-content">
-            <div v-if="component.chartAllType.toLowerCase().indexOf('pie') >= 0">
+            <div
+              v-if="component.chartAllType.toLowerCase().indexOf('pie') >= 0"
+            >
               <el-form-item label="饼图设置" class="customLabel" />
               <el-form-item class="df-form-item" abel="外半径(0-1)">
                 <el-button
@@ -196,7 +198,11 @@
                   style="width: 100px"
                   @change="changeRadius('1')"
                 />
-                <el-button type="text" icon="el-icon-plus" @click="radiusPlus('1')" />
+                <el-button
+                  type="text"
+                  icon="el-icon-plus"
+                  @click="radiusPlus('1')"
+                />
               </el-form-item>
               <el-form-item class="df-form-item" label="内半径(0-1)">
                 <el-button
@@ -209,7 +215,11 @@
                   style="width: 100px"
                   @change="changeRadius('2')"
                 />
-                <el-button type="text" icon="el-icon-plus" @click="radiusPlus('2')" />
+                <el-button
+                  type="text"
+                  icon="el-icon-plus"
+                  @click="radiusPlus('2')"
+                />
               </el-form-item>
               <el-form-item class="df-form-item" label="扇区间隔">
                 <el-input
@@ -226,7 +236,9 @@
                 />
               </el-form-item>
             </div>
-            <div v-if="component.chartAllType.toLowerCase().indexOf('radar') >= 0">
+            <div
+              v-if="component.chartAllType.toLowerCase().indexOf('radar') >= 0"
+            >
               <el-form-item label="雷达图设置" class="customLabel" /><br>
               <el-form-item class="df-form-item" label="折线宽度">
                 <el-input
@@ -248,10 +260,13 @@
               <el-form-item class="df-form-item" label="坐标轴颜色">
                 <input-color-picker
                   :input-width="140"
-                  :value="component.defaultOption.spec.axes[0].grid.style.stroke"
+                  :value="
+                    component.defaultOption.spec.axes[0].grid.style.stroke
+                  "
                   @change="
                     (val) => {
-                      component.defaultOption.spec.axes[0].grid.style.stroke = val;
+                      component.defaultOption.spec.axes[0].grid.style.stroke =
+                        val;
                       changeRadarColor(chartsComponents, component);
                     }
                   "
@@ -262,7 +277,8 @@
                   :value="component.defaultOption.spec.axes[1].label.style.fill"
                   @change="
                     (val) => {
-                      component.defaultOption.spec.axes[1].label.style.fill = val;
+                      component.defaultOption.spec.axes[1].label.style.fill =
+                        val;
                       changeRadarLabelColor(chartsComponents, component);
                     }
                   "
@@ -317,7 +333,9 @@
                 label="圆角"
               >
                 <el-input
-                  v-model.number="component.defaultOption.spec.bar.style.cornerRadius"
+                  v-model.number="
+                    component.defaultOption.spec.bar.style.cornerRadius
+                  "
                   @change="reLoadChart()"
                 />
               </el-form-item>
@@ -337,7 +355,8 @@
               <el-form-item
                 v-if="
                   (component.chartAllType.toLowerCase().indexOf('line') >= 0 ||
-                    component.chartAllType.toLowerCase().indexOf('area') >= 0) &&
+                    component.chartAllType.toLowerCase().indexOf('area') >=
+                    0) &&
                     component.defaultOption.spec.lineLabel.visible
                 "
                 class="df-form-item"
@@ -360,7 +379,8 @@
               <el-form-item
                 v-if="
                   (component.chartAllType.toLowerCase().indexOf('line') >= 0 ||
-                    component.chartAllType.toLowerCase().indexOf('area') >= 0) &&
+                    component.chartAllType.toLowerCase().indexOf('area') >=
+                    0) &&
                     component.defaultOption.spec.lineLabel.visible
                 "
                 class="df-form-item"
@@ -376,7 +396,6 @@
                   "
                 />
               </el-form-item>
-
             </div>
           </div>
 
@@ -389,7 +408,10 @@
               @click="addColor(component)"
             ><i class="el-icon-plus el-icon--left" />添加</el-button>
           </div>
-          <el-form-item style="width: 100%;margin-bottom: 12px;" class="df-form-item">
+          <el-form-item
+            style="width: 100%; margin-bottom: 12px"
+            class="df-form-item"
+          >
             <el-select
               v-model="systemColor"
               placeholder="请选择"
@@ -404,26 +426,38 @@
               />
             </el-select>
           </el-form-item>
-          <div v-show="component.defaultOption.spec.color.length" class="cus-collapse-content">
+          <div
+            v-show="component.defaultOption.spec.color.length"
+            class="cus-collapse-content"
+          >
             <el-form-item
               v-for="(item, index) in component.defaultOption.spec.color"
               :key="index"
               label=""
             >
-              <div style="position: relative;">
+              <div style="position: relative">
                 <el-color-picker
                   v-model="component.defaultOption.spec.color[index]"
                   size="mini"
                   @change="reLoadChart()"
                 />
-                <i class="el-icon-error" style="cursor: pointer;position: absolute;top: 12px;right: -2px;" @click="confirmDeleteColor(index)" />
+                <i
+                  class="el-icon-error"
+                  style="
+                    cursor: pointer;
+                    position: absolute;
+                    top: 12px;
+                    right: -2px;
+                  "
+                  @click="confirmDeleteColor(index)"
+                />
               </div>
-
             </el-form-item>
-            <div style="text-align: center;">
-              <el-link type="info" @click="clearColor(component)"><i
-                class="el-icon-delete el-icon--left"
-              />清空</el-link>
+            <div style="text-align: center">
+              <el-link
+                type="info"
+                @click="clearColor(component)"
+              ><i class="el-icon-delete el-icon--left" />清空</el-link>
             </div>
           </div>
         </el-collapse-item>
@@ -433,13 +467,7 @@
             @click="xAxisOpen = !xAxisOpen"
           >
             <span>X轴字体</span>
-            <i
-              :class="
-                xAxisOpen
-                  ? 'el-icon-arrow-up'
-                  : 'el-icon-arrow-down'
-              "
-            />
+            <i :class="xAxisOpen ? 'el-icon-arrow-up' : 'el-icon-arrow-down'" />
           </div>
           <div v-show="xAxisOpen" class="cus-collapse-content">
             <el-form-item label="x轴字体" class="df-form-item">
@@ -470,17 +498,11 @@
 
           <div
             class="cus-collapse-header df-c-b"
-            style="margin-top: 12px;"
+            style="margin-top: 12px"
             @click="yAxisOpen = !yAxisOpen"
           >
             <span>Y轴字体</span>
-            <i
-              :class="
-                yAxisOpen
-                  ? 'el-icon-arrow-up'
-                  : 'el-icon-arrow-down'
-              "
-            />
+            <i :class="yAxisOpen ? 'el-icon-arrow-up' : 'el-icon-arrow-down'" />
           </div>
           <div v-show="yAxisOpen" class="cus-collapse-content">
             <el-form-item label="y轴字体" class="df-form-item">
@@ -564,7 +586,8 @@
                   reLoadChart();
                 }
               "
-            /> </el-form-item>
+            />
+          </el-form-item>
           <el-form-item
             v-if="component.defaultOption.spec.label.visible"
             label="字体大小"
@@ -644,10 +667,13 @@
           >
             <input-color-picker
               :input-width="140"
-              :value="component.defaultOption.spec.legends.item.label.style.fill"
+              :value="
+                component.defaultOption.spec.legends.item.label.style.fill
+              "
               @change="
                 (val) => {
-                  component.defaultOption.spec.legends.item.label.style.fill = val;
+                  component.defaultOption.spec.legends.item.label.style.fill =
+                    val;
                   reLoadChart();
                 }
               "
@@ -655,7 +681,6 @@
           </el-form-item>
         </el-collapse-item>
       </el-collapse>
-
     </el-form>
     <el-dialog
       title="添加"
@@ -718,7 +743,13 @@ export default {
   },
   data() {
     return {
-      formCollapse: ['generalConfig', 'chartStyle', 'xAndYAxis', 'labelSet', 'legendSet'],
+      formCollapse: [
+        'generalConfig',
+        'chartStyle',
+        'xAndYAxis',
+        'labelSet',
+        'legendSet'
+      ],
       dataSetOpen: true,
       setWidthAndHeightOpen: true,
       xAxisOpen: true,
@@ -970,6 +1001,7 @@ export default {
     padding-bottom: 0;
   }
 }
+
 .df-form-item {
   display: flex;
   margin-right: 0;
@@ -978,14 +1010,14 @@ export default {
     flex-shrink: 0;
     width: 80px;
   }
-  ::v-deep .el-form-item__content{
+  ::v-deep .el-form-item__content {
     flex: 1;
   }
 }
- .cus-color-picker{
-    ::v-deep .el-input{
-        width: 100% !important;
-    }
+.cus-color-picker {
+  ::v-deep .el-input {
+    width: 100% !important;
+  }
 }
 
 ::v-deep .el-form-item {
