@@ -48,7 +48,7 @@
   height: 60px;
   top: 0;
   z-index: 9;
-  position: fixed;
+  /* position: fixed; */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -741,10 +741,10 @@
 
 ::v-deep .catalog {
   width: 250px;
-  position: fixed;
+  position: relative;
   /* left: 0; */
   bottom: 0;
-  top: 100px;
+  top: 10px;
   padding: 0 20px 40px 20px;
 }
 
