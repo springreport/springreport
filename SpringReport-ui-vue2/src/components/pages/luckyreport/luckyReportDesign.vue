@@ -1218,8 +1218,8 @@
 
         </el-form>
 
-        <div class="df" style="width: 100%;">
-          <div class="variable-content">
+        <div class="df" style="width: 100%;border: 1px solid #e8e8e8;">
+          <div v-show="selectVariableOpen" class="variable-content">
             <div class="variable-title">选择变量</div>
             <div class="variable-warp">
               <div class="variable-warp-title">系统变量</div>
@@ -1290,6 +1290,23 @@
             </div>
           </div>
           <div class="sql-content">
+            <div
+              class="left-action action-icon df-c-b"
+              @click="switchOpenSelectVarPanel()"
+            >
+              <img
+                v-if="selectVariableOpen"
+                src="@/static/img/sheet/left.png"
+                width="8px"
+                height="8px"
+              >
+              <img
+                v-else
+                src="@/static/img/sheet/right.png"
+                width="8px"
+                height="8px"
+              >
+            </div>
             <div v-if="datasourceType == 1" style="height: 25px">
               <el-tooltip
                 content="该操作将执行sql语句并校验sql语句的正确性，并将查询字段全部显示到下方的表格中"
@@ -1343,9 +1360,9 @@
                 <codemirror ref="codeMirror" :options="cmOptions" />
               </div>
             </div>
-            <div style="height: 1px" />
-            <div>
+            <div class="table-warp">
               <!--表格 start-->
+              <div class="table-title">执行结果</div>
               <el-table
                 :data="
                   sqlColumnTableData.tableData.slice(
@@ -1362,6 +1379,12 @@
                 height="230px"
                 :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
               >
+                <el-table-column width="72" label="序号" align="center">
+                  <template slot-scope="scope">
+                    <span>{{ (sqlColumnTableData.tablePage.currentPage- 1) * sqlColumnTableData.tablePage.pageSize + scope.$index + 1 }}</span>
+                  </template>
+                </el-table-column>
+
                 <el-table-column prop="columnName" label="列名" align="center" />
                 <el-table-column prop="name" label="别名" align="center" />
                 <el-table-column prop="dataType" label="数据类型" align="center" />
@@ -1384,370 +1407,370 @@
         </div>
 
       </div>
-      <div v-show="addDatasetType == 2">
-        <div v-show="sqlForm.sqlType == '1' || datasourceType == 2">
-          <el-divider
-            v-if="datasourceType == 1 || datasourceType == 2"
-            content-position="left"
-          >分页参数</el-divider>
-          <el-form
-            ref="paginationRef"
-            :inline="true"
-            :model="paginationForm"
-            class="demo-form-inline"
-          >
-            <el-form-item
-              v-if="datasourceType == 1 || datasourceType == 2"
-              label="是否分页"
-              prop="isPagination"
+      <div v-show="addDatasetType == 2" class="parameter-content">
+        <div v-show="sqlForm.sqlType == '1' || datasourceType == 2" style="margin-bottom:20px">
+          <div class="parameter-warp">
+            <div v-if="datasourceType == 1 || datasourceType == 2" class="warp-title">分页参数</div>
+            <el-form
+              ref="paginationRef"
+              :inline="true"
+              :model="paginationForm"
+              class="demo-form-inline"
             >
-              <el-select
-                v-model="paginationForm.isPagination"
-                placeholder="是否分页"
-                size="small"
+              <el-form-item
+                v-if="datasourceType == 1 || datasourceType == 2"
+                label="是否分页"
+                prop="isPagination"
               >
-                <el-option label="是" :value="1" />
-                <el-option label="否" :value="2" />
-              </el-select>
-            </el-form-item>
-            <el-form-item
-              v-if="paginationForm.isPagination == '1'"
-              label="每页条数"
-              prop="pageCount"
-              :rules="filter_rules('每页条数', { required: true })"
-            >
-              <!-- <el-input v-model="paginationForm.pageCount" placeholder="每页条数" size="small"></el-input> -->
-              <el-select
-                v-model="paginationForm.pageCount"
-                placeholder="请选择"
-                size="small"
+                <el-select
+                  v-model="paginationForm.isPagination"
+                  placeholder="是否分页"
+                  size="small"
+                >
+                  <el-option label="是" :value="1" />
+                  <el-option label="否" :value="2" />
+                </el-select>
+              </el-form-item>
+              <el-form-item
+                v-if="paginationForm.isPagination == '1'"
+                label="每页条数"
+                prop="pageCount"
+                :rules="filter_rules('每页条数', { required: true })"
               >
-                <el-option
-                  v-for="item in selectUtil.pageCount"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                <!-- <el-input v-model="paginationForm.pageCount" placeholder="每页条数" size="small"></el-input> -->
+                <el-select
+                  v-model="paginationForm.pageCount"
+                  placeholder="请选择"
+                  size="small"
+                >
+                  <el-option
+                    v-for="item in selectUtil.pageCount"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </el-form-item>
+              <el-form-item
+                v-if="paginationForm.isPagination == '1' && datasourceType == 2"
+                label="当前页参数属性"
+                prop="currentPageAttr"
+                :rules="filter_rules('当前页参数属性', { required: true })"
+              >
+                <el-input
+                  v-model="paginationForm.currentPageAttr"
+                  placeholder="当前页参数属性"
+                  size="small"
                 />
-              </el-select>
-            </el-form-item>
-            <el-form-item
-              v-if="paginationForm.isPagination == '1' && datasourceType == 2"
-              label="当前页参数属性"
-              prop="currentPageAttr"
-              :rules="filter_rules('当前页参数属性', { required: true })"
-            >
-              <el-input
-                v-model="paginationForm.currentPageAttr"
-                placeholder="当前页参数属性"
-                size="small"
-              />
-            </el-form-item>
-            <el-form-item
-              v-if="paginationForm.isPagination == '1' && datasourceType == 2"
-              label="每页条数参数属性"
-              prop="pageCountAttr"
-              :rules="filter_rules('每页条数参数属性', { required: true })"
-            >
-              <el-input
-                v-model="paginationForm.pageCountAttr"
-                placeholder="每页条数参数属性"
-                size="small"
-              />
-            </el-form-item>
-            <el-form-item
-              v-if="paginationForm.isPagination == '1' && datasourceType == 2"
-              label="总条数属性"
-              prop="totalAttr"
-              :rules="filter_rules('总条数条数属性', { required: true })"
-            >
-              <el-input
-                v-model="paginationForm.totalAttr"
-                placeholder="总条数属性"
-                size="small"
-              />
-            </el-form-item>
-          </el-form>
+              </el-form-item>
+              <el-form-item
+                v-if="paginationForm.isPagination == '1' && datasourceType == 2"
+                label="每页条数参数属性"
+                prop="pageCountAttr"
+                :rules="filter_rules('每页条数参数属性', { required: true })"
+              >
+                <el-input
+                  v-model="paginationForm.pageCountAttr"
+                  placeholder="每页条数参数属性"
+                  size="small"
+                />
+              </el-form-item>
+              <el-form-item
+                v-if="paginationForm.isPagination == '1' && datasourceType == 2"
+                label="总条数属性"
+                prop="totalAttr"
+                :rules="filter_rules('总条数条数属性', { required: true })"
+              >
+                <el-input
+                  v-model="paginationForm.totalAttr"
+                  placeholder="总条数属性"
+                  size="small"
+                />
+              </el-form-item>
+            </el-form>
+          </div>
         </div>
-        <div v-show="sqlForm.sqlType == 1 || datasourceType == 2">
-          <el-divider content-position="left">字段参数</el-divider>
-          <el-form
-            ref="paramRef"
-            :inline="true"
-            :model="paramForm"
-            class="demo-form-inline"
-          >
-            <el-form-item
-              label="参数名称"
-              prop="paramName"
-              :rules="filter_rules('参数名称', { required: true })"
+        <div v-show="sqlForm.sqlType == 1 || datasourceType == 2" style="margin-bottom:20px">
+          <div class="parameter-warp">
+            <div class="warp-title">字段参数</div>
+            <el-form
+              ref="paramRef"
+              :inline="true"
+              :model="paramForm"
+              class="demo-form-inline"
             >
-              <el-input
-                v-model="paramForm.paramName"
-                placeholder="参数名称"
-                size="small"
-              />
-            </el-form-item>
-            <el-form-item
-              label="参数编码"
-              prop="paramCode"
-              :rules="filter_rules('参数编码', { required: true })"
-            >
-              <el-input
-                v-model="paramForm.paramCode"
-                placeholder="参数编码"
-                size="small"
-              />
-            </el-form-item>
-            <el-form-item
-              v-if="datasourceType == 2"
-              label="参数前缀"
-              prop="paramPrefix"
-              :rules="filter_rules('参数前缀', { required: false })"
-            >
-              <el-input
-                v-model="paramForm.paramPrefix"
-                placeholder="参数前缀"
-                size="small"
-              />
-            </el-form-item>
-            <el-form-item
-              label="参数类型"
-              prop="paramType"
-              :rules="filter_rules('参数类型', { required: true })"
-            >
-              <el-select
-                v-model="paramForm.paramType"
-                placeholder="参数类型"
-                size="small"
+              <el-form-item
+                label="参数名称"
+                prop="paramName"
+                :rules="filter_rules('参数名称', { required: true })"
               >
-                <el-option label="字符串" value="varchar" />
-                <el-option label="数值" value="number" />
-                <el-option label="日期" value="date" />
-                <el-option label="下拉单选" value="select" />
-                <el-option label="下拉多选" value="mutiselect" />
-                <el-option label="下拉树(单选)" value="treeSelect" />
-                <el-option label="下拉树(多选)" value="multiTreeSelect" />
-              </el-select>
-            </el-form-item>
-            <el-form-item
-              v-if="paramForm.paramType == 'date'"
-              label="日期格式"
-              prop="dateFormat"
-              :rules="filter_rules('日期格式', { required: false })"
-            >
-              <el-select
-                v-model="paramForm.dateFormat"
-                placeholder="日期格式"
-                size="small"
-              >
-                <el-option label="年" value="yyyy" />
-                <el-option label="年-月" value="yyyy-MM" />
-                <el-option label="年-月-日" value="yyyy-MM-dd" />
-                <el-option label="年-月-日 时:分" value="yyyy-MM-dd HH:mm" />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="默认值" prop="paramDefault">
-              <el-input
-                v-model="paramForm.paramDefault"
-                placeholder="默认值"
-                size="small"
-              />
-            </el-form-item>
-            <el-form-item
-              label="是否必填"
-              prop="paramRequired"
-              :rules="filter_rules('是否必填', { required: true })"
-            >
-              <el-select
-                v-model="paramForm.paramRequired"
-                placeholder="是否必填"
-                size="small"
-              >
-                <el-option label="是" value="1" />
-                <el-option label="否" value="2" />
-              </el-select>
-            </el-form-item>
-            <el-form-item
-              key="paramHidden"
-              label="是否隐藏"
-              prop="paramHidden"
-              :rules="filter_rules('是否隐藏', { required: true })"
-            >
-              <el-select
-                v-model="paramForm.paramHidden"
-                placeholder="是否隐藏"
-                size="small"
-              >
-                <el-option label="是" value="1" />
-                <el-option label="否" value="2" />
-              </el-select>
-            </el-form-item>
-            <el-form-item
-              v-if="
-                paramForm.paramType == 'select' ||
-                  paramForm.paramType == 'mutiselect'
-              "
-              key="selectType"
-              label="选择内容来源"
-              prop="selectType"
-              :rules="filter_rules('选择内容来源', { required: true })"
-            >
-              <el-select
-                v-model="paramForm.selectType"
-                placeholder="选择内容来源"
-                size="small"
-              >
-                <el-option label="自定义" value="1" />
-                <el-option label="sql语句" value="2" />
-              </el-select>
-            </el-form-item>
-            <el-form-item
-              v-if="
-                (paramForm.paramType == 'select' &&
-                  paramForm.selectType == '2') ||
-                  (paramForm.paramType == 'mutiselect' &&
-                    paramForm.selectType == '2') ||
-                  paramForm.paramType == 'treeSelect' ||
-                  paramForm.paramType == 'multiTreeSelect'
-              "
-              label="选择数据源"
-              prop="datasourceId"
-              :rules="filter_rules('选择数据源', { required: true })"
-            >
-              <el-select
-                v-model="paramForm.datasourceId"
-                placeholder="选择数据源"
-                size="small"
-              >
-                <el-option
-                  v-for="op in dataSource"
-                  :key="op.datasourceId"
-                  :label="op.dataSourceName"
-                  :value="op.datasourceId"
+                <el-input
+                  v-model="paramForm.paramName"
+                  placeholder="参数名称"
+                  size="small"
                 />
-              </el-select>
-            </el-form-item>
-            <el-form-item
-              v-if="
-                paramForm.paramType == 'select' && paramForm.selectType == '2'
-              "
-              key="isRelyOnParams"
-              label="是否依赖其他参数"
-              prop="isRelyOnParams"
-              :rules="filter_rules('是否依赖其他参数', { required: true })"
-            >
-              <el-select
-                v-model="paramForm.isRelyOnParams"
-                placeholder="是否依赖其他参数"
-                size="small"
+              </el-form-item>
+              <el-form-item
+                label="参数编码"
+                prop="paramCode"
+                :rules="filter_rules('参数编码', { required: true })"
               >
-                <el-option label="是" value="1" />
-                <el-option label="否" value="2" />
-              </el-select>
-            </el-form-item>
-            <el-form-item
-              v-if="
-                paramForm.paramType == 'select' &&
-                  paramForm.selectType == '2' &&
-                  paramForm.isRelyOnParams == '1'
-              "
-              key="relyOnParams"
-              label="依赖参数代码"
-              prop="relyOnParams"
-              :rules="filter_rules('依赖参数代码', { required: true })"
-            >
-              <el-input
-                v-model="paramForm.relyOnParams"
-                placeholder="依赖参数代码"
-                size="small"
-              />
-            </el-form-item>
-            <el-form-item
-              v-if="paramForm.paramType == 'multiTreeSelect'"
-              key="checkStrictly"
-              label="父子联动"
-              prop="checkStrictly"
-              :rules="filter_rules('父子联动', { required: true })"
-            >
-              <el-select
-                v-model="paramForm.checkStrictly"
-                placeholder="选择父子联动"
-                size="small"
+                <el-input
+                  v-model="paramForm.paramCode"
+                  placeholder="参数编码"
+                  size="small"
+                />
+              </el-form-item>
+              <el-form-item
+                v-if="datasourceType == 2"
+                label="参数前缀"
+                prop="paramPrefix"
+                :rules="filter_rules('参数前缀', { required: false })"
               >
-                <el-option label="是" value="1" />
-                <el-option label="否" value="2" />
-              </el-select>
-            </el-form-item>
-            <el-form-item
-              v-if="
-                paramForm.paramType == 'select' ||
-                  paramForm.paramType == 'mutiselect' ||
-                  paramForm.paramType == 'treeSelect' ||
-                  paramForm.paramType == 'multiTreeSelect'
-              "
-              key="selectContent"
-              label="下拉选择内容"
-              prop="selectContent"
-              :rules="filter_rules('下拉选择内容', { required: true })"
-            >
-              <el-input
-                v-model="paramForm.selectContent"
-                type="textarea"
-                :cols="80"
-                placeholder="下拉选择内容"
-                size="small"
-              />
-              <div class="sub-title">{{ selectContentSuggestion }}</div>
-            </el-form-item>
+                <el-input
+                  v-model="paramForm.paramPrefix"
+                  placeholder="参数前缀"
+                  size="small"
+                />
+              </el-form-item>
+              <el-form-item
+                label="参数类型"
+                prop="paramType"
+                :rules="filter_rules('参数类型', { required: true })"
+              >
+                <el-select
+                  v-model="paramForm.paramType"
+                  placeholder="参数类型"
+                  size="small"
+                >
+                  <el-option label="字符串" value="varchar" />
+                  <el-option label="数值" value="number" />
+                  <el-option label="日期" value="date" />
+                  <el-option label="下拉单选" value="select" />
+                  <el-option label="下拉多选" value="mutiselect" />
+                  <el-option label="下拉树(单选)" value="treeSelect" />
+                  <el-option label="下拉树(多选)" value="multiTreeSelect" />
+                </el-select>
+              </el-form-item>
+              <el-form-item
+                v-if="paramForm.paramType == 'date'"
+                label="日期格式"
+                prop="dateFormat"
+                :rules="filter_rules('日期格式', { required: false })"
+              >
+                <el-select
+                  v-model="paramForm.dateFormat"
+                  placeholder="日期格式"
+                  size="small"
+                >
+                  <el-option label="年" value="yyyy" />
+                  <el-option label="年-月" value="yyyy-MM" />
+                  <el-option label="年-月-日" value="yyyy-MM-dd" />
+                  <el-option label="年-月-日 时:分" value="yyyy-MM-dd HH:mm" />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="默认值" prop="paramDefault">
+                <el-input
+                  v-model="paramForm.paramDefault"
+                  placeholder="默认值"
+                  size="small"
+                />
+              </el-form-item>
+              <el-form-item
+                label="是否必填"
+                prop="paramRequired"
+                :rules="filter_rules('是否必填', { required: true })"
+              >
+                <el-select
+                  v-model="paramForm.paramRequired"
+                  placeholder="是否必填"
+                  size="small"
+                >
+                  <el-option label="是" value="1" />
+                  <el-option label="否" value="2" />
+                </el-select>
+              </el-form-item>
+              <el-form-item
+                key="paramHidden"
+                label="是否隐藏"
+                prop="paramHidden"
+                :rules="filter_rules('是否隐藏', { required: true })"
+              >
+                <el-select
+                  v-model="paramForm.paramHidden"
+                  placeholder="是否隐藏"
+                  size="small"
+                >
+                  <el-option label="是" value="1" />
+                  <el-option label="否" value="2" />
+                </el-select>
+              </el-form-item>
+              <el-form-item
+                v-if="
+                  paramForm.paramType == 'select' ||
+                    paramForm.paramType == 'mutiselect'
+                "
+                key="selectType"
+                label="选择内容来源"
+                prop="selectType"
+                :rules="filter_rules('选择内容来源', { required: true })"
+              >
+                <el-select
+                  v-model="paramForm.selectType"
+                  placeholder="选择内容来源"
+                  size="small"
+                >
+                  <el-option label="自定义" value="1" />
+                  <el-option label="sql语句" value="2" />
+                </el-select>
+              </el-form-item>
+              <el-form-item
+                v-if="
+                  (paramForm.paramType == 'select' &&
+                    paramForm.selectType == '2') ||
+                    (paramForm.paramType == 'mutiselect' &&
+                      paramForm.selectType == '2') ||
+                    paramForm.paramType == 'treeSelect' ||
+                    paramForm.paramType == 'multiTreeSelect'
+                "
+                label="选择数据源"
+                prop="datasourceId"
+                :rules="filter_rules('选择数据源', { required: true })"
+              >
+                <el-select
+                  v-model="paramForm.datasourceId"
+                  placeholder="选择数据源"
+                  size="small"
+                >
+                  <el-option
+                    v-for="op in dataSource"
+                    :key="op.datasourceId"
+                    :label="op.dataSourceName"
+                    :value="op.datasourceId"
+                  />
+                </el-select>
+              </el-form-item>
+              <el-form-item
+                v-if="
+                  paramForm.paramType == 'select' && paramForm.selectType == '2'
+                "
+                key="isRelyOnParams"
+                label="是否依赖其他参数"
+                prop="isRelyOnParams"
+                :rules="filter_rules('是否依赖其他参数', { required: true })"
+              >
+                <el-select
+                  v-model="paramForm.isRelyOnParams"
+                  placeholder="是否依赖其他参数"
+                  size="small"
+                >
+                  <el-option label="是" value="1" />
+                  <el-option label="否" value="2" />
+                </el-select>
+              </el-form-item>
+              <el-form-item
+                v-if="
+                  paramForm.paramType == 'select' &&
+                    paramForm.selectType == '2' &&
+                    paramForm.isRelyOnParams == '1'
+                "
+                key="relyOnParams"
+                label="依赖参数代码"
+                prop="relyOnParams"
+                :rules="filter_rules('依赖参数代码', { required: true })"
+              >
+                <el-input
+                  v-model="paramForm.relyOnParams"
+                  placeholder="依赖参数代码"
+                  size="small"
+                />
+              </el-form-item>
+              <el-form-item
+                v-if="paramForm.paramType == 'multiTreeSelect'"
+                key="checkStrictly"
+                label="父子联动"
+                prop="checkStrictly"
+                :rules="filter_rules('父子联动', { required: true })"
+              >
+                <el-select
+                  v-model="paramForm.checkStrictly"
+                  placeholder="选择父子联动"
+                  size="small"
+                >
+                  <el-option label="是" value="1" />
+                  <el-option label="否" value="2" />
+                </el-select>
+              </el-form-item>
+              <el-form-item
+                v-if="
+                  paramForm.paramType == 'select' ||
+                    paramForm.paramType == 'mutiselect' ||
+                    paramForm.paramType == 'treeSelect' ||
+                    paramForm.paramType == 'multiTreeSelect'
+                "
+                key="selectContent"
+                label="下拉选择内容"
+                prop="selectContent"
+                :rules="filter_rules('下拉选择内容', { required: true })"
+              >
+                <el-input
+                  v-model="paramForm.selectContent"
+                  type="textarea"
+                  :cols="80"
+                  placeholder="下拉选择内容"
+                  size="small"
+                />
+                <div class="sub-title">{{ selectContentSuggestion }}</div>
+              </el-form-item>
 
-            <el-form-item>
-              <el-button
-                type="primary"
-                size="small"
-                @click="addParam"
-              >添加</el-button>
-            </el-form-item>
-            <el-tag
-              v-if="paramForm.paramType == 'date'"
-              type="warning"
-            >注：当参数类型选择日期时，如果想让默认日期是当前日期，则默认值填写current或者CURRENT，如果想让默认日期是当前日期的天几天或者后几天，则填天数，例如前七天则填写-7，后七天则填写7。</el-tag>
-            <el-tag
-              v-if="
-                paramForm.paramType == 'select' ||
-                  paramForm.paramType == 'mutiselect'
-              "
-              type="warning"
-            >自定义数据格式：[{"value":"value1","name":"name1"},{"value":"value2","name":"name2"}]
-              注意：两个key必须是value 和 name</el-tag><br
-              v-if="
-                paramForm.paramType == 'select' ||
-                  paramForm.paramType == 'mutiselect'
-              "
-            >
-            <el-tag
-              v-if="
-                paramForm.paramType == 'select' ||
-                  paramForm.paramType == 'mutiselect'
-              "
-              type="warning"
-            >sql语句格式：select code as value, name as name from table
-              注意：返回的属性中必须有 value 和 name</el-tag>
-            <el-tag
-              v-if="
-                paramForm.paramType == 'treeSelect' ||
-                  paramForm.paramType == 'multiTreeSelect'
-              "
-              type="warning"
-            >sql语句格式：select deptId as id, deptName as name,parentId as
-              pid from table 注意：返回的属性中必须有 id,name和pid</el-tag>
-          </el-form>
-          <div style="height: 2px" />
+              <el-form-item>
+                <el-button
+                  type="primary"
+                  size="small"
+                  @click="addParam"
+                >添加</el-button>
+              </el-form-item>
+              <el-tag
+                v-if="paramForm.paramType == 'date'"
+                type="warning"
+              >注：当参数类型选择日期时，如果想让默认日期是当前日期，则默认值填写current或者CURRENT，如果想让默认日期是当前日期的天几天或者后几天，则填天数，例如前七天则填写-7，后七天则填写7。</el-tag>
+              <el-tag
+                v-if="
+                  paramForm.paramType == 'select' ||
+                    paramForm.paramType == 'mutiselect'
+                "
+                type="warning"
+              >自定义数据格式：[{"value":"value1","name":"name1"},{"value":"value2","name":"name2"}]
+                注意：两个key必须是value 和 name</el-tag><br
+                v-if="
+                  paramForm.paramType == 'select' ||
+                    paramForm.paramType == 'mutiselect'
+                "
+              >
+              <el-tag
+                v-if="
+                  paramForm.paramType == 'select' ||
+                    paramForm.paramType == 'mutiselect'
+                "
+                type="warning"
+              >sql语句格式：select code as value, name as name from table
+                注意：返回的属性中必须有 value 和 name</el-tag>
+              <el-tag
+                v-if="
+                  paramForm.paramType == 'treeSelect' ||
+                    paramForm.paramType == 'multiTreeSelect'
+                "
+                type="warning"
+              >sql语句格式：select deptId as id, deptName as name,parentId as
+                pid from table 注意：返回的属性中必须有 id,name和pid</el-tag>
+            </el-form>
+          </div>
           <div style="height: 50%">
             <!--表格 start-->
             <el-table
               :data="paramTableData.tableData"
               border
-              style="width: 98%"
+              style="width: 100%"
               align="center"
               size="small"
               height="230px"
@@ -1792,7 +1815,7 @@
                 label="依赖参数"
                 align="center"
               />
-              <el-table-column label="操作" align="center">
+              <el-table-column label="操作" align="center" width="200">
                 <template slot-scope="scope">
                   <el-button
                     type="text"
@@ -1820,244 +1843,246 @@
             <!--表格 end-->
           </div>
         </div>
-        <div v-show="sqlForm.sqlType == 2 && datasourceType == 1">
-          <el-divider content-position="left">输入参数</el-divider>
-          <el-form
-            ref="inParamRef"
-            :inline="true"
-            :model="procedureParamForm"
-            class="demo-form-inline"
-            size="small"
-          >
-            <el-form-item
-              label="参数名称"
-              prop="paramName"
-              :rules="filter_rules('参数名称', { required: true })"
+        <div v-show="sqlForm.sqlType == 2 && datasourceType == 1" style="margin-bottom:20px">
+          <div class="parameter-warp">
+            <div class="warp-title">输入参数</div>
+            <el-form
+              ref="inParamRef"
+              :inline="true"
+              :model="procedureParamForm"
+              class="demo-form-inline"
+              size="small"
             >
-              <el-input
-                v-model="procedureParamForm.paramName"
-                placeholder="参数名称"
-              />
-            </el-form-item>
-            <el-form-item
-              label="参数编码"
-              prop="paramCode"
-              :rules="filter_rules('参数编码', { required: true })"
-            >
-              <el-input
-                v-model="procedureParamForm.paramCode"
-                placeholder="参数编码"
-              />
-            </el-form-item>
-            <el-form-item
-              label="参数类型"
-              prop="paramType"
-              :rules="filter_rules('参数类型', { required: true })"
-            >
-              <el-select
-                v-model="procedureParamForm.paramType"
-                placeholder="参数类型"
+              <el-form-item
+                label="参数名称"
+                prop="paramName"
+                :rules="filter_rules('参数名称', { required: true })"
               >
-                <el-option label="int" value="int" />
-                <el-option label="String" value="String" />
-                <el-option label="Long" value="Long" />
-                <el-option label="BigDecimal" value="BigDecimal" />
-                <el-option label="Double" value="Double" />
-                <el-option label="Float" value="Float" />
-                <el-option label="Date" value="Date" />
-                <el-option label="DateTime" value="DateTime" />
-              </el-select>
-            </el-form-item>
-            <el-form-item
-              label="默认值"
-              prop="paramDefault"
-              :rules="filter_rules('默认值', { required: false })"
-            >
-              <el-input
-                v-model="procedureParamForm.paramDefault"
-                placeholder="默认值"
-              />
-            </el-form-item>
-            <el-form-item
-              label="是否必填"
-              prop="paramRequired"
-              :rules="filter_rules('是否必填', { required: true })"
-            >
-              <el-select
-                v-model="procedureParamForm.paramRequired"
-                placeholder="是否必填"
-                size="small"
-              >
-                <el-option label="是" value="1" />
-                <el-option label="否" value="2" />
-              </el-select>
-            </el-form-item>
-            <el-form-item
-              v-if="
-                procedureParamForm.paramType != 'Date' &&
-                  procedureParamForm.paramType != 'DateTime'
-              "
-              label="组件类型"
-              prop="componentType"
-              :rules="filter_rules('组件类型', { required: true })"
-            >
-              <el-select
-                v-model="procedureParamForm.componentType"
-                placeholder="组件类型"
-              >
-                <el-option label="输入框" value="input" />
-                <el-option label="下拉单选" value="select" />
-                <el-option label="下拉多选" value="mutiselect" />
-                <el-option label="下拉树(单选)" value="treeSelect" />
-                <el-option label="下拉树(多选)" value="multiTreeSelect" />
-              </el-select>
-            </el-form-item>
-            <el-form-item
-              v-if="
-                procedureParamForm.paramType != 'Date' &&
-                  procedureParamForm.paramType != 'DateTime' &&
-                  (procedureParamForm.componentType == 'select' ||
-                    procedureParamForm.componentType == 'mutiselect')
-              "
-              key="selectType"
-              label="选择内容来源"
-              prop="selectType"
-              :rules="filter_rules('选择内容来源', { required: true })"
-            >
-              <el-select
-                v-model="procedureParamForm.selectType"
-                placeholder="选择内容来源"
-                size="small"
-              >
-                <el-option label="自定义" value="1" />
-                <el-option label="sql语句" value="2" />
-              </el-select>
-            </el-form-item>
-            <el-form-item
-              v-if="
-                procedureParamForm.paramType != 'Date' &&
-                  procedureParamForm.paramType != 'DateTime' &&
-                  ((procedureParamForm.componentType == 'select' &&
-                    procedureParamForm.selectType == '2') ||
-                    (procedureParamForm.componentType == 'mutiselect' &&
-                      procedureParamForm.selectType == '2') ||
-                    procedureParamForm.componentType == 'treeSelect' ||
-                    procedureParamForm.componentType == 'multiTreeSelect')
-              "
-              label="选择数据源"
-              prop="datasourceId"
-              :rules="filter_rules('选择数据源', { required: true })"
-            >
-              <el-select
-                v-model="procedureParamForm.datasourceId"
-                placeholder="选择数据源"
-                size="small"
-              >
-                <el-option
-                  v-for="op in dataSource"
-                  :key="op.datasourceId"
-                  :label="op.dataSourceName"
-                  :value="op.datasourceId"
+                <el-input
+                  v-model="procedureParamForm.paramName"
+                  placeholder="参数名称"
                 />
-              </el-select>
-            </el-form-item>
-            <el-form-item
-              v-if="
-                procedureParamForm.paramType != 'Date' &&
-                  procedureParamForm.paramType != 'DateTime' &&
-                  procedureParamForm.componentType == 'select' &&
-                  procedureParamForm.selectType == '2'
-              "
-              key="isRelyOnParams"
-              label="是否依赖其他参数"
-              prop="isRelyOnParams"
-              :rules="filter_rules('是否依赖其他参数', { required: true })"
-            >
-              <el-select
-                v-model="procedureParamForm.isRelyOnParams"
-                placeholder="是否依赖其他参数"
-                size="small"
+              </el-form-item>
+              <el-form-item
+                label="参数编码"
+                prop="paramCode"
+                :rules="filter_rules('参数编码', { required: true })"
               >
-                <el-option label="是" value="1" />
-                <el-option label="否" value="2" />
-              </el-select>
-            </el-form-item>
-            <el-form-item
-              v-if="
-                procedureParamForm.paramType != 'Date' &&
-                  procedureParamForm.paramType != 'DateTime' &&
-                  procedureParamForm.componentType == 'multiTreeSelect'
-              "
-              key="checkStrictly"
-              label="父子联动"
-              prop="checkStrictly"
-              :rules="filter_rules('父子联动', { required: true })"
-            >
-              <el-select
-                v-model="procedureParamForm.checkStrictly"
-                placeholder="选择父子联动"
-                size="small"
+                <el-input
+                  v-model="procedureParamForm.paramCode"
+                  placeholder="参数编码"
+                />
+              </el-form-item>
+              <el-form-item
+                label="参数类型"
+                prop="paramType"
+                :rules="filter_rules('参数类型', { required: true })"
               >
-                <el-option label="是" value="1" />
-                <el-option label="否" value="2" />
-              </el-select>
-            </el-form-item>
-            <el-form-item
-              v-if="
-                procedureParamForm.paramType != 'Date' &&
-                  procedureParamForm.paramType != 'DateTime' &&
-                  (procedureParamForm.componentType == 'select' ||
-                    procedureParamForm.componentType == 'mutiselect' ||
-                    procedureParamForm.componentType == 'treeSelect' ||
-                    procedureParamForm.componentType == 'multiTreeSelect')
-              "
-              key="selectContent"
-              label="下拉选择内容"
-              prop="selectContent"
-              :rules="filter_rules('下拉选择内容', { required: true })"
-            >
-              <el-input
-                v-model="procedureParamForm.selectContent"
-                type="textarea"
-                :cols="80"
-                placeholder="下拉选择内容"
-                size="small"
-              />
-              <div class="sub-title">{{ selectContentSuggestion }}</div>
-            </el-form-item>
-            <el-form-item
-              v-if="procedureParamForm.paramType == 'Date'"
-              label="日期格式"
-              prop="dateFormat"
-              :rules="filter_rules('日期格式', { required: false })"
-            >
-              <el-select
-                v-model="procedureParamForm.dateFormat"
-                placeholder="日期格式"
-                size="small"
+                <el-select
+                  v-model="procedureParamForm.paramType"
+                  placeholder="参数类型"
+                >
+                  <el-option label="int" value="int" />
+                  <el-option label="String" value="String" />
+                  <el-option label="Long" value="Long" />
+                  <el-option label="BigDecimal" value="BigDecimal" />
+                  <el-option label="Double" value="Double" />
+                  <el-option label="Float" value="Float" />
+                  <el-option label="Date" value="Date" />
+                  <el-option label="DateTime" value="DateTime" />
+                </el-select>
+              </el-form-item>
+              <el-form-item
+                label="默认值"
+                prop="paramDefault"
+                :rules="filter_rules('默认值', { required: false })"
               >
-                <el-option label="年" value="yyyy" />
-                <el-option label="年-月" value="yyyy-MM" />
-                <el-option label="年-月-日" value="yyyy-MM-dd" />
-              </el-select>
-            </el-form-item>
-            <el-form-item
-              label="是否隐藏"
-              prop="paramHidden"
-              :rules="filter_rules('是否隐藏', { required: true })"
-            >
-              <el-select
-                v-model="procedureParamForm.paramHidden"
-                placeholder="是否隐藏"
+                <el-input
+                  v-model="procedureParamForm.paramDefault"
+                  placeholder="默认值"
+                />
+              </el-form-item>
+              <el-form-item
+                label="是否必填"
+                prop="paramRequired"
+                :rules="filter_rules('是否必填', { required: true })"
               >
-                <el-option label="是" value="1" />
-                <el-option label="否" value="2" />
-              </el-select>
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" @click="addInParam">添加</el-button>
-            </el-form-item>
-          </el-form>
+                <el-select
+                  v-model="procedureParamForm.paramRequired"
+                  placeholder="是否必填"
+                  size="small"
+                >
+                  <el-option label="是" value="1" />
+                  <el-option label="否" value="2" />
+                </el-select>
+              </el-form-item>
+              <el-form-item
+                v-if="
+                  procedureParamForm.paramType != 'Date' &&
+                    procedureParamForm.paramType != 'DateTime'
+                "
+                label="组件类型"
+                prop="componentType"
+                :rules="filter_rules('组件类型', { required: true })"
+              >
+                <el-select
+                  v-model="procedureParamForm.componentType"
+                  placeholder="组件类型"
+                >
+                  <el-option label="输入框" value="input" />
+                  <el-option label="下拉单选" value="select" />
+                  <el-option label="下拉多选" value="mutiselect" />
+                  <el-option label="下拉树(单选)" value="treeSelect" />
+                  <el-option label="下拉树(多选)" value="multiTreeSelect" />
+                </el-select>
+              </el-form-item>
+              <el-form-item
+                v-if="
+                  procedureParamForm.paramType != 'Date' &&
+                    procedureParamForm.paramType != 'DateTime' &&
+                    (procedureParamForm.componentType == 'select' ||
+                      procedureParamForm.componentType == 'mutiselect')
+                "
+                key="selectType"
+                label="选择内容来源"
+                prop="selectType"
+                :rules="filter_rules('选择内容来源', { required: true })"
+              >
+                <el-select
+                  v-model="procedureParamForm.selectType"
+                  placeholder="选择内容来源"
+                  size="small"
+                >
+                  <el-option label="自定义" value="1" />
+                  <el-option label="sql语句" value="2" />
+                </el-select>
+              </el-form-item>
+              <el-form-item
+                v-if="
+                  procedureParamForm.paramType != 'Date' &&
+                    procedureParamForm.paramType != 'DateTime' &&
+                    ((procedureParamForm.componentType == 'select' &&
+                      procedureParamForm.selectType == '2') ||
+                      (procedureParamForm.componentType == 'mutiselect' &&
+                        procedureParamForm.selectType == '2') ||
+                      procedureParamForm.componentType == 'treeSelect' ||
+                      procedureParamForm.componentType == 'multiTreeSelect')
+                "
+                label="选择数据源"
+                prop="datasourceId"
+                :rules="filter_rules('选择数据源', { required: true })"
+              >
+                <el-select
+                  v-model="procedureParamForm.datasourceId"
+                  placeholder="选择数据源"
+                  size="small"
+                >
+                  <el-option
+                    v-for="op in dataSource"
+                    :key="op.datasourceId"
+                    :label="op.dataSourceName"
+                    :value="op.datasourceId"
+                  />
+                </el-select>
+              </el-form-item>
+              <el-form-item
+                v-if="
+                  procedureParamForm.paramType != 'Date' &&
+                    procedureParamForm.paramType != 'DateTime' &&
+                    procedureParamForm.componentType == 'select' &&
+                    procedureParamForm.selectType == '2'
+                "
+                key="isRelyOnParams"
+                label="是否依赖其他参数"
+                prop="isRelyOnParams"
+                :rules="filter_rules('是否依赖其他参数', { required: true })"
+              >
+                <el-select
+                  v-model="procedureParamForm.isRelyOnParams"
+                  placeholder="是否依赖其他参数"
+                  size="small"
+                >
+                  <el-option label="是" value="1" />
+                  <el-option label="否" value="2" />
+                </el-select>
+              </el-form-item>
+              <el-form-item
+                v-if="
+                  procedureParamForm.paramType != 'Date' &&
+                    procedureParamForm.paramType != 'DateTime' &&
+                    procedureParamForm.componentType == 'multiTreeSelect'
+                "
+                key="checkStrictly"
+                label="父子联动"
+                prop="checkStrictly"
+                :rules="filter_rules('父子联动', { required: true })"
+              >
+                <el-select
+                  v-model="procedureParamForm.checkStrictly"
+                  placeholder="选择父子联动"
+                  size="small"
+                >
+                  <el-option label="是" value="1" />
+                  <el-option label="否" value="2" />
+                </el-select>
+              </el-form-item>
+              <el-form-item
+                v-if="
+                  procedureParamForm.paramType != 'Date' &&
+                    procedureParamForm.paramType != 'DateTime' &&
+                    (procedureParamForm.componentType == 'select' ||
+                      procedureParamForm.componentType == 'mutiselect' ||
+                      procedureParamForm.componentType == 'treeSelect' ||
+                      procedureParamForm.componentType == 'multiTreeSelect')
+                "
+                key="selectContent"
+                label="下拉选择内容"
+                prop="selectContent"
+                :rules="filter_rules('下拉选择内容', { required: true })"
+              >
+                <el-input
+                  v-model="procedureParamForm.selectContent"
+                  type="textarea"
+                  :cols="80"
+                  placeholder="下拉选择内容"
+                  size="small"
+                />
+                <div class="sub-title">{{ selectContentSuggestion }}</div>
+              </el-form-item>
+              <el-form-item
+                v-if="procedureParamForm.paramType == 'Date'"
+                label="日期格式"
+                prop="dateFormat"
+                :rules="filter_rules('日期格式', { required: false })"
+              >
+                <el-select
+                  v-model="procedureParamForm.dateFormat"
+                  placeholder="日期格式"
+                  size="small"
+                >
+                  <el-option label="年" value="yyyy" />
+                  <el-option label="年-月" value="yyyy-MM" />
+                  <el-option label="年-月-日" value="yyyy-MM-dd" />
+                </el-select>
+              </el-form-item>
+              <el-form-item
+                label="是否隐藏"
+                prop="paramHidden"
+                :rules="filter_rules('是否隐藏', { required: true })"
+              >
+                <el-select
+                  v-model="procedureParamForm.paramHidden"
+                  placeholder="是否隐藏"
+                >
+                  <el-option label="是" value="1" />
+                  <el-option label="否" value="2" />
+                </el-select>
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" @click="addInParam">添加</el-button>
+              </el-form-item>
+            </el-form>
+          </div>
           <el-tag
             v-if="
               procedureParamForm.paramType == 'Date' ||
@@ -2159,55 +2184,57 @@
             </el-table>
             <!--表格 end-->
           </div>
-          <el-divider content-position="left">输出参数</el-divider>
-          <el-form
-            ref="outParamRef"
-            :inline="true"
-            :model="procedureOutParamForm"
-            class="demo-form-inline"
-            size="small"
-          >
-            <el-form-item
-              label="参数名称"
-              prop="paramName"
-              :rules="filter_rules('参数名称', { required: true })"
+          <div class="parameter-warp">
+            <div class="warp-title">输出参数</div>
+            <el-form
+              ref="outParamRef"
+              :inline="true"
+              :model="procedureOutParamForm"
+              class="demo-form-inline"
+              size="small"
             >
-              <el-input
-                v-model="procedureOutParamForm.paramName"
-                placeholder="参数名称"
-              />
-            </el-form-item>
-            <el-form-item
-              label="参数编码"
-              prop="paramCode"
-              :rules="filter_rules('参数编码', { required: true })"
-            >
-              <el-input
-                v-model="procedureOutParamForm.paramCode"
-                placeholder="参数编码"
-              />
-            </el-form-item>
-            <el-form-item
-              label="参数类型"
-              prop="paramType"
-              :rules="filter_rules('参数类型', { required: true })"
-            >
-              <el-select
-                v-model="procedureOutParamForm.paramType"
-                placeholder="参数类型"
+              <el-form-item
+                label="参数名称"
+                prop="paramName"
+                :rules="filter_rules('参数名称', { required: true })"
               >
-                <el-option label="VARCHAR" value="VARCHAR" />
-                <el-option label="INTEGER" value="INTEGER" />
-                <el-option label="BIGINT" value="BIGINT" />
-                <el-option label="FLOAT" value="FLOAT" />
-                <el-option label="DOUBLE" value="DOUBLE" />
-                <el-option label="DECIMAL" value="DECIMAL" />
-              </el-select>
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" @click="addOutParam">添加</el-button>
-            </el-form-item>
-          </el-form>
+                <el-input
+                  v-model="procedureOutParamForm.paramName"
+                  placeholder="参数名称"
+                />
+              </el-form-item>
+              <el-form-item
+                label="参数编码"
+                prop="paramCode"
+                :rules="filter_rules('参数编码', { required: true })"
+              >
+                <el-input
+                  v-model="procedureOutParamForm.paramCode"
+                  placeholder="参数编码"
+                />
+              </el-form-item>
+              <el-form-item
+                label="参数类型"
+                prop="paramType"
+                :rules="filter_rules('参数类型', { required: true })"
+              >
+                <el-select
+                  v-model="procedureOutParamForm.paramType"
+                  placeholder="参数类型"
+                >
+                  <el-option label="VARCHAR" value="VARCHAR" />
+                  <el-option label="INTEGER" value="INTEGER" />
+                  <el-option label="BIGINT" value="BIGINT" />
+                  <el-option label="FLOAT" value="FLOAT" />
+                  <el-option label="DOUBLE" value="DOUBLE" />
+                  <el-option label="DECIMAL" value="DECIMAL" />
+                </el-select>
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" @click="addOutParam">添加</el-button>
+              </el-form-item>
+            </el-form>
+          </div>
           <div style="height: 30%">
             <!--表格 start-->
             <el-table
@@ -3258,7 +3285,7 @@
     border: 1px solid #e4e9ed;
     background: #fafafa;
     width: 42.5%;
-    margin-right: 24px;
+
     flex-shrink: 0;
     .variable-title {
       height: 46px;
@@ -3299,6 +3326,9 @@
           &:hover{
             color: #fff;
             background: #17B794;
+            ::v-deep .el-icon-circle-plus-outline{
+              color: #fff;
+            }
           }
           &:nth-child(3n){
             margin-right: 0;
@@ -3319,6 +3349,56 @@
   }
   .sql-content{
     flex: 1;
+    position: relative;
+    margin-left: 24px;
+
+    .left-action {
+      left: -20px;
+      border-radius: 0 3px 3px 0;
+    }
+    .action-icon {
+      cursor: pointer;
+      transition: all 0.3s;
+      position: absolute;
+      top: 50%;
+
+      transform: translateY(-50%);
+      z-index: 999;
+      background-color: #17b794;
+      width: 10px;
+      height: 48px;
+      &:hover {
+        opacity: 0.7;
+      }
+    }
+  }
+  .table-warp{
+    padding: 10px;
+    border: 1px solid #eee;
+    .table-title{
+      color: #1A1A1A;
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: "PingFang SC";
+      font-size: 14px;
+      font-style: normal;
+      font-weight: bold;
+      line-height: normal;
+      margin-bottom: 14px;
+    }
+  }
+  .parameter-content{
+    .parameter-warp{
+        border-radius: 4px;
+        background: #f7f9fc;
+        padding: 0 14px;
+        .warp-title{
+           height: 56px;
+           line-height: 56px;
+           font-size: 14px;
+           font-weight: bold;
+           color: #1A1A1A;
+        }
+    }
   }
 }
 
@@ -3735,7 +3815,8 @@
   line-height: 32px;
 }
 ::v-deep .demo-form-inline .el-select,
-::v-deep .demo-form-inline .el-textarea {
+::v-deep .demo-form-inline .el-textarea,
+::v-deep .demo-form-inline .el-input {
   width: 100% !important;
 }
 
@@ -3867,21 +3948,23 @@
 .config-panel {
   background: #ffffff;
   margin-left: 1px;
-  top: -40px;
+  top: -48px;
   position: relative;
   width: 306px;
-  height: 95%;
+  // height: 95%;
+  height: calc(100vh - 64px - 10px - 10px);
+
   display: flex;
   flex-direction: column;
   overflow: auto;
   .config-header {
     width: 100%;
-    height: 32px;
+    height: 48px;
     // background: #2F343D;
-    font-size: 13px;
-    font-weight: 400;
-    color: #000000;
-    line-height: 32px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #1a1a1a;
+    line-height: 48px;
     text-align: center;
   }
   .config-box {

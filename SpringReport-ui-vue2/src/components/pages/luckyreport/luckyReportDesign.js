@@ -70,6 +70,7 @@ export default {
       dataGroupLoading: false, // 数据集分组loading
       datasetItemActive: null, // 数据集选中项
       filedLoading: false, // 字段loading
+      selectVariableOpen: true, // 数据集选择变量展开
 
       vchartShow: false,
       chartOptions: {},
@@ -725,6 +726,15 @@ export default {
       this.leftOpen = !this.leftOpen
       this.$nextTick(() => {
         luckysheet.resize()
+      })
+    },
+    // 数据集选择变量折叠
+    switchOpenSelectVarPanel() {
+      this.selectVariableOpen = !this.selectVariableOpen
+      this.$nextTick(() => {
+        // 这个地方需要重绘编辑器!!!
+        // this.$refs['codeMirror'].resize()
+        // console.log(this.$refs['codeMirror'])
       })
     },
     // 范围选中事件
