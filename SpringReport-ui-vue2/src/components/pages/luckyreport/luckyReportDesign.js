@@ -1685,7 +1685,8 @@ export default {
           }
           this.commonUtil.doPost(obj).then(response => {
             if (response.code == '200') {
-              this.getDataSets()
+              this.getDataSets();
+              this.getTplGroupDatasets();
               // let isExist = false;
               // let dataSet = response.responseData;
               // let index = -1;

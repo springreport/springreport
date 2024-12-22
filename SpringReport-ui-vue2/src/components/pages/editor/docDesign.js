@@ -48,7 +48,8 @@ export default {
         datasetName: '',
         datasourceId: '',
         id: '',
-        sqlType: 1
+        sqlType: 1,
+        groupId: ''
       },
       dataSource: [], // 模板数据源
       paramForm: {
@@ -1671,6 +1672,7 @@ export default {
       this.sqlForm.datasourceId = dataSet.datasourceId
       this.sqlForm.id = dataSet.id
       this.sqlForm.sqlType = dataSet.sqlType
+      this.sqlForm.groupId = dataSet.groupId
       if (dataSet.sqlType == 2) {
         this.procedureInParamTableData.tableData = JSON.parse(dataSet.inParam)
         this.procedureOutParamTableData.tableData = JSON.parse(dataSet.outParam)
@@ -1710,7 +1712,7 @@ export default {
         if (valid) {
           const obj = {
             url: this.apis.reportDesign.addDataSetApi,
-            params: { tplId: reportTplId, datasetType: this.datasourceType, sqlType: this.sqlForm.sqlType, tplSql: tplSql, tplParam: this.paramTableData.tableData ? JSON.stringify(this.paramTableData.tableData) : '', datasourceId: this.sqlForm.datasourceId, datasetName: this.sqlForm.datasetName, id: this.sqlForm.id,
+            params: { tplId: reportTplId, groupId: this.sqlForm.groupId,datasetType: this.datasourceType, sqlType: this.sqlForm.sqlType, tplSql: tplSql, tplParam: this.paramTableData.tableData ? JSON.stringify(this.paramTableData.tableData) : '', datasourceId: this.sqlForm.datasourceId, datasetName: this.sqlForm.datasetName, id: this.sqlForm.id,
               inParam: this.procedureInParamTableData.tableData ? JSON.stringify(this.procedureInParamTableData.tableData) : '', outParam: this.procedureOutParamTableData.tableData ? JSON.stringify(this.procedureOutParamTableData.tableData) : '',
                },
             removeEmpty: false
@@ -1718,6 +1720,7 @@ export default {
           this.commonUtil.doPost(obj).then(response => {
             if (response.code == '200') {
               this.getDataSets()
+              this.getTplGroupDatasets();
               this.closeAddDataSet()
               this.$forceUpdate()
             }
