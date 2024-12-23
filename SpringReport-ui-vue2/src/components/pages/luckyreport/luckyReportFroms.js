@@ -36,7 +36,7 @@ export default {
     return {
       rightOpen: true, // 左侧展开
       leftOpen: true, // 右侧展开
-      rightFormCollapse: ['generalConfig', 'subtotalCells', 'subtotalAttribute', 'groupSubtotal', 'cellFilter', 'cellHide'],
+      rightFormCollapse: ['generalConfig', 'subtotalCells', 'subtotalAttribute', 'cellDiff', 'cellFilter', 'cellHide'],
       rightFormCollapse2: ['generalConfig', 'sheetBlock'],
       groupSetVisible: false, // 分组设置弹框
       groupList: [],

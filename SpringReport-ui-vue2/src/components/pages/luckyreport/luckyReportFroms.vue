@@ -306,7 +306,10 @@
                     <el-option label="向下扩展" value="3" />
                   </el-select>
                 </el-form-item>
-                <el-form-item v-show="cellForm.cellExtend != 4" label="聚合方式">
+                <el-form-item
+                  v-show="cellForm.cellExtend != 4"
+                  label="聚合方式"
+                >
                   <el-select
                     v-model="cellForm.aggregateType"
                     style="width: 100%"
@@ -353,7 +356,10 @@
                   </el-select>
                 </el-form-item>
 
-                <el-form-item v-show="cellForm.dataFrom == 3" label="来源单元格">
+                <el-form-item
+                  v-show="cellForm.dataFrom == 3"
+                  label="来源单元格"
+                >
                   <el-input
                     v-model="cellForm.dependencyCell"
                     style="width: 125px"
@@ -392,7 +398,7 @@
                     <el-option label="计数" value="5" />
                   </el-select>
                 </el-form-item>
-                <el-form-item label="是否数值单位转换" size="small">
+                <el-form-item label="数值单位转换" size="small" class="df-form-item">
                   <el-switch
                     v-model="cellForm.unitTransfer"
                     active-text="是"
@@ -454,7 +460,7 @@
                     @input="changeCellAttr('digit')"
                   />
                 </el-form-item>
-                <el-form-item label="是否允许修改" size="small">
+                <el-form-item label="允许修改" size="small" class="df-form-item">
                   <el-switch
                     v-model="cellForm.allowEdit"
                     active-text="是"
@@ -478,280 +484,215 @@
                     <el-option label="下拉单选" value="4" />
                   </el-select>
                 </el-form-item>
-                <el-form-item label="必填项" size="small">
-                  <el-switch
-                    v-model="cellForm.require"
-                    active-text="是"
-                    inactive-text="否"
-                    :disabled="attrDisabled"
-                    @change="changeCellAttr('require')"
-                  />
-                </el-form-item>
-                <el-form-item
-                  v-show="cellForm.valueType == '1'"
-                  label="长度校验"
-                  size="small"
-                >
-                  <el-switch
-                    v-model="cellForm.lengthValid"
-                    active-text="是"
-                    inactive-text="否"
-                    :disabled="attrDisabled"
-                    @change="changeCellAttr('lengthValid')"
-                  />
-                </el-form-item>
-                <el-form-item
-                  v-show="cellForm.lengthValid && cellForm.valueType == '1'"
-                  label="最小长度"
-                  size="small"
-                >
-                  <el-input
-                    v-model="cellForm.minLength"
-                    style="width: 100%"
-                    placeholder="最小长度"
-                    :disabled="attrDisabled"
-                    @input="changeCellAttr('minLength')"
-                  />
-                </el-form-item>
-                <el-form-item
-                  v-show="cellForm.lengthValid && cellForm.valueType == '1'"
-                  label="最大长度"
-                  size="small"
-                >
-                  <el-input
-                    v-model="cellForm.maxLength"
-                    style="width: 100%"
-                    placeholder="最大长度"
-                    :disabled="attrDisabled"
-                    @input="changeCellAttr('maxLength')"
-                  />
-                </el-form-item>
-                <el-form-item v-show="cellForm.valueType == '1'" label="校验规则">
-                  <el-select
-                    v-model="cellForm.textValidRule"
-                    style="width: 100%"
-                    placeholder="校验规则"
-                    size="small"
-                    :disabled="attrDisabled"
-                    @change="changeCellAttr('textValidRule')"
-                  >
-                    <el-option label="无" value="0" />
-                    <el-option label="邮箱" value="1" />
-                    <el-option label="手机号" value="2" />
-                    <el-option label="座机号" value="3" />
-                    <el-option label="身份证" value="4" />
-                    <el-option label="自定义" value="99" />
-                  </el-select>
-                </el-form-item>
-                <el-form-item
-                  v-show="
-                    cellForm.textValidRule == '99' && cellForm.valueType == '1'
-                  "
-                  label="正则表达式"
-                  size="small"
-                >
-                  <el-input
-                    v-model="cellForm.regex"
-                    style="width: 140px"
-                    placeholder="正则表达式"
-                    :disabled="attrDisabled"
-                    @input="changeCellAttr('regex')"
-                  />
-                </el-form-item>
-                <el-form-item
-                  v-show="cellForm.valueType == '2'"
-                  label="大小校验"
-                  size="small"
-                >
-                  <el-switch
-                    v-model="cellForm.numberRangeValid"
-                    active-text="是"
-                    inactive-text="否"
-                    :disabled="attrDisabled"
-                    @change="changeCellAttr('numberRangeValid')"
-                  />
-                </el-form-item>
-                <el-form-item
-                  v-show="cellForm.valueType == '2' && cellForm.numberRangeValid"
-                  label="最小值"
-                  size="small"
-                >
-                  <el-input
-                    v-model="cellForm.minValue"
-                    style="width: 100%"
-                    placeholder="最小值"
-                    :disabled="attrDisabled"
-                    @input="changeCellAttr('minValue')"
-                  />
-                </el-form-item>
-                <el-form-item
-                  v-show="cellForm.valueType == '2' && cellForm.numberRangeValid"
-                  label="最大值"
-                  size="small"
-                >
-                  <el-input
-                    v-model="cellForm.maxValue"
-                    style="width: 100%"
-                    placeholder="最大值"
-                    :disabled="attrDisabled"
-                    @input="changeCellAttr('maxValue')"
-                  />
-                </el-form-item>
-                <el-form-item
-                  v-show="cellForm.valueType == '2'"
-                  label="小数位数"
-                  size="small"
-                >
-                  <el-input
-                    v-model="cellForm.digit"
-                    style="width: 100%"
-                    placeholder="小数位数"
-                    :disabled="attrDisabled"
-                    @input="changeCellAttr('digit')"
-                  />
-                </el-form-item>
-                <el-form-item
-                  v-show="cellForm.valueType == '3'"
-                  label="格式"
-                  size="small"
-                >
-                  <!-- <el-input v-model="cellForm.dateFormat" style="width:150px"  placeholder="日期格式" @input="changeCellAttr('dateFormat')"></el-input> -->
-                  <el-select
-                    v-model="cellForm.dateFormat"
-                    style="width: 100%"
-                    placeholder="日期格式"
-                    size="small"
-                    :disabled="attrDisabled"
-                    @change="changeCellAttr('dateFormat')"
-                  >
-                    <el-option label="年-月-日" value="yyyy-MM-dd" />
-                    <el-option label="年-月" value="yyyy-MM" />
-                    <el-option label="年" value="yyyy" />
-                    <el-option
-                      label="年-月-日 时:分:秒"
-                      value="yyyy-MM-dd HH:mm:ss"
+                <div class="cus-collapse-content">
+                  <el-form-item label="必填项" size="small" class="df-form-item">
+                    <el-switch
+                      v-model="cellForm.require"
+                      active-text="是"
+                      inactive-text="否"
+                      :disabled="attrDisabled"
+                      @change="changeCellAttr('require')"
                     />
-                    <el-option label="年-月-日 时:分" value="yyyy-MM-dd HH:mm" />
-                    <el-option label="时:分:秒" value="HH:mm:ss" />
-                    <el-option label="时:分" value="HH:mm" />
-                  </el-select>
-                </el-form-item>
-                <el-form-item v-show="cellForm.valueType == '4'" label="数据源">
-                  <el-select
-                    v-model="cellForm.datasourceId"
-                    style="width: 100%"
-                    placeholder="数据源"
+                  </el-form-item>
+                  <el-form-item
+                    v-show="cellForm.valueType == '1'"
+                    label="长度校验"
                     size="small"
-                    :disabled="attrDisabled"
-                    @change="changeCellAttr('datasourceId')"
+                    class="df-form-item"
                   >
-                    <el-option
-                      v-for="op in dataSource"
-                      :key="op.datasourceId"
-                      :label="op.dataSourceName"
-                      :value="op.datasourceId"
+                    <el-switch
+                      v-model="cellForm.lengthValid"
+                      active-text="是"
+                      inactive-text="否"
+                      :disabled="attrDisabled"
+                      @change="changeCellAttr('lengthValid')"
                     />
-                  </el-select>
-                </el-form-item>
-                <el-form-item v-show="cellForm.valueType == '4'" label="字典类型">
-                  <el-select
-                    v-model="cellForm.dictType"
-                    style="width: 100%"
-                    placeholder="字典类型"
+                  </el-form-item>
+                  <el-form-item
+                    v-show="cellForm.lengthValid && cellForm.valueType == '1'"
+                    label="最小长度"
                     size="small"
-                    :disabled="attrDisabled"
-                    @change="changeCellAttr('dictType')"
                   >
-                    <el-option
-                      v-for="op in dictTypes"
-                      :key="op.id"
-                      :label="op.dictType"
-                      :value="op.dictType"
+                    <el-input
+                      v-model="cellForm.minLength"
+                      style="width: 100%"
+                      placeholder="最小长度"
+                      :disabled="attrDisabled"
+                      @input="changeCellAttr('minLength')"
                     />
-                  </el-select>
-                </el-form-item>
-                <el-form-item label="与其他单元格比较" size="small">
-                  <el-switch
-                    v-model="cellForm.otherCellCompare"
-                    active-text="是"
-                    inactive-text="否"
-                    :disabled="attrDisabled"
-                    @change="changeCellAttr('otherCellCompare')"
-                  />
-                </el-form-item>
-                <div v-if="cellForm.otherCellCompare" class="right-dataset-title">
-                  <span class="attr-dataset-title">比较单元格</span>
-                  <el-button
-                    class="addBtn"
-                    :disabled="attrDisabled"
-                    @click="addCompareCells"
-                  >添加<i
-                    class="el-icon-plus el-icon--right"
-                  /></el-button>
+                  </el-form-item>
+                  <el-form-item
+                    v-show="cellForm.lengthValid && cellForm.valueType == '1'"
+                    label="最大长度"
+                    size="small"
+                  >
+                    <el-input
+                      v-model="cellForm.maxLength"
+                      style="width: 100%"
+                      placeholder="最大长度"
+                      :disabled="attrDisabled"
+                      @input="changeCellAttr('maxLength')"
+                    />
+                  </el-form-item>
+                  <el-form-item
+                    v-show="cellForm.valueType == '1'"
+                    label="校验规则"
+                  >
+                    <el-select
+                      v-model="cellForm.textValidRule"
+                      style="width: 100%"
+                      placeholder="校验规则"
+                      size="small"
+                      :disabled="attrDisabled"
+                      @change="changeCellAttr('textValidRule')"
+                    >
+                      <el-option label="无" value="0" />
+                      <el-option label="邮箱" value="1" />
+                      <el-option label="手机号" value="2" />
+                      <el-option label="座机号" value="3" />
+                      <el-option label="身份证" value="4" />
+                      <el-option label="自定义" value="99" />
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item
+                    v-show="
+                      cellForm.textValidRule == '99' && cellForm.valueType == '1'
+                    "
+                    label="正则表达式"
+                    size="small"
+                  >
+                    <el-input
+                      v-model="cellForm.regex"
+                      style="width: 140px"
+                      placeholder="正则表达式"
+                      :disabled="attrDisabled"
+                      @input="changeCellAttr('regex')"
+                    />
+                  </el-form-item>
+                  <el-form-item
+                    v-show="cellForm.valueType == '2'"
+                    label="大小校验"
+                    size="small"
+                  >
+                    <el-switch
+                      v-model="cellForm.numberRangeValid"
+                      active-text="是"
+                      inactive-text="否"
+                      :disabled="attrDisabled"
+                      @change="changeCellAttr('numberRangeValid')"
+                    />
+                  </el-form-item>
+                  <el-form-item
+                    v-show="
+                      cellForm.valueType == '2' && cellForm.numberRangeValid
+                    "
+                    label="最小值"
+                    size="small"
+                  >
+                    <el-input
+                      v-model="cellForm.minValue"
+                      style="width: 100%"
+                      placeholder="最小值"
+                      :disabled="attrDisabled"
+                      @input="changeCellAttr('minValue')"
+                    />
+                  </el-form-item>
+                  <el-form-item
+                    v-show="
+                      cellForm.valueType == '2' && cellForm.numberRangeValid
+                    "
+                    label="最大值"
+                    size="small"
+                  >
+                    <el-input
+                      v-model="cellForm.maxValue"
+                      style="width: 100%"
+                      placeholder="最大值"
+                      :disabled="attrDisabled"
+                      @input="changeCellAttr('maxValue')"
+                    />
+                  </el-form-item>
+                  <el-form-item
+                    v-show="cellForm.valueType == '2'"
+                    label="小数位数"
+                    size="small"
+                  >
+                    <el-input
+                      v-model="cellForm.digit"
+                      style="width: 100%"
+                      placeholder="小数位数"
+                      :disabled="attrDisabled"
+                      @input="changeCellAttr('digit')"
+                    />
+                  </el-form-item>
+                  <el-form-item
+                    v-show="cellForm.valueType == '3'"
+                    label="格式"
+                    size="small"
+                  >
+                    <!-- <el-input v-model="cellForm.dateFormat" style="width:150px"  placeholder="日期格式" @input="changeCellAttr('dateFormat')"></el-input> -->
+                    <el-select
+                      v-model="cellForm.dateFormat"
+                      style="width: 100%"
+                      placeholder="日期格式"
+                      size="small"
+                      :disabled="attrDisabled"
+                      @change="changeCellAttr('dateFormat')"
+                    >
+                      <el-option label="年-月-日" value="yyyy-MM-dd" />
+                      <el-option label="年-月" value="yyyy-MM" />
+                      <el-option label="年" value="yyyy" />
+                      <el-option
+                        label="年-月-日 时:分:秒"
+                        value="yyyy-MM-dd HH:mm:ss"
+                      />
+                      <el-option
+                        label="年-月-日 时:分"
+                        value="yyyy-MM-dd HH:mm"
+                      />
+                      <el-option label="时:分:秒" value="HH:mm:ss" />
+                      <el-option label="时:分" value="HH:mm" />
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item v-show="cellForm.valueType == '4'" label="数据源">
+                    <el-select
+                      v-model="cellForm.datasourceId"
+                      style="width: 100%"
+                      placeholder="数据源"
+                      size="small"
+                      :disabled="attrDisabled"
+                      @change="changeCellAttr('datasourceId')"
+                    >
+                      <el-option
+                        v-for="op in dataSource"
+                        :key="op.datasourceId"
+                        :label="op.dataSourceName"
+                        :value="op.datasourceId"
+                      />
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item
+                    v-show="cellForm.valueType == '4'"
+                    label="字典类型"
+                  >
+                    <el-select
+                      v-model="cellForm.dictType"
+                      style="width: 100%"
+                      placeholder="字典类型"
+                      size="small"
+                      :disabled="attrDisabled"
+                      @change="changeCellAttr('dictType')"
+                    >
+                      <el-option
+                        v-for="op in dictTypes"
+                        :key="op.id"
+                        :label="op.dictType"
+                        :value="op.dictType"
+                      />
+                    </el-select>
+                  </el-form-item>
                 </div>
-                <el-collapse
-                  v-if="
-                    cellForm.otherCellCompare &&
-                      cellForm.compareCells &&
-                      cellForm.compareCells.length > 0
-                  "
-                >
-                  <el-collapse-item
-                    v-for="(o, index) in cellForm.compareCells"
-                    :key="index"
-                  >
-                    <template slot="title">
-                      比较单元格{{ index + 1 }}
-                      <el-button
-                        class="right-block-el-icon-edit"
-                        title="编辑"
-                        type="primary"
-                        icon="el-icon-edit"
-                        circle
-                        size="mini"
-                        :disabled="attrDisabled"
-                        @click.stop="editCompareCell(o, index)"
-                      />
-                      <el-button
-                        class="right-el-icon-delete"
-                        type="danger"
-                        title="删除"
-                        icon="el-icon-delete"
-                        circle
-                        size="mini"
-                        :disabled="attrDisabled"
-                        @click.stop="deleteCompareCell(index)"
-                      />
-                    </template>
-                    <p
-                      class="column-tag"
-                      :title="o.sheetName"
-                      style="min-width: 220px; max-width: 220px"
-                    >
-                      sheet名称：{{ o.sheetName }}
-                    </p>
-                    <p
-                      class="column-tag"
-                      style="min-width: 220px; max-width: 220px"
-                    >
-                      坐标：{{ o.coordinate }}
-                    </p>
-                    <p
-                      class="column-tag"
-                      style="min-width: 220px; max-width: 220px"
-                    >
-                      单元格类型：{{
-                        commonUtil.getDictionaryValueName("cellType", o.cellType)
-                      }}
-                    </p>
-                    <p
-                      class="column-tag"
-                      style="min-width: 220px; max-width: 220px"
-                    >
-                      比较类型：{{ o.compareType }}
-                    </p>
-                  </el-collapse-item>
-                </el-collapse>
+
                 <!-- <el-form-item label="是否预警" size="small">
                         <el-switch
                         v-model="cellForm.warning"
@@ -777,7 +718,7 @@
                     <el-form-item label="预警内容" size="small" v-show="cellForm.warning">
                         <el-input type="textarea" :rows="4" v-model="cellForm.warningContent" style="width:150px"  placeholder="预警内容" @input="changeCellAttr('warningContent')" :disabled="attrDisabled"></el-input>
                     </el-form-item> -->
-                <el-form-item label="是否下钻" size="small">
+                <el-form-item label="是否下钻" size="small" class="df-form-item">
                   <el-switch
                     v-model="cellForm.isDrill"
                     active-text="是"
@@ -820,7 +761,87 @@
                   />
                 </el-form-item>
               </el-collapse-item>
-
+              <el-collapse-item title="单元格比较" name="cellDiff">
+                <el-form-item label="与其他单元格比较" size="small" class="df-form-item">
+                  <el-switch
+                    v-model="cellForm.otherCellCompare"
+                    active-text="是"
+                    inactive-text="否"
+                    :disabled="attrDisabled"
+                    @change="changeCellAttr('otherCellCompare')"
+                  />
+                </el-form-item>
+                <div
+                  v-if="cellForm.otherCellCompare"
+                  class="right-dataset-title df-c-b"
+                >
+                  <span class="attr-dataset-title">比较单元格</span>
+                  <el-button
+                    class="addBtn"
+                    :disabled="attrDisabled"
+                    @click="addCompareCells"
+                  ><i class="el-icon-plus el-icon--left" />添加</el-button>
+                </div>
+                <el-collapse
+                  v-if="
+                    cellForm.otherCellCompare &&
+                      cellForm.compareCells &&
+                      cellForm.compareCells.length > 0
+                  "
+                  class="sub-collapse"
+                >
+                  <el-collapse-item
+                    v-for="(o, index) in cellForm.compareCells"
+                    :key="index"
+                  >
+                    <template slot="title">
+                      比较单元格{{ index + 1 }}
+                      <div
+                        class="right-block-el-icon-edit"
+                        title="编辑"
+                        :disabled="attrDisabled"
+                        @click.stop="editCompareCell(o, index)"
+                      />
+                      <div
+                        class="right-el-icon-delete"
+                        title="删除"
+                        :disabled="attrDisabled"
+                        @click.stop="deleteCompareCell(index)"
+                      />
+                    </template>
+                    <p
+                      class="column-tag"
+                      :title="o.sheetName"
+                      style="min-width: 220px; max-width: 220px"
+                    >
+                      sheet名称：{{ o.sheetName }}
+                    </p>
+                    <p
+                      class="column-tag"
+                      style="min-width: 220px; max-width: 220px"
+                    >
+                      坐标：{{ o.coordinate }}
+                    </p>
+                    <p
+                      class="column-tag"
+                      style="min-width: 220px; max-width: 220px"
+                    >
+                      单元格类型：{{
+                        commonUtil.getDictionaryValueName(
+                          "cellType",
+                          o.cellType
+                        )
+                      }}
+                    </p>
+                    <p
+                      class="column-tag"
+                      style="min-width: 220px; max-width: 220px"
+                    >
+                      比较类型：{{ o.compareType }}
+                    </p>
+                  </el-collapse-item>
+                </el-collapse>
+              </el-collapse-item>
               <el-collapse-item title="单元格过滤条件" name="cellFilter">
                 <div class="df" style="padding: 8px 0 16px 0">
                   <span class="cell-label">判断查询</span>
@@ -849,13 +870,14 @@
 
                 <el-collapse
                   v-if="
-                    cellForm.cellconditions && cellForm.cellconditions.length > 0
+                    cellForm.cellconditions &&
+                      cellForm.cellconditions.length > 0
                   "
+                  class="sub-collapse"
                 >
                   <el-collapse-item
                     v-for="(o, index) in cellForm.cellconditions"
                     :key="index"
-                    class="sub-collapse"
                   >
                     <template slot="title">
                       过滤条件{{ index + 1 }}
@@ -914,7 +936,6 @@
                 </el-collapse>
               </el-collapse-item>
             </el-collapse>
-
           </el-form>
           <div v-show="tabIndex == 2" class="demo-form-inline">
             <el-collapse v-model="rightFormCollapse2">
@@ -1027,7 +1048,7 @@
               </el-select>
             </el-form-item>
           </el-form>
-          <div class="df" style="width: 100%;border: 1px solid #e8e8e8;">
+          <div class="df" style="width: 100%; border: 1px solid #e8e8e8">
             <div v-show="selectVariableOpen" class="variable-content">
               <div class="variable-title">选择变量</div>
               <div class="variable-warp">
@@ -1039,7 +1060,12 @@
                     :title="item.label"
                     class="variable-item df-c"
                   >
-                    <div class="overflow-text" style="flex:1;margin-right:8px;">{{ item.label }}({{ item.value }})</div>
+                    <div
+                      class="overflow-text"
+                      style="flex: 1; margin-right: 8px"
+                    >
+                      {{ item.label }}({{ item.value }})
+                    </div>
                     <i
                       class="el-icon-copy-document"
                       title="复制"
@@ -1107,11 +1133,19 @@
                   align="center"
                   size="small"
                   height="230px"
-                  :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+                  :header-cell-style="{
+                    background: '#eef1f6',
+                    color: '#606266',
+                  }"
                 >
                   <el-table-column width="72" label="序号" align="center">
                     <template slot-scope="scope">
-                      <span>{{ (sqlColumnTableData.tablePage.currentPage- 1) * sqlColumnTableData.tablePage.pageSize + scope.$index + 1 }}</span>
+                      <span>{{
+                        (sqlColumnTableData.tablePage.currentPage - 1) *
+                          sqlColumnTableData.tablePage.pageSize +
+                          scope.$index +
+                          1
+                      }}</span>
                     </template>
                   </el-table-column>
                   <el-table-column
@@ -1142,13 +1176,20 @@
               </div>
             </div>
           </div>
-
         </div>
       </div>
       <div v-show="addDatasetType == 2" class="parameter-content">
-        <div v-show="sqlForm.sqlType == '1' || datasourceType == 2" style="margin-bottom:20px">
+        <div
+          v-show="sqlForm.sqlType == '1' || datasourceType == 2"
+          style="margin-bottom: 20px"
+        >
           <div class="parameter-warp">
-            <div v-if="datasourceType == 1 || datasourceType == 2" class="warp-title">分页参数</div>
+            <div
+              v-if="datasourceType == 1 || datasourceType == 2"
+              class="warp-title"
+            >
+              分页参数
+            </div>
             <el-form
               ref="paginationRef"
               label-position="right"
@@ -1227,9 +1268,11 @@
               </el-form-item>
             </el-form>
           </div>
-
         </div>
-        <div v-show="sqlForm.sqlType == 1 || datasourceType == 2" style="margin-bottom:20px">
+        <div
+          v-show="sqlForm.sqlType == 1 || datasourceType == 2"
+          style="margin-bottom: 20px"
+        >
           <div class="parameter-warp">
             <div class="warp-title">字段参数</div>
             <el-form
@@ -1489,11 +1532,7 @@
               height="230px"
               :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
             >
-              <el-table-column
-                prop="paramName"
-                label="参数名"
-                align="center"
-              />
+              <el-table-column prop="paramName" label="参数名" align="center" />
               <el-table-column
                 prop="paramCode"
                 label="参数编码"
@@ -1615,11 +1654,7 @@
               height="230px"
               :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
             >
-              <el-table-column
-                prop="paramName"
-                label="参数名"
-                align="center"
-              />
+              <el-table-column prop="paramName" label="参数名" align="center" />
               <el-table-column
                 prop="paramCode"
                 label="参数编码"
@@ -1726,11 +1761,7 @@
               height="230px"
               :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
             >
-              <el-table-column
-                prop="paramName"
-                label="参数名"
-                align="center"
-              />
+              <el-table-column prop="paramName" label="参数名" align="center" />
               <el-table-column
                 prop="paramCode"
                 label="参数编码"
@@ -2091,16 +2122,16 @@
     <el-dialog
       title="单元格比较"
       :visible.sync="cellCompareVisiable"
-      width="50%"
+      width="30%"
       height="80%"
       :close-on-click-modal="false"
       @close="closeCompareCells"
     >
       <el-form
         ref="compareRef"
-        :inline="true"
         :model="cellCompareForm"
         class="demo-form-inline"
+        label-position="top"
       >
         <el-form-item
           label="sheet名称"
@@ -3323,6 +3354,12 @@
 }
 ::v-deep .vue-codemirror .CodeMirror {
   border: 1px solid #eee;
+}
+.cus-collapse-content {
+  border-radius: 4px;
+  border: 0.5px solid rgba(23, 183, 148, 0.1);
+  background: rgba(23, 183, 148, 0.05);
+  padding: 8px 10px;
 }
 
 .config-panel {
