@@ -30,21 +30,6 @@ import Axios from 'axios'
 import vchart from '../../component/vchart/vchart.vue'
 import vchartsetting from '../../component/vchart/vchartsetting.vue'
 
-/**
- *editSubtotalCell
-deleteSubtotalCell
-editSubtotalAttrs
-deleteSubtotalAttrs
-editSubtotalCalc
-deleteSubtotalCalc
-editCellCondition
-copyCellCondition
-deleteCellCondition
-editCellHiddenCondition
-copyCellHiddenCondition
-deleteCellHiddenCondition
-这些方法需要加 attrDisabled判断
- */
 export default {
   components: {
     vuedraggable,
@@ -1685,8 +1670,8 @@ export default {
           }
           this.commonUtil.doPost(obj).then(response => {
             if (response.code == '200') {
-              this.getDataSets();
-              this.getTplGroupDatasets();
+              this.getDataSets()
+              this.getTplGroupDatasets()
               // let isExist = false;
               // let dataSet = response.responseData;
               // let index = -1;
@@ -2932,10 +2917,18 @@ export default {
       })
     },
     deleteCellCondition(index) {
+      if (this.attrDisabled) {
+        return
+      }
+
       this.cellForm.cellconditions.splice(index, 1)
       this.changeCellAttr('cellconditions')
     },
     editCellCondition(index) {
+      if (this.attrDisabled) {
+        return
+      }
+
       const cellCondition = this.cellForm.cellconditions[index]
       this.cellConditionForm.property = cellCondition.property
       this.cellConditionForm.operator = cellCondition.operator
@@ -2946,6 +2939,9 @@ export default {
       this.cellConditionVisiable = true
     },
     copyCellCondition(row) {
+      if (this.attrDisabled) {
+        return
+      }
       this.cellConditionForm.property = row.property
       this.cellConditionForm.operator = row.operator
       this.cellConditionForm.type = row.type
@@ -3246,10 +3242,18 @@ export default {
       })
     },
     deleteCellHiddenCondition(index) {
+      if (this.attrDisabled) {
+        return
+      }
+
       this.cellForm.cellHiddenConditions.splice(index, 1)
       this.changeCellAttr('cellHiddenConditions')
     },
     editCellHiddenCondition(index) {
+      if (this.attrDisabled) {
+        return
+      }
+
       const cellHiddenCondition = this.cellForm.cellHiddenConditions[index]
       this.cellHiddenConditionForm.propertyName = cellHiddenCondition.propertyName
       this.cellHiddenConditionForm.property = cellHiddenCondition.property
@@ -3261,6 +3265,10 @@ export default {
       this.cellHiddenConditionVisiable = true
     },
     copyCellHiddenCondition(row) {
+      if (this.attrDisabled) {
+        return
+      }
+
       this.cellHiddenConditionForm.propertyName = row.propertyName
       this.cellHiddenConditionForm.property = row.property
       this.cellHiddenConditionForm.operator = row.operator
@@ -3700,6 +3708,9 @@ export default {
       })
     },
     editSubtotalCell(o, index) {
+      if (this.attrDisabled) {
+        return
+      }
       this.cellSubTotalForm.index = index
       this.cellSubTotalForm.coords = o.coords
       this.cellSubTotalForm.type = o.type
@@ -3707,6 +3718,10 @@ export default {
       this.cellSubTotalVisiable = true
     },
     deleteSubtotalCell(index) {
+      if (this.attrDisabled) {
+        return
+      }
+
       this.cellForm.subTotalCells.splice(index, 1)
       this.changeCellAttr('subTotalCells')
     },
@@ -3764,11 +3779,18 @@ export default {
       this.subTotalCalcVisiable = false
     },
     editSubtotalCalc(o, index) {
+      if (this.attrDisabled) {
+        return
+      }
+
       this.subTotalCalcForm.index = index
       this.subTotalCalcForm.attrs = o.attrs
       this.subTotalCalcVisiable = true
     },
     deleteSubtotalCalc(index) {
+      if (this.attrDisabled) {
+        return
+      }
       this.cellForm.subTotalCalc.splice(index, 1)
       this.changeCellAttr('subTotalCalc')
     },
@@ -3812,6 +3834,9 @@ export default {
       this.subTotalAttrsVisiable = false
     },
     editSubtotalAttrs(o, index) {
+      if (this.attrDisabled) {
+        return
+      }
       this.subTotalAttrsForm.index = index
       this.subTotalAttrsForm.name = o.name
       this.subTotalAttrsForm.fontColor = o.fontColor
@@ -3821,6 +3846,10 @@ export default {
       this.subTotalAttrsVisiable = true
     },
     deleteSubtotalAttrs(index) {
+      if (this.attrDisabled) {
+        return
+      }
+
       this.cellForm.subTotalAttrs.splice(index, 1)
       this.changeCellAttr('subTotalAttrs')
     },
@@ -4254,7 +4283,7 @@ export default {
       this.uploadType = type
       $('#uploadBtn').click() // 触发父容器中的保存模板按钮事件
     },
-    doCopy(item,isInsert) {
+    doCopy(item, isInsert) {
       let text = item.value
       if (item.type == 'number') {
         text = '<if test="' + item.value + '!=null' + '"> \n'
@@ -4263,16 +4292,15 @@ export default {
         text = '<if test="' + item.value + '!=null and ' + item.value + "!=''" + '">\n'
         text = text + '  and ' + item.column + ' = #{' + item.value + '} \n' + '</if>'
       }
-      if(!isInsert){
+      if (!isInsert) {
         const input = document.getElementById('clipboradInput') // 承载复制内容
         input.value = text // 修改文本框的内容
         input.select() // 选中文本
         document.execCommand('copy') // 执行浏览器复制命令
         this.$message.success('复制成功')
-      }else{
+      } else {
         this.addComment(text)
       }
-      
     },
     copyColumn(datasetName, columnName) {
       let text = ''
@@ -4391,7 +4419,7 @@ export default {
         })
       }
     },
-    getWhereByColumn(type, column,isInsert) {
+    getWhereByColumn(type, column, isInsert) {
       let text = ''
       const columnType = column.dataType.toLowerCase()
       if (type == 1) {
@@ -4417,9 +4445,9 @@ export default {
         text = '<if test="' + column.name + '!=null and ' + column.name + "!=''" + '">\n'
         text = text + '  and ' + column.name + ' = #{' + column.name + '} \n' + '</if>'
       }
-      if(isInsert){
+      if (isInsert) {
         this.addComment(text)
-      }else{
+      } else {
         const input = document.getElementById('clipboradInput') // 承载复制内容
         input.value = text // 修改文本框的内容
         input.select() // 选中文本
