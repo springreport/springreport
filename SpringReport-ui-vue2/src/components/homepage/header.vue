@@ -16,38 +16,46 @@
         >
       </div>
       <div class="right df-c">
-        <div v-if="isSystemMerchant == 1" class="role-name">商户</div>
-        <div v-if="isSystemMerchant == 1" class="role-name">
-          <el-select
-            v-model="merchantNo"
-            placeholder="请选择"
-            size="small"
-            @change="changeMerchant"
+        <div v-if="isSystemMerchant == 1" class="df-c">
+          <el-dropdown
+            class="white font"
+            trigger="click"
+            placement="bottom"
+            @command="changeMerchant"
           >
-            <el-option
-              v-for="item in merchants"
-              :key="item.merchantNo"
-              :label="item.merchantName"
-              :value="item.merchantNo"
-            />
-          </el-select>
+            <div class="system-merchant df-c">
+              <span style="margin-right: 8px">{{ merchantName }}</span>
+              <i class="el-icon-sort" style="transform: rotate(90deg);font-size: 12px;" />
+            </div>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item v-for="item in merchants" :key="item.merchantNo" :command="item.merchantNo">{{ item.merchantName }}</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+
+          <div class="line" />
         </div>
-        <div class="role-name">{{ roleName }}</div>
+
         <el-dropdown
           class="white font"
           trigger="click"
           placement="bottom"
           @command="handleCommand"
         >
-          <span class="el-dropdown-link df-c">
+          <div class="el-dropdown-link df-c">
             <img
               src="@/static/img/user-circle.png"
-              height="20"
+              height="36"
               style="margin-right: 8px"
             >
-            {{ username }}
-            <i class="el-icon-arrow-down el-icon--right" />
-          </span>
+            <span style="margin-right: 8px">{{ username }}</span>
+            <div
+              class="role-name"
+              :class="{ 'role-name-apply': roleName == '试用' }"
+            >
+              {{ roleName }}
+            </div>
+            <i class="el-icon-caret-bottom" style="color: #959ea6" />
+          </div>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item command="changePwd">修改密码</el-dropdown-item>
             <el-dropdown-item command="loginout">退出登录</el-dropdown-item>
@@ -113,6 +121,11 @@ export default {
       ]
     }
   },
+  computed: {
+    merchantName() {
+      return this.merchants.find(item => item.merchantNo == this.merchantNo)?.merchantName
+    }
+  },
   mounted() {
     this.roleName = localStorage.getItem('roleName')
     this.username = localStorage.getItem('userName')
@@ -141,7 +154,9 @@ export default {
         }
       })
     },
-    changeMerchant() {
+    changeMerchant(key) {
+      console.log(key)
+      this.merchantNo = key
       localStorage.setItem(
         this.commonConstants.sessionItem.merchantNo,
         this.merchantNo
@@ -254,8 +269,9 @@ export default {
   height: 64px !important;
   padding: 0px;
   background-color: #fff;
-  border-bottom: 1px solid #ccc;
   box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.05);
+  position: relative;
+  z-index: 100;
   .left {
     img {
       cursor: pointer;
@@ -266,12 +282,50 @@ export default {
     padding-right: 24px;
     font-size: 14px;
     color: rgba(0, 0, 0, 0.9);
-    .role-name {
-      margin-right: 8px;
+    .line {
+      width: 1px;
+      height: 24px;
+      background: rgba(0, 0, 0, 0.1);
+      margin: 0 24px;
+    }
+    .system-merchant {
+      cursor: pointer;
+      color: #17b794;
+      font-family: "PingFang SC";
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 14px;
+      padding: 8px 10px;
+      border: 1px solid #17b794;
+      border-radius: 6px;
     }
   }
   .el-dropdown-link {
-    color: rgba(0, 0, 0, 0.9);
+    cursor: pointer;
+    color: #000;
+    font-size: 15px;
+    font-weight: bold;
+    .role-name {
+      margin-right: 8px;
+
+      color: #035dff;
+      text-align: center;
+      font-family: "PingFang SC";
+      font-size: 10px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 10px; /* 91.667% */
+      border-radius: 3px;
+      border: 1px solid #035dff;
+      background: #e1ecff;
+      padding: 4px;
+    }
+    .role-name-apply {
+      border: 1px solid #ff9f9f;
+      background: #ffeded;
+      color: #f01717;
+    }
   }
 }
 // .collapse-btn {
