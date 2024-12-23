@@ -4254,7 +4254,7 @@ export default {
       this.uploadType = type
       $('#uploadBtn').click() // 触发父容器中的保存模板按钮事件
     },
-    doCopy(item) {
+    doCopy(item,isInsert) {
       let text = item.value
       if (item.type == 'number') {
         text = '<if test="' + item.value + '!=null' + '"> \n'
@@ -4263,11 +4263,16 @@ export default {
         text = '<if test="' + item.value + '!=null and ' + item.value + "!=''" + '">\n'
         text = text + '  and ' + item.column + ' = #{' + item.value + '} \n' + '</if>'
       }
-      const input = document.getElementById('clipboradInput') // 承载复制内容
-      input.value = text // 修改文本框的内容
-      input.select() // 选中文本
-      document.execCommand('copy') // 执行浏览器复制命令
-      this.$message.success('复制成功')
+      if(!isInsert){
+        const input = document.getElementById('clipboradInput') // 承载复制内容
+        input.value = text // 修改文本框的内容
+        input.select() // 选中文本
+        document.execCommand('copy') // 执行浏览器复制命令
+        this.$message.success('复制成功')
+      }else{
+        this.addComment(text)
+      }
+      
     },
     copyColumn(datasetName, columnName) {
       let text = ''
@@ -4386,7 +4391,7 @@ export default {
         })
       }
     },
-    getWhereByColumn(type, column) {
+    getWhereByColumn(type, column,isInsert) {
       let text = ''
       const columnType = column.dataType.toLowerCase()
       if (type == 1) {
@@ -4412,7 +4417,15 @@ export default {
         text = '<if test="' + column.name + '!=null and ' + column.name + "!=''" + '">\n'
         text = text + '  and ' + column.name + ' = #{' + column.name + '} \n' + '</if>'
       }
-      this.addComment(text)
+      if(isInsert){
+        this.addComment(text)
+      }else{
+        const input = document.getElementById('clipboradInput') // 承载复制内容
+        input.value = text // 修改文本框的内容
+        input.select() // 选中文本
+        document.execCommand('copy') // 执行浏览器复制命令
+        this.$message.success('复制成功')
+      }
     },
     getWhereByParam(row) {
       let text = ''
