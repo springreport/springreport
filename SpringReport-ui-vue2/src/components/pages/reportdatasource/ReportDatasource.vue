@@ -1,30 +1,48 @@
 <template>
-    <div  class="_tablepage">
-        <searchForm  :searchForm="pageData.searchForm" :searchData="pageData.queryData" :searchHandle="pageData.searchHandle">
-        </searchForm>
-       <cusTable ref="custable"
-      :isSelection='true'
-      :isIndex='true'
-      :isPagination='true'
-      :isHandle='true'
-      :tableCols='pageData.tableCols' 
-      :tableHandles='pageData.tableHandles'
-      :tableData='pageData.tableData'
-      :tablePage='pageData.tablePage'
-      @handleCurrentChange='searchtablelist()'
-      @selectChange='selectChange'></cusTable>
-       <modal ref="modalRef" :modalConfig='pageData.modalConfig' 
-       :modalForm='pageData.modalForm' :modalData='pageData.modalData' 
-       :modalHandles='pageData.modalHandles'
-       @closeModal="closeModal()"></modal>
-       <modal ref="resultPropRef" :modalConfig='pageData.resultPropModalConfig' 
-       :modalForm='pageData.resultPropModalForm' :modalData='pageData.resultPropModalData' 
-       :modalHandles='pageData.resultPropModalHandles'
-       @closeModal="closePropsModal()"></modal>
-       <modal ref="apiHeaderRef" :modalConfig='pageData.apiHeaderModalConfig' 
-       :modalForm='pageData.apiHeaderModalForm' :modalData='pageData.apiHeaderModalData' 
-       :modalHandles='pageData.apiHeaderModalHandles'
-       @closeModal="closeHeadersModal()"></modal>
-    </div>
+  <div class="_tablepage">
+    <searchForm
+      :search-form="pageData.searchForm"
+      :search-data="pageData.queryData"
+      :search-handle="pageData.searchHandle"
+    />
+    <cusTable
+      ref="custable"
+      :is-selection="true"
+      :is-index="true"
+      :is-pagination="true"
+      :is-handle="true"
+      :loading="tableLoading"
+      :table-cols="pageData.tableCols"
+      :table-handles="pageData.tableHandles"
+      :table-data="pageData.tableData"
+      :table-page="pageData.tablePage"
+      @handleCurrentChange="searchtablelist()"
+      @selectChange="selectChange"
+    />
+    <modal
+      ref="modalRef"
+      :modal-config="pageData.modalConfig"
+      :modal-form="pageData.modalForm"
+      :modal-data="pageData.modalData"
+      :modal-handles="pageData.modalHandles"
+      @closeModal="closeModal()"
+    />
+    <modal
+      ref="resultPropRef"
+      :modal-config="pageData.resultPropModalConfig"
+      :modal-form="pageData.resultPropModalForm"
+      :modal-data="pageData.resultPropModalData"
+      :modal-handles="pageData.resultPropModalHandles"
+      @closeModal="closePropsModal()"
+    />
+    <modal
+      ref="apiHeaderRef"
+      :modal-config="pageData.apiHeaderModalConfig"
+      :modal-form="pageData.apiHeaderModalForm"
+      :modal-data="pageData.apiHeaderModalData"
+      :modal-handles="pageData.apiHeaderModalHandles"
+      @closeModal="closeHeadersModal()"
+    />
+  </div>
 </template>
 <script src="./ReportDatasource.js"></script>

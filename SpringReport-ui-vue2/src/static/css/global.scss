@@ -135,29 +135,29 @@
   margin-bottom: 0 !important;
 }
 
-.el-dialog{
-  border-radius:4px !important;
-  .el-dialog__header{
+.el-dialog {
+  border-radius: 4px !important;
+  .el-dialog__header {
     padding: 12px 16px !important;
-    .el-dialog__title{
+    .el-dialog__title {
       color: rgba(0, 0, 0, 0.85);
       font-family: "PingFang SC";
       font-size: 16px !important;
       font-style: normal;
       line-height: 24px; /* 150% */
-      font-weight:600;
+      font-weight: 600;
     }
-    .el-icon-close{
-      color: #646A73;
+    .el-icon-close {
+      color: #646a73;
       font-size: 18px !important;
-      font-weight:bold;
+      font-weight: bold;
     }
   }
-  .el-dialog__body{
+  .el-dialog__body {
     padding: 16px;
     background-color: #fff;
   }
-  .el-dialog__footer{
+  .el-dialog__footer {
     padding: 10px 16px;
   }
 }
@@ -186,5 +186,67 @@
 .cus-scrollbar::-webkit-scrollbar-corner {
   background: transparent;
 }
+.el-menu--collapse > .el-submenu > .el-submenu__title span.iconfont {
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+  overflow: auto;
+  visibility: unset;
+}
 
-
+.action-icon {
+  width: 16px;
+  height: 16px;
+  background-size: 100% 100%;
+  margin-right: 4px;
+}
+.action-icon-search {
+  background-image: url("~@/static/img/common/chaxun.png");
+}
+.action-icon-add {
+  background-image: url("~@/static/img/common/add.png");
+}
+.action-icon-del {
+  background-image: url("~@/static/img/common/del.png");
+}
+.action-icon-export {
+  background-image: url("~@/static/img/common/export.png");
+}
+.action-icon-import {
+  background-image: url("~@/static/img/common/import.png");
+}
+.action-icon-refresh {
+  background-image: url("~@/static/img/common/refresh.png");
+}
+.search-drawer {
+  .el-drawer__header {
+    padding: 16px !important;
+    margin-bottom: 0 !important;
+    font-size: 16px;
+    color: rgba($color: #000000, $alpha: 0.85);
+    line-height: 24px; /* 150% */
+    font-weight: bold;
+  }
+  .el-drawer__body {
+    padding: 8px 26px 52px !important;
+    overflow-y: auto;
+    .el-form-item__label {
+      color: #595959;
+      font-size: 14px;
+      font-weight: bold;
+      line-height: 14px;
+      height: 14px;
+      padding: 0;
+      margin-bottom: 12px;
+    }
+    .search-drawer__footer{
+      text-align: right;
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      left: 0;
+      padding: 8px 26px;
+      border-top: 1px solid #e6e6e6;
+    }
+  }
+}

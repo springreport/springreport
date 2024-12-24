@@ -7,24 +7,25 @@
       style="opacity: 0; position: absolute"
     />
     <!-- 表格操作按钮 -->
-    <section class="ces-handle" v-if="tableHandles.length > 0">
+    <section v-if="tableHandles.length > 0" class="ces-handle">
       <el-row class="operate">
         <el-col :span="24">
           <el-button
             v-for="item in tableHandles"
             :key="item.label"
+            v-has="item.auth"
             :type="item.type"
             :icon="item.icon"
-            v-has="item.auth"
             :size="size || btn.size"
             @click="item.handle()"
-          >{{item.label}}</el-button>
+          >{{ item.label }}</el-button>
         </el-col>
       </el-row>
     </section>
     <!-- 数据表格 -->
     <section class="ces-table">
       <el-table
+        v-loading="loading"
         :data="tableData"
         :size="size"
         row-key="id"
@@ -32,19 +33,18 @@
         :stripe="stripe"
         :border="isBorder"
         :default-expand-all="defaultExpandAll"
-        @selection-change="selectChange"
-        @current-change="currentChange"
-        @cell-dblclick="celldblclick"
-        v-loading="loading"
-        :defaultSelections="defaultSelections"
+        :default-selections="defaultSelections"
         :highlight-current-row="highlightCurrentRow"
         :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
         :lazy="lazy"
-        :load="load"
         ref="cesTable"
+        :load="load"
+        @selection-change="selectChange"
+        @current-change="currentChange"
+        @cell-dblclick="celldblclick"
       >
-        <el-table-column v-if="isSelection" type="selection" align="center"></el-table-column>
-        <el-table-column v-if="isIndex" type="index" :label="indexLabel" align="center" width="50"></el-table-column>
+        <el-table-column v-if="isSelection" type="selection" align="center" />
+        <el-table-column v-if="isIndex" type="index" :label="indexLabel" align="center" width="50" />
         <!-- 数据栏 -->
         <el-table-column
           v-for="item in tableCols"
@@ -58,33 +58,33 @@
           :fixed="item.fixed"
         >
           <template slot-scope="scope">
-            <i :class="scope.row.icon" style="margin-right: 10px" v-if="item.icon"> </i>
+            <i v-if="item.icon" :class="scope.row.icon" style="margin-right: 10px" />
             <!-- html -->
-            <span v-if="item.type==='html'" v-html="item.html(scope.row)"></span>
+            <span v-if="item.type==='html'" v-html="item.html(scope.row)" />
             <!-- 按钮 -->
             <span v-if="item.type==='button'">
               <el-button
                 v-for="btn in item.btnList"
+                v-show="btn.show?btn.show(scope.row):true"
                 :key="(typeof btn.label).toLowerCase()=='string'?btn.label:btn.auth"
+                v-has="btn.auth"
                 :disabled="btn.disabled && btn.disabled(scope.row)"
                 :type="btn.type"
                 :size="size || btn.size"
                 :icon="btn.icon"
-                v-has="btn.auth"
-                v-show="btn.show?btn.show(scope.row):true"
                 @click="btn.handle && btn.handle(scope.row,scope.$index)"
-              >{{(typeof btn.label).toLowerCase()=="string"?btn.label:btn.label(scope.row)}}</el-button>
+              >{{ (typeof btn.label).toLowerCase()=="string"?btn.label:btn.label(scope.row) }}</el-button>
             </span>
             <!-- 输入框 -->
             <el-input
               v-if="item.type==='input'"
-              :type="item.inputType"
               v-model="scope.row[item.prop]"
+              :type="item.inputType"
               :size="size || btn.size"
               :disabled="item.isDisabled && item.isDisabled(scope.row)"
               @focus="item.focus && item.focus(scope.row)"
               @change="item.change && item.change(scope.row)"
-            ></el-input>
+            />
             <!-- 下拉框 -->
             <el-select
               v-if="item.type==='select'"
@@ -96,10 +96,10 @@
             >
               <el-option
                 v-for="op in item.options"
+                :key="op.value"
                 :label="op.label"
                 :value="op.value"
-                :key="op.value"
-              ></el-option>
+              />
             </el-select>
             <!-- 单选组 -->
             <el-radio-group
@@ -109,7 +109,7 @@
               :size="size || btn.size"
               @change="item.change && item.change(scope.row)"
             >
-              <el-radio v-for="ra in item.radios" :label="ra.value" :key="ra.value">{{ra.label}}</el-radio>
+              <el-radio v-for="ra in item.radios" :key="ra.value" :label="ra.value">{{ ra.label }}</el-radio>
             </el-radio-group>
             <!-- 复选框 -->
             <el-checkbox-group
@@ -121,9 +121,9 @@
             >
               <el-checkbox
                 v-for="ra in item.checkboxs"
-                :label="ra.value"
                 :key="ra.value"
-              >{{ra.label}}</el-checkbox>
+                :label="ra.value"
+              >{{ ra.label }}</el-checkbox>
             </el-checkbox-group>
             <!-- 评价 -->
             <el-rate
@@ -132,7 +132,7 @@
               :disabled="item.isDisabled && item.isDisabled(scope.row)"
               :size="size || btn.size"
               @change="item.change && item.change(scope.row)"
-            ></el-rate>
+            />
             <!-- 开关 -->
             <el-switch
               v-if="item.type==='switch'"
@@ -142,7 +142,7 @@
               :inactive-value="item.values&&item.values[1]"
               :disabled="item.isDisabled && item.isDisabled(scope.row)"
               @change="item.change && item.change(scope.row)"
-            ></el-switch>
+            />
             <!-- 图像 -->
             <!-- <el-image v-if="item.type==='image'" :src="scope.row[item.prop]"/> -->
             <el-popover
@@ -152,20 +152,20 @@
               trigger="hover"
               width="500"
             >
-              <img :src="scope.row[item.prop]" style="width: 100%" />
+              <img :src="scope.row[item.prop]" style="width: 100%">
               <img
                 slot="reference"
                 :src="scope.row[item.prop]"
                 :alt="scope.row[item.prop]"
                 style="height: 60px;width: 60px;border-radius:50%; "
-              />
+              >
             </el-popover>
             <img
               v-if="item.type==='image' && !item.popover"
               :src="scope.row[item.prop]"
               :alt="scope.row[item.prop]"
               style="height: 60px;width: 60px;border-radius:50%; "
-            />
+            >
             <!-- 滑块 -->
             <el-slider
               v-if="item.type==='slider'"
@@ -173,43 +173,43 @@
               :disabled="item.isDisabled && item.isDisabled(scope.row)"
               :size="size || btn.size"
               @change="item.change && item.change(scope.row)"
-            ></el-slider>
+            />
             <!-- 默认 -->
             <span
               v-if="!item.type"
-              @click="item.click && item.click(scope.row)"
               :style="item.itemStyle && item.itemStyle(scope.row)"
               :size="size || btn.size"
               :class="item.itemClass && item.itemClass(scope.row)"
-            >{{(item.formatter && item.formatter(item.prop,scope.row,item.codeType)) || scope.row[item.prop]}}</span>
+              @click="item.click && item.click(scope.row)"
+            >{{ (item.formatter && item.formatter(item.prop,scope.row,item.codeType)) || scope.row[item.prop] }}</span>
             <span v-if="item.type ==='foreachtext'">
               <p
-                style="cursor:pointer;color:blue"
-                @click="item.downloadmp4(val)"
                 v-for="(val,index) in scope.row[item.prop]"
                 :key="index"
-              >{{val.fileName}}</p>
+                style="cursor:pointer;color:blue"
+                @click="item.downloadmp4(val)"
+              >{{ val.fileName }}</p>
             </span>
             <span v-if="item.type ==='link'" @click="item.click && item.click(scope.row)">
-              <p style="cursor:pointer;color:blue">{{scope.row[item.prop]}}</p>
+              <p style="cursor:pointer;color:blue">{{ scope.row[item.prop] }}</p>
             </span>
           </template>
         </el-table-column>
       </el-table>
     </section>
     <!-- 分页 -->
-    <section class="ces-pagination df-c-b" v-if="isPagination">
-      <div class="pagination-total">共 {{tablePage.pageTotal}} 项数据</div>
+    <section v-if="isPagination" class="ces-pagination df-c-b">
+      <div class="pagination-total">共 {{ tablePage.pageTotal }} 项数据</div>
       <el-pagination
         background
-        @current-change="handleCurrentChange"
-        @size-change="handleSizeChange"
         layout="sizes ,prev, pager, next,jumper"
         :page-size="tablePage.pageSize"
         :page-sizes="tablePage.pageSizeRange"
         :current-page.sync="tablePage.currentPage"
         :total.sync="tablePage.pageTotal"
-      ></el-pagination>
+        @current-change="handleCurrentChange"
+        @size-change="handleSizeChange"
+      />
     </section>
   </section>
 </template>
@@ -246,17 +246,17 @@ export default {
         pageSize: 10,
         currentPage: 1,
         total: 0,
-        pageSizeRange: [5, 10, 20, 50, 100],
-      }),
+        pageSizeRange: [5, 10, 20, 50, 100]
+      })
     },
-    highlightCurrentRow: { type: Boolean, default: false },
+    highlightCurrentRow: { type: Boolean, default: false }
   },
   data() {
     return {}
   },
   watch: {
     defaultSelections(val) {
-      this.$nextTick(function () {
+      this.$nextTick(function() {
         if (Array.isArray(val)) {
           val.forEach((row) => {
             this.$refs.cesTable.toggleRowSelection(row)
@@ -265,7 +265,7 @@ export default {
           this.$refs.cesTable.toggleRowSelection(val)
         }
       })
-    },
+    }
   },
   methods: {
     selectChange(val) {
@@ -295,16 +295,16 @@ export default {
       this.$emit('currentChange', currentRow)
     },
     celldblclick(row, column, cell, event) {
-      let _this = this
+      const _this = this
       const input = document.getElementById('tableclipboradInput') // 承载复制内容
       input.value = row[column.property] // 修改文本框的内容
       input.select() // 选中文本
       document.execCommand('copy') // 执行浏览器复制命令
     },
-     load(tree, treeNode, resolve){
-      this.$emit('load', tree,treeNode,resolve)
-     }
-  },
+    load(tree, treeNode, resolve) {
+      this.$emit('load', tree, treeNode, resolve)
+    }
+  }
 }
 </script>
 <style lang="scss" scoped >

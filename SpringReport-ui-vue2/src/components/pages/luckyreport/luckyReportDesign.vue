@@ -1272,7 +1272,7 @@
                     >
                       <div class="overflow-text" style="flex:1;margin-right:8px;">{{ column.name }}</div>
                       <el-dropdown>
-                        <i class="el-icon-copy-document" title="复制" style="flex:1;margin-right:4px;"/>
+                        <i class="el-icon-copy-document" title="复制" style="flex:1;margin-right:4px;" />
                         <el-dropdown-menu slot="dropdown">
                           <el-dropdown-item
                             @click.native="getWhereByColumn(1, column)"
@@ -1313,7 +1313,7 @@
             </div>
           </div>
           <div class="sql-content">
-            <div
+            <!-- <div
               class="left-action action-icon df-c-b"
               @click="switchOpenSelectVarPanel()"
             >
@@ -1329,7 +1329,7 @@
                 width="8px"
                 height="8px"
               >
-            </div>
+            </div> -->
             <div v-if="datasourceType == 1" style="height: 25px">
               <el-tooltip
                 content="该操作将执行sql语句并校验sql语句的正确性，并将查询字段全部显示到下方的表格中"
