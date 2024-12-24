@@ -139,6 +139,7 @@
 
 ::v-deep .menu-item .options.visible {
   display: block;
+  z-index: 99;
 }
 
 ::v-deep .menu-item .options li {
