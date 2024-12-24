@@ -45,7 +45,8 @@ api.reportDatasource = {
   getReportDatasourceApi: '/api/reportDatasource/getReportDatasource', // 获取数据源
   connectionTestApi: '/api/reportDatasource/connectionTest', // 连接测试
   getDatasourceSelectDataApi: '/api/reportDatasource/getDatasourceSelectData', // 获取下拉框数据
-  getDatabseTablesApi: '/api/reportDatasource/getDatabseTables' // 获取数据源表信息
+  getDatabseTablesApi: '/api/reportDatasource/getDatabseTables', // 获取数据源表信息
+  parseApiResultAttrApi: '/api/reportDatasource/parseApiResultAttr' // 解析api数据集结果属性
 }
 api.sysRoleReport = {
   // listApi:"/api/sysRoleReport/getReports",//获取表格数据api
