@@ -51,7 +51,7 @@ public class ReportTplDatasetGroupServiceImpl extends ServiceImpl<ReportTplDatas
 		QueryWrapper<ReportTplDatasetGroup> queryWrapper = new QueryWrapper<>();
 		queryWrapper.eq("tpl_id", model.getTplId());
 		queryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
-		List<ReportTplDatasetGroup> list = this.baseMapper.searchDataLike(model);
+		List<ReportTplDatasetGroup> list = this.baseMapper.selectList(queryWrapper);
 		return list;
 	}
 
@@ -82,6 +82,7 @@ public class ReportTplDatasetGroupServiceImpl extends ServiceImpl<ReportTplDatas
 		//校验分组名称否已经存在
 		QueryWrapper<ReportTplDatasetGroup> queryWrapper = new QueryWrapper<ReportTplDatasetGroup>();
 		queryWrapper.eq("tpl_id", model.getTplId());
+		queryWrapper.eq("group_name", model.getGroupName());
 		queryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
 		ReportTplDatasetGroup isExist = this.getOne(queryWrapper,false);
 		if(isExist != null)
@@ -108,6 +109,7 @@ public class ReportTplDatasetGroupServiceImpl extends ServiceImpl<ReportTplDatas
 		QueryWrapper<ReportTplDatasetGroup> queryWrapper = new QueryWrapper<ReportTplDatasetGroup>();
 		queryWrapper.ne("id", model.getId());
 		queryWrapper.eq("tpl_id", model.getTplId());
+		queryWrapper.eq("group_name", model.getGroupName());
 		queryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
 		ReportTplDatasetGroup isExist = this.getOne(queryWrapper,false);
 		if(isExist != null)

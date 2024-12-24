@@ -933,7 +933,7 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 						WordUtil.addTab(paragraph,null);
 						break;
 					case "table":
-						WordUtil.addTable(doc,content,docTplChartsObj,docTplCodesObj,dynamicData,isTemplate);
+						abstractNumID = WordUtil.addTable(doc,content,docTplChartsObj,docTplCodesObj,dynamicData,isTemplate,abstractNumID);
 						break;
 					case "superscript":
 						if(paragraph == null) {

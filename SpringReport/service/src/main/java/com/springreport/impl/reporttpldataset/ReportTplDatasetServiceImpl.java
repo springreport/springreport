@@ -1254,7 +1254,7 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 		QueryWrapper<ReportTplDatasetGroup> groupQueryWrapper = new QueryWrapper<>();
 		groupQueryWrapper.eq("tpl_id", dataset.getTplId());
 		groupQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
-		long count = this.iReportTplDatasetGroupService.count();
+		long count = this.iReportTplDatasetGroupService.count(groupQueryWrapper);
 		ReportTplDatasetGroup reportTplDatasetGroup = null;
 		if(count == 0) {
 			reportTplDatasetGroup = new ReportTplDatasetGroup();
@@ -1283,7 +1283,7 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 				BeanUtils.copyProperties(reportTplDatasets.get(i), reportDatasetDto);
 				datasets.add(reportDatasetDto);
 			}
-			this.iReportDatasourceService.cacheDatasetsColumns(reportTplDatasets,userInfoDto);
+//			this.iReportDatasourceService.cacheDatasetsColumns(reportTplDatasets,userInfoDto);
 		}
 		Map<Long, List<ReportDatasetDto>> reportDatasetsMap = null;
 		if(ListUtil.isNotEmpty(datasets)) {
