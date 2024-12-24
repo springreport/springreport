@@ -1,6 +1,11 @@
 <!--表格组件 -->
 <template>
   <section class="ces-table-page">
+    <textarea
+      id="tableclipboradInput"
+      value=""
+      style="opacity: 0; position: absolute"
+    />
     <!-- 表格操作按钮 -->
     <section class="ces-handle" v-if="tableHandles.length > 0">
       <el-row class="operate">
@@ -291,14 +296,10 @@ export default {
     },
     celldblclick(row, column, cell, event) {
       let _this = this
-      this.$copyText(row[column.property]).then(
-        function (e) {
-          // _this.onCopy()
-        },
-        function (e) {
-          // _this.onError()
-        }
-      )
+      const input = document.getElementById('tableclipboradInput') // 承载复制内容
+      input.value = row[column.property] // 修改文本框的内容
+      input.select() // 选中文本
+      document.execCommand('copy') // 执行浏览器复制命令
     },
      load(tree, treeNode, resolve){
       this.$emit('load', tree,treeNode,resolve)
