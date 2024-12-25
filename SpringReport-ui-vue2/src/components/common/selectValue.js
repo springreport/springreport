@@ -22,7 +22,8 @@ selectUtil.datasourceType = [
   { value: 9, label: 'elasticsearch' },
   { value: 10, label: 'TDengine' },
   { value: 11, label: 'kingbase(人大金仓)' },
-  { value: 12, label: '瀚高(highgo)' }
+  { value: 12, label: '瀚高(highgo)' },
+  { value: 13, label: 'doris' }
 ]
 selectUtil.yesNo = [
   { value: 1, label: '是' },
