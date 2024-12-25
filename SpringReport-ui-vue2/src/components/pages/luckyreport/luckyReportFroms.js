@@ -573,7 +573,7 @@ export default {
     this.isInputPassWord()
     this.getUsers()
     this.getTplGroupDatasets()
-    // this.getReportTplDateSource()
+    this.getReportTplDateSource()
     var that = this
     this.designHeight = document.body.clientHeight - 46
     window.onresize = function() {
@@ -604,7 +604,6 @@ export default {
             })
           }
         })
-        console.log(accarr)
         this.dataGroupLoading = false
       })
     },
@@ -1361,7 +1360,8 @@ export default {
         this.procedureInParamTableData.tableData = JSON.parse(dataSet.inParam)
         this.procedureOutParamTableData.tableData = JSON.parse(dataSet.outParam)
       }
-      this.getReportTplDateSource()
+      this.getReportTplDateSource();
+      this.getTplGroupDatasets();
     },
     // 删除数据集
     deleteDataSet(dataSet) {
@@ -1425,7 +1425,7 @@ export default {
           }
           this.commonUtil.doPost(obj).then(response => {
             if (response.code == '200') {
-              this.getDataSets()
+              this.getTplGroupDatasets();
               // let isExist = false;
               // let dataSet = response.responseData;
               // let index = -1;
@@ -1986,12 +1986,12 @@ export default {
       this.getTplSettings()
     },
     async clickDatasets(o) {
-      if (o.isActive) {
-        this.$set(o, 'isActive', false)
-      } else {
-        this.$set(o, 'isActive', true)
-        await this.getDatasetColumns(o)
+      this.datasetItemActive = o.id
+      if(o.isActive){
+        return;
       }
+      this.$set(o, 'isActive', true)
+      await this.getDatasetColumns(o)
       if (o.datasetType == '2') {
         this.getApiDefaultRequestResult(o)
       }
@@ -2835,7 +2835,7 @@ export default {
           this.changeHorizontalPage()
         }
       } else if (k == 'datasetChanged') {
-        this.getDataSets()
+        this.getTplGroupDatasets();
         this.commonUtil.showMessage({ message: '报表数据集更新，数据集名称：' + v.datasetName + '，操作人：' + data.userName, type: this.commonConstants.messageType.warning })
       } else if (k == 'sheetNotExist') {
         this.commonUtil.showMessage({ message: '该sheet页已经被删除，请尝试刷新页面获取最新的模板数据', type: this.commonConstants.messageType.warning })
