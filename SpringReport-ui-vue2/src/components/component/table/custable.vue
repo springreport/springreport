@@ -25,6 +25,7 @@
     <!-- 数据表格 -->
     <section class="ces-table">
       <el-table
+        ref="cesTable"
         v-loading="loading"
         :data="tableData"
         :size="size"
@@ -37,7 +38,6 @@
         :highlight-current-row="highlightCurrentRow"
         :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
         :lazy="lazy"
-        ref="cesTable"
         :load="load"
         @selection-change="selectChange"
         @current-change="currentChange"
@@ -218,8 +218,8 @@
 export default {
   props: {
     // 表格型号：mini,medium,small
-    size: { type: String, default: 'small' },
-    isBorder: { type: Boolean, default: false },
+    size: { type: String, default: 'medium' },
+    isBorder: { type: Boolean, default: true },
     lazy: { type: Boolean, default: false },
     defaultExpandAll: { type: Boolean, default: false },
     stripe: { type: Boolean, default: false },
@@ -314,9 +314,10 @@ export default {
 }
 .ces-table {
   /* height: 60vh; */
-  height: calc(100vh - 340px);
+  height: calc(100vh - 286px);
 }
 .ces-pagination {
+  padding: 10px 16px 4px;
   text-align: right;
   .pagination-total {
     font-size: 14px;

@@ -12,19 +12,28 @@
 }
 /* 更改公共组件table样式 */
 .ces-table-page {
-  padding: 24px 24px 8px;
+  padding: 0px 0px 8px;
   background: #ffffff;
   border-radius: 8px;
+  .el-table__header-wrapper{
+    .el-table__cell{
+      padding: 12px 0;
+    }
+  }
+}
+.el-table__body tr.hover-row > td.el-table__cell{
+  background-color: rgba(23, 183, 148, 0.05) !important;
 }
 .ces-table-page thead tr th {
-  background: linear-gradient(0deg, #e8f8f2, #e8f8f2), #ffffff !important;
-  color: rgba(0, 0, 0, 0.4);
+  background: linear-gradient(0deg, #FAFAFA, #FAFAFA), #ffffff !important;
+  color: #333;
   font-weight: 400;
   font-size: 14px;
   padding: 12px 0;
+  font-weight: bold;
 }
 .ces-table-page tbody tr td {
-  color: rgba(0, 0, 0, 0.9);
+  color: #595959;
 }
 /* 更改树节点的状态 */
 .el-tree-node__content:hover {
@@ -201,21 +210,51 @@
   margin-right: 4px;
 }
 .action-icon-search {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-size: 100% 100%;
+  margin-right: 4px;
   background-image: url("~@/static/img/common/chaxun.png");
 }
 .action-icon-add {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-size: 100% 100%;
+  margin-right: 4px;
   background-image: url("~@/static/img/common/add.png");
 }
 .action-icon-del {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-size: 100% 100%;
+  margin-right: 4px;
   background-image: url("~@/static/img/common/del.png");
 }
 .action-icon-export {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-size: 100% 100%;
+  margin-right: 4px;
   background-image: url("~@/static/img/common/export.png");
 }
 .action-icon-import {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-size: 100% 100%;
+  margin-right: 4px;
   background-image: url("~@/static/img/common/import.png");
 }
 .action-icon-refresh {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-size: 100% 100%;
+  margin-right: 4px;
   background-image: url("~@/static/img/common/refresh.png");
 }
 .search-drawer {

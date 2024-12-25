@@ -1,28 +1,38 @@
 <template>
-    <div  class="_tablepage">
-        <!-- <searchForm  :searchForm="pageData.searchForm" :searchData="pageData.queryData" :searchHandle="pageData.searchHandle">
-        </searchForm> -->
-       <cusTable  ref="custable"
-      :isSelection='false'
-      :isIndex='false'
-      :isPagination='false'
-      :isHandle='true'
-      :tableCols='pageData.tableCols' 
-      :tableHandles='pageData.tableHandles'
-      :tableData='pageData.tableData'
-      :tablePage='pageData.tablePage'
-      :lazy='pageData.lazy'
-      @handleCurrentChange='searchtablelist()'
-      @selectChange='selectChange'
-      @load="loadData"></cusTable>
-       <modal ref="modalRef" :modalConfig='pageData.modalConfig' 
-       :modalForm='pageData.modalForm' :modalData='pageData.modalData' 
-       :modalHandles='pageData.modalHandles'
-       @closeModal="closeModal()"></modal>
-       <modal ref="folderModalRef" :modalConfig='pageData.folderModalConfig' 
-       :modalForm='pageData.folderModalForm' :modalData='pageData.folderModalData' 
-       :modalHandles='pageData.folderModalHandles'
-       @closeModal="closeFolderModal()"></modal>
-    </div>
+  <div class="_tablepage">
+    <searchForm
+      :table-handles="pageData.tableHandles"
+    />
+    <cusTable
+      ref="custable"
+      :is-selection="false"
+      :is-index="false"
+      :is-pagination="false"
+      :is-handle="true"
+      :table-cols="pageData.tableCols"
+      :table-data="pageData.tableData"
+      :table-page="pageData.tablePage"
+      :lazy="pageData.lazy"
+      @handleCurrentChange="searchtablelist()"
+      @selectChange="selectChange"
+      @load="loadData"
+    />
+    <modal
+      ref="modalRef"
+      :modal-config="pageData.modalConfig"
+      :modal-form="pageData.modalForm"
+      :modal-data="pageData.modalData"
+      :modal-handles="pageData.modalHandles"
+      @closeModal="closeModal()"
+    />
+    <modal
+      ref="folderModalRef"
+      :modal-config="pageData.folderModalConfig"
+      :modal-form="pageData.folderModalForm"
+      :modal-data="pageData.folderModalData"
+      :modal-handles="pageData.folderModalHandles"
+      @closeModal="closeFolderModal()"
+    />
+  </div>
 </template>
 <script src="./OnlineTpl.js"></script>

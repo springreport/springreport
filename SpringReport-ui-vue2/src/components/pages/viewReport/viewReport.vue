@@ -17,27 +17,23 @@
       ></el-tree>
     </div> -->
     <div class="_tablepage">
-      <!-- <searchForm
-        ref="searchRef"
-        :searchForm="pageData.searchForm"
-        :searchData="pageData.queryData"
-        :searchHandle="pageData.searchHandle"
-      ></searchForm> -->
+      <searchForm
+        :table-handles="pageData.tableHandles"
+      />
       <cusTable
         ref="custable"
-        :isSelection="false"
-        :isIndex="false"
-        :isPagination="false"
-        :isHandle="true"
-        :tableCols="pageData.tableCols"
-        :tableHandles="pageData.tableHandles"
-        :tableData="pageData.tableData"
-        :tablePage="pageData.tablePage"
-        :lazy='pageData.lazy'
+        :is-selection="false"
+        :is-index="false"
+        :is-pagination="false"
+        :is-handle="true"
+        :table-cols="pageData.tableCols"
+        :table-data="pageData.tableData"
+        :table-page="pageData.tablePage"
+        :lazy="pageData.lazy"
         @handleCurrentChange="searchtablelist()"
         @selectChange="selectChange"
         @load="loadData"
-      ></cusTable>
+      />
     </div>
   </div>
 </template>

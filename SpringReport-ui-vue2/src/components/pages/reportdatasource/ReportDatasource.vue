@@ -4,6 +4,7 @@
       :search-form="pageData.searchForm"
       :search-data="pageData.queryData"
       :search-handle="pageData.searchHandle"
+      :table-handles="pageData.tableHandles"
     />
     <cusTable
       ref="custable"
@@ -13,7 +14,6 @@
       :is-handle="true"
       :loading="tableLoading"
       :table-cols="pageData.tableCols"
-      :table-handles="pageData.tableHandles"
       :table-data="pageData.tableData"
       :table-page="pageData.tablePage"
       @handleCurrentChange="searchtablelist()"

@@ -1,33 +1,38 @@
 <template>
-    <div class="container">
-        <div class="left">
-        <el-tree
-            :data="pageData.treeData"
-            :props="pageData.defaultProps"
-            @node-click="handleNodeClick"
-            default-expand-all
-        ></el-tree>
-        </div>
-        <div  class="_tablepage">
-            <searchForm  :searchForm="pageData.searchForm" :searchData="pageData.queryData" :searchHandle="pageData.searchHandle">
-            </searchForm>
-            <cusTable ref="custable" 
-            :isSelection='true'
-            :isIndex='true'
-            :isPagination='true'
-            :isHandle='true'
-            :tableCols='pageData.tableCols' 
-            :tableHandles='pageData.tableHandles'
-            :tableData='pageData.tableData'
-            :tablePage='pageData.tablePage'
-            @handleCurrentChange='searchtablelist()'
-            @selectChange='selectChange'></cusTable>
-            <modal ref="modalRef" :modalConfig='pageData.modalConfig' 
-            :modalForm='pageData.modalForm' :modalData='pageData.modalData' 
-            :modalHandles='pageData.modalHandles'
-            @closeModal="closeModal()"></modal>
-        </div>
+  <div class="container">
+    <div class="left">
+      <el-tree
+        :data="pageData.treeData"
+        :props="pageData.defaultProps"
+        default-expand-all
+        @node-click="handleNodeClick"
+      />
     </div>
+    <div class="_tablepage">
+      <searchForm :search-form="pageData.searchForm" :search-data="pageData.queryData" :search-handle="pageData.searchHandle" :table-handles="pageData.tableHandles" />
+      <cusTable
+        ref="custable"
+        :is-selection="true"
+        :is-index="true"
+        :is-pagination="true"
+        :is-handle="true"
+        :table-cols="pageData.tableCols"
+
+        :table-data="pageData.tableData"
+        :table-page="pageData.tablePage"
+        @handleCurrentChange="searchtablelist()"
+        @selectChange="selectChange"
+      />
+      <modal
+        ref="modalRef"
+        :modal-config="pageData.modalConfig"
+        :modal-form="pageData.modalForm"
+        :modal-data="pageData.modalData"
+        :modal-handles="pageData.modalHandles"
+        @closeModal="closeModal()"
+      />
+    </div>
+  </div>
 </template>
 <script src="./SysUser.js"></script>
 <style scoped>

@@ -17,63 +17,63 @@
       ></el-tree>
     </div> -->
     <div class="_tablepage">
-      <!-- <searchForm
-        ref="searchRef"
-        :searchForm="pageData.searchForm"
-        :searchData="pageData.queryData"
-        :searchHandle="pageData.searchHandle"
-      ></searchForm> -->
+      <searchForm
+        :table-handles="pageData.tableHandles"
+      />
       <cusTable
         ref="custable"
-        :isSelection="false"
-        :isIndex="false"
-        :isPagination="false"
-        :isHandle="true"
-        :tableCols="pageData.tableCols"
-        :tableHandles="pageData.tableHandles"
-        :tableData="pageData.tableData"
-        :tablePage="pageData.tablePage"
-        :lazy='pageData.lazy'
+        :is-selection="false"
+        :is-index="false"
+        :is-pagination="false"
+        :is-handle="true"
+        :table-cols="pageData.tableCols"
+        :table-data="pageData.tableData"
+        :table-page="pageData.tablePage"
+        :lazy="pageData.lazy"
         @handleCurrentChange="searchtablelist()"
         @selectChange="selectChange"
         @load="loadData"
-      ></cusTable>
+      />
       <modal
         ref="modalRef"
-        :modalConfig="pageData.modalConfig"
-        :modalForm="pageData.modalForm"
-        :modalData="pageData.modalData"
-        :modalHandles="pageData.modalHandles"
+        :modal-config="pageData.modalConfig"
+        :modal-form="pageData.modalForm"
+        :modal-data="pageData.modalData"
+        :modal-handles="pageData.modalHandles"
         @closeModal="closeModal()"
-      ></modal>
+      />
       <modal
         ref="copyModalRef"
-        :modalConfig="pageData.copyModalConfig"
-        :modalForm="pageData.copyModalForm"
-        :modalData="pageData.copyModalData"
-        :modalHandles="pageData.copyModalHandles"
+        :modal-config="pageData.copyModalConfig"
+        :modal-form="pageData.copyModalForm"
+        :modal-data="pageData.copyModalData"
+        :modal-handles="pageData.copyModalHandles"
         @closeModal="closeCopyModal()"
-      ></modal>
+      />
       <modal
         ref="changePwd"
-        :modalConfig="pageData.changePwdConfig"
-        :modalForm="pageData.changePwdForm"
-        :modalData="pageData.changePwdModalData"
-        :modalHandles="pageData.changePwdModalHandles"
+        :modal-config="pageData.changePwdConfig"
+        :modal-form="pageData.changePwdForm"
+        :modal-data="pageData.changePwdModalData"
+        :modal-handles="pageData.changePwdModalHandles"
         @closeModal="closePwdModal()"
-      ></modal>
+      />
       <modal
         ref="shareReport"
-        :modalConfig="pageData.shareReportConfig"
-        :modalForm="pageData.shareReportForm"
-        :modalData="pageData.shareReportModalData"
-        :modalHandles="pageData.shareReportModalHandles"
+        :modal-config="pageData.shareReportConfig"
+        :modal-form="pageData.shareReportForm"
+        :modal-data="pageData.shareReportModalData"
+        :modal-handles="pageData.shareReportModalHandles"
         @closeModal="closeShareReportModal()"
-      ></modal>
-      <modal ref="folderModalRef" :modalConfig='pageData.folderModalConfig' 
-       :modalForm='pageData.folderModalForm' :modalData='pageData.folderModalData' 
-       :modalHandles='pageData.folderModalHandles'
-       @closeModal="closeFolderModal()"></modal>
+      />
+      <modal
+        ref="folderModalRef"
+        :modal-config="pageData.folderModalConfig"
+        :modal-form="pageData.folderModalForm"
+        :modal-data="pageData.folderModalData"
+        :modal-handles="pageData.folderModalHandles"
+        @closeModal="closeFolderModal()"
+      />
       <textarea id="clipboradInput" style="opacity:0;position:absolute" />
     </div>
   </div>

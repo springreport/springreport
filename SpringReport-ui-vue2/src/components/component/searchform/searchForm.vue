@@ -3,22 +3,55 @@
   <div>
     <div class="search-content df-c-b">
       <div class="left-warp df-c">
-        <div class="action-item df-c" @click="drawer = true">
+        <!-- 查询显示与否根据searchForm -->
+        <div
+          v-if="searchForm.length"
+          v-has="'reportDatasource_search'"
+          class="action-item df-c"
+          @click="drawer = true"
+        >
           <i class="el-icon-search" style="margin-right: 4px" />
           <span>查询</span>
-          <!-- 这块不点击查询，会有视觉上的bug -->
-          <div v-show="conditionNum" class="condition df-c" @click.stop="clearCondition">
+          <!-- conditionNum这块不点击查询，会有视觉上的bug，点击清除条件 -->
+          <div
+            v-show="conditionNum"
+            class="condition df-c"
+            @click.stop="clearCondition"
+          >
             <span style="margin-right: 4px">{{ conditionNum }}</span>
-            <i class="el-icon-close" style="color: #959EA6;" />
+            <i class="el-icon-close" style="color: #959ea6" />
           </div>
         </div>
-        <!-- <div class="action-item">
-          <span class="action-icon action-icon-del" />
-          <span>删除</span>
-        </div> -->
+        <div
+          v-for="(item, index) in leftTableHandles"
+          :key="index"
+          class="action-item df-c"
+          :class="{'action-item-del':item.iconClass=='action-icon-del'}"
+          @click="item.handle()"
+        >
+          <i v-if="item.iconClass" :class="item.iconClass" />
+          <span>{{ item.label }}</span>
+        </div>
+      </div>
+
+      <div class="right-warp">
+        <el-button
+          v-for="item in rightTableHandles"
+          :key="item.label"
+          v-has="item.auth"
+          :type="item.type"
+          size="mini"
+          @click="item.handle()"
+        >
+          <div class="df-c">
+            <span v-if="item.iconClass" :class="item.iconClass" style="width: 12px;height: 12px;" />
+            <span>{{ item.label }}</span>
+          </div>
+        </el-button>
       </div>
     </div>
     <el-drawer
+      v-if="searchForm.length"
       title="添加筛选项"
       :visible.sync="drawer"
       :close-on-press-escape="false"
@@ -287,7 +320,13 @@ export default {
       type: Array,
       default: () => []
     },
+    // 搜索按钮
     searchHandle: {
+      type: Array,
+      default: () => []
+    },
+    // 表格操作按钮
+    tableHandles: {
       type: Array,
       default: () => []
     },
@@ -302,6 +341,7 @@ export default {
     }
   },
   computed: {
+    // 查询条件的数量
     conditionNum() {
       let count = 0
       for (const key in this.searchData) {
@@ -310,13 +350,25 @@ export default {
           // 检查值是否为 null 或者是空字符串
           if (value !== null && value !== '') {
             // 如果值是其他类型的非空值，比如数字或布尔值，也视为有效
-            if (typeof value === 'number' || typeof value === 'boolean' || (typeof value === 'string' && value.trim() !== '')) {
+            if (
+              typeof value === 'number' ||
+              typeof value === 'boolean' ||
+              (typeof value === 'string' && value.trim() !== '')
+            ) {
               count++
             }
           }
         }
       }
       return count
+    },
+    // 左侧操作 删除、刷新类
+    leftTableHandles() {
+      return this.tableHandles.filter((item) => item.position !== 'right')
+    },
+    // 右侧操作 一般是添加类
+    rightTableHandles() {
+      return this.tableHandles.filter((item) => item.position === 'right')
     }
   },
   methods: {
@@ -326,7 +378,7 @@ export default {
     },
     // 清除条件
     clearCondition() {
-      this.searchHandle.forEach(item => {
+      this.searchHandle.forEach((item) => {
         if (item.label.includes('重置') || item.label.includes('清除条件')) {
           console.log(item)
           item.handle()
@@ -363,8 +415,11 @@ export default {
         border-radius: 4px;
         background: rgba(23, 183, 148, 0.05);
         font-size: 12px;
-        color: #17B794;
+        color: #17b794;
       }
+    }
+    .action-item-del{
+      color: #FF4D4F;
     }
   }
 }
