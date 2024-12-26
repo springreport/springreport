@@ -6,7 +6,10 @@
           v-for="tag in tagsList"
           :key="tag.title"
           class="menu-tag df-c"
-          :class="{ 'menu-tag-active': isActive(tag) }"
+          :class="[
+            `${tag.path.replaceAll('/', '')}`,
+            isActive(tag) ? 'menu-tag-active' : '',
+          ]"
           @click="goPage(tag.path)"
         >
           <span>{{ tag.title }}</span>
@@ -42,13 +45,19 @@
   border-bottom: 1px solid #e6e6e6;
   justify-content: space-between;
   .ycy_scrollbar {
+    width: 100%;
     margin-right: 6px;
   }
+  ::v-deep .el-scrollbar__wrap {
+    overflow-y: hidden;
+  }
   .left {
-    display: flex;
-    flex-flow: row nowrap;
+    display: -webkit-box;
+    -webkit-box-align: center;
     height: 56px;
     align-items: center;
+    // overflow-x: auto;
+    // white-space: nowrap; /* 防止Tab项换行 */
     .el-tag {
       height: 32px;
       line-height: 32px;
@@ -100,6 +109,7 @@
     height: 56px;
     display: flex;
     align-items: center;
+    flex-shrink: 0;
     .more-menu {
       cursor: pointer;
       color: #333;
@@ -177,9 +187,25 @@ export default {
         })
       }
       this.GLOBAL.tagsList = this.tagsList
+
+      this.$nextTick(() => {
+        this.scrollIntoView(route.path)
+      })
     },
     goPage(path) {
       this.$router.push(path)
+      this.scrollIntoView(path)
+    },
+    // 滚动到元素所在位置
+    scrollIntoView(path) {
+      const currentEle = document.querySelector(`.${path.replaceAll('/', '')}`)
+      if (currentEle) {
+        currentEle.scrollIntoView({
+          behavior: 'smooth', // 平滑滚动
+          block: 'nearest', // 保持垂直位置不变
+          inline: 'end' // 水平方向上尽可能接近视口边缘
+        })
+      }
     },
     // 关闭标签
     handleCloseTag(tag) {

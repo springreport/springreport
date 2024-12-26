@@ -23,7 +23,12 @@
       </el-row>
     </section>
     <!-- 数据表格 -->
-    <section class="ces-table">
+    <section
+      class="ces-table"
+      :style="{
+        height: isPagination ? 'calc(100vh - 286px)' : 'calc(100vh - 238px)',
+      }"
+    >
       <el-table
         ref="cesTable"
         v-loading="loading"
@@ -36,7 +41,7 @@
         :default-expand-all="defaultExpandAll"
         :default-selections="defaultSelections"
         :highlight-current-row="highlightCurrentRow"
-        :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+        :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
         :lazy="lazy"
         :load="load"
         @selection-change="selectChange"
@@ -44,7 +49,13 @@
         @cell-dblclick="celldblclick"
       >
         <el-table-column v-if="isSelection" type="selection" align="center" />
-        <el-table-column v-if="isIndex" type="index" :label="indexLabel" align="center" width="50" />
+        <el-table-column
+          v-if="isIndex"
+          type="index"
+          :label="indexLabel"
+          align="center"
+          width="50"
+        />
         <!-- 数据栏 -->
         <el-table-column
           v-for="item in tableCols"
@@ -53,31 +64,43 @@
           :label="item.label"
           :width="item.width"
           :align="item.align"
-          :render-header="item.require?renderHeader:null"
+          :render-header="item.require ? renderHeader : null"
           :show-overflow-tooltip="item.overflow"
           :fixed="item.fixed"
         >
           <template slot-scope="scope">
-            <i v-if="item.icon" :class="scope.row.icon" style="margin-right: 10px" />
+            <i
+              v-if="item.icon"
+              :class="scope.row.icon"
+              style="margin-right: 10px"
+            />
             <!-- html -->
-            <span v-if="item.type==='html'" v-html="item.html(scope.row)" />
+            <span v-if="item.type === 'html'" v-html="item.html(scope.row)" />
             <!-- 按钮 -->
-            <span v-if="item.type==='button'">
+            <span v-if="item.type === 'button'">
               <el-button
                 v-for="btn in item.btnList"
-                v-show="btn.show?btn.show(scope.row):true"
-                :key="(typeof btn.label).toLowerCase()=='string'?btn.label:btn.auth"
+                v-show="btn.show ? btn.show(scope.row) : true"
+                :key="
+                  (typeof btn.label).toLowerCase() == 'string'
+                    ? btn.label
+                    : btn.auth
+                "
                 v-has="btn.auth"
                 :disabled="btn.disabled && btn.disabled(scope.row)"
                 :type="btn.type"
                 :size="size || btn.size"
                 :icon="btn.icon"
-                @click="btn.handle && btn.handle(scope.row,scope.$index)"
-              >{{ (typeof btn.label).toLowerCase()=="string"?btn.label:btn.label(scope.row) }}</el-button>
+                @click="btn.handle && btn.handle(scope.row, scope.$index)"
+              >{{
+                (typeof btn.label).toLowerCase() == "string"
+                  ? btn.label
+                  : btn.label(scope.row)
+              }}</el-button>
             </span>
             <!-- 输入框 -->
             <el-input
-              v-if="item.type==='input'"
+              v-if="item.type === 'input'"
               v-model="scope.row[item.prop]"
               :type="item.inputType"
               :size="size || btn.size"
@@ -87,7 +110,7 @@
             />
             <!-- 下拉框 -->
             <el-select
-              v-if="item.type==='select'"
+              v-if="item.type === 'select'"
               v-model="scope.row[item.prop]"
               :size="size || btn.size"
               :props="item.props"
@@ -103,17 +126,21 @@
             </el-select>
             <!-- 单选组 -->
             <el-radio-group
-              v-if="item.type==='radioGroup'"
+              v-if="item.type === 'radioGroup'"
               v-model="scope.row[item.prop]"
               :disabled="item.isDisabled && item.isDisabled(scope.row)"
               :size="size || btn.size"
               @change="item.change && item.change(scope.row)"
             >
-              <el-radio v-for="ra in item.radios" :key="ra.value" :label="ra.value">{{ ra.label }}</el-radio>
+              <el-radio
+                v-for="ra in item.radios"
+                :key="ra.value"
+                :label="ra.value"
+              >{{ ra.label }}</el-radio>
             </el-radio-group>
             <!-- 复选框 -->
             <el-checkbox-group
-              v-if="item.type==='checkbox'"
+              v-if="item.type === 'checkbox'"
               v-model="scope.row[item.prop]"
               :disabled="item.isDisabled && item.isDisabled(scope.row)"
               :size="size || btn.size"
@@ -127,7 +154,7 @@
             </el-checkbox-group>
             <!-- 评价 -->
             <el-rate
-              v-if="item.type==='rate'"
+              v-if="item.type === 'rate'"
               v-model="scope.row[item.prop]"
               :disabled="item.isDisabled && item.isDisabled(scope.row)"
               :size="size || btn.size"
@@ -135,18 +162,18 @@
             />
             <!-- 开关 -->
             <el-switch
-              v-if="item.type==='switch'"
+              v-if="item.type === 'switch'"
               v-model="scope.row[item.prop]"
               :size="size || btn.size"
-              :active-value="item.values&&item.values[0]"
-              :inactive-value="item.values&&item.values[1]"
+              :active-value="item.values && item.values[0]"
+              :inactive-value="item.values && item.values[1]"
               :disabled="item.isDisabled && item.isDisabled(scope.row)"
               @change="item.change && item.change(scope.row)"
             />
             <!-- 图像 -->
             <!-- <el-image v-if="item.type==='image'" :src="scope.row[item.prop]"/> -->
             <el-popover
-              v-if="item.type==='image' && item.popover"
+              v-if="item.type === 'image' && item.popover"
               placement="right"
               title
               trigger="hover"
@@ -157,18 +184,18 @@
                 slot="reference"
                 :src="scope.row[item.prop]"
                 :alt="scope.row[item.prop]"
-                style="height: 60px;width: 60px;border-radius:50%; "
+                style="height: 60px; width: 60px; border-radius: 50%"
               >
             </el-popover>
             <img
-              v-if="item.type==='image' && !item.popover"
+              v-if="item.type === 'image' && !item.popover"
               :src="scope.row[item.prop]"
               :alt="scope.row[item.prop]"
-              style="height: 60px;width: 60px;border-radius:50%; "
+              style="height: 60px; width: 60px; border-radius: 50%"
             >
             <!-- 滑块 -->
             <el-slider
-              v-if="item.type==='slider'"
+              v-if="item.type === 'slider'"
               v-model="scope.row[item.prop]"
               :disabled="item.isDisabled && item.isDisabled(scope.row)"
               :size="size || btn.size"
@@ -181,17 +208,28 @@
               :size="size || btn.size"
               :class="item.itemClass && item.itemClass(scope.row)"
               @click="item.click && item.click(scope.row)"
-            >{{ (item.formatter && item.formatter(item.prop,scope.row,item.codeType)) || scope.row[item.prop] }}</span>
-            <span v-if="item.type ==='foreachtext'">
+            >{{
+              (item.formatter &&
+                item.formatter(item.prop, scope.row, item.codeType)) ||
+                scope.row[item.prop]
+            }}</span>
+            <span v-if="item.type === 'foreachtext'">
               <p
-                v-for="(val,index) in scope.row[item.prop]"
+                v-for="(val, index) in scope.row[item.prop]"
                 :key="index"
-                style="cursor:pointer;color:blue"
+                style="cursor: pointer; color: blue"
                 @click="item.downloadmp4(val)"
-              >{{ val.fileName }}</p>
+              >
+                {{ val.fileName }}
+              </p>
             </span>
-            <span v-if="item.type ==='link'" @click="item.click && item.click(scope.row)">
-              <p style="cursor:pointer;color:blue">{{ scope.row[item.prop] }}</p>
+            <span
+              v-if="item.type === 'link'"
+              @click="item.click && item.click(scope.row)"
+            >
+              <p style="cursor: pointer; color: blue">
+                {{ scope.row[item.prop] }}
+              </p>
             </span>
           </template>
         </el-table-column>
@@ -309,7 +347,7 @@ export default {
 </script>
 <style lang="scss" scoped >
 .ces-table-require::before {
-  content: '*';
+  content: "*";
   color: red;
 }
 .ces-table {

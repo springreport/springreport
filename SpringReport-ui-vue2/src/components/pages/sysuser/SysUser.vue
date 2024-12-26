@@ -49,6 +49,7 @@
   padding: 6px;
 }
 ._tablepage {
+  width: 100%;
   flex: 1;
 }
 </style>
