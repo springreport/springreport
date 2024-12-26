@@ -17,8 +17,8 @@ export default {
         // 查询条件 end
         // 查询表单按钮start
         searchHandle: [
+          { label: '清除条件', type: '', handle: () => this.resetSearch(), auth: 'sysRole_search' },
           { label: '查询', type: 'primary', handle: () => this.searchtablelist(), auth: 'sysRole_search' },
-          { label: '重置', type: 'warning', handle: () => this.resetSearch(), auth: 'sysRole_search' }
         ],
         // 查询表单按钮end
         // 表格数据start
