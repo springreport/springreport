@@ -1328,8 +1328,8 @@ export default {
       for (let index = 0; index < this.dataSource.length; index++) {
         const element = this.dataSource[index]
         if (this.sqlForm.datasourceId == element.datasourceId) {
+          this.sqlColumnTableData.tableData = []
           if (element.type == '4') {
-            this.sqlColumnTableData.tableData = []
             this.datasourceType = '2'
             if (element.apiColumns) {
               const columns = JSON.parse(element.apiColumns)

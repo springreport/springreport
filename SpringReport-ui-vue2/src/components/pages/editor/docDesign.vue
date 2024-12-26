@@ -760,6 +760,12 @@
                     title="复制"
                     @click="doCopy(item)"
                   />
+                  <i
+                    class="el-icon-circle-plus-outline"
+                    title="添加"
+                    style="margin-left:4px"
+                    @click="doCopy(item,true)"
+                  />
                 </div>
               </div>
               <div class="variable-warp-title">解析表</div>
@@ -790,7 +796,7 @@
                     >
                       <div class="overflow-text" style="flex:1;margin-right:8px;">{{ column.name }}</div>
                       <el-dropdown>
-                        <i class="el-icon-circle-plus-outline" title="复制" />
+                       <i class="el-icon-copy-document" title="复制" style="flex:1;margin-right:4px;" />
                         <el-dropdown-menu slot="dropdown">
                           <el-dropdown-item
                             @click.native="getWhereByColumn(1, column)"
@@ -803,6 +809,23 @@
                           >查询条件(=)</el-dropdown-item>
                           <el-dropdown-item
                             @click.native="getWhereByColumn(4, column)"
+                          >查询条件(in)</el-dropdown-item>
+                        </el-dropdown-menu>
+                      </el-dropdown>
+                      <el-dropdown>
+                        <i class="el-icon-circle-plus-outline" title="添加" />
+                        <el-dropdown-menu slot="dropdown">
+                          <el-dropdown-item
+                            @click.native="getWhereByColumn(1, column,true)"
+                          >仅字段</el-dropdown-item>
+                          <el-dropdown-item
+                            @click.native="getWhereByColumn(2, column,true)"
+                          >表名.字段</el-dropdown-item>
+                          <el-dropdown-item
+                            @click.native="getWhereByColumn(3, column,true)"
+                          >查询条件(=)</el-dropdown-item>
+                          <el-dropdown-item
+                            @click.native="getWhereByColumn(4, column,true)"
                           >查询条件(in)</el-dropdown-item>
                         </el-dropdown-menu>
                       </el-dropdown>
@@ -2058,6 +2081,12 @@
           &:hover{
             color: #fff;
             background: #17B794;
+            ::v-deep .el-icon-circle-plus-outline {
+              color: #fff;
+            }
+            ::v-deep .el-icon-copy-document {
+              color: #fff;
+            }
           }
           &:nth-child(3n){
             margin-right: 0;

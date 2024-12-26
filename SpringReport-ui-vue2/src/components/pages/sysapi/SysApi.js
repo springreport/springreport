@@ -17,8 +17,8 @@ export default {
         //查询条件 end
         //查询表单按钮start
         searchHandle:[
+          {label:'清除条件',type:'',handle:()=>this.resetSearch(),auth:'sysApi_search'},
           {label:'查询',type:'primary',handle:()=>this.searchtablelist(),auth:'sysApi_search'},
-          {label:'重置',type:'warning',handle:()=>this.resetSearch(),auth:'sysApi_search'}
         ],
         //查询表单按钮end
         //表格数据start
@@ -26,8 +26,8 @@ export default {
         //表格数据end
         //表格工具栏按钮 start
         tableHandles:[
-          {label:'新增',type:'primary',handle:()=>this.showModal(this.commonConstants.modalType.insert),auth:'sysApi_insert'},
-          {label:'批量删除',type:'danger',handle:()=>this.deleteBatch(),auth:'sysApi_batchDelete'}
+          {label:'新增',position: 'right', iconClass: 'action-icon-add',type:'primary',handle:()=>this.showModal(this.commonConstants.modalType.insert),auth:'sysApi_insert'},
+          {label:'批量删除',position: 'left', iconClass: 'action-icon-del',type:'danger',handle:()=>this.deleteBatch(),auth:'sysApi_batchDelete'}
         ],
         //表格工具栏按钮 end
         selectList:[],//表格选中的数据

@@ -1,6 +1,6 @@
 <template>
     <div  class="_tablepage">
-        <searchForm  :searchForm="pageData.searchForm" :searchData="pageData.queryData" :searchHandle="pageData.searchHandle">
+        <searchForm  :searchForm="pageData.searchForm" :searchData="pageData.queryData" :searchHandle="pageData.searchHandle" :table-handles="pageData.tableHandles">
         </searchForm>
        <cusTable  
       :isSelection='true'
@@ -8,7 +8,6 @@
       :isPagination='true'
       :isHandle='true'
       :tableCols='pageData.tableCols' 
-      :tableHandles='pageData.tableHandles'
       :tableData='pageData.tableData'
       :tablePage='pageData.tablePage'
       @handleCurrentChange='searchtablelist()'

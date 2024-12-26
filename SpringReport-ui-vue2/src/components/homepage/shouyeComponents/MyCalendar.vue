@@ -141,14 +141,14 @@ export default {
       this.paused = []
       // 角标蓝色1是已执行 黄色2是已暂停
       const data = [
-        {
-          date: '2024-12-08',
-          status: 1
-        },
-        {
-          date: '2024-12-16',
-          status: 2
-        }
+        // {
+        //   date: '2024-12-08',
+        //   status: 1
+        // },
+        // {
+        //   date: '2024-12-16',
+        //   status: 2
+        // }
       ]
       this.executed = data
         .filter((item) => item.status === 1)

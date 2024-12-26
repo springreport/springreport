@@ -58,7 +58,7 @@ const router = new Router({
           component: () =>
             import("@/components/pages/reportdatasource/ReportDatasource.vue"),
           meta: {
-            title: "数据库管理",
+            title: "数据源管理",
           },
         },
         {
@@ -66,7 +66,7 @@ const router = new Router({
           name: "reportTpl",
           component: () => import("@/components/pages/reporttpl/ReportTpl.vue"),
           meta: {
-            title: "报表模板管理",
+            title: "Excel报表",
           },
         },
         {
@@ -139,7 +139,7 @@ const router = new Router({
           component: () =>
             import("@/components/pages/viewReport/viewReport.vue"),
           meta: {
-            title: "报表查看",
+            title: "Excel报表查看",
           },
         },
         {
@@ -169,7 +169,7 @@ const router = new Router({
           name: "onlineTpl",
           component: () => import("@/components/pages/onlinetpl/OnlineTpl.vue"),
           meta: {
-            title: "协同文档管理",
+            title: "Excel协同文档",
           },
         },
         {
@@ -193,7 +193,7 @@ const router = new Router({
           name: "docTpl",
           component: () => import("@/components/pages/doctpl/DocTpl.vue"),
           meta: {
-            title: "word模板管理",
+            title: "word报表",
           },
         },
         {
