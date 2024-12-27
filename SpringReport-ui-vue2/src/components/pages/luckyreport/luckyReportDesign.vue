@@ -398,7 +398,7 @@
                 </el-form-item>
                 <el-form-item
                   v-show="cellForm.dataFrom == 3"
-                  label="数据来源行号"
+                  label="数据来源行号(填写行号值,如1)"
                 >
                   <el-input
                     v-model="cellForm.groupSummaryDependencyr"
@@ -408,16 +408,10 @@
                     :disabled="attrDisabled"
                     @input="changeGroupSummary('r')"
                   />
-                  <el-alert
-                    title="填写行值,如1"
-                    type="success"
-                    :closable="false"
-                    style="height: 30px; width: 125px"
-                  />
                 </el-form-item>
                 <el-form-item
                   v-show="cellForm.dataFrom == 3"
-                  label="数据来源列号"
+                  label="数据来源列号(填写列值,如A)"
                 >
                   <el-input
                     v-model="cellForm.groupSummaryDependencyc"
@@ -426,12 +420,6 @@
                     placeholder="数据来源列号"
                     :disabled="attrDisabled"
                     @input="changeGroupSummary('c')"
-                  />
-                  <el-alert
-                    title="填写列值,如A"
-                    type="success"
-                    :closable="false"
-                    style="height: 30px; width: 126px"
                   />
                 </el-form-item>
                 <el-form-item

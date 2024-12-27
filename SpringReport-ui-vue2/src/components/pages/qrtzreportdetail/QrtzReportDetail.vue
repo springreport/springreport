@@ -16,7 +16,7 @@
        :modalForm='pageData.modalForm' :modalData='pageData.modalData' 
        :modalHandles='pageData.modalHandles'
        @closeModal="closeModal()"></modal>
-       <el-dialog title="参数设置" :visible.sync="pageData.paramDialog"  height="80%" top="20px" :close-on-click-modal='false' @close='closeParamDialog'>
+       <el-dialog title="参数设置" :visible.sync="pageData.paramDialog"  height="80%" width="30%" :close-on-click-modal='false' @close='closeParamDialog'>
             <taskReportForm  ref="reportRef" :reportName="''" :reportForm="pageData.reportForm" :searchData="pageData.searchData">
             </taskReportForm>
              <span slot="footer" class="dialog-footer">
