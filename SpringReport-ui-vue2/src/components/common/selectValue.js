@@ -936,4 +936,9 @@ selectUtil.luckyChartType = [
   { value: 'echarts|pie|default', label: '饼图', img: 'pie-simple.webp' },
   { value: 'echarts|radar|default', label: '雷达图', img: 'radar.webp' }
 ]
+
+selectUtil.cellFillType = [
+  { value: 1, label: '插入' },
+  { value: 2, label: '覆盖' }
+]
 export default selectUtil

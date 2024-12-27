@@ -169,7 +169,7 @@
         </el-collapse-item>
 
         <el-collapse-item title="图表装修" name="chartStyle">
-          <div
+          <!-- <div
             class="cus-collapse-header df-c-b"
             @click="setWidthAndHeightOpen = !setWidthAndHeightOpen"
           >
@@ -181,13 +181,12 @@
                   : 'el-icon-arrow-down'
               "
             />
-          </div>
+          </div> -->
           <div v-show="setWidthAndHeightOpen" class="cus-collapse-content">
             <div
               v-if="component.chartAllType.toLowerCase().indexOf('pie') >= 0"
             >
-              <el-form-item label="饼图设置" class="customLabel" />
-              <el-form-item class="df-form-item" abel="外半径(0-1)">
+              <el-form-item class="df-form-item" label="外半径(0-1)">
                 <el-button
                   type="text"
                   icon="el-icon-minus"
@@ -195,7 +194,6 @@
                 />
                 <el-input
                   v-model="component.defaultOption.spec.outerRadius"
-                  style="width: 100px"
                   @change="changeRadius('1')"
                 />
                 <el-button
@@ -212,7 +210,6 @@
                 />
                 <el-input
                   v-model="component.defaultOption.spec.innerRadius"
-                  style="width: 100px"
                   @change="changeRadius('2')"
                 />
                 <el-button
@@ -239,7 +236,7 @@
             <div
               v-if="component.chartAllType.toLowerCase().indexOf('radar') >= 0"
             >
-              <el-form-item label="雷达图设置" class="customLabel" /><br>
+              <!-- <el-form-item label="雷达图设置" class="customLabel" /><br> -->
               <el-form-item class="df-form-item" label="折线宽度">
                 <el-input
                   v-model="component.defaultOption.spec.line.style.lineWidth"
@@ -461,7 +458,12 @@
             </div>
           </div>
         </el-collapse-item>
-        <el-collapse-item title="坐标轴设置" name="xAndYAxis">
+        <el-collapse-item title="坐标轴设置" name="xAndYAxis" v-if="
+                component.chartAllType.toLowerCase().indexOf('line') >= 0 ||
+                  component.chartAllType.toLowerCase().indexOf('area') >= 0 ||
+                  component.chartAllType.toLowerCase().indexOf('column') >= 0 ||
+                  component.chartAllType.toLowerCase().indexOf('bar') >= 0
+              ">
           <div
             class="cus-collapse-header df-c-b"
             @click="xAxisOpen = !xAxisOpen"
@@ -615,7 +617,7 @@
             >设置规则</el-button>
           </el-form-item>
         </el-collapse-item>
-        <el-collapse-item title="图例设置" name="xAndYAxis">
+        <el-collapse-item title="图例设置" name="legends">
           <el-form-item label="是否显示" class="df-form-item">
             <el-switch
               v-model="component.defaultOption.spec.legends.visible"
