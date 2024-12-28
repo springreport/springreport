@@ -260,6 +260,30 @@
   background-image: url("~@/static/img/common/refresh.png");
 }
 
+.action-icon-conditional-export{
+  width: 14px;
+  height: 14px;
+  background-image: url("~@/static/img/common/conditional-export.png");
+}
+.action-icon-current-export{
+  width: 14px;
+  height: 14px;
+  background-image: url("~@/static/img/common/current-export.png");
+}
+
+.action-icon-export-all{
+  width: 14px;
+  height: 14px;
+  background-image: url("~@/static/img/common/export-all.png");
+}
+
+.action-icon-print{
+  width: 14px;
+  height: 14px;
+  background-image: url("~@/static/img/common/print.png");
+}
+
+
 .search-drawer,
 .handle-drawer {
   .el-drawer__header {
