@@ -112,14 +112,14 @@
     <el-dialog
       title="指定分页"
       :visible.sync="pageDialogVisiable"
-      width="50%"
+      width="30%"
       height="80%"
       :close-on-click-modal="false"
       @close="closePageDialog"
     >
       <el-form
         ref="pageFormRef"
-        :inline="true"
+        label-position="top"
         :model="pageForm"
         class="demo-form-inline"
       >
@@ -133,6 +133,7 @@
             v-model="pageForm.startPage"
             placeholder="起始页"
             size="small"
+            style="width: 100%;"
           >
             <el-option
               v-for="i in Math.ceil(
@@ -157,6 +158,7 @@
             v-model="pageForm.endPage"
             placeholder="结束页"
             size="small"
+            style="width: 100%;"
           >
             <el-option
               v-for="i in Math.ceil(
@@ -184,14 +186,14 @@
     <el-dialog
       title="指定分页"
       :visible.sync="pdfPageDialogVisiable"
-      width="50%"
+      width="30%"
       height="80%"
       :close-on-click-modal="false"
       @close="closePdfPageDialog"
     >
       <el-form
         ref="pdfPageFormRef"
-        :inline="true"
+        label-position="top"
         :model="pdfPageForm"
         class="demo-form-inline"
       >
@@ -205,6 +207,7 @@
             v-model="pdfPageForm.startPage"
             placeholder="起始页"
             size="small"
+            style="width: 100%;"
           >
             <el-option
               v-for="i in Math.ceil(
@@ -229,6 +232,7 @@
             v-model="pdfPageForm.endPage"
             placeholder="结束页"
             size="small"
+            style="width: 100%;"
           >
             <el-option
               v-for="i in Math.ceil(
