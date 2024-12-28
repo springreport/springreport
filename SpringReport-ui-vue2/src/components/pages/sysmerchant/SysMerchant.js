@@ -45,17 +45,17 @@ export default {
         // 表格分页信息end
         // 表格列表头start
         tableCols: [
+          { label: '操作', prop: 'operation', align: 'center', type: 'dropdown', width: 54, btnList: [
+            { label: '查看', type: 'text', auth: 'sysMerchant_getDetail', handle: (row) => this.showModal(this.commonConstants.modalType.detail, row.id) },
+            { label: '编辑', type: 'text', auth: 'sysMerchant_edit', handle: (row) => this.showModal(this.commonConstants.modalType.update, row.id) },
+            { label: '删除', type: 'text', auth: 'sysMerchant_delete', handle: (row) => this.deleteOne(row.id) }
+          ] },
           { label: '租户编号', prop: 'merchantNo', align: 'center' },
           { label: '租户名称', prop: 'merchantName', align: 'center' },
           { label: '电话', prop: 'phone', align: 'center' },
           { label: '邮箱', prop: 'email', align: 'center' },
           { label: '状态', prop: 'status', align: 'center', codeType: 'status', formatter: this.commonUtil.getTableCodeName },
           { label: '权限模板', prop: 'templateName', align: 'center' },
-          { label: '操作', prop: 'operation', align: 'center', type: 'button', btnList: [
-            { label: '查看', type: 'text', auth: 'sysMerchant_getDetail', handle: (row) => this.showModal(this.commonConstants.modalType.detail, row.id) },
-            { label: '编辑', type: 'text', auth: 'sysMerchant_edit', handle: (row) => this.showModal(this.commonConstants.modalType.update, row.id) },
-            { label: '删除', type: 'text', auth: 'sysMerchant_delete', handle: (row) => this.deleteOne(row.id) }
-          ] }
         ],
         // 表格列表头end
         // modal配置 start

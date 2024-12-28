@@ -439,7 +439,10 @@ export default {
         { type: 'Select', label: '页码是否显示', prop: 'pageShow', rules: { required: true }, options: this.selectUtil.yesNo, change: this.changePageShow },
         { type: 'Select', label: '页码显示位置', prop: 'pagePosition', rules: { required: true }, options: this.selectUtil.pdfPosition },
         { type: 'Select', label: '是否水平分页', prop: 'horizontalPage', rules: { required: true }, options: this.selectUtil.yesNo, change: this.changeHorizontalPage },
-        { type: 'Input', label: '分页列', prop: 'horizontalPageColumn', rules: { required: true }}
+        { type: 'Input', label: '分页列', prop: 'horizontalPageColumn', rules: { required: true }},
+        { type: 'Select', label: '固定表头', prop: 'fixedHeader', rules: { required: true }, options: this.selectUtil.yesNo, change: this.changeFixedHeader },
+        { type: 'Input', label: '固定表头起始行', prop: 'fixedHeaderStart', rules: { required: true,type:'positiveInt'}},
+        { type: 'Input', label: '固定表头结束行', prop: 'fixedHeaderEnd', rules: { required: true ,type:'positiveInt'}},
       ],
       settingFormData: {
         pageType: null, // 纸张类型
@@ -456,7 +459,10 @@ export default {
         pageShow: null,
         pagePosition: null,
         horizontalPage: null,
-        horizontalPageColumn: null
+        horizontalPageColumn: null,
+        fixedHeader:null,
+        fixedHeaderStart:null,
+        fixedHeaderEnd:null
       },
       defaultSettingFormData: {
         pageType: 2, // 纸张类型
@@ -3365,6 +3371,9 @@ export default {
           printSettings.pagePosition = that.settingFormData.pagePosition
           printSettings.horizontalPage = that.settingFormData.horizontalPage
           printSettings.horizontalPageColumn = that.settingFormData.horizontalPageColumn
+          printSettings.fixedHeader = that.settingFormData.fixedHeader
+          printSettings.fixedHeaderStart = that.settingFormData.fixedHeaderStart
+          printSettings.fixedHeaderEnd = that.settingFormData.fixedHeaderEnd
           if (printSettings.horizontalPage == 1) {
             luckysheet.addLuckysheetDivider(printSettings.horizontalPageColumn)
           } else {
@@ -3573,6 +3582,7 @@ export default {
           this.changeWaterMarkShow()
           this.changePageShow()
           this.changeHorizontalPage()
+          this.changeFixedHeader()
         }
       } else if (k == 'datasetChanged') {
         this.getTplGroupDatasets();
@@ -4269,6 +4279,9 @@ export default {
         that.settingFormData.pagePosition = printSettings.pagePosition
         that.settingFormData.horizontalPage = printSettings.horizontalPage
         that.settingFormData.horizontalPageColumn = printSettings.horizontalPageColumn
+        that.settingFormData.fixedHeader = printSettings.fixedHeader
+        that.settingFormData.fixedHeaderStart = printSettings.fixedHeaderStart
+        that.settingFormData.fixedHeaderEnd = printSettings.fixedHeaderEnd
       } else {
         that.settingFormData = { ...that.defaultSettingFormData }
       }
@@ -4276,6 +4289,7 @@ export default {
       that.changeWaterMarkShow()
       that.changePageShow()
       that.changeHorizontalPage()
+      that.changeFixedHeader();
     },
     uploadFileClick(type) {
       this.uploadType = type
@@ -4483,7 +4497,20 @@ export default {
       if (this.chartSettingShow) {
         this.chartOptions = chartOptions
       }
-    }
+    },
+    changeFixedHeader() {
+      if (this.settingFormData.fixedHeader == 1) {
+        this.settingModalForm[16].show = true
+        this.settingModalForm[16].rules.required = true
+        this.settingModalForm[17].show = true
+        this.settingModalForm[17].rules.required = true
+      } else {
+        this.settingModalForm[16].show = false
+        this.settingModalForm[16].rules.required = false
+        this.settingModalForm[17].show = false
+        this.settingModalForm[17].rules.required = false
+      }
+    },
   },
   watch: {
     'settingFormData.waterMarkImgs': function(newValue, oldValue) {

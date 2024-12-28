@@ -44,16 +44,16 @@ export default {
         // 表格分页信息end
         // 表格列表头start
         tableCols: [
-          { label: '编码', prop: 'code', align: 'center', overflow: true },
-          { label: '数据源名称', prop: 'name', align: 'center', overflow: true },
-          { label: '数据源类型', prop: 'type', align: 'center', formatter: this.commonUtil.getTableCodeName, codeType: 'dataSourceType', overflow: true },
-          { label: '数据源链接', prop: 'jdbcUrl', align: 'center', overflow: true },
-          { label: '操作', prop: 'operation', align: 'center', type: 'button', width: 220, fixed: 'right', btnList: [
+          { label: '操作', prop: 'operation', align: 'center', type: 'dropdown', width: 54, btnList: [
             { label: '查看', type: 'text', auth: 'reportDatasource_getDetail', handle: (row) => this.showModal(this.commonConstants.modalType.detail, row.id) },
             { label: '编辑', type: 'text', auth: 'reportDatasource_update', handle: (row) => this.showModal(this.commonConstants.modalType.update, row.id) },
             { label: '删除', type: 'text', auth: 'reportDatasource_delete', handle: (row) => this.deleteOne(row.id) },
             { label: '数据字典', type: 'text', auth: 'reportDatasource_dict', handle: (row) => this.routerTo(row) }
-          ] }
+          ] },
+          { label: '编码', prop: 'code', align: 'center', overflow: true },
+          { label: '数据源名称', prop: 'name', align: 'center', overflow: true },
+          { label: '数据源类型', prop: 'type', align: 'center', formatter: this.commonUtil.getTableCodeName, codeType: 'dataSourceType', overflow: true },
+          { label: '数据源链接', prop: 'jdbcUrl', align: 'center', overflow: true },
         ],
         // 表格列表头end
         // modal配置 start

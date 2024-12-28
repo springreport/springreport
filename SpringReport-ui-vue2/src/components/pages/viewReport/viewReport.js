@@ -46,14 +46,14 @@ export default {
         // 表格分页信息end
         // 表格列表头start
         tableCols: [
+          { label: '操作', prop: 'operation', align: 'center', type: 'dropdown', width: 54, btnList: [
+            { label: '报表查看(pc)', type: 'text', auth: 'viewReport_view', handle: (row) => this.routerTo('luckyReportPreview', row), show: (row) => this.isShowBtn(row) },
+            { label: '报表查看(手机)', type: 'text', auth: 'viewReport_view', show: (row) => this.isShowShare(row), handle: (row) => this.routerTo('h5ReportPreview', row) }
+          ] },
           { label: '报表名称', prop: 'tplName', align: 'left', icon: true },
           { label: '报表类型', prop: 'reportTypeName', align: 'center' },
           { label: '导出是否加密', prop: 'exportEncrypt', align: 'center', codeType: 'yesNo', formatter: this.commonUtil.getTableCodeName },
           { label: '报表类型', prop: 'tplType', align: 'center', codeType: 'tplType', formatter: this.commonUtil.getTableCodeName, overflow: true },
-          { label: '操作', prop: 'operation', align: 'center', type: 'button', fixed: 'right', width: 200, btnList: [
-            { label: '报表查看(pc)', type: 'text', auth: 'viewReport_view', handle: (row) => this.routerTo('luckyReportPreview', row), show: (row) => this.isShowBtn(row) },
-            { label: '报表查看(手机)', type: 'text', auth: 'viewReport_view', show: (row) => this.isShowShare(row), handle: (row) => this.routerTo('h5ReportPreview', row) }
-          ] }
         ]
         // 表格列表头end
       }

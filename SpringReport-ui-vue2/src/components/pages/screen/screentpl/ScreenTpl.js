@@ -43,18 +43,18 @@ export default {
         // 表格分页信息end
         // 表格列表头start
         tableCols: [
-          { label: '模板标识', prop: 'tplCode', align: 'left', overflow: true, icon: true },
-          { label: '模板名称', prop: 'tplName', align: 'center', overflow: true },
-          { label: '大屏宽度', prop: 'width', align: 'center', overflow: true },
-          { label: '大屏高度', prop: 'height', align: 'center', overflow: true },
-          // { label: '背景图', prop: 'imgUrl', align: 'center', type: 'image', popover: true},
-          { label: '操作', prop: 'operation', align: 'center', type: 'button', width: 400, fixed: 'right', btnList: [
+          { label: '操作', prop: 'operation', align: 'center', type: 'dropdown', width: 54, btnList: [
             { label: '查看', type: 'text', auth: 'screenTpl_getDetail', handle: (row) => this.showModal(this.commonConstants.modalType.detail, row.id), show: (row) => this.isShowBtn(row) },
             { label: '编辑', type: 'text', auth: 'screenTpl_update', handle: (row) => this.showModal(this.commonConstants.modalType.update, row.id, row.type) },
             { label: '大屏设计', type: 'text', auth: 'screenTpl_screenDesign', handle: (row) => this.screenDesign(row), show: (row) => this.isShowBtn(row) },
             { label: '查看大屏', type: 'text', auth: 'screenTpl_viewScreen', handle: (row) => this.screenView(row), show: (row) => this.isShowBtn(row) },
             { label: '删除', type: 'text', auth: 'screenTpl_delete', handle: (row) => this.deleteOne(row.id, row.type) }
-          ] }
+          ] },
+          { label: '模板标识', prop: 'tplCode', align: 'left', overflow: true, icon: true },
+          { label: '模板名称', prop: 'tplName', align: 'center', overflow: true },
+          { label: '大屏宽度', prop: 'width', align: 'center', overflow: true },
+          { label: '大屏高度', prop: 'height', align: 'center', overflow: true },
+          // { label: '背景图', prop: 'imgUrl', align: 'center', type: 'image', popover: true},
         ],
         // 表格列表头end
         // modal配置 start

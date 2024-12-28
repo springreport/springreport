@@ -41,16 +41,16 @@ export default {
         // 表格分页信息end
         // 表格列表头start
         tableCols: [
-          { label: '角色代码', prop: 'roleCode', align: 'center', overflow: true },
-          { label: '角色名称', prop: 'roleName', align: 'center', overflow: true },
-          { label: '角色描述', prop: 'roleDesc', align: 'center', overflow: true },
-          { label: '操作', prop: 'operation', align: 'center', width: 300, fixed: 'right', type: 'button', btnList: [
+          { label: '操作', prop: 'operation', align: 'center', type: 'dropdown', width: 54, btnList: [
             { label: '查看', type: 'text', auth: 'sysRole_getDetail', handle: (row) => this.showModal(this.commonConstants.modalType.detail, row.id) },
             { label: '编辑', type: 'text', auth: 'sysRole_update', handle: (row) => this.showModal(this.commonConstants.modalType.update, row.id) },
             { label: '功能权限', type: 'text', auth: 'sysRole_authed', handle: (row) => this.showAuthModal(row.id) },
             { label: '报表权限', type: 'text', auth: 'sysRole_reportAuth', handle: (row) => this.showReportAuthModal(row.id) },
             { label: '删除', type: 'text', auth: 'sysRole_delete', handle: (row) => this.deleteOne(row.id) }
-          ] }
+          ] },
+          { label: '角色代码', prop: 'roleCode', align: 'center', overflow: true },
+          { label: '角色名称', prop: 'roleName', align: 'center', overflow: true },
+          { label: '角色描述', prop: 'roleDesc', align: 'center', overflow: true },
         ],
         // 表格列表头end
         // modal配置 start

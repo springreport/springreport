@@ -45,17 +45,17 @@ export default {
         // 表格分页信息end
         // 表格列表头start
         tableCols: [
-          { label: '模板标识', prop: 'tplCode', align: 'left', icon: true },
-          { label: '模板名称', prop: 'tplName', align: 'center' },
-          { label: '数据源代码', prop: 'dataSourceCode', align: 'center', overflow: true },
-          { label: '数据源名称', prop: 'dataSourceName', align: 'center', overflow: true },
-          { label: '操作', prop: 'operation', align: 'center', type: 'button', btnList: [
+          { label: '操作', prop: 'operation', align: 'center', type: 'dropdown', width: 54, btnList: [
             { label: '查看', type: 'text', auth: 'docTpl_getDetail', handle: (row) => this.showModal(this.commonConstants.modalType.detail, row.id), show: (row) => this.isShowBtn(row) },
             { label: '编辑', type: 'text', auth: 'docTpl_edit', handle: (row) => this.showModal(this.commonConstants.modalType.update, row.id, row.type) },
             { label: '设计', type: 'text', auth: 'docTpl_design', handle: (row) => this.routerTo('docDesign', row), show: (row) => this.isShowBtn(row) },
             { label: '报表查看', type: 'text', auth: 'docTpl_view', handle: (row) => this.routerTo('docPreview', row), show: (row) => this.isShowBtn(row) },
             { label: '删除', type: 'text', auth: 'docTpl_delete', handle: (row) => this.deleteOne(row.id, row.type) }
-          ] }
+          ] },
+          { label: '模板标识', prop: 'tplCode', align: 'left', icon: true },
+          { label: '模板名称', prop: 'tplName', align: 'center' },
+          { label: '数据源代码', prop: 'dataSourceCode', align: 'center', overflow: true },
+          { label: '数据源名称', prop: 'dataSourceName', align: 'center', overflow: true },
         ],
         // 表格列表头end
         // modal配置 start

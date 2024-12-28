@@ -44,17 +44,17 @@ export default {
         // 表格分页信息end
         // 表格列表头start
         tableCols: [
+          { label: '操作', prop: 'operation', align: 'center', type: 'dropdown', width: 54, btnList: [
+            { label: '查看', type: 'text', auth: 'sysDept_getDetail', handle: (row) => this.showModal(this.commonConstants.modalType.detail, row.id) },
+            { label: '编辑', type: 'text', auth: 'sysDept_edit', handle: (row) => this.showModal(this.commonConstants.modalType.update, row.id) },
+            { label: '删除', type: 'text', auth: 'sysDept_delete', handle: (row) => this.deleteOne(row.id) }
+          ] },
           { label: '部门名称', prop: 'deptName', align: 'center' },
           { label: '负责人', prop: 'leader', align: 'center' },
           { label: '联系电话', prop: 'phone', align: 'center' },
           { label: '邮箱', prop: 'email', align: 'center' },
           { label: '状态', prop: 'status', align: 'center', codeType: 'status', formatter: this.commonUtil.getTableCodeName },
           { label: '排序', prop: 'deptSort', align: 'center' },
-          { label: '操作', prop: 'operation', align: 'center', type: 'button', btnList: [
-            { label: '查看', type: 'text', auth: 'sysDept_getDetail', handle: (row) => this.showModal(this.commonConstants.modalType.detail, row.id) },
-            { label: '编辑', type: 'text', auth: 'sysDept_edit', handle: (row) => this.showModal(this.commonConstants.modalType.update, row.id) },
-            { label: '删除', type: 'text', auth: 'sysDept_delete', handle: (row) => this.deleteOne(row.id) }
-          ] }
         ],
         // 表格列表头end
         // modal配置 start

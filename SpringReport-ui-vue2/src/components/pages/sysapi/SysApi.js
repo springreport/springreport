@@ -41,15 +41,15 @@ export default {
         //表格分页信息end
         //表格列表头start
         tableCols:[
+          {label:'操作',prop:'operation',align:'center',type: 'dropdown', width: 54,btnList:[
+						{label:'查看',type:'text',auth:'sysApi_getDetail',handle:(row)=>this.showModal(this.commonConstants.modalType.detail,row.id)},
+						{label:'编辑',type:'text',auth:'sysApi_update',handle:(row)=>this.showModal(this.commonConstants.modalType.update,row.id)},
+						{label:'删除',type:'text',auth:'sysApi_delete',handle:(row)=>this.deleteOne(row.id)},
+					]},
 					{label:'权限标识',prop:'apiCode',align:'center',overflow:true},
 					{label:'权限名称',prop:'apiName',align:'center',overflow:true},
 					{label:'权限描述',prop:'apiFunction',align:'center',overflow:true},
           {label:'排序',prop:'sort',align:'center',overflow:true},
-					{label:'操作',prop:'operation',align:'center',fixed:'right',width:200,type:'button',btnList:[
-						{label:'查看',type:'text',auth:'sysApi_getDetail',handle:(row)=>this.showModal(this.commonConstants.modalType.detail,row.id)},
-						{label:'编辑',type:'text',auth:'sysApi_update',handle:(row)=>this.showModal(this.commonConstants.modalType.update,row.id)},
-						{label:'删除',type:'text',auth:'sysApi_delete',handle:(row)=>this.deleteOne(row.id)},
-					]}
         ],
         //表格列表头end
         //modal配置 start

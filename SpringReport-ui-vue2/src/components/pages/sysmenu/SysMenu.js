@@ -51,18 +51,18 @@ export default {
         // 表格分页信息end
         // 表格列表头start
         tableCols: [
+          { label: '操作', prop: 'operation', align: 'center', type: 'dropdown', width: 54, btnList: [
+            { label: '查看', type: 'text', auth: 'sysMenu_getDetail', handle: (row) => this.showModal(this.commonConstants.modalType.detail, row.id) },
+            { label: '编辑', type: 'text', auth: 'sysMenu_update', handle: (row) => this.showModal(this.commonConstants.modalType.update, row.id) },
+            { label: '菜单功能', type: 'text', auth: 'sysMenu_sysApi', handle: (row) => this.routerTo(row) },
+            { label: '删除', type: 'text', auth: 'sysMenu_delete', handle: (row) => this.deleteOne(row.id) }
+          ] },
           { label: '菜单名称', prop: 'menuName', align: 'left', overflow: true },
           { label: '菜单地址', prop: 'menuUrl', align: 'center', overflow: true },
           { label: '菜单图标', prop: 'menuIcon', align: 'center', overflow: true },
           // {label:'访问规则',prop:'accessRule',align:'center',codeType:'menuRule',formatter:this.commonUtil.getTableCodeName},
           { label: '是否隐藏', prop: 'isHidden', align: 'center', codeType: 'yesNo', formatter: this.commonUtil.getTableCodeName, overflow: true },
           { label: '排序', prop: 'sort', align: 'center', overflow: true },
-          { label: '操作', prop: 'operation', align: 'center', type: 'button', width: 220, fixed: 'right', btnList: [
-            { label: '查看', type: 'text', auth: 'sysMenu_getDetail', handle: (row) => this.showModal(this.commonConstants.modalType.detail, row.id) },
-            { label: '编辑', type: 'text', auth: 'sysMenu_update', handle: (row) => this.showModal(this.commonConstants.modalType.update, row.id) },
-            { label: '菜单功能', type: 'text', auth: 'sysMenu_sysApi', handle: (row) => this.routerTo(row) },
-            { label: '删除', type: 'text', auth: 'sysMenu_delete', handle: (row) => this.deleteOne(row.id) }
-          ] }
         ],
         // 表格列表头end
         // modal配置 start

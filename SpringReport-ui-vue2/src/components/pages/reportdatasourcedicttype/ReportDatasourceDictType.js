@@ -41,15 +41,15 @@ export default {
         // 表格分页信息end
         // 表格列表头start
         tableCols: [
-          { label: '字典类型', prop: 'dictType', align: 'center', overflow: true },
-          { label: '字典类型名称', prop: 'dictName', align: 'center', overflow: true },
-          { label: '备注', prop: 'remark', align: 'center', overflow: true },
-          { label: '操作', prop: 'operation', align: 'center', type: 'button', width: 220, fixed: 'right', btnList: [
+          { label: '操作', prop: 'operation', align: 'center', type: 'dropdown', width: 54, btnList: [
             { label: '查看', type: 'text', auth: 'reportDatasourceDictType_getDetail', handle: (row) => this.showModal(this.commonConstants.modalType.detail, row.id) },
             { label: '编辑', type: 'text', auth: 'reportDatasourceDictType_update', handle: (row) => this.showModal(this.commonConstants.modalType.update, row.id) },
             { label: '删除', type: 'text', auth: 'reportDatasourceDictType_delete', handle: (row) => this.deleteOne(row.id) },
             { label: '字典值', type: 'text', auth: 'reportDatasourceDictType_dictData', handle: (row) => this.routerTo(row) }
-          ] }
+          ] },
+          { label: '字典类型', prop: 'dictType', align: 'center', overflow: true },
+          { label: '字典类型名称', prop: 'dictName', align: 'center', overflow: true },
+          { label: '备注', prop: 'remark', align: 'center', overflow: true },
         ],
         // 表格列表头end
         // modal配置 start

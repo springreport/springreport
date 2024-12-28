@@ -41,14 +41,14 @@ export default {
         // 表格分页信息end
         // 表格列表头start
         tableCols: [
-          { label: '岗位编码', prop: 'postCode', align: 'center' },
-          { label: '岗位名称', prop: 'postName', align: 'center' },
-          { label: '排序', prop: 'postSort', align: 'center' },
-          { label: '操作', prop: 'operation', align: 'center', type: 'button', btnList: [
+          { label: '操作', prop: 'operation', align: 'center', type: 'dropdown', width: 54, btnList: [
             { label: '查看', type: 'text', auth: 'sysPost_getDetail', handle: (row) => this.showModal(this.commonConstants.modalType.detail, row.id) },
             { label: '编辑', type: 'text', auth: 'sysPost_edit', handle: (row) => this.showModal(this.commonConstants.modalType.update, row.id) },
             { label: '删除', type: 'text', auth: 'sysPost_delete', handle: (row) => this.deleteOne(row.id) }
-          ] }
+          ] },
+          { label: '岗位编码', prop: 'postCode', align: 'center' },
+          { label: '岗位名称', prop: 'postName', align: 'center' },
+          { label: '排序', prop: 'postSort', align: 'center' },
         ],
         // 表格列表头end
         // modal配置 start

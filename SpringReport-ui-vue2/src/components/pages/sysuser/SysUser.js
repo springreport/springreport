@@ -49,6 +49,12 @@ export default {
         // 表格分页信息end
         // 表格列表头start
         tableCols: [
+          { label: '操作', prop: 'operation', align: 'center', type: 'dropdown', width: 54, btnList: [
+            { label: '查看', type: 'text', auth: 'sysUser_getDetail', handle: (row) => this.showModal(this.commonConstants.modalType.detail, row.id) },
+            { label: '编辑', type: 'text', auth: 'sysUser_update', handle: (row) => this.showModal(this.commonConstants.modalType.update, row.id), show: (row) => this.isShowDelete(row) },
+            { label: '重置密码', type: 'text', auth: 'sysUser_resetPwd', handle: (row) => this.resetPwd(row.id), show: (row) => this.isShowResetPwd(row) },
+            { label: '删除', type: 'text', auth: 'sysUser_delete', handle: (row) => this.deleteOne(row.id), show: (row) => this.isShowDelete(row) }
+          ] },
           { label: '用户登录名', prop: 'userName', align: 'center', overflow: true },
           { label: '用户姓名', prop: 'userRealName', align: 'center', overflow: true },
           { label: '用户邮箱', prop: 'userEmail', align: 'center', overflow: true },
@@ -59,12 +65,6 @@ export default {
           { label: '岗位', prop: 'postName', align: 'center', overflow: true },
           { label: '是否锁定', prop: 'userLocked', align: 'center', codeType: 'yesNo', formatter: this.commonUtil.getTableCodeName, overflow: true },
           { label: '是否管理员', prop: 'isAdmin', align: 'center', codeType: 'yesNo', formatter: this.commonUtil.getTableCodeName, overflow: true },
-          { label: '操作', prop: 'operation', align: 'center', type: 'button', fixed: 'right', width: 200, btnList: [
-            { label: '查看', type: 'text', auth: 'sysUser_getDetail', handle: (row) => this.showModal(this.commonConstants.modalType.detail, row.id) },
-            { label: '编辑', type: 'text', auth: 'sysUser_update', handle: (row) => this.showModal(this.commonConstants.modalType.update, row.id), show: (row) => this.isShowDelete(row) },
-            { label: '重置密码', type: 'text', auth: 'sysUser_resetPwd', handle: (row) => this.resetPwd(row.id), show: (row) => this.isShowResetPwd(row) },
-            { label: '删除', type: 'text', auth: 'sysUser_delete', handle: (row) => this.deleteOne(row.id), show: (row) => this.isShowDelete(row) }
-          ] }
         ],
         // 表格列表头end
         // modal配置 start
