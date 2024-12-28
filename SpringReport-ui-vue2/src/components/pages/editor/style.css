@@ -127,9 +127,8 @@
 
 ::v-deep .menu-item .options {
   width: 70px;
-  position: absolute;
-  left: 0;
-  top: 25px;
+  position: fixed;
+  top: 113px;
   padding: 10px;
   background: #fff;
   font-size: 14px;
@@ -620,10 +619,10 @@
   width: 260px;
   height: 72px;
   box-sizing: border-box;
-  position: absolute;
+  position: fixed;
   display: none;
   z-index: 99;
-  top: 25px;
+  top: 113px;
   left: 0;
   background: #ffffff;
   box-shadow: 0px 5px 5px #e3dfdf;
@@ -819,10 +818,8 @@
   margin: 80px auto;
 }
 .editor-container{
-  position: relative;
   height: calc(100vh - 164px);
   overflow-y: auto;
-  z-index: 100;
 }
 ::v-deep .editor{
   position: unset !important;
