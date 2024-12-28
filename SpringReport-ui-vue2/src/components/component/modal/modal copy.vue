@@ -1,15 +1,12 @@
 <template>
   <div>
     <!-- :width="modalConfig.width" -->
-    <el-drawer
+    <el-dialog
       :title="modalConfig.title"
       :visible.sync="modalConfig.show"
-      :close-on-press-escape="false"
-      :wrapper-closable="false"
-      size="36%"
+      width="30%"
+      :close-on-click-modal="false"
       append-to-body
-      custom-class="handle-drawer"
-      class="handle-drawer"
       @close="closeModal"
     >
       <div class="el-dialog-div">
@@ -348,7 +345,7 @@
           </el-form-item>
         </el-form>
       </div>
-      <div class="handle-drawer__footer">
+      <span slot="footer" class="dialog-footer">
         <el-button
           v-for="item in modalHandles"
           v-show="modalConfig.type != commonConstants.modalType.detail"
@@ -358,8 +355,8 @@
           :disabled="modalConfig.disabled && item.disabled()"
           @click="item.handle()"
         >{{ item.label }}</el-button>
-      </div>
-    </el-drawer>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -420,14 +417,12 @@ export default {
 </script>
 <style lang="scss" scoped>
 .el-dialog-div {
-  max-height: calc(100vh - 120px);
+  max-height: 60vh;
   overflow: auto;
-  width: calc(100% + 8px);
   padding-right: 8px;
-  margin-right: -8px;
   &::-webkit-scrollbar {
-    height: 6px;
-    width: 6px;
+    height: 10px;
+    width: 10px;
     overflow: visible;
   }
 

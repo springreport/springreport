@@ -57,7 +57,7 @@
       :close-on-press-escape="false"
       :wrapper-closable="false"
       direction="rtl"
-      width="36%"
+      size="36%"
       custom-class="search-drawer"
       class="search-drawer"
     >

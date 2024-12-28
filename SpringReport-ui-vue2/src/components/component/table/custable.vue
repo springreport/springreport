@@ -67,6 +67,7 @@
           :render-header="item.require ? renderHeader : null"
           :show-overflow-tooltip="item.overflow"
           :fixed="item.fixed"
+          :type="item.type"
         >
           <template slot-scope="scope">
             <i
@@ -98,6 +99,39 @@
                   : btn.label(scope.row)
               }}</el-button>
             </span>
+            <!-- 按钮的拓展 下拉菜单 -->
+            <div v-if="item.type === 'dropdown'">
+              <el-dropdown
+                size="small"
+                class="table-dropdown"
+              >
+                <div class="more-btn">
+                  <i class="el-icon-more" style="transform: rotate(90deg)" />
+                </div>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item
+                    v-for="btn in item.btnList"
+                    v-show="btn.show ? btn.show(scope.row) : true"
+                    :key="
+                      (typeof btn.label).toLowerCase() == 'string'
+                        ? btn.label
+                        : btn.auth
+                    "
+                    v-has="btn.auth"
+                    :disabled="btn.disabled && btn.disabled(scope.row)"
+                    :type="btn.type"
+                    :size="size || btn.size"
+                    :icon="btn.icon"
+                    :class="{ 'el-dropdown-item-del': btn.type === 'danger' }"
+                    @click.native="btn.handle && btn.handle(scope.row, scope.$index)"
+                  >{{
+                    (typeof btn.label).toLowerCase() == "string"
+                      ? btn.label
+                      : btn.label(scope.row)
+                  }}</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </div>
             <!-- 输入框 -->
             <el-input
               v-if="item.type === 'input'"
@@ -360,6 +394,46 @@ export default {
   .pagination-total {
     font-size: 14px;
     color: rgba(0, 0, 0, 0.6);
+  }
+}
+.more-btn {
+  width: 36px;
+  height: 36px;
+  line-height: 36px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s;
+  &:hover {
+    background-color: #f2f2f2;
+  }
+  .el-icon-more {
+    color: #17b794;
+  }
+}
+::v-deep .el-dropdown-menu--small {
+  padding: 0 !important;
+}
+::v-deep .el-dropdown-menu__item {
+  height: 32px;
+  line-height: 32px;
+  padding: 0 16px;
+  min-width: 70px;
+  text-align: center;
+  font-size: 14px;
+}
+::v-deep .el-dropdown-menu {
+  padding: 0;
+}
+::v-deep .el-dropdown-item-del {
+  color: #ff4d4f !important;
+}
+
+::v-deep .el-table__expand-icon{
+  line-height: 18px !important;
+  height: 18px !important;
+  i{
+    color: #17b794;
+    font-weight: bold;
   }
 }
 </style>

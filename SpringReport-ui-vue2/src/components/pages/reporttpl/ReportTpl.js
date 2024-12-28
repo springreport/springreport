@@ -50,25 +50,28 @@ export default {
         // 表格分页信息end
         // 表格列表头start
         tableCols: [
-          { label: '报表标识', prop: 'tplCode', align: 'left', overflow: true, icon: true },
+          { label: '操作', prop: 'operation', align: 'center', type: '', type: 'dropdown', width: 54,
+            btnList: [
+              { label: '查看', type: 'text', auth: 'reportTpl_getDetail', handle: (row) => this.showModal(this.commonConstants.modalType.detail, row.id), show: (row) => this.isShowBtn(row) },
+              { label: '编辑', type: 'text', auth: 'reportTpl_update', handle: (row) => this.showModal(this.commonConstants.modalType.update, row.id, row.type) },
+              { label: '删除', type: 'danger', auth: 'reportTpl_delete', handle: (row) => this.deleteOne(row.id, row.type) },
+              { label: '复制', type: 'text', auth: 'reportTpl_copy', handle: (row) => this.copyReport(row), show: (row) => this.isShowBtn(row) },
+              { label: '报表设计', type: 'text', auth: 'reportTpl_reportDesign', handle: (row) => this.routerTo(row.tplType == '1' ? 'luckyReportDesign' : 'luckyReportFroms', row), show: (row) => this.isShowBtn(row) },
+              { label: '修改密码', type: 'text', auth: 'reportTpl_changePwd', show: (row) => this.isShowChangePwd(row), handle: (row) => this.showChangePwd(row) },
+              { label: '报表查看(pc)', type: 'text', auth: 'reportTpl_reportView', handle: (row) => this.routerTo('luckyReportPreview', row), show: (row) => this.isShowBtn(row) },
+              { label: '报表查看(手机)', type: 'text', auth: 'reportTpl_reportView', show: (row) => this.isShowShare(row), handle: (row) => this.routerTo('h5ReportPreview', row) },
+              { label: '报表分享', type: 'text', auth: 'reportTpl_reportShare', handle: (row) => this.showShareReport(row), show: (row) => this.isShowBtn(row) },
+              { label: '定时任务', type: 'text', auth: 'reportTpl_Task', show: (row) => this.isShowShare(row), handle: (row) => this.routerToTask(row) }
+            ]
+          },
+          { label: '报表标识', prop: 'tplCode', align: 'left', overflow: true, icon: false },
           { label: '报表名称', prop: 'tplName', align: 'center', overflow: true },
           { label: '查看权限', prop: 'viewAuth', align: 'center', codeType: 'viewAuth', formatter: this.commonUtil.getTableCodeName, overflow: true },
           { label: '数据源代码', prop: 'dataSourceCode', align: 'center', overflow: true },
           { label: '数据源名称', prop: 'dataSourceName', align: 'center', overflow: true },
           { label: '导出是否加密', prop: 'exportEncrypt', align: 'center', codeType: 'yesNo', formatter: this.commonUtil.getTableCodeName, overflow: true },
-          { label: '报表类型', prop: 'tplType', align: 'center', codeType: 'tplType', formatter: this.commonUtil.getTableCodeName, overflow: true },
-          { label: '操作', prop: 'operation', align: 'center', type: 'button', width: 400, btnList: [
-            { label: '查看', type: 'text', auth: 'reportTpl_getDetail', handle: (row) => this.showModal(this.commonConstants.modalType.detail, row.id), show: (row) => this.isShowBtn(row) },
-            { label: '编辑', type: 'text', auth: 'reportTpl_update', handle: (row) => this.showModal(this.commonConstants.modalType.update, row.id, row.type) },
-            { label: '删除', type: 'text', auth: 'reportTpl_delete', handle: (row) => this.deleteOne(row.id, row.type) },
-            { label: '复制', type: 'text', auth: 'reportTpl_copy', handle: (row) => this.copyReport(row), show: (row) => this.isShowBtn(row) },
-            { label: '报表设计', type: 'text', auth: 'reportTpl_reportDesign', handle: (row) => this.routerTo(row.tplType == '1' ? 'luckyReportDesign' : 'luckyReportFroms', row), show: (row) => this.isShowBtn(row) },
-            { label: '修改密码', type: 'text', auth: 'reportTpl_changePwd', show: (row) => this.isShowChangePwd(row), handle: (row) => this.showChangePwd(row) },
-            { label: '报表查看(pc)', type: 'text', auth: 'reportTpl_reportView', handle: (row) => this.routerTo('luckyReportPreview', row), show: (row) => this.isShowBtn(row) },
-            { label: '报表查看(手机)', type: 'text', auth: 'reportTpl_reportView', show: (row) => this.isShowShare(row), handle: (row) => this.routerTo('h5ReportPreview', row) },
-            { label: '报表分享', type: 'text', auth: 'reportTpl_reportShare', handle: (row) => this.showShareReport(row), show: (row) => this.isShowBtn(row) },
-            { label: '定时任务', type: 'text', auth: 'reportTpl_Task', show: (row) => this.isShowShare(row), handle: (row) => this.routerToTask(row) }
-          ] }
+          { label: '报表类型', prop: 'tplType', align: 'center', codeType: 'tplType', formatter: this.commonUtil.getTableCodeName, overflow: true }
+
         ],
         // 表格列表头end
         // modal配置 start
