@@ -1851,10 +1851,13 @@
       :close-on-click-modal="false"
       @close="closeDatasourceDialog"
     > -->
+    <!-- direction="ltr" -->
     <el-drawer
       title="填报属性"
       :visible.sync="datasourceDialog"
-      size="36%"
+      size="100%"
+      :modal="false"
+      :modal-append-to-body="false"
       custom-class="test"
       :close-on-press-escape="false"
       :wrapper-closable="false"
@@ -3451,7 +3454,10 @@
     width: 0;
   }
 }
-
+::v-deep .handle-drawer{
+  width: 36%;
+  left: unset;
+}
 ::v-deep .handle-drawer .el-drawer__body {
   background-color: #f7f9fc;
   padding: 8px 10px 52px !important;
