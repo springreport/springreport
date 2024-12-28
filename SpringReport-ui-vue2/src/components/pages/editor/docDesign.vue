@@ -100,23 +100,35 @@
                         {{ datasetItem.datasetName }}
                       </div>
                       <div class="action-box df-c">
-                         <el-dropdown>
-                            <div
-                              class="action action-copy"
-                            />
-                            <el-dropdown-menu slot="dropdown">
-                              <el-dropdown-item v-on:click.native="copyAttr(5,datasetItem.datasetName)">列表</el-dropdown-item>
-                              <el-dropdown-item v-on:click.native="copyAttr(6,datasetItem.datasetName)">区块对</el-dropdown-item>
-                            </el-dropdown-menu>
+                        <el-dropdown>
+                          <div class="action action-copy" />
+                          <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item
+                              @click.native="
+                                copyAttr(5, datasetItem.datasetName)
+                              "
+                            >列表</el-dropdown-item>
+                            <el-dropdown-item
+                              @click.native="
+                                copyAttr(6, datasetItem.datasetName)
+                              "
+                            >区块对</el-dropdown-item>
+                          </el-dropdown-menu>
                         </el-dropdown>
                         <el-dropdown>
-                            <div
-                              class="action action-add"
-                            />
-                            <el-dropdown-menu slot="dropdown">
-                              <el-dropdown-item v-on:click.native="copyAttr(5,datasetItem.datasetName,null,true)">列表</el-dropdown-item>
-                              <el-dropdown-item v-on:click.native="copyAttr(6,datasetItem.datasetName,null,true)">区块对</el-dropdown-item>
-                            </el-dropdown-menu>
+                          <div class="action action-add" />
+                          <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item
+                              @click.native="
+                                copyAttr(5, datasetItem.datasetName, null, true)
+                              "
+                            >列表</el-dropdown-item>
+                            <el-dropdown-item
+                              @click.native="
+                                copyAttr(6, datasetItem.datasetName, null, true)
+                              "
+                            >区块对</el-dropdown-item>
+                          </el-dropdown-menu>
                         </el-dropdown>
                         <div
                           class="action action-edit"
@@ -151,47 +163,121 @@
               element-loading-spinner="el-icon-loading"
             >
               <template v-if="displayFields.length">
+                <div
+                  v-for="fieldItem in displayFields"
+                  :key="fieldItem.columnName"
+                  class="dataset-item df-c-b"
+                >
                   <div
-                    v-for="fieldItem in displayFields"
-                    :key="fieldItem.columnName"
-                    class="dataset-item df-c-b"
+                    class="set-name overflow-text"
+                    style="flex: 1"
+                    :title="fieldItem.columnName"
                   >
-                    <div
-                      class="set-name overflow-text"
-                      style="flex: 1"
-                      :title="fieldItem.columnName"
-                    >
-                      {{ fieldItem.columnName }}
-                    </div>
-                    <div class="action-box df-c">
-                      <el-dropdown>
-                            <div
-                              class="action action-edit"
-                            />
-                            <el-dropdown-menu slot="dropdown">
-                              <el-dropdown-item v-on:click.native="copyAttr(1,datasetItem.datasetName,fieldItem.name)">文本</el-dropdown-item>
-                              <el-dropdown-item v-on:click.native="copyAttr(2,datasetItem.datasetName,fieldItem.name)">图片</el-dropdown-item>
-                              <el-dropdown-item v-on:click.native="copyAttr(3,datasetItem.datasetName,fieldItem.name)">列表文本</el-dropdown-item>
-                              <el-dropdown-item v-on:click.native="copyAttr(4,datasetItem.datasetName,fieldItem.name)">列表图片</el-dropdown-item>
-                              <el-dropdown-item v-on:click.native="copyAttr(7,datasetItem.datasetName,fieldItem.name)">区块对文本</el-dropdown-item>
-                              <el-dropdown-item v-on:click.native="copyAttr(8,datasetItem.datasetName,fieldItem.name)">区块对图片</el-dropdown-item>
-                              </el-dropdown-menu>
-                      </el-dropdown>
-                      <el-dropdown>
-                            <div
-                              class="action action-add"
-                            />
-                            <el-dropdown-menu slot="dropdown">
-                              <el-dropdown-item v-on:click.native="copyAttr(1,datasetItem.datasetName,fieldItem.name,true)">文本</el-dropdown-item>
-                              <el-dropdown-item v-on:click.native="copyAttr(2,datasetItem.datasetName,fieldItem.name,true)">图片</el-dropdown-item>
-                              <el-dropdown-item v-on:click.native="copyAttr(3,datasetItem.datasetName,fieldItem.name,true)">列表文本</el-dropdown-item>
-                              <el-dropdown-item v-on:click.native="copyAttr(4,datasetItem.datasetName,fieldItem.name,true)">列表图片</el-dropdown-item>
-                              <el-dropdown-item v-on:click.native="copyAttr(7,datasetItem.datasetName,fieldItem.name,true)">区块对文本</el-dropdown-item>
-                              <el-dropdown-item v-on:click.native="copyAttr(8,datasetItem.datasetName,fieldItem.name,true)">区块对图片</el-dropdown-item>
-                              </el-dropdown-menu>
-                      </el-dropdown>
-                    </div>
+                    {{ fieldItem.columnName }}
                   </div>
+                  <div class="action-box df-c">
+                    <el-dropdown>
+                      <div class="action action-edit" />
+                      <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item
+                          @click.native="
+                            copyAttr(1, datasetItem.datasetName, fieldItem.name)
+                          "
+                        >文本</el-dropdown-item>
+                        <el-dropdown-item
+                          @click.native="
+                            copyAttr(2, datasetItem.datasetName, fieldItem.name)
+                          "
+                        >图片</el-dropdown-item>
+                        <el-dropdown-item
+                          @click.native="
+                            copyAttr(3, datasetItem.datasetName, fieldItem.name)
+                          "
+                        >列表文本</el-dropdown-item>
+                        <el-dropdown-item
+                          @click.native="
+                            copyAttr(4, datasetItem.datasetName, fieldItem.name)
+                          "
+                        >列表图片</el-dropdown-item>
+                        <el-dropdown-item
+                          @click.native="
+                            copyAttr(7, datasetItem.datasetName, fieldItem.name)
+                          "
+                        >区块对文本</el-dropdown-item>
+                        <el-dropdown-item
+                          @click.native="
+                            copyAttr(8, datasetItem.datasetName, fieldItem.name)
+                          "
+                        >区块对图片</el-dropdown-item>
+                      </el-dropdown-menu>
+                    </el-dropdown>
+                    <el-dropdown>
+                      <div class="action action-add" />
+                      <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item
+                          @click.native="
+                            copyAttr(
+                              1,
+                              datasetItem.datasetName,
+                              fieldItem.name,
+                              true
+                            )
+                          "
+                        >文本</el-dropdown-item>
+                        <el-dropdown-item
+                          @click.native="
+                            copyAttr(
+                              2,
+                              datasetItem.datasetName,
+                              fieldItem.name,
+                              true
+                            )
+                          "
+                        >图片</el-dropdown-item>
+                        <el-dropdown-item
+                          @click.native="
+                            copyAttr(
+                              3,
+                              datasetItem.datasetName,
+                              fieldItem.name,
+                              true
+                            )
+                          "
+                        >列表文本</el-dropdown-item>
+                        <el-dropdown-item
+                          @click.native="
+                            copyAttr(
+                              4,
+                              datasetItem.datasetName,
+                              fieldItem.name,
+                              true
+                            )
+                          "
+                        >列表图片</el-dropdown-item>
+                        <el-dropdown-item
+                          @click.native="
+                            copyAttr(
+                              7,
+                              datasetItem.datasetName,
+                              fieldItem.name,
+                              true
+                            )
+                          "
+                        >区块对文本</el-dropdown-item>
+                        <el-dropdown-item
+                          @click.native="
+                            copyAttr(
+                              8,
+                              datasetItem.datasetName,
+                              fieldItem.name,
+                              true
+                            )
+                          "
+                        >区块对图片</el-dropdown-item>
+                      </el-dropdown-menu>
+                    </el-dropdown>
+                  </div>
+                </div>
                 <el-input
                   v-show="datasetItem.apiResult"
                   v-model="datasetItem.apiResult"
@@ -205,60 +291,97 @@
           </div>
         </div>
       </div>
-      <div class="center">
-          <div class="menu" editor-component="menu">
+      <div
+        class="center"
+        :style="{
+          width: leftOpen ? 'calc(100vw - 460px - 10px)' : 'calc(100vw - 10px)',
+        }"
+      >
+        <div class="menu" editor-component="menu">
           <div class="menu-item">
             <div class="menu-item__save" title="保存模板">
-              <i></i>
+              <i />
             </div>
             <div class="menu-item__upload" title="上传">
-              <i></i>
+              <i />
             </div>
-            <div style="display:none">
-              <input type="file" id="uploadDocxBtn" accept=".docx" @change="uploadDocx">
-              </div>
+            <div style="display: none">
+              <input
+                id="uploadDocxBtn"
+                type="file"
+                accept=".docx"
+                @change="uploadDocx"
+              >
+            </div>
             <div class="menu-item__download" title="导出模板">
-              <i></i>
+              <i />
             </div>
             <div class="menu-item__preview" title="预览">
-              <i></i>
+              <i />
             </div>
             <div class="menu-item__undo">
-              <i></i>
+              <i />
             </div>
             <div class="menu-item__redo">
-              <i></i>
+              <i />
             </div>
             <div class="menu-item__painter" title="格式刷(双击可连续使用)">
-              <i></i>
+              <i />
             </div>
             <div class="menu-item__format" title="清除格式">
-              <i></i>
+              <i />
             </div>
           </div>
-          <div class="menu-divider"></div>
+          <div class="menu-divider" />
           <div class="menu-item">
             <div class="menu-item__font">
               <span class="select" title="字体">微软雅黑</span>
               <div class="options">
                 <ul>
-                  <li data-family="Microsoft YaHei" style="font-family:'Microsoft YaHei';">微软雅黑</li>
-                  <li data-family="宋体" style="font-family:'宋体';">宋体</li>
-                  <li data-family="黑体" style="font-family:'黑体';">黑体</li>
-                  <li data-family="仿宋" style="font-family:'仿宋';">仿宋</li>
-                  <li data-family="楷体" style="font-family:'楷体';">楷体</li>
-                  <li data-family="等线" style="font-family:'等线';">等线</li>
-                  <li data-family="华文琥珀" style="font-family:'华文琥珀';">华文琥珀</li>
-                  <li data-family="华文楷体" style="font-family:'华文楷体';">华文楷体</li>
-                  <li data-family="华文隶书" style="font-family:'华文隶书';">华文隶书</li>
-                  <li data-family="华文新魏" style="font-family:'华文新魏';">华文新魏</li>
-                  <li data-family="华文行楷" style="font-family:'华文行楷';">华文行楷</li>
-                  <li data-family="华文中宋" style="font-family:'华文中宋';">华文中宋</li>
-                  <li data-family="华文彩云" style="font-family:'华文彩云';">华文彩云</li>
-                  <li data-family="Arial" style="font-family:'Arial';">Arial</li>
-                  <li data-family="Segoe UI" style="font-family:'Segoe UI';">Segoe UI</li>
-                  <li data-family="Ink Free" style="font-family:'Ink Free';">Ink Free</li>
-                  <li data-family="Fantasy" style="font-family:'Fantasy';">Fantasy</li>
+                  <li
+                    data-family="Microsoft YaHei"
+                    style="font-family: 'Microsoft YaHei'"
+                  >
+                    微软雅黑
+                  </li>
+                  <li data-family="宋体" style="font-family: '宋体'">宋体</li>
+                  <li data-family="黑体" style="font-family: '黑体'">黑体</li>
+                  <li data-family="仿宋" style="font-family: '仿宋'">仿宋</li>
+                  <li data-family="楷体" style="font-family: '楷体'">楷体</li>
+                  <li data-family="等线" style="font-family: '等线'">等线</li>
+                  <li data-family="华文琥珀" style="font-family: '华文琥珀'">
+                    华文琥珀
+                  </li>
+                  <li data-family="华文楷体" style="font-family: '华文楷体'">
+                    华文楷体
+                  </li>
+                  <li data-family="华文隶书" style="font-family: '华文隶书'">
+                    华文隶书
+                  </li>
+                  <li data-family="华文新魏" style="font-family: '华文新魏'">
+                    华文新魏
+                  </li>
+                  <li data-family="华文行楷" style="font-family: '华文行楷'">
+                    华文行楷
+                  </li>
+                  <li data-family="华文中宋" style="font-family: '华文中宋'">
+                    华文中宋
+                  </li>
+                  <li data-family="华文彩云" style="font-family: '华文彩云'">
+                    华文彩云
+                  </li>
+                  <li data-family="Arial" style="font-family: 'Arial'">
+                    Arial
+                  </li>
+                  <li data-family="Segoe UI" style="font-family: 'Segoe UI'">
+                    Segoe UI
+                  </li>
+                  <li data-family="Ink Free" style="font-family: 'Ink Free'">
+                    Ink Free
+                  </li>
+                  <li data-family="Fantasy" style="font-family: 'Fantasy'">
+                    Fantasy
+                  </li>
                 </ul>
               </div>
             </div>
@@ -286,99 +409,99 @@
               </div>
             </div>
             <div class="menu-item__size-add">
-              <i></i>
+              <i />
             </div>
             <div class="menu-item__size-minus">
-              <i></i>
+              <i />
             </div>
             <div class="menu-item__bold">
-              <i></i>
+              <i />
             </div>
             <div class="menu-item__italic">
-              <i></i>
+              <i />
             </div>
             <div class="menu-item__underline">
-              <i></i>
-              <span class="select"></span>
+              <i />
+              <span class="select" />
               <div class="options">
                 <ul>
-                  <li data-decoration-style='solid'>
-                    <i></i>
+                  <li data-decoration-style="solid">
+                    <i />
                   </li>
-                  <li data-decoration-style='double'>
-                    <i></i>
+                  <li data-decoration-style="double">
+                    <i />
                   </li>
-                  <li data-decoration-style='dashed'>
-                    <i></i>
+                  <li data-decoration-style="dashed">
+                    <i />
                   </li>
-                  <li data-decoration-style='dotted'>
-                    <i></i>
+                  <li data-decoration-style="dotted">
+                    <i />
                   </li>
-                  <li data-decoration-style='wavy'>
-                    <i></i>
+                  <li data-decoration-style="wavy">
+                    <i />
                   </li>
                 </ul>
               </div>
             </div>
             <div class="menu-item__strikeout" title="删除线(Ctrl+Shift+X)">
-              <i></i>
+              <i />
             </div>
             <div class="menu-item__superscript">
-              <i></i>
+              <i />
             </div>
             <div class="menu-item__subscript">
-              <i></i>
+              <i />
             </div>
             <div class="menu-item__color" title="字体颜色">
-              <i></i>
-              <span></span>
-              <input type="color" id="color" />
+              <i />
+              <span />
+              <input id="color" type="color">
             </div>
             <div class="menu-item__highlight" title="高亮">
-              <i></i>
-              <span></span>
-              <input type="color" id="highlight">
+              <i />
+              <span />
+              <input id="highlight" type="color">
             </div>
             <div class="menu-item__cellcolor" title="单元格颜色">
-              <i></i>
+              <i />
               <!-- <span></span> -->
-              <input type="color" id="cellcolor" />
+              <input id="cellcolor" type="color">
             </div>
           </div>
-          <div class="menu-divider"></div>
+          <div class="menu-divider" />
           <div class="menu-item">
             <div class="menu-item__title">
-              <i></i>
+              <i />
               <span class="select" title="切换标题">正文</span>
               <div class="options">
                 <ul>
-                  <li style="font-size:16px;">正文</li>
-                  <li data-level="first" style="font-size:26px;">标题1</li>
-                  <li data-level="second" style="font-size:24px;">标题2</li>
-                  <li data-level="third" style="font-size:22px;">标题3</li>
-                  <li data-level="fourth" style="font-size:20px;">标题4</li>
-                  <li data-level="fifth" style="font-size:18px;">标题5</li>
-                  <li data-level="sixth" style="font-size:16px;">标题6</li>
+                  <li style="font-size: 16px">正文</li>
+                  <li data-level="first" style="font-size: 26px">标题1</li>
+                  <li data-level="second" style="font-size: 24px">标题2</li>
+                  <li data-level="third" style="font-size: 22px">标题3</li>
+                  <li data-level="fourth" style="font-size: 20px">标题4</li>
+                  <li data-level="fifth" style="font-size: 18px">标题5</li>
+                  <li data-level="sixth" style="font-size: 16px">标题6</li>
                 </ul>
               </div>
             </div>
             <div class="menu-item__left">
-              <i></i>
+              <i />
             </div>
             <div class="menu-item__center">
-              <i></i>
+              <i />
             </div>
             <div class="menu-item__right">
-              <i></i>
+              <i />
             </div>
             <div class="menu-item__alignment">
-              <i></i>
+              <i />
             </div>
             <div class="menu-item__row-margin">
-              <i title="行间距"></i>
+              <i title="行间距" />
               <div class="options">
                 <ul>
-                  <li data-rowmargin='1'>1</li>
+                  <li data-rowmargin="1">1</li>
                   <li data-rowmargin="1.25">1.25</li>
                   <li data-rowmargin="1.5">1.5</li>
                   <li data-rowmargin="1.75">1.75</li>
@@ -389,13 +512,13 @@
               </div>
             </div>
             <div class="menu-item__list">
-              <i></i>
+              <i />
               <div class="options">
                 <ul>
                   <li>
                     <label>取消列表</label>
                   </li>
-                  <li data-list-type="ol" data-list-style='decimal'>
+                  <li data-list-type="ol" data-list-style="decimal">
                     <label>有序列表：</label>
                     <ol>
                       <li>________</li>
@@ -407,21 +530,21 @@
                       <li>________</li>
                     </ul>
                   </li> -->
-                  <li data-list-type="ul" data-list-style='disc'>
+                  <li data-list-type="ul" data-list-style="disc">
                     <label>实心圆点列表：</label>
-                    <ul style="list-style-type: disc;">
+                    <ul style="list-style-type: disc">
                       <li>________</li>
                     </ul>
                   </li>
-                  <li data-list-type="ul" data-list-style='circle'>
+                  <li data-list-type="ul" data-list-style="circle">
                     <label>空心圆点列表：</label>
-                    <ul style="list-style-type: circle;">
+                    <ul style="list-style-type: circle">
                       <li>________</li>
                     </ul>
                   </li>
-                  <li data-list-type="ul" data-list-style='square'>
+                  <li data-list-type="ul" data-list-style="square">
                     <label>空心方块列表：</label>
-                    <ul style="list-style-type: square;">
+                    <ul style="list-style-type: square">
                       <li>________</li>
                     </ul>
                   </li>
@@ -429,13 +552,13 @@
               </div>
             </div>
           </div>
-          <div class="menu-divider"></div>
+          <div class="menu-divider" />
           <div class="menu-item">
             <div class="menu-item__chart">
-              <i title="图表"></i>
+              <i title="图表" />
             </div>
             <div class="menu-item__table">
-              <i title="表格"></i>
+              <i title="表格" />
             </div>
             <div class="menu-item__table__collapse">
               <div class="table-close">×</div>
@@ -443,48 +566,52 @@
                 <span class="table-select">插入</span>
                 <span>表格</span>
               </div>
-              <div class="table-panel"></div>
+              <div class="table-panel" />
             </div>
             <div class="menu-item__image">
-              <i title="图片"></i>
-              <input type="file" id="image" accept=".png, .jpg, .jpeg, .svg, .gif">
+              <i title="图片" />
+              <input
+                id="image"
+                type="file"
+                accept=".png, .jpg, .jpeg, .svg, .gif"
+              >
             </div>
             <div class="menu-item__barcode">
-              <i title="条形码"></i>
+              <i title="条形码" />
             </div>
             <div class="menu-item__qrcode">
-              <i title="二维码"></i>
+              <i title="二维码" />
             </div>
             <div class="menu-item__hyperlink">
-              <i title="超链接"></i>
+              <i title="超链接" />
             </div>
             <div class="menu-item__separator">
-              <i title="分割线"></i>
+              <i title="分割线" />
               <div class="options">
                 <ul>
-                  <li data-separator='0,0'>
-                    <i></i>
+                  <li data-separator="0,0">
+                    <i />
                   </li>
                   <li data-separator="1,1">
-                    <i></i>
+                    <i />
                   </li>
                   <li data-separator="3,1">
-                    <i></i>
+                    <i />
                   </li>
                   <li data-separator="4,4">
-                    <i></i>
+                    <i />
                   </li>
                   <li data-separator="7,3,3,3">
-                    <i></i>
+                    <i />
                   </li>
                   <li data-separator="6,2,2,2,2,2">
-                    <i></i>
+                    <i />
                   </li>
                 </ul>
               </div>
             </div>
             <div class="menu-item__watermark">
-              <i title="水印(添加、删除)"></i>
+              <i title="水印(添加、删除)" />
               <div class="options">
                 <ul>
                   <li data-menu="add">添加水印</li>
@@ -493,8 +620,8 @@
               </div>
             </div>
             <div class="menu-item__page-break" title="分页符">
-            <i></i>
-          </div>
+              <i />
+            </div>
             <!-- <div class="menu-item__codeblock" title="代码块">
               <i></i>
             </div>
@@ -530,20 +657,20 @@
               <i></i>
             </div> -->
           </div>
-          <div class="menu-divider"></div>
+          <div class="menu-divider" />
           <div class="menu-item">
             <div class="menu-item__search" data-menu="search">
-              <i></i>
+              <i />
             </div>
             <div class="menu-item__search__collapse" data-menu="search">
               <div class="menu-item__search__collapse__search">
-                <input type="text" />
-                <label class="search-result"></label>
+                <input type="text">
+                <label class="search-result" />
                 <div class="arrow-left">
-                  <i></i>
+                  <i />
                 </div>
                 <div class="arrow-right">
-                  <i></i>
+                  <i />
                 </div>
                 <span>×</span>
               </div>
@@ -553,7 +680,7 @@
               </div>
             </div>
             <div class="menu-item__print" data-menu="print">
-              <i></i>
+              <i />
             </div>
           </div>
         </div>
@@ -561,20 +688,24 @@
           <div class="catalog__header">
             <span>目录</span>
             <div class="catalog__header__close">
-              <i></i>
+              <i />
             </div>
           </div>
-          <div class="catalog__main"></div>
+          <div class="catalog__main" />
         </div>
-        <div class="editor"></div>
-        <div class="comment" editor-component="comment"></div>
+        <div class="editor-container">
+          <div class="editor" />
+
+        </div>
+        <!-- <div class="editor" /> -->
+        <div class="comment" editor-component="comment" />
         <div class="footer" editor-component="footer">
           <div>
             <div class="catalog-mode" title="目录">
-              <i></i>
+              <i />
             </div>
             <div class="page-mode">
-              <i title="页面模式(分页、连页)"></i>
+              <i title="页面模式(分页、连页)" />
               <div class="options">
                 <ul>
                   <li data-page-mode="paging" class="active">分页</li>
@@ -583,20 +714,25 @@
               </div>
             </div>
             <span>可见页码：<span class="page-no-list">1</span></span>
-            <span>页面：<span class="page-no">1</span>/<span class="page-size">1</span></span>
+            <span>页面：<span class="page-no">1</span>/<span
+              class="page-size"
+            >1</span></span>
             <span>字数：<span class="word-count">0</span></span>
           </div>
           <!-- <div class="editor-mode" title="编辑模式(编辑、清洁、只读、表单)">编辑模式</div> -->
           <div>
             <div class="page-scale-minus" title="缩小(Ctrl+-)">
-              <i></i>
+              <i />
             </div>
-            <span class="page-scale-percentage" title="显示比例(点击可复原Ctrl+0)">100%</span>
+            <span
+              class="page-scale-percentage"
+              title="显示比例(点击可复原Ctrl+0)"
+            >100%</span>
             <div class="page-scale-add" title="放大(Ctrl+=)">
-              <i></i>
+              <i />
             </div>
             <div class="paper-size">
-              <i title="纸张类型"></i>
+              <i title="纸张类型" />
               <div class="options">
                 <ul>
                   <li data-paper-size="794*1123" class="active">A4</li>
@@ -613,7 +749,7 @@
               </div>
             </div>
             <div class="paper-direction">
-              <i title="纸张方向"></i>
+              <i title="纸张方向" />
               <div class="options">
                 <ul>
                   <li data-paper-direction="vertical" class="active">纵向</li>
@@ -622,10 +758,10 @@
               </div>
             </div>
             <div class="paper-margin" title="页边距">
-              <i></i>
+              <i />
             </div>
             <div class="fullscreen" title="全屏显示">
-              <i></i>
+              <i />
             </div>
             <!-- <div class="editor-option" title="编辑器设置">
               <i></i>
@@ -739,10 +875,9 @@
               />
             </el-select>
           </el-form-item>
-
         </el-form>
 
-        <div class="df" style="width: 100%;">
+        <div class="df" style="width: 100%">
           <div class="variable-content">
             <div class="variable-title">选择变量</div>
             <div class="variable-warp">
@@ -754,7 +889,9 @@
                   :title="item.label"
                   class="variable-item df-c"
                 >
-                  <div class="overflow-text" style="flex:1;margin-right:8px;">{{ item.label }}({{ item.value }})</div>
+                  <div class="overflow-text" style="flex: 1; margin-right: 8px">
+                    {{ item.label }}({{ item.value }})
+                  </div>
                   <i
                     class="el-icon-copy-document"
                     title="复制"
@@ -763,8 +900,8 @@
                   <i
                     class="el-icon-circle-plus-outline"
                     title="添加"
-                    style="margin-left:4px"
-                    @click="doCopy(item,true)"
+                    style="margin-left: 4px"
+                    @click="doCopy(item, true)"
                   />
                 </div>
               </div>
@@ -776,7 +913,7 @@
                   placeholder="请选择解析表"
                   size="mini"
                   filterable
-                  style="margin-bottom:10px;width: 254px;"
+                  style="margin-bottom: 10px; width: 254px"
                   @change="getTableColumns"
                 >
                   <el-option
@@ -794,9 +931,18 @@
                       class="variable-item df-c"
                       :title="column.name"
                     >
-                      <div class="overflow-text" style="flex:1;margin-right:8px;">{{ column.name }}</div>
+                      <div
+                        class="overflow-text"
+                        style="flex: 1; margin-right: 8px"
+                      >
+                        {{ column.name }}
+                      </div>
                       <el-dropdown>
-                       <i class="el-icon-copy-document" title="复制" style="flex:1;margin-right:4px;" />
+                        <i
+                          class="el-icon-copy-document"
+                          title="复制"
+                          style="flex: 1; margin-right: 4px"
+                        />
                         <el-dropdown-menu slot="dropdown">
                           <el-dropdown-item
                             @click.native="getWhereByColumn(1, column)"
@@ -816,22 +962,27 @@
                         <i class="el-icon-circle-plus-outline" title="添加" />
                         <el-dropdown-menu slot="dropdown">
                           <el-dropdown-item
-                            @click.native="getWhereByColumn(1, column,true)"
+                            @click.native="getWhereByColumn(1, column, true)"
                           >仅字段</el-dropdown-item>
                           <el-dropdown-item
-                            @click.native="getWhereByColumn(2, column,true)"
+                            @click.native="getWhereByColumn(2, column, true)"
                           >表名.字段</el-dropdown-item>
                           <el-dropdown-item
-                            @click.native="getWhereByColumn(3, column,true)"
+                            @click.native="getWhereByColumn(3, column, true)"
                           >查询条件(=)</el-dropdown-item>
                           <el-dropdown-item
-                            @click.native="getWhereByColumn(4, column,true)"
+                            @click.native="getWhereByColumn(4, column, true)"
                           >查询条件(in)</el-dropdown-item>
                         </el-dropdown-menu>
                       </el-dropdown>
                     </div>
                   </template>
-                  <el-empty v-else style="margin:0 auto" :image-size="60" description="暂无字段" />
+                  <el-empty
+                    v-else
+                    style="margin: 0 auto"
+                    :image-size="60"
+                    description="暂无字段"
+                  />
                 </div>
               </div>
             </div>
@@ -868,7 +1019,8 @@
               </el-tooltip>
               <el-dropdown
                 v-if="
-                  paramTableData.tableData && paramTableData.tableData.length > 0
+                  paramTableData.tableData &&
+                    paramTableData.tableData.length > 0
                 "
               >
                 <el-tag
@@ -909,9 +1061,17 @@
                 height="230px"
                 :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
               >
-                <el-table-column prop="columnName" label="列名" align="center" />
+                <el-table-column
+                  prop="columnName"
+                  label="列名"
+                  align="center"
+                />
                 <el-table-column prop="name" label="别名" align="center" />
-                <el-table-column prop="dataType" label="数据类型" align="center" />
+                <el-table-column
+                  prop="dataType"
+                  label="数据类型"
+                  align="center"
+                />
                 <el-table-column prop="width" label="宽度" align="center" />
               </el-table>
               <!--表格 end-->
@@ -929,7 +1089,6 @@
             </div>
           </div>
         </div>
-
       </div>
       <div v-show="addDatasetType == 2">
         <div v-show="sqlForm.sqlType == 1 || datasourceType == 2">
@@ -1802,51 +1961,81 @@
         >确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="高亮设置" :visible.sync="highlightVisiable" width="50%" height="80%" :close-on-click-modal='false' @close='closehighlightDialog'>
-                <el-form :inline="true" :model="highlightForm" class="demo-form-inline" ref="highlightRef">
-                    <el-form-item label="高亮颜色"  prop="color" key="color" :rules="filter_rules('高亮颜色',{required:true})">
-                        <el-select  placeholder="高亮颜色" size="small" v-model="highlightForm.color">
-                            <el-option v-for="op in selectUtil.highlightcolor" :label="op.label" :value="op.value" :key="op.value"></el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-form>
-                <span slot="footer" class="dialog-footer">
-                    <el-button @click="closehighlightDialog" size="small">取 消</el-button>
-                    <el-button type="primary" @click="confirmSetHighlight" size="small">确 定</el-button>
-                </span>
-            </el-dialog>
-            <modal
-              ref="commonModal"
-              :modalConfig="modalConfig"
-              :modalForm="modalForm"
-              :modalData="modalData"
-              :modalHandles="modalHandles"
-              @closeModal="closeModal()"
-            ></modal>
-            <modal
-            ref="chartModalRef"
-            :modalConfig="chartModalConfig"
-            :modalForm="chartModalForm"
-            :modalData="chartModalData"
-            :modalHandles="chartModalHandles"
-            @closeModal="closeChartModal()"
-          ></modal>
-            <modal
-            ref="codeModalRef"
-            :modalConfig="codeModalConfig"
-            :modalForm="codeModalForm"
-            :modalData="codeModalData"
-            :modalHandles="codeModalHandles"
-            @closeModal="closeCodeModal()"
-          ></modal>
-          <modal
-            ref="paperMarginModalRef"
-            :modalConfig="paperMarginModalConfig"
-            :modalForm="paperMarginModalForm"
-            :modalData="paperMarginModalData"
-            :modalHandles="paperMarginModalHandles"
-            @closeModal="closePaperMarginModal()"
-          ></modal>
+    <el-dialog
+      title="高亮设置"
+      :visible.sync="highlightVisiable"
+      width="50%"
+      height="80%"
+      :close-on-click-modal="false"
+      @close="closehighlightDialog"
+    >
+      <el-form
+        ref="highlightRef"
+        :inline="true"
+        :model="highlightForm"
+        class="demo-form-inline"
+      >
+        <el-form-item
+          key="color"
+          label="高亮颜色"
+          prop="color"
+          :rules="filter_rules('高亮颜色', { required: true })"
+        >
+          <el-select
+            v-model="highlightForm.color"
+            placeholder="高亮颜色"
+            size="small"
+          >
+            <el-option
+              v-for="op in selectUtil.highlightcolor"
+              :key="op.value"
+              :label="op.label"
+              :value="op.value"
+            />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="small" @click="closehighlightDialog">取 消</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          @click="confirmSetHighlight"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
+    <modal
+      ref="commonModal"
+      :modal-config="modalConfig"
+      :modal-form="modalForm"
+      :modal-data="modalData"
+      :modal-handles="modalHandles"
+      @closeModal="closeModal()"
+    />
+    <modal
+      ref="chartModalRef"
+      :modal-config="chartModalConfig"
+      :modal-form="chartModalForm"
+      :modal-data="chartModalData"
+      :modal-handles="chartModalHandles"
+      @closeModal="closeChartModal()"
+    />
+    <modal
+      ref="codeModalRef"
+      :modal-config="codeModalConfig"
+      :modal-form="codeModalForm"
+      :modal-data="codeModalData"
+      :modal-handles="codeModalHandles"
+      @closeModal="closeCodeModal()"
+    />
+    <modal
+      ref="paperMarginModalRef"
+      :modal-config="paperMarginModalConfig"
+      :modal-form="paperMarginModalForm"
+      :modal-data="paperMarginModalData"
+      :modal-handles="paperMarginModalHandles"
+      @closeModal="closePaperMarginModal()"
+    />
     <textarea
       id="clipboradInput"
       value=""
@@ -1866,6 +2055,7 @@
 }
 
 .left {
+  flex-shrink: 0;
   box-sizing: border-box;
   width: 460px;
   height: 99vh;
@@ -2050,11 +2240,11 @@
       font-size: 14px;
       font-style: normal;
       font-weight: bold;
-      border-bottom: 1px solid #EFEBEB;
+      border-bottom: 1px solid #efebeb;
     }
-    .variable-warp{
+    .variable-warp {
       padding: 9px 17px;
-      .variable-warp-title{
+      .variable-warp-title {
         color: #979191;
         font-size: 12px;
         font-style: normal;
@@ -2062,14 +2252,14 @@
         line-height: 22px; /* 183.333% */
         margin-bottom: 12px;
       }
-      .variable-list{
+      .variable-list {
         flex-wrap: wrap;
-        .variable-item{
-          width: calc((100% - 18px)/3);
+        .variable-item {
+          width: calc((100% - 18px) / 3);
           box-sizing: border-box;
           padding: 0 10px;
           border-radius: 4px;
-          background: #E1F2F0;
+          background: #e1f2f0;
           height: 32px;
           line-height: 32px;
           color: #595959;
@@ -2078,9 +2268,9 @@
           transition: all 0.3s;
           margin-bottom: 12px;
           cursor: pointer;
-          &:hover{
+          &:hover {
             color: #fff;
-            background: #17B794;
+            background: #17b794;
             ::v-deep .el-icon-circle-plus-outline {
               color: #fff;
             }
@@ -2088,24 +2278,24 @@
               color: #fff;
             }
           }
-          &:nth-child(3n){
+          &:nth-child(3n) {
             margin-right: 0;
           }
         }
       }
-      .analysis-list{
+      .analysis-list {
         border-radius: 3px;
-        border: 1px solid #C1E0D9;
-        background: #FFF;
+        border: 1px solid #c1e0d9;
+        background: #fff;
         padding: 8px 10px 0;
-        .variable-item{
+        .variable-item {
           border-radius: 4px;
-          background: #F1F2F3;
+          background: #f1f2f3;
         }
       }
     }
   }
-  .sql-content{
+  .sql-content {
     flex: 1;
   }
 }
@@ -2352,10 +2542,10 @@
   font-weight: bold;
 }
 .center {
-  flex: 1;
+  // flex: 1;
   position: relative;
-  margin: 0 10px;
-  overflow: auto;
+  margin-left: 10px;
+  // overflow: auto;
   .left-action {
     left: -10px;
     border-radius: 0 3px 3px 0;
@@ -2684,8 +2874,8 @@
     width: 0;
   }
 }
-.editor{
+.editor {
   position: relative;
-  top:-123px
+  top: -123px;
 }
 </style>
