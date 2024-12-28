@@ -40,6 +40,14 @@ export default {
         //表格分页信息end
         //表格列表头start
         tableCols:[
+          {label:'操作',prop:'operation',align:'center', type: '', type: 'dropdown', width: 54,btnList:[
+						{label:'查看',type:'text',auth:'reportTask_detail',handle:(row)=>this.showModal(this.commonConstants.modalType.detail,row.id)},
+						{label:'编辑',type:'text',auth:'reportTask_edit',handle:(row)=>this.showModal(this.commonConstants.modalType.update,row.id)},
+            {label:'立即执行',type:'text',auth:'reportTask_runTask',handle:(row)=>this.runTask(row.id)},
+            {label:'暂停任务',type:'text',auth:'reportTask_pause',show:(row)=>this.isShowPause(row),handle:(row)=>this.pauseTask(row.id)},
+            {label:'恢复任务',type:'text',auth:'reportTask_resume',show:(row)=>this.isShowResume(row),handle:(row)=>this.resumeTask(row.id)},
+						{label:'删除',type:'text',auth:'reportTask_delete',handle:(row)=>this.deleteOne(row.id)},
+					]},
 					{label:'任务名称',prop:'jobName',align:'center'},
 					{label:'任务执行时间',prop:'jobCron',align:'center'},
 					{label:'任务参数',prop:'jobData',align:'center',overflow:true},
@@ -47,14 +55,6 @@ export default {
           {label:'下次执行时间',prop:'nextFireTime',align:'center',overflow:true},
           {label:'任务状态',prop:'jobStatus',align:'center',overflow:true,formatter:this.commonUtil.getTableCodeName,codeType:'jobStatus'},
 					{label:'发送邮箱',prop:'email',align:'center'},
-					{label:'操作',prop:'operation',align:'center',type:'button',btnList:[
-						{label:'查看',type:'text',auth:'reportTask_detail',handle:(row)=>this.showModal(this.commonConstants.modalType.detail,row.id)},
-						{label:'编辑',type:'text',auth:'reportTask_edit',handle:(row)=>this.showModal(this.commonConstants.modalType.update,row.id)},
-            {label:'立即执行',type:'text',auth:'reportTask_runTask',handle:(row)=>this.runTask(row.id)},
-            {label:'暂停任务',type:'text',auth:'reportTask_pause',show:(row)=>this.isShowPause(row),handle:(row)=>this.pauseTask(row.id)},
-            {label:'恢复任务',type:'text',auth:'reportTask_resume',show:(row)=>this.isShowResume(row),handle:(row)=>this.resumeTask(row.id)},
-						{label:'删除',type:'text',auth:'reportTask_delete',handle:(row)=>this.deleteOne(row.id)},
-					]}
         ],
         //表格列表头end
         //modal配置 start
