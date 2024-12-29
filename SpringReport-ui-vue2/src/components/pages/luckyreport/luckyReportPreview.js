@@ -363,12 +363,13 @@ export default {
             { label: '导出全部PDF', handle: () => this.pdfExport(1) }
           ]
         },
-        {
-          btnType: 'dropDown', label: '打印', icon: 'action-icon action-icon-print',
-          downs: [
-            { label: '打印全部', handle: () => this.pdfPrint(1) }
-          ]
-        }
+        {btnType: 'button', label: '打印', iconClass: 'action-icon action-icon-print',handle: () => this.pdfPrint(1), size: 'mini'}
+        // {
+        //   btnType: 'dropDown', label: '打印', icon: 'action-icon action-icon-print',
+        //   downs: [
+        //     { label: '打印全部', handle: () => this.pdfPrint(1) }
+        //   ]
+        // }
       ]
       var that = this
       this.commonUtil.doPost(obj, headers).then(response => {
@@ -499,11 +500,13 @@ export default {
                 { label: '本页导出PDF', handle: () => this.pdfPageExport(1) }
               ]
             })
-            this.searchHandle[4].downs = [
-              ...this.searchHandle[4].downs,
-              { label: '打印本页', handle: () => this.pdfPagePrint(1) },
-              { label: '定向打印', handle: () => this.showCustomPdfPage(2) }
-            ]
+            this.searchHandle.push({
+              btnType: 'dropDown', label: '定向打印', icon: 'action-icon action-icon-print',
+              downs: [
+                { label: '打印本页', handle: () => this.pdfPagePrint(1) },
+                { label: '定向打印', handle: () => this.showCustomPdfPage(2) }
+              ]
+            })
           }
           this.reportForm = result
           this.showReportForm = true
@@ -538,7 +541,8 @@ export default {
       })
     },
     resetSearch: function() {
-      this.getReportParam()
+      this.getReportParam();
+      this.closeSearch();
     },
     getReportData(isInit, isCurrent) {
       var that = this
@@ -2409,6 +2413,9 @@ export default {
     },
     searchClick(){
       this.drawer = true;
+    },
+    closeSearch(){
+      this.drawer = false;
     }
   }
 }
