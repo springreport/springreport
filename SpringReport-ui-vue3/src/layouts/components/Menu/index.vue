@@ -32,7 +32,7 @@
           <MenuItem :item="{ ...item, isBlack }" :key="item.path" />
         </template>
       </template>
-      <div class="collapse-btn df-c" @click="handleCollapse()">
+      <div class="collapse-btn df-c-c" @click="handleCollapse()">
         <img src="@/assets/img/menu-fold.png" v-show="isCollapse" style="height: 16px;width: auto;" />
         <img
           src="@/assets/img/menu-unfold.png"
