@@ -227,17 +227,17 @@ export default {
       line-height: normal;
       transition: all 0.3s;
       &:hover {
-        color: #17b794;
+        color: $--color-primary;
         font-weight: 500;
         border-radius: 4px;
-        background: rgba(23, 183, 148, 0.05);
+        background: rgba($color: $--color-primary, $alpha: 0.05);
       }
     }
     .tab-item-active {
-      color: #17b794;
+      color: $--color-primary;
       font-weight: 500;
       border-radius: 4px;
-      background: rgba(23, 183, 148, 0.05);
+      background: rgba($color: $--color-primary, $alpha: 0.05);
     }
   }
   .task-list {

@@ -37,6 +37,7 @@
   </div>
 </template>
 <style lang="scss" scoped>
+@import "@/element-variables.scss";
 ._tag {
   flex: 0 0 56px;
   display: flex;
@@ -88,7 +89,7 @@
     }
     .menu-tag:hover,
     .menu-tag-active {
-      color: #17b794;
+      color: $--color-primary;
       font-weight: bold;
       &::before {
         position: absolute;
@@ -99,7 +100,7 @@
         max-width: 62px;
         transform: translate(-50%, -50%);
         height: 3px;
-        background: #17b794;
+        background: $--color-primary;
         border-radius: 2px;
       }
     }

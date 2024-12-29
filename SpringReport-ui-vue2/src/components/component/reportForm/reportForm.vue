@@ -6,19 +6,19 @@
       <div class="left-warp" />
 
       <div class="headerLeft df-c" style="width: 30%">
-          <div
-            class="tplname"
-            style="
+        <div
+          class="tplname"
+          style="
               width: 300px;
               overflow: hidden;
               text-overflow: ellipsis;
               white-space: nowrap;
             "
-            :title="reportName"
-          >
-            {{ reportName }}
-          </div>
+          :title="reportName"
+        >
+          {{ reportName }}
         </div>
+      </div>
       <div class="right-warp df-c">
         <div
           v-if="searchHandle.length"
@@ -550,10 +550,10 @@ export default {
       type: Array,
       default: () => []
     },
-    headerUsers:{
+    headerUsers: {
       type: Array,
       default: () => []
-    },
+    }
   },
   data() {
     return {
@@ -708,18 +708,8 @@ export default {
     box-sizing: border-box;
     &:hover {
       cursor: pointer;
-      border-color: #17b794;
+      border-color: $--color-primary;
       opacity: 0.7;
-    }
-    .condition {
-      margin-left: 8px;
-      height: 20px;
-      line-height: 20px;
-      padding: 0 4px 0 8px;
-      border-radius: 4px;
-      background: rgba(23, 183, 148, 0.05);
-      font-size: 12px;
-      color: #17b794;
     }
   }
   .action-item-del {

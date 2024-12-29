@@ -7,7 +7,7 @@
   color: $--color-primary !important;
 }
 .el-menu-item.is-active {
-  background: #f0fcf9 !important;
+  background: rgba($color: $--color-primary, $alpha: 0.05) !important;
   border-radius: 3px !important;
 }
 /* 更改公共组件table样式 */
@@ -23,7 +23,7 @@
 }
 // 更改table鼠标悬浮的颜色
 .el-table__body tr:hover > td.el-table__cell{
-  background-color: rgba(23, 183, 148, 0.05) !important;
+  background-color: rgba($color: $--color-primary, $alpha: 0.05) !important;
 }
 // 更改表头颜色
 .ces-table-page thead tr th {

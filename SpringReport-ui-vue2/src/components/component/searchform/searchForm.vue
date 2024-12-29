@@ -389,6 +389,8 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+@import "@/element-variables.scss";
+
 .search-content {
   height: 32px;
   line-height: 32px;
@@ -415,7 +417,7 @@ export default {
         border-radius: 4px;
         background: rgba(23, 183, 148, 0.05);
         font-size: 12px;
-        color: #17b794;
+        color: $--color-primary;
       }
     }
     .action-item-del{

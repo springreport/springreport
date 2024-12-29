@@ -380,6 +380,8 @@ export default {
 }
 </script>
 <style lang="scss" scoped >
+@import "@/element-variables.scss";
+
 .ces-table-require::before {
   content: "*";
   color: red;
@@ -407,7 +409,7 @@ export default {
     background-color: #f2f2f2;
   }
   .el-icon-more {
-    color: #17b794;
+    color: $--color-primary;
   }
 }
 ::v-deep .el-dropdown-menu--small {
@@ -432,7 +434,7 @@ export default {
   line-height: 18px !important;
   height: 18px !important;
   i{
-    color: #17b794;
+    color: $--color-primary;
     font-weight: bold;
   }
 }

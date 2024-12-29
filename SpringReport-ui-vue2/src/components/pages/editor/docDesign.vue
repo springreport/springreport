@@ -2047,6 +2047,8 @@
 <script src="./docDesign.js"></script>
 <style scoped src="./style.css"></style>
 <style scoped lang="scss">
+@import "@/element-variables.scss";
+
 .pagebox {
   height: 100%;
   display: flex;
@@ -2127,7 +2129,7 @@
     }
     .dataset-item:hover,
     .dataset-item-active {
-      background: #17b794;
+      background: $--color-primary;
       color: #fff;
       .action-copy {
         background-image: url("~@/static/img/sheet/dataset-copy-active.svg") !important;
@@ -2167,8 +2169,8 @@
       .dataset-item:hover,
       .dataset-item-active {
         background: #fff;
-        color: #17b794;
-        border: 1px solid #17b794;
+        color: $--color-primary;
+        border: 1px solid $--color-primary;
         .action-edit {
           background-image: url("~@/static/img/sheet/dataset-copy-active.png") !important;
         }
@@ -2213,7 +2215,7 @@
     border-radius: 4px;
     background-color: #fff;
     &:hover {
-      color: #17b794;
+      color: $--color-primary;
     }
   }
   // margin-top: 2px;
@@ -2270,7 +2272,7 @@
           cursor: pointer;
           &:hover {
             color: #fff;
-            background: #17b794;
+            background: $--color-primary;
             ::v-deep .el-icon-circle-plus-outline {
               color: #fff;
             }
@@ -2342,7 +2344,7 @@
         cursor: pointer;
       }
       .setting-text {
-        color: #17b794;
+        color: $--color-primary;
         font-family: "PingFang SC";
         font-size: 12px;
         font-style: normal;
@@ -2562,7 +2564,7 @@
 
     transform: translateY(-50%);
     z-index: 999;
-    background-color: #17b794;
+    background-color: $--color-primary;
     width: 10px;
     height: 48px;
     &:hover {
@@ -2626,7 +2628,7 @@
     left: 50%;
     bottom: 0;
     transform: translateX(-50%);
-    background: #17b794;
+    background: $--color-primary;
     width: 51px;
     height: 3px;
   }

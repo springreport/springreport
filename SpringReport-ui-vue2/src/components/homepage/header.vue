@@ -265,6 +265,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "@/element-variables.scss";
+
 ._header {
   height: 64px !important;
   padding: 0px;
@@ -290,14 +292,14 @@ export default {
     }
     .system-merchant {
       cursor: pointer;
-      color: #17b794;
+      color: $--color-primary;
       font-family: "PingFang SC";
       font-size: 14px;
       font-style: normal;
       font-weight: 500;
       line-height: 14px;
       padding: 8px 10px;
-      border: 1px solid #17b794;
+      border: 1px solid $--color-primary;
       border-radius: 6px;
     }
   }

@@ -75,6 +75,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "@/element-variables.scss";
+
 .el-dialog-div {
   display: flex;
   flex-wrap: wrap;
@@ -89,7 +91,7 @@ export default {
   cursor: pointer;
   transition: all .3s;;
   &:hover,&-active{
-    border: 1px solid #17B794;
+    border: 1px solid $--color-primary;
     .vchart-item-name{
       background: rgba(23, 183, 148, 0.10) !important;
     }
