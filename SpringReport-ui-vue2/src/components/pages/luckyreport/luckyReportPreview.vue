@@ -13,7 +13,7 @@
     style="height: 100%; display: flex; flex-direction: column"
     :element-loading-text="loadingText"
   >
-    <div style="width: 100%; flex: none">
+    <!-- <div style="width: 100%; flex: none">
       <el-header class="_header df-c-b">
         <div class="headerLeft df-c" style="width: 30%">
           <div
@@ -60,7 +60,7 @@
           </el-dropdown>
         </div>
       </el-header>
-    </div>
+    </div> -->
     <div style="width: 100%; flex: none">
       <reportForm
         v-if="showReportForm && showSearch"
@@ -73,6 +73,8 @@
         :show-search.sync="showSearch"
         :is-param-merge="isParamMerge"
         :is-drill="isDrill"
+        :users="users"
+        :headerUsers="headerUsers"
       />
     </div>
     <div style="width: 100%; flex: 1; overflow: auto">

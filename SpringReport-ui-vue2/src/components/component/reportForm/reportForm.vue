@@ -5,6 +5,20 @@
     <div class="search-content df-c-b">
       <div class="left-warp" />
 
+      <div class="headerLeft df-c" style="width: 30%">
+          <div
+            class="tplname"
+            style="
+              width: 300px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            "
+            :title="reportName"
+          >
+            {{ reportName }}
+          </div>
+        </div>
       <div class="right-warp df-c">
         <div
           v-if="searchHandle.length"
@@ -56,6 +70,36 @@
           <i class="el-icon-back" style="margin-right: 4px" />
           <div>返回上级报表</div>
         </div>
+        <div class="headerRight df-c">
+          <el-dropdown
+            v-if="users.length > 0"
+            class="white font"
+            trigger="click"
+            placement="bottom"
+          >
+            <span class="el-dropdown-link df-c">
+              <el-avatar
+                v-for="(item, index) in headerUsers"
+                :key="index"
+                size="small"
+                :style="{
+                  marginRight: '4px',
+                  backgroundColor: item.color + ' !important',
+                }"
+                shape="circle"
+                :title="item.userName"
+              >
+                {{ item.userName.slice(0, 1).toUpperCase() }}
+              </el-avatar>
+              <i class="el-icon-arrow-down el-icon--right" />
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item v-for="(item, index) in users" :key="index">{{
+                item.userName
+              }}</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </div>
       </div>
     </div>
     <el-drawer
@@ -79,13 +123,6 @@
         @submit.native.prevent
       >
         <div v-show="isShowSearch" style="display: flex; width: 100%">
-          <!-- <div style="display: flex; width: 15%">
-          <div style="width: 100%; height: 100%; padding-top:18px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">
-            <span :title="reportName">
-              {{reportName}}
-            </span>
-          </div>
-        </div> -->
           <div style="display: flex; width: 100%; padding-left: 0px">
             <el-tabs
               v-if="reportForm.length > 1"
@@ -508,7 +545,15 @@ export default {
     isDrill: {
       type: Number,
       default: 2
-    }
+    },
+    users: {
+      type: Array,
+      default: () => []
+    },
+    headerUsers:{
+      type: Array,
+      default: () => []
+    },
   },
   data() {
     return {
@@ -646,7 +691,7 @@ export default {
 .search-content {
   height: 32px;
   line-height: 32px;
-  background-color: #f3f3f3;
+  background-color: #fff;
   padding: 15px 10px 9px 20px;
   .action-item {
     height: 32px;
@@ -681,15 +726,10 @@ export default {
     color: #ff4d4f;
   }
 }
-span {
-  padding: 0px 20px;
-  background-color: rgba(208, 208, 208, 0);
-  font-size: 19px;
-  line-height: 30px;
-  color: #45c5a9;
-  font-weight: bold;
-  margin: 5px 0;
+.headerRight{
+  margin-left: 10px;
 }
+
 ::v-deep .el-button--primary {
   color: #ffffff;
   background-color: $--color-primary;
@@ -718,5 +758,15 @@ span {
   height: 3px;
   // max-width: 80px;
   border-radius: 1px;
+}
+.tplname {
+  padding: 0px 16px;
+  font-size: 16px;
+  line-height: 30px;
+  color: rgba(0, 0, 0, 0.85);
+  font-weight: bold;
+  margin: 5px 0;
+  position: absolute;
+  left:10px
 }
 </style>
