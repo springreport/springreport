@@ -1,10 +1,213 @@
 {
   "id": "3688321",
-  "name": "springReport2",
+  "name": "springReport",
   "font_family": "iconfont",
   "css_prefix_text": "icon-",
   "description": "",
   "glyphs": [
+    {
+      "icon_id": "42737064",
+      "name": "导出",
+      "font_class": "daochu",
+      "unicode": "e648",
+      "unicode_decimal": 58952
+    },
+    {
+      "icon_id": "42737058",
+      "name": "Word 报表",
+      "font_class": "a-Wordbaobiao",
+      "unicode": "e649",
+      "unicode_decimal": 58953
+    },
+    {
+      "icon_id": "42737061",
+      "name": "本页导出",
+      "font_class": "benyedaochu",
+      "unicode": "e64a",
+      "unicode_decimal": 58954
+    },
+    {
+      "icon_id": "42737060",
+      "name": "PPT报表",
+      "font_class": "PPTbaobiao",
+      "unicode": "e64b",
+      "unicode_decimal": 58955
+    },
+    {
+      "icon_id": "42737059",
+      "name": "Excel 协同文档",
+      "font_class": "a-Excelxietongwendang",
+      "unicode": "e64d",
+      "unicode_decimal": 58957
+    },
+    {
+      "icon_id": "42737057",
+      "name": "Excel 报表",
+      "font_class": "a-Excelbaobiao",
+      "unicode": "e64e",
+      "unicode_decimal": 58958
+    },
+    {
+      "icon_id": "42737083",
+      "name": "系统管理",
+      "font_class": "xitongguanli",
+      "unicode": "e63a",
+      "unicode_decimal": 58938
+    },
+    {
+      "icon_id": "42737082",
+      "name": "新建",
+      "font_class": "xinjian",
+      "unicode": "e63b",
+      "unicode_decimal": 58939
+    },
+    {
+      "icon_id": "42737075",
+      "name": "角色管理",
+      "font_class": "jiaoseguanli",
+      "unicode": "e63c",
+      "unicode_decimal": 58940
+    },
+    {
+      "icon_id": "42737073",
+      "name": "导入",
+      "font_class": "daoru",
+      "unicode": "e63d",
+      "unicode_decimal": 58941
+    },
+    {
+      "icon_id": "42737071",
+      "name": "定向导出",
+      "font_class": "dingxiangdaochu",
+      "unicode": "e63e",
+      "unicode_decimal": 58942
+    },
+    {
+      "icon_id": "42737077",
+      "name": "筛选",
+      "font_class": "shaixuan",
+      "unicode": "e63f",
+      "unicode_decimal": 58943
+    },
+    {
+      "icon_id": "42737076",
+      "name": "全查",
+      "font_class": "quancha",
+      "unicode": "e640",
+      "unicode_decimal": 58944
+    },
+    {
+      "icon_id": "42737066",
+      "name": "报表管理",
+      "font_class": "baobiaoguanli",
+      "unicode": "e631",
+      "unicode_decimal": 58929
+    },
+    {
+      "icon_id": "42737063",
+      "name": "报表查看",
+      "font_class": "baobiaochakan",
+      "unicode": "e641",
+      "unicode_decimal": 58945
+    },
+    {
+      "icon_id": "42737070",
+      "name": "首页",
+      "font_class": "shouye",
+      "unicode": "e642",
+      "unicode_decimal": 58946
+    },
+    {
+      "icon_id": "42737062",
+      "name": "大屏模板管理",
+      "font_class": "dapingmobanguanli",
+      "unicode": "e643",
+      "unicode_decimal": 58947
+    },
+    {
+      "icon_id": "42737069",
+      "name": "部门管理",
+      "font_class": "bumenguanli",
+      "unicode": "e644",
+      "unicode_decimal": 58948
+    },
+    {
+      "icon_id": "42737067",
+      "name": "菜单管理",
+      "font_class": "caidanguanli",
+      "unicode": "e645",
+      "unicode_decimal": 58949
+    },
+    {
+      "icon_id": "42737068",
+      "name": "全部导出",
+      "font_class": "quanbudaochu",
+      "unicode": "e646",
+      "unicode_decimal": 58950
+    },
+    {
+      "icon_id": "42737065",
+      "name": "切换商户",
+      "font_class": "qiehuanshanghu",
+      "unicode": "e647",
+      "unicode_decimal": 58951
+    },
+    {
+      "icon_id": "42737085",
+      "name": "数据源管理",
+      "font_class": "shujuyuanguanli",
+      "unicode": "e634",
+      "unicode_decimal": 58932
+    },
+    {
+      "icon_id": "42737086",
+      "name": "页查",
+      "font_class": "yecha",
+      "unicode": "e635",
+      "unicode_decimal": 58933
+    },
+    {
+      "icon_id": "42737079",
+      "name": "数据源管理-1",
+      "font_class": "shujuyuanguanli-1",
+      "unicode": "e633",
+      "unicode_decimal": 58931
+    },
+    {
+      "icon_id": "42737080",
+      "name": "刷新",
+      "font_class": "shuaxin",
+      "unicode": "e636",
+      "unicode_decimal": 58934
+    },
+    {
+      "icon_id": "42737078",
+      "name": "岗位管理",
+      "font_class": "gangweiguanli",
+      "unicode": "e632",
+      "unicode_decimal": 58930
+    },
+    {
+      "icon_id": "42737074",
+      "name": "打印",
+      "font_class": "dayin",
+      "unicode": "e637",
+      "unicode_decimal": 58935
+    },
+    {
+      "icon_id": "42737084",
+      "name": "最大化",
+      "font_class": "zuidahua",
+      "unicode": "e638",
+      "unicode_decimal": 58936
+    },
+    {
+      "icon_id": "42737081",
+      "name": "最小化",
+      "font_class": "zuixiaohua",
+      "unicode": "e639",
+      "unicode_decimal": 58937
+    },
     {
       "icon_id": "4764837",
       "name": "大屏",
