@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3688321 */
-  src: url('iconfont.woff2?t=1730972126930') format('woff2'),
-       url('iconfont.woff?t=1730972126930') format('woff'),
-       url('iconfont.ttf?t=1730972126930') format('truetype');
+  src: url('iconfont.woff2?t=1734260105447') format('woff2'),
+       url('iconfont.woff?t=1734260105447') format('woff'),
+       url('iconfont.ttf?t=1734260105447') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,122 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-daochu:before {
+  content: "\e648";
+}
+
+.icon-a-Wordbaobiao:before {
+  content: "\e649";
+}
+
+.icon-benyedaochu:before {
+  content: "\e64a";
+}
+
+.icon-PPTbaobiao:before {
+  content: "\e64b";
+}
+
+.icon-a-Excelxietongwendang:before {
+  content: "\e64d";
+}
+
+.icon-a-Excelbaobiao:before {
+  content: "\e64e";
+}
+
+.icon-xitongguanli:before {
+  content: "\e63a";
+}
+
+.icon-xinjian:before {
+  content: "\e63b";
+}
+
+.icon-jiaoseguanli:before {
+  content: "\e63c";
+}
+
+.icon-daoru:before {
+  content: "\e63d";
+}
+
+.icon-dingxiangdaochu:before {
+  content: "\e63e";
+}
+
+.icon-shaixuan:before {
+  content: "\e63f";
+}
+
+.icon-quancha:before {
+  content: "\e640";
+}
+
+.icon-baobiaoguanli:before {
+  content: "\e631";
+}
+
+.icon-baobiaochakan:before {
+  content: "\e641";
+}
+
+.icon-shouye:before {
+  content: "\e642";
+}
+
+.icon-dapingmobanguanli:before {
+  content: "\e643";
+}
+
+.icon-bumenguanli:before {
+  content: "\e644";
+}
+
+.icon-caidanguanli:before {
+  content: "\e645";
+}
+
+.icon-quanbudaochu:before {
+  content: "\e646";
+}
+
+.icon-qiehuanshanghu:before {
+  content: "\e647";
+}
+
+.icon-shujuyuanguanli:before {
+  content: "\e634";
+}
+
+.icon-yecha:before {
+  content: "\e635";
+}
+
+.icon-shujuyuanguanli-1:before {
+  content: "\e633";
+}
+
+.icon-shuaxin:before {
+  content: "\e636";
+}
+
+.icon-gangweiguanli:before {
+  content: "\e632";
+}
+
+.icon-dayin:before {
+  content: "\e637";
+}
+
+.icon-zuidahua:before {
+  content: "\e638";
+}
+
+.icon-zuixiaohua:before {
+  content: "\e639";
 }
 
 .icon-xingzhuang:before {
