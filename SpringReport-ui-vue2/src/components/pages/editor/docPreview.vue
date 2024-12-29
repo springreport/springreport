@@ -8,7 +8,7 @@
 -->
 <template>
     <div class="_tablepage" style="height: 100%;display: flex;flex-direction: column;" v-loading="loading" :element-loading-text="loadingText">
-       <div style="width: 100%;flex: none;">
+       <!-- <div style="width: 100%;flex: none;">
             <el-header class="_header df-c-b">
                 <div class="headerLeft df-c" style="width:30%">
                 <div class="tplname" style="width: 100%;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;" :title="tplName">
@@ -23,9 +23,9 @@
                     </div>
                 </div>
             </el-header>
-        </div>
+        </div> -->
         <div style="width: 100%;flex: none;">
-        <reportForm v-if="showReportForm && showSearch" ref="reportRef" :reportName="tplName" :reportForm="reportForm" :searchData="searchData" :searchHandle="searchHandle" :activitiName="activitiName" :showSearch.sync="showSearch" :isParamMerge="isParamMerge" :isDrill="2">
+        <reportForm v-if="showReportForm && showSearch" ref="reportRef" :reportName="tplName" :reportForm="reportForm" :searchData="searchData" :searchHandle="searchHandle" :activitiName="activitiName" :showSearch.sync="showSearch" :isParamMerge="isParamMerge" :isDrill="2" :drawer="drawer">
         </reportForm>
         </div>
         <div style="width: 100%;flex: 1;overflow: hidden;">

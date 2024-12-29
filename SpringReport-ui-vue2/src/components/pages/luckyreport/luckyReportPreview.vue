@@ -75,6 +75,7 @@
         :is-drill="isDrill"
         :users="users"
         :headerUsers="headerUsers"
+        :drawer="drawer"
       />
     </div>
     <div style="width: 100%; flex: 1; overflow: auto">

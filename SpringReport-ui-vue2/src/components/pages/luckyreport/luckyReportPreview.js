@@ -14,6 +14,7 @@ export default {
   },
   data() {
     return {
+      drawer:false,
       chartOptions: {},
       chartSettingShow: false,
       showReportSql: false,
@@ -354,7 +355,7 @@ export default {
       this.searchHandle = [
         { label: '查询当前页', drawerBtn: true, icon: 'el-icon-search', type: 'info', handle: () => this.getReportData(2, true), size: 'mini' },
         { label: '查询全部', drawerBtn: true, icon: 'el-icon-search', type: 'primary', handle: () => this.getReportData(), size: 'mini' },
-        { label: '重置', drawerBtn: true, icon: 'el-icon-refresh-left', type: 'warning', handle: () => this.resetSearch(), size: 'mini' },
+        { label: '重置', drawerBtn: true, icon: 'el-icon-refresh-left', type: '', handle: () => this.resetSearch(), size: 'mini' },
         {
           btnType: 'dropDown', label: '导出全部', icon: 'action-icon action-icon-export-all',
           downs: [
@@ -542,13 +543,14 @@ export default {
     getReportData(isInit, isCurrent) {
       var that = this
       // 项目初始化的时候 不进行this.$refs['reportRef'].$refs['reportFormRef'] 因为此时抽屉组件未加载
-      if (isInit) {
+      if (isInit == 1) {
         that.sendReportDataRequest(isInit, isCurrent)
         return
       }
       this.$refs['reportRef'].$refs['reportFormRef'].validate((valid) => {
         if (valid) {
           that.sendReportDataRequest(isInit, isCurrent)
+          that.drawer = false;
         } else {
           this.commonUtil.showMessage({ message: this.commonUtil.getMessageFromList('error.search.param', null), type: this.commonConstants.messageType.error })
           this.loading = false
@@ -2404,6 +2406,9 @@ export default {
       if (this.chartSettingShow) {
         this.chartOptions = chartOptions
       }
+    },
+    searchClick(){
+      this.drawer = true;
     }
   }
 }

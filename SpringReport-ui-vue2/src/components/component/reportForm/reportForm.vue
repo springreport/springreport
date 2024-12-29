@@ -23,7 +23,7 @@
         <div
           v-if="searchHandle.length"
           class="action-item df-c"
-          @click="drawer = true"
+          @click="searchClick"
         >
           <i class="el-icon-search" style="margin-right: 4px" />
           <div>查询</div>
@@ -111,6 +111,7 @@
       size="36%"
       custom-class="search-drawer"
       class="search-drawer"
+      @close="closeSearch"
     >
       <el-form
         ref="reportFormRef"
@@ -553,7 +554,11 @@ export default {
     headerUsers: {
       type: Array,
       default: () => []
-    }
+    },
+    drawer: {
+      type: Boolean,
+      default: false
+    },
   },
   data() {
     return {
@@ -561,7 +566,7 @@ export default {
       isShowSearch: this.showSearch,
       text: '收起搜索',
       icon: 'el-icon-arrow-up',
-      drawer: false
+      // drawer: false
     }
   },
   computed: {
@@ -584,7 +589,7 @@ export default {
     handleAction(item) {
       item.handle()
       setTimeout(() => {
-        this.drawer = false
+        // this.drawer = false
       }, 100)
     },
     showSearchClick() {
@@ -661,6 +666,12 @@ export default {
     // 返回上级报表
     back() {
       this.$parent.back()
+    },
+    searchClick(){
+      this.$parent.searchClick()
+    },
+    closeSearch(){
+      this.$parent.closeSearch()
     },
     getTreeData(item) {
       if (!item.init) {

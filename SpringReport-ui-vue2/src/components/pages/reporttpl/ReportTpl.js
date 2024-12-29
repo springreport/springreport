@@ -64,7 +64,7 @@ export default {
               { label: '定时任务', type: 'text', auth: 'reportTpl_Task', show: (row) => this.isShowShare(row), handle: (row) => this.routerToTask(row) }
             ]
           },
-          { label: '报表标识', prop: 'tplCode', align: 'left', overflow: true, icon: false },
+          { label: '报表标识', prop: 'tplCode', align: 'left', overflow: true, icon: true },
           { label: '报表名称', prop: 'tplName', align: 'center', overflow: true },
           { label: '查看权限', prop: 'viewAuth', align: 'center', codeType: 'viewAuth', formatter: this.commonUtil.getTableCodeName, overflow: true },
           { label: '数据源代码', prop: 'dataSourceCode', align: 'center', overflow: true },

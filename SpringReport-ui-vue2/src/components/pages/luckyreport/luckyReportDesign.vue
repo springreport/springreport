@@ -3281,7 +3281,7 @@
     border-radius: 4px;
     background-color: #fff;
     &:hover {
-      color: $--color-primary;
+      // color: $--color-primary;
     }
   }
   // margin-top: 2px;
