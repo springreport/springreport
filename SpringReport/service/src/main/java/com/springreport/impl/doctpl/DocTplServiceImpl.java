@@ -37,6 +37,7 @@ import org.apache.poi.wp.usermodel.HeaderFooterType;
 import org.apache.poi.xwpf.model.XWPFHeaderFooterPolicy;
 import org.apache.poi.xwpf.usermodel.IBodyElement;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
+import org.apache.poi.xwpf.usermodel.TOC;
 import org.apache.poi.xwpf.usermodel.UnderlinePatterns;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFFooter;
@@ -55,16 +56,19 @@ import org.docx4j.fonts.IdentityPlusMapper;
 import org.docx4j.fonts.Mapper;
 import org.docx4j.fonts.PhysicalFonts;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTBorder;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTFldChar;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTBr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTP;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPBdr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPPr;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPageNumber;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSdtBlock;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTString;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTText;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTVerticalAlignRun;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STBrType;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STFldCharType;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STHdrFtr;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STNumberFormat;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -812,39 +816,78 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 					WordUtil.addWatermark(doc, data, "#aeb5c0", size);
 				}
 			}
+			//首页页眉不显示
+//			CTSectPr sect = doc.getDocument().getBody().getSectPr();
+//			sect.addNewTitlePg();
 			//页眉
 			JSONArray header = JSON.parseArray(model.getHeader());
 			if(ListUtil.isNotEmpty(header)) {
 				XWPFHeader docHeader = doc.createHeader(HeaderFooterType.DEFAULT);
-				XWPFParagraph paragraph = docHeader.createParagraph();
+				XWPFParagraph paragraph = null;
 				for (int i = 0; i < header.size(); i++) {
 					String type = header.getJSONObject(i).getString("type")==null?"":header.getJSONObject(i).getString("type");
 					switch (type) {
 					case "separator":
+						if(i == 0 || paragraph == null) {
+							paragraph = docHeader.createParagraph();
+						}
 						WordUtil.addSeparator(paragraph, header.getJSONObject(i));
+						if(i == 0) {
+							paragraph = null;
+						}
 						break;
 					default:
-						WordUtil.addParagraph(paragraph, header.getJSONObject(i), null);
+						if(paragraph == null) {
+							paragraph = docHeader.createParagraph();
+						}
+						WordUtil.addParagraph(paragraph, header.getJSONObject(i), null,true);
 						break;
 					}
 				}
+//				XWPFFooter footerFirst = doc.createFooter(HeaderFooterType.FIRST);
+//				paragraph = footerFirst.getParagraphArray(0);
+//				if (paragraph == null)
+//				{
+//					paragraph = footerFirst.createParagraph();
+//				    paragraph.setAlignment(ParagraphAlignment.CENTER);
+//				    XWPFRun run = paragraph.createRun();
+//				    run.setText(" ");
+//				}
 			}
 			//页脚
 			JSONArray footer = JSON.parseArray(model.getFooter());
 			if(ListUtil.isNotEmpty(footer)) {
 				XWPFFooter docFooter = doc.createFooter(HeaderFooterType.DEFAULT);
-				XWPFParagraph paragraph = docFooter.createParagraph();
+				XWPFParagraph paragraph = null;
 				for (int i = 0; i < footer.size(); i++) {
 					String type = footer.getJSONObject(i).getString("type")==null?"":footer.getJSONObject(i).getString("type");
 					switch (type) {
 					case "separator":
+						if(i == 0 || paragraph == null) {
+							paragraph = docFooter.createParagraph();
+						}
 						WordUtil.addSeparator(paragraph, footer.getJSONObject(i));
+						if(i == 0) {
+							paragraph = null;
+						}
 						break;
 					default:
-						WordUtil.addParagraph(paragraph, footer.getJSONObject(i), null);
+						if(paragraph == null) {
+							paragraph = docFooter.createParagraph();
+						}
+						WordUtil.addParagraph(paragraph, footer.getJSONObject(i), null,true);
 						break;
 					}
 				}
+//				XWPFFooter footerFirst = doc.createFooter(HeaderFooterType.FIRST);
+//				paragraph = footerFirst.getParagraphArray(0);
+//				if (paragraph == null)
+//				{
+//					paragraph = footerFirst.createParagraph();
+//				    paragraph.setAlignment(ParagraphAlignment.CENTER);
+//				    XWPFRun run = paragraph.createRun();
+//				    run.setText(" ");
+//				}
 			}
 			//文档主体内容
 			JSONArray main = JSON.parseArray(model.getMain());
@@ -875,7 +918,7 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 						if(paragraph == null) {
 							paragraph = doc.createParagraph();
 						}
-						WordUtil.addParagraph(paragraph,content, null);
+						WordUtil.addParagraph(paragraph,content, null,false);
 						break;
 					case "title":
 						if(paragraph == null) {
@@ -890,7 +933,7 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 						WordUtil.addTab(paragraph,null);
 						break;
 					case "table":
-						WordUtil.addTable(doc,content,docTplChartsObj,docTplCodesObj,dynamicData,isTemplate);
+						abstractNumID = WordUtil.addTable(doc,content,docTplChartsObj,docTplCodesObj,dynamicData,isTemplate,abstractNumID);
 						break;
 					case "superscript":
 						if(paragraph == null) {
@@ -997,12 +1040,13 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 								content.put("value", value.replaceFirst("\n", ""));
 							}
 						}
-						WordUtil.addParagraph(paragraph,content, null);
+						WordUtil.addParagraph(paragraph,content, null,false);
 						break;
 					}
 					lastType = type;
 				}
 			}
+//			addPageNumbers(doc, 0);
 			 // 创建页脚
 			XWPFFooter pageFooter = doc.createFooter(HeaderFooterType.DEFAULT);//创建一个新的XWPFFooter对象
 		    XWPFParagraph footerParagraph = pageFooter.createParagraph();
@@ -1025,7 +1069,6 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 		    footerRun.getCTR().addNewInstrText().setSpace(SpaceAttribute.Space.Enum.forString("preserve"));
 		    footerRun.getCTR().addNewFldChar().setFldCharType(STFldCharType.Enum.forString("end"));
 		    footerRun.setText("");
-		 
 		    // 将页脚添加到所有的页面
 		    XWPFHeaderFooterPolicy headerFooterPolicy = new XWPFHeaderFooterPolicy(doc);
 		    headerFooterPolicy.createFooter(STHdrFtr.DEFAULT, new XWPFParagraph[]{footerParagraph});
@@ -1049,6 +1092,14 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 		}
 		
 		return baos;
+	}
+	
+	private static void addPageNumbers(XWPFDocument doc, int startingNum) {
+		  CTSectPr sectPr = doc.getDocument().getBody().isSetSectPr() ? doc.getDocument().getBody().getSectPr()
+		    : doc.getDocument().getBody().addNewSectPr();
+		  CTPageNumber pgNum = sectPr.isSetPgNumType() ? sectPr.getPgNumType() : sectPr.addNewPgNumType();
+		  pgNum.setStart(BigInteger.valueOf(startingNum));
+		  pgNum.setFmt(STNumberFormat.DECIMAL);
 	}
 	
 	/**  
@@ -1517,6 +1568,17 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 			for (int i = 0; i < runs.size(); i++) {
 				DocTextDto docTextDto = new DocTextDto();
 				XWPFRun xwpfRun = runs.get(i);
+				List<CTBr> brList = xwpfRun.getCTR().getBrList();
+				if(ListUtil.isNotEmpty(brList)) {
+					for (CTBr br : brList) {
+	                    if (br.getType() == STBrType.PAGE) {
+	                    	DocTextDto pageBreak = new DocTextDto();
+	                    	pageBreak.setType("pageBreak");
+	                    	pageBreak.setValue("\n");
+	            			documentElements.add(pageBreak);
+	                    }
+	                }
+				}
 				List<XWPFPicture> pictures = xwpfRun.getEmbeddedPictures();
 				if(ListUtil.isNotEmpty(pictures)) {
 					for (int j = 0; j < pictures.size(); j++) {

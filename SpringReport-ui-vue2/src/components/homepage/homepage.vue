@@ -48,13 +48,13 @@ export default {
     vAside,
     vFooter,
     vHeader,
-    vTag,
+    vTag
   },
   data() {
     return {
-      ycyShow: false, // 切换手写布局样式
+      ycyShow: false // 切换手写布局样式
     }
-  },
+  }
 }
 </script>
 
@@ -71,7 +71,7 @@ export default {
         overflow: auto;
         .ycy-main {
           overflow: visible;
-          padding: 16px 24px 0 24px;
+          padding: 8px 8px 0px 8px;
         }
       }
     }

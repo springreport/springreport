@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.springreport.entity.qrtzreportdetail.QrtzReportDetail;
 import com.springreport.base.BaseEntity;
 import com.springreport.base.PageEntity;
+import com.springreport.base.UserInfoDto;
+import com.springreport.dto.qrtzreportdetail.ReqIndexQrtzDto;
 
  /**  
 * @Description: QrtzReportDetail服务接口
@@ -101,4 +103,15 @@ public interface IQrtzReportDetailService extends IService<QrtzReportDetail> {
 	 * @date 2023-07-30 11:42:46 
 	 */ 
 	BaseEntity resumeTask(Long id);
+	
+	/**  
+	 * @MethodName: getIndexTaskList
+	 * @Description: 获取首页任务列表
+	 * @author caiyang
+	 * @param model
+	 * @param userInfoDto
+	 * @return PageEntity
+	 * @date 2024-12-10 06:02:50 
+	 */ 
+	PageEntity getIndexTaskList(ReqIndexQrtzDto model,UserInfoDto userInfoDto);
 }

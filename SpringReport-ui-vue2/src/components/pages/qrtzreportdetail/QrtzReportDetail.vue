@@ -1,6 +1,6 @@
 <template>
     <div  class="_tablepage">
-        <searchForm  :searchForm="pageData.searchForm" :searchData="pageData.queryData" :searchHandle="pageData.searchHandle">
+        <searchForm  :searchForm="pageData.searchForm" :searchData="pageData.queryData" :searchHandle="pageData.searchHandle" :table-handles="pageData.tableHandles">
         </searchForm>
        <cusTable  
       :isSelection='true'
@@ -8,7 +8,6 @@
       :isPagination='true'
       :isHandle='true'
       :tableCols='pageData.tableCols' 
-      :tableHandles='pageData.tableHandles'
       :tableData='pageData.tableData'
       :tablePage='pageData.tablePage'
       @handleCurrentChange='searchtablelist()'
@@ -17,7 +16,7 @@
        :modalForm='pageData.modalForm' :modalData='pageData.modalData' 
        :modalHandles='pageData.modalHandles'
        @closeModal="closeModal()"></modal>
-       <el-dialog title="参数设置" :visible.sync="pageData.paramDialog"  height="80%" top="20px" :close-on-click-modal='false' @close='closeParamDialog'>
+       <el-dialog title="参数设置" :visible.sync="pageData.paramDialog"  height="80%" width="30%" :close-on-click-modal='false' @close='closeParamDialog'>
             <taskReportForm  ref="reportRef" :reportName="''" :reportForm="pageData.reportForm" :searchData="pageData.searchData">
             </taskReportForm>
              <span slot="footer" class="dialog-footer">

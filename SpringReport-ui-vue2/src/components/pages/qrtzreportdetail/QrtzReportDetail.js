@@ -16,8 +16,8 @@ export default {
         //查询条件 end
         //查询表单按钮start
         searchHandle:[
-          {label:'查询',type:'primary',handle:()=>this.searchtablelist(),auth:'reportTask_search'},
-          {label:'重置',type:'warning',handle:()=>this.resetSearch(),auth:'reportTask_search'}
+          {label:'清除条件',type:'',handle:()=>this.resetSearch(),auth:'reportTask_search'},
+          {label:'查询',type:'primary',handle:()=>this.searchtablelist(),auth:'reportTask_search'}
         ],
         //查询表单按钮end
         //表格数据start
@@ -25,8 +25,8 @@ export default {
         //表格数据end
         //表格工具栏按钮 start
         tableHandles:[
-          {label:'新增',type:'primary',handle:()=>this.showModal(this.commonConstants.modalType.insert),auth:'reportTask_insert'},
-          {label:'批量删除',type:'danger',handle:()=>this.deleteBatch(),auth:'reportTask_batchdelete'}
+          {label:'新增',type:'primary',position: 'right', iconClass: 'action-icon-add',handle:()=>this.showModal(this.commonConstants.modalType.insert),auth:'reportTask_insert'},
+          {label:'批量删除',position: 'left', iconClass: 'action-icon-del',type:'danger',handle:()=>this.deleteBatch(),auth:'reportTask_batchdelete'}
         ],
         //表格工具栏按钮 end
         selectList:[],//表格选中的数据
@@ -40,6 +40,14 @@ export default {
         //表格分页信息end
         //表格列表头start
         tableCols:[
+          {label:'操作',prop:'operation',align:'center', type: '', type: 'dropdown', width: 54,btnList:[
+						{label:'查看',type:'text',auth:'reportTask_detail',handle:(row)=>this.showModal(this.commonConstants.modalType.detail,row.id)},
+						{label:'编辑',type:'text',auth:'reportTask_edit',handle:(row)=>this.showModal(this.commonConstants.modalType.update,row.id)},
+            {label:'立即执行',type:'text',auth:'reportTask_runTask',handle:(row)=>this.runTask(row.id)},
+            {label:'暂停任务',type:'text',auth:'reportTask_pause',show:(row)=>this.isShowPause(row),handle:(row)=>this.pauseTask(row.id)},
+            {label:'恢复任务',type:'text',auth:'reportTask_resume',show:(row)=>this.isShowResume(row),handle:(row)=>this.resumeTask(row.id)},
+						{label:'删除',type:'text',auth:'reportTask_delete',handle:(row)=>this.deleteOne(row.id)},
+					]},
 					{label:'任务名称',prop:'jobName',align:'center'},
 					{label:'任务执行时间',prop:'jobCron',align:'center'},
 					{label:'任务参数',prop:'jobData',align:'center',overflow:true},
@@ -47,14 +55,6 @@ export default {
           {label:'下次执行时间',prop:'nextFireTime',align:'center',overflow:true},
           {label:'任务状态',prop:'jobStatus',align:'center',overflow:true,formatter:this.commonUtil.getTableCodeName,codeType:'jobStatus'},
 					{label:'发送邮箱',prop:'email',align:'center'},
-					{label:'操作',prop:'operation',align:'center',type:'button',btnList:[
-						{label:'查看',type:'text',auth:'reportTask_detail',handle:(row)=>this.showModal(this.commonConstants.modalType.detail,row.id)},
-						{label:'编辑',type:'text',auth:'reportTask_edit',handle:(row)=>this.showModal(this.commonConstants.modalType.update,row.id)},
-            {label:'立即执行',type:'text',auth:'reportTask_runTask',handle:(row)=>this.runTask(row.id)},
-            {label:'暂停任务',type:'text',auth:'reportTask_pause',show:(row)=>this.isShowPause(row),handle:(row)=>this.pauseTask(row.id)},
-            {label:'恢复任务',type:'text',auth:'reportTask_resume',show:(row)=>this.isShowResume(row),handle:(row)=>this.resumeTask(row.id)},
-						{label:'删除',type:'text',auth:'reportTask_delete',handle:(row)=>this.deleteOne(row.id)},
-					]}
         ],
         //表格列表头end
         //modal配置 start
@@ -302,7 +302,7 @@ export default {
                           var data = new Array();
                           if(this.$route.query[result[i].params[m].paramCode])
                           {
-                              data.push(this.$route.query[result[i].params[m].paramCode]);
+                            data = this.$route.query[result[i].params[m].paramCode].split(",");
                           }else{
                               if(result[i].params[m].paramDefault != null && result[i].params[m].paramDefault != "")
                               {

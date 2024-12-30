@@ -101,5 +101,23 @@ public enum DriverClassEnum implements BaseIntEnum{
 		public String getName() {
 			return "com.kingbase8.Driver";
 		}
-	}
+	},
+	HIGODB {
+		public Integer getCode() {
+			return 12;
+		}
+
+		public String getName() {
+			return "com.highgo.jdbc.Driver";
+		}
+	},
+	DORIS {
+		public Integer getCode() {
+			return 13;
+		}
+
+		public String getName() {
+			return "com.mysql.cj.jdbc.Driver";
+		}
+	},
 }

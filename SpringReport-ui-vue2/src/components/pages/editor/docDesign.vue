@@ -1,108 +1,387 @@
 <template>
-    <div v-loading="loading" :element-loading-text="loadingText" style="height: 100%;display: flex;flex-direction: column">
-      <div style="width: 240px;flex: none;">
-            <el-header class="_header df-c-b">
-                <div class="headerLeft df-c" style="width:100%">
-                <div class="tplname" style="width: 240px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;" :title="tplName">
-                      {{tplName}}
-                    </div>
-                </div>
-            </el-header>
+  <div
+    v-loading="loading"
+    :element-loading-text="loadingText"
+    style="
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      background-color: #f0f2f5;
+    "
+  >
+    <div style="width: 100%; flex: none" class="header-box">
+      <el-header class="_header df-c-b">
+        <div class="headerLeft df-c" style="width: 30%">
+          <div
+            class="tplname"
+            style="
+              width: 100%;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            "
+            :title="tplName"
+          >
+            {{ tplName }}
+          </div>
         </div>
-      <div style="flex: 1;height:100vh;display:flex">
-        <div class="left">
-            <div class="left-dataset-title">
-                <span class="dataset-title">数据集管理</span>
-                <el-button class="addBtn" @click="addDataSets">添加<i class="el-icon-plus el-icon--right"></i></el-button>
-            </div>
-            <div v-for="o in datasets" :key="o.id">
-                <div :class="o.isActive?'dataset-box-active':'dataset-box'" style="position:relative">
-                    <i :class="o.isActive?'el-icon-arrow-down el-icon-arrow-down_dataset':'el-icon-arrow-right'" @click="clickDatasets(o)"></i>
-                    <span class="dataset-name" @click="clickDatasets(o)" :title="o.datasetName">{{o.datasetName}}
-                       <el-dropdown>
-                           <i class="el-icon-circle-plus-outline" title="添加"></i>
-                           <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item v-on:click.native="copyAttr(5,o.datasetName)">列表</el-dropdown-item>
-                            <el-dropdown-item v-on:click.native="copyAttr(6,o.datasetName)">区块对</el-dropdown-item>
-                          </el-dropdown-menu>
-                          </el-dropdown>
-                    </span>
-                    <i class="el-icon-edit" @click="editDataSet(o)"></i>
-                    <i class="el-icon-delete" @click="deleteDataSet(o)"></i>
-                </div>
-                <div class="dataset-box-content" v-if="o.isActive">
-                        <p class="column-tag" v-for="(column,index) in o.columns" :key="index" :title="column.name" >
-                          <el-dropdown>
-                           <i class="el-icon-circle-plus-outline" title="添加"></i>
-                           <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item v-on:click.native="copyAttr(1,o.datasetName,column.name)">文本</el-dropdown-item>
-                            <el-dropdown-item v-on:click.native="copyAttr(2,o.datasetName,column.name)">图片</el-dropdown-item>
-                            <el-dropdown-item v-on:click.native="copyAttr(3,o.datasetName,column.name)">列表文本</el-dropdown-item>
-                            <el-dropdown-item v-on:click.native="copyAttr(4,o.datasetName,column.name)">列表图片</el-dropdown-item>
-                            <el-dropdown-item v-on:click.native="copyAttr(7,o.datasetName,column.name)">区块对文本</el-dropdown-item>
-                            <el-dropdown-item v-on:click.native="copyAttr(8,o.datasetName,column.name)">区块对图片</el-dropdown-item>
-                          </el-dropdown-menu>
-                          </el-dropdown>
-                          {{column.name}}
-                        </p>
-                    <el-input v-show="o.apiResult" type="textarea" placeholder="" v-model="o.apiResult" rows="6"></el-input>
-                </div>
-            </div>
+      </el-header>
+    </div>
+    <!-- <div style="flex: 1;height:100vh;display:flex"> -->
+    <div
+      :style="{
+        flex: 1,
+        display: 'flex',
+        height: designHeight + 'px',
+      }"
+    >
+      <div v-show="leftOpen" class="left">
+        <div class="left-dataset-title">
+          <span class="dataset-title">数据集管理</span>
+          <el-button
+            v-has="'reportDesign_addDataSet'"
+            type="primary"
+            size="small"
+            plain
+            class="add-dataset"
+            @click="addDataSets"
+          ><i class="el-icon-plus el-icon--left" />添加数据集</el-button>
         </div>
-        <div class="center">
-          <div class="menu" editor-component="menu">
-          <div class="menu-item">
-            <div class="menu-item__save" title="保存模板">
-              <i></i>
-            </div>
-            <div class="menu-item__upload" title="上传">
-              <i></i>
-            </div>
-            <div style="display:none">
-              <input type="file" id="uploadDocxBtn" accept=".docx" @change="uploadDocx">
+        <div class="left-dataset-content df">
+          <div class="dataset-group">
+            <div class="section-name df-c">
+              <span style="margin-right: 8px">报表</span>
+              <div class="set-group df-c" @click="groupSetVisible = true">
+                <img
+                  src="@/static/img/sheet/setting.png"
+                  width="12px"
+                  height="12px"
+                >
+                <div class="setting-text">分组设置</div>
               </div>
-            <div class="menu-item__download" title="导出模板">
-              <i></i>
             </div>
-            <div class="menu-item__preview" title="预览">
-              <i></i>
-            </div>
-            <div class="menu-item__undo">
-              <i></i>
-            </div>
-            <div class="menu-item__redo">
-              <i></i>
-            </div>
-            <div class="menu-item__painter" title="格式刷(双击可连续使用)">
-              <i></i>
-            </div>
-            <div class="menu-item__format" title="清除格式">
-              <i></i>
+            <el-input
+              v-model="datasetKeyword"
+              prefix-icon="el-icon-search"
+              placeholder="报表搜索"
+              class="search"
+              clearable
+            />
+            <div
+              v-loading="dataGroupLoading"
+              class="group-list cus-scrollbar"
+              element-loading-text="拼命加载中"
+              element-loading-spinner="el-icon-loading"
+            >
+              <el-collapse v-if="displayGroupList && displayGroupList.length">
+                <el-collapse-item
+                  v-for="groupItem in displayGroupList"
+                  :key="groupItem.id"
+                  :title="groupItem.groupName"
+                  :name="groupItem.id"
+                >
+                  <template v-if="groupItem.data.length">
+                    <div
+                      v-for="datasetItem in groupItem.data"
+                      :key="datasetItem.id"
+                      class="dataset-item df-c-b"
+                      :class="
+                        datasetItemActive == datasetItem.id
+                          ? 'dataset-item-active'
+                          : ''
+                      "
+                      @click="clickDatasets(datasetItem)"
+                    >
+                      <div
+                        class="set-name overflow-text"
+                        style="flex: 1"
+                        :title="datasetItem.datasetName"
+                      >
+                        {{ datasetItem.datasetName }}
+                      </div>
+                      <div class="action-box df-c">
+                        <el-dropdown>
+                          <div class="action action-copy" />
+                          <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item
+                              @click.native="
+                                copyAttr(5, datasetItem.datasetName)
+                              "
+                            >列表</el-dropdown-item>
+                            <el-dropdown-item
+                              @click.native="
+                                copyAttr(6, datasetItem.datasetName)
+                              "
+                            >区块对</el-dropdown-item>
+                          </el-dropdown-menu>
+                        </el-dropdown>
+                        <el-dropdown>
+                          <div class="action action-add" />
+                          <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item
+                              @click.native="
+                                copyAttr(5, datasetItem.datasetName, null, true)
+                              "
+                            >列表</el-dropdown-item>
+                            <el-dropdown-item
+                              @click.native="
+                                copyAttr(6, datasetItem.datasetName, null, true)
+                              "
+                            >区块对</el-dropdown-item>
+                          </el-dropdown-menu>
+                        </el-dropdown>
+                        <div
+                          class="action action-edit"
+                          @click.stop="editDataSet(datasetItem)"
+                        />
+                        <div
+                          class="action action-del"
+                          @click.stop="deleteDataSet(datasetItem)"
+                        />
+                      </div>
+                    </div>
+                  </template>
+                  <el-empty v-else :image-size="60" description="暂无数据集" />
+                </el-collapse-item>
+              </el-collapse>
+              <el-empty v-else :image-size="60" description="暂无分组" />
             </div>
           </div>
-          <div class="menu-divider"></div>
+          <div class="dataset-fields">
+            <div class="section-name">字段</div>
+            <el-input
+              v-model="filedKeyword"
+              prefix-icon="el-icon-search"
+              placeholder="检索所选报表内字段"
+              class="search"
+              clearable
+            />
+            <div
+              v-loading="filedLoading"
+              class="group-list cus-scrollbar"
+              element-loading-text="拼命加载中"
+              element-loading-spinner="el-icon-loading"
+            >
+              <template v-if="displayFields.length">
+                <div
+                  v-for="fieldItem in displayFields"
+                  :key="fieldItem.columnName"
+                  class="dataset-item df-c-b"
+                >
+                  <div
+                    class="set-name overflow-text"
+                    style="flex: 1"
+                    :title="fieldItem.columnName"
+                  >
+                    {{ fieldItem.columnName }}
+                  </div>
+                  <div class="action-box df-c">
+                    <el-dropdown>
+                      <div class="action action-edit" />
+                      <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item
+                          @click.native="
+                            copyAttr(1, datasetItem.datasetName, fieldItem.name)
+                          "
+                        >文本</el-dropdown-item>
+                        <el-dropdown-item
+                          @click.native="
+                            copyAttr(2, datasetItem.datasetName, fieldItem.name)
+                          "
+                        >图片</el-dropdown-item>
+                        <el-dropdown-item
+                          @click.native="
+                            copyAttr(3, datasetItem.datasetName, fieldItem.name)
+                          "
+                        >列表文本</el-dropdown-item>
+                        <el-dropdown-item
+                          @click.native="
+                            copyAttr(4, datasetItem.datasetName, fieldItem.name)
+                          "
+                        >列表图片</el-dropdown-item>
+                        <el-dropdown-item
+                          @click.native="
+                            copyAttr(7, datasetItem.datasetName, fieldItem.name)
+                          "
+                        >区块对文本</el-dropdown-item>
+                        <el-dropdown-item
+                          @click.native="
+                            copyAttr(8, datasetItem.datasetName, fieldItem.name)
+                          "
+                        >区块对图片</el-dropdown-item>
+                      </el-dropdown-menu>
+                    </el-dropdown>
+                    <el-dropdown>
+                      <div class="action action-add" />
+                      <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item
+                          @click.native="
+                            copyAttr(
+                              1,
+                              datasetItem.datasetName,
+                              fieldItem.name,
+                              true
+                            )
+                          "
+                        >文本</el-dropdown-item>
+                        <el-dropdown-item
+                          @click.native="
+                            copyAttr(
+                              2,
+                              datasetItem.datasetName,
+                              fieldItem.name,
+                              true
+                            )
+                          "
+                        >图片</el-dropdown-item>
+                        <el-dropdown-item
+                          @click.native="
+                            copyAttr(
+                              3,
+                              datasetItem.datasetName,
+                              fieldItem.name,
+                              true
+                            )
+                          "
+                        >列表文本</el-dropdown-item>
+                        <el-dropdown-item
+                          @click.native="
+                            copyAttr(
+                              4,
+                              datasetItem.datasetName,
+                              fieldItem.name,
+                              true
+                            )
+                          "
+                        >列表图片</el-dropdown-item>
+                        <el-dropdown-item
+                          @click.native="
+                            copyAttr(
+                              7,
+                              datasetItem.datasetName,
+                              fieldItem.name,
+                              true
+                            )
+                          "
+                        >区块对文本</el-dropdown-item>
+                        <el-dropdown-item
+                          @click.native="
+                            copyAttr(
+                              8,
+                              datasetItem.datasetName,
+                              fieldItem.name,
+                              true
+                            )
+                          "
+                        >区块对图片</el-dropdown-item>
+                      </el-dropdown-menu>
+                    </el-dropdown>
+                  </div>
+                </div>
+                <el-input
+                  v-show="datasetItem.apiResult"
+                  v-model="datasetItem.apiResult"
+                  type="textarea"
+                  placeholder=""
+                  rows="6"
+                />
+              </template>
+              <el-empty v-else :image-size="60" description="暂无字段" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="center"
+        :style="{
+          width: leftOpen ? 'calc(100vw - 460px - 10px)' : 'calc(100vw - 10px)',
+        }"
+      >
+        <div class="menu" editor-component="menu">
+          <div class="menu-item">
+            <div class="menu-item__save" title="保存模板">
+              <i />
+            </div>
+            <div class="menu-item__upload" title="上传">
+              <i />
+            </div>
+            <div style="display: none">
+              <input
+                id="uploadDocxBtn"
+                type="file"
+                accept=".docx"
+                @change="uploadDocx"
+              >
+            </div>
+            <div class="menu-item__download" title="导出模板">
+              <i />
+            </div>
+            <div class="menu-item__preview" title="预览">
+              <i />
+            </div>
+            <div class="menu-item__undo">
+              <i />
+            </div>
+            <div class="menu-item__redo">
+              <i />
+            </div>
+            <div class="menu-item__painter" title="格式刷(双击可连续使用)">
+              <i />
+            </div>
+            <div class="menu-item__format" title="清除格式">
+              <i />
+            </div>
+          </div>
+          <div class="menu-divider" />
           <div class="menu-item">
             <div class="menu-item__font">
               <span class="select" title="字体">微软雅黑</span>
               <div class="options">
                 <ul>
-                  <li data-family="Microsoft YaHei" style="font-family:'Microsoft YaHei';">微软雅黑</li>
-                  <li data-family="宋体" style="font-family:'宋体';">宋体</li>
-                  <li data-family="黑体" style="font-family:'黑体';">黑体</li>
-                  <li data-family="仿宋" style="font-family:'仿宋';">仿宋</li>
-                  <li data-family="楷体" style="font-family:'楷体';">楷体</li>
-                  <li data-family="等线" style="font-family:'等线';">等线</li>
-                  <li data-family="华文琥珀" style="font-family:'华文琥珀';">华文琥珀</li>
-                  <li data-family="华文楷体" style="font-family:'华文楷体';">华文楷体</li>
-                  <li data-family="华文隶书" style="font-family:'华文隶书';">华文隶书</li>
-                  <li data-family="华文新魏" style="font-family:'华文新魏';">华文新魏</li>
-                  <li data-family="华文行楷" style="font-family:'华文行楷';">华文行楷</li>
-                  <li data-family="华文中宋" style="font-family:'华文中宋';">华文中宋</li>
-                  <li data-family="华文彩云" style="font-family:'华文彩云';">华文彩云</li>
-                  <li data-family="Arial" style="font-family:'Arial';">Arial</li>
-                  <li data-family="Segoe UI" style="font-family:'Segoe UI';">Segoe UI</li>
-                  <li data-family="Ink Free" style="font-family:'Ink Free';">Ink Free</li>
-                  <li data-family="Fantasy" style="font-family:'Fantasy';">Fantasy</li>
+                  <li
+                    data-family="Microsoft YaHei"
+                    style="font-family: 'Microsoft YaHei'"
+                  >
+                    微软雅黑
+                  </li>
+                  <li data-family="宋体" style="font-family: '宋体'">宋体</li>
+                  <li data-family="黑体" style="font-family: '黑体'">黑体</li>
+                  <li data-family="仿宋" style="font-family: '仿宋'">仿宋</li>
+                  <li data-family="楷体" style="font-family: '楷体'">楷体</li>
+                  <li data-family="等线" style="font-family: '等线'">等线</li>
+                  <li data-family="华文琥珀" style="font-family: '华文琥珀'">
+                    华文琥珀
+                  </li>
+                  <li data-family="华文楷体" style="font-family: '华文楷体'">
+                    华文楷体
+                  </li>
+                  <li data-family="华文隶书" style="font-family: '华文隶书'">
+                    华文隶书
+                  </li>
+                  <li data-family="华文新魏" style="font-family: '华文新魏'">
+                    华文新魏
+                  </li>
+                  <li data-family="华文行楷" style="font-family: '华文行楷'">
+                    华文行楷
+                  </li>
+                  <li data-family="华文中宋" style="font-family: '华文中宋'">
+                    华文中宋
+                  </li>
+                  <li data-family="华文彩云" style="font-family: '华文彩云'">
+                    华文彩云
+                  </li>
+                  <li data-family="Arial" style="font-family: 'Arial'">
+                    Arial
+                  </li>
+                  <li data-family="Segoe UI" style="font-family: 'Segoe UI'">
+                    Segoe UI
+                  </li>
+                  <li data-family="Ink Free" style="font-family: 'Ink Free'">
+                    Ink Free
+                  </li>
+                  <li data-family="Fantasy" style="font-family: 'Fantasy'">
+                    Fantasy
+                  </li>
                 </ul>
               </div>
             </div>
@@ -130,99 +409,99 @@
               </div>
             </div>
             <div class="menu-item__size-add">
-              <i></i>
+              <i />
             </div>
             <div class="menu-item__size-minus">
-              <i></i>
+              <i />
             </div>
             <div class="menu-item__bold">
-              <i></i>
+              <i />
             </div>
             <div class="menu-item__italic">
-              <i></i>
+              <i />
             </div>
             <div class="menu-item__underline">
-              <i></i>
-              <span class="select"></span>
+              <i />
+              <span class="select" />
               <div class="options">
                 <ul>
-                  <li data-decoration-style='solid'>
-                    <i></i>
+                  <li data-decoration-style="solid">
+                    <i />
                   </li>
-                  <li data-decoration-style='double'>
-                    <i></i>
+                  <li data-decoration-style="double">
+                    <i />
                   </li>
-                  <li data-decoration-style='dashed'>
-                    <i></i>
+                  <li data-decoration-style="dashed">
+                    <i />
                   </li>
-                  <li data-decoration-style='dotted'>
-                    <i></i>
+                  <li data-decoration-style="dotted">
+                    <i />
                   </li>
-                  <li data-decoration-style='wavy'>
-                    <i></i>
+                  <li data-decoration-style="wavy">
+                    <i />
                   </li>
                 </ul>
               </div>
             </div>
             <div class="menu-item__strikeout" title="删除线(Ctrl+Shift+X)">
-              <i></i>
+              <i />
             </div>
             <div class="menu-item__superscript">
-              <i></i>
+              <i />
             </div>
             <div class="menu-item__subscript">
-              <i></i>
+              <i />
             </div>
             <div class="menu-item__color" title="字体颜色">
-              <i></i>
-              <span></span>
-              <input type="color" id="color" />
+              <i />
+              <span />
+              <input id="color" type="color">
             </div>
             <div class="menu-item__highlight" title="高亮">
-              <i></i>
-              <span></span>
-              <input type="color" id="highlight">
+              <i />
+              <span />
+              <input id="highlight" type="color">
             </div>
             <div class="menu-item__cellcolor" title="单元格颜色">
-              <i></i>
+              <i />
               <!-- <span></span> -->
-              <input type="color" id="cellcolor" />
+              <input id="cellcolor" type="color">
             </div>
           </div>
-          <div class="menu-divider"></div>
+          <div class="menu-divider" />
           <div class="menu-item">
             <div class="menu-item__title">
-              <i></i>
+              <i />
               <span class="select" title="切换标题">正文</span>
               <div class="options">
                 <ul>
-                  <li style="font-size:16px;">正文</li>
-                  <li data-level="first" style="font-size:26px;">标题1</li>
-                  <li data-level="second" style="font-size:24px;">标题2</li>
-                  <li data-level="third" style="font-size:22px;">标题3</li>
-                  <li data-level="fourth" style="font-size:20px;">标题4</li>
-                  <li data-level="fifth" style="font-size:18px;">标题5</li>
-                  <li data-level="sixth" style="font-size:16px;">标题6</li>
+                  <li style="font-size: 16px">正文</li>
+                  <li data-level="first" style="font-size: 26px">标题1</li>
+                  <li data-level="second" style="font-size: 24px">标题2</li>
+                  <li data-level="third" style="font-size: 22px">标题3</li>
+                  <li data-level="fourth" style="font-size: 20px">标题4</li>
+                  <li data-level="fifth" style="font-size: 18px">标题5</li>
+                  <li data-level="sixth" style="font-size: 16px">标题6</li>
                 </ul>
               </div>
             </div>
             <div class="menu-item__left">
-              <i></i>
+              <i />
             </div>
             <div class="menu-item__center">
-              <i></i>
+              <i />
             </div>
             <div class="menu-item__right">
-              <i></i>
+              <i />
             </div>
             <div class="menu-item__alignment">
-              <i></i>
+              <i />
             </div>
             <div class="menu-item__row-margin">
-              <i title="行间距"></i>
+              <i title="行间距" />
               <div class="options">
                 <ul>
-                  <li data-rowmargin='1'>1</li>
+                  <li data-rowmargin="1">1</li>
                   <li data-rowmargin="1.25">1.25</li>
                   <li data-rowmargin="1.5">1.5</li>
                   <li data-rowmargin="1.75">1.75</li>
@@ -233,13 +512,13 @@
               </div>
             </div>
             <div class="menu-item__list">
-              <i></i>
+              <i />
               <div class="options">
                 <ul>
                   <li>
                     <label>取消列表</label>
                   </li>
-                  <li data-list-type="ol" data-list-style='decimal'>
+                  <li data-list-type="ol" data-list-style="decimal">
                     <label>有序列表：</label>
                     <ol>
                       <li>________</li>
@@ -251,21 +530,21 @@
                       <li>________</li>
                     </ul>
                   </li> -->
-                  <li data-list-type="ul" data-list-style='disc'>
+                  <li data-list-type="ul" data-list-style="disc">
                     <label>实心圆点列表：</label>
-                    <ul style="list-style-type: disc;">
+                    <ul style="list-style-type: disc">
                       <li>________</li>
                     </ul>
                   </li>
-                  <li data-list-type="ul" data-list-style='circle'>
+                  <li data-list-type="ul" data-list-style="circle">
                     <label>空心圆点列表：</label>
-                    <ul style="list-style-type: circle;">
+                    <ul style="list-style-type: circle">
                       <li>________</li>
                     </ul>
                   </li>
-                  <li data-list-type="ul" data-list-style='square'>
+                  <li data-list-type="ul" data-list-style="square">
                     <label>空心方块列表：</label>
-                    <ul style="list-style-type: square;">
+                    <ul style="list-style-type: square">
                       <li>________</li>
                     </ul>
                   </li>
@@ -273,13 +552,13 @@
               </div>
             </div>
           </div>
-          <div class="menu-divider"></div>
+          <div class="menu-divider" />
           <div class="menu-item">
             <div class="menu-item__chart">
-              <i title="图表"></i>
+              <i title="图表" />
             </div>
             <div class="menu-item__table">
-              <i title="表格"></i>
+              <i title="表格" />
             </div>
             <div class="menu-item__table__collapse">
               <div class="table-close">×</div>
@@ -287,48 +566,52 @@
                 <span class="table-select">插入</span>
                 <span>表格</span>
               </div>
-              <div class="table-panel"></div>
+              <div class="table-panel" />
             </div>
             <div class="menu-item__image">
-              <i title="图片"></i>
-              <input type="file" id="image" accept=".png, .jpg, .jpeg, .svg, .gif">
+              <i title="图片" />
+              <input
+                id="image"
+                type="file"
+                accept=".png, .jpg, .jpeg, .svg, .gif"
+              >
             </div>
             <div class="menu-item__barcode">
-              <i title="条形码"></i>
+              <i title="条形码" />
             </div>
             <div class="menu-item__qrcode">
-              <i title="二维码"></i>
+              <i title="二维码" />
             </div>
             <div class="menu-item__hyperlink">
-              <i title="超链接"></i>
+              <i title="超链接" />
             </div>
             <div class="menu-item__separator">
-              <i title="分割线"></i>
+              <i title="分割线" />
               <div class="options">
                 <ul>
-                  <li data-separator='0,0'>
-                    <i></i>
+                  <li data-separator="0,0">
+                    <i />
                   </li>
                   <li data-separator="1,1">
-                    <i></i>
+                    <i />
                   </li>
                   <li data-separator="3,1">
-                    <i></i>
+                    <i />
                   </li>
                   <li data-separator="4,4">
-                    <i></i>
+                    <i />
                   </li>
                   <li data-separator="7,3,3,3">
-                    <i></i>
+                    <i />
                   </li>
                   <li data-separator="6,2,2,2,2,2">
-                    <i></i>
+                    <i />
                   </li>
                 </ul>
               </div>
             </div>
             <div class="menu-item__watermark">
-              <i title="水印(添加、删除)"></i>
+              <i title="水印(添加、删除)" />
               <div class="options">
                 <ul>
                   <li data-menu="add">添加水印</li>
@@ -337,8 +620,8 @@
               </div>
             </div>
             <div class="menu-item__page-break" title="分页符">
-            <i></i>
-          </div>
+              <i />
+            </div>
             <!-- <div class="menu-item__codeblock" title="代码块">
               <i></i>
             </div>
@@ -374,20 +657,20 @@
               <i></i>
             </div> -->
           </div>
-          <div class="menu-divider"></div>
+          <div class="menu-divider" />
           <div class="menu-item">
             <div class="menu-item__search" data-menu="search">
-              <i></i>
+              <i />
             </div>
             <div class="menu-item__search__collapse" data-menu="search">
               <div class="menu-item__search__collapse__search">
-                <input type="text" />
-                <label class="search-result"></label>
+                <input type="text">
+                <label class="search-result" />
                 <div class="arrow-left">
-                  <i></i>
+                  <i />
                 </div>
                 <div class="arrow-right">
-                  <i></i>
+                  <i />
                 </div>
                 <span>×</span>
               </div>
@@ -397,7 +680,7 @@
               </div>
             </div>
             <div class="menu-item__print" data-menu="print">
-              <i></i>
+              <i />
             </div>
           </div>
         </div>
@@ -405,20 +688,24 @@
           <div class="catalog__header">
             <span>目录</span>
             <div class="catalog__header__close">
-              <i></i>
+              <i />
             </div>
           </div>
-          <div class="catalog__main"></div>
+          <div class="catalog__main" />
         </div>
-        <div class="editor"></div>
-        <div class="comment" editor-component="comment"></div>
+        <div class="editor-container">
+          <div class="editor" />
+
+        </div>
+        <!-- <div class="editor" /> -->
+        <div class="comment" editor-component="comment" />
         <div class="footer" editor-component="footer">
           <div>
             <div class="catalog-mode" title="目录">
-              <i></i>
+              <i />
             </div>
             <div class="page-mode">
-              <i title="页面模式(分页、连页)"></i>
+              <i title="页面模式(分页、连页)" />
               <div class="options">
                 <ul>
                   <li data-page-mode="paging" class="active">分页</li>
@@ -427,20 +714,25 @@
               </div>
             </div>
             <span>可见页码：<span class="page-no-list">1</span></span>
-            <span>页面：<span class="page-no">1</span>/<span class="page-size">1</span></span>
+            <span>页面：<span class="page-no">1</span>/<span
+              class="page-size"
+            >1</span></span>
             <span>字数：<span class="word-count">0</span></span>
           </div>
           <!-- <div class="editor-mode" title="编辑模式(编辑、清洁、只读、表单)">编辑模式</div> -->
           <div>
             <div class="page-scale-minus" title="缩小(Ctrl+-)">
-              <i></i>
+              <i />
             </div>
-            <span class="page-scale-percentage" title="显示比例(点击可复原Ctrl+0)">100%</span>
+            <span
+              class="page-scale-percentage"
+              title="显示比例(点击可复原Ctrl+0)"
+            >100%</span>
             <div class="page-scale-add" title="放大(Ctrl+=)">
-              <i></i>
+              <i />
             </div>
             <div class="paper-size">
-              <i title="纸张类型"></i>
+              <i title="纸张类型" />
               <div class="options">
                 <ul>
                   <li data-paper-size="794*1123" class="active">A4</li>
@@ -457,7 +749,7 @@
               </div>
             </div>
             <div class="paper-direction">
-              <i title="纸张方向"></i>
+              <i title="纸张方向" />
               <div class="options">
                 <ul>
                   <li data-paper-direction="vertical" class="active">纵向</li>
@@ -466,691 +758,2003 @@
               </div>
             </div>
             <div class="paper-margin" title="页边距">
-              <i></i>
+              <i />
             </div>
             <div class="fullscreen" title="全屏显示">
-              <i></i>
+              <i />
             </div>
             <!-- <div class="editor-option" title="编辑器设置">
               <i></i>
             </div> -->
           </div>
         </div>
+        <div
+          class="left-action action-icon df-c-b"
+          @click="switchOpenLeftPanel()"
+        >
+          <img
+            v-if="leftOpen"
+            src="@/static/img/sheet/left.png"
+            width="8px"
+            height="8px"
+          >
+          <img
+            v-else
+            src="@/static/img/sheet/right.png"
+            width="8px"
+            height="8px"
+          >
+        </div>
       </div>
     </div>
-    <el-dialog title="数据集" :visible.sync="addDatasetsDialogVisiable" width="80%" height="80%" top="20px" :close-on-click-modal='false' @close='closeAddDataSet' append-to-body>
-              <el-tabs type="border-card">
-                  <el-tab-pane label="sql语句">
-                  <div>
-                      <el-form :inline="true" :model="sqlForm" class="demo-form-inline" ref="sqlRef">
-                      <el-form-item label="数据集名称"  prop="datasetName" :rules="filter_rules('数据集名称',{required:true})">
-                          <el-input v-model="sqlForm.datasetName" placeholder="数据集名称" size="small"></el-input>
-                      </el-form-item>
-                      <el-form-item  label="选择数据源" prop="datasourceId" :rules="filter_rules('选择数据源',{required:true})">
-                          <el-select v-model="sqlForm.datasourceId" placeholder="选择数据源" size="small" @change="changeDatasource">
-                              <el-option v-for="op in dataSource" :label="op.dataSourceName" :value="op.datasourceId" :key="op.datasourceId"></el-option>
-                          </el-select>
-                          </el-form-item>
-                          <el-form-item  label="sql类型" prop="sqlType" :rules="filter_rules('选择数据源',{required:true})" v-if="datasourceType == 1">
-                          <el-select v-model="sqlForm.sqlType" placeholder="选择sql类型" size="small">
-                              <el-option v-for="op in selectUtil.sqlType" :label="op.label" :value="op.value" :key="op.value"></el-option>
-                          </el-select>
-                          </el-form-item><br>
-                          <el-form-item  label="系统变量">
-                             <p class="column-tag" v-for="(item,index) in commonConstants.systemParam" :key="index" ><i class="el-icon-copy-document" title="复制" @click="doCopy(item)"></i>{{item.label}}({{item.value}})</p> 
-                          </el-form-item>
-                      </el-form>
+    <el-dialog
+      title="数据集"
+      :visible.sync="addDatasetsDialogVisiable"
+      width="82%"
+      top="20px"
+      :close-on-click-modal="false"
+      append-to-body
+      class="add-dataset-dialog"
+      @close="closeAddDataSet"
+    >
+      <el-radio-group v-model="addDatasetType" style="margin-bottom: 16px">
+        <el-radio-button :label="1">sql语句</el-radio-button>
+        <el-radio-button :label="2">参数配置</el-radio-button>
+      </el-radio-group>
+      <div v-show="addDatasetType == 1">
+        <el-form
+          ref="sqlRef"
+          :inline="true"
+          :model="sqlForm"
+          class="demo-form-inline"
+        >
+          <el-form-item
+            label="数据集名称"
+            prop="datasetName"
+            :rules="filter_rules('数据集名称', { required: true })"
+          >
+            <el-input
+              v-model="sqlForm.datasetName"
+              placeholder="数据集名称"
+              size="small"
+            />
+          </el-form-item>
+          <el-form-item
+            label="数据源"
+            prop="datasourceId"
+            :rules="filter_rules('选择数据源', { required: true })"
+          >
+            <el-select
+              v-model="sqlForm.datasourceId"
+              placeholder="选择数据源"
+              size="small"
+              @change="changeDatasource"
+            >
+              <el-option
+                v-for="op in dataSource"
+                :key="op.datasourceId"
+                :label="op.dataSourceName"
+                :value="op.datasourceId"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            v-if="datasourceType == 1"
+            label="sql类型"
+            prop="sqlType"
+            :rules="filter_rules('选择sql类型', { required: true })"
+          >
+            <el-select
+              v-model="sqlForm.sqlType"
+              placeholder="选择sql类型"
+              size="small"
+            >
+              <el-option
+                v-for="op in selectUtil.sqlType"
+                :key="op.value"
+                :label="op.label"
+                :value="op.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            label="分组"
+            prop="groupId"
+            :rules="filter_rules('选择分组', { required: true })"
+          >
+            <el-select
+              v-model="sqlForm.groupId"
+              placeholder="选择分组"
+              size="small"
+            >
+              <el-option
+                v-for="item in groupList"
+                :key="item.id"
+                :label="item.groupName"
+                :value="item.id"
+              />
+            </el-select>
+          </el-form-item>
+        </el-form>
 
-                  <div style="height:25px;" v-if="datasourceType == 1">
-                  <el-tooltip content="该操作将执行sql语句并校验sql语句的正确性，并将查询字段全部显示到下方的表格中" placement="bottom"><el-tag type="success" @click="execSql" size="small" style="cursor:pointer" ><i class="el-icon-caret-right"></i>执行</el-tag></el-tooltip>
-                  <el-tooltip content="该操作会将sql语句进行格式化并显示" placement="right"><el-tag @click="formatSql" size="small" style="cursor:pointer"><i class="el-icon-document"></i>格式化</el-tag> </el-tooltip>
-                  <el-tooltip content="该操作会插入注释标签" placement="right"><el-tag @click="addComment(' <!--  -->')" type="warning" size="small" style="cursor:pointer"><i class="el-icon-circle-plus-outline"></i>添加注释</el-tag> </el-tooltip>
-                  <el-dropdown v-if="paramTableData.tableData && paramTableData.tableData.length > 0">
-                    <el-tag  type="danger" size="small" style="cursor:pointer"><i class="el-icon-circle-plus-outline"></i>添加参数</el-tag>
-                    <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item v-for="(row,index) in paramTableData.tableData" :key="index" v-on:click.native="getWhereByParam(row)">{{row.paramCode}}</el-dropdown-item>
-                    
-                    </el-dropdown-menu>
-                  </el-dropdown>
+        <div class="df" style="width: 100%">
+          <div class="variable-content">
+            <div class="variable-title">选择变量</div>
+            <div class="variable-warp">
+              <div class="variable-warp-title">系统变量</div>
+              <div class="variable-list df">
+                <div
+                  v-for="(item, index) in commonConstants.systemParam"
+                  :key="index"
+                  :title="item.label"
+                  class="variable-item df-c"
+                >
+                  <div class="overflow-text" style="flex: 1; margin-right: 8px">
+                    {{ item.label }}({{ item.value }})
                   </div>
-                  <div style="height:300px;" v-if="datasourceType == 1">
-                    <div style="height:100%;width:75%;float:left;">
-                      <codemirror ref="codeMirror"  :options="cmOptions"></codemirror>
+                  <i
+                    class="el-icon-copy-document"
+                    title="复制"
+                    @click="doCopy(item)"
+                  />
+                  <i
+                    class="el-icon-circle-plus-outline"
+                    title="添加"
+                    style="margin-left: 4px"
+                    @click="doCopy(item, true)"
+                  />
+                </div>
+              </div>
+              <div class="variable-warp-title">解析表</div>
+
+              <div class="tablecolumn">
+                <el-select
+                  v-model="datasourceTableName"
+                  placeholder="请选择解析表"
+                  size="mini"
+                  filterable
+                  style="margin-bottom: 10px; width: 254px"
+                  @change="getTableColumns"
+                >
+                  <el-option
+                    v-for="op in dataSourceTables"
+                    :key="op.value"
+                    :label="op.name"
+                    :value="op.value"
+                  />
+                </el-select>
+                <div class="variable-list analysis-list df">
+                  <template v-if="tableColumns.length">
+                    <div
+                      v-for="(column, index) in tableColumns"
+                      :key="index"
+                      class="variable-item df-c"
+                      :title="column.name"
+                    >
+                      <div
+                        class="overflow-text"
+                        style="flex: 1; margin-right: 8px"
+                      >
+                        {{ column.name }}
+                      </div>
+                      <el-dropdown>
+                        <i
+                          class="el-icon-copy-document"
+                          title="复制"
+                          style="flex: 1; margin-right: 4px"
+                        />
+                        <el-dropdown-menu slot="dropdown">
+                          <el-dropdown-item
+                            @click.native="getWhereByColumn(1, column)"
+                          >仅字段</el-dropdown-item>
+                          <el-dropdown-item
+                            @click.native="getWhereByColumn(2, column)"
+                          >表名.字段</el-dropdown-item>
+                          <el-dropdown-item
+                            @click.native="getWhereByColumn(3, column)"
+                          >查询条件(=)</el-dropdown-item>
+                          <el-dropdown-item
+                            @click.native="getWhereByColumn(4, column)"
+                          >查询条件(in)</el-dropdown-item>
+                        </el-dropdown-menu>
+                      </el-dropdown>
+                      <el-dropdown>
+                        <i class="el-icon-circle-plus-outline" title="添加" />
+                        <el-dropdown-menu slot="dropdown">
+                          <el-dropdown-item
+                            @click.native="getWhereByColumn(1, column, true)"
+                          >仅字段</el-dropdown-item>
+                          <el-dropdown-item
+                            @click.native="getWhereByColumn(2, column, true)"
+                          >表名.字段</el-dropdown-item>
+                          <el-dropdown-item
+                            @click.native="getWhereByColumn(3, column, true)"
+                          >查询条件(=)</el-dropdown-item>
+                          <el-dropdown-item
+                            @click.native="getWhereByColumn(4, column, true)"
+                          >查询条件(in)</el-dropdown-item>
+                        </el-dropdown-menu>
+                      </el-dropdown>
                     </div>
-                    <div style="height:100%;width:24.5%;float:right;" class="tablecolumn">
-                        <el-tag type="success" size="small" style="cursor:pointer">请选择解析表</el-tag>
-                        <el-select v-model="datasourceTableName" placeholder="请选择解析表" size="mini" @change="getTableColumns" filterable >
-                            <el-option v-for="op in dataSourceTables" :label="op.name" :value="op.value" :key="op.value"></el-option>
-                        </el-select>
-                        <div class="dataset-box-content2" >
-                            <p class="column-tag" v-for="(column,index) in tableColumns" :key="index" :title="column.name">
-                                <el-dropdown>
-                                    <i class="el-icon-circle-plus-outline" title="复制"></i>
-                                    <el-dropdown-menu slot="dropdown">
-                                        <el-dropdown-item v-on:click.native="getWhereByColumn(1,column)">仅字段</el-dropdown-item>
-                                        <el-dropdown-item v-on:click.native="getWhereByColumn(2,column)">表名.字段</el-dropdown-item>
-                                        <el-dropdown-item v-on:click.native="getWhereByColumn(3,column)">查询条件(=)</el-dropdown-item>
-                                        <el-dropdown-item v-on:click.native="getWhereByColumn(4,column)">查询条件(in)</el-dropdown-item>
-                                    </el-dropdown-menu>
-                                </el-dropdown>
-                                {{column.name}}
-                            </p>
-                        </div>
-                    </div>
-                  </div>
-                  <div style="height:1px"></div>
-                  <div>
-                      <!--表格 start-->
-                      <el-table :data="sqlColumnTableData.tableData.slice((sqlColumnTableData.tablePage.currentPage-1)*sqlColumnTableData.tablePage.pageSize,sqlColumnTableData.tablePage.currentPage*sqlColumnTableData.tablePage.pageSize)" border style="width: 100%" align="center" size="small" height="230px" :header-cell-style="{background:'#eef1f6',color:'#606266'}">
-                      <el-table-column prop="columnName" label="列名"  align="center"></el-table-column>
-                      <el-table-column prop="name" label="别名"  align="center"></el-table-column>
-                      <el-table-column prop="dataType" label="数据类型"  align="center"></el-table-column>
-                      <el-table-column prop="width" label="宽度"  align="center"></el-table-column>
-                          </el-table>
-                          <!--表格 end-->
-                          <!--分页 start-->
-                          <el-pagination
-                          @current-change="handleCurrentChange"
-                          @size-change="handleSizeChange"
-                          :current-page="sqlColumnTableData.tablePage.currentPage"
-                          :page-sizes="sqlColumnTableData.tablePage.pageSizeRange"
-                          :page-size="sqlColumnTableData.tablePage.pageSize"
-                          layout="total, sizes, prev, pager, next, jumper"
-                          :total="sqlColumnTableData.tablePage.pageTotal">
-                          </el-pagination>
-                          <!--分页 end-->
-                  </div>
-                  </div>
-                  </el-tab-pane>
-                  <el-tab-pane label="参数配置" >
-                      <div v-show="sqlForm.sqlType == 1 || datasourceType == 2">
-                      <el-divider content-position="left">字段参数</el-divider>
-                      <el-form :inline="true" :model="paramForm" class="demo-form-inline" ref="paramRef">
-                          <el-form-item label="参数名称"  prop="paramName" :rules="filter_rules('参数名称',{required:true})">
-                          <el-input v-model="paramForm.paramName" placeholder="参数名称" size="small"></el-input>
-                          </el-form-item>
-                          <el-form-item label="参数编码"  prop="paramCode" :rules="filter_rules('参数编码',{required:true})">
-                          <el-input v-model="paramForm.paramCode" placeholder="参数编码" size="small"></el-input>
-                          </el-form-item>
-                          <el-form-item label="参数前缀" v-if="datasourceType == 2"  prop="paramPrefix" :rules="filter_rules('参数前缀',{required:false})">
-                          <el-input v-model="paramForm.paramPrefix" placeholder="参数前缀" size="small"></el-input>
-                          </el-form-item>
-                          <el-form-item label="参数类型" prop="paramType" :rules="filter_rules('参数类型',{required:true})">
-                          <el-select v-model="paramForm.paramType" placeholder="参数类型"  size="small">
-                              <el-option label="字符串" value="varchar"></el-option>
-                              <el-option label="数值" value="number"></el-option>
-                              <el-option label="日期" value="date"></el-option>
-                              <el-option label="下拉单选" value="select"></el-option>
-                              <el-option label="下拉多选" value="mutiselect"></el-option>
-                              <el-option label="下拉树(单选)" value="treeSelect"></el-option>
-                              <el-option label="下拉树(多选)" value="multiTreeSelect"></el-option>
-                          </el-select>
-                          </el-form-item>
-                          <el-form-item v-if="paramForm.paramType == 'date'" label="日期格式" prop="dateFormat" :rules="filter_rules('日期格式',{required:false})">
-                          <el-select v-model="paramForm.dateFormat" placeholder="日期格式"  size="small">
-                              <el-option label="yyyy-MM-dd" value="yyyy-MM-dd"></el-option>
-                              <el-option label="yyyy-MM" value="yyyy-MM"></el-option>
-                              <el-option label="yyyy-MM-dd HH:mm" value="yyyy-MM-dd HH:mm"></el-option>
-                          </el-select>
-                          </el-form-item>
-                          <el-form-item label="默认值" prop="paramDefault">
-                          <el-input v-model="paramForm.paramDefault" placeholder="默认值" size="small"></el-input>
-                          </el-form-item>
-                          <el-form-item label="是否必填" prop="paramRequired" :rules="filter_rules('是否必填',{required:true})">
-                          <el-select v-model="paramForm.paramRequired" placeholder="是否必填" size="small">
-                              <el-option label="是" value="1"></el-option>
-                              <el-option label="否" value="2"></el-option>
-                          </el-select>
-                          </el-form-item>
-                          <el-form-item label="是否隐藏" prop="paramHidden" :rules="filter_rules('是否隐藏',{required:true})" key="paramHidden">
-                          <el-select v-model="paramForm.paramHidden" placeholder="是否隐藏" size="small">
-                              <el-option label="是" value="1"></el-option>
-                              <el-option label="否" value="2"></el-option>
-                          </el-select>
-                          </el-form-item>
-                          <el-form-item v-if="paramForm.paramType == 'select' || paramForm.paramType == 'mutiselect'" label="选择内容来源" key="selectType" prop="selectType" :rules="filter_rules('选择内容来源',{required:true})">
-                          <el-select v-model="paramForm.selectType" placeholder="选择内容来源"  size="small">
-                              <el-option label="自定义" value="1"></el-option>
-                              <el-option label="sql语句" value="2"></el-option>
-                          </el-select>
-                          </el-form-item>
-                          <el-form-item  v-if="(paramForm.paramType == 'select' && paramForm.selectType == '2') || (paramForm.paramType == 'mutiselect' && paramForm.selectType == '2') || paramForm.paramType == 'treeSelect' || paramForm.paramType == 'multiTreeSelect'" label="选择数据源" prop="datasourceId" :rules="filter_rules('选择数据源',{required:true})">
-                          <el-select v-model="paramForm.datasourceId" placeholder="选择数据源" size="small">
-                              <el-option v-for="op in dataSource" :label="op.dataSourceName" :value="op.datasourceId" :key="op.datasourceId"></el-option>
-                          </el-select>
-                          </el-form-item>
-                          <el-form-item v-if="(paramForm.paramType == 'select') && paramForm.selectType == '2'" label="是否依赖其他参数" prop="isRelyOnParams" key="isRelyOnParams" :rules="filter_rules('是否依赖其他参数',{required:true})">
-                          <el-select v-model="paramForm.isRelyOnParams" placeholder="是否依赖其他参数" size="small">
-                              <el-option label="是" value="1"></el-option>
-                              <el-option label="否" value="2"></el-option>
-                          </el-select>
-                          </el-form-item>
-                          <el-form-item v-if="(paramForm.paramType == 'select') && paramForm.selectType == '2' && paramForm.isRelyOnParams == '1'" label="依赖参数代码" key="relyOnParams" prop="relyOnParams" :rules="filter_rules('依赖参数代码',{required:true})">
-                            <el-input v-model="paramForm.relyOnParams" placeholder="依赖参数代码" size="small"></el-input>
-                          </el-form-item>
-                          <el-form-item v-if="paramForm.paramType == 'multiTreeSelect'" label="父子联动" prop="checkStrictly" key="checkStrictly" :rules="filter_rules('父子联动',{required:true})">
-                          <el-select v-model="paramForm.checkStrictly" placeholder="选择父子联动" size="small">
-                              <el-option label="是" value="1"></el-option>
-                              <el-option label="否" value="2"></el-option>
-                          </el-select>
-                          </el-form-item>
-                          <el-form-item v-if="paramForm.paramType == 'select' || paramForm.paramType == 'mutiselect' || paramForm.paramType == 'treeSelect' || paramForm.paramType == 'multiTreeSelect'" key="selectContent" label="下拉选择内容" prop="selectContent" :rules="filter_rules('下拉选择内容',{required:true})">
-                          <el-input type="textarea" :cols="80" v-model="paramForm.selectContent" placeholder="下拉选择内容" size="small"></el-input>
-                          <div class="sub-title">{{selectContentSuggestion}}</div>
-                          </el-form-item>
-                          
-                          <el-form-item>
-                            <el-button type="primary" @click="addParam" size="small">添加</el-button>
-                          </el-form-item>
-                          <el-tag v-if="paramForm.paramType == 'date'" type="warning">注：当参数类型选择日期时，如果想让默认日期是当前日期，则默认值填写current或者CURRENT，如果想让默认日期是当前日期的天几天或者后几天，则填天数，例如前七天则填写-7，后七天则填写7。</el-tag>
-                          <el-tag v-if="paramForm.paramType == 'select' || paramForm.paramType == 'mutiselect'" type="warning">自定义数据格式：[{"value":"value1","name":"name1"},{"value":"value2","name":"name2"}] 注意：两个key必须是value 和 name</el-tag><br v-if="paramForm.paramType == 'select' || paramForm.paramType == 'mutiselect'">
-                          <el-tag v-if="paramForm.paramType == 'select' || paramForm.paramType == 'mutiselect'" type="warning">sql语句格式：select code as value, name as name from table 注意：返回的属性中必须有 value 和 name</el-tag>
-                          <el-tag v-if="paramForm.paramType == 'treeSelect' || paramForm.paramType == 'multiTreeSelect'" type="warning">sql语句格式：select deptId as id, deptName as name,parentId as pid from table 注意：返回的属性中必须有 id,name和pid</el-tag>
-                          
-                      </el-form>
-                      <div style="height:2px"></div>
-                      <div style="height:50%">
-                      <!--表格 start-->
-                      <el-table :data="paramTableData.tableData" border style="width: 98%" align="center" size="small" height="230px" :header-cell-style="{background:'#eef1f6',color:'#606266'}">
-                      <el-table-column prop="paramName" label="参数名"  align="center"></el-table-column>
-                      <el-table-column prop="paramCode" label="参数编码"  align="center"></el-table-column>
-                      <el-table-column prop="paramType" label="参数类型"  align="center"></el-table-column>
-                      <el-table-column prop="paramDefault" label="默认值"  align="center"></el-table-column>
-                      <el-table-column prop="paramRequired" label="是否必填"  align="center" :formatter="commonUtil.formatterTableValue"></el-table-column>
-                      <el-table-column prop="paramHidden" label="是否隐藏"  align="center" :formatter="commonUtil.formatterTableValue"></el-table-column>
-                      <el-table-column prop="isRelyOnParams" label="是否依赖其他参数"  align="center" :formatter="commonUtil.formatterTableValue"></el-table-column>
-                      <el-table-column prop="relyOnParams" label="依赖参数"  align="center"></el-table-column>
-                      <el-table-column  label="操作"  align="center">
-                          <template slot-scope="scope">
-                              <el-button @click="editParam(scope.row)" type="text" size="small">编辑</el-button>
-                              <el-button @click="deleteParam(scope.$index)" type="text" size="small">删除</el-button>
-                          </template>
-                      </el-table-column>
-                      </el-table>
-                          <!--表格 end-->
-                      </div>
-                      </div>
-                      <div v-show="sqlForm.sqlType == 2 && datasourceType == 1">
-                          <el-divider content-position="left">输入参数</el-divider>
-                          <el-form :inline="true" :model="procedureParamForm" class="demo-form-inline" ref="inParamRef">
-                              <el-form-item label="参数名称"  prop="paramName" :rules="filter_rules('参数名称',{required:true})">
-                                  <el-input v-model="procedureParamForm.paramName" placeholder="参数名称" ></el-input>
-                              </el-form-item>
-                              <el-form-item label="参数编码"  prop="paramCode" :rules="filter_rules('参数编码',{required:true})">
-                                  <el-input v-model="procedureParamForm.paramCode" placeholder="参数编码"></el-input>
-                              </el-form-item>
-                              <el-form-item label="参数类型" prop="paramType" :rules="filter_rules('参数类型',{required:true})">
-                              <el-select v-model="procedureParamForm.paramType" placeholder="参数类型"  >
-                                  <el-option label="int" value="int"></el-option>
-                                  <el-option label="String" value="String"></el-option>
-                                  <el-option label="Long" value="Long"></el-option>
-                                  <el-option label="BigDecimal" value="BigDecimal"></el-option>
-                                  <el-option label="Double" value="Double"></el-option>
-                                  <el-option label="Float" value="Float"></el-option>
-                                  <el-option label="Date" value="Date"></el-option>
-                              </el-select>
-                              </el-form-item>
-                              <el-form-item label="默认值" prop="paramDefault" :rules="filter_rules('默认值',{required:true})">
-                                  <el-input v-model="procedureParamForm.paramDefault" placeholder="默认值"></el-input>
-                              </el-form-item>
-                              <el-form-item label="是否隐藏" prop="paramHidden" :rules="filter_rules('是否隐藏',{required:true})">
-                                <el-select v-model="procedureParamForm.paramHidden" placeholder="是否隐藏" >
-                                    <el-option label="是" value="1"></el-option>
-                                    <el-option label="否" value="2"></el-option>
-                                </el-select>
-                                </el-form-item>
-                              <el-form-item>
-                              <el-button type="primary" @click="addInParam">添加</el-button>
-                              </el-form-item>
-                          </el-form>
-                          <div style="height:40%">
-                              <!--表格 start-->
-                              <el-table :data="procedureInParamTableData.tableData" border style="width: 100%" align="center" size="small" height="230px" :header-cell-style="{background:'#eef1f6',color:'#606266'}">
-                              <el-table-column prop="paramName" label="参数名"  align="center"></el-table-column>
-                              <el-table-column prop="paramCode" label="参数编码"  align="center"></el-table-column>
-                              <el-table-column prop="paramType" label="参数类型"  align="center"></el-table-column>
-                              <el-table-column prop="paramDefault" label="默认值"  align="center"></el-table-column>
-                              <el-table-column prop="paramHidden" label="是否隐藏"  align="center" :formatter="commonUtil.formatterTableValue"></el-table-column>
-                              <el-table-column fixed="right" label="操作" width="180" align="center">
-                                  <template slot-scope="scope">
-                                      <el-button @click="editInParam(scope.row)" type="text" size="small">编辑</el-button>
-                                      <el-button @click="moveUp(scope.$index,'1')" type="text" size="small">上移</el-button>
-                                      <el-button @click="moveDown(scope.$index,'1')" type="text" size="small">下移</el-button>
-                                      <el-button @click="deleteInParam(scope.$index)" type="text" size="small">删除</el-button>
-                                  </template>
-                              </el-table-column>
-                              </el-table>
-                              <!--表格 end-->
-                          </div>
-                          <el-divider content-position="left">输出参数</el-divider>
-                          <el-form :inline="true" :model="procedureOutParamForm" class="demo-form-inline" ref="outParamRef">
-                              <el-form-item label="参数名称"  prop="paramName" :rules="filter_rules('参数名称',{required:true})">
-                                  <el-input v-model="procedureOutParamForm.paramName" placeholder="参数名称" ></el-input>
-                              </el-form-item>
-                              <el-form-item label="参数编码"  prop="paramCode" :rules="filter_rules('参数编码',{required:true})">
-                                  <el-input v-model="procedureOutParamForm.paramCode" placeholder="参数编码"></el-input>
-                              </el-form-item>
-                              <el-form-item label="参数类型" prop="paramType" :rules="filter_rules('参数类型',{required:true})">
-                              <el-select v-model="procedureOutParamForm.paramType" placeholder="参数类型">
-                                  <el-option label="VARCHAR" value="VARCHAR"></el-option>
-                                  <el-option label="INTEGER" value="INTEGER"></el-option>
-                                  <el-option label="BIGINT" value="BIGINT"></el-option>
-                                  <el-option label="FLOAT" value="FLOAT"></el-option>
-                                  <el-option label="DOUBLE" value="DOUBLE"></el-option>
-                                  <el-option label="DECIMAL" value="DECIMAL"></el-option>
-                              </el-select>
-                              </el-form-item>
-                              <el-form-item>
-                              <el-button type="primary" @click="addOutParam">添加</el-button>
-                              </el-form-item>
-                          </el-form>
-                          <div style="height:30%">
-                              <!--表格 start-->
-                              <el-table :data="procedureOutParamTableData.tableData" border style="width: 100%" align="center" size="small" height="230px" :header-cell-style="{background:'#eef1f6',color:'#606266'}">
-                              <el-table-column prop="paramName" label="参数名"  align="center"></el-table-column>
-                              <el-table-column prop="paramCode" label="参数编码"  align="center"></el-table-column>
-                              <el-table-column prop="paramType" label="参数类型"  align="center"></el-table-column>
-                              <el-table-column fixed="right" label="操作" width="180" align="center">
-                                  <template slot-scope="scope">
-                                      <el-button @click="editOutParam(scope.row)" type="text" size="small">编辑</el-button>
-                                      <el-button @click="moveUp(scope.$index,'2')" type="text" size="small">上移</el-button>
-                                      <el-button @click="moveDown(scope.$index,'2')" type="text" size="small">下移</el-button>
-                                      <el-button @click="deleteOutParam(scope.$index)" type="text" size="small">删除</el-button>
-                                  </template>
-                              </el-table-column>
-                              </el-table>
-                              <!--表格 end-->
-                          </div>
-                      </div>
-                  </el-tab-pane>
-                  </el-tabs>
-                  <span slot="footer" class="dialog-footer">
-                  <el-button @click="closeAddDataSet" size="small">取 消</el-button>
-                  <el-button type="primary" @click="addDataSet" size="small">确 定</el-button>
-                  </span>
-              </el-dialog>
-              <modal
-              ref="commonModal"
-              :modalConfig="modalConfig"
-              :modalForm="modalForm"
-              :modalData="modalData"
-              :modalHandles="modalHandles"
-              @closeModal="closeModal()"
-            ></modal>
-            <modal
-            ref="chartModalRef"
-            :modalConfig="chartModalConfig"
-            :modalForm="chartModalForm"
-            :modalData="chartModalData"
-            :modalHandles="chartModalHandles"
-            @closeModal="closeChartModal()"
-          ></modal>
-          <el-dialog title="高亮设置" :visible.sync="highlightVisiable" width="50%" height="80%" :close-on-click-modal='false' @close='closehighlightDialog'>
-                <el-form :inline="true" :model="highlightForm" class="demo-form-inline" ref="highlightRef">
-                    <el-form-item label="高亮颜色"  prop="color" key="color" :rules="filter_rules('高亮颜色',{required:true})">
-                        <el-select  placeholder="高亮颜色" size="small" v-model="highlightForm.color">
-                            <el-option v-for="op in selectUtil.highlightcolor" :label="op.label" :value="op.value" :key="op.value"></el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-form>
-                <span slot="footer" class="dialog-footer">
-                    <el-button @click="closehighlightDialog" size="small">取 消</el-button>
-                    <el-button type="primary" @click="confirmSetHighlight" size="small">确 定</el-button>
-                </span>
-            </el-dialog>
-            <modal
-            ref="codeModalRef"
-            :modalConfig="codeModalConfig"
-            :modalForm="codeModalForm"
-            :modalData="codeModalData"
-            :modalHandles="codeModalHandles"
-            @closeModal="closeCodeModal()"
-          ></modal>
-          <modal
-            ref="paperMarginModalRef"
-            :modalConfig="paperMarginModalConfig"
-            :modalForm="paperMarginModalForm"
-            :modalData="paperMarginModalData"
-            :modalHandles="paperMarginModalHandles"
-            @closeModal="closePaperMarginModal()"
-          ></modal>
-          <textarea id="clipboradInput" value="" style="opacity:0;position:absolute" />
+                  </template>
+                  <el-empty
+                    v-else
+                    style="margin: 0 auto"
+                    :image-size="60"
+                    description="暂无字段"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="sql-content">
+            <div v-if="datasourceType == 1" style="height: 25px">
+              <el-tooltip
+                content="该操作将执行sql语句并校验sql语句的正确性，并将查询字段全部显示到下方的表格中"
+                placement="bottom"
+              ><el-tag
+                type="success"
+                size="small"
+                style="cursor: pointer"
+                @click="execSql"
+              ><i class="el-icon-caret-right" />执行</el-tag></el-tooltip>
+              <el-tooltip
+                content="该操作会将sql语句进行格式化并显示"
+                placement="right"
+              ><el-tag
+                size="small"
+                style="cursor: pointer"
+                @click="formatSql"
+              ><i class="el-icon-document" />格式化</el-tag>
+              </el-tooltip>
+              <el-tooltip
+                content="该操作会插入注释标签"
+                placement="right"
+              ><el-tag
+                type="warning"
+                size="small"
+                style="cursor: pointer"
+                @click="addComment(' <!--  -->')"
+              ><i class="el-icon-circle-plus-outline" />添加注释</el-tag>
+              </el-tooltip>
+              <el-dropdown
+                v-if="
+                  paramTableData.tableData &&
+                    paramTableData.tableData.length > 0
+                "
+              >
+                <el-tag
+                  type="danger"
+                  size="small"
+                  style="cursor: pointer"
+                ><i class="el-icon-circle-plus-outline" />添加参数</el-tag>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item
+                    v-for="(row, index) in paramTableData.tableData"
+                    :key="index"
+                    @click.native="getWhereByParam(row)"
+                  >{{ row.paramCode }}</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </div>
+            <div v-if="datasourceType == 1" style="height: 300px">
+              <div style="height: 100%; width: 100%">
+                <codemirror ref="codeMirror" :options="cmOptions" />
+              </div>
+            </div>
+            <div style="height: 1px" />
+            <div>
+              <!--表格 start-->
+              <el-table
+                :data="
+                  sqlColumnTableData.tableData.slice(
+                    (sqlColumnTableData.tablePage.currentPage - 1) *
+                      sqlColumnTableData.tablePage.pageSize,
+                    sqlColumnTableData.tablePage.currentPage *
+                      sqlColumnTableData.tablePage.pageSize
+                  )
+                "
+                border
+                style="width: 100%"
+                align="center"
+                size="small"
+                height="230px"
+                :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+              >
+                <el-table-column
+                  prop="columnName"
+                  label="列名"
+                  align="center"
+                />
+                <el-table-column prop="name" label="别名" align="center" />
+                <el-table-column
+                  prop="dataType"
+                  label="数据类型"
+                  align="center"
+                />
+                <el-table-column prop="width" label="宽度" align="center" />
+              </el-table>
+              <!--表格 end-->
+              <!--分页 start-->
+              <el-pagination
+                :current-page="sqlColumnTableData.tablePage.currentPage"
+                :page-sizes="sqlColumnTableData.tablePage.pageSizeRange"
+                :page-size="sqlColumnTableData.tablePage.pageSize"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="sqlColumnTableData.tablePage.pageTotal"
+                @current-change="handleCurrentChange"
+                @size-change="handleSizeChange"
+              />
+              <!--分页 end-->
+            </div>
+          </div>
+        </div>
+      </div>
+      <div v-show="addDatasetType == 2">
+        <div v-show="sqlForm.sqlType == 1 || datasourceType == 2">
+          <el-divider content-position="left">字段参数</el-divider>
+          <el-form
+            ref="paramRef"
+            :inline="true"
+            :model="paramForm"
+            class="demo-form-inline"
+          >
+            <el-form-item
+              label="参数名称"
+              prop="paramName"
+              :rules="filter_rules('参数名称', { required: true })"
+            >
+              <el-input
+                v-model="paramForm.paramName"
+                placeholder="参数名称"
+                size="small"
+              />
+            </el-form-item>
+            <el-form-item
+              label="参数编码"
+              prop="paramCode"
+              :rules="filter_rules('参数编码', { required: true })"
+            >
+              <el-input
+                v-model="paramForm.paramCode"
+                placeholder="参数编码"
+                size="small"
+              />
+            </el-form-item>
+            <el-form-item
+              v-if="datasourceType == 2"
+              label="参数前缀"
+              prop="paramPrefix"
+              :rules="filter_rules('参数前缀', { required: false })"
+            >
+              <el-input
+                v-model="paramForm.paramPrefix"
+                placeholder="参数前缀"
+                size="small"
+              />
+            </el-form-item>
+            <el-form-item
+              label="参数类型"
+              prop="paramType"
+              :rules="filter_rules('参数类型', { required: true })"
+            >
+              <el-select
+                v-model="paramForm.paramType"
+                placeholder="参数类型"
+                size="small"
+              >
+                <el-option label="字符串" value="varchar" />
+                <el-option label="数值" value="number" />
+                <el-option label="日期" value="date" />
+                <el-option label="下拉单选" value="select" />
+                <el-option label="下拉多选" value="mutiselect" />
+                <el-option label="下拉树(单选)" value="treeSelect" />
+                <el-option label="下拉树(多选)" value="multiTreeSelect" />
+              </el-select>
+            </el-form-item>
+            <el-form-item
+              v-if="paramForm.paramType == 'date'"
+              label="日期格式"
+              prop="dateFormat"
+              :rules="filter_rules('日期格式', { required: false })"
+            >
+              <el-select
+                v-model="paramForm.dateFormat"
+                placeholder="日期格式"
+                size="small"
+              >
+                <el-option label="年" value="yyyy" />
+                <el-option label="年-月" value="yyyy-MM" />
+                <el-option label="年-月-日" value="yyyy-MM-dd" />
+                <el-option label="年-月-日 时:分" value="yyyy-MM-dd HH:mm" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="默认值" prop="paramDefault">
+              <el-input
+                v-model="paramForm.paramDefault"
+                placeholder="默认值"
+                size="small"
+              />
+            </el-form-item>
+            <el-form-item
+              label="是否必填"
+              prop="paramRequired"
+              :rules="filter_rules('是否必填', { required: true })"
+            >
+              <el-select
+                v-model="paramForm.paramRequired"
+                placeholder="是否必填"
+                size="small"
+              >
+                <el-option label="是" value="1" />
+                <el-option label="否" value="2" />
+              </el-select>
+            </el-form-item>
+            <el-form-item
+              key="paramHidden"
+              label="是否隐藏"
+              prop="paramHidden"
+              :rules="filter_rules('是否隐藏', { required: true })"
+            >
+              <el-select
+                v-model="paramForm.paramHidden"
+                placeholder="是否隐藏"
+                size="small"
+              >
+                <el-option label="是" value="1" />
+                <el-option label="否" value="2" />
+              </el-select>
+            </el-form-item>
+            <el-form-item
+              v-if="
+                paramForm.paramType == 'select' ||
+                  paramForm.paramType == 'mutiselect'
+              "
+              key="selectType"
+              label="选择内容来源"
+              prop="selectType"
+              :rules="filter_rules('选择内容来源', { required: true })"
+            >
+              <el-select
+                v-model="paramForm.selectType"
+                placeholder="选择内容来源"
+                size="small"
+              >
+                <el-option label="自定义" value="1" />
+                <el-option label="sql语句" value="2" />
+              </el-select>
+            </el-form-item>
+            <el-form-item
+              v-if="
+                (paramForm.paramType == 'select' &&
+                  paramForm.selectType == '2') ||
+                  (paramForm.paramType == 'mutiselect' &&
+                    paramForm.selectType == '2') ||
+                  paramForm.paramType == 'treeSelect' ||
+                  paramForm.paramType == 'multiTreeSelect'
+              "
+              label="选择数据源"
+              prop="datasourceId"
+              :rules="filter_rules('选择数据源', { required: true })"
+            >
+              <el-select
+                v-model="paramForm.datasourceId"
+                placeholder="选择数据源"
+                size="small"
+              >
+                <el-option
+                  v-for="op in dataSource"
+                  :key="op.datasourceId"
+                  :label="op.dataSourceName"
+                  :value="op.datasourceId"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item
+              v-if="
+                paramForm.paramType == 'select' && paramForm.selectType == '2'
+              "
+              key="isRelyOnParams"
+              label="是否依赖其他参数"
+              prop="isRelyOnParams"
+              :rules="filter_rules('是否依赖其他参数', { required: true })"
+            >
+              <el-select
+                v-model="paramForm.isRelyOnParams"
+                placeholder="是否依赖其他参数"
+                size="small"
+              >
+                <el-option label="是" value="1" />
+                <el-option label="否" value="2" />
+              </el-select>
+            </el-form-item>
+            <el-form-item
+              v-if="
+                paramForm.paramType == 'select' &&
+                  paramForm.selectType == '2' &&
+                  paramForm.isRelyOnParams == '1'
+              "
+              key="relyOnParams"
+              label="依赖参数代码"
+              prop="relyOnParams"
+              :rules="filter_rules('依赖参数代码', { required: true })"
+            >
+              <el-input
+                v-model="paramForm.relyOnParams"
+                placeholder="依赖参数代码"
+                size="small"
+              />
+            </el-form-item>
+            <el-form-item
+              v-if="paramForm.paramType == 'multiTreeSelect'"
+              key="checkStrictly"
+              label="父子联动"
+              prop="checkStrictly"
+              :rules="filter_rules('父子联动', { required: true })"
+            >
+              <el-select
+                v-model="paramForm.checkStrictly"
+                placeholder="选择父子联动"
+                size="small"
+              >
+                <el-option label="是" value="1" />
+                <el-option label="否" value="2" />
+              </el-select>
+            </el-form-item>
+            <el-form-item
+              v-if="
+                paramForm.paramType == 'select' ||
+                  paramForm.paramType == 'mutiselect' ||
+                  paramForm.paramType == 'treeSelect' ||
+                  paramForm.paramType == 'multiTreeSelect'
+              "
+              key="selectContent"
+              label="下拉选择内容"
+              prop="selectContent"
+              :rules="filter_rules('下拉选择内容', { required: true })"
+            >
+              <el-input
+                v-model="paramForm.selectContent"
+                type="textarea"
+                :cols="80"
+                placeholder="下拉选择内容"
+                size="small"
+              />
+              <div class="sub-title">{{ selectContentSuggestion }}</div>
+            </el-form-item>
+
+            <el-form-item>
+              <el-button
+                type="primary"
+                size="small"
+                @click="addParam"
+              >添加</el-button>
+            </el-form-item>
+            <el-tag
+              v-if="paramForm.paramType == 'date'"
+              type="warning"
+            >注：当参数类型选择日期时，如果想让默认日期是当前日期，则默认值填写current或者CURRENT，如果想让默认日期是当前日期的天几天或者后几天，则填天数，例如前七天则填写-7，后七天则填写7。</el-tag>
+            <el-tag
+              v-if="
+                paramForm.paramType == 'select' ||
+                  paramForm.paramType == 'mutiselect'
+              "
+              type="warning"
+            >自定义数据格式：[{"value":"value1","name":"name1"},{"value":"value2","name":"name2"}]
+              注意：两个key必须是value 和 name</el-tag><br
+              v-if="
+                paramForm.paramType == 'select' ||
+                  paramForm.paramType == 'mutiselect'
+              "
+            >
+            <el-tag
+              v-if="
+                paramForm.paramType == 'select' ||
+                  paramForm.paramType == 'mutiselect'
+              "
+              type="warning"
+            >sql语句格式：select code as value, name as name from table
+              注意：返回的属性中必须有 value 和 name</el-tag>
+            <el-tag
+              v-if="
+                paramForm.paramType == 'treeSelect' ||
+                  paramForm.paramType == 'multiTreeSelect'
+              "
+              type="warning"
+            >sql语句格式：select deptId as id, deptName as name,parentId as
+              pid from table 注意：返回的属性中必须有 id,name和pid</el-tag>
+          </el-form>
+          <div style="height: 2px" />
+          <div style="height: 50%">
+            <!--表格 start-->
+            <el-table
+              :data="paramTableData.tableData"
+              border
+              style="width: 98%"
+              align="center"
+              size="small"
+              height="230px"
+              :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+            >
+              <el-table-column prop="paramName" label="参数名" align="center" />
+              <el-table-column
+                prop="paramCode"
+                label="参数编码"
+                align="center"
+              />
+              <el-table-column
+                prop="paramType"
+                label="参数类型"
+                align="center"
+              />
+              <el-table-column
+                prop="paramDefault"
+                label="默认值"
+                align="center"
+              />
+              <el-table-column
+                prop="paramRequired"
+                label="是否必填"
+                align="center"
+                :formatter="commonUtil.formatterTableValue"
+              />
+              <el-table-column
+                prop="paramHidden"
+                label="是否隐藏"
+                align="center"
+                :formatter="commonUtil.formatterTableValue"
+              />
+              <el-table-column
+                prop="isRelyOnParams"
+                label="是否依赖其他参数"
+                align="center"
+                :formatter="commonUtil.formatterTableValue"
+              />
+              <el-table-column
+                prop="relyOnParams"
+                label="依赖参数"
+                align="center"
+              />
+              <el-table-column label="操作" align="center">
+                <template slot-scope="scope">
+                  <el-button
+                    type="text"
+                    size="small"
+                    @click="editParam(scope.row)"
+                  >编辑</el-button>
+                  <el-button
+                    type="text"
+                    size="small"
+                    @click="moveUp(scope.$index, '3')"
+                  >上移</el-button>
+                  <el-button
+                    type="text"
+                    size="small"
+                    @click="moveDown(scope.$index, '3')"
+                  >下移</el-button>
+                  <el-button
+                    type="text"
+                    size="small"
+                    @click="deleteParam(scope.$index)"
+                  >删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+            <!--表格 end-->
+          </div>
+        </div>
+        <div v-show="sqlForm.sqlType == 2 && datasourceType == 1">
+          <el-divider content-position="left">输入参数</el-divider>
+          <el-form
+            ref="inParamRef"
+            :inline="true"
+            :model="procedureParamForm"
+            class="demo-form-inline"
+            size="small"
+          >
+            <el-form-item
+              label="参数名称"
+              prop="paramName"
+              :rules="filter_rules('参数名称', { required: true })"
+            >
+              <el-input
+                v-model="procedureParamForm.paramName"
+                placeholder="参数名称"
+              />
+            </el-form-item>
+            <el-form-item
+              label="参数编码"
+              prop="paramCode"
+              :rules="filter_rules('参数编码', { required: true })"
+            >
+              <el-input
+                v-model="procedureParamForm.paramCode"
+                placeholder="参数编码"
+              />
+            </el-form-item>
+            <el-form-item
+              label="参数类型"
+              prop="paramType"
+              :rules="filter_rules('参数类型', { required: true })"
+            >
+              <el-select
+                v-model="procedureParamForm.paramType"
+                placeholder="参数类型"
+              >
+                <el-option label="int" value="int" />
+                <el-option label="String" value="String" />
+                <el-option label="Long" value="Long" />
+                <el-option label="BigDecimal" value="BigDecimal" />
+                <el-option label="Double" value="Double" />
+                <el-option label="Float" value="Float" />
+                <el-option label="Date" value="Date" />
+                <el-option label="DateTime" value="DateTime" />
+              </el-select>
+            </el-form-item>
+            <el-form-item
+              label="默认值"
+              prop="paramDefault"
+              :rules="filter_rules('默认值', { required: false })"
+            >
+              <el-input
+                v-model="procedureParamForm.paramDefault"
+                placeholder="默认值"
+              />
+            </el-form-item>
+            <el-form-item
+              label="是否必填"
+              prop="paramRequired"
+              :rules="filter_rules('是否必填', { required: true })"
+            >
+              <el-select
+                v-model="procedureParamForm.paramRequired"
+                placeholder="是否必填"
+                size="small"
+              >
+                <el-option label="是" value="1" />
+                <el-option label="否" value="2" />
+              </el-select>
+            </el-form-item>
+            <el-form-item
+              v-if="
+                procedureParamForm.paramType != 'Date' &&
+                  procedureParamForm.paramType != 'DateTime'
+              "
+              label="组件类型"
+              prop="componentType"
+              :rules="filter_rules('组件类型', { required: true })"
+            >
+              <el-select
+                v-model="procedureParamForm.componentType"
+                placeholder="组件类型"
+              >
+                <el-option label="输入框" value="input" />
+                <el-option label="下拉单选" value="select" />
+                <el-option label="下拉多选" value="mutiselect" />
+                <el-option label="下拉树(单选)" value="treeSelect" />
+                <el-option label="下拉树(多选)" value="multiTreeSelect" />
+              </el-select>
+            </el-form-item>
+            <el-form-item
+              v-if="
+                procedureParamForm.paramType != 'Date' &&
+                  procedureParamForm.paramType != 'DateTime' &&
+                  (procedureParamForm.componentType == 'select' ||
+                    procedureParamForm.componentType == 'mutiselect')
+              "
+              key="selectType"
+              label="选择内容来源"
+              prop="selectType"
+              :rules="filter_rules('选择内容来源', { required: true })"
+            >
+              <el-select
+                v-model="procedureParamForm.selectType"
+                placeholder="选择内容来源"
+                size="small"
+              >
+                <el-option label="自定义" value="1" />
+                <el-option label="sql语句" value="2" />
+              </el-select>
+            </el-form-item>
+            <el-form-item
+              v-if="
+                procedureParamForm.paramType != 'Date' &&
+                  procedureParamForm.paramType != 'DateTime' &&
+                  ((procedureParamForm.componentType == 'select' &&
+                    procedureParamForm.selectType == '2') ||
+                    (procedureParamForm.componentType == 'mutiselect' &&
+                      procedureParamForm.selectType == '2') ||
+                    procedureParamForm.componentType == 'treeSelect' ||
+                    procedureParamForm.componentType == 'multiTreeSelect')
+              "
+              label="选择数据源"
+              prop="datasourceId"
+              :rules="filter_rules('选择数据源', { required: true })"
+            >
+              <el-select
+                v-model="procedureParamForm.datasourceId"
+                placeholder="选择数据源"
+                size="small"
+              >
+                <el-option
+                  v-for="op in dataSource"
+                  :key="op.datasourceId"
+                  :label="op.dataSourceName"
+                  :value="op.datasourceId"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item
+              v-if="
+                procedureParamForm.paramType != 'Date' &&
+                  procedureParamForm.paramType != 'DateTime' &&
+                  procedureParamForm.componentType == 'select' &&
+                  procedureParamForm.selectType == '2'
+              "
+              key="isRelyOnParams"
+              label="是否依赖其他参数"
+              prop="isRelyOnParams"
+              :rules="filter_rules('是否依赖其他参数', { required: true })"
+            >
+              <el-select
+                v-model="procedureParamForm.isRelyOnParams"
+                placeholder="是否依赖其他参数"
+                size="small"
+              >
+                <el-option label="是" value="1" />
+                <el-option label="否" value="2" />
+              </el-select>
+            </el-form-item>
+            <el-form-item
+              v-if="
+                procedureParamForm.paramType != 'Date' &&
+                  procedureParamForm.paramType != 'DateTime' &&
+                  procedureParamForm.componentType == 'multiTreeSelect'
+              "
+              key="checkStrictly"
+              label="父子联动"
+              prop="checkStrictly"
+              :rules="filter_rules('父子联动', { required: true })"
+            >
+              <el-select
+                v-model="procedureParamForm.checkStrictly"
+                placeholder="选择父子联动"
+                size="small"
+              >
+                <el-option label="是" value="1" />
+                <el-option label="否" value="2" />
+              </el-select>
+            </el-form-item>
+            <el-form-item
+              v-if="
+                procedureParamForm.paramType != 'Date' &&
+                  procedureParamForm.paramType != 'DateTime' &&
+                  (procedureParamForm.componentType == 'select' ||
+                    procedureParamForm.componentType == 'mutiselect' ||
+                    procedureParamForm.componentType == 'treeSelect' ||
+                    procedureParamForm.componentType == 'multiTreeSelect')
+              "
+              key="selectContent"
+              label="下拉选择内容"
+              prop="selectContent"
+              :rules="filter_rules('下拉选择内容', { required: true })"
+            >
+              <el-input
+                v-model="procedureParamForm.selectContent"
+                type="textarea"
+                :cols="80"
+                placeholder="下拉选择内容"
+                size="small"
+              />
+              <div class="sub-title">{{ selectContentSuggestion }}</div>
+            </el-form-item>
+            <el-form-item
+              v-if="procedureParamForm.paramType == 'Date'"
+              label="日期格式"
+              prop="dateFormat"
+              :rules="filter_rules('日期格式', { required: false })"
+            >
+              <el-select
+                v-model="procedureParamForm.dateFormat"
+                placeholder="日期格式"
+                size="small"
+              >
+                <el-option label="年" value="yyyy" />
+                <el-option label="年-月" value="yyyy-MM" />
+                <el-option label="年-月-日" value="yyyy-MM-dd" />
+              </el-select>
+            </el-form-item>
+            <el-form-item
+              label="是否隐藏"
+              prop="paramHidden"
+              :rules="filter_rules('是否隐藏', { required: true })"
+            >
+              <el-select
+                v-model="procedureParamForm.paramHidden"
+                placeholder="是否隐藏"
+              >
+                <el-option label="是" value="1" />
+                <el-option label="否" value="2" />
+              </el-select>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="addInParam">添加</el-button>
+            </el-form-item>
+          </el-form>
+          <el-tag
+            v-if="
+              procedureParamForm.paramType == 'Date' ||
+                procedureParamForm.paramType == 'DateTime'
+            "
+            type="warning"
+          >注：当参数类型选择日期时，如果想让默认日期是当前日期，则默认值填写current或者CURRENT，如果想让默认日期是当前日期的天几天或者后几天，则填天数，例如前七天则填写-7，后七天则填写7。</el-tag>
+          <el-tag
+            v-if="
+              procedureParamForm.componentType == 'select' ||
+                procedureParamForm.componentType == 'mutiselect'
+            "
+            type="warning"
+          >自定义数据格式：[{"value":"value1","name":"name1"},{"value":"value2","name":"name2"}]
+            注意：两个key必须是value 和 name</el-tag><br
+            v-if="
+              paramForm.paramType == 'select' ||
+                paramForm.paramType == 'mutiselect'
+            "
+          >
+          <el-tag
+            v-if="
+              procedureParamForm.componentType == 'select' ||
+                procedureParamForm.componentType == 'mutiselect'
+            "
+            type="warning"
+          >sql语句格式：select code as value, name as name from table
+            注意：返回的属性中必须有 value 和 name</el-tag>
+          <el-tag
+            v-if="
+              procedureParamForm.componentType == 'treeSelect' ||
+                procedureParamForm.componentType == 'multiTreeSelect'
+            "
+            type="warning"
+          >sql语句格式：select deptId as id, deptName as name,parentId as pid
+            from table 注意：返回的属性中必须有 id,name和pid</el-tag>
+          <div style="height: 40%">
+            <!--表格 start-->
+            <el-table
+              :data="procedureInParamTableData.tableData"
+              border
+              style="width: 100%"
+              align="center"
+              size="small"
+              height="230px"
+              :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+            >
+              <el-table-column prop="paramName" label="参数名" align="center" />
+              <el-table-column
+                prop="paramCode"
+                label="参数编码"
+                align="center"
+              />
+              <el-table-column
+                prop="paramType"
+                label="参数类型"
+                align="center"
+              />
+              <el-table-column
+                prop="paramDefault"
+                label="默认值"
+                align="center"
+              />
+              <el-table-column
+                prop="paramHidden"
+                label="是否隐藏"
+                align="center"
+                :formatter="commonUtil.formatterTableValue"
+              />
+              <el-table-column
+                fixed="right"
+                label="操作"
+                width="180"
+                align="center"
+              >
+                <template slot-scope="scope">
+                  <el-button
+                    type="text"
+                    size="small"
+                    @click="editInParam(scope.row)"
+                  >编辑</el-button>
+                  <el-button
+                    type="text"
+                    size="small"
+                    @click="moveUp(scope.$index, '1')"
+                  >上移</el-button>
+                  <el-button
+                    type="text"
+                    size="small"
+                    @click="moveDown(scope.$index, '1')"
+                  >下移</el-button>
+                  <el-button
+                    type="text"
+                    size="small"
+                    @click="deleteInParam(scope.$index)"
+                  >删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+            <!--表格 end-->
+          </div>
+          <el-divider content-position="left">输出参数</el-divider>
+          <el-form
+            ref="outParamRef"
+            :inline="true"
+            :model="procedureOutParamForm"
+            class="demo-form-inline"
+            size="small"
+          >
+            <el-form-item
+              label="参数名称"
+              prop="paramName"
+              :rules="filter_rules('参数名称', { required: true })"
+            >
+              <el-input
+                v-model="procedureOutParamForm.paramName"
+                placeholder="参数名称"
+              />
+            </el-form-item>
+            <el-form-item
+              label="参数编码"
+              prop="paramCode"
+              :rules="filter_rules('参数编码', { required: true })"
+            >
+              <el-input
+                v-model="procedureOutParamForm.paramCode"
+                placeholder="参数编码"
+              />
+            </el-form-item>
+            <el-form-item
+              label="参数类型"
+              prop="paramType"
+              :rules="filter_rules('参数类型', { required: true })"
+            >
+              <el-select
+                v-model="procedureOutParamForm.paramType"
+                placeholder="参数类型"
+              >
+                <el-option label="VARCHAR" value="VARCHAR" />
+                <el-option label="INTEGER" value="INTEGER" />
+                <el-option label="BIGINT" value="BIGINT" />
+                <el-option label="FLOAT" value="FLOAT" />
+                <el-option label="DOUBLE" value="DOUBLE" />
+                <el-option label="DECIMAL" value="DECIMAL" />
+              </el-select>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="addOutParam">添加</el-button>
+            </el-form-item>
+          </el-form>
+          <div style="height: 30%">
+            <!--表格 start-->
+            <el-table
+              :data="procedureOutParamTableData.tableData"
+              border
+              style="width: 100%"
+              align="center"
+              size="small"
+              height="230px"
+              :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+            >
+              <el-table-column prop="paramName" label="参数名" align="center" />
+              <el-table-column
+                prop="paramCode"
+                label="参数编码"
+                align="center"
+              />
+              <el-table-column
+                prop="paramType"
+                label="参数类型"
+                align="center"
+              />
+              <el-table-column
+                fixed="right"
+                label="操作"
+                width="180"
+                align="center"
+              >
+                <template slot-scope="scope">
+                  <el-button
+                    type="text"
+                    size="small"
+                    @click="editOutParam(scope.row)"
+                  >编辑</el-button>
+                  <el-button
+                    type="text"
+                    size="small"
+                    @click="moveUp(scope.$index, '2')"
+                  >上移</el-button>
+                  <el-button
+                    type="text"
+                    size="small"
+                    @click="moveDown(scope.$index, '2')"
+                  >下移</el-button>
+                  <el-button
+                    type="text"
+                    size="small"
+                    @click="deleteOutParam(scope.$index)"
+                  >删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+            <!--表格 end-->
+          </div>
+        </div>
+      </div>
+
+      <span slot="footer" class="dialog-footer">
+        <el-button size="small" @click="closeAddDataSet">取 消</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          @click="addDataSet"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 左侧分组设置 -->
+    <el-dialog
+      :close-on-click-modal="false"
+      title="分组设置"
+      :visible.sync="groupSetVisible"
+      width="504px"
+      @close="closeGroupDialog"
+    >
+      <div class="group-dialog">
+        <div class="df-c-b">
+          <div class="title">全部分组（{{ groupList.length }}）</div>
+          <el-button
+            size="medium"
+            @click="openGroupHandleDialog()"
+          >新增分组</el-button>
+        </div>
+        <el-table
+          size="small"
+          :data="groupList"
+          style="width: 100%; margin-top: 12px"
+        >
+          <el-table-column prop="groupName" label="选项" />
+          <el-table-column label="操作" width="180">
+            <template slot-scope="scope">
+              <el-link
+                type="info"
+                style="margin-right: 12px"
+                @click="openGroupHandleDialog(scope.row)"
+              >编辑</el-link>
+              <el-link
+                type="info"
+                @click="deleteGroup(scope.row)"
+              >删除</el-link>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+    </el-dialog>
+    <!-- 新增编辑分组 -->
+    <el-dialog
+      :close-on-click-modal="false"
+      :title="groupForm.id ? '编辑分组' : '新增分组'"
+      :visible.sync="groupHandleVisible"
+      width="417px"
+      @close="closeGroupHandleDialog"
+    >
+      <el-input
+        v-model="groupForm.groupName"
+        size="medium"
+        placeholder="请输入"
+      />
+      <span slot="footer" class="dialog-footer">
+        <el-button
+          size="small"
+          @click="closeGroupHandleDialog()"
+        >取 消</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          :loading="groupHandleLoading"
+          @click="addOrEditGroup()"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog
+      title="高亮设置"
+      :visible.sync="highlightVisiable"
+      width="50%"
+      height="80%"
+      :close-on-click-modal="false"
+      @close="closehighlightDialog"
+    >
+      <el-form
+        ref="highlightRef"
+        :inline="true"
+        :model="highlightForm"
+        class="demo-form-inline"
+      >
+        <el-form-item
+          key="color"
+          label="高亮颜色"
+          prop="color"
+          :rules="filter_rules('高亮颜色', { required: true })"
+        >
+          <el-select
+            v-model="highlightForm.color"
+            placeholder="高亮颜色"
+            size="small"
+          >
+            <el-option
+              v-for="op in selectUtil.highlightcolor"
+              :key="op.value"
+              :label="op.label"
+              :value="op.value"
+            />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="small" @click="closehighlightDialog">取 消</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          @click="confirmSetHighlight"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
+    <modal
+      ref="commonModal"
+      :modal-config="modalConfig"
+      :modal-form="modalForm"
+      :modal-data="modalData"
+      :modal-handles="modalHandles"
+      @closeModal="closeModal()"
+    />
+    <modal
+      ref="chartModalRef"
+      :modal-config="chartModalConfig"
+      :modal-form="chartModalForm"
+      :modal-data="chartModalData"
+      :modal-handles="chartModalHandles"
+      @closeModal="closeChartModal()"
+    />
+    <modal
+      ref="codeModalRef"
+      :modal-config="codeModalConfig"
+      :modal-form="codeModalForm"
+      :modal-data="codeModalData"
+      :modal-handles="codeModalHandles"
+      @closeModal="closeCodeModal()"
+    />
+    <modal
+      ref="paperMarginModalRef"
+      :modal-config="paperMarginModalConfig"
+      :modal-form="paperMarginModalForm"
+      :modal-data="paperMarginModalData"
+      :modal-handles="paperMarginModalHandles"
+      @closeModal="closePaperMarginModal()"
+    />
+    <textarea
+      id="clipboradInput"
+      value=""
+      style="opacity: 0; position: absolute"
+    />
   </div>
 </template>
 
 <script src="./docDesign.js"></script>
 <style scoped src="./style.css"></style>
 <style scoped lang="scss">
+@import "@/element-variables.scss";
+
 .pagebox {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    background: #ffffff;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
 }
+
 .left {
-    box-sizing: border-box;
-    width: 240px;
-    height: 99vh;
-    background: #FFFFFF;
-    // box-shadow: 0px 4px 8px #D2E3FF;
-    overflow-y:auto;
-    overflow-x:hidden;
-    border-top: 1px solid #E7E7E7;
-    border-right: 1px solid #E7E7E7;
-}
-.left-head{
-    box-sizing: border-box;
-    position: absolute;
-    width: 240px;
-    height: 32px;
-    left: 0px;
-    background: #FFFFFF;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-}
-.left-head .el-icon-s-fold{
-    position: absolute;
-    right: 5%;
-    top: 18.75%;
-    bottom: 18.66%;
-}
-.left-dataset-title{
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 5px 16px;
-    gap: 62px;
-    width: 240px;
-    height: 40px;
-    background: #FFFFFF;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    flex: none;
-    order: 1;
-    flex-grow: 0;
-    // margin-top: 2px;
-}
-.dataset-title{
-    width: 80px;
-    height: 22px;
-    font-style: normal;
-    font-weight: 500;
-    font-size: 16px;
-    line-height: 22px;
-    color: rgba(0, 0, 0, 0.9);
-    flex: none;
-    order: 0;
-    flex-grow: 0;
-}
-.right-dataset-title{
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 62px;
-    width: 240px;
-    height: 40px;
-    background: #FFFFFF;
-    /* border-bottom: 1px solid rgba(0, 0, 0, 0.1); */
-    flex: none;
-    order: 1;
-    flex-grow: 0;
-    margin-top: 2px;
-}
-.attr-dataset-title{
-    width: 100px;
-    height: 32px;
-    font-style: normal;
-    font-weight: 500;
-    font-size: 14px;
-    line-height: 32px;
-    color:#606266;
-    flex: none;
-    order: 0;
-    flex-grow: 0;
-    font-weight: bold;
-}
-.addBtn{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    padding: 2px 12px;
-    gap: 4px;
-    width: 66px;
-    height: 22px;
-    background: #45c5a9;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  width: 460px;
+  height: 99vh;
+  background: #ffffff;
+  // box-shadow: 0px 4px 8px #D2E3FF;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-top: 1px solid #e7e7e7;
+
+  .group-list {
+    padding: 8px;
     border-radius: 4px;
-    flex: none;
-    order: 1;
-    flex-grow: 0;
-    font-family: 'PingFang SC';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 12px;
-    line-height: 18px;
-    color: #FFFFFF;
-}
-.dataset-box{
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    align-items: center;
-    padding: 7px 16px;
-    gap: 103px;
-
-    width: 240px;
-    height: 36px;
-
-    background: #FFFFFF;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    flex: none;
-    order: 0;
-    flex-grow: 0;
-}
-.el-icon-arrow-right{
-    position: absolute;
-    left: 5.25%;
-    cursor:pointer;
-}
-.el-icon-arrow-down_dataset{
-    position: absolute;
-    left: 5.25%;
-    cursor:pointer;
-}
-.dataset-name{
-    width: 140px;
-    height: 22px;
-    font-family: 'PingFang SC';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 14px;
-    line-height: 22px;
-    color: #191919;
-    flex: none;
-    order: 1;
-    flex-grow: 0;
-    max-width: 190px;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow:ellipsis;
-    padding-right:50px;
-    cursor:pointer;
-}
-.el-icon-edit{
-    position: absolute;
-    right: 17.3%;
-    color: #ED7B2F;
-    cursor:pointer;
-}
-.el-icon-delete{
-    position: absolute;
-    right: 7.3%;
-    color: #ED7B2F;
-    cursor:pointer;
-}
-
-.right-el-icon-edit{
-    position: absolute;
-    right: 32.3%;
-    cursor:pointer;
-}
-.right-block-el-icon-edit{
-    position: absolute;
-    right: 20.3%;
-    cursor:pointer;
-}
-.right-el-icon-copy-document{
-    position: absolute;
-    right: 20.3%;
-    cursor:pointer;
-}
-.right-el-icon-delete{
-    position: absolute;
-    right: 8.3%;
-    cursor:pointer;
-}
-
-.dataset-box-active{
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    align-items: center;
-    padding: 7px 16px;
-    gap: 103px;
-    /* background: #A5C3F5; */
-    width: 240px;
-    height: 36px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    flex: none;
-    order: 0;
-    flex-grow: 0;
-}
-.dataset-box-content{
-    width: 240px;
-    min-height:150px;
-    /* background: #A5C3F5; */
-    flex: none;
-    order: 4;
-    flex-grow: 0;
-    max-height:400px;
+    background: #f1f2f3;
+    height: calc(100% - 170px);
     overflow-y: auto;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    padding-left: 5px;
-    padding-top: 3px;
+    ::v-deep .el-collapse-item__header {
+      height: 18px;
+      line-height: 18px;
+      background-color: transparent;
+      color: #979797;
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+    ::v-deep .el-collapse-item__wrap {
+      background-color: transparent;
+    }
+    ::v-deep .el-collapse-item__content {
+      padding-bottom: 0;
+      background-color: transparent;
+    }
+    .dataset-item {
+      width: 188px;
+      box-sizing: border-box;
+      border-radius: 4px;
+      background: #fff;
+      color: #3c3c3c;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 32px;
+      height: 32px;
+      margin-bottom: 8px;
+      padding: 0 10px;
+      cursor: pointer;
+      transition: all 0.3s;
+
+      .action-box {
+        .action {
+          width: 18px;
+          height: 18px;
+          background-size: 100% 100%;
+        }
+        .action-copy {
+          background-image: url("~@/static/img/sheet/dataset-copy.png");
+          margin-right: 4px;
+        }
+        .action-add {
+          background-image: url("~@/static/img/sheet/dataset-add.svg");
+          margin-right: 4px;
+        }
+        .action-edit {
+          background-image: url("~@/static/img/sheet/dataset-edit.png");
+          margin-right: 4px;
+        }
+        .action-del {
+          background-image: url("~@/static/img/sheet/dataset-del.png");
+        }
+      }
+    }
+    .dataset-item:hover,
+    .dataset-item-active {
+      background: $--color-primary;
+      color: #fff;
+      .action-copy {
+        background-image: url("~@/static/img/sheet/dataset-copy-active.svg") !important;
+      }
+      .action-add {
+        background-image: url("~@/static/img/sheet/dataset-add-active.svg") !important;
+      }
+      .action-edit {
+        background-image: url("~@/static/img/sheet/dataset-edit-active.png") !important;
+      }
+      .action-del {
+        background-image: url("~@/static/img/sheet/dataset-del-active.png") !important;
+      }
+    }
+  }
+  .dataset-fields {
+    .group-list {
+      padding: 0px;
+      border-radius: 0px;
+      background: #fff;
+      height: calc(100% - 154px);
+      .dataset-item {
+        width: 100%;
+        background: #f1f2f3;
+        border: 1px solid #f1f2f3;
+        box-sizing: border-box;
+        .action-box {
+          .action-edit {
+            background-image: url("~@/static/img/sheet/dataset-copy.png");
+            margin-right: 4px;
+          }
+          .action-add {
+            background-image: url("~@/static/img/sheet/dataset-add.svg");
+          }
+        }
+      }
+      .dataset-item:hover,
+      .dataset-item-active {
+        background: #fff;
+        color: $--color-primary;
+        border: 1px solid $--color-primary;
+        .action-edit {
+          background-image: url("~@/static/img/sheet/dataset-copy-active.png") !important;
+        }
+        .action-add {
+          background-image: url("~@/static/img/sheet/dataset-add-active2.svg") !important;
+        }
+      }
+    }
+  }
 }
-.dataset-box-content2{
-    width: 100%;
-    height:100%;
-    /* background: #A5C3F5; */
-    flex: none;
-    order: 4;
-    flex-grow: 0;
-    max-height:270px;
-    overflow-y: auto;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    padding-left: 5px;
-    padding-top: 3px;
-    scrollbar-width: none;
+.left-head {
+  box-sizing: border-box;
+  position: absolute;
+  width: 240px;
+  height: 32px;
+  left: 0px;
+  background: #ffffff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
-.column-tag{
-    max-width:150px;
-    height: 30px;
-    background: #f7bb61;
-    border-radius: 2px;
-    color: rgba(0, 0, 0, 0.6);
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    display: inline-block;
-    padding: 0 10px;
-    height: 32px;
-    line-height: 30px;
-    font-size: 12px;
+.left-head .el-icon-s-fold {
+  position: absolute;
+  right: 5%;
+  top: 18.75%;
+  bottom: 18.66%;
+}
+.left-dataset-title {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0px 16px;
+  width: 460px;
+  height: 48px;
+  // border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  flex: none;
+  order: 1;
+  flex-grow: 0;
+  background: #fff;
+  box-shadow: 0px 1px 0px 0px rgba(0, 0, 0, 0.04);
+  .add-dataset {
     border-radius: 4px;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    border: 1px solid rgba(64,158,255,.2);
-    font-weight: bold;
+    background-color: #fff;
+    &:hover {
+      // color: $--color-primary;
+    }
+  }
+  // margin-top: 2px;
 }
-.center{
+
+.add-dataset-dialog {
+  ::v-deep .el-radio-button:first-child .el-radio-button__inner {
+    border-radius: 10px 0 0 10px;
+  }
+  ::v-deep .el-radio-button:last-child .el-radio-button__inner {
+    border-radius: 0 10px 10px 0;
+  }
+  .variable-content {
+    border: 1px solid #e4e9ed;
+    background: #fafafa;
+    width: 42.5%;
+    margin-right: 24px;
+    flex-shrink: 0;
+    .variable-title {
+      height: 46px;
+      padding: 0 16px;
+      line-height: 46px;
+      color: #1a1a1a;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: bold;
+      border-bottom: 1px solid #efebeb;
+    }
+    .variable-warp {
+      padding: 9px 17px;
+      .variable-warp-title {
+        color: #979191;
+        font-size: 12px;
+        font-style: normal;
+        font-weight: bold;
+        line-height: 22px; /* 183.333% */
+        margin-bottom: 12px;
+      }
+      .variable-list {
+        flex-wrap: wrap;
+        .variable-item {
+          width: calc((100% - 18px) / 3);
+          box-sizing: border-box;
+          padding: 0 10px;
+          border-radius: 4px;
+          background: #e1f2f0;
+          height: 32px;
+          line-height: 32px;
+          color: #595959;
+          font-size: 12px;
+          margin-right: 9px;
+          transition: all 0.3s;
+          margin-bottom: 12px;
+          cursor: pointer;
+          &:hover {
+            color: #fff;
+            background: $--color-primary;
+            ::v-deep .el-icon-circle-plus-outline {
+              color: #fff;
+            }
+            ::v-deep .el-icon-copy-document {
+              color: #fff;
+            }
+          }
+          &:nth-child(3n) {
+            margin-right: 0;
+          }
+        }
+      }
+      .analysis-list {
+        border-radius: 3px;
+        border: 1px solid #c1e0d9;
+        background: #fff;
+        padding: 8px 10px 0;
+        .variable-item {
+          border-radius: 4px;
+          background: #f1f2f3;
+        }
+      }
+    }
+  }
+  .sql-content {
     flex: 1;
-    overflow:auto
-    // height: 100vh;
+  }
 }
-.right{
-    // top:50px;
-    width: 254px;
-    height: 99vh;
-    background: #FFFFFF;
-    // box-shadow: 0px 4px 8px #D2E3FF;
-}
-.right-head{
-    // top:50px;
-    box-sizing: border-box;
-    position: absolute;
-    width: 254px;
-    height: 32px;
-    right: 0px;
-    background: #FFFFFF;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-}
-.right-head .el-icon-s-unfold{
-    position: absolute;
-    left: 5%;
-    top: 18.75%;
-    bottom: 18.66%;
-}
-.right-title{
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    padding: 6px 4px;
-    gap: 4px;
-    width: 254px;
-    height: 30px;
-    background: #E7E7E7;
-    flex: none;
-    order: 1;
-    align-self: stretch;
-    flex-grow: 0;
-    // margin-top: 2px;
-}
-.cell-property{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    padding: 3px 16px;
-    gap: 4px;
-    width: 50px;
-    height: 22px;
-    background: #FFFFFF;
-    border-radius: 4px;
-    flex: none;
-    order: 0;
-    flex-grow: 1;
-    color:#45c5a9;
-    font-size: 16px;
-    cursor: pointer;
-}
-.cell-property-noactive{
-    background: #E7E7E7;
-    cursor: pointer;
-    color:rgba(0, 0, 0, 0.6);;
 
+.group-dialog {
+  ::v-deep .el-table th.el-table__cell {
+    background-color: #fafafa;
+    color: rgba(0, 0, 0, 0.85);
+  }
 }
-.blockBtn{
-    width: 230px;
-    height: 30px;
-    background: #45c5a9;
-    border-radius: 4px;
-    line-height: 5px;
-    border-color: #45c5a9;
+
+.dataset-title {
+  width: 80px;
+  height: 22px;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 22px;
+  color: rgba(0, 0, 0, 0.9);
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+}
+.left-dataset-content {
+  width: 460px;
+  height: calc(100% - 48px);
+  .dataset-group,
+  .dataset-fields {
+    flex: 1;
+    padding: 0 12px;
+    flex-shrink: 0;
+    width: 50%;
+    .section-name {
+      height: 32px;
+      color: #666;
+      font-family: "PingFang SC";
+      font-size: 14px;
+      font-style: normal;
+      font-weight: bold;
+      line-height: normal;
+      line-height: 32px;
+      margin-bottom: 4px;
+      .set-group {
+        cursor: pointer;
+      }
+      .setting-text {
+        color: $--color-primary;
+        font-family: "PingFang SC";
+        font-size: 12px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+        height: 17px;
+        margin-left: 1px;
+      }
+    }
+    .search {
+      margin-bottom: 10px;
+      ::v-deep .el-input__inner {
+        height: 36px;
+        line-height: 36px;
+        border-radius: 6px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+      }
+      ::v-deep .el-input__icon {
+        line-height: 36px;
+      }
+    }
+  }
+  .dataset-group {
+    border-right: 1px solid #f5f5f5;
+  }
+}
+.right-dataset-title {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 62px;
+  height: 32px;
+  background: #ffffff;
+  /* border-bottom: 1px solid rgba(0, 0, 0, 0.1); */
+  flex: none;
+  order: 1;
+  flex-grow: 0;
+  margin-top: 2px;
+}
+.attr-dataset-title {
+  width: fit-content;
+  height: 20px;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  color: #292e33;
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+  font-weight: bold;
+}
+.addBtn {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 2px 8px;
+  height: 22px;
+  background: #45c5a9;
+  border-radius: 3px;
+  flex: none;
+  order: 1;
+  flex-grow: 0;
+  font-family: "PingFang SC";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 18px;
+  color: #ffffff;
+}
+.el-icon-arrow-right {
+  position: absolute;
+  left: 5.25%;
+  cursor: pointer;
+}
+
+.el-icon-edit {
+  position: absolute;
+  right: 17.3%;
+  cursor: pointer;
+  width: 14px;
+  height: 14px;
+  top: 9px;
+  background-image: url("~@/static/img/sheet/edit.png");
+  background-size: 14px 14px;
+  background-repeat: no-repeat;
+}
+.el-icon-delete {
+  position: absolute;
+  right: 7.3%;
+  cursor: pointer;
+  width: 14px;
+  height: 14px;
+  top: 9px;
+  background-image: url("~@/static/img/sheet/del.png");
+  background-size: 14px 14px;
+  background-repeat: no-repeat;
+}
+
+.right-el-icon-edit {
+  position: absolute;
+  right: 74px;
+  cursor: pointer;
+  width: 14px;
+  height: 14px;
+  top: 9px;
+  background-image: url("~@/static/img/sheet/edit.png");
+  background-size: 14px 14px;
+  background-repeat: no-repeat;
+}
+::v-deep .el-collapse-item__arrow {
+  margin-right: 0;
+}
+.right-block-el-icon-edit {
+  position: absolute;
+  right: 52px;
+  cursor: pointer;
+  width: 14px;
+  height: 14px;
+  top: 9px;
+  background-image: url("~@/static/img/sheet/edit.png");
+  background-size: 14px 14px;
+  background-repeat: no-repeat;
+}
+.right-el-icon-copy-document {
+  position: absolute;
+  right: 52px;
+  cursor: pointer;
+  width: 14px;
+  height: 14px;
+  top: 9px;
+  background-image: url("~@/static/img/sheet/copy.png");
+  background-size: 14px 14px;
+  background-repeat: no-repeat;
+}
+.right-el-icon-delete {
+  position: absolute;
+  right: 30px;
+  cursor: pointer;
+  width: 14px;
+  height: 14px;
+  top: 9px;
+  background-image: url("~@/static/img/sheet/del.png");
+  background-size: 14px 14px;
+  background-repeat: no-repeat;
+}
+
+.dataset-box-content {
+  width: 240px;
+  min-height: 150px;
+  /* background: #A5C3F5; */
+  flex: none;
+  order: 4;
+  flex-grow: 0;
+  max-height: 400px;
+  overflow-y: auto;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding-left: 5px;
+  padding-top: 3px;
+}
+
+.right-form {
+  .column-tag {
+    width: 100% !important;
+    height: 14px;
+    background: transparent;
+    color: #595959;
+    font-family: "PingFang SC";
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 14px;
+    border: 0;
+    padding: 0;
+  }
+}
+.column-tag {
+  max-width: 150px;
+  height: 30px;
+  background: #f7bb61;
+  border-radius: 2px;
+  color: rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: inline-block;
+  padding: 0 10px;
+  height: 32px;
+  line-height: 30px;
+  font-size: 12px;
+  border-radius: 4px;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  border: 1px solid rgba(64, 158, 255, 0.2);
+  font-weight: bold;
+}
+.center {
+  // flex: 1;
+  position: relative;
+  margin-left: 10px;
+  // overflow: auto;
+  .left-action {
+    left: -10px;
+    border-radius: 0 3px 3px 0;
+  }
+  .right-action {
+    border-radius: 3px 0 0 3px;
+    right: -10px;
+  }
+  .action-icon {
+    cursor: pointer;
+    transition: all 0.3s;
+    position: absolute;
+    top: 50%;
+
+    transform: translateY(-50%);
+    z-index: 999;
+    background-color: $--color-primary;
+    width: 10px;
+    height: 48px;
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+  // height: 100vh;
+}
+.right {
+  // top:50px;
+  width: 306px;
+  height: 99vh;
+  background: #ffffff;
+  // box-shadow: 0px 4px 8px #D2E3FF;
+}
+.right-head {
+  // top:50px;
+  box-sizing: border-box;
+  position: absolute;
+  width: 306px;
+  height: 32px;
+  right: 0px;
+  background: #ffffff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+.right-head .el-icon-s-unfold {
+  position: absolute;
+  left: 5%;
+  top: 18.75%;
+  bottom: 18.66%;
+}
+.right-title {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  width: 306px;
+  height: 48px;
+  background: #e7e7e7;
+  flex: none;
+  order: 1;
+  align-self: stretch;
+  flex-grow: 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  background: #fff;
+  box-shadow: 0px 1px 0px 0px rgba(0, 0, 0, 0.04);
+}
+.cell-property {
+  display: inline-block;
+  width: 50%;
+  height: 48px;
+  line-height: 48px;
+  font-size: 16px;
+  cursor: pointer;
+  color: #1a1a1a;
+  font-weight: 500;
+  position: relative;
+  text-align: center;
+  &::before {
+    position: absolute;
+    content: "";
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    background: $--color-primary;
+    width: 51px;
+    height: 3px;
+  }
+}
+.cell-property-noactive {
+  color: #666;
+  &::before {
+    width: 0;
+  }
+}
+.cell-label {
+  color: #292e33;
+  font-family: "PingFang SC";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 12px;
+  margin-right: 12px;
+}
+::v-deep .sub-collapse {
+  margin-top: 6px;
+  border-bottom: 0;
+  .el-collapse-item {
+    border-left: 1px solid rgba(0, 0, 0, 0.05);
+    border-right: 1px solid rgba(0, 0, 0, 0.05);
+    margin-bottom: 8px;
+  }
+  .el-collapse-item__header {
+    padding-left: 16px !important;
+  }
+  .el-collapse-item__wrap {
+    background-color: #fafafa !important;
+    padding: 5px 12px 10px 12px !important;
+    border-bottom: 0;
+    .el-collapse-item__content {
+      background-color: #fff;
+      padding: 5px 7px;
+      border-radius: 3px;
+    }
+  }
+}
+.right-form {
+  position: absolute;
+  width: 306px;
+  height: calc(100vh - 64px - 10px - 48px - 10px);
+  right: 0px;
+  // top: 50px;
+  background: #ffffff;
+  overflow: auto;
+  ::v-deep .el-collapse-item {
+    .el-collapse-item__header {
+      position: relative;
+      padding: 0 12px;
+      height: 36px;
+      line-height: 36px;
+      background-color: #f9fafa;
+      color: #666;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    .el-collapse-item__wrap {
+      padding: 16px;
+      background-color: #fff;
+    }
+    .el-collapse-item__content {
+      padding-bottom: 0;
+    }
+  }
+  .df-form-item {
+    display: flex;
+    ::v-deep .el-form-item__label {
+      margin-right: 12px;
+    }
+  }
+  ::v-deep .el-form-item {
+    margin-bottom: 8px;
+  }
+  ::v-deep .el-form--label-top .el-form-item__label {
+    padding-bottom: 0;
+    line-height: 32px;
+  }
+}
+::v-deep .demo-form-inline.el-form--label-top .el-form-item__label {
+  padding-bottom: 0;
+  line-height: 32px;
+}
+::v-deep .demo-form-inline .el-select,
+::v-deep .demo-form-inline .el-textarea {
+  width: 100% !important;
+}
+
+.right-form::-webkit-scrollbar {
+  width: 14px;
+  height: 14px;
+}
+
+.right-form::-webkit-scrollbar-track,
+::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  border: 5px solid transparent;
+}
+
+.right-form::-webkit-scrollbar-track {
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2) inset;
+}
+
+.right-form::-webkit-scrollbar-thumb {
+  min-height: 20px;
+  background-clip: content-box;
+  box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.2) inset;
+}
+
+.right-form::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+.blockBtn {
+  width: 230px;
+  height: 30px;
+  background: #45c5a9;
+  border-radius: 4px;
+  line-height: 5px;
+  border-color: #45c5a9;
 }
 .contentbox {
-    display: flex;
+  display: flex;
 }
 .dataset-box-content::-webkit-scrollbar {
   width: 5px;
@@ -1161,19 +2765,22 @@
 }
 /*修改左侧垂直滚动条的样式*/
 .tplname {
-  padding: 0px 20px;
+  padding: 0px 16px;
   background-color: rgba(208, 208, 208, 0);
-  font-size: 19px;
+  font-size: 18px;
   line-height: 30px;
-  color: #45c5a9;
+  color: #1a1a1a;
   font-weight: bold;
   margin: 5px 0;
 }
+.header-box {
+  margin-bottom: 10px;
+}
 ._header {
-  height: 45px !important;
+  height: 64px !important;
   padding: 0px;
   background-color: #fff;
-//   border-bottom: 1px solid #ccc;
+  //   border-bottom: 1px solid #ccc;
   .headerRight {
     padding-right: 24px;
     font-size: 14px;
@@ -1186,58 +2793,91 @@
     color: rgba(0, 0, 0, 0.9);
   }
 }
-::v-deep .el-avatar{
-    background:#45c5a9 !important
+::v-deep .el-avatar {
+  background: #45c5a9 !important;
 }
 
 ::v-deep .el-dialog__wrapper {
-   overflow: hidden;
-//    z-index: 2005 !important;
-   pointer-events: none !important;
+  overflow: hidden;
+  //    z-index: 2005 !important;
+  pointer-events: none !important;
 }
 
-::v-deep .el-dialog{
-    pointer-events: auto !important;
-    /* background:#d9ebf0 !important; */
-} 
- ::v-deep .authdialog{
-    margin-top: 50px !important;
-    margin-left: 0px !important;
-    flex-direction: column !important;
-    // overflow: hidden !important;
-    max-height: calc(100% - 90px) !important;
-    top:0 !important;
-    left:0px!important;
-    bottom: 0;
-    pointer-events: auto !important;
-    /* background:#d9ebf0 !important; */
-} 
-.authdialog ::v-deep .el-dialog__body{
-    height: calc(100% - 90px) !important;
-    overflow: auto;
+::v-deep .el-dialog {
+  pointer-events: auto !important;
+  /* background:#d9ebf0 !important; */
 }
-.authdialog ::v-deep .el-dialog-div{
-     max-height: 60vh;
-     overflow: auto;
-     margin-left: 10px;
+::v-deep .authdialog {
+  margin-top: 50px !important;
+  margin-left: 0px !important;
+  flex-direction: column !important;
+  // overflow: hidden !important;
+  max-height: calc(100% - 90px) !important;
+  top: 0 !important;
+  left: 0px !important;
+  bottom: 0;
+  pointer-events: auto !important;
+  /* background:#d9ebf0 !important; */
+}
+.authdialog ::v-deep .el-dialog__body {
+  height: calc(100% - 90px) !important;
+  overflow: auto;
+}
+.authdialog ::v-deep .el-dialog-div {
+  max-height: 60vh;
+  overflow: auto;
+  margin-left: 10px;
 }
 .authdialog ::v-deep .el-dialog-div::-webkit-scrollbar {
-    display: none; /*隐藏滚动条*/
+  display: none; /*隐藏滚动条*/
 }
-.authdialog ::v-deep .el-dialog__title{
-    font-weight: bold;
+.authdialog ::v-deep .el-dialog__title {
+  font-weight: bold;
 }
-.el-divider--horizontal{
-    margin: 10px 0
+.el-divider--horizontal {
+  margin: 10px 0;
 }
-::v-deep .el-tabs__content .el-tab-pane{
-    height:600px;
-    overflow: auto;
+::v-deep .el-tabs__content .el-tab-pane {
+  height: 600px;
+  overflow: auto;
 }
 ::v-deep .vue-codemirror .CodeMirror {
   border: 1px solid #eee;
 }
-.tablecolumn{
-    border: 1px solid #eee;
+
+.config-panel {
+  background: #ffffff;
+  margin-left: 1px;
+  top: -40px;
+  position: relative;
+  width: 306px;
+  height: 95%;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  .config-header {
+    width: 100%;
+    height: 32px;
+    // background: #2F343D;
+    font-size: 13px;
+    font-weight: 400;
+    color: #000000;
+    line-height: 32px;
+    text-align: center;
+  }
+  .config-box {
+    flex: 1;
+    padding: 10px;
+    overflow: auto;
+  }
+
+  /*定义滚动条的宽度*/
+  .config-box::-webkit-scrollbar {
+    width: 0;
+  }
+}
+.editor {
+  position: relative;
+  top: -123px;
 }
 </style>

@@ -12,6 +12,7 @@ export default {
     },
     data() {
         return{
+            drawer:false,
             showReportSql:false,
             reportSqls:{},
             reportDialogVisiable:false,
@@ -59,9 +60,9 @@ export default {
                 obj.url = this.apis.previewReport.getSharePreviewReportParamApi
             }
             this.searchHandle=[
-                {label:'查询',icon:'el-icon-search',type:'primary',handle:()=>this.getReportData(),size:'mini'},
-                {label:'重置',icon:'el-icon-refresh-left',type:'warning',handle:()=>this.resetSearch(),size:'mini'},
-                {label:'导出word',icon:'iconfont icon-daochuword',type:'success',handle:()=>this.downLoadDoc(1),size:'mini'},
+                { label: '查询', drawerBtn: true, icon: 'el-icon-search', type: 'primary', handle: () => this.getReportData(), size: 'mini' },
+                { label: '重置', drawerBtn: true, icon: 'el-icon-refresh-left', type: '', handle: () => this.resetSearch(), size: 'mini' },
+                {btnType: 'button', label: '导出word', iconClass: 'iconfont icon-daochuword',handle: () => this.downLoadDoc(1), size: 'mini'}
             ];
             var that = this;
             this.commonUtil.doPost(obj,headers) .then(response=>{
@@ -108,7 +109,7 @@ export default {
                                 }else{
                                     if(this.$route.query[result[i].params[m].paramCode])
                                     {
-                                        data.push(this.$route.query[result[i].params[m].paramCode]);
+                                        data = this.$route.query[result[i].params[m].paramCode].split(",");
                                     }else{
                                         if(result[i].params[m].paramDefault != null && result[i].params[m].paramDefault != "")
                                         {
@@ -193,52 +194,62 @@ export default {
         resetSearch:function(){
             this.getReportParam();
         },
-        getReportData(){
+        getReportData(isInit){
             var that = this;
+            // 项目初始化的时候 不进行this.$refs['reportRef'].$refs['reportFormRef'] 因为此时抽屉组件未加载
+            if (isInit == 1) {
+                that.sendReportDataRequest(isInit)
+                return
+            }
             this.$refs['reportRef'].$refs['reportFormRef'].validate((valid) => {
                 if (valid) {
-                    let apiHeaders = {};
-                    if(that.apiHeaders && that.apiHeaders.length > 0){
-                        for (let index = 0; index < that.apiHeaders.length; index++) {
-                            const element = that.apiHeaders[index];
-                            if(that.$route.query[element]){
-                                apiHeaders[element] = that.$route.query[element];
-                            }
-                        }
-                    }
-                    let tplId = that.$route.query.tplId;
-                    let obj = {
-                        url:that.apis.docTpl.previewDocApi,
-                        params:{tplId:tplId,searchData:that.searchData.params,fileId:that.fileId,apiHeaders:apiHeaders},
-                    }
-                    let headers = {};
-                    if(that.isShare == 1)
-                    {
-                        headers.shareCode = that.shareCode;
-                        headers.shareUser = that.shareUser;
-                        obj.url = that.apis.docTpl.previewDocApi
-                    }
-                    that.loadingText = "文档生成中...";
-                    that.loading = true;
-                    that.commonUtil.doPost(obj,headers) .then(response=>{
-                        if (response.code == "200")
-                        {
-                            that.showReportSql = response.responseData.showReportSql;
-                            that.reportSqls = response.responseData.reportSqls;
-                            that.tplName = response.responseData.tplName;
-                            that.docxUrl = response.responseData.docxUrl;
-                            const iframe = document.getElementById('pdfIframe');
-                            iframe.src = response.responseData.pdfUrl;
-                            that.fileId = response.responseData.fileId;
-                            that.loading = false;
-                        }else{
-                            that.loading = false;
-                        }
-                    });
+                    that.sendReportDataRequest(isInit)
+                    that.drawer = false;
                 }else{
                     that.commonUtil.showMessage({message:that.commonUtil.getMessageFromList("error.search.param",null),type: that.commonConstants.messageType.error})
                     that.loading = false;
                     return false;
+                }
+            });
+        },
+        sendReportDataRequest(isInit) {
+            const that = this
+            let apiHeaders = {};
+            if(that.apiHeaders && that.apiHeaders.length > 0){
+                for (let index = 0; index < that.apiHeaders.length; index++) {
+                    const element = that.apiHeaders[index];
+                    if(that.$route.query[element]){
+                        apiHeaders[element] = that.$route.query[element];
+                    }
+                }
+            }
+            let tplId = that.$route.query.tplId;
+            let obj = {
+                url:that.apis.docTpl.previewDocApi,
+                params:{tplId:tplId,searchData:that.searchData.params,fileId:that.fileId,apiHeaders:apiHeaders},
+            }
+            let headers = {};
+            if(that.isShare == 1)
+            {
+                headers.shareCode = that.shareCode;
+                headers.shareUser = that.shareUser;
+                obj.url = that.apis.docTpl.previewDocApi
+            }
+            that.loadingText = "文档生成中...";
+            that.loading = true;
+            that.commonUtil.doPost(obj,headers) .then(response=>{
+                if (response.code == "200")
+                {
+                    that.showReportSql = response.responseData.showReportSql;
+                    that.reportSqls = response.responseData.reportSqls;
+                    that.tplName = response.responseData.tplName;
+                    that.docxUrl = response.responseData.docxUrl;
+                    const iframe = document.getElementById('pdfIframe');
+                    iframe.src = response.responseData.pdfUrl;
+                    that.fileId = response.responseData.fileId;
+                    that.loading = false;
+                }else{
+                    that.loading = false;
                 }
             });
         },
@@ -256,6 +267,9 @@ export default {
         },
         downLoadDoc(type){
             window.open(this.docxUrl);
+        },
+        searchClick(){
+            this.drawer = true;
         }
     }
 }

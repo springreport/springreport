@@ -5,7 +5,9 @@ import com.springreport.entity.reporttpldataset.ReportTplDataset;
 import com.springreport.mapper.reportdatasource.ReportDatasourceMapper;
 import com.springreport.api.reportdatasource.IReportDatasourceService;
 import com.springreport.api.reporttpl.IReportTplService;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
@@ -163,6 +165,11 @@ public class ReportDatasourceServiceImpl extends ServiceImpl<ReportDatasourceMap
 		}else if(DriverClassEnum.KINGBASE.getCode().intValue() == model.getType().intValue())
 		{
 			model.setDriverClass(DriverClassEnum.KINGBASE.getName());
+		}else if(DriverClassEnum.HIGODB.getCode().intValue() == model.getType().intValue())
+		{
+			model.setDriverClass(DriverClassEnum.HIGODB.getName());
+		}else if (DriverClassEnum.DORIS.getCode().intValue() == model.getType().intValue()) {
+			model.setDriverClass(DriverClassEnum.DORIS.getName());
 		}
 		this.save(model);
 		result.setStatusMsg(MessageUtil.getValue("info.insert"));
@@ -213,6 +220,11 @@ public class ReportDatasourceServiceImpl extends ServiceImpl<ReportDatasourceMap
 		}else if(DriverClassEnum.KINGBASE.getCode().intValue() == model.getType().intValue())
 		{
 			model.setDriverClass(DriverClassEnum.KINGBASE.getName());
+		}else if(DriverClassEnum.HIGODB.getCode().intValue() == model.getType().intValue())
+		{
+			model.setDriverClass(DriverClassEnum.HIGODB.getName());
+		}else if (DriverClassEnum.DORIS.getCode().intValue() == model.getType().intValue()) {
+			model.setDriverClass(DriverClassEnum.DORIS.getName());
 		}
 		this.updateById(model);
 		result.setStatusMsg(MessageUtil.getValue("info.update"));
@@ -434,6 +446,12 @@ public class ReportDatasourceServiceImpl extends ServiceImpl<ReportDatasourceMap
 			}else if(DriverClassEnum.KINGBASE.getCode().intValue() == reportDatasource.getType().intValue())
 			{
 				reportDatasource.setDriverClass(DriverClassEnum.KINGBASE.getName());
+			}else if(DriverClassEnum.HIGODB.getCode().intValue() == reportDatasource.getType().intValue())
+			{
+				reportDatasource.setDriverClass(DriverClassEnum.HIGODB.getName());
+			}else if(DriverClassEnum.DORIS.getCode().intValue() == reportDatasource.getType().intValue())
+			{
+				reportDatasource.setDriverClass(DriverClassEnum.DORIS.getName());
 			}
 			//数据库
 			//数据源配置
@@ -572,6 +590,106 @@ public class ReportDatasourceServiceImpl extends ServiceImpl<ReportDatasourceMap
 		//获取数据源
 //		DataSource dataSource = JdbcUtils.getDataSource(dataSourceConfig);
 		result = JdbcUtils.parseDatabaseTables(dataSourceConfig);
+		return result;
+	}
+
+
+	/**  
+	 * @MethodName: parseApiResultAttr
+	 * @Description: 解析api数据集结果属性
+	 * @author caiyang
+	 * @param reportDatasource
+	 * @return
+	 * @see com.springreport.api.reportdatasource.IReportDatasourceService#parseApiResultAttr(com.springreport.entity.reportdatasource.ReportDatasource)
+	 * @date 2024-12-24 03:02:19 
+	 */
+	@Override
+	public JSONArray parseApiResultAttr(ReportDatasource reportDatasource) {
+		JSONArray result = new JSONArray();
+		Map<String, String> headers = new HashMap<>();
+		if(StringUtil.isNotEmpty(reportDatasource.getApiRequestHeader()))
+		{
+			JSONArray jsonArray = JSONArray.parseArray(reportDatasource.getApiRequestHeader());
+			if(!ListUtil.isEmpty(jsonArray))
+			{
+				for (int i = 0; i < jsonArray.size(); i++) {
+					String headerName = jsonArray.getJSONObject(i).getString("headerName");
+					String headerValue = jsonArray.getJSONObject(i).getString("headerValue");
+					if(StringUtil.isNotEmpty(headerValue))
+					{
+						headers.put(headerName, headerValue);
+					}
+				}
+			}
+		}
+		String requestResult = HttpClientUtil.connectionTest(reportDatasource.getJdbcUrl(),reportDatasource.getApiRequestType(),null,headers);
+		if(StringUtil.isNotEmpty(requestResult)) {
+			if("ObjectArray".equals(reportDatasource.getApiResultType())) {
+				//对象数组
+				try {
+					JSONArray resultArray = JSON.parseArray(requestResult);
+					if(ListUtil.isNotEmpty(resultArray)) {
+						JSONObject jsonObject = resultArray.getJSONObject(0);
+						JSONObject attr = null;
+						for (String key : jsonObject.keySet()) {
+							attr = new JSONObject();
+							attr.put("propCode", key);
+							attr.put("propName", key);
+							result.add(attr);
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+					throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.jsonarrayparse"));
+				}
+			}else if("Object".equals(reportDatasource.getApiResultType())) {
+				//对象
+				try {
+					JSONObject resultObject = JSON.parseObject(requestResult);
+					if(StringUtil.isNullOrEmpty(reportDatasource.getApiColumnsPrefix())) {
+						JSONObject attr = null;
+						for (String key : resultObject.keySet()) {
+							attr = new JSONObject();
+							attr.put("propCode", key);
+							attr.put("propName", key);
+							result.add(attr);
+						}
+					}else {
+						String[] prefix = reportDatasource.getApiColumnsPrefix().split("\\.");
+						Object data = null;
+						for (int i = 0; i < prefix.length; i++) {
+							data = resultObject.get(prefix[i]);
+							if(data instanceof JSONObject) {
+								resultObject = (JSONObject) data;
+							}else if(data instanceof JSONArray) {
+								break;
+							}
+						}
+						JSONObject dataObj = null;
+						if(data instanceof JSONObject) {
+							dataObj = (JSONObject) data;
+						}else if(data instanceof JSONArray) {
+							JSONArray dataArray = (JSONArray) data;
+							if(ListUtil.isNotEmpty(dataArray)) {
+								dataObj = dataArray.getJSONObject(0);
+							}
+						}
+						if(dataObj != null) {
+							JSONObject attr = null;
+							for (String key : dataObj.keySet()) {
+								attr = new JSONObject();
+								attr.put("propCode", key);
+								attr.put("propName", key);
+								result.add(attr);
+							}
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+					throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.jsonparse"));
+				}
+			}
+		}
 		return result;
 	}
 

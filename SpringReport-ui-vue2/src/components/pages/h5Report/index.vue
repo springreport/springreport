@@ -487,6 +487,8 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import "@/element-variables.scss";
+
 .index {
   height: 100%;
   display: flex;
@@ -515,7 +517,7 @@ export default {
     background: #f5f5f5;
   }
   .sheet-item-active {
-    background: #17b794;
+    background: $--color-primary;
     color: #fff;
   }
 }
@@ -579,7 +581,7 @@ export default {
       }
     }
     .van-pagination__item--active {
-      background: #17b794;
+      background: $--color-primary;
       box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.1);
       color: #fff;
     }
@@ -620,7 +622,7 @@ export default {
     font-weight: 400;
   }
   .tab-item-active {
-    color: #17b794;
+    color: $--color-primary;
     background: #d4f6ef;
   }
 }

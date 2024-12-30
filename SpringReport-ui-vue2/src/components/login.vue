@@ -1,12 +1,12 @@
 <template>
   <div class="login">
     <div class="login__left df-c-c">
-      <img src="@/static/img/loginIcon.png" style="width: 500px" />
+      <img src="@/static/img/loginIcon.png" style="width: 500px">
     </div>
     <div class="login__right df-c-c">
       <div class="login-box">
         <div class="df-c">
-          <img src="@/static/img/logoWithName.png" height="48px" />
+          <img src="@/static/img/logoWithName.png" height="48px">
           <el-divider direction="vertical" />
           <div class="welcome">欢迎登录</div>
         </div>
@@ -25,12 +25,12 @@
           </el-form-item>
         </el-form>
       </div>
-      <div class="filing-information df-c">
+      <div class="filing-information df-c-c">
         <a
           target="_blank"
           href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=37021302001006"
         >鲁公网安备 37021302001006号</a>
-        <img src="@/static/img/aicon.png" class="beian-icon" />
+        <img src="@/static/img/aicon.png" class="beian-icon">
         <a target="_blank" href="https://beian.miit.gov.cn/">鲁ICP备2021031250号-2</a>
       </div>
     </div>
@@ -41,37 +41,37 @@
 export default {
   data() {
     return {
-      merchantMode:2,//是否是租户模式 1是 2否
+      merchantMode: 2, // 是否是租户模式 1是 2否
       formLogin: {
-        merchantNo:"SR00000000",
+        merchantNo: 'SR00000000',
         loginName: 'test',
-        password: '123456',
-      },
+        password: '123456'
+      }
     }
   },
   mounted() {
     // let userAccount = this.getCookie('userName');
     // this.$refs['form'].resetFields();//校验重置
     // this.formLogin.loginName = userAccount;
-    this.getMerchantMode();
-    window.addEventListener('keydown', this.keyDown);
+    this.getMerchantMode()
+    window.addEventListener('keydown', this.keyDown)
   },
   destroyed() {
     window.removeEventListener('keydown', this.keyDown, false)
   },
   methods: {
-    getMerchantMode(){
-        var object = {
-          url: this.apis.login.getMerchantModeApi,
-          params: {},
-          removeEmpty: false,
+    getMerchantMode() {
+      var object = {
+        url: this.apis.login.getMerchantModeApi,
+        params: {},
+        removeEmpty: false
+      }
+      var that = this
+      this.commonUtil.doPost(object).then((response) => {
+        if (response.code === '200') {
+          that.merchantMode = response.responseData
         }
-        var that = this;
-        this.commonUtil.doPost(object).then((response) => {
-            if (response.code === '200') {
-               that.merchantMode = response.responseData
-            }
-          })
+      })
     },
     // 提交登录
     login() {
@@ -80,12 +80,12 @@ export default {
           var param = {
             userName: this.formLogin.loginName,
             password: this.$md5(this.formLogin.password),
-            merchantNo:this.formLogin.merchantNo
+            merchantNo: this.formLogin.merchantNo
           }
           var object = {
             url: this.apis.login.loginApi,
             params: param,
-            removeEmpty: false,
+            removeEmpty: false
           }
           this.commonUtil.doPost(object).then((response) => {
             if (response.code === '200') {
@@ -109,15 +109,15 @@ export default {
               localStorage.setItem(
                 this.commonConstants.sessionItem.authorization,
                 responseData.token
-              ) 
+              )
               localStorage.setItem(
                 this.commonConstants.sessionItem.isSystemMerchant,
                 responseData.isSystemMerchant
-              ) 
+              )
               localStorage.setItem(
                 this.commonConstants.sessionItem.merchantNo,
                 responseData.merchantNo
-              ) 
+              )
               localStorage.setItem(
                 this.commonConstants.sessionItem.isAdmin,
                 responseData.isAdmin
@@ -158,8 +158,8 @@ export default {
       if (e.keyCode == 13) {
         this.login()
       }
-    },
-  },
+    }
+  }
 }
 </script>
 
@@ -205,8 +205,7 @@ export default {
     .filing-information {
       position: absolute;
       bottom: 50px;
-      left: 50%;
-      transform: translateX(-50%);
+      width: 100%;
       a {
         color: rgba(0, 0, 0, 0.4);
         font-size: 12px;

@@ -1,6 +1,6 @@
 {
   "name": "SpringReport",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "SpringReport",
   "author": "caiyang <caiyang90@163.com>",
   "scripts": {
@@ -15,7 +15,7 @@
     "test:ci": "npm run lint && npm run test:unit"
   },
   "dependencies": {
-    "@hufe921/canvas-editor": "^0.9.75",
+    "@hufe921/canvas-editor": "^0.9.82",
     "@jiaminghi/data-view": "^2.10.0",
     "@visactor/vchart": "^1.11.9",
     "@visactor/vchart-theme": "^1.11.5",

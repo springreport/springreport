@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 本文件由代码生成器自动完成 -->
+<mapper namespace="com.springreport.mapper.qrtzreportdetail.QrtzReportDetailMapper" >
+
+
+  <!-- 根据条件模糊查询 -->
+  <select id="getIndexTaskList" databaseId="mysql" resultType="com.springreport.dto.qrtzreportdetail.IndexQrtzDto" parameterType="com.springreport.dto.qrtzreportdetail.ReqIndexQrtzDto">
+    select
+	t2.tpl_name as tplName,
+	t1.id as id,
+	t1.tpl_id as tplId,
+	t1.job_name as jobName,
+	t1.email as email,
+	t1.export_type as exportType,
+	t3.NEXT_FIRE_TIME as nextFireTime,
+	t3.TRIGGER_STATE as triggerState
+	from
+	qrtz_report_detail t1
+	JOIN report_tpl t2
+	on t1.tpl_id = t2.id
+	join qrtz_triggers t3
+	on CONCAT(t1.id, '_', t1.job_name) = t3.JOB_NAME
+	<where>
+		<if test="creator !=null">
+			and t1.creator = #{creator}
+		</if>
+		<if test="merchantNo !=null and merchantNo !=''">
+			and t2.merchant_no = #{merchantNo,jdbcType=VARCHAR}
+		</if>
+		<if test="delFlag !=null">
+			and t1.del_flag = #{delFlag,jdbcType=TINYINT}
+		</if>
+	</where>
+	
+	
+	ORDER BY t1.id desc
+  </select>
+
+</mapper>

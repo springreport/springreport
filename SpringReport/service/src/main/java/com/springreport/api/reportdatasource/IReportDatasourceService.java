@@ -137,4 +137,14 @@ public interface IReportDatasourceService extends IService<ReportDatasource> {
 	 * @date 2022-11-15 07:59:14 
 	 */  
 	List<Map<String, String>> getDatabseTables(ReportDatasource datasource);
+	
+	/**  
+	 * @MethodName: parseApiResultAttr
+	 * @Description: 解析api数据集结果属性
+	 * @author caiyang
+	 * @param reportDatasource
+	 * @return JSONArray
+	 * @date 2024-12-24 03:01:59 
+	 */ 
+	JSONArray parseApiResultAttr(ReportDatasource reportDatasource);
 }

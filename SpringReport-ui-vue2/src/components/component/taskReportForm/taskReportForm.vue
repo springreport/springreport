@@ -1,8 +1,9 @@
 <!-- 搜索表单 -->
 <template>
-  <div>
+  <div class="el-dialog-div">
     <el-form
       :inline="inline"
+      label-position="top"
       :label-width="labelWidth"
       ref="reportFormRef"
       class="demo-form-inline"
@@ -11,9 +12,9 @@
       :showSearch="showSearch"
       :isParamMerge="isParamMerge"
     >
-      <div style="display: flex; width: 100%">
-        <div style="display: flex; width: 100%;padding-top:10px">
-          <div v-if="reportForm.length==1" style="width:100%;">
+      <div >
+        <div >
+          <div v-if="reportForm.length==1">
                 <el-form-item
                 v-for="(item, index) in reportForm[0].params"
                 :class="itemClass"
@@ -31,7 +32,6 @@
                   "
                   v-model="searchData.params[0].params[index][item.paramCode]"
                   :placeholder="'请输入' + item.paramName"
-                  size="mini"
                   :disabled="item.disabled"
                   clearable
                 ></el-input>
@@ -41,8 +41,8 @@
                     item.paramType === 'select' && item.isRelyOnParams !== 1
                   "
                   v-model="searchData.params[0].params[index][item.paramCode]"
-                  size="mini"
                   clearable
+                   style="width: 100% !important"
                 >
                   <el-option :label="'请选择'" value=""></el-option>
                   <el-option
@@ -58,7 +58,7 @@
                   "
                   v-model="searchData.params[0].params[index][item.paramCode]"
                   clearable
-                  size="mini"
+                  style="width: 100% !important"
                   @focus="
                     getRelyOnParamys(
                       item,
@@ -79,8 +79,8 @@
                 <el-select
                   v-if="item.paramType === 'mutiselect'"
                   v-model="searchData.params[0].params[index][item.paramCode]"
-                  size="mini"
                   :multiple="true"
+                  style="width: 100% !important"
                 >
                   <el-option
                     v-for="op in item.selectData"
@@ -92,11 +92,11 @@
                 <!-- 日期 -->
                 <el-date-picker
                   v-if="item.paramType === 'date'"
-                  size="mini"
                   v-model="searchData.params[0].params[index][item.paramCode]"
                   :format="item.dateFormat"
                   :value-format="item.dateFormat"
-                  :type="item.dateFormat == 'yyyy-MM-dd'?'date':item.dateFormat == 'yyyy-MM'?'month':'datetime'"
+                  :type="item.dateFormat == 'yyyy-MM-dd'?'date':item.dateFormat == 'yyyy-MM'?'month':item.dateFormat == 'yyyy'?'year':'datetime'"
+                  style="width: 100% !important"
                 ></el-date-picker>
                 <div class="sub-title">是否使用默认值
                   <el-switch
@@ -120,7 +120,7 @@ export default {
     },
     inline: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     itemClass: {
       type: String,
@@ -242,19 +242,40 @@ export default {
   },
 };
 </script>
-<style lang="less" scoped>
-span {
-  padding: 0px 20px;
-  background-color: rgba(208, 208, 208, 0);
-  font-size: 19px;
-  line-height: 30px;
-  color: #45c5a9;
-  font-weight: bold;
-  margin: 5px 0;
-}
+<style lang="scss" scoped>
+@import "@/element-variables.scss";
+
+
 ::v-deep .el-button--primary {
     color: #FFFFFF;
-    background-color: #17b794;
-    border-color: #17b794
+    background-color: $--color-primary;
+    border-color: $--color-primary;
+}
+.el-dialog-div {
+  max-height: 60vh;
+  overflow: auto;
+  padding-right: 8px;
+  &::-webkit-scrollbar {
+    height: 10px;
+    width: 10px;
+    overflow: visible;
+  }
+
+  &::-webkit-scrollbar-button {
+    width: 0;
+    height: 0;
+  }
+
+  &::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #ddd;
+    background-clip: padding-box;
+    border: 4px solid #f2f4f7;
+    border-radius: 8px;
+    min-height: 24px;
+  }
 }
 </style>

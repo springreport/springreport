@@ -223,8 +223,8 @@
       // margin-left: 1px;
       top: 45px;
       position: relative;
-      width: 254px;
-      height: 95%;
+      width: 306px;
+      height: calc(100vh - 64px - 10px - 10px);
       display: flex;
       flex-direction: column;
       overflow: auto;

@@ -215,7 +215,7 @@ public class WordUtil {
     	JSONArray valueList = content.getJSONArray("valueList");
     	if(ListUtil.isNotEmpty(valueList)) {
     		for (int i = 0; i < valueList.size(); i++) {
-    			addParagraph(paragraph,valueList.getJSONObject(i),headStyle);
+    			addParagraph(paragraph,valueList.getJSONObject(i),headStyle,false);
 			}
     	}
     	
@@ -229,9 +229,9 @@ public class WordUtil {
      * @param content void
      * @date 2024-05-04 08:48:31 
      */ 
-    public static void addParagraph(XWPFParagraph paragraph,JSONObject content,String titleStyle) {
+    public static void addParagraph(XWPFParagraph paragraph,JSONObject content,String titleStyle,boolean ignoreStartn) {
     	XWPFRun run = paragraph.createRun();
-    	setRunText(run,content,"text");
+    	setRunText(run,content,"text",ignoreStartn);
     	String rowFlex = content.getString("rowFlex");//对齐方式
     	Float rowMargin = content.getFloat("rowMargin");//行间距
     	if(StringUtil.isNotEmpty(rowFlex)) {
@@ -264,7 +264,7 @@ public class WordUtil {
     	
     }
     
-    private static void setRunText(XWPFRun run,JSONObject content,String type) {
+    private static void setRunText(XWPFRun run,JSONObject content,String type,boolean ignoreStartn) {
     	String value = content.getString("value");//内容
     	String font = content.getString("font");//字体
      	Double fontSize = content.getDouble("size");//字体大小
@@ -274,6 +274,11 @@ public class WordUtil {
     	String highlight = content.getString("highlight");//高亮
     	Boolean underline = content.getBoolean("underline");//是否下划线
     	Boolean strikeout = content.getBoolean("strikeout");//是否删除线
+    	if(ignoreStartn) {
+    		if(StringUtil.isNotEmpty(value) && value.startsWith("\n")) {
+    			value = value.replaceFirst("\n", "");
+    		}
+    	}
     	if(value.contains("\n")) {
     		if("\n".equals(value)) {
     			run.setText("");
@@ -291,9 +296,9 @@ public class WordUtil {
     					run.addBreak();	
     				}
     			}
-    			if(value.endsWith("\n")) {
-        			run.addBreak();	
-        		}
+//    			if(value.endsWith("\n")) {
+//        			run.addBreak();	
+//        		}
     		}
     		
     	}else {
@@ -402,7 +407,7 @@ public class WordUtil {
      * @throws Exception 
      * @date 2024-05-05 07:50:03 
      */ 
-    public static void addTable(XWPFDocument doc,JSONObject tableData,JSONObject docTplChartsObj,JSONObject docTplCodesObj,Map<String, Object> dynamicData,boolean isTemplate) throws Exception {
+    public static int addTable(XWPFDocument doc,JSONObject tableData,JSONObject docTplChartsObj,JSONObject docTplCodesObj,Map<String, Object> dynamicData,boolean isTemplate,int abstractNumID) throws Exception {
     	int rows = 1;//行数
     	int cols = 1;//列数
     	JSONArray trList = tableData.getJSONArray("trList");
@@ -442,28 +447,8 @@ public class WordUtil {
     	}
     	CTTbl ttbl = xwpfTable.getCTTbl(); 
 	    CTTblGrid tblGrid = ttbl.addNewTblGrid();
-    	for (int i = 0; i < cols; i++) {
-    		CTTblGridCol gridCol = tblGrid.addNewGridCol();
-    		gridCol.setW(new BigInteger(String.valueOf(colgroup.getJSONObject(i).getBigDecimal("width").intValue()*16)));  
-    		for (int j = 0; j < rows; j++) {
-    			xwpfTable.getRow(j).getCell(i).setWidth(String.valueOf(colgroup.getJSONObject(i).getBigDecimal("width").intValue()*16));
-			}
-		}
-    	for (int i = 0; i < rows; i++) {
-//    		xwpfTable.getRow(i).setHeight(42*15);
-//    		if(i == 0) {
-//    			xwpfTable.getRow(i).setHeight(42*15);
-//    		}else {
-    			int height = trList.getJSONObject(i).getIntValue("height");
-        		float multiple = height/42;
-        		if(multiple > 6) {
-        			xwpfTable.getRow(i).setHeight(height*15);
-        		}else {
-        			xwpfTable.getRow(i).setHeight(42*15);
-        		}	
-//    		}
-		}
-//    	setTableWidthFixed(xwpfTable,true);
+    	
+    	setTableWidthFixed(xwpfTable,true);
     	JSONObject mergeObj = new JSONObject();
     	mergeObj.put("isMerge", true);
     	for (int i = 0; i < rows; i++) {
@@ -502,6 +487,7 @@ public class WordUtil {
 				}
 			}
 		}
+    	Map<Integer, Boolean> isDynamicRow = new HashMap<>();
     	for (int i = 0; i < trList.size(); i++) {
     		JSONArray tdList = trList.getJSONObject(i).getJSONArray("tdList");
     		for (int j = 0; j < tdList.size(); j++) {
@@ -510,10 +496,40 @@ public class WordUtil {
 				if(isMerge) {
 					continue;
 				}else {
-					setCellValue(xwpfTable.getRow(i).getCell(j),cellInfo,docTplChartsObj,docTplCodesObj,dynamicData,doc,isTemplate);
+					abstractNumID = setCellValue(xwpfTable.getRow(i).getCell(j),cellInfo,docTplChartsObj,docTplCodesObj,dynamicData,doc,isTemplate,abstractNumID);
+				}
+				if(!isDynamicRow.containsKey(i)) {
+					String plainText = getCellPlainText(cellInfo);
+					if(StringUtil.isNotEmpty(plainText)) {
+						if((plainText.contains("{{") && plainText.contains("}}")) || (plainText.contains("[") && plainText.contains("]"))) {
+							isDynamicRow.put(i, true);
+						}
+					}
 				}
     		}
     	}
+    	for (int i = 0; i < cols; i++) {
+    		CTTblGridCol gridCol = tblGrid.addNewGridCol();
+    		gridCol.setW(new BigInteger(String.valueOf(colgroup.getJSONObject(i).getBigDecimal("width").intValue()*16)));  
+    		for (int j = 0; j < rows; j++) {
+    			xwpfTable.getRow(j).getCell(i).setWidth(String.valueOf(colgroup.getJSONObject(i).getBigDecimal("width").intValue()*16));
+			}
+		}
+    	for (int i = 0; i < rows; i++) {
+    		int height = trList.getJSONObject(i).getIntValue("height");
+    		if(isDynamicRow.containsKey(i)) {
+            	float multiple = height/42;
+            	xwpfTable.getRow(i).setHeight(42*15);
+//            	if(multiple > 6) {
+//            		xwpfTable.getRow(i).setHeight(height*15);
+//            	}else {
+//            		xwpfTable.getRow(i).setHeight(42*15);
+//            	}
+            	xwpfTable.getRow(i).setHeight(42*15);
+    		}else {
+    			xwpfTable.getRow(i).setHeight(height*15);
+    		}
+		}
     	for (int i = 0; i < trList.size(); i++) {
 			JSONArray tdList = trList.getJSONObject(i).getJSONArray("tdList");
 			for (int j = 0; j < tdList.size(); j++) {
@@ -549,6 +565,20 @@ public class WordUtil {
 				}
     		}
     	}
+    	return abstractNumID;
+    }
+    
+    public static String getCellPlainText(JSONObject cellInfo) {
+    	StringBuffer sb = new StringBuffer();
+    	JSONArray values = cellInfo.getJSONArray("value");
+    	if(ListUtil.isNotEmpty(values)) {
+    		for (int i = 0; i < values.size(); i++) {
+    			JSONObject content = values.getJSONObject(i);
+            	String value = content.getString("value");//内容
+            	sb.append(value);
+			}
+    	}
+    	return sb.toString();
     }
     
 	/**
@@ -562,9 +592,9 @@ public class WordUtil {
         }
     }
     
-    private static void setCellValue(XWPFTableCell cell,JSONObject cellInfo,JSONObject docTplChartsObj,JSONObject docTplCodesObj,Map<String, Object> dynamicData,XWPFDocument doc,boolean isTemplate) throws Exception {
+    private static int setCellValue(XWPFTableCell cell,JSONObject cellInfo,JSONObject docTplChartsObj,JSONObject docTplCodesObj,Map<String, Object> dynamicData,XWPFDocument doc,boolean isTemplate,int abstractNumID) throws Exception {
     	if(cell == null) {
-    		return;
+    		return abstractNumID;
     	}
     	String backgroundColor = cellInfo.getString("backgroundColor");
     	if(StringUtil.isNotEmpty(backgroundColor)) {
@@ -573,184 +603,83 @@ public class WordUtil {
     	JSONArray values = cellInfo.getJSONArray("value");
     	String verticalAlign = cellInfo.getString("verticalAlign");
     	if(ListUtil.isNotEmpty(values)) {
-    		CTP ctp = CTP.Factory.newInstance();
-            XWPFParagraph paragraph = new XWPFParagraph(ctp, cell);
-            String alignment = "";
+            XWPFParagraph paragraph = null;
             Float pRowMargin = 1f;
+            String lastType = "";
             for (int i = 0; i < values.size(); i++) {
             	JSONObject content = values.getJSONObject(i);
-            	String value = content.getString("value");//内容
-            	String type = content.getString("type");
-            	String font = content.getString("font");//字体
-            	Double fontSize = content.getDouble("size");//字体大小
-            	Boolean bold = content.getBoolean("bold");//是否加粗
-            	String color = content.getString("color");//字体颜色
-            	Boolean italic = content.getBoolean("italic");//是否斜体
-            	String highlight = content.getString("highlight");//高亮
-            	Boolean underline = content.getBoolean("underline");//是否下划线
-            	Boolean strikeout = content.getBoolean("strikeout");//是否删除线
-            	String rowFlex = content.getString("rowFlex");//对齐方式
-            	Float rowMargin = content.getFloat("rowMargin");//行间距
-            	XWPFRun run = paragraph.createRun();
-            	if("tab".equals(type)) {
-            		addTab(paragraph,run);
-            	}else if("image".equals(type)){
-            		String chartUrlPrefix = MessageUtil.getValue("chart.url.prefix");
-            		String url = content.getString("value");
-            		if(url.contains(chartUrlPrefix)) {
-            			//图表
-						if(!StringUtil.isEmptyMap(docTplChartsObj)) {
-							if(docTplChartsObj.containsKey(url)) {
-								JSONObject tplCharts = docTplChartsObj.getJSONArray(url).getJSONObject(0);
-								DocChartSettingDto docChartSettingDto = new DocChartSettingDto();
-								BeanUtils.copyProperties(tplCharts, docChartSettingDto);
-								WordUtil.addChart(doc,paragraph, content,dynamicData,isTemplate,docChartSettingDto);
-							}else {
-								WordUtil.addImage(paragraph, content);
-							}
-						}else if(!StringUtil.isEmptyMap(docTplCodesObj)) {
-							if(docTplCodesObj.containsKey(url) && !isTemplate) {
-								JSONObject tplCodes = docTplCodesObj.getJSONArray(url).getJSONObject(0);
-								Map<String, Object> data = null;
-								if(dynamicData.get(tplCodes.getString("datasetName")) != null) {
-									data = (Map<String, Object>) dynamicData.get(tplCodes.getString("datasetName"));
-								}
-								int width = content.getIntValue("width");
-								int height = content.getIntValue("height");
-								if(data != null) {
-									Object datavalue = data.get(tplCodes.getString("valueField"));
-									if(datavalue != null) {
-										byte[] codeByte = null;
-										if(tplCodes.getIntValue("codeType") == 1) {
-											codeByte = BarCodeUtil.generateBarcodeImage(String.valueOf(datavalue), width, height/2);
-										}else {
-											codeByte = QRCodeUtil.generateQRCodeImage(String.valueOf(datavalue), width, height);
-										}
-										WordUtil.addImage(paragraph, content, codeByte);
-									}
-								}
-							}else {
-								WordUtil.addImage(paragraph, content);
-							}
-            		}else {
-            			WordUtil.addImage(paragraph, content);
-            		}
-            	}
-            	}else {
-            		if(value.contains("\n")) {
-                		if("\n".equals(value)) {
-                			run.addBreak();
-                		}else {
-                			String[] textes = value.split("\n");
-                			for (int t = 0; t < textes.length; t++) {
-                				run.setText(textes[t]);
-                				run.addBreak();	
-                			}
-                		}
-                	}else {
-                		run.setText(value);
-                	}
-            	}
-            	if(StringUtil.isNotEmpty(font)) {
-            		run.setFontFamily(font);
-            	}else {
-            		run.setFontFamily("微软雅黑");
-            	}
-            	if(fontSize != null) {
-            		run.setFontSize(fontSize/1.33445);
-            	}else {
-            		run.setFontSize(16/1.33445);
-            	}
-            	if(bold != null) {
-            		run.setBold(bold);
-            	}
-            	if(StringUtil.isNotEmpty(color)) {
-            		if(color.startsWith("#")) {
-            			run.setColor(color.replaceAll("#", ""));
-            		}else if(color.startsWith("rgb")) {
-            			try {
-        					int[] rgbs = StringUtil.rgbStringToRgb(color);
-        					color = StringUtil.rgb2Hex(rgbs[0], rgbs[1], rgbs[2]);
-        					run.setColor(color);
-        				} catch (Exception e) {
-        					
-        				}
-            		}
-            		
-            	}
-            	if(italic != null) {
-            		run.setItalic(italic);
-            	}
-            	if(StringUtil.isNotEmpty(highlight)) {
-            		run.setTextHighlightColor(getHighlightName(highlight));
-            	}
-            	if(underline != null) {
-            		if(underline) {
-            			JSONObject textDecoration = content.getJSONObject("textDecoration");
-                		if(textDecoration == null) {
-                			run.setUnderline(UnderlinePatterns.SINGLE);
-                		}else {
-                			String style = textDecoration.getString("style");
-                			switch (style) {
-            				case "solid":
-            					run.setUnderline(UnderlinePatterns.SINGLE);
-            					break;
-            				case "double":
-            					run.setUnderline(UnderlinePatterns.DOUBLE);
-            					break;
-            				case "dashed":
-            					run.setUnderline(UnderlinePatterns.DASH);
-            					break;
-            				case "dotted":
-            					run.setUnderline(UnderlinePatterns.DOT_DASH);
-            					break;
-            				case "wavy":
-            					run.setUnderline(UnderlinePatterns.WAVE);
-            					break;
-            				default:
-            					run.setUnderline(UnderlinePatterns.NONE);
-            					break;
-            				}
-                		}
-            		}else {
-            			run.setUnderline(UnderlinePatterns.NONE);
-            		}
-            	}else {
-            		run.setUnderline(UnderlinePatterns.NONE);
-            	}
-            	if(strikeout != null) {
-            		run.setStrikeThrough(strikeout);
-            	}
-            	if(StringUtil.isNotEmpty(rowFlex)) {
-            		alignment = rowFlex;
-            	}
-            	if(rowMargin != null) {
-            		pRowMargin = rowMargin;
-            	}
-			}
-            if(StringUtil.isNotEmpty(alignment)) {
-        		switch (alignment) {
-    			case "left":
-    				paragraph.setAlignment(ParagraphAlignment.LEFT);
-    				break;
-    			case "center":
-    				paragraph.setAlignment(ParagraphAlignment.CENTER);
-    				break;
-    			case "right":
-    				paragraph.setAlignment(ParagraphAlignment.RIGHT);
-    				break;
-    			case "alignment":
-    				paragraph.setAlignment(ParagraphAlignment.BOTH);
-    				break;
-    			default:
-    				paragraph.setAlignment(ParagraphAlignment.LEFT);
-    				break;
-    			}
+            	String type = content.getString("type") == null?"":content.getString("type");
+            	switch (type) {
+				case "":
+					if(content.getString("value").startsWith("\n") || 
+							(!type.equals(lastType) && !"tab".equals(lastType) 
+									&& !"superscript".equals(lastType) 
+									&& !"subscript".equals(lastType)
+									&& !"separator".equals(lastType)
+									&& !"hyperlink".equals(lastType))) {
+						content.put("value", content.getString("value").replaceFirst("\n", ""));
+						if(i == 0) {
+							paragraph = cell.getParagraphs().get(0);
+						}else {
+							paragraph = cell.addParagraph();
+						}
+					}
+					if("separator".equals(lastType)) {
+						String value = content.getString("value");
+						if(StringUtil.isNotEmpty(value) && value.startsWith("\n")) {
+							content.put("value", value.replaceFirst("\n", ""));
+						}
+					}
+					if(paragraph == null) {
+						if(i == 0) {
+							paragraph = cell.getParagraphs().get(0);
+						}else {
+							paragraph = cell.addParagraph();
+						}
+					}
+					WordUtil.addParagraph(paragraph,content, null,false);
+					break;
+				case "superscript":
+					if(paragraph == null) {
+						if(i == 0) {
+							paragraph = cell.getParagraphs().get(0);
+						}else {
+							paragraph = cell.addParagraph();
+						}
+					}
+					WordUtil.addSubSupScript(paragraph, content, "sup");
+					break;
+				case "subscript":
+					if(paragraph == null) {
+						if(i == 0) {
+							paragraph = cell.getParagraphs().get(0);
+						}else {
+							paragraph = cell.addParagraph();
+						}
+					}
+					WordUtil.addSubSupScript(paragraph, content, "sub");
+					break;
+				case "hyperlink":
+					if(paragraph == null) {
+						if(i == 0) {
+							paragraph = cell.getParagraphs().get(0);
+						}else {
+							paragraph = cell.addParagraph();
+						}
+					}
+					WordUtil.addHyperlink(paragraph, content);
+					break;
+				case "list":
+					abstractNumID = WordUtil.addCellList(doc, content, abstractNumID, cell);
+					break;
+				default:
+					break;
+				}
+            	lastType = type;
         	}
-            if(pRowMargin != null) {
+            if(pRowMargin != null && paragraph != null) {
             	paragraph.setSpacingBetween(pRowMargin,LineSpacingRule.AUTO);
         	}
-            cell.setParagraph(paragraph);
             if(StringUtil.isNotEmpty(verticalAlign)) {
             	switch (verticalAlign) {
 				case "top":
@@ -766,8 +695,8 @@ public class WordUtil {
 					break;
 				}
             }
-            
     	}
+    	return abstractNumID;
     }
     
     /**  
@@ -781,7 +710,7 @@ public class WordUtil {
      */ 
     public static void addSubSupScript(XWPFParagraph paragraph,JSONObject content,String type) {
     	XWPFRun run = paragraph.createRun();
-    	setRunText(run,content,type);
+    	setRunText(run,content,type,false);
     }
     
     /**  
@@ -838,7 +767,7 @@ public class WordUtil {
     			String value = valueObj.getString("value");
     			run = paragraph.createHyperlinkRun(url);
     			valueObj.put("value", value);
-    			setRunText(run,valueObj,"text");
+    			setRunText(run,valueObj,"text",false);
     		}
     	}
     }
@@ -891,7 +820,7 @@ public class WordUtil {
 					}
 					run = paragraph.createRun();  
 					valueObj.put("value", value);
-					setRunText(run,valueObj,type);
+					setRunText(run,valueObj,type,false);
 				}else {
 					String[] values = value.split("\n");
 					for (int j = 0; j < values.length; j++) {
@@ -907,7 +836,73 @@ public class WordUtil {
 							}
 							run = paragraph.createRun();  
 							valueObj.put("value", values[j]);
-							setRunText(run,valueObj,type);
+							setRunText(run,valueObj,type,false);
+						}
+					}
+				}
+				
+			}
+    	}
+    	return abstractNumID;
+    }
+    
+    /**  
+     * @MethodName: addList
+     * @Description: 添加列表
+     * @author caiyang
+     * @param paragraph
+     * @param content void
+     * @date 2024-05-06 01:36:56 
+     */ 
+    public static int addCellList(XWPFDocument document,JSONObject content,int abstractNumID,XWPFTableCell cell) {
+    	String listStyle = content.getString("listStyle");
+    	JSONArray valueList = content.getJSONArray("valueList");
+    	if(ListUtil.isNotEmpty(valueList)) {
+    		BigInteger numID = getNewDecimalNumberingId(document, BigInteger.valueOf(abstractNumID),listStyle);
+    		abstractNumID = abstractNumID + 1;
+    		XWPFParagraph paragraph = null;
+//    		paragraph.setNumID(numID);
+    		XWPFRun run = null;
+    		for (int i = 0; i < valueList.size(); i++) {
+    			JSONObject valueObj = valueList.getJSONObject(i);
+				String value = valueObj.getString("value");
+				String type = valueObj.getString("type") == null?"":valueObj.getString("type");
+				switch (type) {
+				case "superscript":
+					type = "sup";
+					break;
+				case "subscript":
+					type = "sub";
+					break;
+				default:
+					type = "text";
+					break;
+				}
+				if("\n".equals(value)) {
+					if(ListUtil.isEmpty(cell.getParagraphs().get(0).getRuns())) {
+						paragraph = cell.getParagraphs().get(0);
+					}else {
+						paragraph = cell.addParagraph();
+					}
+					paragraph.setNumID(numID);
+					paragraph.setNumILvl(BigInteger.valueOf(0));
+					run = paragraph.createRun();  
+					valueObj.put("value", value);
+					setRunText(run,valueObj,type,false);
+				}else {
+					String[] values = value.split("\n");
+					for (int j = 0; j < values.length; j++) {
+						if(StringUtil.isNotEmpty(values[j])) {
+							if(ListUtil.isEmpty(cell.getParagraphs().get(0).getRuns())) {
+								paragraph = cell.getParagraphs().get(0);
+							}else {
+								paragraph = cell.addParagraph();
+							}
+							paragraph.setNumID(numID);
+							paragraph.setNumILvl(BigInteger.valueOf(0));
+							run = paragraph.createRun();  
+							valueObj.put("value", values[j]);
+							setRunText(run,valueObj,type,false);
 						}
 					}
 				}

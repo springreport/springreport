@@ -44,14 +44,16 @@
 }
 
 ::v-deep .menu {
-  width: 100%;
+  width: fit-content;
+  max-width: 100%;
   height: 60px;
+  margin: 0 auto;
   top: 0;
   z-index: 9;
-  position: fixed;
+  overflow-x: auto;
+  /* position: fixed; */
   display: flex;
   align-items: center;
-  justify-content: center;
   background: #F2F4F7;
   box-shadow: 0 2px 4px 0 transparent;
 }
@@ -125,9 +127,8 @@
 
 ::v-deep .menu-item .options {
   width: 70px;
-  position: absolute;
-  left: 0;
-  top: 25px;
+  position: fixed;
+  top: 113px;
   padding: 10px;
   background: #fff;
   font-size: 14px;
@@ -139,6 +140,7 @@
 
 ::v-deep .menu-item .options.visible {
   display: block;
+  z-index: 99;
 }
 
 ::v-deep .menu-item .options li {
@@ -436,11 +438,11 @@
   border: 1px solid #e2e6ed;
   box-sizing: border-box;
   border-radius: 2px;
-  position: absolute;
+  position: fixed;
   display: none;
   z-index: 99;
-  top: 25px;
-  left: 0;
+  top: 113px;
+  /* left: 0; */
   padding: 14px 27px;
   cursor: auto;
 }
@@ -617,10 +619,10 @@
   width: 260px;
   height: 72px;
   box-sizing: border-box;
-  position: absolute;
+  position: fixed;
   display: none;
   z-index: 99;
-  top: 25px;
+  top: 113px;
   left: 0;
   background: #ffffff;
   box-shadow: 0px 5px 5px #e3dfdf;
@@ -741,10 +743,10 @@
 
 ::v-deep .catalog {
   width: 250px;
-  position: fixed;
+  position: absolute;
   /* left: 0; */
   bottom: 0;
-  top: 100px;
+  top: 70px;
   padding: 0 20px 40px 20px;
 }
 
@@ -814,6 +816,13 @@
 
 ::v-deep .editor>div {
   margin: 80px auto;
+}
+.editor-container{
+  height: calc(100vh - 164px);
+  overflow-y: auto;
+}
+::v-deep .editor{
+  position: unset !important;
 }
 
 ::v-deep .ce-page-container canvas {

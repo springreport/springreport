@@ -1,4 +1,6 @@
 package com.springreport.mapper.qrtzreportdetail;
+import com.springreport.dto.qrtzreportdetail.IndexQrtzDto;
+import com.springreport.dto.qrtzreportdetail.ReqIndexQrtzDto;
 import com.springreport.entity.qrtzreportdetail.QrtzReportDetail;
 import java.util.List;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -18,4 +20,14 @@ public interface QrtzReportDetailMapper extends BaseMapper<QrtzReportDetail>{
      * @return 实体集合
      */
     List<QrtzReportDetail> searchDataLike(final QrtzReportDetail model);
+    
+    /**  
+     * @MethodName: getIndexTaskList
+     * @Description: 获取首页任务列表
+     * @author caiyang
+     * @param model
+     * @return List<IndexQrtzDto>
+     * @date 2024-12-10 06:08:56 
+     */ 
+    List<IndexQrtzDto> getIndexTaskList(ReqIndexQrtzDto model);
 }

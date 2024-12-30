@@ -11753,6 +11753,13 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			printSettingsDto.setHorizontalPage(
 					resPreviewData.getSheetDatas().get(0).getPrintSettings() == null?2:resPreviewData.getSheetDatas().get(0).getPrintSettings().getHorizontalPage());
 			printSettingsDto.setPageDivider(resPreviewData.getSheetDatas().get(0).getPageDivider());
+			if(mesGenerateReportDto.isPatination()) {
+				if(YesNoEnum.YES.getCode().intValue() == mesGenerateReportDto.getIsCustomerPage().intValue()) {
+					printSettingsDto.setStartPage(mesGenerateReportDto.getStartPage());
+				}else {
+					printSettingsDto.setStartPage(Integer.valueOf(String.valueOf(mesGenerateReportDto.getPagination().get("currentPage"))));
+				}
+			}
 			objects.add(new ExcelObject("excel",is,x,y,endx,endy,mesGenerateReportDto.getPdfType(),colhidden,rowhidden,resPreviewData.getSheetDatas().get(0).getXxbtScreenshot(),printSettingsDto,mesExportExcel.getImageInfos(),mesExportExcel.getBackImages(),mesExportExcel.getSheetConfigs().get(0).getWrapText()));
 			FileOutputStream fos = new FileOutputStream(dirPath + date + "/" + filename);
 			Excel2Pdf pdf = new Excel2Pdf(objects, fos);
@@ -12645,6 +12652,13 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			printSettingsDto.setKeyWords("SpringReport_2.1.0");
 			printSettingsDto.setHorizontalPage(resPreviewData.getSheetDatas().get(0).getPrintSettings() == null?2:resPreviewData.getSheetDatas().get(0).getPrintSettings().getHorizontalPage());
 			printSettingsDto.setPageDivider(resPreviewData.getSheetDatas().get(0).getPageDivider());
+			if(mesGenerateReportDto.isPatination()) {
+				if(YesNoEnum.YES.getCode().intValue() == mesGenerateReportDto.getIsCustomerPage().intValue()) {
+					printSettingsDto.setStartPage(mesGenerateReportDto.getStartPage());
+				}else {
+					printSettingsDto.setStartPage(Integer.valueOf(String.valueOf(mesGenerateReportDto.getPagination().get("currentPage"))));
+				}
+			}
 			objects.add(new ExcelObject("excel",is,x,y,endx,endy,mesGenerateReportDto.getPdfType(),colhidden,rowhidden,resPreviewData.getSheetDatas().get(0).getXxbtScreenshot(),printSettingsDto,mesExportExcel.getImageInfos(),mesExportExcel.getBackImages(),mesExportExcel.getSheetConfigs().get(0).getWrapText()));
 			httpServletResponse.setContentType("application/pdf");
 	    	//设置文件名编码格式

@@ -19,10 +19,13 @@ import com.springreport.base.BaseEntity;
 import com.springreport.base.Response;
 import com.springreport.base.UserInfoDto;
 import com.springreport.constants.Constants;
+import com.springreport.dto.reportdatasource.ApiTestResultDto;
 import com.springreport.dto.reportdatasource.MesGetSelectDataDto;
 import com.springreport.dto.reportdatasource.MesReportDatasourceDto;
 import com.springreport.dto.reporttpldatasource.MesExecSqlDto;
 import com.springreport.entity.reportdatasource.ReportDatasource;
+import com.springreport.entity.reporttpldataset.ReportTplDataset;
+import com.alibaba.fastjson.JSONArray;
 import com.springreport.annotation.Check;
 import com.springreport.annotation.LoginUser;
 import com.springreport.annotation.MethodLog;
@@ -218,6 +221,22 @@ public class ReportDatasourceController extends BaseController {
 	public Response getDatabseTables(@RequestBody ReportDatasource datasource)
 	{
 		List<Map<String, String>> result = this.iReportDatasourceService.getDatabseTables(datasource);
+		return Response.success(result);
+	}
+	
+	/**  
+	 * @MethodName: parseApiResultAttr
+	 * @Description: 解析api数据集结果属性
+	 * @author caiyang
+	 * @param model
+	 * @return Response
+	 * @date 2024-12-24 02:56:08 
+	 */ 
+	@RequestMapping(value = "/parseApiResultAttr",method = RequestMethod.POST)
+	@MethodLog(module="ReportDatasource",remark="解析api数据集结果属性",operateType=Constants.OPERATE_TYPE_SEARCH)
+	@Check({"apiResultType:required#返回值类型","apiRequestType:required#请求方式","jdbcUrl:required#请求链接"})
+	public Response parseApiResultAttr(@RequestBody ReportDatasource model) {
+		JSONArray result = this.iReportDatasourceService.parseApiResultAttr(model);
 		return Response.success(result);
 	}
 }
