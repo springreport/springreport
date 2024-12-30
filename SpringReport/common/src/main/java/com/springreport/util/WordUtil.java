@@ -41,6 +41,7 @@ import org.apache.poi.xwpf.usermodel.BreakType;
 import org.apache.poi.xwpf.usermodel.LineSpacingRule;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.TableRowAlign;
+import org.apache.poi.xwpf.usermodel.TextAlignment;
 import org.apache.poi.xwpf.usermodel.UnderlinePatterns;
 import org.apache.poi.xwpf.usermodel.VerticalAlign;
 import org.apache.poi.xwpf.usermodel.XWPFAbstractNum;
@@ -70,6 +71,7 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPPrGeneral;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPageMar;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPageSz;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSpacing;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTString;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTStyle;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTbl;
@@ -256,7 +258,8 @@ public class WordUtil {
     		paragraph.setAlignment(ParagraphAlignment.LEFT);
     	}
     	if(rowMargin != null) {
-    		paragraph.setSpacingBetween(rowMargin,LineSpacingRule.AUTO);
+    		paragraph.setSpacingBefore((int) (rowMargin/2*240));
+    		paragraph.setSpacingAfter((int) (rowMargin/2*240));
     	}
     	if(StringUtil.isNotEmpty(titleStyle)) {
     		paragraph.setStyle(titleStyle);

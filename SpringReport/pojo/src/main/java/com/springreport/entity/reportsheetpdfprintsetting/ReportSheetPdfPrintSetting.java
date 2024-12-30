@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
  /**  
 * @Description: report_sheet_pdf_print_setting - 
 * @author 
-* @date 2024-02-24 07:42:54
+* @date 2024-12-27 05:32:06
 * @version V1.0  
  */
 @Data
@@ -118,4 +118,16 @@ public class ReportSheetPdfPrintSetting extends PageEntity {
     /** horizontal_page_column - 分页列，多个列用,隔开 */
     @TableField("horizontal_page_column")
     private String horizontalPageColumn;
+
+    /** fixed_header - 固定表头 1是 2否 */
+    @TableField("fixed_header")
+    private Integer fixedHeader;
+
+    /** fixed_header_start - 固定表头起始行 */
+    @TableField("fixed_header_start")
+    private Integer fixedHeaderStart;
+
+    /** fixed_header_end - 固定表头结束行 */
+    @TableField("fixed_header_end")
+    private Integer fixedHeaderEnd;
 }
