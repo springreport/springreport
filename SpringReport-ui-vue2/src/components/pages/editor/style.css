@@ -438,11 +438,11 @@
   border: 1px solid #e2e6ed;
   box-sizing: border-box;
   border-radius: 2px;
-  position: absolute;
+  position: fixed;
   display: none;
   z-index: 99;
-  top: 25px;
-  left: 0;
+  top: 113px;
+  /* left: 0; */
   padding: 14px 27px;
   cursor: auto;
 }

@@ -19,7 +19,7 @@
         </div>
       </div>
 
-      <div class="task-list">
+      <div class="task-list" v-if="taskDatas && taskDatas.length > 0">
         <div v-for="item in taskDatas" :key="item.id" class="task-item">
           <!-- <div class="df-c-b">
 
@@ -44,6 +44,9 @@
           <div class="desc overflow-text">发送邮箱：{{ item.email }}</div>
         </div>
       </div>
+      <div class="task-list" v-else>
+        <el-empty description="暂无数据"></el-empty>
+      </div>
 
       <el-pagination
         :page-size="pagination.pageSize"
@@ -52,6 +55,7 @@
         layout="prev, pager, next"
         :total="pagination.total"
         @current-change="handleCurrentChange"
+         v-if="taskDatas && taskDatas.length > 0"
       />
     </div>
   </div>
