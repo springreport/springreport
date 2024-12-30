@@ -204,14 +204,14 @@ const router = new Router({
             title: "大屏模板管理",
           },
         },
-        {
-          path: "/slideTpl",
-          name: "slideTpl",
-          component: () => import("@/components/pages/slidetpl/SlideTpl.vue"),
-          meta: {
-            title: "PPT模板管理",
-          },
-        },
+        // {
+        //   path: "/slideTpl",
+        //   name: "slideTpl",
+        //   component: () => import("@/components/pages/slidetpl/SlideTpl.vue"),
+        //   meta: {
+        //     title: "PPT模板管理",
+        //   },
+        // },
       ],
     },
     {
@@ -320,22 +320,22 @@ const router = new Router({
         title: "附件查看",
       },
     },
-    {
-      path: "/slideDesign",
-      name: "slideDesign",
-      component: () => import("@/components/pages/slide/slideDesign.vue"),
-      meta: {
-        title: "PPT设计",
-      },
-    },
-    {
-      path: "/slidePreview",
-      name: "slidePreview",
-      component: () => import("@/components/pages/slide/slidePreview.vue"),
-      meta: {
-        title: "PPT预览",
-      },
-    },
+    // {
+    //   path: "/slideDesign",
+    //   name: "slideDesign",
+    //   component: () => import("@/components/pages/slide/slideDesign.vue"),
+    //   meta: {
+    //     title: "PPT设计",
+    //   },
+    // },
+    // {
+    //   path: "/slidePreview",
+    //   name: "slidePreview",
+    //   component: () => import("@/components/pages/slide/slidePreview.vue"),
+    //   meta: {
+    //     title: "PPT预览",
+    //   },
+    // },
     {
       path: "*",
       redirect: "/404",
