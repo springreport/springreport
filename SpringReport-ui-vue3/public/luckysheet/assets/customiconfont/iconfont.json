@@ -6,6 +6,34 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "42976984",
+      "name": "用户管理",
+      "font_class": "yonghuguanli",
+      "unicode": "e64f",
+      "unicode_decimal": 58959
+    },
+    {
+      "icon_id": "42976982",
+      "name": "租户",
+      "font_class": "zuhu",
+      "unicode": "e650",
+      "unicode_decimal": 58960
+    },
+    {
+      "icon_id": "42976983",
+      "name": "租户管理",
+      "font_class": "zuhuguanli",
+      "unicode": "e651",
+      "unicode_decimal": 58961
+    },
+    {
+      "icon_id": "42976981",
+      "name": "权限",
+      "font_class": "quanxian",
+      "unicode": "e652",
+      "unicode_decimal": 58962
+    },
+    {
       "icon_id": "42737064",
       "name": "导出",
       "font_class": "daochu",
