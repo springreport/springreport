@@ -68,11 +68,11 @@ public class MybatisPlusConfig {
 	        DatabaseIdProvider databaseIdProvider = new VendorDatabaseIdProvider();
 	        Properties p = new Properties();
 	        p.setProperty("MySQL", "mysql");
-//	        p.setProperty("PostgreSQL", "postgresql");
-//	        p.setProperty("DM DBMS", "dm8");
-//	        p.setProperty("Oracle", "oracle");
-//	        p.setProperty("SQL Server", "sqlserver");
-//	        p.setProperty("Kingbase", "kingbase8");
+	        p.setProperty("PostgreSQL", "postgresql");
+	        p.setProperty("DM DBMS", "dm8");
+	        p.setProperty("Oracle", "oracle");
+	        p.setProperty("SQL Server", "sqlserver");
+	        p.setProperty("Kingbase", "kingbase8");
 	        databaseIdProvider.setProperties(p);
 	        return databaseIdProvider;
 	 }
