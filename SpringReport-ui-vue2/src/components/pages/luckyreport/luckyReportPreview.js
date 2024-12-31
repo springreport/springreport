@@ -547,20 +547,20 @@ export default {
     getReportData(isInit, isCurrent) {
       var that = this
       // 项目初始化的时候 不进行this.$refs['reportRef'].$refs['reportFormRef'] 因为此时抽屉组件未加载
-      if (isInit == 1) {
+      if (!this.$refs['reportRef'].$refs['reportFormRef']) {
         that.sendReportDataRequest(isInit, isCurrent)
-        return
+      }else{
+        this.$refs['reportRef'].$refs['reportFormRef'].validate((valid) => {
+          if (valid) {
+            that.sendReportDataRequest(isInit, isCurrent)
+            that.drawer = false;
+          } else {
+            this.commonUtil.showMessage({ message: this.commonUtil.getMessageFromList('error.search.param', null), type: this.commonConstants.messageType.error })
+            this.loading = false
+            return false
+          }
+        })
       }
-      this.$refs['reportRef'].$refs['reportFormRef'].validate((valid) => {
-        if (valid) {
-          that.sendReportDataRequest(isInit, isCurrent)
-          that.drawer = false;
-        } else {
-          this.commonUtil.showMessage({ message: this.commonUtil.getMessageFromList('error.search.param', null), type: this.commonConstants.messageType.error })
-          this.loading = false
-          return false
-        }
-      })
     },
     sendReportDataRequest(isInit, isCurrent) {
       const that = this
