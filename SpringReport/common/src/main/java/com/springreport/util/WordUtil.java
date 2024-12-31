@@ -675,6 +675,16 @@ public class WordUtil {
 				case "list":
 					abstractNumID = WordUtil.addCellList(doc, content, abstractNumID, cell);
 					break;
+				case "image":
+					if(paragraph == null) {
+						if(i == 0) {
+							paragraph = cell.getParagraphs().get(0);
+						}else {
+							paragraph = cell.addParagraph();
+						}
+					}
+					WordUtil.addImage(paragraph, content);
+					break;
 				default:
 					break;
 				}

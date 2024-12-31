@@ -19,6 +19,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.springreport.constants.StatusCode;
 import com.springreport.exception.BizException;
@@ -137,6 +138,10 @@ public class HttpClientUtil {
 //            }
         } catch (Exception e) {
             log.error("系统错误:",e);
+            JSONObject resultObj = new JSONObject();
+            resultObj.put("errCode", StatusCode.FAILURE);
+            resultObj.put("errMsg", e.getMessage());
+            resultString = JSON.toJSONString(resultObj);
         } finally {
             try {
                 if (response != null) {
@@ -145,6 +150,10 @@ public class HttpClientUtil {
                 httpclient.close();
             } catch (IOException e) {
                 log.error("系统错误:",e);
+                JSONObject resultObj = new JSONObject();
+                resultObj.put("errCode", StatusCode.FAILURE);
+                resultObj.put("errMsg", e.getMessage());
+                resultString = JSON.toJSONString(resultObj);
             }
         }
         return resultString;
@@ -286,6 +295,10 @@ public class HttpClientUtil {
             resultString = EntityUtils.toString(response.getEntity(), "utf-8");
         } catch (Exception e) {
             log.error("系统错误:",e);
+            JSONObject resultObj = new JSONObject();
+            resultObj.put("errCode", StatusCode.FAILURE);
+            resultObj.put("errMsg", e.getMessage());
+            resultString = JSON.toJSONString(resultObj);
         } finally {
             try {
                 if (response!=null) {
@@ -293,6 +306,10 @@ public class HttpClientUtil {
                 }
             } catch (IOException e) {
                 log.error("系统错误:",e);
+                JSONObject resultObj = new JSONObject();
+                resultObj.put("errCode", StatusCode.FAILURE);
+                resultObj.put("errMsg", e.getMessage());
+                resultString = JSON.toJSONString(resultObj);
             }
         }
         return resultString;
