@@ -53,7 +53,7 @@ SpringReport项目是从2021年正式开始开发，从2020年就有第一个版
 7. 支持word模板设计，word模板动态绑定数据进行填充
 8. 兼容支持的数据库有MySQL/Oracle/Postgresql/SqlServer/达梦数据库/人大金仓，不管是否有信创要求都可以支持
 9. Springboot+vue前后端分离技术架构，vue2和vue3都可支持
-10. 报表数据源目前支持多达11种：MySQL，Oracle，Postgresql，Sqlserver，influxdb，达梦数据库，人大金仓，clickhouse，elasticsearch，TDengine，http请求
+10. 报表数据源目前支持多达13种：MySQL，Oracle，Postgresql，Sqlserver，influxdb，达梦数据库，人大金仓，clickhouse，elasticsearch，TDengine，http请求，瀚高数据库，doris数据库，
    后续也会持续更新，支持更多的数据源
 11. 支持多租户模式
 12. 自主研发，拥有自主知识产权
