@@ -395,8 +395,16 @@ public class ReportDatasourceServiceImpl extends ServiceImpl<ReportDatasourceMap
 				}
 			}
 			String requestResult = HttpClientUtil.connectionTest(reportDatasource.getJdbcUrl(),reportDatasource.getApiRequestType(),null,headers);
-			result.setStatusMsg("接口连接测试成功！");
-			result.setApiResult(requestResult);
+			if(requestResult.startsWith("{\"errCode\":\"50001\"")) {
+				JSONObject jsonObject = JSON.parseObject(requestResult);
+				result.setStatusCode(StatusCode.FAILURE);
+				result.setStatusMsg("接口连接测试失败，错误信息："+jsonObject.getString("errMsg"));
+				result.setApiResult(requestResult);
+			}else {
+				result.setStatusMsg("接口连接测试成功！");
+				result.setApiResult(requestResult);
+			}
+			
 		}else if(reportDatasource.getType().intValue() == 6) {
 			boolean isSuccess = JdbcUtils.influxdbTest(reportDatasource.getUserName(), reportDatasource.getPassword(), reportDatasource.getJdbcUrl().substring(0,reportDatasource.getJdbcUrl().lastIndexOf("/")), null, null);
 			if(isSuccess)

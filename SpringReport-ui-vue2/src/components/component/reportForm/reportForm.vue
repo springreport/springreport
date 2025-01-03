@@ -30,7 +30,7 @@
         </div>
         <div
           v-for="(item, index) in buttonSearchHandles"
-          :key="index"
+          :key="item.label+index"
           class="action-item df-c"
           @click="item.handle()"
         >
@@ -104,7 +104,7 @@
     </div>
     <el-drawer
       title="添加筛选项"
-      :visible.sync="drawer"
+      :visible="drawer"
       :close-on-press-escape="false"
       :wrapper-closable="false"
       direction="rtl"

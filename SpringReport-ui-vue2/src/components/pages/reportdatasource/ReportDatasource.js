@@ -82,9 +82,9 @@ export default {
           { type: 'Textarea', label: '接口返回结果', prop: 'apiResult', rules: { required: false }, rows: 6, width: '500px' }
         ],
         apiResultProps: [
-          { label: '属性值编码', prop: 'propCode', align: 'center', width: 150, overflow: true },
-          { label: '属性值名称', prop: 'propName', align: 'center', width: 150, overflow: true },
-          { label: '操作', prop: 'operation', align: 'center', type: 'button', width: 120, btnList: [
+          { label: '属性值编码', prop: 'propCode', align: 'center',  overflow: true },
+          { label: '属性值名称', prop: 'propName', align: 'center',  overflow: true },
+          { label: '操作', prop: 'operation', align: 'center', type: 'button',  btnList: [
             { label: '编辑', type: 'text', auth: 'ignore', handle: (row, index) => this.editProps(row, index) },
             { label: '删除', type: 'text', auth: 'ignore', handle: (row, index) => this.deleteProps(row, index) }
           ] }
@@ -95,9 +95,9 @@ export default {
         ],
         propsTableData: [],
         apiHeaderProps: [
-          { label: '属性', prop: 'headerName', align: 'center', width: 150, overflow: true },
-          { label: '属性值', prop: 'headerValue', align: 'center', width: 150, overflow: true },
-          { label: '操作', prop: 'operation', align: 'center', type: 'button', width: 120, btnList: [
+          { label: '属性', prop: 'headerName', align: 'center', overflow: true },
+          { label: '属性值', prop: 'headerValue', align: 'center', overflow: true },
+          { label: '操作', prop: 'operation', align: 'center', type: 'button', btnList: [
             { label: '编辑', type: 'text', auth: 'ignore', handle: (row, index) => this.editHeaders(row, index) },
             { label: '删除', type: 'text', auth: 'ignore', handle: (row, index) => this.deleteHeaders(row, index) }
           ] }
