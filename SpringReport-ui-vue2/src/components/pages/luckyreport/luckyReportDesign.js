@@ -248,7 +248,8 @@ export default {
         subtotalAttrs: '', // 小计属性
         subTotalCells: [], // 小计单元格
         subTotalCalc: [], // 小计分组链
-        subTotalAttrs: []// 小计属性
+        subTotalAttrs: [],// 小计属性
+        cellFillType:1,//数据填充方式 1插入 2覆盖
       },
       delSheetsIndex: [], // 删除的sheet index
       xAxisVisiable: false,
@@ -785,6 +786,12 @@ export default {
         this.cellForm.subTotalCells = cellFormData.subTotalCells
         this.cellForm.subTotalCalc = cellFormData.subTotalCalc
         this.cellForm.subTotalAttrs = cellFormData.subTotalAttrs
+        this.cellForm.cellFillType = cellFormData.cellFillType
+        if(cellFormData.cellFillType){
+          this.cellForm.cellFillType = cellFormData.cellFillType
+        }else{
+          this.cellForm.cellFillType = 1
+        }
         if (cellFormData.isDrill && cellFormData.drillId) {
           this.reportTpls = []
           var drillReport = {
@@ -829,6 +836,7 @@ export default {
         this.cellForm.subTotalCells = []
         this.cellForm.subTotalCalc = []
         this.cellForm.subTotalAttrs = []
+        this.cellForm.cellFillType = 1
         // this.getDrillReport();
       }
       if (this.cellForm.datasourceId) {

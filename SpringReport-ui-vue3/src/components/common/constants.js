@@ -6346,11 +6346,11 @@ commonConstants.luckysheetPreviewToolBarConfig = {
     redo:false,
     undo:false,
     history:false,
-    currencyFormat: false, //货币格式
-    percentageFormat: false, //百分比格式
-    numberDecrease: false, // '减少小数位数'
-    numberIncrease: false, // '增加小数位数
-    moreFormats: false, // '更多格式'
+    currencyFormat: true, //货币格式
+    percentageFormat: true, //百分比格式
+    numberDecrease: true, // '减少小数位数'
+    numberIncrease: true, // '增加小数位数
+    moreFormats: true, // '更多格式'
     border: true, // '边框'
     textWrapMode: true, // '换行方式'
     textRotateMode: false, // '文本旋转方式'

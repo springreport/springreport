@@ -298,4 +298,8 @@ public class LuckysheetReportCell extends PageEntity {
     /** subtotal_attrs - 小计属性 */
     @TableField("subtotal_attrs")
     private String subtotalAttrs;
+    
+    /** cell_fill_type - 数据填充方式 1插入 2覆盖 */
+    @TableField("cell_fill_type")
+    private Integer cellFillType;
 }

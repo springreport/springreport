@@ -133,6 +133,7 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 				bindData.setSubtotalCalc(variableCells.get(i).getSubtotalCalc());
 				bindData.setSheetIndex(sheetIndex);
 				bindData.setIsChartAttr(variableCells.get(i).getIsChartAttr());
+				bindData.setCellFillType(variableCells.get(i).getCellFillType());
 				if(variableCells.get(i).getIsSubtotal()) {
 					if(StringUtil.isNotEmpty(variableCells.get(i).getSubtotalCells())) {
 						JSONArray subtotalCells = JSON.parseArray(variableCells.get(i).getSubtotalCells());

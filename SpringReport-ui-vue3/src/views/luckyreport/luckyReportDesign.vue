@@ -76,6 +76,19 @@
                             <el-option label="交叉扩展" :value=4></el-option>
                           </el-select>
                       </el-form-item>
+                      <el-form-item label="数据填充方式" v-if="cellForm.cellExtend != 4">
+                        <el-select
+                            v-model="cellForm.cellFillType"
+                            style="width: 100%"
+                            placeholder="数据填充方式"
+                            size="small"
+                            :disabled="attrDisabled"
+                            @change="changeCellAttr('cellFillType')"
+                        >
+                            <el-option label="插入" :value="1" />
+                            <el-option label="覆盖" :value="2" />
+                        </el-select>
+                        </el-form-item>
                       <el-form-item label="聚合方式" v-show="cellForm.cellExtend != 4">
                           <el-select  style="width:150px" placeholder="聚合方式" size="small" v-model="cellForm.aggregateType" @change="changeAggregateType" :disabled="attrDisabled">
                             <el-option label="列表" value="list"></el-option>

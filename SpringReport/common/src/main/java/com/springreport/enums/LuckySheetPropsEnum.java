@@ -739,5 +739,15 @@ public enum LuckySheetPropsEnum implements BaseCharEnum {
 			return "上标";
 		}
 	},
+	CELLFILLTYPE{
+		public String getCode() {
+			return "cellFillType";
+		}
+	
+		public String getName() {
+			return "数据填充方式";
+		}
+	},
+	
 	
 }
