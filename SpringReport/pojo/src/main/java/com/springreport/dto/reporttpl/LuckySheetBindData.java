@@ -503,4 +503,11 @@ public class LuckySheetBindData {
      * @date 2024-08-23 03:33:34 
      */  
     private String cellText;
+    
+    /**  
+     * @Fields cellFillType : 数据填充方式 1插入 2覆盖
+     * @author caiyang
+     * @date 2024-12-31 11:26:00 
+     */  
+    private Integer cellFillType = 1;
 }
