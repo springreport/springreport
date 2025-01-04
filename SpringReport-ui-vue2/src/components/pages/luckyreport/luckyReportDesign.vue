@@ -328,6 +328,7 @@
                     size="small"
                     :disabled="attrDisabled"
                     @change="changeCellAttr('cellFillType')"
+                    v-if="cellForm.cellExtend != 4"
                   >
                     <el-option label="插入" :value="1" />
                     <el-option label="覆盖" :value="2" />
