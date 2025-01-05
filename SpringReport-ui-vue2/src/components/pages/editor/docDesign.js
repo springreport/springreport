@@ -1,4 +1,4 @@
-import Editor from './assets/js/canvas-editor.umd.js'
+import Editor from './assets/js/canvas-editor.es'
 import sqlFormatter from 'sql-formatter'
 import 'codemirror/mode/javascript/javascript.js'
 import 'codemirror/lib/codemirror.css'
