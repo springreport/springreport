@@ -1,4 +1,4 @@
-import Editor from '@hufe921/canvas-editor'
+import Editor from './assets/js/canvas-editor.es.js'
 import { format } from "sql-formatter";
 import codemirror from "codemirror-editor-vue3";
 // base style
@@ -336,6 +336,11 @@ export default {
                 Number(margins[2]),
                 Number(margins[3])
               ])
+            }
+            if(response.responseData.firstpageHeaderFooterShow == 2){
+              that.updateOptions("header","firstPage",true);
+              that.updateOptions("footer","firstPage",true);
+              that.updateOptions("pageNumber","fromPageNo",1);
             }
         }
       })
@@ -2315,6 +2320,16 @@ export default {
       this.codeModalData.codeUrl = row.codeUrl;
       this.codeModalData.index = index;
       this.changeCodeDatasets(row.datasetId);
+    },
+    updateOptions(key1,key2,value){
+      const options = this.instance.command.getOptions()
+      if(key2){
+        options[key1][key2] = value;
+        this.instance.command.executeUpdateOptions(options)
+      }else{
+        options[key1] = value;
+        this.instance.command.executeUpdateOptions(options)
+      }
     }
   },
 //使用mounted的原因是因为在mounted中dom已经加载完毕，否则会报错，找不到getAttribute这个方法
