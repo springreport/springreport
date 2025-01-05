@@ -72,6 +72,7 @@ export default {
 					{type:'Input',label:'模板名称',prop:'tplName',rules:{required:true,maxLength:40}},
           {type:'Select',label:'数据源',prop:'dataSource',rules:{required:true},multiple:true,props:{label:"code",value:"id"}},
           {type:'Select',label:'参数是否合并',prop:'paramMerge',rules:{required:true},options:this.selectUtil.yesNo},
+          { type: 'Select', label: '首页页眉页脚是否显示', prop: 'firstpageHeaderFooterShow', rules: { required: true }, options: this.selectUtil.yesNo },
           {type:'Select',label:'所属目录',prop:'reportType',rules:{required:true},props:{label:'reportTypeName',value:'id'}},
         ],
         //modal表单 end
@@ -82,6 +83,7 @@ export default {
           dataSource:[],//报表数据源
           paramMerge:1,
           reportType:"",
+          firstpageHeaderFooterShow:1,
         },
         //modal 数据 end
         //modal 按钮 start
@@ -369,7 +371,7 @@ export default {
       this.commonUtil.doPost(obj) .then(response=>{
         if (response.code == "200")
         {
-          this.pageData.modalForm[4].options = response.responseData;
+          this.pageData.modalForm[5].options = response.responseData;
         }
       });
     },
