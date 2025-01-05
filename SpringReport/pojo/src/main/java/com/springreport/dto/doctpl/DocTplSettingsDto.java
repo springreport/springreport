@@ -38,4 +38,11 @@ public class DocTplSettingsDto extends DocTplSettings{
 	 * @date 2024-10-23 10:05:38 
 	 */  
 	private List<DocTplCodes> docTplCodes;
+	
+	/**  
+	 * @Fields firstpageHeaderFooterShow : 首页页眉页脚是否显示 1是 2否
+	 * @author caiyang
+	 * @date 2025-01-04 07:38:41 
+	 */  
+	private Integer firstpageHeaderFooterShow;
 }

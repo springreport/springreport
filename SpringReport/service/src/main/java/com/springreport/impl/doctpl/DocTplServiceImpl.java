@@ -524,6 +524,7 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 		if (docTpl != null) {
 			result.setTplName(docTpl.getTplName());
 		}
+		result.setFirstpageHeaderFooterShow(docTpl.getFirstpageHeaderFooterShow());
 		result.setChartUrlPrefix(MessageUtil.getValue("chart.url.prefix"));
 		//获取图表信息
 		QueryWrapper<DocTplCharts> chartsWrapper = new QueryWrapper<>();
@@ -615,7 +616,10 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
         String filename = URLEncoder.encode(docTpl.getTplName(), "UTF-8");
         httpServletResponse.addHeader("Content-Disposition", "attachment;filename=" +filename + ".docx");
         httpServletResponse.addHeader("filename", filename + ".docx");
-		ByteArrayOutputStream baos = this.getDocTplStream(model,null,true);
+        DocTplSettingsDto docTplSettingsDto = new DocTplSettingsDto();
+        BeanUtils.copyProperties(model, docTplSettingsDto);
+        docTplSettingsDto.setFirstpageHeaderFooterShow(docTpl.getFirstpageHeaderFooterShow());
+		ByteArrayOutputStream baos = this.getDocTplStream(docTplSettingsDto,null,true);
 		byte[] bytes = baos.toByteArray();
 		httpServletResponse.setHeader("Content-Length", String.valueOf(bytes.length));
         BufferedOutputStream bos = null;
@@ -656,7 +660,7 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 				data.put(datasets.get(i).getDatasetName(), datasetData);
 			}
 		}
-		Map<String, Object> result = this.generateDocPdf(model.getTplId(), data,paramsType,model.getFileId());
+		Map<String, Object> result = this.generateDocPdf(model.getTplId(), data,paramsType,model.getFileId(),docTpl.getFirstpageHeaderFooterShow());
 		result.put("tplName", docTpl.getTplName());
 		result.put("reportSqls", reportSqls);
 		result.put("showReportSql", showReportSql);
@@ -672,7 +676,7 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 	 * @return Map<String,String>
 	 * @date 2024-05-07 04:49:42 
 	 */ 
-	private Map<String, Object> generateDocPdf(Long tplId,Map<String, Object> data,Map<String, List<String>> paramsType,String fileId){
+	private Map<String, Object> generateDocPdf(Long tplId,Map<String, Object> data,Map<String, List<String>> paramsType,String fileId,int firstpageHeaderFooterShow){
 		Map<String, Object> result = new HashMap<String, Object>();
 		QueryWrapper<DocTplSettings> queryWrapper = new QueryWrapper<>();
 		queryWrapper.eq("tpl_id", tplId);
@@ -693,7 +697,10 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 		FileOutputStream docxFileOutputStream = null;
 		FileOutputStream pdfFileOutputStream = null;
 		try {
-			baos = this.getDocTplStream(model,data,false);
+			DocTplSettingsDto tplSettingsDto = new DocTplSettingsDto();
+			BeanUtils.copyProperties(model, tplSettingsDto);
+			tplSettingsDto.setFirstpageHeaderFooterShow(firstpageHeaderFooterShow);
+			baos = this.getDocTplStream(tplSettingsDto,data,false);
 			ZipSecureFile.setMinInflateRatio(-1.0d);
 			inputStream = new ByteArrayInputStream(baos.toByteArray());
 			String date = DateUtil.getNow(DateUtil.FORMAT_LONOGRAM);
@@ -774,7 +781,7 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 		return result;
 	}
 	
-	private ByteArrayOutputStream getDocTplStream(DocTplSettings model,Map<String, Object> dynamicData,boolean isTemplate) {
+	private ByteArrayOutputStream getDocTplStream(DocTplSettingsDto model,Map<String, Object> dynamicData,boolean isTemplate) {
 		ByteArrayOutputStream baos = null;
 		XWPFDocument doc = new XWPFDocument();
 		QueryWrapper<DocTplCharts> chartsWrapper = new QueryWrapper<>();
@@ -817,8 +824,10 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 				}
 			}
 			//首页页眉不显示
-//			CTSectPr sect = doc.getDocument().getBody().getSectPr();
-//			sect.addNewTitlePg();
+			if(YesNoEnum.NO.getCode().intValue() == model.getFirstpageHeaderFooterShow().intValue()) {
+				CTSectPr sect = doc.getDocument().getBody().getSectPr();
+				sect.addNewTitlePg();
+			}
 			//页眉
 			JSONArray header = JSON.parseArray(model.getHeader());
 			if(ListUtil.isNotEmpty(header)) {
@@ -1046,7 +1055,7 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 					lastType = type;
 				}
 			}
-//			addPageNumbers(doc, 0);
+			addPageNumbers(doc, 0);
 			 // 创建页脚
 			XWPFFooter pageFooter = doc.createFooter(HeaderFooterType.DEFAULT);//创建一个新的XWPFFooter对象
 		    XWPFParagraph footerParagraph = pageFooter.createParagraph();
@@ -1063,12 +1072,13 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 		    footerRun.getCTR().addNewInstrText().setStringValue("PAGE \\* MERGEFORMAT");
 		    footerRun.getCTR().addNewInstrText().setSpace(SpaceAttribute.Space.Enum.forString("preserve"));
 		    footerRun.getCTR().addNewFldChar().setFldCharType(STFldCharType.Enum.forString("end"));
-		    footerRun.setText("/");
-		    footerRun.getCTR().addNewFldChar().setFldCharType(STFldCharType.Enum.forString("begin"));
-		    footerRun.getCTR().addNewInstrText().setStringValue("NUMPAGES \\* MERGEFORMAT");
-		    footerRun.getCTR().addNewInstrText().setSpace(SpaceAttribute.Space.Enum.forString("preserve"));
-		    footerRun.getCTR().addNewFldChar().setFldCharType(STFldCharType.Enum.forString("end"));
-		    footerRun.setText("");
+		    
+//		    footerRun.setText("/");
+//		    footerRun.getCTR().addNewFldChar().setFldCharType(STFldCharType.Enum.forString("begin"));
+//		    footerRun.getCTR().addNewInstrText().setStringValue("NUMPAGES \\* MERGEFORMAT");
+//		    footerRun.getCTR().addNewInstrText().setSpace(SpaceAttribute.Space.Enum.forString("preserve"));
+//		    footerRun.getCTR().addNewFldChar().setFldCharType(STFldCharType.Enum.forString("end"));
+//		    footerRun.setText("");
 		    // 将页脚添加到所有的页面
 		    XWPFHeaderFooterPolicy headerFooterPolicy = new XWPFHeaderFooterPolicy(doc);
 		    headerFooterPolicy.createFooter(STHdrFtr.DEFAULT, new XWPFParagraph[]{footerParagraph});
