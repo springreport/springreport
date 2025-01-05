@@ -1055,7 +1055,9 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 					lastType = type;
 				}
 			}
-			addPageNumbers(doc, 0);
+			if(YesNoEnum.NO.getCode().intValue() == model.getFirstpageHeaderFooterShow().intValue()) {
+				addPageNumbers(doc, 0);
+			}
 			 // 创建页脚
 			XWPFFooter pageFooter = doc.createFooter(HeaderFooterType.DEFAULT);//创建一个新的XWPFFooter对象
 		    XWPFParagraph footerParagraph = pageFooter.createParagraph();
