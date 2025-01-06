@@ -3,18 +3,21 @@
     <div class="calendar-header df-c-b">
       <div class="month">{{ currentMonth.clone().format('YYYY年MM月') }}</div>
       <div class="action">
-        <el-icon
-          style="color: rgba(0, 0, 0, 0.25); margin-right: 20px; cursor: pointer"
+        <icon-left
+          theme="outline"
+          size="18"
+          fill="rgba(0, 0, 0, 0.25)"
           @click="handleMonth('subtract')"
-        >
-          <ArrowLeft />
-        </el-icon>
-        <el-icon>
-          <ArrowRight
-            style="color: rgba(0, 0, 0, 0.25); cursor: pointer"
-            @click="handleMonth('add')"
-          />
-        </el-icon>
+          style="margin-right: 20px; cursor: pointer"
+        />
+
+        <icon-right
+          theme="outline"
+          size="18"
+          fill="rgba(0, 0, 0, 0.25)"
+          @click="handleMonth('add')"
+          style="cursor: pointer"
+        />
       </div>
     </div>
     <div class="calendar-body">

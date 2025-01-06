@@ -1,7 +1,5 @@
 <template>
   <div class="right-panel">
-
-    <FullScreen :color="color" @refresh="onRefresh" />
     <icon-refresh
       title="刷新"
       @click="handleRefresh"
@@ -11,6 +9,8 @@
       :fill="color"
       :strokeWidth="4"
     />
+    <FullScreen :color="color" @refresh="onRefresh" />
+
     <Avatar :color="color" />
   </div>
 </template>
@@ -22,7 +22,6 @@
 </script>
 
 <script setup>
-
   import FullScreen from '@/components/FullScreen/index.vue';
 
   import { useStore } from 'vuex';
@@ -38,7 +37,6 @@
   const store = useStore();
 
   let activeName = ref('first');
-
 
   const onRefresh = () => {};
 

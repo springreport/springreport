@@ -36,9 +36,9 @@ $base-select-width-small: 120px;
 $base-drawer-width: 320px;
 $base-logo-width: 240px;
 // 收起宽度
-$base-unfold-width: 60px;
+$base-unfold-width: 64px;
 // 菜单栏宽度
-$base-menu-width: 232px;
+$base-menu-width: 228px;
 // 头像宽度
 $base-avatar-widht: 40px;
 
@@ -130,10 +130,11 @@ $base-margin-20: 20px;
 $base-margin-20: 25px;
 
 //默认阴影
-$base-box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+// $base-box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+$base-box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.05);
 $base-tabs-bar-height: 55px;
 $base-tag-item-height: 34px;
-$base-nav-bar-height: 56px;
+$base-nav-bar-height: 64px;
 
 //默认动画
 $base-transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1), border 0s,
@@ -142,7 +143,7 @@ $base-transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1), border 0s,
 $base-transition-time: 0.3s;
 $base-transition-time-4: 0.4s;
 $base-color: #f45;
-$green-color: #11d86c;
+$green-color: green;
 
 $color-red: red;
 $color-green: green;
