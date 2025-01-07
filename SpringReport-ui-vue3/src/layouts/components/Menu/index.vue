@@ -27,6 +27,13 @@
           />
         </div>
       </div>
+      <div v-if="!isCollapse" class="filter-menu">
+        <el-input v-model="filterText" style="width: 100%" placeholder="搜索菜单" clearable>
+          <template #prefix>
+            <icon-search />
+          </template>
+        </el-input>
+      </div>
       <template v-for="item in routes.value">
         <template v-if="!item.hidden">
           <MenuItem :item="{ ...item, isBlack }" :key="item.path" />
@@ -80,6 +87,8 @@
   });
 
   const uniqueOpenedFlag = ref(uniqueOpened);
+
+  const filterText = ref('');
 
   const store = useStore();
   const router = useRouter();
@@ -146,6 +155,18 @@
 </script>
 
 <style lang="scss" scoped>
+  .filter-menu {
+    padding: 12px 8px;
+    background-color: #fff;
+    box-sizing: border-box;
+    :deep(.el-input__wrapper) {
+      width: 100%;
+      max-width: calc(228px - 16px);
+      border-radius: 6px;
+      background: #f5f6f7;
+      border-color: #f5f6f7;
+    }
+  }
   .el-menu-vertical {
     position: fixed;
     top: 0;
@@ -177,7 +198,7 @@
       width: 100%;
       height: $base-nav-bar-height;
       z-index: 8000;
-      padding-left: 24px;
+      padding-left: 0;
       box-sizing: border-box;
       img {
         cursor: pointer;

@@ -1,8 +1,8 @@
 <template>
-  <el-menu-item :key="item.path" :index="item.path" v-if="item.subs.length==0">
+  <el-menu-item :key="item.path" :index="item.path" v-if="item.subs.length == 0">
     <span class="iconfont" :class="item.icon" />
     <template #title>
-      <span class="title">{{item.title }}</span>
+      <span class="title">{{ item.title }}</span>
     </template>
   </el-menu-item>
   <el-sub-menu :class="{ 'is-black': isBlack }" :index="item.path" v-else>
@@ -21,52 +21,61 @@
 </template>
 
 <script>
-export default {
-  name: 'MenuItem',
-};
+  export default {
+    name: 'MenuItem',
+  };
 </script>
 
 <script setup>
-import { computed } from 'vue';
-import { useStore } from 'vuex';
+  import { computed } from 'vue';
+  import { useStore } from 'vuex';
 
-import { themeConfig } from '@/config/theme';
-const { themeOptions } = themeConfig;
+  import { themeConfig } from '@/config/theme';
+  const { themeOptions } = themeConfig;
 
-const whiteColors = ['#fff', '#ffffff', '#FFF', '#FFF', 'rgb(255, 255, 255)'];
+  const whiteColors = ['#fff', '#ffffff', '#FFF', '#FFF', 'rgb(255, 255, 255)'];
 
-defineProps({
-  item: {
-    type: Object,
-    default: () => {
-      return {};
+  defineProps({
+    item: {
+      type: Object,
+      default: () => {
+        return {};
+      },
     },
-  },
-});
+  });
 
-const store = useStore();
+  const store = useStore();
 
-const theme = computed(() => {
-  return store.getters['setting/theme'];
-});
+  const theme = computed(() => {
+    return store.getters['setting/theme'];
+  });
 
-const menuBgColor = computed(() => {
-  return themeOptions[theme.value].menuBgColor;
-});
+  const menuBgColor = computed(() => {
+    return themeOptions[theme.value].menuBgColor;
+  });
 
-const isBlack = computed(() => {
-  return whiteColors.indexOf(menuBgColor.value) === -1;
-});
+  const isBlack = computed(() => {
+    return whiteColors.indexOf(menuBgColor.value) === -1;
+  });
 </script>
 <style lang="scss" scoped>
-.menu-icon,
-.icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: $base-icon-width-big !important;
-  height: $base-icon-height-super-max !important;
-  margin-right: $base-margin-5;
-  visibility: initial !important;
-}
+  .menu-icon,
+  .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: $base-icon-width-big !important;
+    height: $base-icon-height-super-max !important;
+    margin-right: $base-margin-5;
+    visibility: initial !important;
+  }
+
+  .iconfont {
+    font-size: 20px !important;
+    margin-right: 8px;
+  }
+
+  :deep(.el-sub-menu__title:hover) {
+    background-color: #f0fcf9 !important;
+  }
 </style>
