@@ -9,22 +9,16 @@
       ></el-tree>
     </div> -->
     <div class="_tablepage">
-      <!-- <searchForm
-        ref="searchRef"
-        :searchForm="pageData.searchForm"
-        :searchData="pageData.queryData"
-        :searchHandle="pageData.searchHandle"
-      ></searchForm> -->
+      <searchForm :table-handles="pageData.tableHandles" />
       <cusTable
         :isSelection="false"
         :isIndex="false"
         :isPagination="false"
         :isHandle="true"
         :tableCols="pageData.tableCols"
-        :tableHandles="pageData.tableHandles"
         :tableData="pageData.tableData"
         :tablePage="pageData.tablePage"
-        :lazy='pageData.lazy'
+        :lazy="pageData.lazy"
         @handleCurrentChange="searchtablelist()"
         @selectChange="selectChange"
         @load="loadData"
@@ -53,7 +47,7 @@
         :modalHandles="pageData.changePwdModalHandles"
         @closeModal="closePwdModal()"
       ></modal>
-       <modal
+      <modal
         ref="shareReport"
         :modalConfig="pageData.shareReportConfig"
         :modalForm="pageData.shareReportForm"
@@ -61,35 +55,39 @@
         :modalHandles="pageData.shareReportModalHandles"
         @closeModal="closeShareReportModal()"
       ></modal>
-      <modal ref="folderModalRef" :modalConfig='pageData.folderModalConfig' 
-       :modalForm='pageData.folderModalForm' :modalData='pageData.folderModalData' 
-       :modalHandles='pageData.folderModalHandles'
-       @closeModal="closeFolderModal()"></modal>
-      <textarea id="clipboradInput" style="opacity:0;position:absolute" />
+      <modal
+        ref="folderModalRef"
+        :modalConfig="pageData.folderModalConfig"
+        :modalForm="pageData.folderModalForm"
+        :modalData="pageData.folderModalData"
+        :modalHandles="pageData.folderModalHandles"
+        @closeModal="closeFolderModal()"
+      ></modal>
+      <textarea id="clipboradInput" style="opacity: 0; position: absolute" />
     </div>
   </div>
 </template>
 <script src="./ReportTpl.js"></script>
 <style lang="scss" scoped>
-.echarts-container {
-  padding: $base-main-padding;
-  background-color: $base-color-white;
-  width: calc(100% - 200px);
-}
-.container {
-  display: flex;
-  overflow: auto;
-}
-.left {
-  box-sizing: border-box;
-  width: 232px;
-  flex-shrink: 0;
-  background: #ffffff;
-  border-radius: 6px;
-  margin-right: 16px;
-  padding: 6px;
-}
-._tablepage {
-  flex: 1;
-}
+  .echarts-container {
+    padding: $base-main-padding;
+    background-color: $base-color-white;
+    width: calc(100% - 200px);
+  }
+  .container {
+    display: flex;
+    overflow: auto;
+  }
+  .left {
+    box-sizing: border-box;
+    width: 232px;
+    flex-shrink: 0;
+    background: #ffffff;
+    border-radius: 6px;
+    margin-right: 16px;
+    padding: 6px;
+  }
+  ._tablepage {
+    width: 100%;
+  }
 </style>
