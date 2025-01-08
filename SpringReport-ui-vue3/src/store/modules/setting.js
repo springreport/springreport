@@ -99,8 +99,8 @@ const actions = {
   /**
    * @description 切换展开收起
    */
-  changeCollapse: ({ commit }) => {
-    commit('CHANGE_COLLAPSE');
+  changeCollapse: ({ commit }, collapse) => {
+    commit('CHANGE_COLLAPSE', collapse);
   },
   /**
    * @description 切换是否全屏

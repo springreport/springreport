@@ -22,7 +22,6 @@
 </template>
 
 <script setup>
-  import { on } from 'events';
   import { onMounted } from 'vue';
   import { useStore } from 'vuex';
   const store = useStore();
