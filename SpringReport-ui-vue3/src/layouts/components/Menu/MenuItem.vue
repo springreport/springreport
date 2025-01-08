@@ -58,6 +58,11 @@
     return whiteColors.indexOf(menuBgColor.value) === -1;
   });
 </script>
+<style lang="scss">
+  .el-menu--collapse > .el-sub-menu > .el-sub-menu__title > span {
+    margin-right: 0 !important;
+  }
+</style>
 <style lang="scss" scoped>
   .menu-icon,
   .icon {
@@ -71,6 +76,9 @@
   }
 
   .iconfont {
+    width: fit-content !important;
+    height: fit-content !important;
+    visibility: visible !important;
     font-size: 20px !important;
     margin-right: 8px;
   }

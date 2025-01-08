@@ -34,7 +34,7 @@
           </template>
         </el-input>
       </div>
-      <template v-for="item in routes.value">
+      <template v-for="item in displayMenuData">
         <template v-if="!item.hidden">
           <MenuItem :item="{ ...item, isBlack }" :key="item.path" />
         </template>
@@ -99,6 +99,18 @@
 
   const menuBgColor = computed(() => {
     return themeOptions[theme.value].menuBgColor;
+  });
+
+  const displayMenuData = computed(() => {
+    if (filterText.value) {
+      return routes.value
+        .map((group) => ({
+          ...group,
+          subs: group.subs.filter((item) => item.title.includes(filterText.value)),
+        }))
+        .filter((group) => group.subs.length > 0); // 只保留有匹配项的组
+    }
+    return routes.value;
   });
 
   const isBlack = computed(() => {

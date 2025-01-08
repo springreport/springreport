@@ -51,7 +51,11 @@ const getters = {
 };
 
 const mutations = {
-  CHANGE_COLLAPSE: (state) => {
+  CHANGE_COLLAPSE: (state, collapse) => {
+    if (collapse != undefined) {
+      state.collapse = collapse;
+      return;
+    }
     state.collapse = !state.collapse;
   },
   CHANGE_FULL_SCREEN: (state, flag) => {

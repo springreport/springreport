@@ -22,6 +22,8 @@
 </template>
 
 <script setup>
+  import { on } from 'events';
+  import { onMounted } from 'vue';
   import { useStore } from 'vuex';
   const store = useStore();
   const handleCollapse = () => {
@@ -29,6 +31,36 @@
   };
   const isCollapse = computed(() => {
     return store.getters.collapse;
+  });
+
+  const checkScreenWidth = () => {
+    const navShow = window.innerWidth < 1300;
+    store.dispatch('setting/changeCollapse', navShow);
+  };
+
+  const debounce = (fn, delay) => {
+    let timer = null;
+    return function () {
+      if (timer) {
+        clearTimeout(timer);
+      }
+      timer = setTimeout(fn, delay);
+    };
+  };
+
+  onMounted(() => {
+    checkScreenWidth();
+    // 屏幕宽度变化时，重新计算菜单宽度
+    window.addEventListener(
+      'resize',
+      debounce(function () {
+        checkScreenWidth();
+      }, 300)
+    );
+  });
+
+  onUnmounted(() => {
+    window.removeEventListener('resize', checkScreenWidth());
   });
 </script>
 
