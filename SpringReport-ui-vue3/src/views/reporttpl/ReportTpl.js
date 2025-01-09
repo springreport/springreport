@@ -81,41 +81,12 @@ export default {
         //表格分页信息end
         //表格列表头start
         tableCols: [
-          { label: '报表标识', prop: 'tplCode', align: 'left', overflow: true, icon: true },
-          { label: '报表名称', prop: 'tplName', align: 'center', overflow: true },
-          {
-            label: '查看权限',
-            prop: 'viewAuth',
-            align: 'center',
-            codeType: 'viewAuth',
-            formatter: this.commonUtil.getTableCodeName,
-            overflow: true,
-          },
-          { label: '数据源代码', prop: 'dataSourceCode', align: 'center', overflow: true },
-          { label: '数据源名称', prop: 'dataSourceName', align: 'center', overflow: true },
-          {
-            label: '导出是否加密',
-            prop: 'exportEncrypt',
-            align: 'center',
-            codeType: 'yesNo',
-            formatter: this.commonUtil.getTableCodeName,
-            overflow: true,
-          },
-          {
-            label: '报表类型',
-            prop: 'tplType',
-            align: 'center',
-            codeType: 'tplType',
-            formatter: this.commonUtil.getTableCodeName,
-            overflow: true,
-          },
           {
             label: '操作',
             prop: 'operation',
             align: 'center',
-            type: 'button',
-            fixed: 'right',
-            width: 320,
+            type: 'dropdown',
+            width: 54,
             btnList: [
               {
                 label: '查看',
@@ -133,7 +104,7 @@ export default {
               },
               {
                 label: '删除',
-                type: 'primary',
+                type: 'danger',
                 auth: 'reportTpl_delete',
                 handle: (row) => this.deleteOne(row.id, row.type),
               },
@@ -188,6 +159,34 @@ export default {
                 handle: (row) => this.routerToTask(row),
               },
             ],
+          },
+          { label: '报表标识', prop: 'tplCode', align: 'left', overflow: true, icon: true },
+          { label: '报表名称', prop: 'tplName', align: 'center', overflow: true },
+          {
+            label: '查看权限',
+            prop: 'viewAuth',
+            align: 'center',
+            codeType: 'viewAuth',
+            formatter: this.commonUtil.getTableCodeName,
+            overflow: true,
+          },
+          { label: '数据源代码', prop: 'dataSourceCode', align: 'center', overflow: true },
+          { label: '数据源名称', prop: 'dataSourceName', align: 'center', overflow: true },
+          {
+            label: '导出是否加密',
+            prop: 'exportEncrypt',
+            align: 'center',
+            codeType: 'yesNo',
+            formatter: this.commonUtil.getTableCodeName,
+            overflow: true,
+          },
+          {
+            label: '报表类型',
+            prop: 'tplType',
+            align: 'center',
+            codeType: 'tplType',
+            formatter: this.commonUtil.getTableCodeName,
+            overflow: true,
           },
         ],
         //表格列表头end

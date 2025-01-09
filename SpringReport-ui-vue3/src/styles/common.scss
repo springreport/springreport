@@ -303,3 +303,8 @@ html {
     }
   }
 }
+
+// 移除el-tooltip的焦点样式
+.el-tooltip__trigger:focus-visible {
+  outline: unset;
+}

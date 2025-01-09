@@ -2,6 +2,7 @@ export default {
   name: 'reportDatasource',
   data() {
     return {
+      tableLoading: true,
       pageData: {
         //查询表单内容 start
         searchForm: [
@@ -72,24 +73,13 @@ export default {
         //表格分页信息end
         //表格列表头start
         tableCols: [
-          { label: '编码', prop: 'code', align: 'center', overflow: true },
-          { label: '数据源名称', prop: 'name', align: 'center', overflow: true },
-          {
-            label: '数据源类型',
-            prop: 'type',
-            align: 'center',
-            formatter: this.commonUtil.getTableCodeName,
-            codeType: 'dataSourceType',
-            overflow: true,
-          },
-          { label: '数据源链接', prop: 'jdbcUrl', align: 'center', overflow: true },
           {
             label: '操作',
             prop: 'operation',
             align: 'center',
-            type: 'button',
-            width: 300,
-            fixed: 'right',
+            type: '',
+            type: 'dropdown',
+            width: 54,
             btnList: [
               {
                 label: '查看',
@@ -105,7 +95,7 @@ export default {
               },
               {
                 label: '删除',
-                type: 'primary',
+                type: 'danger',
                 auth: 'reportDatasource_delete',
                 handle: (row) => this.deleteOne(row.id),
               },
@@ -117,6 +107,17 @@ export default {
               },
             ],
           },
+          { label: '编码', prop: 'code', align: 'center', overflow: true },
+          { label: '数据源名称', prop: 'name', align: 'center', overflow: true },
+          {
+            label: '数据源类型',
+            prop: 'type',
+            align: 'center',
+            formatter: this.commonUtil.getTableCodeName,
+            codeType: 'dataSourceType',
+            overflow: true,
+          },
+          { label: '数据源链接', prop: 'jdbcUrl', align: 'center', overflow: true },
         ],
         //表格列表头end
         //modal配置 start
@@ -365,12 +366,15 @@ export default {
      * @author: caiyang
      */
     searchtablelist() {
+      this.tableLoading = true;
+
       var obj = {
         url: this.apis.reportDatasource.listApi,
         params: Object.assign({}, this.pageData.queryData, this.pageData.tablePage),
       };
       this.commonUtil.getTableList(obj).then((response) => {
         this.commonUtil.tableAssignment(response, this.pageData.tablePage, this.pageData.tableData);
+        this.tableLoading = false;
       });
     },
     resetSearch() {
