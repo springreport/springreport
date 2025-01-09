@@ -205,7 +205,7 @@
             <el-input
               v-if="item.type === 'Textarea'"
               type="textarea"
-              :style="'width:' + item.width"
+              style="width: 100%"
               :rows="item.rows ? item.rows : 2"
               v-model="modalData[item.prop]"
               :placeholder="'请输入' + item.label"
