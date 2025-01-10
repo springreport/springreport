@@ -8,6 +8,7 @@ import com.aspose.words.Document;
 import com.aspose.words.EditingLanguage;
 import com.aspose.words.License;
 import com.aspose.words.LoadOptions;
+import com.aspose.words.ParagraphFormat;
 import com.aspose.words.SaveFormat;
 
 /**
@@ -46,6 +47,8 @@ public class AsposeUtil {
 //        	LoadOptions opt = new LoadOptions();
 //        	opt.getLanguagePreferences().setDefaultEditingLanguage(EditingLanguage.CHINESE_PRC);
             Document doc = new Document(wordPath);
+            ParagraphFormat pf = doc.getStyles().getDefaultParagraphFormat();
+            pf.clearFormatting();
             doc.save(os, SaveFormat.PDF);
         }
     }

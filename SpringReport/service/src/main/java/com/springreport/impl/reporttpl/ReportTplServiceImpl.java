@@ -305,6 +305,9 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 	@Autowired
 	private IReportTypeService iReportTypeService;
 	
+	@Value("${thirdParty.type}")
+    private String thirdPartyType;
+	
 	/**
      * 本地保存路径
      */
@@ -1259,7 +1262,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			List<ReportRangeAuthUser> rangeAuthUsers = new ArrayList<>();
 			if(this.authenticEnabale)
 			{
-				if(reportTpl.getCreator().longValue() == userInfoDto.getUserId().longValue())
+				if(userInfoDto.getUserId() != null && reportTpl.getCreator().longValue() == userInfoDto.getUserId().longValue())
 				{
 					//先删除再新增
 					QueryWrapper<ReportRangeAuth> rangeAuthQueryWrapper = new QueryWrapper<>();
@@ -1968,7 +1971,11 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		sheets = this.iReportTplSheetService.list(sheetQueryWrapper);
 		boolean isCreator = false;
 		if(this.authenticEnabale) {
-			isCreator = reportTpl.getCreator().longValue() == userInfoDto.getUserId().longValue();
+			if(StringUtil.isNotEmpty(userInfoDto.getUserName()) && userInfoDto.getUserName().equals(this.thirdPartyType)) {
+				isCreator = true;
+			}else {
+				isCreator = reportTpl.getCreator().longValue() == userInfoDto.getUserId().longValue();
+			}
 		}else {
 			isCreator = true;
 		}
@@ -2006,7 +2013,10 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				settings.setCreatorName(sysUser.getUserName());
 			}
 		}
-		
+		if(StringUtil.isNotEmpty(userInfoDto.getUserName()) && userInfoDto.getUserName().equals(this.thirdPartyType)) {
+			//是否是ifram嵌入的第三方调用
+			settings.setIsThirdParty(YesNoEnum.YES.getCode());
+		}
 		return settings;
 	}
 
@@ -11090,7 +11100,16 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		}
 		ObjectMapper objectMapper = new ObjectMapper();
 		List<String> databaseSheets = new ArrayList<>();//数据库中已经保存的sheet
-		boolean isCreator = reportTpl.getCreator().longValue() == userInfoDto.getUserId().longValue();
+		boolean isCreator = false;
+		if(this.authenticEnabale) {
+			if(StringUtil.isNotEmpty(userInfoDto.getUserName()) && userInfoDto.getUserName().equals(this.thirdPartyType)) {
+				isCreator = true;
+			}else {
+				isCreator = reportTpl.getCreator().longValue() == userInfoDto.getUserId().longValue();
+			}
+		}else {
+			isCreator = true;
+		}
 		for (int t = 0; t < sheets.size(); t++) {
 			ResLuckySheetTplSettingsDto result = new ResLuckySheetTplSettingsDto();
 			String key = RedisPrefixEnum.REPORTTPLSHEETTEMPCACHE.getCode()+"designMode-" +reportTpl.getId()+"-"+ sheets.get(t).getSheetIndex();
@@ -11332,6 +11351,10 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			{
 				settings.setCreatorName(sysUser.getUserName());
 			}
+		}
+		if(StringUtil.isNotEmpty(userInfoDto.getUserName()) && userInfoDto.getUserName().equals(this.thirdPartyType)) {
+			//是否是ifram嵌入的第三方调用
+			settings.setIsThirdParty(YesNoEnum.YES.getCode());
 		}
 		return settings;
 	}
@@ -12207,7 +12230,12 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		}else {
 			throw new BizException(StatusCode.FAILURE, "分享类型传入错误");
 		}
-		shareUrl = shareUrl + "?tplId="+shareDto.getTplId()+"&shareCode="+shareCode+"&shareUser="+userInfoDto.getUserId();
+		if(StringUtil.isNotEmpty(shareDto.getThirdPartyType())) {
+			userInfoDto.setUserName(shareDto.getThirdPartyType());
+			shareUrl = shareUrl + "?tplId="+shareDto.getTplId()+"&shareCode="+shareCode+"&shareUser="+shareDto.getThirdPartyType();
+		}else {
+			shareUrl = shareUrl + "?tplId="+shareDto.getTplId()+"&shareCode="+shareCode+"&shareUser="+userInfoDto.getUserId();
+		}
 		if(shareDto.getTplType().intValue() == 1)
 		{
 			String shareMsg = MessageUtil.getValue("info.share.showreport", new String[] {shareUrl,userInfoDto.getUserName(),DateUtil.getNow(),String.valueOf(shareDto.getShareTime()),shareType});

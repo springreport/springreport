@@ -5,6 +5,7 @@ import com.springreport.constants.StatusCode;
 import com.springreport.enums.YesNoEnum;
 import com.springreport.exception.BizException;
 import com.springreport.util.JWTUtil;
+import com.springreport.util.StringUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,6 +25,9 @@ public class CurrentUserMethodArgumentResolver implements HandlerMethodArgumentR
 
 	@Value("${authentic.enabale}")
     private boolean authenticEnabale;
+	
+	@Value("${thirdParty.type}")
+	private String thirdPartyType;
 	/**
 	 *若不想自定义注解，可以直接在实现HandlerMethodArgumentResolver的supportsParameter直接返回true 这样每一个请求过来的都会分解该参数
 	 * 功能描述: 用于判定是否需要处理该参数分解，返回true为需要，并会去调用下面的方法resolveArgument。
@@ -56,10 +60,19 @@ public class CurrentUserMethodArgumentResolver implements HandlerMethodArgumentR
 			 * 如果是shiro的话直接通过shiro获取用户信息即可
 			 */
 			String token = webRequest.getHeader("Authorization");
-			log.info("token信息："+token);
-			UserInfoDto userInfoDto = JWTUtil.getUserInfo(token);
-			if (userInfoDto == null) {
-				throw new BizException(StatusCode.TOKEN_FAILURE, "登陆信息失效，请重新登录");
+			String thirdPartyType = webRequest.getHeader("thirdPartyType");
+			UserInfoDto userInfoDto = null;
+			if(StringUtil.isNotEmpty(thirdPartyType) && thirdPartyType.equals(this.thirdPartyType)) {
+				log.info("第三方调用登录，调用方："+thirdPartyType);
+				userInfoDto = new UserInfoDto();
+				userInfoDto.setIsAdmin(YesNoEnum.YES.getCode());
+				userInfoDto.setUserName(thirdPartyType);
+			}else {
+				log.info("token信息："+token);
+				userInfoDto = JWTUtil.getUserInfo(token);
+				if (userInfoDto == null) {
+					throw new BizException(StatusCode.TOKEN_FAILURE, "登陆信息失效，请重新登录");
+				}
 			}
 			return userInfoDto;
 		}else {

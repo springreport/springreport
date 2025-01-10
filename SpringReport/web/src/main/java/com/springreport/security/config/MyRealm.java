@@ -78,6 +78,9 @@ public class MyRealm extends AuthorizingRealm {
 	@Autowired
 	private ISysMerchantService iSysMerchantService;
 	
+	@Value("${thirdParty.type}")
+	private String thirdPartyType;
+	
 	@Override
 	public boolean supports(AuthenticationToken token) {
 		return token instanceof JWTToken;
@@ -91,7 +94,14 @@ public class MyRealm extends AuthorizingRealm {
 		SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
 		if(authenticEnabale)
 		{
-			UserInfoDto userInfoDto = JWTUtil.getUserInfo(principals.toString());
+			UserInfoDto userInfoDto = null;
+			if(principals.toString().equals(thirdPartyType)) {
+				userInfoDto = new UserInfoDto();
+				userInfoDto.setIsAdmin(YesNoEnum.YES.getCode());
+				userInfoDto.setIsSystemMerchant(YesNoEnum.NO.getCode());
+			}else {
+				 userInfoDto = JWTUtil.getUserInfo(principals.toString());
+			}
 			SysMerchant merchant = null;
 			List<Long> merchantAuthIds = null;//商户拥有的全部权限id
 			if(this.merchantmode == YesNoEnum.YES.getCode()) {
@@ -157,6 +167,9 @@ public class MyRealm extends AuthorizingRealm {
 		String token = jwtToken.getToken();
 		ServletResponse response = ((WebSubject)SecurityUtils.getSubject()).getServletResponse(); 
 		HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+		if(StringUtil.isNotEmpty(jwtToken.getType()) && jwtToken.getType().equals(thirdPartyType)) {
+			return new SimpleAuthenticationInfo(jwtToken.getType(), token, "my_realm");
+		}
 		// 解密获得username，用于和数据库进行对比
 		UserInfoDto userInfoDto = JWTUtil.getUserInfo(token);
 		if (StringUtil.isNullOrEmpty(userInfoDto.getUserName())) {

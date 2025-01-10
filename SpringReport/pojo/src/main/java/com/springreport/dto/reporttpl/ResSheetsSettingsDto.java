@@ -60,4 +60,11 @@ public class ResSheetsSettingsDto {
      */  
     private String creatorName;
     
+    /**  
+     * @Fields isThirdParty : 是否是第三方调用 1是 2否
+     * @author caiyang
+     * @date 2025-01-09 11:17:35 
+     */  
+    private Integer isThirdParty = YesNoEnum.NO.getCode();
+    
 }

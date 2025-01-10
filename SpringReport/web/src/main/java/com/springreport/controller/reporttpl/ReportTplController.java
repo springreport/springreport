@@ -340,14 +340,23 @@ public class ReportTplController extends BaseController {
 		{
 			throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.share.time"));
 		}
-		SysUser sysUser = iSysUserService.getById(shareUser);
-		if(sysUser == null)
-		{
-			throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.share.param"));
-		}
+		String thirdPartyType = MessageUtil.getValue("thirdParty.type");
 		UserInfoDto userInfoDto = new UserInfoDto();
-		userInfoDto.setUserId(sysUser.getId());
-		userInfoDto.setIsAdmin(sysUser.getIsAdmin());
+		SysUser sysUser = null;
+		if(thirdPartyType.equals(shareUser)) {
+			sysUser = new SysUser();
+			sysUser.setIsAdmin(YesNoEnum.YES.getCode());
+			userInfoDto.setIsAdmin(YesNoEnum.YES.getCode());
+		}else {
+			sysUser = iSysUserService.getById(shareUser);
+			if(sysUser == null)
+			{
+				throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.share.param"));
+			}
+			userInfoDto.setUserId(sysUser.getId());
+			userInfoDto.setIsAdmin(sysUser.getIsAdmin());
+		}
+		
 		if(YesNoEnum.YES.getCode().intValue() != sysUser.getIsAdmin().intValue())
 		{
 			QueryWrapper<SysUserRole> queryWrapper = new QueryWrapper<>();
@@ -830,14 +839,22 @@ public class ReportTplController extends BaseController {
 		{
 			throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.share.time"));
 		}
-		SysUser sysUser = iSysUserService.getById(shareUser);
-		if(sysUser == null)
-		{
-			throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.share.param"));
-		}
+		String thirdPartyType = MessageUtil.getValue("thirdParty.type");
 		UserInfoDto userInfoDto = new UserInfoDto();
-		userInfoDto.setUserId(sysUser.getId());
-		userInfoDto.setIsAdmin(sysUser.getIsAdmin());
+		SysUser sysUser = null;
+		if(thirdPartyType.equals(shareUser)) {
+			sysUser = new SysUser();
+			sysUser.setIsAdmin(YesNoEnum.YES.getCode());
+			userInfoDto.setIsAdmin(YesNoEnum.YES.getCode());
+		}else {
+			sysUser = iSysUserService.getById(shareUser);
+			if(sysUser == null)
+			{
+				throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.share.param"));
+			}
+			userInfoDto.setUserId(sysUser.getId());
+			userInfoDto.setIsAdmin(sysUser.getIsAdmin());
+		}
 		if(YesNoEnum.YES.getCode().intValue() != sysUser.getIsAdmin().intValue())
 		{
 			QueryWrapper<SysUserRole> queryWrapper = new QueryWrapper<>();
