@@ -2246,7 +2246,7 @@ export default {
       const fileType = this.commonUtil.getFileExt(item.linkAddress)
       if (fileType) {
         if (this.commonConstants.attachPreviewExt.includes(fileType)) {
-          const viewReport = this.$router.resolve({ name: 'attachment', query: { url: item.linkAddress, name: item.fileName, fileType: fileType }})
+          const viewReport = this.$router.resolve({ name: 'attachment', query: { url: item.linkAddress, name: item.fileName, fileType: fileType,'thirdPartyType':localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType) }})
           window.open(viewReport.href, '_blank')
         } else {
           window.open(item.linkAddress, '_blank')
@@ -2340,7 +2340,8 @@ export default {
       formData.append('isFormsReport', 1)
       const config = {
         headers: { 'Content-Type': 'multipart/form-data',
-          'Authorization': localStorage.getItem(that.commonConstants.sessionItem.authorization) }
+          'Authorization': localStorage.getItem(that.commonConstants.sessionItem.authorization),
+          'thirdPartyType':localStorage.getItem(that.commonConstants.sessionItem.thirdPartyType), }
       }
       try {
         Axios.post(that.apis.reportTpl.uploadReportTplApi, formData, config)

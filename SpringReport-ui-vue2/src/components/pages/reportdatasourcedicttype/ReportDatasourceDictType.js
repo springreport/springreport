@@ -27,7 +27,8 @@ export default {
         // 表格工具栏按钮 start
         tableHandles: [
           { label: '新增', type: 'primary', position: 'right', iconClass: 'action-icon-add', handle: () => this.showModal(this.commonConstants.modalType.insert), auth: 'reportDatasourceDictType_insert' },
-          { label: '批量删除', type: 'danger', position: 'left', iconClass: 'action-icon-del', handle: () => this.deleteBatch(), auth: 'reportDatasourceDictType_delete' }
+          { label: '批量删除', type: 'danger', position: 'left', iconClass: 'action-icon-del', handle: () => this.deleteBatch(), auth: 'reportDatasourceDictType_delete' },
+          { label: '返回', type: 'primary', position: 'left', iconClass: 'action-icon-back', handle: () => this.backTo(), auth: 'ignore',isHidden:true}
         ],
         // 表格工具栏按钮 end
         selectList: [], // 表格选中的数据
@@ -86,8 +87,19 @@ export default {
     }
   },
   activated() {
-    this.pageData.tableData = []
-    this.searchtablelist()
+    let thirdPartyType = localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)
+    if(!thirdPartyType){
+      this.pageData.tableData = []
+      this.searchtablelist()
+    }
+  },
+  mounted() {
+    let thirdPartyType = localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)
+    if(thirdPartyType){
+      this.pageData.tableData = []
+      this.searchtablelist()
+      this.pageData.tableHandles[2].isHidden = false;
+    }
   },
   methods: {
     /**
@@ -228,7 +240,10 @@ export default {
     routerTo(row) {
       this.$store.commit('setParameters', { key: 'reportDatasourceId', value: row.datasourceId })
       this.$store.commit('setParameters', { key: 'dictType', value: row.dictType })
-      this.$router.push({ name: 'reportDatasourceDictData' })
+      this.$router.push({ name: 'reportDatasourceDictData',query:{thirdPartyType:localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)} })
+    },
+    backTo(){
+      this.$router.push({ name: 'reportDatasource',query:{thirdPartyType:localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)} })
     }
   }
 }

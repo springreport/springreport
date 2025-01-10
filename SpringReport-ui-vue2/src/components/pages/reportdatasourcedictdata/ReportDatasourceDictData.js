@@ -27,7 +27,8 @@ export default {
         // 表格工具栏按钮 start
         tableHandles: [
           { label: '新增', type: 'primary', position: 'right', iconClass: 'action-icon-add', handle: () => this.showModal(this.commonConstants.modalType.insert), auth: 'reportDatasourceDictData_insert' },
-          { label: '批量删除', type: 'danger', position: 'left', iconClass: 'action-icon-del', handle: () => this.deleteBatch(), auth: 'reportDatasourceDictData_delete' }
+          { label: '批量删除', type: 'danger', position: 'left', iconClass: 'action-icon-del', handle: () => this.deleteBatch(), auth: 'reportDatasourceDictData_delete' },
+          { label: '返回', type: 'primary', position: 'left', iconClass: 'action-icon-back', handle: () => this.backTo(), auth: 'ignore',isHidden:true}
         ],
         // 表格工具栏按钮 end
         selectList: [], // 表格选中的数据
@@ -86,8 +87,19 @@ export default {
     }
   },
   activated() {
-    this.pageData.tableData = []
-    this.searchtablelist()
+    let thirdPartyType = localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)
+    if(!thirdPartyType){
+      this.pageData.tableData = []
+      this.searchtablelist()
+    }
+  },
+  mounted() {
+    let thirdPartyType = localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)
+    if(thirdPartyType){
+      this.pageData.tableData = []
+      this.searchtablelist()
+      this.pageData.tableHandles[2].isHidden = false;
+    }
   },
   methods: {
     /**
@@ -228,6 +240,9 @@ export default {
     },
     selectChange(rows) {
       this.pageData.selectList = rows
+    },
+    backTo(){
+      this.$router.push({ name: 'reportDatasourceDictType',query:{thirdPartyType:localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)} })
     }
   }
 }

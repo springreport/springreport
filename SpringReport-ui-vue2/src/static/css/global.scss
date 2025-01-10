@@ -283,6 +283,15 @@
   background-image: url("~@/static/img/common/print.png");
 }
 
+.action-icon-back {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-size: 100% 100%;
+  margin-right: 4px;
+  background-image: url("~@/static/img/common/back.png");
+}
+
 
 .search-drawer,
 .handle-drawer {

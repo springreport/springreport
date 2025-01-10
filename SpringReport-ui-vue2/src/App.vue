@@ -9,7 +9,7 @@ import $ from 'jquery'
 export default {
   name: 'App',
   mounted(){
-    
+    // console.log(1)
   },
   methods:{
     getUserInfoByToken(){
@@ -22,6 +22,7 @@ export default {
         this.commonUtil.doPost(object).then((response) => {
             if (response.code === '200') {
                var responseData = response.responseData
+               console.log(responseData)
               localStorage.setItem(
                 that.commonConstants.sessionItem.position,
                 responseData.roleName
@@ -64,6 +65,12 @@ export default {
       deep: true,
       handler(val){
         let token = val.query.token;
+        let thirdPartyType = val.query.thirdPartyType;
+        if(thirdPartyType){
+          localStorage.setItem(this.commonConstants.sessionItem.thirdPartyType, thirdPartyType);
+        }else{
+          localStorage.removeItem(this.commonConstants.sessionItem.thirdPartyType)
+        }
         if(token)
         {
             localStorage.setItem(this.commonConstants.sessionItem.authorization, token);

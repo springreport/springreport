@@ -180,8 +180,18 @@ export default {
     }
   },
   activated() {
-    this.pageData.tableData = []
-    this.searchtablelist()
+    let thirdPartyType = localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)
+    if(!thirdPartyType){
+      this.pageData.tableData = []
+      this.searchtablelist()
+    }
+  },
+  mounted() {
+    let thirdPartyType = localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)
+    if(thirdPartyType){
+      this.pageData.tableData = []
+      this.searchtablelist()
+    }
   },
   methods: {
     /**
@@ -370,7 +380,7 @@ export default {
     },
     routerTo(row) {
       this.$store.commit('setParameters', { key: 'reportDatasourceId', value: row.id })
-      this.$router.push({ name: 'reportDatasourceDictType' })
+      this.$router.push({ name: 'reportDatasourceDictType',query:{thirdPartyType:localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)} })
     },
     // 修改数据源类型
     changeDatasourceType() {

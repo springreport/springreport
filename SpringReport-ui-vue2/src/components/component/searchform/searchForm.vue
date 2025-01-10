@@ -27,6 +27,7 @@
           :key="index"
           class="action-item df-c"
           :class="{'action-item-del':item.iconClass=='action-icon-del'}"
+          v-show="!item.isHidden"
           @click="item.handle()"
         >
           <i v-if="item.iconClass" :class="item.iconClass" />

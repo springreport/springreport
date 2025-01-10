@@ -122,9 +122,20 @@ export default {
     }
   },
   activated() {
-    this.searchtablelist()
-    this.getReportDatasource()
-    this.getReportType()
+    let thirdPartyType = localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)
+    if(!thirdPartyType){
+      this.searchtablelist()
+      this.getReportDatasource()
+      this.getReportType()
+    }
+  },
+  mounted() {
+    let thirdPartyType = localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)
+    if(thirdPartyType){
+      this.searchtablelist()
+      this.getReportDatasource()
+      this.getReportType()
+    }
   },
   methods: {
     /**
@@ -146,7 +157,7 @@ export default {
         that.$nextTick(() => {
           that.$refs.custable.$refs.cesTable.doLayout()
         })
-        that.getReportType()
+        // that.getReportType()
       })
     },
     resetSearch() {
@@ -337,7 +348,7 @@ export default {
     },
     // 页面跳转
     routerTo(name, row) {
-      const viewReport = this.$router.resolve({ name: name, query: { tplId: row.id }})
+      const viewReport = this.$router.resolve({ name: name, query: { tplId: row.id,thirdPartyType:localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType) }})
       window.open(viewReport.href, '_blank')
     },
     loadData(tree, treeNode, resolve) {

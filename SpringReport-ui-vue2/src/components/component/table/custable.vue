@@ -23,10 +23,10 @@
       </el-row>
     </section>
     <!-- 数据表格 -->
-    <section
+    <section 
       class="ces-table"
       :style="{
-        height: isPagination ? 'calc(100vh - 286px)' : 'calc(100vh - 238px)',
+        height: getTableHeight(),
       }"
     >
       <el-table
@@ -324,7 +324,12 @@ export default {
     highlightCurrentRow: { type: Boolean, default: false }
   },
   data() {
-    return {}
+    return {
+      thirdPartyType:"",
+    }
+  },
+  mounted(){
+    this.thirdPartyType = localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType);
   },
   watch: {
     defaultSelections(val) {
@@ -340,6 +345,21 @@ export default {
     }
   },
   methods: {
+    getTableHeight(){
+      if(this.isPagination){
+        if(this.thirdPartyType){
+          return 'calc(100vh - 146px)';
+        }else{
+          return 'calc(100vh - 286px)';
+        }
+      }else{
+        if(this.thirdPartyType){
+          return 'calc(100vh - 108px)';
+        }else{
+          return 'calc(100vh - 238px)';
+        }
+      }
+    },
     selectChange(val) {
       this.$emit('selectChange', val)
     },
