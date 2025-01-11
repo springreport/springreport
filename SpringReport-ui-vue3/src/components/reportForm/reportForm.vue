@@ -766,7 +766,6 @@
   };
 </script>
 <style lang="scss" scoped>
-  @import '@/element-variables.scss';
   .search-content {
     height: 32px;
     line-height: 32px;
@@ -787,7 +786,7 @@
       box-sizing: border-box;
       &:hover {
         cursor: pointer;
-        border-color: $--color-primary;
+        border-color: $base-color-primary;
         opacity: 0.7;
       }
     }
@@ -801,8 +800,8 @@
 
   ::v-deep .el-button--primary {
     color: #ffffff;
-    background-color: $--color-primary;
-    border-color: $--color-primary;
+    background-color: $base-color-primary;
+    border-color: $base-color-primary;
   }
   ::v-deep .el-form-item {
     margin-bottom: 10px !important;

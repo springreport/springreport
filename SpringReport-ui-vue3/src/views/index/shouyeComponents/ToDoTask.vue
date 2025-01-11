@@ -153,8 +153,6 @@
   };
 </script>
 <style lang="scss" scoped>
-  @import '@/element-variables.scss';
-
   ::v-deep .el-pager li {
     color: #666;
     font-weight: normal;
@@ -162,10 +160,10 @@
     border: 1px solid transparent;
   }
   ::v-deep .el-pager li.active {
-    color: $--color-primary;
+    color: $base-color-primary;
     border-radius: 3px;
     font-size: 14px;
-    border: 1px solid $--color-primary;
+    border: 1px solid $base-color-primary;
   }
   ::v-deep .el-pagination--small .btn-prev,
   ::v-deep .el-pagination--small .btn-next {
@@ -221,17 +219,17 @@
         line-height: normal;
         transition: all 0.3s;
         &:hover {
-          color: $--color-primary;
+          color: $base-color-primary;
           font-weight: 500;
           border-radius: 4px;
-          background: rgba($color: $--color-primary, $alpha: 0.05);
+          background: rgba($color: $base-color-primary, $alpha: 0.05);
         }
       }
       .tab-item-active {
-        color: $--color-primary;
+        color: $base-color-primary;
         font-weight: 500;
         border-radius: 4px;
-        background: rgba($color: $--color-primary, $alpha: 0.05);
+        background: rgba($color: $base-color-primary, $alpha: 0.05);
       }
     }
     .task-list {

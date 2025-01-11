@@ -1981,8 +1981,6 @@
 <script src="./luckyReportFroms.js"></script>
 
 <style scoped lang="scss">
-  @import '@/element-variables.scss';
-
   .pagebox {
     height: 100%;
     display: flex;
@@ -2061,7 +2059,7 @@
 
       .dataset-item:hover,
       .dataset-item-active {
-        background: $--color-primary;
+        background: $base-color-primary;
         color: #fff;
 
         .action-edit {
@@ -2102,8 +2100,8 @@
         .dataset-item:hover,
         .dataset-item-active {
           background: #fff;
-          color: $--color-primary;
-          border: 1px solid $--color-primary;
+          color: $base-color-primary;
+          border: 1px solid $base-color-primary;
 
           .action-edit {
             background-image: url('@/assets/img/sheet/dataset-copy-active.png') !important;
@@ -2226,7 +2224,7 @@
 
             &:hover {
               color: #fff;
-              background: $--color-primary;
+              background: $base-color-primary;
 
               ::v-deep .el-icon-circle-plus-outline {
                 color: #fff;
@@ -2271,7 +2269,7 @@
 
         transform: translateY(-50%);
         z-index: 999;
-        background-color: $--color-primary;
+        background-color: $base-color-primary;
         width: 10px;
         height: 48px;
 
@@ -2361,7 +2359,7 @@
         }
 
         .setting-text {
-          color: $--color-primary;
+          color: $base-color-primary;
           font-family: 'PingFang SC';
           font-size: 12px;
           font-style: normal;
@@ -2599,7 +2597,7 @@
 
       transform: translateY(-50%);
       z-index: 999;
-      background-color: $--color-primary;
+      background-color: $base-color-primary;
       width: 10px;
       height: 48px;
 
@@ -2671,7 +2669,7 @@
       left: 50%;
       bottom: 0;
       transform: translateX(-50%);
-      background: $--color-primary;
+      background: $base-color-primary;
       width: 51px;
       height: 3px;
     }
@@ -3074,7 +3072,7 @@
 
         .dataset-attr:hover,
         .dataset-attr-active {
-          background: $--color-primary;
+          background: $base-color-primary;
 
           .dataset-name2 {
             color: #fff;

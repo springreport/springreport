@@ -78,8 +78,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '@/element-variables.scss';
-
   .el-dialog-div {
     display: flex;
     flex-wrap: wrap;
@@ -95,7 +93,7 @@
     transition: all 0.3s;
     &:hover,
     &-active {
-      border: 1px solid $--color-primary;
+      border: 1px solid $base-color-primary;
       .vchart-item-name {
         background: rgba(23, 183, 148, 0.1) !important;
       }

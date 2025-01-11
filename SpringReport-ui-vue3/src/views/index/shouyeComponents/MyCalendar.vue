@@ -158,8 +158,6 @@
 </script>
 
 <style scoped lang="scss">
-  @import '@/element-variables.scss';
-
   .calendar {
     width: 430px;
     margin: auto;
@@ -220,15 +218,15 @@
       position: relative;
       &:hover {
         color: #fff;
-        background-color: $--color-primary;
+        background-color: $base-color-primary;
       }
     }
     .is-current {
-      border: 1px solid $--color-primary;
+      border: 1px solid $base-color-primary;
     }
     .date-selected {
       color: #fff;
-      background-color: $--color-primary !important;
+      background-color: $base-color-primary !important;
     }
     .executed::before {
       position: absolute;
