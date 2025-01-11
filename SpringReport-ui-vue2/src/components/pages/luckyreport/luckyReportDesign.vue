@@ -322,13 +322,13 @@
                 </el-form-item>
                 <el-form-item label="数据填充方式">
                   <el-select
+                    v-if="cellForm.cellExtend != 4"
                     v-model="cellForm.cellFillType"
                     style="width: 100%"
                     placeholder="数据填充方式"
                     size="small"
                     :disabled="attrDisabled"
                     @change="changeCellAttr('cellFillType')"
-                    v-if="cellForm.cellExtend != 4"
                   >
                     <el-option label="插入" :value="1" />
                     <el-option label="覆盖" :value="2" />
@@ -1873,9 +1873,9 @@
             <div class="warp-title">输入参数</div>
             <el-form
               ref="inParamRef"
-              :inline="true"
+              abel-position="right"
               :model="procedureParamForm"
-              class="demo-form-inline"
+              class="df-form"
               size="small"
             >
               <el-form-item

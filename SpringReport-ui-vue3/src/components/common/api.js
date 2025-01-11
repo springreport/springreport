@@ -87,6 +87,11 @@ api.reportDesign = {
   saveReportFormsTplApi: '/api/reportTpl/saveReportFormsTpl', //保存填报报表模板api
   getReportFormsTplApi: '/api/reportTpl/getReportFormsTpl', //获取填报报表模板api
   getApiDefaultRequestResultApi: '/api/reportTplDataset/getApiDefaultRequestResult', //获取接口返回值
+  getTableListApi: '/api/reportTplDatasetGroup/getTableList', // 获取分组列表
+  insertGroupApi: '/api/reportTplDatasetGroup/insert', // 新增分组
+  updateGroupApi: '/api/reportTplDatasetGroup/update', // 修改分组
+  deleteGroupApi: '/api/reportTplDatasetGroup/delete', // 删除分组
+  getTplGroupDatasetsApi: '/api/reportTplDataset/getTplGroupDatasets', // 获取分组数据集
 };
 
 //预览报表对应的api

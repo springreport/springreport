@@ -84,6 +84,13 @@ html {
   align-items: center;
   justify-content: space-between;
 }
+.overflow-text {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+}
 .df-c-c {
   display: flex;
   align-items: center;
@@ -186,6 +193,59 @@ html {
 }
 .el-tree-node__content {
   margin-bottom: 6px;
+}
+
+.el-dialog {
+  border-radius: 4px !important;
+  padding: 0 !important;
+  .el-dialog__header {
+    padding: 12px 16px !important;
+    .el-dialog__title {
+      color: rgba(0, 0, 0, 0.85);
+      font-family: "PingFang SC";
+      font-size: 16px !important;
+      font-style: normal;
+      line-height: 24px; /* 150% */
+      font-weight: 600;
+    }
+    .el-dialog__close  {
+      color: #646a73;
+      font-size: 18px !important;
+      font-weight: bold;
+    }
+  }
+  .el-dialog__body {
+    padding: 16px;
+    background-color: #fff;
+  }
+  .el-dialog__footer {
+    padding: 10px 16px;
+  }
+}
+
+.cus-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.cus-scrollbar::-webkit-scrollbar-track,
+::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  border: 5px solid transparent;
+}
+
+.cus-scrollbar::-webkit-scrollbar-track {
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2) inset;
+}
+
+.cus-scrollbar::-webkit-scrollbar-thumb {
+  min-height: 20px;
+  background-clip: content-box;
+  box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.2) inset;
+}
+
+.cus-scrollbar::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
 
