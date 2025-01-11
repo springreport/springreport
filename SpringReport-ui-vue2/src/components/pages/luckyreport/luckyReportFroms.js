@@ -34,7 +34,7 @@ export default {
   },
   data() {
     return {
-      isThirdParty:2,//是否第三方iframe调用
+      isThirdParty: 2, // 是否第三方iframe调用
       rightOpen: true, // 左侧展开
       leftOpen: true, // 右侧展开
       rightFormCollapse: ['generalConfig', 'subtotalCells', 'subtotalAttribute', 'cellDiff', 'cellFilter', 'cellHide'],
@@ -576,9 +576,9 @@ export default {
     this.getTplGroupDatasets()
     this.getReportTplDateSource()
     var that = this
-    this.designHeight = document.body.clientHeight - 46
+    this.designHeight = document.body.clientHeight - 46 - 10
     window.onresize = function() {
-      that.designHeight = document.body.clientHeight - 46
+      that.designHeight = document.body.clientHeight - 46 - 10
     }
   },
   methods: {
@@ -663,7 +663,7 @@ export default {
       const reportTplId = this.$route.query.tplId// reportTplId
       var options = this.sheetOptions
       options.isReport = true
-      if(this.isThirdParty != 1){
+      if (this.isThirdParty != 1) {
         options.allowUpdate = true
         options.gridKey = 'designMode-' + reportTplId
         options.updateUrl = location.protocol === 'https:' ? 'wss' + '://' + location.host + '/SpringReport/api/coedit/websocket/luckysheet' : 'ws' + '://' + location.host + '/SpringReport/api/coedit/websocket/luckysheet'
@@ -1363,8 +1363,8 @@ export default {
         this.procedureInParamTableData.tableData = JSON.parse(dataSet.inParam)
         this.procedureOutParamTableData.tableData = JSON.parse(dataSet.outParam)
       }
-      this.getReportTplDateSource();
-      this.getTplGroupDatasets();
+      this.getReportTplDateSource()
+      this.getTplGroupDatasets()
     },
     // 删除数据集
     deleteDataSet(dataSet) {
@@ -1428,7 +1428,7 @@ export default {
           }
           this.commonUtil.doPost(obj).then(response => {
             if (response.code == '200') {
-              this.getTplGroupDatasets();
+              this.getTplGroupDatasets()
               // let isExist = false;
               // let dataSet = response.responseData;
               // let index = -1;
@@ -1844,7 +1844,7 @@ export default {
             }
           }
           _this.isParamMerge = response.responseData.isParamMerge == '1'
-          _this.isThirdParty = response.responseData.isThirdParty;
+          _this.isThirdParty = response.responseData.isThirdParty
           _this.init()
         }
       })
@@ -1852,7 +1852,7 @@ export default {
     // 预览
     previewReport() {
       const reportTplId = this.$route.query.tplId// reportTplId
-      const viewReport = this.$router.resolve({ name: 'luckyReportPreview', query: { tplId: reportTplId,thirdPartyType:localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType) }})
+      const viewReport = this.$router.resolve({ name: 'luckyReportPreview', query: { tplId: reportTplId, thirdPartyType: localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType) }})
       window.open(viewReport.href, '_blank')
     },
     // 添加循环块
@@ -1991,8 +1991,8 @@ export default {
     },
     async clickDatasets(o) {
       this.datasetItemActive = o.id
-      if(o.isActive){
-        return;
+      if (o.isActive) {
+        return
       }
       this.$set(o, 'isActive', true)
       await this.getDatasetColumns(o)
@@ -2063,7 +2063,7 @@ export default {
       const config = {
         headers: { 'Content-Type': 'multipart/form-data',
           'Authorization': localStorage.getItem(that.commonConstants.sessionItem.authorization),
-          'thirdPartyType':localStorage.getItem(that.commonConstants.sessionItem.thirdPartyType), }
+          'thirdPartyType': localStorage.getItem(that.commonConstants.sessionItem.thirdPartyType) }
       }
       try {
         Axios.post(that.apis.reportTpl.uploadReportTplApi, formData, config)
@@ -2840,7 +2840,7 @@ export default {
           this.changeHorizontalPage()
         }
       } else if (k == 'datasetChanged') {
-        this.getTplGroupDatasets();
+        this.getTplGroupDatasets()
         this.commonUtil.showMessage({ message: '报表数据集更新，数据集名称：' + v.datasetName + '，操作人：' + data.userName, type: this.commonConstants.messageType.warning })
       } else if (k == 'sheetNotExist') {
         this.commonUtil.showMessage({ message: '该sheet页已经被删除，请尝试刷新页面获取最新的模板数据', type: this.commonConstants.messageType.warning })
@@ -3493,7 +3493,7 @@ export default {
       const fileType = this.commonUtil.getFileExt(item.linkAddress)
       if (fileType) {
         if (this.commonConstants.attachPreviewExt.includes(fileType)) {
-          const viewReport = this.$router.resolve({ name: 'attachment', query: { url: item.linkAddress, name: item.fileName, fileType: fileType,'thirdPartyType':localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType) }})
+          const viewReport = this.$router.resolve({ name: 'attachment', query: { url: item.linkAddress, name: item.fileName, fileType: fileType, 'thirdPartyType': localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType) }})
           window.open(viewReport.href, '_blank')
         } else {
           window.open(item.linkAddress, '_blank')

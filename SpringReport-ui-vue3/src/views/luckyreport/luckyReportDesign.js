@@ -2726,22 +2726,19 @@ export default {
       this.getTplSettings();
     },
     async clickDatasets(o) {
+      this.datasetItemActive = o.id;
       if (o.isActive) {
-        //   this.$set(o,"isActive",false);
-        o.isActive = false;
-      } else {
-        //   this.$set(o,"isActive",true);
-        o.isActive = true;
-        if (!o.columns || o.columns == null || o.columns.length == 0) {
-          await this.getDatasetColumns(o);
-        }
+        return;
       }
+      o.isActive = true;
+      await this.getDatasetColumns(o);
       if (o.datasetType == '2') {
         this.getApiDefaultRequestResult(o);
       }
       this.$forceUpdate();
     },
     getDatasetColumns(element) {
+      this.filedLoading = true;
       let obj = {
         url: this.apis.reportDesign.getDataSetColumnsApi,
         params: { id: element.id },
@@ -2750,6 +2747,7 @@ export default {
       this.commonUtil.doPost(obj).then((response) => {
         element.columns = response.responseData;
         this.dataSetAttrs = element.columns;
+        this.filedLoading = false;
       });
     },
     //获取api接口默认参数的返回值

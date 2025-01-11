@@ -147,34 +147,35 @@
               element-loading-spinner="el-icon-loading"
             >
               <template v-if="displayFields.length">
-                <vuedraggable
+                <draggable
                   v-model="displayFields"
                   class="wrapper"
                   :sort="false"
                   :disabled="false"
+                  item-key="id"
                 >
-                  <div
-                    v-for="fieldItem in displayFields"
-                    :key="fieldItem.columnName"
-                    class="dataset-item df-c-b"
-                    @dragend="endDraggable(datasetItem.datasetName, fieldItem.name)"
-                  >
+                  <template #item="{ element }">
                     <div
-                      class="set-name overflow-text"
-                      style="flex: 1"
-                      :title="fieldItem.columnName"
+                      class="dataset-item df-c-b"
+                      @dragend="endDraggable(datasetItem.datasetName, element.name)"
                     >
-                      {{ fieldItem.columnName }}
-                    </div>
-                    <div class="action-box df-c">
                       <div
-                        class="action action-edit"
-                        @click="copyColumn(datasetItem.datasetName, fieldItem.name)"
-                      />
-                      <div class="action action-del" />
+                        class="set-name overflow-text"
+                        style="flex: 1"
+                        :title="element.columnName"
+                      >
+                        {{ element.columnName }}
+                      </div>
+                      <div class="action-box df-c">
+                        <div
+                          class="action action-edit"
+                          @click="copyColumn(datasetItem.datasetName, element.name)"
+                        />
+                        <div class="action action-del" />
+                      </div>
                     </div>
-                  </div>
-                </vuedraggable>
+                  </template>
+                </draggable>
                 <el-input
                   v-show="datasetItem.apiResult"
                   v-model="datasetItem.apiResult"
