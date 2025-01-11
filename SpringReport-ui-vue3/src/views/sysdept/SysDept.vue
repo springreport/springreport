@@ -12,6 +12,7 @@
       :isIndex="false"
       :isPagination="false"
       :isHandle="true"
+      :loading="tableLoading"
       :stripe="true"
       :defaultExpandAll="true"
       :tableCols="pageData.tableCols"

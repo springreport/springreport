@@ -2,6 +2,7 @@ export default {
   name: 'reportDatasourceDictType',
   data() {
     return {
+      tableLoading: true,
       pageData: {
         //查询表单内容 start
         searchForm: [
@@ -65,16 +66,12 @@ export default {
         //表格分页信息end
         //表格列表头start
         tableCols: [
-          { label: '字典类型', prop: 'dictType', align: 'center', overflow: true },
-          { label: '字典类型名称', prop: 'dictName', align: 'center', overflow: true },
-          { label: '备注', prop: 'remark', align: 'center', overflow: true },
           {
             label: '操作',
             prop: 'operation',
             align: 'center',
-            type: 'button',
-            fixed: 'right',
-            width: 220,
+            type: 'dropdown',
+            width: 54,
             btnList: [
               {
                 label: '查看',
@@ -90,7 +87,7 @@ export default {
               },
               {
                 label: '删除',
-                type: 'primary',
+                type: 'danger',
                 auth: 'reportDatasourceDictType_delete',
                 handle: (row) => this.deleteOne(row.id),
               },
@@ -102,6 +99,9 @@ export default {
               },
             ],
           },
+          { label: '字典类型', prop: 'dictType', align: 'center', overflow: true },
+          { label: '字典类型名称', prop: 'dictName', align: 'center', overflow: true },
+          { label: '备注', prop: 'remark', align: 'center', overflow: true },
         ],
         //表格列表头end
         //modal配置 start
@@ -166,6 +166,7 @@ export default {
      * @author: caiyang
      */
     searchtablelist() {
+      this.tableLoading = true;
       var obj = {
         url: this.apis.reportDatasourceDictType.listApi,
         params: Object.assign(
@@ -176,6 +177,7 @@ export default {
       };
       this.commonUtil.getTableList(obj).then((response) => {
         this.commonUtil.tableAssignment(response, this.pageData.tablePage, this.pageData.tableData);
+        this.tableLoading = false;
       });
     },
     resetSearch() {

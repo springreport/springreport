@@ -1,14 +1,14 @@
 <template>
     <div  class="_tablepage">
-        <searchForm  :searchForm="pageData.searchForm" :searchData="pageData.queryData" :searchHandle="pageData.searchHandle">
+        <searchForm  :searchForm="pageData.searchForm" :searchData="pageData.queryData" :searchHandle="pageData.searchHandle" :tableHandles="pageData.tableHandles">
         </searchForm>
        <cusTable  
       :isSelection='true'
       :isIndex='true'
       :isPagination='true'
       :isHandle='true'
+      :loading="tableLoading"
       :tableCols='pageData.tableCols' 
-      :tableHandles='pageData.tableHandles'
       :tableData='pageData.tableData'
       :tablePage='pageData.tablePage'
       @handleCurrentChange='searchtablelist()'

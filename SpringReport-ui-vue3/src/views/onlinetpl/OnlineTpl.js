@@ -2,6 +2,7 @@ export default {
   name: 'onlineTpl',
   data() {
     return {
+      tableLoading: true,
       pageData: {
         //查询表单内容 start
         searchForm: [{ type: 'Input', label: '文档名称', prop: 'tplName' }],
@@ -70,12 +71,12 @@ export default {
         //表格分页信息end
         //表格列表头start
         tableCols: [
-          { label: '文档名称', prop: 'tplName', align: 'left', icon: true },
           {
             label: '操作',
             prop: 'operation',
             align: 'center',
-            type: 'button',
+            type: 'dropdown',
+            width: 54,
             btnList: [
               {
                 label: '查看',
@@ -100,12 +101,13 @@ export default {
               },
               {
                 label: '删除',
-                type: 'primary',
+                type: 'danger',
                 auth: 'onlineTpl_delete',
                 handle: (row) => this.deleteOne(row.id, row.type),
               },
             ],
           },
+          { label: '文档名称', prop: 'tplName', align: 'left', icon: true },
         ],
         //表格列表头end
         //modal配置 start
@@ -203,6 +205,7 @@ export default {
      * @author: caiyang
      */
     searchtablelist() {
+      this.tableLoading = true;
       var obj = {
         url: this.apis.onlineTpl.listApi,
         params: Object.assign({}, this.pageData.queryData, this.pageData.tablePage),
@@ -212,6 +215,7 @@ export default {
       this.commonUtil.getTableList(obj).then((response) => {
         that.pageData.tableData = response.responseData;
         that.getReportType();
+        this.tableLoading = false;
       });
     },
     resetSearch() {

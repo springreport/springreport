@@ -12,6 +12,7 @@
       :isIndex="true"
       :isPagination="true"
       :isHandle="true"
+      :loading="tableLoading"
       :tableCols="pageData.tableCols"
       :tableData="pageData.tableData"
       :tablePage="pageData.tablePage"
