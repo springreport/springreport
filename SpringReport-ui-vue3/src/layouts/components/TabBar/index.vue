@@ -8,7 +8,7 @@
           class="menu-tag df-c"
           :class="[
             `${tag.path.replaceAll('/', '')}`,
-            fullPath == tag.path ? 'menu-tag-active' : '',
+            fullPath.split('?')[0] == tag.path ? 'menu-tag-active' : '',
           ]"
           @click="handleTabClick(tag)"
         >
@@ -107,7 +107,7 @@
 
       const scrollIntoView = (path) => {
         console.log(path);
-        const currentEle = document.querySelector(`.${path.replaceAll('/', '')}`);
+        const currentEle = document.querySelector(`.${path.split('?')[0].replaceAll('/', '')}`);
         console.log(currentEle);
         if (currentEle) {
           currentEle.scrollIntoView({

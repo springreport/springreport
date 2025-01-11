@@ -94,24 +94,25 @@
                 </div>
                 <template #dropdown>
                   <el-dropdown-menu>
-                    <el-dropdown-item
-                      v-for="btn in item.btnList"
+                    <div v-for="btn in item.btnList"
                       v-show="btn.show ? btn.show(scope.row) : true"
-                      :key="(typeof btn.label).toLowerCase() == 'string' ? btn.label : btn.auth"
-                      v-has="btn.auth"
-                      :disabled="btn.disabled && btn.disabled(scope.row)"
-                      :type="btn.type"
-                      :size="size || btn.size"
-                      :icon="btn.icon"
-                      :class="{ 'el-dropdown-item-del': btn.type === 'danger' }"
-                      @click.native="btn.handle && btn.handle(scope.row, scope.$index)"
-                    >
-                      {{
-                        (typeof btn.label).toLowerCase() == 'string'
-                          ? btn.label
-                          : btn.label(scope.row)
-                      }}
-                    </el-dropdown-item>
+                       :key="(typeof btn.label).toLowerCase() == 'string' ? btn.label : btn.auth" v-has="btn.auth">
+                        <el-dropdown-item
+                          :key="(typeof btn.label).toLowerCase() == 'string' ? btn.label : btn.auth"
+                          :disabled="btn.disabled && btn.disabled(scope.row)"
+                          :type="btn.type"
+                          :size="size || btn.size"
+                          :icon="btn.icon"
+                          :class="{ 'el-dropdown-item-del': btn.type === 'danger' }"
+                          @click.native="btn.handle && btn.handle(scope.row, scope.$index)"
+                        >
+                          {{
+                            (typeof btn.label).toLowerCase() == 'string'
+                              ? btn.label
+                              : btn.label(scope.row)
+                          }}
+                        </el-dropdown-item>
+                    </div>
                   </el-dropdown-menu>
                 </template>
               </el-dropdown>

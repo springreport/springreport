@@ -2,6 +2,7 @@ export default {
   name: 'sysMenu',
   data() {
     return {
+      tableLoading: true,
       pageData: {
         //查询表单内容 start
         searchForm: [{ type: 'Input', label: '菜单名称', prop: 'menuName' }],
@@ -18,15 +19,15 @@ export default {
         //查询表单按钮start
         searchHandle: [
           {
-            label: '查询',
-            type: 'primary',
-            handle: () => this.searchtablelist(),
+            label: '清除条件',
+            type: '',
+            handle: () => this.resetSearch(),
             auth: 'sysMenu_search',
           },
           {
-            label: '重置',
-            type: 'warning',
-            handle: () => this.resetSearch(),
+            label: '查询',
+            type: 'primary',
+            handle: () => this.searchtablelist(),
             auth: 'sysMenu_search',
           },
         ],
@@ -65,26 +66,12 @@ export default {
         //表格分页信息end
         //表格列表头start
         tableCols: [
-          { label: '菜单名称', prop: 'menuName', align: 'left', overflow: true },
-          { label: '菜单地址', prop: 'menuUrl', align: 'center', overflow: true },
-          { label: '菜单图标', prop: 'menuIcon', align: 'center', overflow: true },
-          // {label:'访问规则',prop:'accessRule',align:'center',codeType:'menuRule',formatter:this.commonUtil.getTableCodeName},
-          {
-            label: '是否隐藏',
-            prop: 'isHidden',
-            align: 'center',
-            codeType: 'yesNo',
-            formatter: this.commonUtil.getTableCodeName,
-            overflow: true,
-          },
-          { label: '排序', prop: 'sort', align: 'center', overflow: true },
           {
             label: '操作',
             prop: 'operation',
             align: 'center',
-            type: 'button',
-            width: 240,
-            fixed: 'right',
+            type: 'dropdown',
+            width: 54,
             btnList: [
               {
                 label: '查看',
@@ -106,12 +93,25 @@ export default {
               },
               {
                 label: '删除',
-                type: 'primary',
+                type: 'danger',
                 auth: 'sysMenu_delete',
                 handle: (row) => this.deleteOne(row.id),
               },
             ],
           },
+          { label: '菜单名称', prop: 'menuName', align: 'left', overflow: true },
+          { label: '菜单地址', prop: 'menuUrl', align: 'center', overflow: true },
+          { label: '菜单图标', prop: 'menuIcon', align: 'center', overflow: true },
+          // {label:'访问规则',prop:'accessRule',align:'center',codeType:'menuRule',formatter:this.commonUtil.getTableCodeName},
+          {
+            label: '是否隐藏',
+            prop: 'isHidden',
+            align: 'center',
+            codeType: 'yesNo',
+            formatter: this.commonUtil.getTableCodeName,
+            overflow: true,
+          },
+          { label: '排序', prop: 'sort', align: 'center', overflow: true },
         ],
         //表格列表头end
         //modal配置 start
@@ -202,6 +202,7 @@ export default {
      * @author: caiyang
      */
     searchtablelist() {
+      this.tableLoading = true;
       var obj = {
         url: this.apis.sysMenu.listApi,
         params: Object.assign({}, this.pageData.queryData, this.pageData.tablePage),
@@ -210,6 +211,7 @@ export default {
       this.commonUtil.getTableList(obj).then((response) => {
         that.pageData.tableData = response.responseData;
         that.pageData.modalForm[4].data = response.responseData;
+        this.tableLoading = false;
         // this.commonUtil.tableAssignment(response,this.pageData.tablePage,this.pageData.tableData);
       });
     },

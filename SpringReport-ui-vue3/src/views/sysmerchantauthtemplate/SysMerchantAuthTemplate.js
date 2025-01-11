@@ -2,6 +2,7 @@ export default {
   name: 'sysMerchantAuthTemplate',
   data() {
     return {
+      tableLoading: true,
       pageData: {
         //查询表单内容 start
         searchForm: [{ type: 'Input', label: '模板名称', prop: 'templateName' }],
@@ -61,12 +62,12 @@ export default {
         //表格分页信息end
         //表格列表头start
         tableCols: [
-          { label: '模板名称', prop: 'templateName', align: 'center' },
           {
             label: '操作',
             prop: 'operation',
             align: 'center',
-            type: 'button',
+            type: 'dropdown',
+            width: 54,
             btnList: [
               {
                 label: '查看',
@@ -82,12 +83,13 @@ export default {
               },
               {
                 label: '删除',
-                type: 'primary',
+                type: 'danger',
                 auth: 'sysMerchantAuth_delete',
                 handle: (row) => this.deleteOne(row.id),
               },
             ],
           },
+          { label: '模板名称', prop: 'templateName', align: 'center' },
         ],
         //表格列表头end
         //modal配置 start
@@ -148,12 +150,14 @@ export default {
      * @author: caiyang
      */
     searchtablelist() {
+      this.tableLoading = true;
       var obj = {
         url: this.apis.sysMerchantAuthTemplate.listApi,
         params: Object.assign({}, this.pageData.queryData, this.pageData.tablePage),
       };
       this.commonUtil.getTableList(obj).then((response) => {
         this.commonUtil.tableAssignment(response, this.pageData.tablePage, this.pageData.tableData);
+        this.tableLoading = false;
       });
     },
     resetSearch() {

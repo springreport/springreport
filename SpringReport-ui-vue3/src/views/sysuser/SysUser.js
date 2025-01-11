@@ -2,6 +2,7 @@ export default {
   name: 'sysUser',
   data() {
     return {
+      tableLoading: true,
       pageData: {
         defaultProps: {
           children: 'children',
@@ -73,37 +74,12 @@ export default {
         //表格分页信息end
         //表格列表头start
         tableCols: [
-          { label: '用户登录名', prop: 'userName', align: 'center', overflow: true },
-          { label: '用户姓名', prop: 'userRealName', align: 'center', overflow: true },
-          { label: '用户邮箱', prop: 'userEmail', align: 'center', overflow: true },
-          { label: '座机', prop: 'userPhone', align: 'center', overflow: true },
-          { label: '手机', prop: 'userMobile', align: 'center', overflow: true },
-          { label: '角色', prop: 'roleName', align: 'center', overflow: true },
-          { label: '部门', prop: 'deptName', align: 'center', overflow: true },
-          { label: '岗位', prop: 'postName', align: 'center', overflow: true },
-          {
-            label: '是否锁定',
-            prop: 'userLocked',
-            align: 'center',
-            codeType: 'yesNo',
-            formatter: this.commonUtil.getTableCodeName,
-            overflow: true,
-          },
-          {
-            label: '是否管理员',
-            prop: 'isAdmin',
-            align: 'center',
-            codeType: 'yesNo',
-            formatter: this.commonUtil.getTableCodeName,
-            overflow: true,
-          },
           {
             label: '操作',
             prop: 'operation',
             align: 'center',
-            type: 'button',
-            fixed: 'right',
-            width: 200,
+            type: 'dropdown',
+            width: 54,
             btnList: [
               {
                 label: '查看',
@@ -127,12 +103,36 @@ export default {
               },
               {
                 label: '删除',
-                type: 'primary',
+                type: 'danger',
                 auth: 'sysUser_delete',
                 handle: (row) => this.deleteOne(row.id),
                 show: (row) => this.isShowDelete(row),
               },
             ],
+          },
+          { label: '用户登录名', prop: 'userName', align: 'center', overflow: true },
+          { label: '用户姓名', prop: 'userRealName', align: 'center', overflow: true },
+          { label: '用户邮箱', prop: 'userEmail', align: 'center', overflow: true },
+          { label: '座机', prop: 'userPhone', align: 'center', overflow: true },
+          { label: '手机', prop: 'userMobile', align: 'center', overflow: true },
+          { label: '角色', prop: 'roleName', align: 'center', overflow: true },
+          { label: '部门', prop: 'deptName', align: 'center', overflow: true },
+          { label: '岗位', prop: 'postName', align: 'center', overflow: true },
+          {
+            label: '是否锁定',
+            prop: 'userLocked',
+            align: 'center',
+            codeType: 'yesNo',
+            formatter: this.commonUtil.getTableCodeName,
+            overflow: true,
+          },
+          {
+            label: '是否管理员',
+            prop: 'isAdmin',
+            align: 'center',
+            codeType: 'yesNo',
+            formatter: this.commonUtil.getTableCodeName,
+            overflow: true,
           },
         ],
         //表格列表头end
@@ -245,17 +245,20 @@ export default {
      * @author: caiyang
      */
     searchtablelist() {
+      this.tableLoading = true;
       var obj = {
         url: this.apis.sysUser.listApi,
         params: Object.assign({}, this.pageData.queryData, this.pageData.tablePage),
       };
       this.commonUtil.getTableList(obj).then((response) => {
         this.commonUtil.tableAssignment(response, this.pageData.tablePage, this.pageData.tableData);
+        this.tableLoading = false;
       });
     },
     resetSearch() {
       this.commonUtil.clearObj(this.pageData.queryData);
       this.searchtablelist();
+      this.tableLoading = false;
     },
     /**
      * @description: modal显示

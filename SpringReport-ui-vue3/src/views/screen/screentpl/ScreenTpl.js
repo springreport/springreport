@@ -2,6 +2,7 @@ export default {
   name: 'screenTpl',
   data() {
     return {
+      tableLoading: true,
       pageData: {
         // 查询表单内容 start
         searchForm: [
@@ -74,18 +75,12 @@ export default {
         // 表格分页信息end
         // 表格列表头start
         tableCols: [
-          { label: '模板标识', prop: 'tplCode', align: 'left', overflow: true, icon: true },
-          { label: '模板名称', prop: 'tplName', align: 'center', overflow: true },
-          { label: '大屏宽度', prop: 'width', align: 'center', overflow: true },
-          { label: '大屏高度', prop: 'height', align: 'center', overflow: true },
-          // { label: '背景图', prop: 'imgUrl', align: 'center', type: 'image', popover: true},
           {
             label: '操作',
             prop: 'operation',
             align: 'center',
-            type: 'button',
-            width: 400,
-            fixed: 'right',
+            type: 'dropdown',
+            width: 54,
             btnList: [
               {
                 label: '查看',
@@ -117,12 +112,17 @@ export default {
               },
               {
                 label: '删除',
-                type: 'primary',
+                type: 'danger',
                 auth: 'screenTpl_delete',
                 handle: (row) => this.deleteOne(row.id, row.type),
               },
             ],
           },
+          { label: '模板标识', prop: 'tplCode', align: 'left', overflow: true, icon: true },
+          { label: '模板名称', prop: 'tplName', align: 'center', overflow: true },
+          { label: '大屏宽度', prop: 'width', align: 'center', overflow: true },
+          { label: '大屏高度', prop: 'height', align: 'center', overflow: true },
+          // { label: '背景图', prop: 'imgUrl', align: 'center', type: 'image', popover: true},
         ],
         // 表格列表头end
         // modal配置 start
@@ -303,6 +303,7 @@ export default {
      * @author: caiyang
      */
     searchtablelist() {
+      this.tableLoading = true;
       var obj = {
         url: this.apis.screenTpl.listApi,
         params: Object.assign({}, this.pageData.queryData, this.pageData.tablePage),
@@ -312,6 +313,7 @@ export default {
       this.commonUtil.getTableList(obj).then((response) => {
         that.pageData.tableData = response.responseData;
         that.getReportType();
+        this.tableLoading = false;
       });
     },
     resetSearch() {

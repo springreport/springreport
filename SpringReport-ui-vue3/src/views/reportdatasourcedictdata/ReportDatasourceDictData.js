@@ -2,6 +2,7 @@ export default {
   name: 'reportDatasourceDictData',
   data() {
     return {
+      tableLoading: true,
       pageData: {
         //查询表单内容 start
         searchForm: [
@@ -65,17 +66,12 @@ export default {
         //表格分页信息end
         //表格列表头start
         tableCols: [
-          { label: '字典标签', prop: 'dictLabel', align: 'center', overflow: true },
-          { label: '字典键值', prop: 'dictValue', align: 'center', overflow: true },
-          { label: '字典类型', prop: 'dictType', align: 'center', overflow: true },
-          { label: '备注', prop: 'remark', align: 'center' },
           {
             label: '操作',
             prop: 'operation',
             align: 'center',
-            type: 'button',
-            fixed: 'right',
-            width: 220,
+            type: 'dropdown',
+            width: 54,
             btnList: [
               {
                 label: '查看',
@@ -91,12 +87,16 @@ export default {
               },
               {
                 label: '删除',
-                type: 'primary',
+                type: 'danger',
                 auth: 'reportDatasourceDictData_delete',
                 handle: (row) => this.deleteOne(row.id),
               },
             ],
           },
+          { label: '字典标签', prop: 'dictLabel', align: 'center', overflow: true },
+          { label: '字典键值', prop: 'dictValue', align: 'center', overflow: true },
+          { label: '字典类型', prop: 'dictType', align: 'center', overflow: true },
+          { label: '备注', prop: 'remark', align: 'center' },
         ],
         //表格列表头end
         //modal配置 start
@@ -161,6 +161,7 @@ export default {
      * @author: caiyang
      */
     searchtablelist() {
+      this.tableLoading = true;
       var datasourceId = this.$route.query.reportDatasourceId;
       var dictType = this.$route.query.dictType;
       var obj = {
@@ -173,6 +174,7 @@ export default {
       };
       this.commonUtil.getTableList(obj).then((response) => {
         this.commonUtil.tableAssignment(response, this.pageData.tablePage, this.pageData.tableData);
+        this.tableLoading = false;
       });
     },
     resetSearch() {

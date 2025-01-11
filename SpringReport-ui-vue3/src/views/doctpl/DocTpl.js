@@ -2,6 +2,7 @@ export default {
   name: 'docTpl',
   data() {
     return {
+      tableLoading: true,
       pageData: {
         //查询表单内容 start
         searchForm: [
@@ -74,15 +75,12 @@ export default {
         //表格分页信息end
         //表格列表头start
         tableCols: [
-          { label: '模板标识', prop: 'tplCode', align: 'left', icon: true },
-          { label: '模板名称', prop: 'tplName', align: 'center' },
-          { label: '数据源代码', prop: 'dataSourceCode', align: 'center', overflow: true },
-          { label: '数据源名称', prop: 'dataSourceName', align: 'center', overflow: true },
           {
             label: '操作',
             prop: 'operation',
             align: 'center',
-            type: 'button',
+            type: 'dropdown',
+            width: 54,
             btnList: [
               {
                 label: '查看',
@@ -114,12 +112,16 @@ export default {
               },
               {
                 label: '删除',
-                type: 'primary',
+                type: 'danger',
                 auth: 'docTpl_delete',
                 handle: (row) => this.deleteOne(row.id, row.type),
               },
             ],
           },
+          { label: '模板标识', prop: 'tplCode', align: 'left', icon: true },
+          { label: '模板名称', prop: 'tplName', align: 'center' },
+          { label: '数据源代码', prop: 'dataSourceCode', align: 'center', overflow: true },
+          { label: '数据源名称', prop: 'dataSourceName', align: 'center', overflow: true },
         ],
         //表格列表头end
         //modal配置 start
@@ -240,6 +242,7 @@ export default {
      * @author: caiyang
      */
     searchtablelist() {
+      this.tableLoading = true;
       var obj = {
         url: this.apis.docTpl.listApi,
         params: Object.assign({}, this.pageData.queryData, this.pageData.tablePage),
@@ -249,6 +252,7 @@ export default {
       this.commonUtil.getTableList(obj).then((response) => {
         that.pageData.tableData = response.responseData;
         that.getReportType();
+        this.tableLoading = false;
       });
     },
     resetSearch() {

@@ -2,6 +2,7 @@ export default {
   name: 'sysRole',
   data() {
     return {
+      tableLoading: true,
       pageData: {
         //查询表单内容 start
         searchForm: [
@@ -65,16 +66,12 @@ export default {
         //表格分页信息end
         //表格列表头start
         tableCols: [
-          { label: '角色代码', prop: 'roleCode', align: 'center', overflow: true },
-          { label: '角色名称', prop: 'roleName', align: 'center', overflow: true },
-          { label: '角色描述', prop: 'roleDesc', align: 'center', overflow: true },
           {
             label: '操作',
             prop: 'operation',
             align: 'center',
-            type: 'button',
-            width: 300,
-            fixed: 'right',
+            type: 'dropdown',
+            width: 54,
             btnList: [
               {
                 label: '查看',
@@ -102,12 +99,15 @@ export default {
               },
               {
                 label: '删除',
-                type: 'primary',
+                type: 'danger',
                 auth: 'sysRole_delete',
                 handle: (row) => this.deleteOne(row.id),
               },
             ],
           },
+          { label: '角色代码', prop: 'roleCode', align: 'center', overflow: true },
+          { label: '角色名称', prop: 'roleName', align: 'center', overflow: true },
+          { label: '角色描述', prop: 'roleDesc', align: 'center', overflow: true },
         ],
         //表格列表头end
         //modal配置 start
@@ -225,12 +225,14 @@ export default {
      * @author: caiyang
      */
     searchtablelist() {
+      this.tableLoading = true;
       var obj = {
         url: this.apis.sysRole.listApi,
         params: Object.assign({}, this.pageData.queryData, this.pageData.tablePage),
       };
       this.commonUtil.getTableList(obj).then((response) => {
         this.commonUtil.tableAssignment(response, this.pageData.tablePage, this.pageData.tableData);
+        this.tableLoading = false;
       });
     },
     resetSearch() {

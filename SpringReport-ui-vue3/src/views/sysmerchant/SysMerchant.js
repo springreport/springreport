@@ -4,6 +4,7 @@ export default {
   data() {
     return {
       pageData: {
+        tableLoading: true,
         //查询表单内容 start
         searchForm: [
           { type: 'Input', label: '租户编号', prop: 'merchantNo' },
@@ -70,23 +71,12 @@ export default {
         //表格分页信息end
         //表格列表头start
         tableCols: [
-          { label: '租户编号', prop: 'merchantNo', align: 'center' },
-          { label: '租户名称', prop: 'merchantName', align: 'center' },
-          { label: '电话', prop: 'phone', align: 'center' },
-          { label: '邮箱', prop: 'email', align: 'center' },
-          {
-            label: '状态',
-            prop: 'status',
-            align: 'center',
-            codeType: 'status',
-            formatter: this.commonUtil.getTableCodeName,
-          },
-          { label: '权限模板', prop: 'templateName', align: 'center' },
           {
             label: '操作',
             prop: 'operation',
             align: 'center',
-            type: 'button',
+            type: 'dropdown',
+            width: 54,
             btnList: [
               {
                 label: '查看',
@@ -102,12 +92,24 @@ export default {
               },
               {
                 label: '删除',
-                type: 'primary',
+                type: 'danger',
                 auth: 'sysMerchant_delete',
                 handle: (row) => this.deleteOne(row.id),
               },
             ],
           },
+          { label: '租户编号', prop: 'merchantNo', align: 'center' },
+          { label: '租户名称', prop: 'merchantName', align: 'center' },
+          { label: '电话', prop: 'phone', align: 'center' },
+          { label: '邮箱', prop: 'email', align: 'center' },
+          {
+            label: '状态',
+            prop: 'status',
+            align: 'center',
+            codeType: 'status',
+            formatter: this.commonUtil.getTableCodeName,
+          },
+          { label: '权限模板', prop: 'templateName', align: 'center' },
         ],
         //表格列表头end
         //modal配置 start
@@ -191,12 +193,14 @@ export default {
      * @author: caiyang
      */
     searchtablelist() {
+      this.tableLoading = true;
       var obj = {
         url: this.apis.sysMerchant.listApi,
         params: Object.assign({}, this.pageData.queryData, this.pageData.tablePage),
       };
       this.commonUtil.getTableList(obj).then((response) => {
         this.commonUtil.tableAssignment(response, this.pageData.tablePage, this.pageData.tableData);
+        this.tableLoading = false;
       });
     },
     resetSearch() {

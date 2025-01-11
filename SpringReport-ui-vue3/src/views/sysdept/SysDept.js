@@ -2,6 +2,7 @@ export default {
   name: 'sysDept',
   data() {
     return {
+      tableLoading: true,
       pageData: {
         //查询表单内容 start
         searchForm: [
@@ -61,23 +62,12 @@ export default {
         //表格分页信息end
         //表格列表头start
         tableCols: [
-          { label: '部门名称', prop: 'deptName', align: 'center' },
-          { label: '负责人', prop: 'leader', align: 'center' },
-          { label: '联系电话', prop: 'phone', align: 'center' },
-          { label: '邮箱', prop: 'email', align: 'center' },
-          {
-            label: '状态',
-            prop: 'status',
-            align: 'center',
-            codeType: 'status',
-            formatter: this.commonUtil.getTableCodeName,
-          },
-          { label: '排序', prop: 'deptSort', align: 'center' },
           {
             label: '操作',
             prop: 'operation',
             align: 'center',
-            type: 'button',
+            type: 'dropdown',
+            width: 54,
             btnList: [
               {
                 label: '查看',
@@ -93,12 +83,24 @@ export default {
               },
               {
                 label: '删除',
-                type: 'primary',
+                type: 'danger',
                 auth: 'sysDept_delete',
                 handle: (row) => this.deleteOne(row.id),
               },
             ],
           },
+          { label: '部门名称', prop: 'deptName', align: 'center' },
+          { label: '负责人', prop: 'leader', align: 'center' },
+          { label: '联系电话', prop: 'phone', align: 'center' },
+          { label: '邮箱', prop: 'email', align: 'center' },
+          {
+            label: '状态',
+            prop: 'status',
+            align: 'center',
+            codeType: 'status',
+            formatter: this.commonUtil.getTableCodeName,
+          },
+          { label: '排序', prop: 'deptSort', align: 'center' },
         ],
         //表格列表头end
         //modal配置 start
@@ -197,6 +199,7 @@ export default {
      * @author: caiyang
      */
     searchtablelist() {
+      this.tableLoading = true;
       var obj = {
         url: this.apis.sysDept.listApi,
         params: Object.assign({}, this.pageData.queryData, this.pageData.tablePage),
@@ -205,6 +208,7 @@ export default {
       this.commonUtil.getTableList(obj).then((response) => {
         that.pageData.tableData = response.responseData;
         that.pageData.modalForm[0].data = response.responseData;
+        this.tableLoading = false;
         // this.commonUtil.tableAssignment(response,this.pageData.tablePage,this.pageData.tableData);
       });
     },
