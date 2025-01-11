@@ -6,7 +6,6 @@
         <!-- 查询显示与否根据searchForm -->
         <div
           v-if="searchForm.length"
-          v-has="'reportDatasource_search'"
           class="action-item df-c"
           @click="drawer = true"
         >
@@ -28,6 +27,7 @@
           class="action-item df-c"
           :class="{'action-item-del':item.iconClass=='action-icon-del'}"
           v-show="!item.isHidden"
+          v-has="item.auth"
           @click="item.handle()"
         >
           <i v-if="item.iconClass" :class="item.iconClass" />
