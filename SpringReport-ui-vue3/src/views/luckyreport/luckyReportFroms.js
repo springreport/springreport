@@ -2758,6 +2758,9 @@ export default {
       });
     },
     editCompareCell(obj, index) {
+      if (this.attrDisabled) {
+        return;
+      }
       this.cellCompareVisiable = true;
       this.cellCompareForm.index = index;
       this.cellCompareForm.sheetName = obj.sheetName;
@@ -2766,6 +2769,9 @@ export default {
       this.cellCompareForm.compareType = obj.compareType;
     },
     deleteCompareCell(index) {
+      if (this.attrDisabled) {
+        return;
+      }
       this.cellForm.compareCells.splice(index, 1);
       var cells = this.getSelectRangeCells();
       if (cells && cells.length > 0) {
@@ -2824,10 +2830,16 @@ export default {
       this.cellConditionVisiable = false;
     },
     deleteCellCondition(index) {
+      if (this.attrDisabled) {
+        return;
+      }
       this.cellForm.cellconditions.splice(index, 1);
       this.changeCellAttr('cellconditions');
     },
     editCellCondition(index) {
+      if (this.attrDisabled) {
+        return;
+      }
       let cellCondition = this.cellForm.cellconditions[index];
       this.cellConditionForm.property = cellCondition.property;
       this.cellConditionForm.operator = cellCondition.operator;
@@ -2838,6 +2850,9 @@ export default {
       this.cellConditionVisiable = true;
     },
     copyCellCondition(row) {
+      if (this.attrDisabled) {
+        return;
+      }
       this.cellConditionForm.property = row.property;
       this.cellConditionForm.operator = row.operator;
       this.cellConditionForm.type = row.type;

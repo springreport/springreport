@@ -3152,10 +3152,16 @@ export default {
       });
     },
     deleteCellCondition(index) {
+      if (this.attrDisabled) {
+        return;
+      }
       this.cellForm.cellconditions.splice(index, 1);
       this.changeCellAttr('cellconditions');
     },
     editCellCondition(index) {
+      if (this.attrDisabled) {
+        return;
+      }
       let cellCondition = this.cellForm.cellconditions[index];
       this.cellConditionForm.property = cellCondition.property;
       this.cellConditionForm.operator = cellCondition.operator;
@@ -3166,6 +3172,9 @@ export default {
       this.cellConditionVisiable = true;
     },
     copyCellCondition(row) {
+      if (this.attrDisabled) {
+        return;
+      }
       this.cellConditionForm.property = row.property;
       this.cellConditionForm.operator = row.operator;
       this.cellConditionForm.type = row.type;
@@ -3482,10 +3491,16 @@ export default {
       });
     },
     deleteCellHiddenCondition(index) {
+      if (this.attrDisabled) {
+        return;
+      }
       this.cellForm.cellHiddenConditions.splice(index, 1);
       this.changeCellAttr('cellHiddenConditions');
     },
     editCellHiddenCondition(index) {
+      if (this.attrDisabled) {
+        return;
+      }
       let cellHiddenCondition = this.cellForm.cellHiddenConditions[index];
       this.cellHiddenConditionForm.propertyName = cellHiddenCondition.propertyName;
       this.cellHiddenConditionForm.property = cellHiddenCondition.property;
@@ -3497,6 +3512,9 @@ export default {
       this.cellHiddenConditionVisiable = true;
     },
     copyCellHiddenCondition(row) {
+      if (this.attrDisabled) {
+        return;
+      }
       this.cellHiddenConditionForm.propertyName = row.propertyName;
       this.cellHiddenConditionForm.property = row.property;
       this.cellHiddenConditionForm.operator = row.operator;
@@ -3976,6 +3994,9 @@ export default {
       });
     },
     editSubtotalCell(o, index) {
+      if (this.attrDisabled) {
+        return;
+      }
       this.cellSubTotalForm.index = index;
       this.cellSubTotalForm.coords = o.coords;
       this.cellSubTotalForm.type = o.type;
@@ -3983,6 +4004,9 @@ export default {
       this.cellSubTotalVisiable = true;
     },
     deleteSubtotalCell(index) {
+      if (this.attrDisabled) {
+        return;
+      }
       this.cellForm.subTotalCells.splice(index, 1);
       this.changeCellAttr('subTotalCells');
     },
@@ -4041,11 +4065,17 @@ export default {
       this.subTotalCalcVisiable = false;
     },
     editSubtotalCalc(o, index) {
+      if (this.attrDisabled) {
+        return;
+      }
       this.subTotalCalcForm.index = index;
       this.subTotalCalcForm.attrs = o.attrs;
       this.subTotalCalcVisiable = true;
     },
     deleteSubtotalCalc(index) {
+      if (this.attrDisabled) {
+        return;
+      }
       this.cellForm.subTotalCalc.splice(index, 1);
       this.changeCellAttr('subTotalCalc');
     },
@@ -4094,6 +4124,9 @@ export default {
       this.subTotalAttrsVisiable = false;
     },
     editSubtotalAttrs(o, index) {
+      if (this.attrDisabled) {
+        return;
+      }
       this.subTotalAttrsForm.index = index;
       this.subTotalAttrsForm.name = o.name;
       this.subTotalAttrsForm.fontColor = o.fontColor;
@@ -4103,6 +4136,9 @@ export default {
       this.subTotalAttrsVisiable = true;
     },
     deleteSubtotalAttrs(index) {
+      if (this.attrDisabled) {
+        return;
+      }
       this.cellForm.subTotalAttrs.splice(index, 1);
       this.changeCellAttr('subTotalAttrs');
     },
