@@ -397,14 +397,14 @@ export default {
           label: '重置',
           drawerBtn: true,
           icon: 'icon-refresh',
-          type: 'warning',
+          type: '',
           handle: () => this.resetSearch(),
           size: 'small',
         },
         {
           btnType: 'dropDown',
           label: '导出全部',
-          icon: 'action-icon action-icon-export-all',
+          icon: 'action-icon-export-all',
           downs: [
             { label: '导出全部Excel', handle: () => this.exportExcel() },
             { label: '导出全部PDF', handle: () => this.pdfExport(1) },
@@ -413,7 +413,7 @@ export default {
         {
           btnType: 'button',
           label: '打印',
-          iconClass: 'action-icon action-icon-print',
+          iconClass: 'action-icon-print',
           handle: () => this.pdfPrint(1),
           size: 'mini',
         },
@@ -590,7 +590,7 @@ export default {
             this.searchHandle.push({
               btnType: 'dropDown',
               label: '定向导出',
-              icon: 'action-icon action-icon-conditional-export',
+              icon: 'action-icon-conditional-export',
               downs: [
                 { label: '定向导出Excel', handle: () => this.showCustomPage() },
                 { label: '定向导出PDF', handle: () => this.showCustomPdfPage(1) },
@@ -599,7 +599,7 @@ export default {
             this.searchHandle.push({
               btnType: 'dropDown',
               label: '本页导出',
-              icon: 'action-icon action-icon-current-export',
+              icon: 'action-icon-current-export',
               downs: [
                 { label: '本页导出Excel', handle: () => this.exportPageExcel() },
                 { label: '本页导出PDF', handle: () => this.pdfPageExport(1) },
@@ -608,7 +608,7 @@ export default {
             this.searchHandle.push({
               btnType: 'dropDown',
               label: '定向打印',
-              icon: 'action-icon action-icon-print',
+              icon: 'action-icon-print',
               downs: [
                 { label: '打印本页', handle: () => this.pdfPagePrint(1) },
                 { label: '定向打印', handle: () => this.showCustomPdfPage(2) },

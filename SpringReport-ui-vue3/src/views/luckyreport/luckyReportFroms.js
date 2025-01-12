@@ -96,6 +96,7 @@ export default {
         datasourceId: '',
         id: '',
         sqlType: 1,
+        groupId: ''
       },
       dataSource: [], //模板数据源
       dataSourceTables: [], //数据源解析的表
@@ -1559,6 +1560,7 @@ export default {
       this.sqlForm.datasourceId = dataSet.datasourceId;
       this.sqlForm.id = dataSet.id;
       this.sqlForm.sqlType = dataSet.sqlType;
+      this.sqlForm.groupId = dataSet.groupId
       if (dataSet.sqlType == 2) {
         this.procedureInParamTableData.tableData = JSON.parse(dataSet.inParam);
         this.procedureOutParamTableData.tableData = JSON.parse(dataSet.outParam);
@@ -1613,6 +1615,7 @@ export default {
             url: this.apis.reportDesign.addDataSetApi,
             params: {
               tplId: reportTplId,
+              groupId: this.sqlForm.groupId,
               datasetType: this.datasourceType,
               sqlType: this.sqlForm.sqlType,
               tplSql: tplSql,
@@ -1636,6 +1639,7 @@ export default {
           this.commonUtil.doPost(obj).then((response) => {
             if (response.code == '200') {
               this.getDataSets();
+              this.getTplGroupDatasets()
               // let isExist = false;
               // let dataSet = response.responseData;
               // let index = -1;
@@ -3793,7 +3797,7 @@ export default {
       that.changePageShow();
       that.changeHorizontalPage();
     },
-    doCopy(item) {
+    doCopy(item,isInsert) {
       let text = item.value;
       if (item.type == 'number') {
         text = '<if test="' + item.value + '!=null' + '"> \n';
@@ -3802,14 +3806,18 @@ export default {
         text = '<if test="' + item.value + '!=null and ' + item.value + "!=''" + '">\n';
         text = text + '  and ' + item.column + ' = #{' + item.value + '} \n' + '</if>';
       }
-      const input = document.getElementById('clipboradInput'); // 承载复制内容
-      input.value = text; // 修改文本框的内容
-      input.select(); // 选中文本
-      document.execCommand('copy'); // 执行浏览器复制命令
-      this.commonUtil.showMessage({
-        message: '复制成功',
-        type: this.commonConstants.messageType.success,
-      });
+      if (!isInsert) {
+        const input = document.getElementById('clipboradInput'); // 承载复制内容
+        input.value = text; // 修改文本框的内容
+        input.select(); // 选中文本
+        document.execCommand('copy'); // 执行浏览器复制命令
+        this.commonUtil.showMessage({
+          message: '复制成功',
+          type: this.commonConstants.messageType.success,
+        });
+      } else {
+        this.addComment(text);
+      }
     },
     copyColumn(datasetName, columnName) {
       let text = datasetName + '.${' + columnName + '}';
@@ -3821,6 +3829,13 @@ export default {
         message: '复制成功',
         type: this.commonConstants.messageType.success,
       });
+    },
+    addComment(val) {
+      let pos1 = this.$refs.codeMirror.cminstance.getCursor();
+      let pos2 = {};
+      pos2.line = pos1.line;
+      pos2.ch = pos1.ch;
+      this.$refs.codeMirror.cminstance.replaceRange(val, pos2);
     },
     uploadAttachment() {
       let rangeAxis = luckysheet.getRangeAxis();

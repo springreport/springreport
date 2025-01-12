@@ -3,8 +3,8 @@ export default {
   name: 'sysMerchant',
   data() {
     return {
+      tableLoading: true,
       pageData: {
-        tableLoading: true,
         //查询表单内容 start
         searchForm: [
           { type: 'Input', label: '租户编号', prop: 'merchantNo' },

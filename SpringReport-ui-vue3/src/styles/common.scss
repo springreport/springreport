@@ -305,23 +305,37 @@ html {
 }
 
 .action-icon-conditional-export{
+  display: inline-block;
   width: 14px;
   height: 14px;
+  background-size: 100% 100%;
+  margin-right: 4px;
   background-image: url("@/assets/img/common/conditional-export.png");
 }
 .action-icon-current-export{
+  display: inline-block;
   width: 14px;
   height: 14px;
+  background-size: 100% 100%;
+  margin-right: 4px;
   background-image: url("@/assets/img/common/current-export.png");
 }
 
 .action-icon-export-all{
+  display: inline-block;
   width: 14px;
   height: 14px;
+  background-size: 100% 100%;
+  margin-right: 4px;
   background-image: url("@/assets/img/common/export-all.png");
 }
 
 .action-icon-print{
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background-size: 100% 100%;
+  margin-right: 4px;
   width: 14px;
   height: 14px;
   background-image: url("@/assets/img/common/print.png");

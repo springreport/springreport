@@ -181,7 +181,7 @@
                   v-model="datasetItem.apiResult"
                   type="textarea"
                   placeholder=""
-                  rows="6"
+                  :rows="6"
                 />
               </template>
               <el-empty v-else :image-size="60" description="暂无字段" />
@@ -1112,16 +1112,16 @@
                         <icon-copy title="复制" style="flex: 1; margin-right: 4px" />
                         <template #dropdown>
                           <el-dropdown-menu>
-                            <el-dropdown-item @click.native="getWhereByColumn(1, column)"
+                            <el-dropdown-item v-on:click="getWhereByColumn(1, column)"
                               >仅字段</el-dropdown-item
                             >
-                            <el-dropdown-item @click.native="getWhereByColumn(2, column)"
+                            <el-dropdown-item v-on:click="getWhereByColumn(2, column)"
                               >表名.字段</el-dropdown-item
                             >
-                            <el-dropdown-item @click.native="getWhereByColumn(3, column)"
+                            <el-dropdown-item v-on:click="getWhereByColumn(3, column)"
                               >查询条件(=)</el-dropdown-item
                             >
-                            <el-dropdown-item @click.native="getWhereByColumn(4, column)"
+                            <el-dropdown-item v-on:click="getWhereByColumn(4, column)"
                               >查询条件(in)</el-dropdown-item
                             >
                           </el-dropdown-menu>
@@ -1131,16 +1131,16 @@
                         <icon-add-one title="添加" />
                         <template #dropdown>
                           <el-dropdown-menu>
-                            <el-dropdown-item @click.native="getWhereByColumn(1, column, true)"
+                            <el-dropdown-item v-on:click="getWhereByColumn(1, column, true)"
                               >仅字段</el-dropdown-item
                             >
-                            <el-dropdown-item @click.native="getWhereByColumn(2, column, true)"
+                            <el-dropdown-item v-on:click="getWhereByColumn(2, column, true)"
                               >表名.字段</el-dropdown-item
                             >
-                            <el-dropdown-item @click.native="getWhereByColumn(3, column, true)"
+                            <el-dropdown-item v-on:click="getWhereByColumn(3, column, true)"
                               >查询条件(=)</el-dropdown-item
                             >
-                            <el-dropdown-item @click.native="getWhereByColumn(4, column, true)"
+                            <el-dropdown-item v-on:click="getWhereByColumn(4, column, true)"
                               >查询条件(in)</el-dropdown-item
                             >
                           </el-dropdown-menu>

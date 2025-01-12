@@ -1,18 +1,18 @@
 <template>
-  <el-menu-item :key="item.path" :index="item.path" v-if="item.subs.length == 0">
+  <el-menu-item :key="item.path" :index="'/'+item.path" v-if="item.subs.length == 0">
     <span class="iconfont" :class="item.icon" />
     <template #title>
       <span class="title">{{ item.title }}</span>
     </template>
   </el-menu-item>
-  <el-sub-menu :class="{ 'is-black': isBlack }" :index="item.path" v-else>
+  <el-sub-menu :class="{ 'is-black': isBlack }" :index="'/'+item.path" v-else>
     <template #title>
       <span class="iconfont" :class="item.icon" />
       <span class="title">{{ item.title }}</span>
     </template>
     <template v-for="(option, index) in item.subs">
       <menu-item v-if="option.subs" :key="option.path" :item="option" />
-      <el-menu-item v-else :index="option.path" :key="index">
+      <el-menu-item v-else :index="'/'+option.path" :key="index">
         <span class="iconfont" :class="option.icon" />
         <span class="title">{{ option.title }}</span>
       </el-menu-item>

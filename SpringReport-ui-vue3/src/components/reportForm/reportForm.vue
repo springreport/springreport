@@ -52,7 +52,7 @@
                 <el-dropdown-item
                   v-for="(op, index) in item.downs"
                   :key="index"
-                  @click.native="op.handle()"
+                  v-on:click="op.handle()"
                   >{{ op.label }}</el-dropdown-item
                 >
               </el-dropdown-menu>
@@ -282,42 +282,6 @@
                     :style="{ 'text-align': inline ? 'center' : 'inherit', display: '-webkit-box' }"
                   >
                     <!-- <el-button v-for='item in searchHandle' :key="item.label" :type="item.type"  @click='item.handle()' :icon="item.icon" :size="item.size" :title="item.label" circle ></el-button> -->
-                    <div v-for="item in searchHandle" :key="item.label" style="margin-left: 10px">
-                      <el-button
-                        v-if="!item.btnType || item.btnType == 'button'"
-                        :type="item.type"
-                        @click="item.handle()"
-                        :icon="item.icon"
-                        :size="item.size"
-                        :title="item.label"
-                        circle
-                      ></el-button>
-                      <el-dropdown
-                        v-if="item.btnType == 'dropDown'"
-                        class="white font"
-                        style="margin-top: 5px"
-                        trigger="hover"
-                        placement="bottom"
-                        :size="item.size"
-                      >
-                        <el-button
-                          :type="item.type"
-                          :icon="item.icon"
-                          circle
-                          :size="item.size"
-                        ></el-button>
-                        <template #dropdown>
-                          <el-dropdown-menu>
-                            <el-dropdown-item
-                              v-for="(op, index) in item.downs"
-                              :key="index"
-                              @click="op.handle()"
-                              >{{ op.label }}</el-dropdown-item
-                            >
-                          </el-dropdown-menu>
-                        </template>
-                      </el-dropdown>
-                    </div>
                     <el-button
                       v-show="isDrill == 1"
                       style="margin-left: 10px"
@@ -328,7 +292,7 @@
                       circle
                       title="返回上级报表"
                     ></el-button>
-                    <el-button
+                    <!-- <el-button
                       style="margin-left: 10px"
                       type="primary"
                       :icon="icon"
@@ -337,7 +301,7 @@
                       circle
                       :title="text"
                       class="showSearchBtn"
-                    ></el-button>
+                    ></el-button> -->
                   </div>
                 </el-form-item>
               </el-tab-pane>
@@ -798,31 +762,31 @@
     margin-left: 10px;
   }
 
-  ::v-deep .el-button--primary {
+  :deep(.el-button--primary) {
     color: #ffffff;
     background-color: $base-color-primary;
     border-color: $base-color-primary;
   }
-  ::v-deep .el-form-item {
+  :deep(.el-form-item) {
     margin-bottom: 10px !important;
   }
-  ::v-deep .el-form-item__error {
+  :deep(.el-form-item__error) {
     line-height: 0 !important;
     padding-top: 2px !important;
   }
-  ::v-deep .el-tabs__content {
+  :deep(.el-tabs__content) {
     padding: 0 10px;
   }
-  ::v-deep .el-tabs__header {
+  :deep(.el-tabs__header) {
     margin-bottom: 24px;
   }
-  ::v-deep .el-tabs__item {
+  :deep(.el-tabs__item) {
     height: 46px;
   }
-  ::v-deep .el-tabs__nav-wrap::after {
+  :deep(.el-tabs__nav-wrap::after) {
     content: unset !important;
   }
-  ::v-deep .el-tabs__active-bar {
+  :deep(.el-tabs__active-bar) {
     height: 3px;
     // max-width: 80px;
     border-radius: 1px;

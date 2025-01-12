@@ -102,6 +102,7 @@ export default {
         datasourceId: '',
         id: '',
         sqlType: 1,
+        groupId: ''
       },
       dataSource: [], //模板数据源
       isParamMerge: true,
@@ -1828,6 +1829,7 @@ export default {
       this.sqlForm.datasourceId = dataSet.datasourceId;
       this.sqlForm.id = dataSet.id;
       this.sqlForm.sqlType = dataSet.sqlType;
+      this.sqlForm.groupId = dataSet.groupId
       if (dataSet.sqlType == 2) {
         this.procedureInParamTableData.tableData = JSON.parse(dataSet.inParam);
         this.procedureOutParamTableData.tableData = JSON.parse(dataSet.outParam);
@@ -1892,6 +1894,7 @@ export default {
             url: this.apis.reportDesign.addDataSetApi,
             params: {
               tplId: reportTplId,
+              groupId: this.sqlForm.groupId,
               datasetType: this.datasourceType,
               sqlType: this.sqlForm.sqlType,
               tplSql: tplSql,
@@ -1918,6 +1921,7 @@ export default {
           this.commonUtil.doPost(obj).then((response) => {
             if (response.code == '200') {
               this.getDataSets();
+              this.getTplGroupDatasets()
               // let isExist = false;
               // let dataSet = response.responseData;
               // let index = -1;
@@ -4784,7 +4788,7 @@ export default {
         });
       }
     },
-    getWhereByColumn(type, column) {
+    getWhereByColumn(type, column,isInsert) {
       let text = '';
       let columnType = column.dataType.toLowerCase();
       if (type == 1) {
@@ -4819,7 +4823,18 @@ export default {
         text = '<if test="' + column.name + '!=null and ' + column.name + "!=''" + '">\n';
         text = text + '  and ' + column.name + ' = #{' + column.name + '} \n' + '</if>';
       }
-      this.addComment(text);
+      if (isInsert) {
+        this.addComment(text)
+      } else {
+        const input = document.getElementById('clipboradInput') // 承载复制内容
+        input.value = text // 修改文本框的内容
+        input.select() // 选中文本
+        document.execCommand('copy') // 执行浏览器复制命令
+        this.commonUtil.showMessage({
+          message: '复制成功',
+          type: this.commonConstants.messageType.success,
+        });
+      }
     },
     getWhereByParam(row) {
       let text = '';

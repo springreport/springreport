@@ -104,7 +104,7 @@
                           :size="size || btn.size"
                           :icon="btn.icon"
                           :class="{ 'el-dropdown-item-del': btn.type === 'danger' }"
-                          @click.native="btn.handle && btn.handle(scope.row, scope.$index)"
+                          v-on:click="btn.handle && btn.handle(scope.row, scope.$index)"
                         >
                           {{
                             (typeof btn.label).toLowerCase() == 'string'
