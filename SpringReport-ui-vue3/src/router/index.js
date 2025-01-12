@@ -68,7 +68,7 @@ export const constantRoutes = [
     name: 'luckyReportPreview',
     component: () => import('@/views/luckyreport/luckyReportPreview.vue'),
     meta: {
-      title: '报表查看',
+      title: 'Excel报表查看',
     },
   },
   {
@@ -283,7 +283,7 @@ export const constantRoutes = [
         name: 'onlineTpl',
         component: () => import('@/views/onlinetpl/OnlineTpl.vue'),
         meta: {
-          title: '协同文档管理',
+          title: 'Excel协同文档',
           icon: 'icon-excel',
         },
       },
@@ -292,7 +292,7 @@ export const constantRoutes = [
         name: 'reportTpl',
         component: () => import('@/views/reporttpl/ReportTpl.vue'),
         meta: {
-          title: '报表模板管理',
+          title: 'Excel报表',
           icon: 'icon-table',
         },
       },
@@ -301,7 +301,7 @@ export const constantRoutes = [
         name: 'viewReport',
         component: () => import('@/views/viewReport/viewReport.vue'),
         meta: {
-          title: '报表查看',
+          title: 'Excel报表查看',
           icon: 'icon-eyes',
         },
       },
@@ -319,7 +319,7 @@ export const constantRoutes = [
         name: 'docTpl',
         component: () => import('@/views/doctpl/DocTpl.vue'),
         meta: {
-          title: 'word模板管理',
+          title: 'Word报表',
           icon: 'icon-word',
         },
       },

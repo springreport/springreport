@@ -768,12 +768,12 @@
     background-color: $base-color-primary;
     border-color: $base-color-primary;
   }
-  :deep(.el-form-item) {
-    margin-bottom: 10px !important;
-  }
+  // :deep(.el-form-item) {
+  //   margin-bottom: 10px !important;
+  // }
   :deep(.el-form-item__error) {
     line-height: 0 !important;
-    padding-top: 2px !important;
+    padding-top: 8px !important;
   }
   :deep(.el-tabs__content) {
     padding: 0 10px;

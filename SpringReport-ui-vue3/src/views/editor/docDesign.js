@@ -440,7 +440,17 @@ export default {
           const viewReport = that.$router.resolve({ name: 'docPreview', query: { tplId: tplId }})
           window.open(viewReport.href, '_blank')
         }
-
+        // 动态设置展开面板的位置
+        function setDropdownContentPosition(parentNode, dropdownNode) {
+          const dropdownContent = dropdownNode
+          const rect = parentNode.getBoundingClientRect()
+          const screenWidth = window.innerWidth
+          dropdownContent.style.top = `${rect.bottom}px`
+          dropdownContent.style.left = `${rect.left}px`
+          if (rect.left + dropdownContent.offsetWidth > screenWidth) {
+            dropdownContent.style.left = `${rect.right - dropdownContent.offsetWidth}px`
+          }
+        }
         // | 撤销 | 重做 | 格式刷 | 清除格式 |
         const undoDom = document.querySelector('.menu-item__undo')
         undoDom.title = `撤销(${isApple ? '⌘' : 'Ctrl'}+Z)`
@@ -494,6 +504,7 @@ export default {
         fontDom.onclick = function () {
           console.log('font')
           fontOptionDom.classList.toggle('visible')
+          setDropdownContentPosition(fontDom, fontOptionDom)
         }
         fontOptionDom.onclick = function (evt) {
           const family = evt.target.dataset.family
@@ -507,6 +518,7 @@ export default {
         sizeSetDom.onclick = function () {
           console.log('size')
           sizeOptionDom.classList.toggle('visible')
+          setDropdownContentPosition(sizeSetDom, sizeOptionDom)
         }
         sizeOptionDom.onclick = function (evt) {
           const size = evt.target.dataset.size
@@ -623,6 +635,7 @@ export default {
         titleDom.onclick = function () {
           console.log('title')
           titleOptionDom.classList.toggle('visible')
+          setDropdownContentPosition(titleDom, titleOptionDom)
         }
         titleOptionDom.onclick = function (evt) {
           const li = evt.target 
@@ -664,6 +677,7 @@ export default {
         rowMarginDom.onclick = function () {
           console.log('row-margin')
           rowOptionDom.classList.toggle('visible')
+          setDropdownContentPosition(rowMarginDom, rowOptionDom)
         }
         rowOptionDom.onclick = function (evt) {
           const li = evt.target
@@ -676,6 +690,7 @@ export default {
         listDom.onclick = function () {
           console.log('list')
           listOptionDom.classList.toggle('visible')
+          setDropdownContentPosition(listDom, listOptionDom)
         }
         listOptionDom.onclick = function (evt) {
           const li = evt.target 
@@ -730,6 +745,7 @@ export default {
         tableDom.onclick = function () {
           console.log('table')
           tablePanelContainer.style.display = 'block'
+          setDropdownContentPosition(tableDom, tablePanelContainer)
         }
         tablePanel.onmousemove = function (evt) {
           const celSize = 16
@@ -816,6 +832,7 @@ export default {
         watermarkDom.onclick = function () {
           console.log('watermark')
           watermarkOptionDom.classList.toggle('visible')
+          setDropdownContentPosition(watermarkDom, watermarkOptionDom)
         }
         watermarkOptionDom.onmousedown = function (evt) {
           const li = evt.target

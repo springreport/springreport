@@ -1694,6 +1694,83 @@
         </span>
       </template>
     </el-dialog>
+    <el-dialog
+      title="高亮设置"
+      v-model="highlightVisiable"
+      width="50%"
+      height="80%"
+      :close-on-click-modal="false"
+      @close="closehighlightDialog"
+    >
+      <el-form
+        ref="highlightRef"
+        :inline="true"
+        :model="highlightForm"
+        class="demo-form-inline"
+      >
+        <el-form-item
+          key="color"
+          label="高亮颜色"
+          prop="color"
+          :rules="filter_rules('高亮颜色', { required: true })"
+        >
+          <el-select
+            v-model="highlightForm.color"
+            placeholder="高亮颜色"
+            style="width:220px!important"
+          >
+            <el-option
+              v-for="op in selectUtil.highlightcolor"
+              :key="op.value"
+              :label="op.label"
+              :value="op.value"
+            />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+      <span class="dialog-footer">
+        <el-button size="small" @click="closehighlightDialog">取 消</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          @click="confirmSetHighlight"
+        >确 定</el-button>
+      </span>
+      </template>
+    </el-dialog>
+    <modal
+      ref="commonModal"
+      :modal-config="modalConfig"
+      :modal-form="modalForm"
+      :modal-data="modalData"
+      :modal-handles="modalHandles"
+      @closeModal="closeModal()"
+    />
+    <modal
+      ref="chartModalRef"
+      :modal-config="chartModalConfig"
+      :modal-form="chartModalForm"
+      :modal-data="chartModalData"
+      :modal-handles="chartModalHandles"
+      @closeModal="closeChartModal()"
+    />
+    <modal
+      ref="codeModalRef"
+      :modal-config="codeModalConfig"
+      :modal-form="codeModalForm"
+      :modal-data="codeModalData"
+      :modal-handles="codeModalHandles"
+      @closeModal="closeCodeModal()"
+    />
+    <modal
+      ref="paperMarginModalRef"
+      :modal-config="paperMarginModalConfig"
+      :modal-form="paperMarginModalForm"
+      :modal-data="paperMarginModalData"
+      :modal-handles="paperMarginModalHandles"
+      @closeModal="closePaperMarginModal()"
+    />
     <textarea id="clipboradInput" value="" style="opacity: 0; position: absolute" />
   </div>
 </template>
