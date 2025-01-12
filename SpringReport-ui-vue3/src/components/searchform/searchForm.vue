@@ -4,11 +4,7 @@
     <div class="search-content df-c-b">
       <div class="left-warp df-c">
         <!-- 查询显示与否根据searchForm -->
-        <div
-          v-if="searchForm.length"
-          class="action-item df-c"
-          @click="drawer = true"
-        >
+        <div v-if="searchForm.length" class="action-item df-c" @click="drawer = true">
           <icon-search fill="#666" style="margin-right: 4px" />
           <span>查询</span>
           <!-- conditionNum这块不点击查询，会有视觉上的bug，点击清除条件 -->
@@ -40,7 +36,11 @@
           @click="item.handle()"
         >
           <div class="df-c">
-            <span v-if="item.iconClass" :class="item.iconClass" style="width: 12px; height: 12px" />
+            <span
+              v-if="item.iconClass"
+              :class="item.iconClass"
+              style="width: 12px; height: 12px; margin-right: 4px"
+            />
             <span style="height: 12px">{{ item.label }}</span>
           </div>
         </el-button>

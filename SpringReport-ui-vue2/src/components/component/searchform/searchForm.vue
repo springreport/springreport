@@ -23,11 +23,11 @@
         </div>
         <div
           v-for="(item, index) in leftTableHandles"
+          v-show="!item.isHidden"
           :key="index"
+          v-has="item.auth"
           class="action-item df-c"
           :class="{'action-item-del':item.iconClass=='action-icon-del'}"
-          v-show="!item.isHidden"
-          v-has="item.auth"
           @click="item.handle()"
         >
           <i v-if="item.iconClass" :class="item.iconClass" />
@@ -45,8 +45,8 @@
           @click="item.handle()"
         >
           <div class="df-c">
-            <span v-if="item.iconClass" :class="item.iconClass" style="width: 12px;height: 12px;" />
-            <span>{{ item.label }}</span>
+            <span v-if="item.iconClass" :class="item.iconClass" style="width: 12px;height: 12px;margin-right: 4px;" />
+            <span style="height: 12px">{{ item.label }}</span>
           </div>
         </el-button>
       </div>

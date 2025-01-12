@@ -7,12 +7,11 @@
           :key="tag.title"
           class="menu-tag df-c"
           :class="[
-            `${tag.path.replaceAll('/', '')}`,
-            isActive(tag) ? 'menu-tag-active' : '',
+            `${tag.path.replaceAll('/', '')}`
           ]"
           @click="goPage(tag.path)"
         >
-          <span>{{ tag.title }}</span>
+          <span class="menu-tag-title" :class="[isActive(tag) ? 'menu-tag-active' : '']">{{ tag.title }}</span>
           <div
             v-if="!tag.hideclose"
             class="close"
@@ -87,16 +86,17 @@
         background-size: 100% 100%;
       }
     }
-    .menu-tag:hover,
+    .menu-tag-title:hover,
     .menu-tag-active {
       color: $--color-primary;
       font-weight: bold;
+      position: relative;
       &::before {
         position: absolute;
         content: "";
         left: 50%;
         bottom: 0;
-        width: 40%;
+        width: 60%;
         max-width: 62px;
         transform: translate(-50%, -50%);
         height: 3px;

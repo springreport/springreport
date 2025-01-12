@@ -6,13 +6,14 @@
           v-for="tag in visitedRouteList"
           :key="tag.path"
           class="menu-tag df-c"
-          :class="[
-            `${tag.path.replaceAll('/', '')}`,
-            fullPath.split('?')[0] == tag.path ? 'menu-tag-active' : '',
-          ]"
+          :class="[`${tag.path.replaceAll('/', '')}`]"
           @click="handleTabClick(tag)"
         >
-          <span>{{ tag.meta.title }}</span>
+          <span
+            class="menu-tag-title"
+            :class="[fullPath.split('?')[0] == tag.path ? 'menu-tag-active' : '']"
+            >{{ tag.meta.title }}</span
+          >
           <div v-if="!isAffix(tag)" class="close" @click.stop="handleTabRemove(tag.path)" />
         </div>
       </div>
@@ -322,16 +323,18 @@
           background-size: 100% 100%;
         }
       }
-      .menu-tag:hover,
+      .menu-tag-title:hover,
       .menu-tag-active {
         color: $base-color-primary;
         font-weight: bold;
+        position: relative;
+
         &::before {
           position: absolute;
           content: '';
           left: 50%;
           bottom: 0;
-          width: 40%;
+          width: 60%;
           max-width: 62px;
           transform: translate(-50%, -50%);
           height: 3px;

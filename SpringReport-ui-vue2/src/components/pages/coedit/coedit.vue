@@ -1,69 +1,79 @@
 <template>
-    <div class="contentbox" style="height: 100%;display: flex;flex-direction: column;">
-        <div style="width: 100%;flex: none;">
-            <el-header class="_header df-c-b">
-                <div class="left df-c">
-                <img
-                    src="@/static/img/logoWithName.png"
-                    height="30px"
-                    style="margin-left:8px"
-                />
-                </div>
-                <div class="right df-c">
-                <el-dropdown class="white font" trigger="click" placement="bottom" v-if="users.length > 0">
-                    <span class="el-dropdown-link df-c">
-                    <el-avatar size="small" :style="{marginRight:'4px',backgroundColor:item.color+' !important'}" shape="circle" :title="item.userName" v-for="(item,index) in headerUsers" :key="index"> {{(item.userName.slice(0,1)).toUpperCase()}} </el-avatar>
-                    <i class="el-icon-arrow-down el-icon--right" ></i>
-                    </span>
-                    <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item  v-for="(item,index) in users" :key="index">{{item.userName}}</el-dropdown-item>
-                    </el-dropdown-menu>
-                </el-dropdown>
-                </div>
-            </el-header>
+  <div class="contentbox" style="height: 100%;display: flex;flex-direction: column;">
+    <div style="width: 100%;flex: none;">
+      <el-header class="_header df-c-b">
+        <div class="left df-c">
+          <img
+            src="@/static/img/logoWithName.png"
+            height="30px"
+            style="margin-left:8px"
+          >
         </div>
-        <div v-loading="loading" :element-loading-text="loadingText" style="width: 100%;flex: 1;overflow: auto;">
-            <!-- <div id="luckysheet" style="width:100%;height:100%;left: 0px;overflow:auto;"></div> -->
-            <div  class="config-panel" v-if="chartSettingShow">
-                <div class="config-header">图表设置</div>
-                <div class="config-box">
-                    <vchartsetting :component="chartOptions" :isPreview="false" :isCoedit="true"></vchartsetting>
-                </div>
-            </div>
-             <div id="luckysheet" style="margin:0px;padding:0px;width:100%;height:100%;left: 0px;top: 50px"></div>
-            <el-dialog
-            :modal="false"
-            :close-on-click-modal='false'
-            :title="hisDialogTitle"
-            :visible.sync="hisdialogVisible"
-             @close="closeModal"
-            width="300px"
-            custom-class="hisdialog"
-            >
-            <div class="el-dialog-div" v-if="historyData && historyData.length > 0" >
-                <div v-for="(item,index) in historyData" :key="index">
-                <el-divider content-position="left">{{item.createTime}}</el-divider>
-                <el-descriptions title="" :column="1" border>
-                    <el-descriptions-item label="修改内容">{{item.changeDesc}}</el-descriptions-item>
-                    <el-descriptions-item label="操作人">{{item.operator}}</el-descriptions-item>
-                </el-descriptions>
-                </div>
-            </div>
-            <span slot="footer" class="dialog-footer"  v-if="historyData && historyData.length > 0">
-                <el-pagination
-                    small
-                    layout="prev, pager, next"
-                    :total="total"
-                    :page-size="pageSize"
-                    :current-page.sync="currentPage"
-                    @current-change="handleCurrentChange">
-                    </el-pagination>
+        <div class="right df-c">
+          <el-dropdown v-if="users.length > 0" class="white font" trigger="click" placement="bottom">
+            <span class="el-dropdown-link df-c">
+              <el-avatar v-for="(item,index) in headerUsers" :key="index" size="small" :style="{marginRight:'4px',backgroundColor:item.color+' !important'}" shape="circle" :title="item.userName"> {{ (item.userName.slice(0,1)).toUpperCase() }} </el-avatar>
+              <i class="el-icon-arrow-down el-icon--right" />
             </span>
-            <el-empty v-if="!historyData || historyData.length == 0" description="暂无改动记录"></el-empty>
-        </el-dialog>
-        <el-dialog :title="authTitle" :visible.sync="addAuthVisiable" width="850px" height="80%" custom-class="addauthdialog"  :modal="true" :close-on-click-modal='false' @close='closeAddAuth'>
-                <el-form :inline="true" :model="addAuthForm" class="demo-form-inline" ref="addAuthRef">
-                    <!-- <el-transfer
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item v-for="(item,index) in users" :key="index">{{ item.userName }}</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </div>
+      </el-header>
+    </div>
+    <div v-loading="loading" :element-loading-text="loadingText" style="width: 100%;flex: 1;overflow: auto;">
+      <!-- <div id="luckysheet" style="width:100%;height:100%;left: 0px;overflow:auto;"></div> -->
+      <div v-if="chartSettingShow" class="config-panel">
+        <div class="config-header">图表设置</div>
+        <div class="config-box">
+          <vchartsetting :component="chartOptions" :is-preview="false" :is-coedit="true" />
+        </div>
+      </div>
+      <div id="luckysheet" style="margin:0px;padding:0px;width:100%;height:100%;left: 0px;top: 50px" />
+      <el-dialog
+        :modal="false"
+        :close-on-click-modal="false"
+        :title="hisDialogTitle"
+        :visible.sync="hisdialogVisible"
+        width="300px"
+        custom-class="hisdialog"
+        @close="closeModal"
+      >
+        <div v-if="historyData && historyData.length > 0" class="el-dialog-div">
+          <div v-for="(item,index) in historyData" :key="index">
+            <el-divider content-position="left">{{ item.createTime }}</el-divider>
+            <el-descriptions title="" :column="1" border>
+              <el-descriptions-item label="修改内容">{{ item.changeDesc }}</el-descriptions-item>
+              <el-descriptions-item label="操作人">{{ item.operator }}</el-descriptions-item>
+            </el-descriptions>
+          </div>
+        </div>
+        <span v-if="historyData && historyData.length > 0" slot="footer" class="dialog-footer">
+          <el-pagination
+            small
+            layout="prev, pager, next"
+            :total="total"
+            :page-size="pageSize"
+            :current-page.sync="currentPage"
+            @current-change="handleCurrentChange"
+          />
+        </span>
+        <el-empty v-if="!historyData || historyData.length == 0" description="暂无改动记录" />
+      </el-dialog>
+      <el-drawer
+        :title="authTitle"
+        :visible.sync="addAuthVisiable"
+        size="36%"
+        custom-class="handle-drawer"
+        class="handle-drawer"
+
+        :modal="true"
+        :close-on-click-modal="false"
+        @close="closeAddAuth"
+      >
+        <el-form ref="addAuthRef" label-position="top" :model="addAuthForm" class="demo-form-inline">
+          <!-- <el-transfer
                         v-model="addAuthForm.userIds"
                         :data="authUsers"
                         :titles="['用户信息', '授权用户']"
@@ -78,72 +88,76 @@
                           </el-select>
                     </span>
                     </el-transfer> -->
-                    <el-tree
-                    :data="authUsers"
-                    show-checkbox
-                    default-expand-all
-                    node-key="id"
-                    ref="tree"
-                    highlight-current
-                    :props="defaultProps"
-                    :default-checked-keys="defaultCheckedUsers">
-                     <span class="custom-tree-node" slot-scope="{ node, data }">
-                         <span>{{ node.label }}</span>
-                         <span v-if="node.key.indexOf('dept')<0">
-                         <el-select  placeholder="请选择" size="mini"  v-model="data.authType" style="margin-left: 10px;width:120px;height:20px" @change="changeAuthType(data)">
-                            <el-option label="编辑" :value='1'></el-option>
-                            <el-option label="不可查看" :value='2'></el-option>
-                          </el-select>
-                          </span>
-                     </span>
-                    </el-tree>
-                </el-form>
-                <span slot="footer" class="dialog-footer">
-                    <el-button @click="closeAddAuth" size="small">取 消</el-button>
-                    <el-button type="primary" @click="confirmAddAuth" size="small">确 定</el-button>
-                </span>
-            </el-dialog>
-        <el-dialog
-            :modal="false"
-            :close-on-click-modal='false'
-            :title="authedRangeTitle"
-            :visible.sync="authdialogVisible"
-             @close="closeAuthDialog"
-             custom-class="hisdialog"
-            width="300px"
-            >
-            <div class="el-dialog-div" v-if="authedRange && authedRange.length > 0" >
-                <div v-for="(item,index) in authedRange" :key="index">
-                <el-descriptions title="" :column="1" border>
-                    <el-descriptions-item label="保护范围">{{item.rangeAxis}}</el-descriptions-item>
-                    <el-descriptions-item label="保护类型" v-if="!isCreator">{{item.authType==1?'可编辑':'不可查看'}}</el-descriptions-item>
-                    <el-descriptions-item label="授权人数" v-if="isCreator">{{item.userIds.length}}</el-descriptions-item>
-                </el-descriptions>
-                <div style="text-align:right;margin-top:5px" v-if="isCreator">
-                <el-button type="primary" title="编辑" icon="el-icon-edit" circle size="mini" @click="editRange(item)"></el-button>
-                    <el-button type="warning" icon="el-icon-monitor" title="显示选区" circle size="mini" @click="showRange(item)"></el-button>
-                    <el-button type="danger" icon="el-icon-delete" title="删除" circle size="mini" @click="deleteRange(item,index)"></el-button>
-                </div>
-                <el-divider content-position="left"></el-divider>
-                </div>
+          <el-tree
+            ref="tree"
+            :data="authUsers"
+            show-checkbox
+            default-expand-all
+            node-key="id"
+            highlight-current
+            :props="defaultProps"
+            :default-checked-keys="defaultCheckedUsers"
+          >
+            <span slot-scope="{ node, data }" class="custom-tree-node">
+              <span>{{ node.label }}</span>
+              <span v-if="node.key.indexOf('dept')<0">
+                <el-select v-model="data.authType" placeholder="请选择" size="mini" style="margin-left: 10px;width:120px;height:20px" @change="changeAuthType(data)">
+                  <el-option label="编辑" :value="1" />
+                  <el-option label="不可查看" :value="2" />
+                </el-select>
+              </span>
+            </span>
+          </el-tree>
+        </el-form>
+        <div class="handle-drawer__footer">
+          <el-button size="small" @click="closeAddAuth">取 消</el-button>
+          <el-button type="primary" size="small" @click="confirmAddAuth">确 定</el-button>
+        </div>
+      </el-drawer>
+      <el-dialog
+        :modal="false"
+        :close-on-click-modal="false"
+        :title="authedRangeTitle"
+        :visible.sync="authdialogVisible"
+        custom-class="hisdialog"
+        width="300px"
+        @close="closeAuthDialog"
+      >
+        <div v-if="authedRange && authedRange.length > 0" class="el-dialog-div">
+          <div v-for="(item,index) in authedRange" :key="index">
+            <el-descriptions title="" :column="1" border>
+              <el-descriptions-item label="保护范围">{{ item.rangeAxis }}</el-descriptions-item>
+              <el-descriptions-item v-if="!isCreator" label="保护类型">{{ item.authType==1?'可编辑':'不可查看' }}</el-descriptions-item>
+              <el-descriptions-item v-if="isCreator" label="授权人数">{{ item.userIds.length }}</el-descriptions-item>
+            </el-descriptions>
+            <div v-if="isCreator" style="text-align:right;margin-top:5px">
+              <el-button type="primary" title="编辑" icon="el-icon-edit" circle size="mini" @click="editRange(item)" />
+              <el-button type="warning" icon="el-icon-monitor" title="显示选区" circle size="mini" @click="showRange(item)" />
+              <el-button type="danger" icon="el-icon-delete" title="删除" circle size="mini" @click="deleteRange(item,index)" />
             </div>
-            <el-empty v-if="(!authedRange || authedRange.length == 0) && isCreator" description="暂无授权信息"></el-empty>
-            <el-empty v-if="(!authedRange || authedRange.length == 0) && !isCreator" description="暂无操作权限"></el-empty>
-        </el-dialog>
-        <div style="display:none">
-            <input id="uploadBtn" type="file" accept="xlsx/*"  @change="loadExcel" />
+            <el-divider content-position="left" />
+          </div>
         </div>
-        <div style="display:none">
-            <input id="uploadAttachmentBtn" type="file" accept="*"  @change="changeAttachment" />
-        </div>
-        </div>
-        <vchart :show.sync="vchartShow" @closeModal="closeAddChartModal()"></vchart>
+        <el-empty v-if="(!authedRange || authedRange.length == 0) && isCreator" description="暂无授权信息" />
+        <el-empty v-if="(!authedRange || authedRange.length == 0) && !isCreator" description="暂无操作权限" />
+      </el-dialog>
+      <div style="display:none">
+        <input id="uploadBtn" type="file" accept="xlsx/*" @change="loadExcel">
+      </div>
+      <div style="display:none">
+        <input id="uploadAttachmentBtn" type="file" accept="*" @change="changeAttachment">
+      </div>
     </div>
+    <vchart :show.sync="vchartShow" @closeModal="closeAddChartModal()" />
+  </div>
 </template>
 
 <script src="./coedit.js"></script>
 
 <style scoped lang="scss">
+::v-deep .el-tree-node__content{
+    font-size: 14px;
+}
 .center{
     flex: 1;
     height: 100vh;
@@ -170,7 +184,7 @@
     bottom: 0;
     pointer-events: auto !important;
     /* background:#d9ebf0 !important; */
-} 
+}
 .hisdialog ::v-deep .el-dialog__body{
     height: calc(100% - 90px) !important;
     overflow: auto;

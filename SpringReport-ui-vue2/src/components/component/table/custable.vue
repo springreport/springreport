@@ -23,7 +23,7 @@
       </el-row>
     </section>
     <!-- 数据表格 -->
-    <section 
+    <section
       class="ces-table"
       :style="{
         height: getTableHeight(),
@@ -325,11 +325,8 @@ export default {
   },
   data() {
     return {
-      thirdPartyType:"",
+      thirdPartyType: ''
     }
-  },
-  mounted(){
-    this.thirdPartyType = localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType);
   },
   watch: {
     defaultSelections(val) {
@@ -344,19 +341,22 @@ export default {
       })
     }
   },
+  mounted() {
+    this.thirdPartyType = localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)
+  },
   methods: {
-    getTableHeight(){
-      if(this.isPagination){
-        if(this.thirdPartyType){
-          return 'calc(100vh - 146px)';
-        }else{
-          return 'calc(100vh - 286px)';
+    getTableHeight() {
+      if (this.isPagination) {
+        if (this.thirdPartyType) {
+          return 'calc(100vh - 146px)'
+        } else {
+          return 'calc(100vh - 286px)'
         }
-      }else{
-        if(this.thirdPartyType){
-          return 'calc(100vh - 108px)';
-        }else{
-          return 'calc(100vh - 238px)';
+      } else {
+        if (this.thirdPartyType) {
+          return 'calc(100vh - 108px)'
+        } else {
+          return 'calc(100vh - 238px)'
         }
       }
     },
@@ -448,6 +448,9 @@ export default {
 }
 ::v-deep .el-dropdown-item-del {
   color: #ff4d4f !important;
+}
+::v-deep .el-dropdown-menu__item{
+  text-align: left;
 }
 
 ::v-deep .el-table__expand-icon{
