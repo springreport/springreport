@@ -158,14 +158,14 @@
           <el-button type="primary" @click="confirmAddAuth" size="small">确 定</el-button>
         </div>
       </el-drawer>
-      <el-dialog
+      <el-drawer
         :modal="false"
         :close-on-click-modal="false"
         :title="authedRangeTitle"
         v-model="authdialogVisible"
         @close="closeAuthDialog"
-        modal-class="hisDialog"
-        width="300px"
+        custom-class="handle-drawer"
+        class="handle-drawer"
       >
         <div class="el-dialog-div" v-if="authedRange && authedRange.length > 0">
           <div v-for="(item, index) in authedRange" :key="index">
@@ -215,7 +215,7 @@
           v-if="(!authedRange || authedRange.length == 0) && !isCreator"
           description="暂无操作权限"
         ></el-empty>
-      </el-dialog>
+      </el-drawer>
       <div style="display: none">
         <input id="uploadBtn" type="file" accept="xlsx/*" @change="loadExcel" />
       </div>

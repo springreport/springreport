@@ -61,8 +61,8 @@
         </template>
 
         <div v-show="isDrill == 1" class="action-item df-c" @click="back">
-          <i class="el-icon-back" style="margin-right: 4px" />
-          <div>返回上级报表</div>
+          <icon-return theme="outline" size="16" fill="#595959" style="margin-right: 4px"/>
+          <div >返回上级报表</div>
         </div>
         <div class="headerRight df-c">
           <el-dropdown

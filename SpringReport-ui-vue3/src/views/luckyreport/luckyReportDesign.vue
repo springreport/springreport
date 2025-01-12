@@ -36,7 +36,7 @@
                 :title="item.userName"
                 v-for="(item, index) in headerUsers"
                 :key="index"
-                size="default"
+                :size="30"
               >
                 {{ item.userName.slice(0, 1).toUpperCase() }}
               </el-avatar>
@@ -2395,11 +2395,12 @@
         </span>
       </template>
     </el-dialog>
-    <el-dialog
+    <el-drawer
       :title="authTitle"
       v-model="addAuthVisiable"
       width="650px"
-      modal-class="addauthdialog"
+      custom-class="handle-drawer"
+      class="handle-drawer"
       :modal="true"
       :close-on-click-modal="false"
       @close="closeAddAuth"
@@ -2425,13 +2426,11 @@
         >
         </el-tree>
       </el-form>
-      <template #footer>
-        <span class="dialog-footer">
+        <div class="handle-drawer__footer">
           <el-button @click="closeAddAuth">取 消</el-button>
           <el-button type="primary" @click="confirmAddAuth">确 定</el-button>
-        </span>
-      </template>
-    </el-dialog>
+        </div>
+    </el-drawer>
     <modal
       ref="settingRef"
       :modalConfig="settingModalConfig"
@@ -2440,14 +2439,14 @@
       :modalHandles="settingModalHandles"
       @closeModal="closeSettingModal()"
     ></modal>
-    <el-dialog
+    <el-drawer
       :modal="false"
       :close-on-click-modal="false"
       :title="authedRangeTitle"
       v-model="authdialogVisible"
       @close="closeAuthDialog"
-      modal-class="authdialog"
-      width="240px"
+      custom-class="handle-drawer"
+      class="handle-drawer"
     >
       <div class="el-dialog-div" v-if="authedRange && authedRange.length > 0">
         <div v-for="(item, index) in authedRange" :key="index">
@@ -2491,7 +2490,7 @@
         v-if="(!authedRange || authedRange.length == 0) && !isCreator"
         description="暂无操作权限"
       ></el-empty>
-    </el-dialog>
+    </el-drawer>
     <!-- 左侧分组设置 -->
     <el-dialog
       :close-on-click-modal="false"
@@ -3470,16 +3469,16 @@
   }
 
   ::v-deep .authdialog {
-    margin-top: 50px !important;
-    margin-left: 0px !important;
-    flex-direction: column !important;
-    // overflow: hidden !important;
-    max-height: calc(100% - 90px) !important;
-    top: 0 !important;
-    left: 0px !important;
-    bottom: 0;
-    pointer-events: auto !important;
-    /* background:#d9ebf0 !important; */
+      margin-top: 50px !important;
+      margin-left: 0px !important;
+      flex-direction: column !important;
+      // overflow: hidden !important;
+      max-height: calc(100% - 90px) !important;
+      top: 0 !important;
+      left: 0px !important;
+      bottom: 0;
+      pointer-events: auto !important;
+      /* background:#d9ebf0 !important; */
   }
 
   .authdialog ::v-deep .el-dialog__body {

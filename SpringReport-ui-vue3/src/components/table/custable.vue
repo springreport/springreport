@@ -426,4 +426,7 @@
       font-weight: bold;
     }
   }
+  .ces-table-page{
+    width: 100%;
+  }
 </style>

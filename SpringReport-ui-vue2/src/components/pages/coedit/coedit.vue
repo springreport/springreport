@@ -64,7 +64,6 @@
       <el-drawer
         :title="authTitle"
         :visible.sync="addAuthVisiable"
-        size="36%"
         custom-class="handle-drawer"
         class="handle-drawer"
 
@@ -114,13 +113,13 @@
           <el-button type="primary" size="small" @click="confirmAddAuth">确 定</el-button>
         </div>
       </el-drawer>
-      <el-dialog
+      <el-drawer
         :modal="false"
         :close-on-click-modal="false"
         :title="authedRangeTitle"
         :visible.sync="authdialogVisible"
-        custom-class="hisdialog"
-        width="300px"
+        custom-class="handle-drawer"
+        class="handle-drawer"
         @close="closeAuthDialog"
       >
         <div v-if="authedRange && authedRange.length > 0" class="el-dialog-div">
@@ -140,7 +139,7 @@
         </div>
         <el-empty v-if="(!authedRange || authedRange.length == 0) && isCreator" description="暂无授权信息" />
         <el-empty v-if="(!authedRange || authedRange.length == 0) && !isCreator" description="暂无操作权限" />
-      </el-dialog>
+      </el-drawer>
       <div style="display:none">
         <input id="uploadBtn" type="file" accept="xlsx/*" @change="loadExcel">
       </div>

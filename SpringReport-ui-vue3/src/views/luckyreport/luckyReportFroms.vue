@@ -1830,11 +1830,12 @@
         </span>
       </template>
     </el-dialog>
-    <el-dialog
+    <el-drawer
       :title="authTitle"
       v-model="addAuthVisiable"
       width="650px"
-      modal-class="addauthdialog"
+      custom-class="handle-drawer"
+      class="handle-drawer"
       :modal="true"
       :close-on-click-modal="false"
       @close="closeAddAuth"
@@ -1860,13 +1861,11 @@
         >
         </el-tree>
       </el-form>
-      <template #footer>
-        <span class="dialog-footer">
+        <div class="handle-drawer__footer">
           <el-button @click="closeAddAuth">取 消</el-button>
           <el-button type="primary" @click="confirmAddAuth">确 定</el-button>
-        </span>
-      </template>
-    </el-dialog>
+        </div>
+    </el-drawer>
     <modal
       ref="settingRef"
       :modalConfig="settingModalConfig"
@@ -1875,14 +1874,14 @@
       :modalHandles="settingModalHandles"
       @closeModal="closeSettingModal()"
     ></modal>
-    <el-dialog
+    <el-drawer
       :modal="false"
       :close-on-click-modal="false"
       :title="authedRangeTitle"
       v-model="authdialogVisible"
       @close="closeAuthDialog"
-      modal-class="authdialog"
-      width="240px"
+      custom-class="handle-drawer"
+      class="handle-drawer"
     >
       <div class="el-dialog-div" v-if="authedRange && authedRange.length > 0">
         <div v-for="(item, index) in authedRange" :key="index">
@@ -1926,7 +1925,7 @@
         v-if="(!authedRange || authedRange.length == 0) && !isCreator"
         description="暂无操作权限"
       ></el-empty>
-    </el-dialog>
+    </el-drawer>
     <!-- 左侧分组设置 -->
     <el-dialog
       :close-on-click-modal="false"
@@ -3004,7 +3003,7 @@
   }
 
   ::v-deep .handle-drawer .el-drawer__body {
-    background-color: #f7f9fc;
+    // background-color: #f7f9fc;
     padding: 8px 10px 52px !important;
   }
 
