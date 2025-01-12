@@ -725,6 +725,12 @@
   };
 </script>
 <style lang="scss" scoped>
+  :deep(.el-tabs__nav-next) {
+    line-height: 50px !important;
+  }
+  :deep(.el-tabs__nav-prev) {
+    line-height: 50px !important;
+  }
   .search-content {
     height: 32px;
     line-height: 32px;
