@@ -42,7 +42,7 @@
     </div>
     <div style=" margin-top: 14px" v-if="activeBottom == 1 && isPagination">
       <div class="pagination df-c-b">
-      <el-pagination small background layout="prev, pager, next,total" :total="pagination.total"  
+      <el-pagination size="small" background layout="prev, pager, next,total" :total="pagination.total*1"  
       @current-change="changeCurrentPage" :page-size="pagination.pageSize" 
       :current-page="pagination.currentPage"
       :hide-on-single-page="false" :pager-count="11"/>
@@ -454,7 +454,7 @@ export default {
 
 <style scoped lang="scss">
 .index {
-  height: 100%;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;

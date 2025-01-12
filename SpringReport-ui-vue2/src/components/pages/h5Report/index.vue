@@ -1,4 +1,5 @@
 <template>
+<el-scrollbar height="100vh" ref="scroll">
   <div class="index" v-loading="loading" element-loading-text="数据加载中">
     <!-- 导航栏 -->
     <van-nav-bar
@@ -7,11 +8,11 @@
       @click-right="onClickRight"
     >
       <template #left v-if="isDrill == 1">
-        <img src="@/static/img/back.png" width="24px" height="24px" />
+        <img class="back"  width="24px" height="24px" />
       </template>
       <template #right>
-        <img
-          src="@/static/img/filter.png"
+        <img class="filter"
+          
           width="18px"
           height="18px"
           @click="openFilter"
@@ -33,34 +34,18 @@
     <!-- table或图表 -->
     <div class="content" v-if="currentSheetInfo">
       <template v-if="activeBottom == 1">
-        <ReportTable :info="currentSheetInfo.table" :imgs="currentSheetInfo.images" :drillCells="currentSheetInfo.drillCells"/>
+        <ReportTable :info="currentSheetInfo.table" :imgs="currentSheetInfo.images" :drillCells="currentSheetInfo.drillCells" @drill="drill"/>
       </template>
       <template v-else>
         <ReportChart :info="currentSheetInfo.chartsOptions" />
       </template>
     </div>
-    <div style="padding: 0 14px; margin-top: 14px" v-if="activeBottom == 1 && isPagination">
+    <div style=" margin-top: 14px" v-if="activeBottom == 1 && isPagination">
       <div class="pagination df-c-b">
-        <div class="total-info">
-          <div class="count">共{{ pagination.total }}条</div>
-          <!-- <div class="label">共有数据(条)</div> -->
-        </div>
-        <van-pagination
-          v-model="pagination.currentPage"
-          :total-items="pagination.total"
-          :force-ellipses="true"
-          :items-per-page="pagination.pageSize"
-          @change="changeCurrentPage"
-        />
-        <div class="quick-action df-c">
-          <!-- 不可选取可给 action-disabled 类名-->
-          <div class="action pre df-c" @click="changeCurrentPage('pre')">
-            <svg-icon icon-class="pre" class="svg" />
-          </div>
-          <div class="action next df-c" @click="changeCurrentPage('next')">
-            <svg-icon icon-class="next" class="svg" />
-          </div>
-        </div>
+      <el-pagination size="mini" background layout="prev, pager, next,total" :total="pagination.total*1"  
+      @current-change="changeCurrentPage" :page-size="pagination.pageSize" 
+      :current-page="pagination.currentPage"
+      :hide-on-single-page="false" :pager-count="11"/>
       </div>
     </div>
     <!-- 底部切换 如果只有图标或者table其中一项则不显示-->
@@ -87,20 +72,17 @@
       ref="ReportFilterRef"
       :info="reportForm[0]?reportForm[0]:{params:[]}"
       :searchData="searchData.params[0]"
+      @search="search"
     />
   </div>
+</el-scrollbar>
 </template>
 
 <script>
-import Vue from "vue";
-import { Tab, Tabs, NavBar, Pagination } from "vant";
 import ReportTable from "./components/ReportTable.vue";
 import ReportChart from "./components/ReportChart.vue";
 import ReportFilter from "./components/ReportFilter.vue";
-Vue.use(Tab);
-Vue.use(Tabs);
-Vue.use(NavBar);
-Vue.use(Pagination);
+
 export default {
   name: "index",
   data() {
@@ -115,7 +97,7 @@ export default {
       pagination: {
         //分页信息
         currentPage: 1,
-        pageSize: 10,
+        pageSize: 20,
         total: 101,
       },
       currentTplId: null,
@@ -173,7 +155,7 @@ export default {
     openFilter() {
       this.$refs["ReportFilterRef"].openDrawer();
     },
-    // 点击回到上一报表
+    // 点击回到上一页
     onClickLeft() {
       // this.$route.go(-1);
       this.back();
@@ -408,25 +390,9 @@ export default {
       // 获取接口
     },
     // 更改页码
-    changeCurrentPage(type) {
-      if (type == "pre") {
-        if (this.pagination.currentPage == 1) {
-          return;
-        }
-        this.pagination.currentPage--;
-      } else if (type == "next") {
-        // 总页数向上取整
-          const lastPage = Math.ceil(
-          this.pagination.total / this.pagination.pageSize
-        );
-        if (lastPage == this.pagination.currentPage) {
-          return;
-        }
-        this.pagination.currentPage++;
-      }
+    changeCurrentPage(val) {
       // 获取接口
-      this.pageParam.currentPage = this.pagination.currentPage;
-      this.pageParam.pageCount = this.pagination.pageSize;
+      this.pageParam.currentPage = val;
       this.getMobileReport();
     },
     //报表下钻
@@ -487,13 +453,19 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "@/element-variables.scss";
-
 .index {
-  height: 100%;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+}
+.back{
+  width:24px !important;
+  height:24px !important;
+}
+.filter{
+  width:18px !important;
+  height:18px !important;
 }
 .content {
   flex: 1;
@@ -517,7 +489,7 @@ export default {
     background: #f5f5f5;
   }
   .sheet-item-active {
-    background: $--color-primary;
+    background: #17b794;
     color: #fff;
   }
 }
@@ -559,44 +531,23 @@ export default {
       background: #666;
     }
   }
-  ::v-deep .van-pagination {
-    .van-pagination__prev,
-    .van-pagination__next {
-      display: none;
-    }
-    .van-pagination__page {
-      border-radius: 2px;
-      background: #f5f7f9;
-      box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.1);
-      font-size: 14px;
-      font-style: normal;
-      font-weight: 400;
-      line-height: 24px;
-      height: 24px;
-      min-width: 24px;
-      color: rgba(0, 0, 0, 0.85);
-      margin-right: 4px;
-      &:last-child {
-        margin-right: 0;
-      }
-    }
-    .van-pagination__item--active {
-      background: $--color-primary;
-      box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.1);
-      color: #fff;
-    }
-    .van-pagination__item::after {
-      border-width: 0;
-      border: 0;
-    }
-  }
 }
-::v-deep .van-tabs__line {
+:deep(.van-tabs__line) {
   bottom: 20px !important;
 }
-::v-deep .el-form-item__error {
+:deep(.el-form-item__error) {
   padding-top: 0px !important;
 }
+:deep(.el-pagination)
+{
+  width:100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.el-scrollbar :deep(.el-scrollbar__view){
+    height:100% !important;
+  }
 .bottom-tab {
   margin-top: 12px;
   width: 100%;
@@ -622,7 +573,7 @@ export default {
     font-weight: 400;
   }
   .tab-item-active {
-    color: $--color-primary;
+    color: #17b794;
     background: #d4f6ef;
   }
 }
