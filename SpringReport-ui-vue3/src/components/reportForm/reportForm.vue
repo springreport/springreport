@@ -127,12 +127,7 @@
           </div>
           </div> -->
           <div style="display: flex; width: 100%; padding-left: 0px">
-            <el-tabs
-              type="border-card"
-              v-model="tabFocus"
-              v-if="reportForm.length > 1"
-              style="width: 100%"
-            >
+            <el-tabs v-model="tabFocus" v-if="reportForm.length > 1" style="width: 100%">
               <el-tab-pane
                 v-for="(data, i) in reportForm"
                 :key="data.datasetName"
