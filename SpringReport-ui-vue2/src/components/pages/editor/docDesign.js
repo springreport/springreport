@@ -1908,6 +1908,7 @@ export default {
       this.commonUtil.showConfirm(params)
     },
     deleteDataSetCallback() {
+      this.getTplGroupDatasets();
       this.getDataSets()
     },
     uploadFile(file, imageFileDom) {
