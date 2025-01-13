@@ -75,7 +75,7 @@
               <el-avatar
                 v-for="(item, index) in headerUsers"
                 :key="index"
-                size="small"
+                :size=30
                 :style="{
                   marginRight: '4px',
                   backgroundColor: item.color + ' !important',
@@ -85,7 +85,7 @@
               >
                 {{ item.userName.slice(0, 1).toUpperCase() }}
               </el-avatar>
-              <i class="el-icon-arrow-down el-icon--right" />
+               <icon-down theme="outline" size="16" />
             </span>
             <template #dropdown>
               <el-dropdown-menu>

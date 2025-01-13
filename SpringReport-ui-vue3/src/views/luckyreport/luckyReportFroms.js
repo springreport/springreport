@@ -3233,6 +3233,7 @@ export default {
     },
     deleteDataSetCallback(result) {
       this.getDataSets();
+      this.getTplGroupDatasets();
       var obj = {
         cells: {},
         value: result.responseData,

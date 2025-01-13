@@ -19,15 +19,15 @@ export default {
         //查询表单按钮start
         searchHandle: [
           {
-            label: '查询',
-            type: 'primary',
-            handle: () => this.searchtablelist(),
+            label: '清除条件',
+            type: '',
+            handle: () => this.resetSearch(),
             auth: 'reportDatasourceDictData_search',
           },
           {
-            label: '重置',
-            type: 'warning',
-            handle: () => this.resetSearch(),
+            label: '查询',
+            type: 'primary',
+            handle: () => this.searchtablelist(),
             auth: 'reportDatasourceDictData_search',
           },
         ],

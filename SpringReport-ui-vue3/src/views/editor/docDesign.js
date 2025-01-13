@@ -290,7 +290,6 @@ export default {
       datasetItemActive: null, // 数据集选中项
       filedLoading: false, // 字段loading
       designHeight: 0,
-      designHeight: 0,
       selectVariableOpen: true, // 数据集选择变量展开
     }
   },
@@ -1944,6 +1943,7 @@ export default {
     },
     deleteDataSetCallback(){
       this.getDataSets();
+      this.getTplGroupDatasets();
     },
     uploadFile(file,imageFileDom) {
       const param = new FormData() // 创建form对象

@@ -14,7 +14,7 @@
           >
             <span class="el-dropdown-link df-c">
               <el-avatar
-                size="small"
+                :size="30"
                 :style="{ marginRight: '4px', backgroundColor: item.color + ' !important' }"
                 shape="circle"
                 :title="item.userName"
