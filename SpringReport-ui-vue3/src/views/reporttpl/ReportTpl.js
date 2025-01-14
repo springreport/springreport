@@ -805,7 +805,7 @@ export default {
     },
     //页面跳转
     routerTo(name, row) {
-      let viewReport = this.$router.resolve({ name: name, query: { tplId: row.id } });
+      let viewReport = this.$router.resolve({ name: name, query: { tplId: row.id ,thirdPartyType:localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)} });
       window.open(viewReport.href, '_blank');
     },
     //是否显示修改密码按钮
@@ -969,8 +969,12 @@ export default {
             });
             return;
           }
+          var extraParam = {}
+          if(localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)){
+            extraParam.thirdPartyType = localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType);
+          }
           var obj = {
-            params: this.pageData.shareReportModalData,
+            params: Object.assign({}, this.pageData.shareReportModalData, extraParam),
             removeEmpty: false,
           };
           obj.url = this.apis.reportTpl.getShareUrlApi;
@@ -1000,7 +1004,7 @@ export default {
       }
     },
     routerToTask(row) {
-      this.$router.push({ name: 'reportTask', query: { taskTplId: row.id } });
+      this.$router.push({ name: 'reportTask', query: { taskTplId: row.id ,thirdPartyType:localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)} });
     },
     loadData(tree, treeNode, resolve) {
       var obj = {

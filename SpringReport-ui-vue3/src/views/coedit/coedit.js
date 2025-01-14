@@ -16,6 +16,7 @@ export default {
     },
     data() {
         return{
+            isThirdParty:2,
             shareUser:"",
             loading:false,
             loadingText:"文件上传中，请耐心等待...",
@@ -291,7 +292,8 @@ export default {
             let config = {
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                    'Authorization': localStorage.getItem(that.commonConstants.sessionItem.authorization)
+                    'Authorization': localStorage.getItem(that.commonConstants.sessionItem.authorization),
+                    'thirdPartyType':localStorage.getItem(that.commonConstants.sessionItem.thirdPartyType)
                 }
             }
             try {
@@ -492,6 +494,7 @@ export default {
             {
               document.title = response.responseData.tplName;
               that.isCreator = response.responseData.creator;
+              that.isThirdParty = response.responseData.isThirdParty;
               that.creatorName = response.responseData.creatorName;
               that.sheetRangeAuth = response.responseData.sheetRangeAuth;
               var gridKey = that.$route.query.gridKey;
@@ -545,6 +548,10 @@ export default {
         })
       },
       addAuthClick(){
+        if(this.isThirdParty == 1){
+          this.commonUtil.showMessage({ message: '第三方iframe调用暂不支持该功能！', type: this.commonConstants.messageType.error })
+          return;
+        }
         let rangeAxis = luckysheet.getRangeAxis();
         if(!rangeAxis || rangeAxis.length == 0)
         {
@@ -655,6 +662,10 @@ export default {
           });
       },
       viewAuthClick(){
+        if(this.isThirdParty == 1){
+          this.commonUtil.showMessage({ message: '第三方iframe调用暂不支持该功能！', type: this.commonConstants.messageType.error })
+          return;
+        }
         this.authRangeToArray();
         if(this.isCreator)
         {
@@ -1185,7 +1196,7 @@ export default {
         let fileType = this.commonUtil.getFileExt(item.linkAddress);
         if(fileType){
           if(this.commonConstants.attachPreviewExt.includes(fileType)){
-            let viewReport = this.$router.resolve({ name:"attachment",query: {url:item.linkAddress,name:item.fileName,fileType:fileType}});
+            let viewReport = this.$router.resolve({ name:"attachment",query: {url:item.linkAddress,name:item.fileName,fileType:fileType,'thirdPartyType':localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)}});
             window.open(viewReport.href, '_blank');
           }else{
             window.open(item.linkAddress, '_blank');

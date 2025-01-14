@@ -553,7 +553,7 @@ export default {
     routerTo(row) {
       this.$router.push({
         name: 'reportDatasourceDictType',
-        query: { reportDatasourceId: row.id },
+        query: { reportDatasourceId: row.id,thirdPartyType:localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType) },
       });
     },
     //修改数据源类型

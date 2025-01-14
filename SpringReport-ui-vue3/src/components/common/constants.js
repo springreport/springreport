@@ -25,7 +25,8 @@ commonConstants.sessionItem={
     roleName:"roleName",
     isSystemMerchant:'isSystemMerchant',
     merchantNo:'merchantNo',
-    userId:'userId'
+    userId:'userId',
+    thirdPartyType:"thirdPartyType",
 }
 commonConstants.commonVariable = {
     borderPath:"../../../SpringReport-vue3/src/assets/img/border/",//边框路径

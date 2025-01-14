@@ -459,7 +459,7 @@ export default {
     },
     //页面跳转
     routerTo(name, row) {
-      let viewReport = this.$router.resolve({ name: name, query: { tplId: row.id } });
+      let viewReport = this.$router.resolve({ name: name, query: { tplId: row.id ,thirdPartyType:localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)} });
       window.open(viewReport.href, '_blank');
     },
     loadData(tree, treeNode, resolve) {

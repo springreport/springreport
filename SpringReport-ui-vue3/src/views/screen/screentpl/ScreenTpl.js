@@ -507,7 +507,7 @@ export default {
       this.pageData.selectList = rows;
     },
     screenDesign(row) {
-      const viewReport = this.$router.resolve({ name: 'screenDesign', query: { tplId: row.id } });
+      const viewReport = this.$router.resolve({ name: 'screenDesign', query: { tplId: row.id,thirdPartyType:localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType) } });
       window.open(viewReport.href, '_blank');
     },
     // 获取数据源

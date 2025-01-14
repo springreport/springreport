@@ -34,6 +34,12 @@
     () => {
       scroll.value.setScrollTop(0);
       let token = router.currentRoute.value.query.token;
+      let thirdPartyType = router.currentRoute.value.query.thirdPartyType;
+      if(thirdPartyType){
+          localStorage.setItem("thirdPartyType", thirdPartyType);
+        }else{
+          localStorage.removeItem("thirdPartyType")
+        }
       if (token && !localStorage.getItem('token')) {
         localStorage.setItem('token', token);
         getUserInfoByToken();

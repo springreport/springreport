@@ -59,6 +59,7 @@ export default {
   },
   data() {
     return {
+      isThirdParty:2,//是否第三方iframe调用
       rightOpen: true, // 左侧展开
       leftOpen: true, // 右侧展开
       rightFormCollapse: [
@@ -796,12 +797,14 @@ export default {
       const reportTplId = this.$route.query.tplId; // reportTplId
       var options = this.sheetOptions;
       options.isReport = true;
-      options.allowUpdate = true;
-      options.gridKey = 'designMode-' + reportTplId;
-      options.updateUrl =
-        location.protocol === 'https:'
-          ? 'wss' + '://' + location.host + '/api/coedit/websocket/luckysheet'
-          : 'ws' + '://' + location.host + '/api/coedit/websocket/luckysheet';
+      if(this.isThirdParty != 1){
+        options.allowUpdate = true;
+        options.gridKey = 'designMode-' + reportTplId;
+        options.updateUrl =
+          location.protocol === 'https:'
+            ? 'wss' + '://' + location.host + '/api/coedit/websocket/luckysheet'
+            : 'ws' + '://' + location.host + '/api/coedit/websocket/luckysheet';
+      }
       options.uploadImage = this.commonUtil.uploadImage;
       if (!this.isCreator) {
         options.cellRightClickConfig.insertRow = false;
@@ -2549,6 +2552,7 @@ export default {
             }
           }
           _this.isParamMerge = response.responseData.isParamMerge == '1' ? true : false;
+          _this.isThirdParty = response.responseData.isThirdParty;
           _this.init(charts);
         }
       });
@@ -2558,7 +2562,7 @@ export default {
       let reportTplId = this.$route.query.tplId; //reportTplId
       let viewReport = this.$router.resolve({
         name: 'luckyReportPreview',
-        query: { tplId: reportTplId },
+        query: { tplId: reportTplId ,thirdPartyType:localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)},
       });
       window.open(viewReport.href, '_blank');
     },
@@ -2816,6 +2820,7 @@ export default {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: localStorage.getItem(that.commonConstants.sessionItem.authorization),
+          'thirdPartyType':localStorage.getItem(that.commonConstants.sessionItem.thirdPartyType)
         },
       };
       try {
@@ -4157,6 +4162,10 @@ export default {
       }
     },
     addAuthClick() {
+      if(this.isThirdParty == 1){
+        this.commonUtil.showMessage({ message: '第三方iframe调用暂不支持该功能！', type: this.commonConstants.messageType.error })
+        return;
+      }
       let rangeAxis = luckysheet.getRangeAxis();
       if (!rangeAxis || rangeAxis.length == 0) {
         this.commonUtil.showMessage({
@@ -4234,6 +4243,10 @@ export default {
       }
     },
     viewAuthClick() {
+      if(this.isThirdParty == 1){
+        this.commonUtil.showMessage({ message: '第三方iframe调用暂不支持该功能！', type: this.commonConstants.messageType.error })
+        return;
+      }
       this.authRangeToArray();
       if (this.isCreator) {
         this.authedRangeTitle = '保护范围';
@@ -4685,7 +4698,7 @@ export default {
         if (this.commonConstants.attachPreviewExt.includes(fileType)) {
           let viewReport = this.$router.resolve({
             name: 'attachment',
-            query: { url: item.linkAddress, name: item.fileName, fileType: fileType },
+            query: { url: item.linkAddress, name: item.fileName, fileType: fileType ,'thirdPartyType':localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)},
           });
           window.open(viewReport.href, '_blank');
         } else {

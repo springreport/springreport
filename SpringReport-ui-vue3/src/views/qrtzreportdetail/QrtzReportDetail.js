@@ -27,7 +27,8 @@ export default {
         //表格工具栏按钮 start
         tableHandles:[
           {label:'新增',position: 'right',iconClass: 'action-icon-add',type:'primary',handle:()=>this.showModal(this.commonConstants.modalType.insert),auth:'reportTask_insert'},
-          {label:'批量删除',position: 'left',iconClass: 'action-icon-del',type:'danger',handle:()=>this.deleteBatch(),auth:'reportTask_batchdelete'}
+          {label:'批量删除',position: 'left',iconClass: 'action-icon-del',type:'danger',handle:()=>this.deleteBatch(),auth:'reportTask_batchdelete'},
+          {label: '返回', type: 'primary', position: 'left', iconClass: 'action-icon-back', handle: () => this.backTo(), auth: 'ignore',isHidden:true}
         ],
         //表格工具栏按钮 end
         selectList:[],//表格选中的数据
@@ -105,6 +106,10 @@ export default {
     }
   },
   mounted(){
+    let thirdPartyType = localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)
+    if(thirdPartyType){
+      this.pageData.tableHandles[2].isHidden = false;
+    }
     this.searchtablelist();
     this.getReportParam();
   },
@@ -426,6 +431,9 @@ export default {
         this.pageData.modalForm[4].show = false;
         this.pageData.modalForm[4].rules.required = false;
       }
+    },
+    backTo(){
+      this.$router.push({ name: 'reportTpl',query:{thirdPartyType:localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)} })
     }
   }
 };

@@ -53,6 +53,7 @@ export default {
             handle: () => this.deleteBatch(),
             auth: 'reportDatasourceDictType_delete',
           },
+          { label: '返回', type: 'primary', position: 'left', iconClass: 'action-icon-back', handle: () => this.backTo(), auth: 'ignore',isHidden:true}
         ],
         //表格工具栏按钮 end
         selectList: [], //表格选中的数据
@@ -157,6 +158,10 @@ export default {
   mounted() {
     this.pageData.tableData = [];
     this.searchtablelist();
+    let thirdPartyType = localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)
+    if(thirdPartyType){
+      this.pageData.tableHandles[2].isHidden = false;
+    }
   },
   methods: {
     /**
@@ -309,8 +314,11 @@ export default {
       // this.$router.push({ name: 'reportDatasourceDictData'})
       this.$router.push({
         name: 'reportDatasourceDictData',
-        query: { reportDatasourceId: row.datasourceId, dictType: row.dictType },
+        query: { reportDatasourceId: row.datasourceId, dictType: row.dictType,thirdPartyType:localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)},
       });
     },
+    backTo(){
+      this.$router.push({ name: 'reportDatasource',query:{thirdPartyType:localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)} })
+    }
   },
 };

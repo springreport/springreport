@@ -299,13 +299,14 @@
     // margin-left: 1px;
     top: 45px;
     position: relative;
-    width: 254px;
-    height: 95%;
+    width: 306px;
+    height: calc(100vh - 64px - 10px - 20px);
     display: flex;
     flex-direction: column;
     overflow: auto;
     z-index: 1999;
     float: right;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     .config-header {
       width: 100%;
       height: 32px;

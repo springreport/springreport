@@ -17,16 +17,19 @@
        :modalForm='pageData.modalForm' :modalData='pageData.modalData' 
        :modalHandles='pageData.modalHandles'
        @closeModal="closeModal()"></modal>
-       <el-dialog title="参数设置" v-model="pageData.paramDialog"  top="20px" width="1000px" :close-on-click-modal='false' @close='closeParamDialog'>
+       <el-drawer title="参数设置" v-model="pageData.paramDialog"   :close-on-click-modal='false' @close='closeParamDialog'
+       size="36%"
+      custom-class="handle-drawer"
+      class="handle-drawer">
             <taskReportForm  ref="reportRef" :reportName="''" :reportForm="pageData.reportForm" :searchData="pageData.searchData">
             </taskReportForm>
-            <template #footer>
+            <div class="handle-drawer__footer">
              <span class="dialog-footer">
-                <el-button @click="closeParamDialog" size="small">取 消</el-button>
-                <el-button type="primary" @click="confirmParams" size="small">确 定</el-button>
+                <el-button @click="closeParamDialog" >取 消</el-button>
+                <el-button type="primary" @click="confirmParams">确 定</el-button>
             </span>
-            </template>
-       </el-dialog>
+            </div>
+       </el-drawer>
 
     </div>
 </template>

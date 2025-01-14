@@ -411,7 +411,7 @@ export default {
     routerTo(row) {
       let viewReport = this.$router.resolve({
         name: 'coedit',
-        query: { gridKey: row.listId, isLoadALL: row.dataLoadType },
+        query: { gridKey: row.listId, isLoadALL: row.dataLoadType ,thirdPartyType:localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)},
       });
       window.open(viewReport.href, '_blank');
     },

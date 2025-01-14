@@ -436,7 +436,7 @@ export default {
         previewDom.onclick = function () {
           console.log('preview')
           const tplId = that.$route.query.tplId// reportTplId
-          const viewReport = that.$router.resolve({ name: 'docPreview', query: { tplId: tplId }})
+          const viewReport = that.$router.resolve({ name: 'docPreview', query: { tplId: tplId ,thirdPartyType: localStorage.getItem(that.commonConstants.sessionItem.thirdPartyType)}})
           window.open(viewReport.href, '_blank')
         }
         // 动态设置展开面板的位置
@@ -1447,7 +1447,7 @@ export default {
           main:JSON.stringify(tplSettings.data.main),
           footer:JSON.stringify(tplSettings.data.footer),
           paperDirection:paperDirection,
-          watermark:JSON.stringify(tplSettings.watermark),
+          watermark:JSON.stringify(tplSettings.options.watermark),
           docTplCharts:this.docTplCharts,
           docTplCodes:this.docTplCodes,
           margins:JSON.stringify(paperMargin),
@@ -1997,7 +1997,8 @@ export default {
       formData.append("tplId",this.$route.query.tplId);
       let config = {
           headers: {'Content-Type': 'multipart/form-data',
-          'Authorization':localStorage.getItem(that.commonConstants.sessionItem.authorization)}
+          'Authorization':localStorage.getItem(that.commonConstants.sessionItem.authorization),
+          thirdPartyType: localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)}
       }
       try {
         Axios.post(that.apis.docTpl.uploadDocxApi, formData, config)

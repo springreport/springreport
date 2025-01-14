@@ -294,7 +294,7 @@ export default {
         },
         async preview() {
             await this.save()
-            const viewReport = this.$router.resolve({ name: 'screenView', query: { tplId: this.screenProperties.id,sendRequest:2}})
+            const viewReport = this.$router.resolve({ name: 'screenView', query: { tplId: this.screenProperties.id,sendRequest:2,thirdPartyType:localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)}})
             window.open(viewReport.href, '_blank')
         },
     }

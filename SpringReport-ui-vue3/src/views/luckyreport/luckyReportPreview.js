@@ -2776,7 +2776,7 @@ export default {
         if (this.commonConstants.attachPreviewExt.includes(fileType)) {
           let viewReport = this.$router.resolve({
             name: 'attachment',
-            query: { url: item.linkAddress, name: item.fileName, fileType: fileType },
+            query: { url: item.linkAddress, name: item.fileName, fileType: fileType,'thirdPartyType':localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType) },
           });
           window.open(viewReport.href, '_blank');
         } else {
@@ -2897,6 +2897,7 @@ export default {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: localStorage.getItem(that.commonConstants.sessionItem.authorization),
+          'thirdPartyType':localStorage.getItem(that.commonConstants.sessionItem.thirdPartyType)
         },
       };
       try {

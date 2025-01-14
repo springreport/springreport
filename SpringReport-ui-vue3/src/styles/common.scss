@@ -341,6 +341,17 @@ html {
   background-image: url("@/assets/img/common/print.png");
 }
 
+.action-icon-back{
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background-size: 100% 100%;
+  margin-right: 4px;
+  width: 14px;
+  height: 14px;
+  background-image: url("@/assets/img/common/back.png");
+}
+
 .search-drawer,
 .handle-drawer {
   .el-drawer__header {
