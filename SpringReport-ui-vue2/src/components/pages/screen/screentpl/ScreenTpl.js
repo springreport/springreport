@@ -153,10 +153,22 @@ export default {
     }
   },
   activated() {
-    this.pageData.tableData = []
-    this.searchtablelist()
-    this.getReportDatasource()
-    this.getReportType()
+    let thirdPartyType = localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)
+    if(!thirdPartyType){
+      this.pageData.tableData = []
+      this.searchtablelist()
+      this.getReportDatasource()
+      this.getReportType()
+    }
+  },
+  mounted() {
+    let thirdPartyType = localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)
+    if(thirdPartyType){
+      this.pageData.tableData = []
+      this.searchtablelist()
+      this.getReportDatasource()
+      this.getReportType()
+    }
   },
   methods: {
     /**
@@ -355,7 +367,7 @@ export default {
       this.pageData.selectList = rows
     },
     screenDesign(row) {
-      const viewReport = this.$router.resolve({ name: 'screenDesign', query: { tplId: row.id }})
+      const viewReport = this.$router.resolve({ name: 'screenDesign', query: { tplId: row.id,thirdPartyType:localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType) }})
       window.open(viewReport.href, '_blank')
     },
     // 获取数据源

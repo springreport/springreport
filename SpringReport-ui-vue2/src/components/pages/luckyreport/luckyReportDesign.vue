@@ -322,13 +322,13 @@
                 </el-form-item>
                 <el-form-item label="数据填充方式">
                   <el-select
+                    v-if="cellForm.cellExtend != 4"
                     v-model="cellForm.cellFillType"
                     style="width: 100%"
                     placeholder="数据填充方式"
                     size="small"
                     :disabled="attrDisabled"
                     @change="changeCellAttr('cellFillType')"
-                    v-if="cellForm.cellExtend != 4"
                   >
                     <el-option label="插入" :value="1" />
                     <el-option label="覆盖" :value="2" />
@@ -1747,14 +1747,14 @@
                 />
                 <div class="sub-title">{{ selectContentSuggestion }}</div>
               </el-form-item>
-
               <el-form-item>
                 <el-button
                   type="primary"
                   size="small"
                   @click="addParam"
                 >添加</el-button>
-              </el-form-item>
+              </el-form-item><br>
+              <div style="width:100%">
               <el-tag
                 v-if="paramForm.paramType == 'date'"
                 type="warning"
@@ -1788,6 +1788,7 @@
                 type="warning"
               >sql语句格式：select deptId as id, deptName as name,parentId as
                 pid from table 注意：返回的属性中必须有 id,name和pid</el-tag>
+              </div>
             </el-form>
           </div>
           <div style="height: 50%">
@@ -1873,9 +1874,9 @@
             <div class="warp-title">输入参数</div>
             <el-form
               ref="inParamRef"
-              :inline="true"
+              abel-position="right"
               :model="procedureParamForm"
-              class="demo-form-inline"
+              class="df-form"
               size="small"
             >
               <el-form-item
@@ -2957,12 +2958,13 @@
         >确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog
+    <el-drawer
       :title="authTitle"
       :visible.sync="addAuthVisiable"
       width="650px"
       height="80%"
-      custom-class="addauthdialog"
+      custom-class="handle-drawer"
+      class="handle-drawer"
       :modal="true"
       :close-on-click-modal="false"
       @close="closeAddAuth"
@@ -2992,15 +2994,15 @@
           :default-checked-keys="defaultCheckedUsers"
         />
       </el-form>
-      <span slot="footer" class="dialog-footer">
+      <div class="handle-drawer__footer">
         <el-button size="small" @click="closeAddAuth">取 消</el-button>
         <el-button
           type="primary"
           size="small"
           @click="confirmAddAuth"
         >确 定</el-button>
-      </span>
-    </el-dialog>
+      </div>
+    </el-drawer>
     <modal
       ref="settingRef"
       :modal-config="settingModalConfig"
@@ -3009,13 +3011,13 @@
       :modal-handles="settingModalHandles"
       @closeModal="closeSettingModal()"
     />
-    <el-dialog
+    <el-drawer
       :modal="false"
       :close-on-click-modal="false"
       :title="authedRangeTitle"
       :visible.sync="authdialogVisible"
-      custom-class="authdialog"
-      width="240px"
+      custom-class="handle-drawer"
+      class="handle-drawer"
       @close="closeAuthDialog"
     >
       <div v-if="authedRange && authedRange.length > 0" class="el-dialog-div">
@@ -3065,7 +3067,7 @@
         v-if="(!authedRange || authedRange.length == 0) && !isCreator"
         description="暂无操作权限"
       />
-    </el-dialog>
+    </el-drawer>
     <!-- 左侧分组设置 -->
     <el-dialog
       :close-on-click-modal="false"
@@ -3860,7 +3862,7 @@
     }
     .el-form-item__label {
       flex-shrink: 0;
-      width: 80px;
+      // width: 80px;
     }
     .el-form-item__content {
       width: calc(100% - 92px);
@@ -3956,13 +3958,13 @@
   /* background:#d9ebf0 !important; */
 }
 ::v-deep .authdialog {
-  margin-top: 50px !important;
-  margin-left: 0px !important;
+  margin-top: 75px !important;
+  margin-right: 0px !important;
   flex-direction: column !important;
   // overflow: hidden !important;
   max-height: calc(100% - 90px) !important;
   top: 0 !important;
-  left: 0px !important;
+  right: 5px !important;
   bottom: 0;
   pointer-events: auto !important;
   /* background:#d9ebf0 !important; */

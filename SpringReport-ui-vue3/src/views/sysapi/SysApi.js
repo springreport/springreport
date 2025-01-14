@@ -2,6 +2,7 @@ export default {
   name:'sysApi',
   data() {
     return{
+      tableLoading: true,
       pageData:{
         //查询表单内容 start
         searchForm:[
@@ -17,8 +18,8 @@ export default {
         //查询条件 end
         //查询表单按钮start
         searchHandle:[
+          {label:'清除条件',type:'',handle:()=>this.resetSearch(),auth:'sysApi_search'},
           {label:'查询',type:'primary',handle:()=>this.searchtablelist(),auth:'sysApi_search'},
-          {label:'重置',type:'warning',handle:()=>this.resetSearch(),auth:'sysApi_search'}
         ],
         //查询表单按钮end
         //表格数据start
@@ -26,8 +27,8 @@ export default {
         //表格数据end
         //表格工具栏按钮 start
         tableHandles:[
-          {label:'新增',type:'primary',handle:()=>this.showModal(this.commonConstants.modalType.insert),auth:'sysApi_insert'},
-          {label:'批量删除',type:'danger',handle:()=>this.deleteBatch(),auth:'sysApi_batchDelete'}
+          {label:'新增',type:'primary',position: 'right',iconClass: 'action-icon-add',handle:()=>this.showModal(this.commonConstants.modalType.insert),auth:'sysApi_insert'},
+          {label:'批量删除',type:'danger', position: 'left',iconClass: 'action-icon-del',handle:()=>this.deleteBatch(),auth:'sysApi_batchDelete'}
         ],
         //表格工具栏按钮 end
         selectList:[],//表格选中的数据
@@ -41,15 +42,15 @@ export default {
         //表格分页信息end
         //表格列表头start
         tableCols:[
+          {label:'操作',prop:'operation',align:'center',width:54,type:'dropdown',btnList:[
+						{label:'查看',type:'primary',auth:'sysApi_getDetail',handle:(row)=>this.showModal(this.commonConstants.modalType.detail,row.id)},
+						{label:'编辑',type:'primary',auth:'sysApi_update',handle:(row)=>this.showModal(this.commonConstants.modalType.update,row.id)},
+						{label:'删除',type:'danger',auth:'sysApi_delete',handle:(row)=>this.deleteOne(row.id)},
+					]},
 					{label:'权限标识',prop:'apiCode',align:'center',overflow:true},
 					{label:'权限名称',prop:'apiName',align:'center',overflow:true},
 					{label:'权限描述',prop:'apiFunction',align:'center',overflow:true},
           {label:'排序',prop:'sort',align:'center',overflow:true},
-					{label:'操作',prop:'operation',align:'center',fixed:'right',width:200,type:'button',btnList:[
-						{label:'查看',type:'primary',auth:'sysApi_getDetail',handle:(row)=>this.showModal(this.commonConstants.modalType.detail,row.id)},
-						{label:'编辑',type:'primary',auth:'sysApi_update',handle:(row)=>this.showModal(this.commonConstants.modalType.update,row.id)},
-						{label:'删除',type:'primary',auth:'sysApi_delete',handle:(row)=>this.deleteOne(row.id)},
-					]}
         ],
         //表格列表头end
         //modal配置 start
@@ -98,12 +99,14 @@ export default {
      * @author: caiyang
      */    
     searchtablelist(){
+      this.tableLoading = true;
       var obj = {
         url:this.apis.sysApi.listApi,
         params:Object.assign({menuId:this.$route.query.menuId}, this.pageData.queryData, this.pageData.tablePage),
       }
       this.commonUtil.getTableList(obj).then(response=>{
         this.commonUtil.tableAssignment(response,this.pageData.tablePage,this.pageData.tableData);
+        this.tableLoading = false;
       });
     },
     resetSearch(){

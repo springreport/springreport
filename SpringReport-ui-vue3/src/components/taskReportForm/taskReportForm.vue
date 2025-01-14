@@ -1,8 +1,8 @@
 <!-- 搜索表单 -->
 <template>
-  <div>
+  <div class="el-dialog-div">
     <el-form
-      :inline="inline"
+      label-position="top"
       :label-width="labelWidth"
       ref="reportFormRef"
       class="demo-form-inline"
@@ -11,8 +11,8 @@
       :showSearch="showSearch"
       :isParamMerge="isParamMerge"
     >
-      <div style="display: flex; width: 100%">
-        <div style="display: flex; width: 100%;padding-top:10px">
+      <div>
+        <div>
           <div v-if="reportForm.length==1" style="width:100%;">
                 <el-form-item
                 v-for="(item, index) in reportForm[0].params"
@@ -31,7 +31,7 @@
                   "
                   v-model="searchData.params[0].params[index][item.paramCode]"
                   :placeholder="'请输入' + item.paramName"
-                  size="default"
+                  
                   :disabled="item.disabled"
                   clearable
                 ></el-input>
@@ -41,7 +41,7 @@
                     item.paramType === 'select' && item.isRelyOnParams !== 1
                   "
                   v-model="searchData.params[0].params[index][item.paramCode]"
-                  size="default"
+                  
                   clearable
                 >
                   <el-option :label="'请选择'" value=""></el-option>
@@ -58,7 +58,7 @@
                   "
                   v-model="searchData.params[0].params[index][item.paramCode]"
                   clearable
-                  size="default"
+                  
                   @focus="
                     getRelyOnParamys(
                       item,
@@ -79,7 +79,7 @@
                 <el-select
                   v-if="item.paramType === 'mutiselect'"
                   v-model="searchData.params[0].params[index][item.paramCode]"
-                  size="default"
+                  
                   :multiple="true"
                 >
                   <el-option
@@ -92,7 +92,7 @@
                 <!-- 日期 -->
                 <el-date-picker
                   v-if="item.paramType === 'date'"
-                  size="default"
+                  
                   v-model="searchData.params[0].params[index][item.paramCode]"
                   :format="(item.dateFormat == 'YYYY-MM-DD' || item.dateFormat == 'yyyy-MM-dd')?'YYYY-MM-DD':item.dateFormat"
                   :value-format="(item.dateFormat == 'YYYY-MM-DD' || item.dateFormat == 'yyyy-MM-dd')?'YYYY-MM-DD':item.dateFormat"

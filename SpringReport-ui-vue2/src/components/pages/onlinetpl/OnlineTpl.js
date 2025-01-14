@@ -110,9 +110,20 @@ export default {
     }
   },
   activated() {
-    this.pageData.tableData = []
-    this.searchtablelist()
-    this.getReportType()
+    let thirdPartyType = localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)
+    if(!thirdPartyType){
+      this.pageData.tableData = []
+      this.searchtablelist()
+      this.getReportType()
+    }
+  },
+  mounted() {
+    let thirdPartyType = localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType);
+    if(thirdPartyType){
+      this.pageData.tableData = []
+      this.searchtablelist()
+      this.getReportType()
+    }
   },
   methods: {
     /**
@@ -312,7 +323,7 @@ export default {
       this.pageData.selectList = rows
     },
     routerTo(row) {
-      const viewReport = this.$router.resolve({ name: 'coedit', query: { gridKey: row.listId, isLoadALL: row.dataLoadType }})
+      const viewReport = this.$router.resolve({ name: 'coedit', query: { gridKey: row.listId, isLoadALL: row.dataLoadType,thirdPartyType:localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType) }})
       window.open(viewReport.href, '_blank')
     },
     loadData(tree, treeNode, resolve) {

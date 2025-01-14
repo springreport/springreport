@@ -780,7 +780,7 @@ public class DocumentToLuckysheetUtil {
                				 for (int t = 0; t < size; t++) {
                					 XSSFFont font = xSSFRichTextString.getFontOfFormattingRun(t);
                					 JSONObject fontStyle = getFontStyle(font);
-               					 fontStyle.put("v", cellVal.substring(subLength, subLength + xSSFRichTextString.getLengthOfFormattingRun(t)));
+               					 fontStyle.put("v", cellVal.substring(subLength, (subLength + xSSFRichTextString.getLengthOfFormattingRun(t))>cellVal.length()?cellVal.length():(subLength + xSSFRichTextString.getLengthOfFormattingRun(t))));
                					 subLength = subLength + xSSFRichTextString.getLengthOfFormattingRun(t);
                					 s.add(fontStyle);
                				 }

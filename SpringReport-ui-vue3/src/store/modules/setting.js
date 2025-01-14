@@ -51,7 +51,11 @@ const getters = {
 };
 
 const mutations = {
-  CHANGE_COLLAPSE: (state) => {
+  CHANGE_COLLAPSE: (state, collapse) => {
+    if (collapse != undefined) {
+      state.collapse = collapse;
+      return;
+    }
     state.collapse = !state.collapse;
   },
   CHANGE_FULL_SCREEN: (state, flag) => {
@@ -95,8 +99,8 @@ const actions = {
   /**
    * @description 切换展开收起
    */
-  changeCollapse: ({ commit }) => {
-    commit('CHANGE_COLLAPSE');
+  changeCollapse: ({ commit }, collapse) => {
+    commit('CHANGE_COLLAPSE', collapse);
   },
   /**
    * @description 切换是否全屏

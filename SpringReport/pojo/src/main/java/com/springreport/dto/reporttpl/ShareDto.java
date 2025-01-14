@@ -55,4 +55,11 @@ public class ShareDto {
 	 * @date 2023-06-26 06:22:36 
 	 */  
 	private Integer allowReport = YesNoEnum.NO.getCode();
+	
+	/**  
+	 * @Fields thirdPartyType : 第三方
+	 * @author caiyang
+	 * @date 2025-01-09 09:22:32 
+	 */  
+	private String thirdPartyType;
 }

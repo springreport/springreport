@@ -18,6 +18,7 @@ import com.springreport.entity.onlinetpl.OnlineTpl;
 import com.springreport.entity.reportdatasource.ReportDatasource;
 import com.springreport.entity.reporttpl.ReportTpl;
 import com.springreport.entity.screentpl.ScreenTpl;
+import com.springreport.enums.DelFlagEnum;
 import com.springreport.enums.YesNoEnum;
 
 @Service
@@ -57,6 +58,7 @@ public class IIndexServiceImpl implements IIndexService{
 		if(YesNoEnum.YES.getCode().intValue() == merchantmode.intValue()) {
 			reportTplQueryWrapper.eq("merchant_no", userInfoDto.getMerchantNo());
 		}
+		reportTplQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
 		long excelCount = this.iReportTplService.count(reportTplQueryWrapper);
 		result.setExcelCount(excelCount);
 		
@@ -64,6 +66,7 @@ public class IIndexServiceImpl implements IIndexService{
 		if(YesNoEnum.YES.getCode().intValue() == merchantmode.intValue()) {
 			docTplQueryWrapper.eq("merchant_no", userInfoDto.getMerchantNo());
 		}
+		docTplQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
 		long wordCount = this.iDocTplService.count(docTplQueryWrapper);
 		result.setWordCount(wordCount);
 		
@@ -71,6 +74,7 @@ public class IIndexServiceImpl implements IIndexService{
 		if(YesNoEnum.YES.getCode().intValue() == merchantmode.intValue()) {
 			onlineTplQueryWrapper.eq("merchant_no", userInfoDto.getMerchantNo());
 		}
+		onlineTplQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
 		long coeditCount = this.iOnlineTplService.count(onlineTplQueryWrapper);
 		result.setCoeditCount(coeditCount);
 		
@@ -78,6 +82,7 @@ public class IIndexServiceImpl implements IIndexService{
 		if(YesNoEnum.YES.getCode().intValue() == merchantmode.intValue()) {
 			screenTplQueryWrapper.eq("merchant_no", userInfoDto.getMerchantNo());
 		}
+		screenTplQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
 		long screenCount = this.iScreenTplService.count(screenTplQueryWrapper);
 		result.setScreenCount(screenCount);
 		
@@ -85,6 +90,7 @@ public class IIndexServiceImpl implements IIndexService{
 		if(YesNoEnum.YES.getCode().intValue() == merchantmode.intValue()) {
 			reportDatasourceQueryWrapper.eq("merchant_no", userInfoDto.getMerchantNo());
 		}
+		reportDatasourceQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
 		long datasourceCount = this.iReportDatasourceService.count(reportDatasourceQueryWrapper);
 		result.setDatasourceCount(datasourceCount);
 		return result;

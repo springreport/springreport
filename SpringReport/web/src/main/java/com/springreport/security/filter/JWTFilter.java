@@ -1,6 +1,8 @@
 package com.springreport.security.filter;
 
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -8,14 +10,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
-import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.springreport.constants.StatusCode;
 import com.springreport.enums.MsgLevelEnum;
+import com.springreport.enums.RedisPrefixEnum;
 import com.springreport.security.config.JWTToken;
+import com.springreport.util.HttpClientUtil;
 import com.springreport.util.MessageUtil;
+import com.springreport.util.RedisUtil;
 import com.springreport.util.StringUtil;
 
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +36,13 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class JWTFilter extends BasicHttpAuthenticationFilter{
+	
+	private RedisUtil redisUtil;
+	
+	public JWTFilter(RedisUtil redisUtil) {
+		super();
+		this.redisUtil = redisUtil;
+	}
 
 	/**
      * 判断用户是否想要登入。
@@ -38,9 +53,15 @@ public class JWTFilter extends BasicHttpAuthenticationFilter{
         HttpServletRequest req = (HttpServletRequest) request;
         req.getRequestURI();
         String authorization = req.getHeader("Authorization");
+        String headerThirdPartyType = req.getHeader("thirdPartyType");
+        String systemThirdPartyType = MessageUtil.getValue("thirdParty.type");
         if(StringUtil.isNullOrEmpty(authorization))
         {
         	authorization = req.getParameter("Authorization");
+        }
+        if(StringUtil.isNotEmpty(headerThirdPartyType) && headerThirdPartyType.equals(systemThirdPartyType)) {
+        	//去第三方验证token信息
+        	return thridPartyTokenCheck(authorization,MessageUtil.getValue("thirdParty.tokencheck.url"));
         }
         log.info("判断用户是否想要登录：{}，请求接口：{}",authorization,req.getServletPath());
         if ("null".equals(authorization) || authorization == null) {
@@ -48,6 +69,33 @@ public class JWTFilter extends BasicHttpAuthenticationFilter{
 		}else {
 			return true;
 		}
+    }
+    
+    private boolean thridPartyTokenCheck(String token,String url) {
+    	String key = RedisPrefixEnum.THIRDPARTYTOKEN.getCode()+token;
+    	Object redisCache = redisUtil.get(key);
+    	if(redisCache != null) {
+    		return true;
+    	}else {
+    		Map<String, Object> params = new HashMap<>(); 
+        	params.put("token", token);
+        	Map<String, String> headerMap = new HashMap<>(1);
+            headerMap.put("Authorization", token);
+        	String requestResult = HttpClientUtil.doGet(url, headerMap, params);
+        	if(requestResult.startsWith("{\"errCode\":\"50001\"")) {
+        		return false;
+        	}else {
+        		JSONObject jsonObject = JSON.parseObject(requestResult);
+        		boolean isSuccess = jsonObject.getBooleanValue("success");
+        		if(isSuccess) {
+        			long expire = Long.parseLong(MessageUtil.getValue("thirdParty.token.expire"));
+        			redisUtil.set(key, requestResult, expire);
+        			return true;
+        		}else {
+        			return false;
+        		}
+        	}
+    	}
     }
 
     /**
@@ -61,8 +109,9 @@ public class JWTFilter extends BasicHttpAuthenticationFilter{
         {
         	authorization = httpServletRequest.getParameter("Authorization");
         }
+        String headerThirdPartyType = httpServletRequest.getHeader("thirdPartyType");
         log.info("判断用户是否想要登录x：{}，请求接口：{}",authorization,httpServletRequest.getServletPath());
-        JWTToken token = new JWTToken(authorization,"1");
+        JWTToken token = new JWTToken(authorization,headerThirdPartyType);
         // 提交给realm进行登入，如果错误他会抛出异常并被捕获
         try {
         	getSubject(request, response).login(token);

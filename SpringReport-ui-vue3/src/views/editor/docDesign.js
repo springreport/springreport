@@ -54,7 +54,8 @@ export default {
         datasetName: '',
         datasourceId: '',
         id: '',
-        sqlType: 1
+        sqlType: 1,
+        groupId: ''
       },
       dataSource: [], // 模板数据源
       paramForm: {
@@ -272,6 +273,24 @@ export default {
         {label:'关闭',type:'default',handle:()=>this.closePaperMarginModal()},
         {label:'确认',type:'primary',handle:()=>this.confirmPaperMarginModal()}
       ],
+      leftOpen: true, // 右侧展开
+      rightFormCollapse: ['generalConfig', 'subtotalCells', 'subtotalAttribute', 'groupSubtotal', 'cellFilter', 'cellHide'],
+      rightFormCollapse2: ['generalConfig', 'sheetBlock'],
+      groupSetVisible: false, // 分组设置弹框
+      groupList: [],
+      groupForm: {
+        groupName: undefined
+      },
+      groupHandleVisible: false, // 新增、编辑分组
+      groupHandleLoading: false, // 新增、编辑分组loading
+      addDatasetType: 1, // 数据集类型 sql语句 | 参数配置
+      datasetKeyword: '', // 报表搜索
+      filedKeyword: '', // 检索所选报表内字段
+      dataGroupLoading: false, // 数据集分组loading
+      datasetItemActive: null, // 数据集选中项
+      filedLoading: false, // 字段loading
+      designHeight: 0,
+      selectVariableOpen: true, // 数据集选择变量展开
     }
   },
   methods: {
@@ -417,10 +436,20 @@ export default {
         previewDom.onclick = function () {
           console.log('preview')
           const tplId = that.$route.query.tplId// reportTplId
-          const viewReport = that.$router.resolve({ name: 'docPreview', query: { tplId: tplId }})
+          const viewReport = that.$router.resolve({ name: 'docPreview', query: { tplId: tplId ,thirdPartyType: localStorage.getItem(that.commonConstants.sessionItem.thirdPartyType)}})
           window.open(viewReport.href, '_blank')
         }
-
+        // 动态设置展开面板的位置
+        function setDropdownContentPosition(parentNode, dropdownNode) {
+          const dropdownContent = dropdownNode
+          const rect = parentNode.getBoundingClientRect()
+          const screenWidth = window.innerWidth
+          dropdownContent.style.top = `${rect.bottom}px`
+          dropdownContent.style.left = `${rect.left}px`
+          if (rect.left + dropdownContent.offsetWidth > screenWidth) {
+            dropdownContent.style.left = `${rect.right - dropdownContent.offsetWidth}px`
+          }
+        }
         // | 撤销 | 重做 | 格式刷 | 清除格式 |
         const undoDom = document.querySelector('.menu-item__undo')
         undoDom.title = `撤销(${isApple ? '⌘' : 'Ctrl'}+Z)`
@@ -474,6 +503,7 @@ export default {
         fontDom.onclick = function () {
           console.log('font')
           fontOptionDom.classList.toggle('visible')
+          setDropdownContentPosition(fontDom, fontOptionDom)
         }
         fontOptionDom.onclick = function (evt) {
           const family = evt.target.dataset.family
@@ -487,6 +517,7 @@ export default {
         sizeSetDom.onclick = function () {
           console.log('size')
           sizeOptionDom.classList.toggle('visible')
+          setDropdownContentPosition(sizeSetDom, sizeOptionDom)
         }
         sizeOptionDom.onclick = function (evt) {
           const size = evt.target.dataset.size
@@ -603,6 +634,7 @@ export default {
         titleDom.onclick = function () {
           console.log('title')
           titleOptionDom.classList.toggle('visible')
+          setDropdownContentPosition(titleDom, titleOptionDom)
         }
         titleOptionDom.onclick = function (evt) {
           const li = evt.target 
@@ -644,6 +676,7 @@ export default {
         rowMarginDom.onclick = function () {
           console.log('row-margin')
           rowOptionDom.classList.toggle('visible')
+          setDropdownContentPosition(rowMarginDom, rowOptionDom)
         }
         rowOptionDom.onclick = function (evt) {
           const li = evt.target
@@ -656,6 +689,7 @@ export default {
         listDom.onclick = function () {
           console.log('list')
           listOptionDom.classList.toggle('visible')
+          setDropdownContentPosition(listDom, listOptionDom)
         }
         listOptionDom.onclick = function (evt) {
           const li = evt.target 
@@ -710,6 +744,7 @@ export default {
         tableDom.onclick = function () {
           console.log('table')
           tablePanelContainer.style.display = 'block'
+          setDropdownContentPosition(tableDom, tablePanelContainer)
         }
         tablePanel.onmousemove = function (evt) {
           const celSize = 16
@@ -796,6 +831,7 @@ export default {
         watermarkDom.onclick = function () {
           console.log('watermark')
           watermarkOptionDom.classList.toggle('visible')
+          setDropdownContentPosition(watermarkDom, watermarkOptionDom)
         }
         watermarkOptionDom.onmousedown = function (evt) {
           const li = evt.target
@@ -1411,7 +1447,7 @@ export default {
           main:JSON.stringify(tplSettings.data.main),
           footer:JSON.stringify(tplSettings.data.footer),
           paperDirection:paperDirection,
-          watermark:JSON.stringify(tplSettings.watermark),
+          watermark:JSON.stringify(tplSettings.options.watermark),
           docTplCharts:this.docTplCharts,
           docTplCodes:this.docTplCodes,
           margins:JSON.stringify(paperMargin),
@@ -1687,6 +1723,7 @@ export default {
       this.sqlForm.datasourceId = dataSet.datasourceId
       this.sqlForm.id = dataSet.id
       this.sqlForm.sqlType = dataSet.sqlType
+      this.sqlForm.groupId = dataSet.groupId
       if (dataSet.sqlType == 2) {
         this.procedureInParamTableData.tableData = JSON.parse(dataSet.inParam)
         this.procedureOutParamTableData.tableData = JSON.parse(dataSet.outParam)
@@ -1726,7 +1763,7 @@ export default {
         if (valid) {
           const obj = {
             url: this.apis.reportDesign.addDataSetApi,
-            params: { tplId: reportTplId, datasetType: this.datasourceType, sqlType: this.sqlForm.sqlType, tplSql: tplSql, tplParam: this.paramTableData.tableData ? JSON.stringify(this.paramTableData.tableData) : '', datasourceId: this.sqlForm.datasourceId, datasetName: this.sqlForm.datasetName, id: this.sqlForm.id,
+            params: { tplId: reportTplId,groupId: this.sqlForm.groupId, datasetType: this.datasourceType, sqlType: this.sqlForm.sqlType, tplSql: tplSql, tplParam: this.paramTableData.tableData ? JSON.stringify(this.paramTableData.tableData) : '', datasourceId: this.sqlForm.datasourceId, datasetName: this.sqlForm.datasetName, id: this.sqlForm.id,
               inParam: this.procedureInParamTableData.tableData ? JSON.stringify(this.procedureInParamTableData.tableData) : '', outParam: this.procedureOutParamTableData.tableData ? JSON.stringify(this.procedureOutParamTableData.tableData) : '',
                },
             removeEmpty: false
@@ -1734,6 +1771,7 @@ export default {
           this.commonUtil.doPost(obj).then(response => {
             if (response.code == '200') {
               this.getDataSets()
+              this.getTplGroupDatasets();
               this.closeAddDataSet()
               this.$forceUpdate()
             }
@@ -1767,14 +1805,19 @@ export default {
       this.datasourceType = '1'
     },
     async clickDatasets(o) {
-      if (o.isActive) {
-        o.isActive = false;
-      } else {
-        o.isActive = true;
-        if(!o.columns || o.columns == null || o.columns.length == 0){
-          await this.getDatasetColumns(o)
-        }
-      }
+      // if (o.isActive) {
+      //   o.isActive = false;
+      // } else {
+      //   o.isActive = true;
+      //   if(!o.columns || o.columns == null || o.columns.length == 0){
+      //     await this.getDatasetColumns(o)
+      //   }
+      // }
+      // if (o.datasetType == '2') {
+      //   this.getApiDefaultRequestResult(o)
+      // }
+      this.datasetItemActive = o.id
+      await this.getDatasetColumns(o)
       if (o.datasetType == '2') {
         this.getApiDefaultRequestResult(o)
       }
@@ -1810,7 +1853,7 @@ export default {
         this.$set(element, 'apiResult', response.responseData.apiResult)
       })
     },
-    copyAttr(type,datasetName,colulmnName){
+    copyAttr(type,datasetName,colulmnName,isInsert){
       let text = "";
       if(type == 1){//文本
         text = "{{" + datasetName + "." + colulmnName + "}}"
@@ -1833,8 +1876,20 @@ export default {
       input.value = text; // 修改文本框的内容
       input.select(); // 选中文本
       document.execCommand('copy'); // 执行浏览器复制命令
-      // this.commonUtil.showMessage({message:"复制成功",type: this.commonConstants.messageType.success})
-      this.instance.command.executePaste();
+      if(isInsert){
+        this.instance.command.executePaste();
+        this.commonUtil.showMessage({
+          message: '属性已添加到文档光标处，如未添加成功可直接使用ctrl+v粘贴到对应的位置',
+          type: this.commonConstants.messageType.success,
+        });
+      }else{
+        this.commonUtil.showMessage({
+          message: '复制成功',
+          type: this.commonConstants.messageType.success,
+        });
+      }
+      
+      // 
     },
     confimModal(){
       var that = this;
@@ -1888,6 +1943,7 @@ export default {
     },
     deleteDataSetCallback(){
       this.getDataSets();
+      this.getTplGroupDatasets();
     },
     uploadFile(file,imageFileDom) {
       const param = new FormData() // 创建form对象
@@ -1941,7 +1997,8 @@ export default {
       formData.append("tplId",this.$route.query.tplId);
       let config = {
           headers: {'Content-Type': 'multipart/form-data',
-          'Authorization':localStorage.getItem(that.commonConstants.sessionItem.authorization)}
+          'Authorization':localStorage.getItem(that.commonConstants.sessionItem.authorization),
+          thirdPartyType: localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)}
       }
       try {
         Axios.post(that.apis.docTpl.uploadDocxApi, formData, config)
@@ -2082,7 +2139,7 @@ export default {
     deleteChart(row,index){
       this.docTplCharts.splice(index,1)
     },
-    doCopy(item){
+    doCopy(item,isInsert){
       let text = item.value;
       if(item.type == "number"){
         text = '<if test="'+item.value+'!=null' + '"> \n' 
@@ -2091,11 +2148,18 @@ export default {
         text = '<if test="'+item.value+'!=null and ' + item.value + "!=''" + '">\n' 
         text = text + "  and " + item.column + " = #{"+item.value+"} \n" + "</if>"
       }
-      const input = document.getElementById('clipboradInput'); // 承载复制内容
-      input.value = text; // 修改文本框的内容
-      input.select(); // 选中文本
-      document.execCommand('copy'); // 执行浏览器复制命令
-      this.commonUtil.showMessage({message:"复制成功",type: this.commonConstants.messageType.success})
+      if (!isInsert) {
+        const input = document.getElementById('clipboradInput'); // 承载复制内容
+        input.value = text; // 修改文本框的内容
+        input.select(); // 选中文本
+        document.execCommand('copy'); // 执行浏览器复制命令
+        this.commonUtil.showMessage({
+          message: '复制成功',
+          type: this.commonConstants.messageType.success,
+        });
+      } else {
+        this.addComment(text);
+      }
     },
     copyColumn(datasetName, columnName){
       let text = "";
@@ -2155,7 +2219,7 @@ export default {
             });
       }
     },
-    getWhereByColumn(type,column){
+    getWhereByColumn(type,column,isInsert){
       let text = "";
       let columnType = column.dataType.toLowerCase();
       if(type == 1){
@@ -2181,7 +2245,18 @@ export default {
           text = '<if test="'+column.name+'!=null and ' + column.name + "!=''" + '">\n' 
           text = text + "  and " + column.name + " = #{"+column.name+"} \n" + "</if>"
       }
-      this.addComment(text)
+      if (isInsert) {
+        this.addComment(text)
+      } else {
+        const input = document.getElementById('clipboradInput') // 承载复制内容
+        input.value = text // 修改文本框的内容
+        input.select() // 选中文本
+        document.execCommand('copy') // 执行浏览器复制命令
+        this.commonUtil.showMessage({
+          message: '复制成功',
+          type: this.commonConstants.messageType.success,
+        });
+      }
     },
     getWhereByParam(row){
       let text = "";
@@ -2330,12 +2405,126 @@ export default {
         options[key1] = value;
         this.instance.command.executeUpdateOptions(options)
       }
-    }
+    },
+    // 左侧折叠
+    switchOpenLeftPanel() {
+      this.leftOpen = !this.leftOpen
+    },
+    // 关闭分组设置弹框
+    closeGroupDialog() {
+      this.groupSetVisible = false
+    },
+    // 打开分组编辑、添加弹框
+    openGroupHandleDialog(item) {
+      this.groupHandleVisible = true
+      this.groupForm = {
+        groupName: item ? item.groupName : undefined,
+        id: item ? item.id : undefined
+      }
+    },
+    // 关闭分组编辑、添加弹框
+    closeGroupHandleDialog() {
+      this.groupHandleVisible = false
+    },
+    // 添加或编辑分组
+    addOrEditGroup() {
+      if (!this.groupForm.groupName) {
+        this.$message.error('请输入分组名称')
+        return
+      }
+      this.groupHandleLoading = true
+      const reportTplId = this.$route.query.tplId// reportTplId
+      const obj = {
+        url: this.groupForm.id ? this.apis.reportDesign.updateGroupApi : this.apis.reportDesign.insertGroupApi,
+        params: { tplId: reportTplId, ...this.groupForm },
+        removeEmpty: false
+      }
+      this.commonUtil.doPost(obj).then(response => {
+        this.groupHandleLoading = false
+        if (response.code === '200') {
+          this.getTplGroupDatasets()
+          this.groupHandleVisible = false
+        }
+      })
+    },
+    // 删除分组
+    deleteGroup(dataSet) {
+      const params = {
+        url: this.apis.reportDesign.deleteGroupApi,
+        messageContent: this.commonUtil.getMessageFromList('confirm.delete', null),
+        callback: this.deleteDataSetCallback,
+        params: { id: dataSet.id },
+        type: 'get'
+      }
+      // 弹出删除确认框
+      this.commonUtil.showConfirm(params)
+    },
+    // 获取分组数据集
+    getTplGroupDatasets() {
+      this.dataGroupLoading = true
+      const reportTplId = this.$route.query.tplId// reportTplId
+      const obj = {
+        url: this.apis.reportDesign.getTplGroupDatasetsApi,
+        params: { tplId: reportTplId },
+        removeEmpty: false
+      }
+      this.commonUtil.doPost(obj).then(response => {
+        this.groupList = response.responseData
+        const accarr = this.groupList.map(item => {
+          return {
+            id: item.id,
+            groupName: item.id,
+            data: item.data.map(daset => {
+              return {
+                id: daset.id,
+                name: daset.datasetName
+              }
+            })
+          }
+        })
+        this.dataGroupLoading = false
+      })
+    },
   },
 //使用mounted的原因是因为在mounted中dom已经加载完毕，否则会报错，找不到getAttribute这个方法
   mounted() {
     this.getDocTplSettings();
     this.getReportTplDateSource();
+    this.getTplGroupDatasets();
     this.getDataSets();
+    this.designHeight = document.body.clientHeight - 46 - 10;
+    var that = this;
+    window.onresize = function () {
+      that.designHeight = document.body.clientHeight - 46 - 10;
+    };
+  },
+  computed: {
+    // 被过滤展示的数据集列表
+    displayGroupList() {
+      if (this.datasetKeyword) {
+        return this.groupList.map(group => ({
+          ...group,
+          data: group.data.filter(item => item.datasetName.includes(this.datasetKeyword))
+        })).filter(group => group.data.length > 0) // 只保留有匹配项的组
+      }
+      return this.groupList
+    },
+    // 过滤后的数据集字段列表
+    displayFields() {
+      let dataArr = []
+      this.groupList.forEach(element => {
+        dataArr = dataArr.concat(element.data)
+      })
+      const fileds = this.datasetItemActive ? dataArr.find(item => item.id === this.datasetItemActive)?.columns || [] : []
+      return this.filedKeyword ? fileds.filter(item => item.columnName.includes(this.filedKeyword)) : fileds
+    },
+    // 数据集id对应的名称
+    datasetItem() {
+      let dataArr = []
+      this.groupList.forEach(element => {
+        dataArr = dataArr.concat(element.data)
+      })
+      return dataArr.find(item => item.id === this.datasetItemActive) || {}
+    },
   },
 };

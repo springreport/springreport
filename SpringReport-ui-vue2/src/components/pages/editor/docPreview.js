@@ -270,6 +270,9 @@ export default {
         },
         searchClick(){
             this.drawer = true;
+        },
+        closeSearch(){
+          this.drawer = false;
         }
     }
 }

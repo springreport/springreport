@@ -249,10 +249,24 @@ export default {
     }
   },
   activated() {
-    this.pageData.tableData = []
-    this.searchtablelist()
-    this.getReportType()
-    this.getReportDatasource()
+    let thirdPartyType = localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)
+    if(!thirdPartyType){
+      this.pageData.tableData = []
+      this.searchtablelist()
+      this.getReportType()
+      this.getReportDatasource()
+    }
+    // this.getReportTypeTree();
+    // this.getRoles();
+  },
+  mounted() {
+    let thirdPartyType = localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)
+    if(thirdPartyType){
+      this.pageData.tableData = []
+      this.searchtablelist()
+      this.getReportType()
+      this.getReportDatasource()
+    }
     // this.getReportTypeTree();
     // this.getRoles();
   },
@@ -500,7 +514,7 @@ export default {
     },
     // 页面跳转
     routerTo(name, row) {
-      const viewReport = this.$router.resolve({ name: name, query: { tplId: row.id }})
+      const viewReport = this.$router.resolve({ name: name, query: { tplId: row.id,thirdPartyType:localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType) }})
       window.open(viewReport.href, '_blank')
     },
     // 是否显示修改密码按钮
@@ -658,8 +672,12 @@ export default {
             this.commonUtil.showMessage({ message: '填报报表暂时不支持h5分享。', type: this.commonConstants.messageType.error })
             return
           }
+          var extraParam = {}
+          if(localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)){
+            extraParam.thirdPartyType = localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType);
+          }
           var obj = {
-            params: this.pageData.shareReportModalData,
+            params:  Object.assign({}, this.pageData.shareReportModalData, extraParam),
             removeEmpty: false
           }
           obj.url = this.apis.reportTpl.getShareUrlApi
@@ -687,7 +705,7 @@ export default {
     },
     routerToTask(row) {
       this.$store.commit('setParameters', { key: 'taskTplId', value: row.id })
-      this.$router.push({ name: 'reportTask' })
+      this.$router.push({ name: 'reportTask',query:{thirdPartyType:localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)}  })
     },
     loadData(tree, treeNode, resolve) {
       var obj = {

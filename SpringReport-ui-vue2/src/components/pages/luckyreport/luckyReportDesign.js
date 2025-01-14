@@ -38,6 +38,7 @@ export default {
   },
   data() {
     return {
+      isThirdParty:2,//是否第三方iframe调用
       rightOpen: true, // 左侧展开
       leftOpen: true, // 右侧展开
       rightFormCollapse: ['generalConfig', 'subtotalCells', 'subtotalAttribute', 'groupSubtotal', 'cellFilter', 'cellHide'],
@@ -672,9 +673,12 @@ export default {
       const reportTplId = this.$route.query.tplId// reportTplId
       var options = this.sheetOptions
       options.isReport = true
-      options.allowUpdate = true
-      options.gridKey = 'designMode-' + reportTplId
-      options.updateUrl = location.protocol === 'https:' ? 'wss' + '://' + location.host + '/SpringReport/api/coedit/websocket/luckysheet' : 'ws' + '://' + location.host + '/SpringReport/api/coedit/websocket/luckysheet'
+      if(this.isThirdParty != 1){
+        options.allowUpdate = true
+        options.gridKey = 'designMode-' + reportTplId
+        options.updateUrl = location.protocol === 'https:' ? 'wss' + '://' + location.host + '/SpringReport/api/coedit/websocket/luckysheet' : 'ws' + '://' + location.host + '/SpringReport/api/coedit/websocket/luckysheet'
+      }
+      
       options.uploadImage = this.commonUtil.uploadImage
       if (!this.isCreator) {
         options.cellRightClickConfig.insertRow = false
@@ -2340,6 +2344,7 @@ export default {
             }
           }
           _this.isParamMerge = response.responseData.isParamMerge == '1'
+          _this.isThirdParty = response.responseData.isThirdParty;
           _this.init(charts)
         }
       })
@@ -2347,7 +2352,7 @@ export default {
     // 预览
     previewReport() {
       const reportTplId = this.$route.query.tplId// reportTplId
-      const viewReport = this.$router.resolve({ name: 'luckyReportPreview', query: { tplId: reportTplId }})
+      const viewReport = this.$router.resolve({ name: 'luckyReportPreview', query: { tplId: reportTplId,thirdPartyType:localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType) }})
       window.open(viewReport.href, '_blank')
     },
     // 添加循环块
@@ -2596,7 +2601,8 @@ export default {
       formData.append('isFormsReport', 2)
       const config = {
         headers: { 'Content-Type': 'multipart/form-data',
-          'Authorization': localStorage.getItem(that.commonConstants.sessionItem.authorization) }
+          'Authorization': localStorage.getItem(that.commonConstants.sessionItem.authorization),
+          'thirdPartyType':localStorage.getItem(that.commonConstants.sessionItem.thirdPartyType), }
       }
       try {
         Axios.post(that.apis.reportTpl.uploadReportTplApi, formData, config)
@@ -3682,6 +3688,7 @@ export default {
     },
     deleteDataSetCallback(result) {
       this.getDataSets()
+      this.getTplGroupDatasets();
       var obj = {
         cells: {},
         value: result.responseData
@@ -3879,6 +3886,10 @@ export default {
       }
     },
     addAuthClick() {
+      if(this.isThirdParty == 1){
+        this.commonUtil.showMessage({ message: '第三方iframe调用暂不支持该功能！', type: this.commonConstants.messageType.error })
+        return;
+      }
       const rangeAxis = luckysheet.getRangeAxis()
       if (!rangeAxis || rangeAxis.length == 0) {
         this.commonUtil.showMessage({ message: '请先选择要设置的区域。', type: this.commonConstants.messageType.error })
@@ -3941,6 +3952,10 @@ export default {
       }
     },
     viewAuthClick() {
+      if(this.isThirdParty == 1){
+        this.commonUtil.showMessage({ message: '第三方iframe调用暂不支持该功能！', type: this.commonConstants.messageType.error })
+        return;
+      }
       this.authRangeToArray()
       if (this.isCreator) {
         this.authedRangeTitle = '保护范围'
@@ -4347,7 +4362,7 @@ export default {
       const fileType = this.commonUtil.getFileExt(item.linkAddress)
       if (fileType) {
         if (this.commonConstants.attachPreviewExt.includes(fileType)) {
-          const viewReport = this.$router.resolve({ name: 'attachment', query: { url: item.linkAddress, name: item.fileName, fileType: fileType }})
+          const viewReport = this.$router.resolve({ name: 'attachment', query: { url: item.linkAddress, name: item.fileName, fileType: fileType,'thirdPartyType':localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType) }})
           window.open(viewReport.href, '_blank')
         } else {
           window.open(item.linkAddress, '_blank')

@@ -1,73 +1,53 @@
 <template>
-  <div
-    id="tabs-bar-container"
-    class="tabs-bar-container"
-    :class="{ horizontal: true }"
-  >
-    <el-tabs
-      v-model="tabActive"
-      type="card"
-      class="tabs-content"
-      @tab-click="handleTabClick"
-      @tab-remove="handleTabRemove"
-    >
-      <el-tab-pane
-        v-for="item in visitedRouteList"
-        :key="item.path"
-        :name="item.path"
-        :closable="!isAffix(item)"
-      >
-        <template #label>
-          <div class="item">
-            <component
-              class="menu-icon"
-              v-if="item.meta.icon"
-              theme="outline"
-              strokeWidth="3"
-              :is="item.meta.icon"
-            />
-            <span>
-              {{ item.meta.title }}
-            </span>
-          </div>
-        </template>
-      </el-tab-pane>
-    </el-tabs>
-    <el-popover
-      placement="bottom"
-      width="auto"
-      trigger="hover"
-      @show="handleShow"
-      @hide="handleHide"
-    >
-      <template #reference>
-        <span class="more" :class="{ active: visible }" style="cursor: pointer">
-          <icon-all-application theme="filled" size="18" :strokeWidth="3" />
-        </span>
-      </template>
-      <div
-        class="command-item"
-        v-for="(item, index) in commandList"
-        :key="index"
-        @click="handleCommand(item.command)"
-      >
-        <component class="icon" theme="filled" size="14" :strokeWidth="3" :is="item.icon" />
-        <span class="command-label">{{ item.text }}</span>
+  <div class="_tag">
+    <el-scrollbar class="ycy_scrollbar">
+      <div class="left">
+        <div
+          v-for="tag in visitedRouteList"
+          :key="tag.path"
+          class="menu-tag df-c"
+          :class="[`${tag.path.replaceAll('/', '')}`]"
+          @click="handleTabClick(tag)"
+        >
+          <span
+            class="menu-tag-title"
+            :class="[fullPath.split('?')[0] == tag.path ? 'menu-tag-active' : '']"
+            >{{ tag.meta.title }}</span
+          >
+          <div v-if="!isAffix(tag)" class="close" @click.stop="handleTabRemove(tag.path)" />
+        </div>
       </div>
-    </el-popover>
+    </el-scrollbar>
+
+    <div class="right">
+      <el-dropdown trigger="click" @command="handleCommand">
+        <div class="df-c more-menu">
+          <span>更多菜单</span>
+          <icon-down style="margin-left: 10px" fill="#333" />
+        </div>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item command="closeOtherstabs">关闭其它</el-dropdown-item>
+            <el-dropdown-item command="closeAlltabs">关闭所有</el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
+    </div>
   </div>
 </template>
 
 <script>
   import { reactive, watch, toRefs, computed, nextTick } from 'vue';
   import { useStore } from 'vuex';
-  import { useRouter } from 'vue-router';
+  import { useRouter, useRoute } from 'vue-router';
 
   export default {
     name: 'TabBar',
     setup() {
       const store = useStore();
       const router = useRouter();
+
+      const route = useRoute();
 
       const state = reactive({
         affixtabs: [],
@@ -102,6 +82,10 @@
         ],
       });
 
+      const fullPath = computed(() => {
+        return route.fullPath;
+      });
+
       const visitedRouteList = computed(() => {
         return store.getters['tabsBar/visitedRoutes'];
       });
@@ -111,9 +95,8 @@
       });
 
       const addtabs = () => {
-        let target = router.resolve({name:"Index"})
-        if(target)
-        {
+        let target = router.resolve({ name: 'Index' });
+        if (target) {
           store.dispatch('tabsBar/addVisitedRoute', target);
         }
         const { name } = router.currentRoute.value;
@@ -121,6 +104,19 @@
           store.dispatch('tabsBar/addVisitedRoute', router.currentRoute.value);
         }
         return false;
+      };
+
+      const scrollIntoView = (path) => {
+        console.log(path);
+        const currentEle = document.querySelector(`.${path.split('?')[0].replaceAll('/', '')}`);
+        console.log(currentEle);
+        if (currentEle) {
+          currentEle.scrollIntoView({
+            behavior: 'smooth', // 平滑滚动
+            block: 'nearest', // 保持垂直位置不变
+            inline: 'end', // 水平方向上尽可能接近视口边缘
+          });
+        }
       };
 
       watch(
@@ -134,6 +130,10 @@
             }
           });
           state.tabActive = tabActiveR;
+
+          setTimeout(() => {
+            scrollIntoView(router.currentRoute.value.fullPath);
+          }, 100);
         },
         { immediate: true }
       );
@@ -168,15 +168,15 @@
       };
 
       const handleTabClick = (tab) => {
-        const route = visitedRouteList.value.filter((item, index) => {
-          if (tab.index == index) return item;
-        })[0];
-        if (router.currentRoute.value.path !== route.path) {
+        if (tab.path !== fullPath.value) {
           router.push({
-            path: route.path,
-            query: route.query,
-            fullPath: route.fullPath,
+            path: tab.path,
+            query: tab.query,
+            fullPath: tab.fullPath,
           });
+          setTimeout(() => {
+            scrollIntoView(tab.path);
+          }, 100);
         } else {
           return false;
         }
@@ -256,6 +256,7 @@
         ...toRefs(state),
         visitedRouteList,
         routes,
+        fullPath,
         isAffix,
         refreshRoute,
         closeAlltabs,
@@ -273,101 +274,104 @@
 </script>
 
 <style lang="scss" scoped>
-  .tabs-bar-container {
-    position: relative;
-    box-sizing: border-box;
+  ._tag {
+    flex: 0 0 56px;
     display: flex;
-    align-content: center;
     align-items: center;
+    background-color: white;
+    border-bottom: 1px solid #e6e6e6;
     justify-content: space-between;
-    height: $base-tabs-bar-height;
-    padding-right: $base-padding;
-    padding-left: $base-padding;
-    user-select: none;
-    background: $base-color-white;
-    border-top: 1px solid #f6f6f6;
-    &.horizontal {
-      padding: 0 40px;
+    .ycy_scrollbar {
+      width: 100%;
+      margin-right: 6px;
     }
-    :deep(.fold-unfold) {
-      margin-right: $base-padding;
+    ::v-deep .el-scrollbar__wrap {
+      overflow-y: hidden;
     }
-    :deep(.el-tabs__item) {
-      display: inline-flex;
+    .left {
+      display: -webkit-box;
+      -webkit-box-align: center;
+      height: 56px;
       align-items: center;
-    }
-    .item {
-      display: inline-flex;
-      align-items: center;
-      .menu-icon {
-        display: flex;
-        padding-right: $base-margin-5;
+      // overflow-x: auto;
+      // white-space: nowrap; /* 防止Tab项换行 */
+      .el-tag {
+        height: 32px;
+        line-height: 32px;
+        margin-left: 8px;
+        border: 1px solid #e4e7ed;
+        border-radius: 4px;
+        &:first-child {
+          margin-left: 0px;
+        }
       }
-    }
+      .menu-tag {
+        padding: 0 16px;
+        height: 56px;
+        line-height: 56px;
+        color: #333;
+        font-size: 14px;
+        cursor: pointer;
+        // transition: all 0.3s;
+        position: relative;
 
-    .tabs-content {
-      width: calc(100% - 90px);
-      height: $base-tag-item-height;
-      :deep(.el-tabs__nav-next, .el-tabs__nav-prev) {
-        height: $base-tag-item-height;
-        line-height: $base-tag-item-height;
+        .close {
+          margin-left: 4px;
+          background-image: url('@/assets/img/common/close.png');
+          width: 12px;
+          height: 12px;
+          background-size: 100% 100%;
+        }
       }
-      :deep(.el-tabs__header) {
-        border-bottom: 0;
-        .el-tabs__nav {
-          border: 0;
-          .el-tabs__item {
-            box-sizing: border-box;
-            height: $base-tag-item-height;
-            margin-right: $base-margin-5;
-            line-height: $base-tag-item-height;
-            border: none;
-            border-radius: $base-border-radius;
-            transition: padding 0.5s cubic-bezier(0.645, 0.045, 0.355, 1) !important;
-            &.is-active {
-              color: $base-color-primary;
-              background: $base-color-primary-light9;
-              border: none;
-              border-bottom: 2px solid;
-            }
-            &:hover {
-              color: $base-color-primary;
-              background: $base-color-primary-light9;
-              border: none;
-              border-bottom: 2px solid;
-            }
-          }
+      .menu-tag-title:hover,
+      .menu-tag-active {
+        color: $base-color-primary;
+        font-weight: bold;
+        position: relative;
+
+        &::before {
+          position: absolute;
+          content: '';
+          left: 50%;
+          bottom: 0;
+          width: 60%;
+          max-width: 62px;
+          transform: translate(-50%, -50%);
+          height: 3px;
+          background: $base-color-primary;
+          border-radius: 2px;
         }
       }
     }
-  }
-  .command-item {
-    display: flex;
-    align-content: center;
-    align-items: center;
-    padding: 5px 10px;
-    cursor: pointer;
-    .command-label {
-      padding-left: 5px;
-    }
-    &:hover {
-      color: $base-color-primary;
-      background-color: $base-color-primary-light9;
-    }
-    .icon {
+
+    .right {
+      height: 56px;
       display: flex;
-    }
-  }
-  .more {
-    display: flex;
-    align-content: center;
-    align-items: center;
-    color: $base-font-color;
-    cursor: pointer;
-    transition: all 0.5s;
-    &.active {
-      color: $base-color-primary !important;
-      transform: rotate(180deg);
+      align-items: center;
+      flex-shrink: 0;
+      .more-menu {
+        cursor: pointer;
+        color: #333;
+        font-feature-settings: 'liga' off, 'clig' off;
+        font-family: 'PingFang SC';
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+        position: relative;
+        padding: 0 14px;
+
+        &:after {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 1px;
+          height: 18px;
+          background: rgba(52, 52, 52, 0.1);
+        }
+      }
     }
   }
 </style>

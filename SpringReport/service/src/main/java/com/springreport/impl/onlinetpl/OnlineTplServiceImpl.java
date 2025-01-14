@@ -103,6 +103,9 @@ public class OnlineTplServiceImpl extends ServiceImpl<OnlineTplMapper, OnlineTpl
 	@Autowired
 	private IReportTypeService iReportTypeService;
 	
+	@Value("${thirdParty.type}")
+    private String thirdPartyType;
+	
 	/** 
 	* @Title: tablePagingQuery 
 	* @Description: 表格分页查询
@@ -486,7 +489,13 @@ public class OnlineTplServiceImpl extends ServiceImpl<OnlineTplMapper, OnlineTpl
 		onlineTpl = this.getOne(onlineTplQueryWrapper);
 		if(onlineTpl != null)
 		{
-			boolean isCreator = onlineTpl.getCreator().longValue() == userInfoDto.getUserId().longValue();
+			boolean isCreator = false;
+			if(StringUtil.isNotEmpty(userInfoDto.getUserName()) && userInfoDto.getUserName().equals(this.thirdPartyType)) {
+				isCreator = true;
+				result.setIsThirdParty(YesNoEnum.YES.getCode());
+			}else {
+				isCreator = onlineTpl.getCreator().longValue() == userInfoDto.getUserId().longValue();
+			}
 			result.setCreator(isCreator);
 			SysUser sysUser = this.iSysUserService.getById(onlineTpl.getCreator());
 			if(sysUser != null)

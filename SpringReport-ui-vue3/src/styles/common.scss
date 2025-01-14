@@ -84,6 +84,13 @@ html {
   align-items: center;
   justify-content: space-between;
 }
+.overflow-text {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+}
 .df-c-c {
   display: flex;
   align-items: center;
@@ -136,19 +143,30 @@ html {
 }
 /* 更改公共组件table样式 */
 .ces-table-page {
-  padding: 24px 24px 8px;
+  padding: 0px 0px 8px;
   background: #ffffff;
   border-radius: 8px;
+  .el-table__header-wrapper {
+    .el-table__cell {
+      padding: 12px 0;
+    }
+  }
 }
+// 更改table鼠标悬浮的颜色
+.el-table__body tr:hover > td.el-table__cell{
+  background-color: rgba($color: $base-color-primary, $alpha: 0.05) !important;
+}
+// 更改表头颜色
 .ces-table-page thead tr th {
-  background: linear-gradient(0deg, #e8f8f2, #e8f8f2), #ffffff !important;
-  color: rgba(0, 0, 0, 0.4);
+  background: linear-gradient(0deg, #fafafa, #fafafa), #ffffff !important;
+  color: #333;
   font-weight: 400;
   font-size: 14px;
   padding: 12px 0;
+  font-weight: bold;
 }
 .ces-table-page tbody tr td {
-  color: rgba(0, 0, 0, 0.9);
+  color: #595959;
 }
 
 .echarts-container.router-page{
@@ -175,4 +193,203 @@ html {
 }
 .el-tree-node__content {
   margin-bottom: 6px;
+}
+
+.el-dialog {
+  border-radius: 4px !important;
+  padding: 0 !important;
+  .el-dialog__header {
+    padding: 12px 16px !important;
+    .el-dialog__title {
+      color: rgba(0, 0, 0, 0.85);
+      font-family: "PingFang SC";
+      font-size: 16px !important;
+      font-style: normal;
+      line-height: 24px; /* 150% */
+      font-weight: 600;
+    }
+    .el-dialog__close  {
+      color: #646a73;
+      font-size: 18px !important;
+      font-weight: bold;
+    }
+  }
+  .el-dialog__body {
+    padding: 16px;
+    background-color: #fff;
+  }
+  .el-dialog__footer {
+    padding: 10px 16px;
+  }
+}
+
+.cus-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.cus-scrollbar::-webkit-scrollbar-track,
+::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  border: 5px solid transparent;
+}
+
+.cus-scrollbar::-webkit-scrollbar-track {
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2) inset;
+}
+
+.cus-scrollbar::-webkit-scrollbar-thumb {
+  min-height: 20px;
+  background-clip: content-box;
+  box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.2) inset;
+}
+
+.cus-scrollbar::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+
+.action-icon {
+  width: 16px;
+  height: 16px;
+  background-size: 100% 100%;
+  margin-right: 4px;
+}
+.action-icon-search {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-size: 100% 100%;
+  margin-right: 4px;
+  background-image: url("@/assets/img/common/chaxun.png");
+}
+.action-icon-add {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-size: 100% 100%;
+  margin-right: 4px;
+  background-image: url("@/assets/img/common/add.png");
+}
+.action-icon-del {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-size: 100% 100%;
+  margin-right: 4px;
+  background-image: url("@/assets/img/common/del.png");
+}
+.action-icon-export {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-size: 100% 100%;
+  margin-right: 4px;
+  background-image: url("@/assets/img/common/export.png");
+}
+.action-icon-import {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-size: 100% 100%;
+  margin-right: 4px;
+  background-image: url("@/assets/img/common/import.png");
+}
+.action-icon-refresh {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-size: 100% 100%;
+  margin-right: 4px;
+  background-image: url("@/assets/img/common/refresh.png");
+}
+
+.action-icon-conditional-export{
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background-size: 100% 100%;
+  margin-right: 4px;
+  background-image: url("@/assets/img/common/conditional-export.png");
+}
+.action-icon-current-export{
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background-size: 100% 100%;
+  margin-right: 4px;
+  background-image: url("@/assets/img/common/current-export.png");
+}
+
+.action-icon-export-all{
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background-size: 100% 100%;
+  margin-right: 4px;
+  background-image: url("@/assets/img/common/export-all.png");
+}
+
+.action-icon-print{
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background-size: 100% 100%;
+  margin-right: 4px;
+  width: 14px;
+  height: 14px;
+  background-image: url("@/assets/img/common/print.png");
+}
+
+.action-icon-back{
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background-size: 100% 100%;
+  margin-right: 4px;
+  width: 14px;
+  height: 14px;
+  background-image: url("@/assets/img/common/back.png");
+}
+
+.search-drawer,
+.handle-drawer {
+  .el-drawer__header {
+    padding: 16px !important;
+    margin-bottom: 0 !important;
+    font-size: 16px;
+    color: rgba($color: #000000, $alpha: 0.85);
+    line-height: 24px; /* 150% */
+    font-weight: bold;
+  }
+  .el-drawer__body {
+    padding: 8px 26px 52px !important;
+    overflow-y: auto;
+    .el-form-item__label {
+      color: #595959;
+      font-size: 14px;
+      font-weight: bold;
+      line-height: 14px;
+      height: 14px;
+      padding: 0;
+      margin-bottom: 12px;
+    }
+    .search-drawer__footer,
+    .handle-drawer__footer {
+      text-align: right;
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      left: 0;
+      padding: 8px 26px;
+      border-top: 1px solid #e6e6e6;
+      z-index: 999;
+      background-color: #fff;
+    }
+  }
+}
+
+// 移除el-tooltip的焦点样式
+.el-tooltip__trigger:focus-visible {
+  outline: unset;
 }

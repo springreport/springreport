@@ -215,7 +215,9 @@ commonUtil.doPost = function(obj,headers)
     }
     var commonHeader = {
         'Authorization':localStorage.getItem(commonConstants.sessionItem.authorization),
-        'reqSource':'1'};
+        'reqSource':'1',
+        'thirdPartyType':localStorage.getItem(commonConstants.sessionItem.thirdPartyType),
+    };
     return new Promise((resolve, reject) => {
         Axios.post(obj.url,obj.params,{headers: Object.assign(commonHeader,headers?headers:{})})
             .then(response => {
@@ -289,7 +291,9 @@ commonUtil.doGet = function(obj,headers)
 {
     var commonHeader = {
         'Authorization':localStorage.getItem(commonConstants.sessionItem.authorization),
-        'reqSource':'1'};
+        'reqSource':'1',
+        'thirdPartyType':localStorage.getItem(commonConstants.sessionItem.thirdPartyType),
+    };
     return new Promise((resolve, reject) => {
         Axios.get(obj.url,{
             params:obj.params,
@@ -346,7 +350,8 @@ commonUtil.downloadFile = function(url,params,callback,headers)
 {
     var commonHeader = {
         'Authorization':localStorage.getItem(commonConstants.sessionItem.authorization),
-        'reqSource':'1'};
+        'reqSource':'1',
+        'thirdPartyType':localStorage.getItem(commonConstants.sessionItem.thirdPartyType)};
     Axios.post(url,params,{
         responseType: 'blob',
         headers: Object.assign(commonHeader,headers?headers:{})
@@ -387,7 +392,9 @@ commonUtil.downloadFile = function(url,params,callback,headers)
 commonUtil.printPdf = function(url,params,headers,callback){
     var commonHeader = {
         'Authorization':localStorage.getItem(commonConstants.sessionItem.authorization),
-        'reqSource':'1'};
+        'reqSource':'1',
+        'thirdPartyType':localStorage.getItem(commonConstants.sessionItem.thirdPartyType)
+    };
     Axios.post(url,params,{
         responseType: 'blob',
         headers: Object.assign(commonHeader,headers?headers:{})
@@ -2082,7 +2089,9 @@ commonUtil.uploadFile = function (file,obj) {
     formData.append("file",file);
     let config = {
         headers: {'Content-Type': 'multipart/form-data',
-        'Authorization':localStorage.getItem(commonConstants.sessionItem.authorization)}
+        'Authorization':localStorage.getItem(commonConstants.sessionItem.authorization),
+        'thirdPartyType':localStorage.getItem(commonConstants.sessionItem.thirdPartyType),
+      }
     }
     return new Promise((resolve, reject) => {
         Axios.post(obj.url, formData, config).then(response => {

@@ -22,6 +22,9 @@ NProgress.configure({
 router.beforeEach(async (to, from, next) => {
   if (progressBar) NProgress.start();
   var token = localStorage.getItem(commonConstants.sessionItem.authorization);
+  if(!token){
+    token = to.query.token
+  }
   if(!loginInterception)
   {
     next();

@@ -3,18 +3,21 @@
     <div class="calendar-header df-c-b">
       <div class="month">{{ currentMonth.clone().format('YYYY年MM月') }}</div>
       <div class="action">
-        <el-icon
-          style="color: rgba(0, 0, 0, 0.25); margin-right: 20px; cursor: pointer"
+        <icon-left
+          theme="outline"
+          size="18"
+          fill="rgba(0, 0, 0, 0.25)"
           @click="handleMonth('subtract')"
-        >
-          <ArrowLeft />
-        </el-icon>
-        <el-icon>
-          <ArrowRight
-            style="color: rgba(0, 0, 0, 0.25); cursor: pointer"
-            @click="handleMonth('add')"
-          />
-        </el-icon>
+          style="margin-right: 20px; cursor: pointer"
+        />
+
+        <icon-right
+          theme="outline"
+          size="18"
+          fill="rgba(0, 0, 0, 0.25)"
+          @click="handleMonth('add')"
+          style="cursor: pointer"
+        />
       </div>
     </div>
     <div class="calendar-body">
@@ -155,8 +158,6 @@
 </script>
 
 <style scoped lang="scss">
-  @import '@/element-variables.scss';
-
   .calendar {
     width: 430px;
     margin: auto;
@@ -217,15 +218,15 @@
       position: relative;
       &:hover {
         color: #fff;
-        background-color: $--color-primary;
+        background-color: $base-color-primary;
       }
     }
     .is-current {
-      border: 1px solid $--color-primary;
+      border: 1px solid $base-color-primary;
     }
     .date-selected {
       color: #fff;
-      background-color: $--color-primary !important;
+      background-color: $base-color-primary !important;
     }
     .executed::before {
       position: absolute;

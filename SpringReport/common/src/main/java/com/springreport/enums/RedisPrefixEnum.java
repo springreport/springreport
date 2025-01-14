@@ -263,5 +263,14 @@ public enum RedisPrefixEnum implements BaseCharEnum{
 		public String getName() {
 			return "附件查看临时缓存";
 		}
+	},
+	THIRDPARTYTOKEN{
+		public String getCode() {
+			return "thirdPartyToken:";
+		}
+
+		public String getName() {
+			return "第三方token缓存";
+		}
 	}
 }

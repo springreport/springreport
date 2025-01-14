@@ -26,7 +26,7 @@
     <section
       class="ces-table"
       :style="{
-        height: isPagination ? 'calc(100vh - 286px)' : 'calc(100vh - 238px)',
+        height: getTableHeight(),
       }"
     >
       <el-table
@@ -324,7 +324,9 @@ export default {
     highlightCurrentRow: { type: Boolean, default: false }
   },
   data() {
-    return {}
+    return {
+      thirdPartyType: ''
+    }
   },
   watch: {
     defaultSelections(val) {
@@ -339,7 +341,25 @@ export default {
       })
     }
   },
+  mounted() {
+    this.thirdPartyType = localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)
+  },
   methods: {
+    getTableHeight() {
+      if (this.isPagination) {
+        if (this.thirdPartyType) {
+          return 'calc(100vh - 146px)'
+        } else {
+          return 'calc(100vh - 286px)'
+        }
+      } else {
+        if (this.thirdPartyType) {
+          return 'calc(100vh - 108px)'
+        } else {
+          return 'calc(100vh - 238px)'
+        }
+      }
+    },
     selectChange(val) {
       this.$emit('selectChange', val)
     },
@@ -428,6 +448,9 @@ export default {
 }
 ::v-deep .el-dropdown-item-del {
   color: #ff4d4f !important;
+}
+::v-deep .el-dropdown-menu__item{
+  text-align: left;
 }
 
 ::v-deep .el-table__expand-icon{

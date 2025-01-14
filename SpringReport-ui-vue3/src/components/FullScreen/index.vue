@@ -1,19 +1,5 @@
 <template>
-  <div v-if="state.isSystemMerchant == 1" class="role-name">商户&nbsp;</div>
-      <div v-if="state.isSystemMerchant == 1" class="role-name">
-        <el-select v-model="state.merchantNo" placeholder="请选择" size="small" @change="changeMerchant" style="width:120px">
-          <el-option
-            v-for="item in state.merchants"
-            :key="item.merchantNo"
-            :label="item.merchantName"
-            :value="item.merchantNo">
-          </el-option>
-      </el-select>
-      </div>
-  <span
-    class="icon-hover full-screen-wrapper"
-    :title="isFullScreen ? '退出全屏' : '全屏'"
-  >
+  <span class="icon-hover full-screen-wrapper" :title="isFullScreen ? '退出全屏' : '全屏'">
     <component
       theme="filled"
       size="16"
@@ -23,10 +9,31 @@
       @click="handleClick"
     />
   </span>
+  <div class="line" />
+  <div v-if="state.isSystemMerchant == 1" class="df-c">
+    <el-dropdown class="white font" trigger="click" placement="bottom" @command="changeMerchant">
+      <div class="system-merchant df-c">
+        <span style="margin-right: 8px">{{ merchantName }}</span>
+        <icon-sort-two theme="outline" size="12" style="transform: rotate(90deg)" />
+      </div>
+      <template #dropdown>
+        <el-dropdown-menu>
+          <el-dropdown-item
+            v-for="item in state.merchants"
+            :key="item.merchantNo"
+            :command="item.merchantNo"
+            >{{ item.merchantName }}</el-dropdown-item
+          >
+        </el-dropdown-menu>
+      </template>
+    </el-dropdown>
+
+    <div class="line" />
+  </div>
 </template>
 
 <script setup>
-  import { reactive,computed,onMounted } from 'vue';
+  import { reactive, computed, onMounted } from 'vue';
   import screenfull from 'screenfull';
   import { useStore } from 'vuex';
   import { ElMessage } from 'element-plus';
@@ -36,10 +43,10 @@
   import commonConstants from '../common/constants';
   const store = useStore();
   const state = reactive({
-      isSystemMerchant:2,
-      merchants:[],
-      merchantNo:"",
-    });
+    isSystemMerchant: 2,
+    merchants: [],
+    merchantNo: '',
+  });
   const router = useRouter();
   defineProps({
     color: {
@@ -49,34 +56,35 @@
   });
 
   onMounted(() => {
-      state.isSystemMerchant = localStorage.getItem(commonConstants.sessionItem.isSystemMerchant)
-      if(state.isSystemMerchant == 1)
-      {
-        state.merchantNo = localStorage.getItem('merchantNo')
-        getMerchants();
+    state.isSystemMerchant = localStorage.getItem(commonConstants.sessionItem.isSystemMerchant);
+    if (state.isSystemMerchant == 1) {
+      state.merchantNo = localStorage.getItem('merchantNo');
+      getMerchants();
+    }
+  });
+  const changeMerchant = async (key) => {
+    state.merchantNo = key;
+    localStorage.setItem(commonConstants.sessionItem.merchantNo, state.merchantNo);
+    router.push('/tempRefresh').catch(() => {});
+  };
+  const getMerchants = async (e) => {
+    var object = {
+      url: apis.login.getMerchantListApi,
+      params: {},
+      removeEmpty: false,
+    };
+    commonUtil.doPost(object).then((response) => {
+      if (response.code === '200') {
+        state.merchants = response.responseData;
       }
-  })
-  const changeMerchant =async (e) =>{
-      localStorage.setItem(
-          commonConstants.sessionItem.merchantNo,
-          state.merchantNo
-      )
-      router.push('/tempRefresh').catch(() => {});
-    }
-  const getMerchants =async (e) =>{
-      var object = {
-          url: apis.login.getMerchantListApi,
-          params: {},
-          removeEmpty: false,
-        }
-        commonUtil.doPost(object).then((response) => {
-            if (response.code === '200') {
-               state.merchants = response.responseData
-            }
-          })
-    }
+    });
+  };
   const isFullScreen = computed(() => {
     return store.getters['setting/isFullScreen'];
+  });
+
+  const merchantName = computed(() => {
+    return state.merchants.find((item) => item.merchantNo == state.merchantNo)?.merchantName;
   });
 
   const emit = defineEmits(['refresh']);
@@ -94,5 +102,23 @@
 <style lang="scss" scoped>
   .full-screen-wrapper {
     padding: 20px 10px;
+  }
+  .line {
+    width: 1px;
+    height: 24px;
+    background: rgba(0, 0, 0, 0.1);
+    margin: 0 24px;
+  }
+  .system-merchant {
+    cursor: pointer;
+    color: $base-color-primary;
+    font-family: 'PingFang SC';
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 14px;
+    padding: 8px 10px;
+    border: 1px solid $base-color-primary;
+    border-radius: 6px;
   }
 </style>

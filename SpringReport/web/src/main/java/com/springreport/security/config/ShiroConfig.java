@@ -13,6 +13,7 @@ import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSource
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -23,6 +24,7 @@ import org.springframework.context.annotation.Primary;
 import com.springreport.constants.Constants;
 import com.springreport.security.filter.JWTFilter;
 import com.springreport.shiro.ShiroMethodInterceptor;
+import com.springreport.util.RedisUtil;
 
 
 /**
@@ -37,6 +39,9 @@ public class ShiroConfig {
 	@Value("${authentic.enabale}")
     private boolean authenticEnabale;
 	
+	@Autowired
+	private RedisUtil redisUtil;
+	
 	
 	@Bean(name = "shiroFilterFactoryBean")
 	public ShiroFilterFactoryBean getShiroFilterFactoryBean(DefaultWebSecurityManager securityManager) throws Exception {
@@ -45,7 +50,7 @@ public class ShiroConfig {
 		{
 			// 添加自己的过滤器并且取名为jwt
 			Map<String, Filter> filterMap = new HashMap<>();
-			filterMap.put(Constants.JWT_STRING, new JWTFilter());
+			filterMap.put(Constants.JWT_STRING, new JWTFilter(redisUtil));
 			shiroFilterFactoryBean.setFilters(filterMap);
 			shiroFilterFactoryBean.setSecurityManager(securityManager);
 //			shiroFilterFactoryBean.setUnauthorizedUrl("/api/common/unnauthorized");//未授权跳转url
@@ -79,7 +84,7 @@ public class ShiroConfig {
 			return shiroFilterFactoryBean;
 		}else {
 			Map<String, Filter> filterMap = new HashMap<>();
-			filterMap.put(Constants.JWT_STRING, new JWTFilter());
+			filterMap.put(Constants.JWT_STRING, new JWTFilter(redisUtil));
 			shiroFilterFactoryBean.setFilters(filterMap);
 			shiroFilterFactoryBean.setSecurityManager(securityManager);
 			Map<String, String> map = new LinkedHashMap<>();

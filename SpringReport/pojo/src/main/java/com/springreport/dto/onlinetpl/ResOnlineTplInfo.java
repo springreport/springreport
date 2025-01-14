@@ -1,6 +1,7 @@
 package com.springreport.dto.onlinetpl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.springreport.enums.YesNoEnum;
 
 import lombok.Data;
 
@@ -34,4 +35,11 @@ public class ResOnlineTplInfo {
      * @date 2024-08-28 03:37:23 
      */  
     private String tplName;
+    
+    /**  
+     * @Fields isThirdParty : 是否是第三方调用 1是 2否
+     * @author caiyang
+     * @date 2025-01-09 11:17:35 
+     */  
+    private Integer isThirdParty = YesNoEnum.NO.getCode();
 }
