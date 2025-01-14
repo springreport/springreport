@@ -16,14 +16,17 @@
        :modalForm='pageData.modalForm' :modalData='pageData.modalData' 
        :modalHandles='pageData.modalHandles'
        @closeModal="closeModal()"></modal>
-       <el-dialog title="参数设置" :visible.sync="pageData.paramDialog"  height="80%" width="30%" :close-on-click-modal='false' @close='closeParamDialog'>
+       <el-drawer title="参数设置" :visible.sync="pageData.paramDialog" :close-on-click-modal='false' @close='closeParamDialog' custom-class="handle-drawer"
+      class="handle-drawer" size="36%">
             <taskReportForm  ref="reportRef" :reportName="''" :reportForm="pageData.reportForm" :searchData="pageData.searchData">
             </taskReportForm>
-             <span slot="footer" class="dialog-footer">
+             <div class="handle-drawer__footer">
+                <span class="dialog-footer">
                 <el-button @click="closeParamDialog" size="small">取 消</el-button>
                 <el-button type="primary" @click="confirmParams" size="small">确 定</el-button>
-            </span>
-       </el-dialog>
+                </span>
+            </div>
+       </el-drawer>
 
     </div>
 </template>

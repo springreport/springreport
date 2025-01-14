@@ -1,6 +1,6 @@
 <!-- 搜索表单 -->
 <template>
-  <div class="el-dialog-div">
+  <div >
     <el-form
       :inline="inline"
       label-position="top"

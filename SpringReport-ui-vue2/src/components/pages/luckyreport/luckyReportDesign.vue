@@ -1747,14 +1747,14 @@
                 />
                 <div class="sub-title">{{ selectContentSuggestion }}</div>
               </el-form-item>
-
               <el-form-item>
                 <el-button
                   type="primary"
                   size="small"
                   @click="addParam"
                 >添加</el-button>
-              </el-form-item>
+              </el-form-item><br>
+              <div style="width:100%">
               <el-tag
                 v-if="paramForm.paramType == 'date'"
                 type="warning"
@@ -1788,6 +1788,7 @@
                 type="warning"
               >sql语句格式：select deptId as id, deptName as name,parentId as
                 pid from table 注意：返回的属性中必须有 id,name和pid</el-tag>
+              </div>
             </el-form>
           </div>
           <div style="height: 50%">
@@ -3861,7 +3862,7 @@
     }
     .el-form-item__label {
       flex-shrink: 0;
-      width: 80px;
+      // width: 80px;
     }
     .el-form-item__content {
       width: calc(100% - 92px);

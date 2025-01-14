@@ -2091,7 +2091,6 @@ commonUtil.uploadFile = function (file,obj) {
         headers: {'Content-Type': 'multipart/form-data',
         'Authorization':localStorage.getItem(commonConstants.sessionItem.authorization),
         'thirdPartyType':localStorage.getItem(commonConstants.sessionItem.thirdPartyType),
-        'thirdPartyType':localStorage.getItem(commonConstants.sessionItem.thirdPartyType),
       }
     }
     return new Promise((resolve, reject) => {
