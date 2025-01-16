@@ -39,6 +39,7 @@ import org.apache.poi.xwpf.usermodel.IBodyElement;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.TOC;
 import org.apache.poi.xwpf.usermodel.UnderlinePatterns;
+import org.apache.poi.xwpf.usermodel.XWPFChart;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFFooter;
 import org.apache.poi.xwpf.usermodel.XWPFHeader;
@@ -55,12 +56,45 @@ import org.apache.poi.xwpf.usermodel.XWPFTableCell.XWPFVertAlign;
 import org.docx4j.fonts.IdentityPlusMapper;
 import org.docx4j.fonts.Mapper;
 import org.docx4j.fonts.PhysicalFonts;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartUtils;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.CategoryLabelPositions;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.title.LegendTitle;
+import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.general.DefaultPieDataset;
+import org.openxmlformats.schemas.drawingml.x2006.chart.CTBarChart;
+import org.openxmlformats.schemas.drawingml.x2006.chart.CTBarSer;
+import org.openxmlformats.schemas.drawingml.x2006.chart.CTChart;
+import org.openxmlformats.schemas.drawingml.x2006.chart.CTLineChart;
+import org.openxmlformats.schemas.drawingml.x2006.chart.CTLineSer;
+import org.openxmlformats.schemas.drawingml.x2006.chart.CTNumData;
+import org.openxmlformats.schemas.drawingml.x2006.chart.CTNumVal;
+import org.openxmlformats.schemas.drawingml.x2006.chart.CTPieChart;
+import org.openxmlformats.schemas.drawingml.x2006.chart.CTPieSer;
+import org.openxmlformats.schemas.drawingml.x2006.chart.CTPlotArea;
+import org.openxmlformats.schemas.drawingml.x2006.chart.CTStrData;
+import org.openxmlformats.schemas.drawingml.x2006.chart.CTStrVal;
+import org.openxmlformats.schemas.drawingml.x2006.chart.CTTitle;
+import org.openxmlformats.schemas.drawingml.x2006.chart.CTTx;
+import org.openxmlformats.schemas.drawingml.x2006.main.CTGraphicalObject;
+import org.openxmlformats.schemas.drawingml.x2006.main.CTGraphicalObjectData;
+import org.openxmlformats.schemas.drawingml.x2006.main.CTRegularTextRun;
+import org.openxmlformats.schemas.drawingml.x2006.main.CTTextBody;
+import org.openxmlformats.schemas.drawingml.x2006.main.CTTextParagraph;
+import org.openxmlformats.schemas.drawingml.x2006.wordprocessingDrawing.CTInline;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTBorder;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTBr;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTDrawing;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTP;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPBdr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPageNumber;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTR;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSdtBlock;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTString;
@@ -79,6 +113,7 @@ import com.springreport.util.DateUtil;
 import com.springreport.util.FileUtil;
 import com.springreport.util.HttpClientUtil;
 import com.springreport.util.InfluxDBConnection;
+import com.springreport.util.JFreeChartUtil;
 import com.springreport.util.JdbcUtils;
 import com.springreport.util.ListUtil;
 import com.springreport.util.Md5Util;
@@ -87,6 +122,8 @@ import com.springreport.util.ParamUtil;
 import com.springreport.util.ReportDataUtil;
 import com.springreport.util.StringUtil;
 import com.springreport.util.WordUtil;
+
+import lombok.extern.slf4j.Slf4j;
 
 import com.github.pagehelper.PageHelper;
 import com.springreport.base.BaseEntity;
@@ -108,6 +145,7 @@ import com.springreport.dto.onlinetpl.OnlineTplTreeDto;
 import com.springreport.dto.reporttpl.MesGenerateReportDto;
 import com.springreport.dto.reporttpldataset.ReportDatasetDto;
 
+import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
@@ -117,6 +155,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.math.BigInteger;
 import java.net.URLEncoder;
 import java.sql.SQLException;
@@ -130,9 +169,14 @@ import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import com.springreport.enums.DatasetTypeEnum;
 import com.springreport.enums.DelFlagEnum;
@@ -149,6 +193,7 @@ import com.springreport.exception.BizException;
 * @date 2024-05-02 08:55:33
 * @version V1.0  
  */
+@Slf4j
 @Service
 public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> implements IDocTplService {
   
@@ -1346,13 +1391,15 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 		List<IBodyElement> bodyElements = xwpfDocument.getBodyElements();
 		Map<BigInteger, JSONObject> listMap = new HashMap<>();
 		List<XWPFHeader> headers = xwpfDocument.getHeaderList();
+		int chartIndex = 0;
+		List<XWPFChart> charts = xwpfDocument.getCharts();
 		if(ListUtil.isNotEmpty(headers)) {
 			for (int i = 0; i < headers.size(); i++) {
 				XWPFHeader header = headers.get(i);
 				List<XWPFParagraph> paragraphs = header.getParagraphs();
 				if(ListUtil.isNotEmpty(paragraphs)) {
 					for (int j = 0; j < paragraphs.size(); j++) {
-						parseTextParagraph(paragraphs.get(j),headerElements);
+						parseTextParagraph(paragraphs.get(j),headerElements,j == 0);
 					}
 				}
 			}
@@ -1364,7 +1411,7 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 				List<XWPFParagraph> paragraphs = footer.getParagraphs();
 				if(ListUtil.isNotEmpty(paragraphs)) {
 					for (int j = 0; j < paragraphs.size(); j++) {
-						parseTextParagraph(paragraphs.get(j),footerElements);
+						parseTextParagraph(paragraphs.get(j),footerElements,j == 0);
 					}
 				}
 			}
@@ -1373,7 +1420,14 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 			for (int i = 0; i < bodyElements.size(); i++) {
 				IBodyElement iBodyElement = bodyElements.get(i);
 				if(iBodyElement instanceof XWPFParagraph) {
-					parseParagraph((XWPFParagraph) iBodyElement,documentElements,listMap);
+					XWPFParagraph paragraph = (XWPFParagraph) iBodyElement;
+					if(isChart(paragraph)) {
+						parseChart(charts,chartIndex,paragraph,documentElements);
+						chartIndex = chartIndex + 1;
+					}else {
+						parseParagraph(paragraph,documentElements,listMap,i==0);
+					}
+					
 				}else if(iBodyElement instanceof XWPFTable) {
 					parseTable((XWPFTable) iBodyElement,documentElements);
 				}
@@ -1387,7 +1441,7 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 		return result;
 	}
 	
-	private void parseParagraph(XWPFParagraph paragraph,List<Object> documentElements,Map<BigInteger, JSONObject> listMap) throws Exception{
+	private void parseParagraph(XWPFParagraph paragraph,List<Object> documentElements,Map<BigInteger, JSONObject> listMap,boolean isFirst) throws Exception{
 		if(paragraph.getNumID() != null) {
 			JSONObject listObj = null;
 			if(listMap.containsKey(paragraph.getNumID())) {
@@ -1413,8 +1467,39 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 		}else if(paragraph.getStyle() != null) {
 			parseTitleParagraph(paragraph, documentElements);
 		}else {
-			parseTextParagraph(paragraph, documentElements);
+			parseTextParagraph(paragraph, documentElements,isFirst);
 		}
+	}
+//	 public static boolean containsChart(XWPFParagraph paragraph) {
+//	        List<XWPFRun> runs = paragraph.getRuns();
+//	        for (XWPFRun run : runs) {
+//	            if (run.getCTR() != null) {
+//	                CTR ctr = run.getCTR();
+//	                List<CTDrawing> drawings = ctr.getDrawingList();
+//	                for (CTDrawing drawing : drawings) {
+//	                    if (drawing.getInlineList() != null) {
+//	                        for (CTInline inline : drawing.getInlineList()) {
+//	                            if (inline.getGraphic() != null) {
+//	                                CTGraphicalObject graphic = inline.getGraphic();
+//	                                CTGraphicalObjectData graphicData = graphic.getGraphicData();
+//	                                if (graphicData != null && "http://schemas.openxmlformats.org/drawingml/2006/chart".equals(graphicData.getUri())) {
+//	                                    return true;
+//	                                }
+//	                            }
+//	                        }
+//	                    }
+//	                }
+//	            }
+//	        }
+//	        return false;
+//	    }
+	private boolean isChart(XWPFParagraph paragraph) {
+		boolean result = false;
+		String ctpStr = String.valueOf(paragraph.getCTP());
+		if(StringUtil.isNotEmpty(ctpStr) && ctpStr.contains("<c:chart")) {
+			return true;
+		}
+		return result;
 	}
 	
 	private void parseListParagraph(XWPFParagraph paragraph,JSONObject listObj) {
@@ -1573,7 +1658,7 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 		}
 	}
 	
-	private void parseTextParagraph(XWPFParagraph paragraph,List<Object> documentElements) throws Exception {
+	private void parseTextParagraph(XWPFParagraph paragraph,List<Object> documentElements,boolean isFirst) throws Exception {
 		List<XWPFRun> runs = paragraph.getRuns();
 		boolean isSeperator = isSeperator(paragraph);
 		if(ListUtil.isNotEmpty(runs)) {
@@ -1593,6 +1678,11 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 				}
 				List<XWPFPicture> pictures = xwpfRun.getEmbeddedPictures();
 				if(ListUtil.isNotEmpty(pictures)) {
+					if(i == runs.size()-1) {
+						DocTextDto breakDocTextDto = new DocTextDto();
+						breakDocTextDto.setValue("\n");
+						documentElements.add(breakDocTextDto);
+					}
 					for (int j = 0; j < pictures.size(); j++) {
 						DocImageDto docImageDto = new DocImageDto();
 						XWPFPicture picture = pictures.get(j);
@@ -1631,14 +1721,14 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 						}
 					}
 					docTextDto.setType("tab");
-					if(i == 0) {
+					if(i == 0 && !isFirst) {
 						text = "\n"+text;
 					}
 					docTextDto.setValue(text == null?"":text);
 					documentElements.add(docTextDto);
 					continue;
 				}
-				if(i == 0) {
+				if(i == 0 && !isFirst) {
 					text = "\n"+text;
 				}
 				String scriptType = getSupSubScriptType(xwpfRun);
@@ -1831,7 +1921,7 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 				if(ListUtil.isNotEmpty(cellParagraph)) {
 					List<Object> docTextDtos = new ArrayList<>();
 					for (int k = 0; k < cellParagraph.size(); k++) {
-						parseParagraph(cellParagraph.get(k), docTextDtos,new HashMap<>());
+						parseParagraph(cellParagraph.get(k), docTextDtos,new HashMap<>(),k == 0);
 					}
 					docTableCellDto.setValue(docTextDtos);
 				}
@@ -1871,4 +1961,217 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 			}
 		}
 	}
+	
+	private void parseChart(List<XWPFChart> charts,int chartIndex,XWPFParagraph paragraph,List<Object> documentElements) throws Exception{
+		if(ListUtil.isNotEmpty(charts) && charts.size() > chartIndex) {
+			//柱状图或者条形图
+			XWPFChart chart = charts.get(chartIndex);
+			CTChart ctChart = chart.getCTChart();
+			String title = "";
+			try {
+				title = ctChart.getTitle().getTx().getRich().getPArray()[0].getRArray()[0].getT();
+			} catch (Exception e) {
+			}
+	        CTPlotArea plotArea = ctChart.getPlotArea();
+	        if (plotArea.sizeOfBarChartArray() > 0) {
+	        	CTBarChart barChart = plotArea.getBarChartArray(0);
+	        	if (barChart != null) {
+	        		String barType = String.valueOf(barChart.getBarDir().getVal());
+	        		parseBarChart(barChart,title,paragraph.getAlignment(),documentElements,"col".equals(barType)?"column":"bar");
+	        	}
+	        }else if(plotArea.sizeOfLineChartArray() > 0) {
+	        	//折线图
+	        	CTLineChart lineChart = plotArea.getLineChartArray(0);
+	        	parseLineChart(lineChart, title, paragraph.getAlignment(), documentElements);
+	        }else if (plotArea.sizeOfPieChartArray() > 0) {
+	        	//饼图
+	        	CTPieChart pieChart = plotArea.getPieChartArray(0);
+	        	parsePieChart(pieChart, title, paragraph.getAlignment(), documentElements);
+	        }
+		}
+	}
+	
+	private void parseBarChart(CTBarChart barChart,String title,ParagraphAlignment paragraphAlignment,List<Object> documentElements,String type) {
+		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+		CTBarSer[] seriesArray = barChart.getSerArray();
+		for (CTBarSer series : seriesArray) {
+			String seriesName = "";
+			if(series.getTx().getStrRef() != null) {
+				seriesName = series.getTx().getStrRef().getStrCache().getPtArray()[0].getV();
+			}
+			// 获取类别数据
+			CTStrData catData = null;
+			if (series.getCat() != null && series.getCat().isSetStrRef()) {
+				catData = series.getCat().getStrRef().getStrCache();
+			} else if (series.getCat() != null && series.getCat().isSetStrLit()) {
+				catData = series.getCat().getStrLit();
+			}
+
+			// 获取数值数据
+			CTNumData valData = null;
+			if (series.getVal() != null && series.getVal().isSetNumRef()) {
+				valData = series.getVal().getNumRef().getNumCache();
+			} else if (series.getVal() != null && series.getVal().isSetNumLit()) {
+				valData = series.getVal().getNumLit();
+			}
+
+			if (catData == null || valData == null) {
+				log.error("Category or value data is missing.");
+				continue;
+			}
+
+			int catSize = catData.sizeOfPtArray();
+			int valSize = valData.sizeOfPtArray();
+
+			if (catSize != valSize) {
+				log.error("Mismatched number of categories and values");
+				continue;
+			}
+
+			for (int i = 0; i < catSize; i++) {
+				CTStrVal catPt = catData.getPtArray(i);
+				CTNumVal valPt = valData.getPtArray(i);
+
+				String category = catPt.getV();
+				try {
+					double value = Double.parseDouble(valPt.getV());
+					dataset.setValue(value, seriesName, category);
+				} catch (NumberFormatException e) {
+					log.error("Failed to parse value for category: {}", category, e);
+				}
+			}
+		}
+		byte[] chartByte = JFreeChartUtil.creteBarChart(title, dataset, 520, 250, type);
+		addChartElement(documentElements, chartByte, paragraphAlignment);
+	}
+	
+	private void parseLineChart(CTLineChart lineChart,String title,ParagraphAlignment paragraphAlignment,List<Object> documentElements) throws Exception{
+		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+		CTLineSer[] seriesArray = lineChart.getSerArray();
+		for (CTLineSer series : seriesArray) {
+			String seriesName = "";
+			if(series.getTx().getStrRef() != null) {
+				seriesName = series.getTx().getStrRef().getStrCache().getPtArray()[0].getV();
+			}
+			// 获取类别数据
+			CTStrData catData = null;
+			if (series.getCat() != null && series.getCat().isSetStrRef()) {
+				catData = series.getCat().getStrRef().getStrCache();
+			} else if (series.getCat() != null && series.getCat().isSetStrLit()) {
+				catData = series.getCat().getStrLit();
+			}
+
+			// 获取数值数据
+			CTNumData valData = null;
+			if (series.getVal() != null && series.getVal().isSetNumRef()) {
+				valData = series.getVal().getNumRef().getNumCache();
+			} else if (series.getVal() != null && series.getVal().isSetNumLit()) {
+				valData = series.getVal().getNumLit();
+			}
+
+			if (catData == null || valData == null) {
+				log.error("Category or value data is missing.");
+				continue;
+			}
+
+			int catSize = catData.sizeOfPtArray();
+			int valSize = valData.sizeOfPtArray();
+
+			if (catSize != valSize) {
+				log.error("Mismatched number of categories and values");
+				continue;
+			}
+
+			for (int i = 0; i < catSize; i++) {
+				CTStrVal catPt = catData.getPtArray(i);
+				CTNumVal valPt = valData.getPtArray(i);
+
+				String category = catPt.getV();
+				try {
+					double value = Double.parseDouble(valPt.getV());
+					dataset.setValue(value, seriesName, category);
+				} catch (NumberFormatException e) {
+					log.error("Failed to parse value for category: {}", category, e);
+				}
+			}
+		}
+		byte[] chartByte = JFreeChartUtil.createLineChart(title, dataset, 520, 250);
+		addChartElement(documentElements, chartByte, paragraphAlignment);
+	}
+	
+	private void parsePieChart(CTPieChart pieChart, String title, ParagraphAlignment paragraphAlignment,
+			List<Object> documentElements) throws Exception {
+		DefaultPieDataset dataset = new DefaultPieDataset();
+		CTPieSer[] seriesArray = pieChart.getSerArray();
+		for (CTPieSer series : seriesArray) {
+			// 获取类别数据
+			CTStrData catData = null;
+			if (series.getCat() != null && series.getCat().isSetStrRef()) {
+				catData = series.getCat().getStrRef().getStrCache();
+			} else if (series.getCat() != null && series.getCat().isSetStrLit()) {
+				catData = series.getCat().getStrLit();
+			}
+
+			// 获取数值数据
+			CTNumData valData = null;
+			if (series.getVal() != null && series.getVal().isSetNumRef()) {
+				valData = series.getVal().getNumRef().getNumCache();
+			} else if (series.getVal() != null && series.getVal().isSetNumLit()) {
+				valData = series.getVal().getNumLit();
+			}
+
+			if (catData == null || valData == null) {
+				log.error("Category or value data is missing.");
+				continue;
+			}
+
+			int catSize = catData.sizeOfPtArray();
+			int valSize = valData.sizeOfPtArray();
+
+			if (catSize != valSize) {
+				log.error("Mismatched number of categories and values");
+				continue;
+			}
+
+			for (int i = 0; i < catSize; i++) {
+				CTStrVal catPt = catData.getPtArray(i);
+				CTNumVal valPt = valData.getPtArray(i);
+
+				String category = catPt.getV();
+				try {
+					double value = Double.parseDouble(valPt.getV());
+					dataset.setValue(category, value);
+				} catch (NumberFormatException e) {
+					log.error("Failed to parse value for category: {}", category, e);
+				}
+			}
+		}
+		byte[] chartByte = JFreeChartUtil.createPieChart(title, dataset, 520, 250,"pie",null);
+		addChartElement(documentElements, chartByte, paragraphAlignment);
+	}
+	
+	private void addChartElement(List<Object> documentElements,byte[] chartByte,ParagraphAlignment paragraphAlignment) {
+		String fileName = IdWorker.getIdStr()+".png";
+	    Map<String, String> result = this.iCommonService.upload(chartByte, fileName);
+	    log.info("Uploaded chart URL: {}", result.get("fileUri"));
+	    DocImageDto docImageDto = new DocImageDto();
+	    docImageDto.setValue(result.get("fileUri"));
+	    docImageDto.setWidth(520);
+	    docImageDto.setHeight(250);
+	    if(paragraphAlignment != null) {
+			if(paragraphAlignment.getValue() == ParagraphAlignment.LEFT.getValue()) {
+				docImageDto.setRowFlex("left");
+			}else if(paragraphAlignment.getValue() == ParagraphAlignment.RIGHT.getValue()) {
+				docImageDto.setRowFlex("right");
+			}else if(paragraphAlignment.getValue() == ParagraphAlignment.CENTER.getValue()) {
+				docImageDto.setRowFlex("center");
+			}else if(paragraphAlignment.getValue() == ParagraphAlignment.BOTH.getValue()) {
+				docImageDto.setRowFlex("alignment");
+			}
+		}else {
+			docImageDto.setRowFlex("center");
+		}
+	    documentElements.add(docImageDto);
+	}
+	
 }

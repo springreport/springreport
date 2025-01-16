@@ -11623,7 +11623,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		Map<String, String> result = null;
 		if(datasourceId != null && StringUtil.isNotEmpty(dictType))
 		{
-			List<ReportDatasourceDictData> dictDatas = (List<ReportDatasourceDictData>) redisUtil.get(datasourceId+"_"+dictType);
+			List<ReportDatasourceDictData> dictDatas = (List<ReportDatasourceDictData>) redisUtil.get(RedisPrefixEnum.REPORTDICT.getCode()+datasourceId+"_"+dictType);
 			if(ListUtil.isEmpty(dictDatas))
 			{
 				QueryWrapper<ReportDatasourceDictData> dictDataQueryWrapper = new QueryWrapper<>();
@@ -11640,7 +11640,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			{
 				result = new HashMap<>();
 				for (int i = 0; i < dictDatas.size(); i++) {
-					result.put(datasourceId+"_"+dictType+"_"+dictDatas.get(i).getDictValue(), dictDatas.get(i).getDictLabel());
+					result.put(RedisPrefixEnum.REPORTDICT.getCode()+datasourceId+"_"+dictType+"_"+dictDatas.get(i).getDictValue(), dictDatas.get(i).getDictLabel());
 				}
 			}
 		}
