@@ -2427,7 +2427,7 @@
     align-items: center;
     padding: 2px 8px;
     height: 22px;
-    background: #45c5a9;
+    background: #17b794;
     border-radius: 3px;
     flex: none;
     order: 1;
@@ -2834,10 +2834,10 @@
   .blockBtn {
     width: 230px;
     height: 30px;
-    background: #45c5a9;
+    background: #17b794;
     border-radius: 4px;
     line-height: 5px;
-    border-color: #45c5a9;
+    border-color: #17b794;
   }
 
   .contentbox {
@@ -2894,7 +2894,7 @@
   }
 
   ::v-deep .el-avatar {
-    background: #45c5a9 !important;
+    background: #17b794 !important;
   }
 
   ::v-deep .el-dialog__wrapper {

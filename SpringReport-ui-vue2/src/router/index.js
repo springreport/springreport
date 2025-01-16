@@ -16,8 +16,8 @@ const router = new Router({
 });
 
 function getRouter(){
-  let routers = commonConstants.routers;
-  // let routers = commonConstants.thirdPartyRouters
+  // let routers = commonConstants.routers;
+  let routers = commonConstants.thirdPartyRouters
   return routers;
 };
 /**
