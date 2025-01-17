@@ -489,7 +489,7 @@
     background-color: rgba(208, 208, 208, 0);
     font-size: 19px;
     line-height: 30px;
-    color: #45c5a9;
+    color: #17b794;
     font-weight: bold;
     margin: 5px 0;
   }

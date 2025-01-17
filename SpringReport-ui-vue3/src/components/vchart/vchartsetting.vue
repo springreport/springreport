@@ -1015,7 +1015,7 @@
     align-items: center;
     padding: 2px 8px;
     height: 22px;
-    background: #45c5a9;
+    background: #17b794;
     border-radius: 3px;
     flex: none;
     order: 1;

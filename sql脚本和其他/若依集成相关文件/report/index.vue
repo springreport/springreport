@@ -1,28 +1,16 @@
-<template>
-  <div>
-    <iframe :src="getLinkUrl" style="width: 100%; height: calc(100vh - 87px); border: none;" />
-  </div>
-</template>
-
-<script>
-import { getToken } from '@/utils/auth'
-export default {
-  name: 'reportLink',
-  computed: {
-    getLinkUrl() {
-      const tempUrl = this.$route.query ? this.$route.query.url : undefined
-      if (tempUrl != null) {
-        if (tempUrl.indexOf('?') === -1) {
-          return tempUrl + '?thirdPartyType=ruoyi&token=' + getToken()
-        } else {
-          return tempUrl + '&thirdPartyType=ruoyi&token=' + getToken()
-        }
-      }
-      return tempUrl
-    }
-  }
+{
+	"data": {
+		"token": "88f56af6-f469-4469-9ad7-249c8fc6d25f"
+	},
+	"success": true
 }
-</script>
 
-<style>
-</style>
+{
+	"errorCode": "UNAUTHORIZED_LOGIN",
+	"errorMessage": "非免登录接口必须包含Token信息！",
+	"success": false
+}
+
+#ff7700
+
+#45c5a9

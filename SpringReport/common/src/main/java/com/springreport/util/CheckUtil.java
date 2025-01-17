@@ -12,6 +12,8 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
 
+import cn.hutool.core.util.NumberUtil;
+
 public class CheckUtil {
 
 	/**
@@ -233,10 +235,10 @@ public class CheckUtil {
      * @return
      */
     public static boolean isNumber(String string) {
-        if (string == null)
-            return false;
-        Pattern pattern = Pattern.compile("^-?\\d+(\\.\\d+)?$");
-        return pattern.matcher(string).matches();
+//        if (string == null)
+//            return false;
+//        Pattern pattern = Pattern.compile("^-?\\d+(\\.\\d+)?$");
+        return NumberUtil.isNumber(string);
     }
 	
 	public static boolean isEmail(String str)

@@ -2558,7 +2558,7 @@
     gap: 4px;
     width: 66px;
     height: 22px;
-    background: #45c5a9;
+    background: #17b794;
     border-radius: 4px;
     flex: none;
     order: 1;
@@ -2768,7 +2768,7 @@
     flex: none;
     order: 0;
     flex-grow: 1;
-    color: #45c5a9;
+    color: #17b794;
     font-size: 16px;
     cursor: pointer;
   }
@@ -2792,10 +2792,10 @@
   .blockBtn {
     width: 230px;
     height: 30px;
-    background: #45c5a9;
+    background: #17b794;
     border-radius: 4px;
     line-height: 5px;
-    border-color: #45c5a9;
+    border-color: #17b794;
   }
   .contentbox {
     display: flex;
@@ -2813,7 +2813,7 @@
     background-color: rgba(208, 208, 208, 0);
     font-size: 19px;
     line-height: 30px;
-    color: #45c5a9;
+    color: #17b794;
     font-weight: bold;
     margin: 5px 0;
   }

@@ -181,7 +181,7 @@ public class CoeditServiceImpl extends ServiceImpl<LuckysheetMapper, Luckysheet>
 					}else {
 						_o.put("shareMode", true);	
 						ShareModeInfo shareModeInfo = JSON.parseObject(redisShareModeInfo.toString(), ShareModeInfo.class);
-						if(userInfoDto.getUserId() != null && shareModeInfo.getUserId().longValue() == userInfoDto.getUserId().longValue())
+						if(userInfoDto.getUserId() != null && shareModeInfo.getUserId()!=null && shareModeInfo.getUserId().longValue() == userInfoDto.getUserId().longValue())
 						{
 							_o.put("shareUser", true);	
 						}else {
