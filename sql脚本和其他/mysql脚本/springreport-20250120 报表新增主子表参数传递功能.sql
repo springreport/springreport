@@ -1,2 +1,1 @@
-ALTER TABLE luckysheet_report_cell ADD COLUMN cell_fill_type tinyint(4) DEFAULT 1 COMMENT '数据填充方式 1插入 2覆盖'; 
-ALTER TABLE doc_tpl ADD COLUMN firstpage_header_footer_show tinyint(4) DEFAULT 1 COMMENT '首页页眉页脚是否显示 1是 2否'; 
+ALTER TABLE report_tpl_dataset ADD COLUMN sub_param_attrs varchar(200) DEFAULT NULL COMMENT '主表传递给子表的参数属性'; 
