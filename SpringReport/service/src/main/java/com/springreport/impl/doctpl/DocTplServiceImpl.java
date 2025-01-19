@@ -133,14 +133,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
-
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.springreport.enums.DatasetTypeEnum;
 import com.springreport.enums.DelFlagEnum;
 import com.springreport.enums.SqlTypeEnum;
@@ -662,9 +659,50 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 		Map<String, List<String>> paramsType = new HashMap<>();//记录参数类型，vertical代表竖向列表参数，horizontal代表横向列表参数
 		List<Map<String, String>> reportSqls = new ArrayList<>();
 		Map<String, String> apiCache = new HashMap<>();//api请求返回结果缓存，同一个api多个数据集的情况下，直接使用缓存数据，防止多次请求
+		Map<String, Object> subParams = new HashMap<String, Object>();//传给子表的参数
 		if(ListUtil.isNotEmpty(datasets)) {
 			for (int i = 0; i < datasets.size(); i++) {
-				Object datasetData = this.getDatasetDatas(model, datasets.get(i), reportSqls,paramsType,userInfoDto,apiCache);
+				Object datasetData = this.getDatasetDatas(model, datasets.get(i), reportSqls,paramsType,userInfoDto,apiCache,subParams);
+				String subParamAttrs = datasets.get(i).getSubParamAttrs();
+				if(StringUtil.isNotEmpty(subParamAttrs) && datasetData != null) {
+					JSONArray attrs = JSON.parseArray(subParamAttrs);
+					if(datasetData instanceof List) {
+						List<Map<String, Object>> datas = (List<Map<String, Object>>) datasetData;
+						if(ListUtil.isNotEmpty(attrs) && ListUtil.isNotEmpty(datas)) {
+							for (int t = 0; t < datas.size(); t++) {
+								for (int j = 0; j < attrs.size(); j++) {
+									if(datas.get(t).containsKey(attrs.getString(j))) {
+										JSONArray paramsArray = null;
+										if(subParams.containsKey(attrs.getString(j))) {
+											paramsArray = (JSONArray) subParams.get(attrs.getString(j));
+										}else {
+											paramsArray = new JSONArray();
+											subParams.put(attrs.getString(j), paramsArray);
+										}
+										paramsArray.add(datas.get(t).get(attrs.getString(j)));
+									}
+								}
+							}
+						}
+					}else {
+						Map<String, Object> objectData = (Map<String, Object>) datasetData;
+						if(ListUtil.isNotEmpty(attrs)) {
+							for (int j = 0; j < attrs.size(); j++) {
+								if(objectData.containsKey(attrs.getString(j))) {
+									JSONArray paramsArray = null;
+									if(subParams.containsKey(attrs.getString(j))) {
+										paramsArray = (JSONArray) subParams.get(attrs.getString(j));
+									}else {
+										paramsArray = new JSONArray();
+										subParams.put(attrs.getString(j), paramsArray);
+									}
+									paramsArray.add(objectData.get(attrs.getString(j)));
+								}
+							}
+						}
+					}
+				}
+				
 				data.put(datasets.get(i).getDatasetName(), datasetData);
 			}
 		}
@@ -1133,7 +1171,8 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 	 * @throws Exception Object
 	 * @date 2024-05-07 04:42:27 
 	 */ 
-	private Object getDatasetDatas(MesGenerateReportDto mesGenerateReportDto,ReportDatasetDto reportTplDataset,List<Map<String, String>> reportSqls,Map<String, List<String>> paramsType,UserInfoDto userInfoDto,Map<String, String> apiCache) throws Exception {
+	private Object getDatasetDatas(MesGenerateReportDto mesGenerateReportDto,ReportDatasetDto reportTplDataset,List<Map<String, String>> reportSqls,
+			Map<String, List<String>> paramsType,UserInfoDto userInfoDto,Map<String, String> apiCache,Map<String, Object> subParams) throws Exception {
 		Map<String, String> sqlMap = new HashMap<>();
 		List<Map<String, Object>> datas = null;
 		Map<String, Object> searchInfo = null;
@@ -1149,6 +1188,10 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 		{
 			params = ParamUtil.getViewParams((JSONArray) searchInfo.get("params"),userInfoDto);
 		}
+		if(params == null) {
+			params = new HashMap<String, Object>();
+		}
+		params.putAll(subParams);
 		if(DatasetTypeEnum.SQL.getCode().intValue() == reportTplDataset.getDatasetType().intValue()) {
 			Object data = this.iReportTplDatasetService.getDatasetDatasource(reportDatasource);
 			if(data instanceof DataSource)
