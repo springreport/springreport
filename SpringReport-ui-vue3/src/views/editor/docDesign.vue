@@ -887,7 +887,6 @@
                 <el-select
                   v-model="datasourceTableName"
                   placeholder="请选择解析表"
-                  size="mini"
                   filterable
                   style="margin-bottom: 10px; width: 254px"
                   @change="getTableColumns"
@@ -1637,6 +1636,23 @@
             <!--表格 end-->
           </div>
         </div>
+        <div class="parameter-warp">
+           <div class="warp-title">字段参数</div>
+               <el-select
+                  v-model="subParamAttrs"
+                  placeholder="主表字段"
+                  multiple
+                  clearable
+                  style="width:220px"
+                >
+                  <el-option
+                    v-for="op in sqlColumnTableData.tableData"
+                    :key="op.name"
+                    :label="op.name"
+                    :value="op.name"
+                  />
+                </el-select>
+            </div>
       </div>
 
       <template #footer>

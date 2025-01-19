@@ -1886,6 +1886,23 @@
             <!--表格 end-->
           </div>
         </div>
+        <div class="parameter-warp">
+           <el-divider content-position="left">子表参数</el-divider>
+               <el-select
+                  v-model="subParamAttrs"
+                  placeholder="主表字段"
+                  size="small"
+                  multiple
+                  clearable
+                >
+                  <el-option
+                    v-for="op in sqlColumnTableData.tableData"
+                    :key="op.name"
+                    :label="op.name"
+                    :value="op.name"
+                  />
+                </el-select>
+            </div>
       </div>
 
       <span slot="footer" class="dialog-footer">
