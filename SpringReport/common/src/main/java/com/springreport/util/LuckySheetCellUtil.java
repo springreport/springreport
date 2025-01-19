@@ -149,6 +149,12 @@ public class LuckySheetCellUtil {
 				Map<String, Object> cellData = cellDatas.get(i);
 				Map<String, Object> cellConfig = (Map<String, Object>) cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode());
 				Map<String, Object> cellValue = (Map<String, Object>) cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode());
+				if(cellConfig == null) {
+					cellConfig = new HashMap<String, Object>();
+				}
+				if(cellValue == null) {
+					cellValue = new HashMap<String, Object>();
+				}
 				Cell cell = this.getCell(Integer.valueOf(String.valueOf(cellData.get(LuckySheetPropsEnum.R.getCode()))), Integer.valueOf(String.valueOf(cellData.get(LuckySheetPropsEnum.C.getCode()))));
 				if(!isPdfStream && cellConfig != null && cellConfig.get("xxbt") != null && "1".equals(String.valueOf(cellConfig.get("xxbt")))
 						&& cellConfig.get("v") != null && String.valueOf(cellConfig.get("v")).contains("|") && String.valueOf(cellConfig.get("v")).split("\\|").length<5)
@@ -267,7 +273,12 @@ public class LuckySheetCellUtil {
 										}
 									}else if(numberFormat.containsKey(dataFormat)) {
 										if(StringUtil.isNotEmpty(String.valueOf(cellValue.get(LuckySheetPropsEnum.CELLVALUE.getCode())))) {
-											cell.setCellValue(Double.parseDouble(String.valueOf(cellValue.get(LuckySheetPropsEnum.CELLVALUE.getCode()))));
+											try {
+												cell.setCellValue(Double.parseDouble(String.valueOf(cellValue.get(LuckySheetPropsEnum.CELLVALUE.getCode()))));
+											} catch (Exception e) {
+												cell.setCellValue(String.valueOf(cellValue.get(LuckySheetPropsEnum.CELLVALUE.getCode())));
+											}
+											
 										}else {
 											cell.setCellValue("");
 										}
@@ -685,6 +696,9 @@ public class LuckySheetCellUtil {
 	{
 		Map<String, Object> result = new LinkedHashMap<String, Object>();
 		//字体
+		if(cellConfig == null) {
+			cellConfig = new HashMap<>();
+		}
 		if(cellConfig.containsKey(LuckySheetPropsEnum.FONTFAMILY.getCode()))
 		{
 			result.put("fontName", cellConfig.get(LuckySheetPropsEnum.FONTFAMILY.getCode()));

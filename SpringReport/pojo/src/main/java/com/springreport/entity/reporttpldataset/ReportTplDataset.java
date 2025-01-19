@@ -126,4 +126,8 @@ public class ReportTplDataset extends PageEntity {
      */  
     @TableField("group_id")
     private Long groupId;
+    
+    /** sub_param_attrs - 主表传递给子表的参数属性 */
+    @TableField("sub_param_attrs")
+    private String subParamAttrs;
 }

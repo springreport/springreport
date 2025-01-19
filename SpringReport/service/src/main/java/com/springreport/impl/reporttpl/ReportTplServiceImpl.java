@@ -2701,13 +2701,14 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 							fixedCellsMap.put(fixedCells.get(i).getCoordsx() + "_" + fixedCells.get(i).getCoordsy(), fixedCells.get(i).getCoordsx() + "_" + fixedCells.get(i).getCoordsy());
 						}
 					}
+					Map<String, Object> subParams = new HashMap<String, Object>();//传给子表的参数
 					Map<String, String> apiCache = new HashMap<>();//api请求返回结果缓存，同一个api多个数据集的情况下，直接使用缓存数据，防止多次请求
 					for (int i = 0; i < usedDataSet.size(); i++) {
 						List<Map<String, Object>> datas = null;
 						Map<String, Object> result = null;
 						if(!datasetDatas.containsKey(usedDataSet.get(i)))
 						{
-							result = this.getDatasetDatas(reportTpl, mesGenerateReportDto, usedDataSet.get(i), isPagination, mergePagination,reportSqls,userInfoDto,apiCache);
+							result = this.getDatasetDatas(reportTpl, mesGenerateReportDto, usedDataSet.get(i), isPagination, mergePagination,reportSqls,userInfoDto,apiCache,subParams);
  							datas = (List<Map<String, Object>>) result.get("datas");
 							datasetDatas.put(usedDataSet.get(i), datas);
 							datasetParamsCache.put(usedDataSet.get(i), (Map<String, Object>) result.get("params"));
@@ -3050,7 +3051,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 	}
 	
 	private Map<String, Object> getDatasetDatas(ReportTpl reportTpl,MesGenerateReportDto mesGenerateReportDto,String datasetName,
-			boolean isPagination,Map<String, Object> mergePagination,List<Map<String, String>> reportSqls,UserInfoDto userInfoDto,Map<String, String> apiCache) throws Exception {
+			boolean isPagination,Map<String, Object> mergePagination,List<Map<String, String>> reportSqls,UserInfoDto userInfoDto,Map<String, String> apiCache,Map<String, Object> subParams) throws Exception {
 		Map<String, String> sqlMap = new HashMap<>();
 		Map<String, Object> resultMap = new HashMap<>();
 		List<Map<String, Object>> datas = null;
@@ -3086,6 +3087,10 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		{
 			params = ParamUtil.getViewParams((JSONArray) searchInfo.get("params"),userInfoDto);
 		}
+		if(params == null) {
+			params = new HashMap<String, Object>();
+		}
+		params.putAll(subParams);
 		if(DatasetTypeEnum.SQL.getCode().intValue() == reportTplDataset.getDatasetType().intValue())
 		{
 			String sql = reportTplDataset.getTplSql();
@@ -3297,6 +3302,28 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 					if(paramsPageCount < pageCount)
 					{
 						mergePagination.put("pageCount", paramsPageCount);
+					}
+				}
+			}
+		}
+		String subParamAttrs = reportTplDataset.getSubParamAttrs();
+		if(StringUtil.isNotEmpty(subParamAttrs)) {
+			JSONArray attrs = JSON.parseArray(subParamAttrs);
+			if(ListUtil.isNotEmpty(attrs) && ListUtil.isNotEmpty(datas) ) {
+				//主数据向下传递，因为有可能有一条数据，也有可能有多条数据，所以统一使用数据的方式传递数据，
+				//子数据集接收参数是注意使用数组方式接收，<foreach>
+				for (int i = 0; i < datas.size(); i++) {
+					for (int j = 0; j < attrs.size(); j++) {
+						if(datas.get(i).containsKey(attrs.getString(j))) {
+							JSONArray paramsArray = null;
+							if(subParams.containsKey(attrs.getString(j))) {
+								paramsArray = (JSONArray) subParams.get(attrs.getString(j));
+							}else {
+								paramsArray = new JSONArray();
+								subParams.put(attrs.getString(j), paramsArray);
+							}
+							paramsArray.add(datas.get(i).get(attrs.getString(j)));
+						}
 					}
 				}
 			}
@@ -3993,12 +4020,14 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 									datas = datasCache.get(luckysheetReportBlockCells.get(t).getDatasetName()+"_"+groupPropertyValue);
 								}else {
 									List<List<Map<String, Object>>> datasetDatas = luckySheetBindData.getBlockDatas().get(luckysheetReportBlockCells.get(t).getDatasetName());
-									for (int i = 0; i < datasetDatas.size(); i++) {
-										String groupPropertyValue2 = datasetDatas.get(i).get(0).get(groupProperty) == null?"":String.valueOf(datasetDatas.get(i).get(0).get(groupProperty));
-										if(groupPropertyValue.equals(groupPropertyValue2)) {
-											datas = datasetDatas.get(i);
-											datasCache.put(luckysheetReportBlockCells.get(t).getDatasetName()+"_"+groupPropertyValue, datas);
-											break;
+									if(ListUtil.isNotEmpty(datasetDatas)) {
+										for (int i = 0; i < datasetDatas.size(); i++) {
+											String groupPropertyValue2 = datasetDatas.get(i).get(0).get(groupProperty) == null?"":String.valueOf(datasetDatas.get(i).get(0).get(groupProperty));
+											if(groupPropertyValue.equals(groupPropertyValue2)) {
+												datas = datasetDatas.get(i);
+												datasCache.put(luckysheetReportBlockCells.get(t).getDatasetName()+"_"+groupPropertyValue, datas);
+												break;
+											}
 										}
 									}
 								}

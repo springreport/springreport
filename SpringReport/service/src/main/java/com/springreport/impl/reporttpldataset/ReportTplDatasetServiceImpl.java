@@ -505,6 +505,7 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 			insertData.setPageCountAttr(reportTplDataset.getPageCountAttr());
 			insertData.setTotalAttr(reportTplDataset.getTotalAttr());
 			insertData.setGroupId(reportTplDataset.getGroupId());
+			insertData.setSubParamAttrs(reportTplDataset.getSubParamAttrs());
 			this.save(insertData);
 			result.setId(insertData.getId());
 		}else {
