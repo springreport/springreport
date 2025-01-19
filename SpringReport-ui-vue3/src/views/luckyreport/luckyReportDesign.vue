@@ -1905,6 +1905,23 @@
             <!--表格 end-->
           </div>
         </div>
+        <div class="parameter-warp">
+              <div class="warp-title">子表参数</div>
+               <el-select
+                  v-model="subParamAttrs"
+                  placeholder="主表字段"
+                  multiple
+                  clearable
+                  style="width:220px"
+                >
+                  <el-option
+                    v-for="op in sqlColumnTableData.tableData"
+                    :key="op.name"
+                    :label="op.name"
+                    :value="op.name"
+                  />
+                </el-select>
+            </div>
       </div>
 
       <template #footer>

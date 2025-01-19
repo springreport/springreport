@@ -191,6 +191,7 @@ export default {
           pageSizeRange: [5, 10, 20, 50],
         },
       },
+      subParamAttrs:[],//主表传递给子表的参数属性
       procedureInParamTableData: {
         tableData: [],
         tablePage: {
@@ -1470,7 +1471,7 @@ export default {
       });
     },
     //获取模板关联的数据源
-    getReportTplDateSource() {
+    getReportTplDateSource(isEdit) {
       let reportTplId = this.$route.query.tplId; //reportTplId
       let obj = {
         url: this.apis.reportDesign.getReportTplDateSourceApi,
@@ -1480,7 +1481,7 @@ export default {
       this.commonUtil.doPost(obj).then((response) => {
         if (response.code == '200') {
           this.dataSource = response.responseData;
-          this.changeDatasource();
+          this.changeDatasource(isEdit);
         }
       });
     },
@@ -1506,12 +1507,14 @@ export default {
       this.datasourceType = '1';
     },
     //选择数据源修改
-    changeDatasource() {
+    changeDatasource(isEdit) {
       for (let index = 0; index < this.dataSource.length; index++) {
         const element = this.dataSource[index];
         if (this.sqlForm.datasourceId == element.datasourceId) {
+          if(!isEdit){
+            this.sqlColumnTableData.tableData = []
+          }
           if (element.type == '4') {
-            this.sqlColumnTableData.tableData = [];
             this.datasourceType = '2';
             if (element.apiColumns) {
               let columns = JSON.parse(element.apiColumns);
@@ -1820,6 +1823,9 @@ export default {
         this.paramTableData.tableData = eval('(' + dataSet.tplParam + ')');
       }
       this.sqlColumnTableData.tableData = dataSet.columns ? dataSet.columns : [];
+      if(!dataSet.columns || dataSet.columns.length == 0){
+        this.getDatasetColumns(dataSet,true);
+      }
       this.sqlColumnTableData.tablePage.pageTotal = dataSet.columns
         ? this.sqlColumnTableData.tableData.length
         : 0;
@@ -1833,11 +1839,16 @@ export default {
       this.sqlForm.id = dataSet.id;
       this.sqlForm.sqlType = dataSet.sqlType;
       this.sqlForm.groupId = dataSet.groupId
+      if(dataSet.subParamAttrs){
+        this.subParamAttrs = JSON.parse(dataSet.subParamAttrs);
+      }else{
+        this.subParamAttrs = [];
+      }
       if (dataSet.sqlType == 2) {
         this.procedureInParamTableData.tableData = JSON.parse(dataSet.inParam);
         this.procedureOutParamTableData.tableData = JSON.parse(dataSet.outParam);
       }
-      this.getReportTplDateSource();
+      this.getReportTplDateSource(true);
     },
     //删除数据集
     deleteDataSet(dataSet) {
@@ -1918,6 +1929,7 @@ export default {
               currentPageAttr: this.paginationForm.currentPageAttr,
               pageCountAttr: this.paginationForm.pageCountAttr,
               totalAttr: this.paginationForm.totalAttr,
+              subParamAttrs: JSON.stringify(this.subParamAttrs)
             },
             removeEmpty: false,
           };
@@ -2745,7 +2757,7 @@ export default {
       }
       this.$forceUpdate();
     },
-    getDatasetColumns(element) {
+    getDatasetColumns(element,isEdit) {
       this.filedLoading = true;
       let obj = {
         url: this.apis.reportDesign.getDataSetColumnsApi,
@@ -2756,6 +2768,9 @@ export default {
         element.columns = response.responseData;
         this.dataSetAttrs = element.columns;
         this.filedLoading = false;
+        if(isEdit){
+          this.sqlColumnTableData.tableData = response.responseData
+        }
       });
     },
     //获取api接口默认参数的返回值
