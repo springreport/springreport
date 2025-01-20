@@ -187,6 +187,7 @@ public class ReportExcelUtil {
         		JSONObject filter = mesExportExcel.getSheetConfigs().get(i).getFilter();
         		JSONArray xxbtCells = new JSONArray();//斜线表头单元格
         		XSSFSheet sheet = wb.createSheet(sheetname);
+        		List<String> noViewAuthCells = mesExportExcel.getSheetConfigs().get(i).getNoViewAuthCells();
         		if(!StringUtil.isEmptyMap(filter))
         		{
         			String filterRange = getFilterRange(filter);
@@ -260,7 +261,7 @@ public class ReportExcelUtil {
                 JSONArray barCodeCells = new JSONArray();//条形码单元格
                 JSONArray qrCodeCells = new JSONArray();//二维码单元格
                 Map<String, Integer> wrapText = new HashMap<>();
-                cellUtil.setCellValues(cellDatas,hyperlinks,borderInfos,unProtectCells,mesExportExcel.getSheetConfigs().get(i).getMerge(),mesExportExcel.getSheetConfigs().get(i).getIsCoedit(), dataVerification,xxbtCells,false,barCodeCells,qrCodeCells,wrapText);
+                cellUtil.setCellValues(cellDatas,hyperlinks,borderInfos,unProtectCells,mesExportExcel.getSheetConfigs().get(i).getMerge(),mesExportExcel.getSheetConfigs().get(i).getIsCoedit(), dataVerification,xxbtCells,false,barCodeCells,qrCodeCells,wrapText,noViewAuthCells);
                 cellUtil.setRowHeight(maxXAndY.get("maxX"), rowlen, rowhidden, wrapText);
                 JSONObject rowlenObj = JSONObject.parseObject(JSONObject.toJSONString(rowlen));
                 JSONObject columnlenObj = JSONObject.parseObject(JSONObject.toJSONString(columnlen));
@@ -767,6 +768,7 @@ public class ReportExcelUtil {
         		JSONObject rowhidden = mesExportExcel.getSheetConfigs().get(i).getRowhidden();
         		JSONArray xxbtCells = new JSONArray();//斜线表头单元格
         		XSSFSheet sheet = wb.createSheet(sheetname);
+        		List<String> noViewAuthCells = mesExportExcel.getSheetConfigs().get(i).getNoViewAuthCells();
         		sheet.setForceFormulaRecalculation(true);
         		if(colhidden != null && !colhidden.isEmpty())
         		{
@@ -829,7 +831,7 @@ public class ReportExcelUtil {
                 JSONArray qrCodeCells = new JSONArray();//二维码单元格
                 Map<String, Integer> wrapText = new HashMap<>();
                 mesExportExcel.getSheetConfigs().get(i).setWrapText(wrapText);
-                cellUtil.setCellValues(cellDatas,hyperlinks,borderInfos,null,mesExportExcel.getSheetConfigs().get(i).getMerge(),mesExportExcel.getSheetConfigs().get(i).getIsCoedit(), dataVerification,xxbtCells,true,barCodeCells,qrCodeCells,wrapText);
+                cellUtil.setCellValues(cellDatas,hyperlinks,borderInfos,null,mesExportExcel.getSheetConfigs().get(i).getMerge(),mesExportExcel.getSheetConfigs().get(i).getIsCoedit(), dataVerification,xxbtCells,true,barCodeCells,qrCodeCells,wrapText,noViewAuthCells);
                 cellUtil.setRowHeight(maxXAndY.get("maxX"), rowlen, rowhidden, wrapText);
                 JSONObject rowlenObj = JSONObject.parseObject(JSONObject.toJSONString(rowlen));
                 JSONObject columnlenObj = JSONObject.parseObject(JSONObject.toJSONString(columnlen));

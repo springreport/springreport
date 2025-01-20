@@ -115,7 +115,7 @@ public interface ICoeditService extends IService<Luckysheet>{
 	 * @throws Exception 
 	 * @date 2023-08-31 02:29:12 
 	 */ 
-	void downLoadExcel(MesDownloadDto model,HttpServletResponse httpServletResponse) throws Exception;
+	void downLoadExcel(MesDownloadDto model,HttpServletResponse httpServletResponse,UserInfoDto userInfoDto) throws Exception;
 	
 	/**  
 	 * @MethodName: beforeEnterShareMode

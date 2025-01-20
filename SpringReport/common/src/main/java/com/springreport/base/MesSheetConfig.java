@@ -171,4 +171,18 @@ public class MesSheetConfig {
      * @date 2024-10-13 03:50:46 
      */  
     private Map<String, Integer> wrapText;
+    
+    /**  
+     * @Fields sheetIndex : sheet唯一标识
+     * @author caiyang
+     * @date 2025-01-20 09:21:12 
+     */  
+    private String sheetIndex;
+    
+    /**  
+	 * @Fields noViewAuthCells : 没有查看权限的单元格
+	 * @author caiyang
+	 * @date 2025-01-20 08:29:21 
+	 */  
+	private List<String> noViewAuthCells;
 }

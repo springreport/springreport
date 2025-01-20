@@ -129,8 +129,8 @@ public class CoeditController extends BaseController{
      * @date 2023-08-31 02:26:20 
      */ 
     @RequestMapping(value = "/downLoadExcel",method = RequestMethod.POST)
-    public void downLoadExcel(@RequestBody MesDownloadDto model) throws Exception {
-    	this.iCoeditService.downLoadExcel(model, httpServletResponse);
+    public void downLoadExcel(@RequestBody MesDownloadDto model,@LoginUser UserInfoDto userInfoDto) throws Exception {
+    	this.iCoeditService.downLoadExcel(model, httpServletResponse,userInfoDto);
     }
     
     /**  
