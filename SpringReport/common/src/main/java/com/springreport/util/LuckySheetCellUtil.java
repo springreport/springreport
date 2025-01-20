@@ -138,7 +138,8 @@ public class LuckySheetCellUtil {
 	 * @date 2021-06-09 05:01:36 
 	 */ 
 	public void setCellValues(List<Map<String, Object>> cellDatas,Map<String, Map<String, Object>> hyperlinks,List<Object> borderInfos,Map<String, String> unProtectCells,JSONObject merge,Integer isCoedit,
-			JSONObject dataVerification,JSONArray xxbtCells,boolean isPdfStream,JSONArray barCodeCells,JSONArray qrCodeCells,Map<String, Integer> wrapText)
+			JSONObject dataVerification,JSONArray xxbtCells,boolean isPdfStream,JSONArray barCodeCells,JSONArray qrCodeCells,Map<String, Integer> wrapText,
+			List<String> noViewAuthCells)
 	{
 		JSONObject cellBorders = this.getCellBorderInfo(borderInfos);
 		if(cellDatas != null && cellDatas.size() > 0)
@@ -180,6 +181,9 @@ public class LuckySheetCellUtil {
 					int r = cell.getAddress().getRow();
 					int c = cell.getAddress().getColumn();
 					String key = r+"_"+c;
+					if(noViewAuthCells.contains(key)) {
+						continue;
+					}
 					if(cellStyleMap.size()<64000)
 					{//单元格格式如果创建超过64000个会报异常
 						boolean isLock = true;

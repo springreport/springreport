@@ -1979,7 +1979,42 @@ public class CoeditServiceImpl extends ServiceImpl<LuckysheetMapper, Luckysheet>
 	 * @date 2023-08-31 02:31:16 
 	 */
 	@Override
-	public void downLoadExcel(MesDownloadDto model,HttpServletResponse httpServletResponse) throws Exception {
+	public void downLoadExcel(MesDownloadDto model,HttpServletResponse httpServletResponse,UserInfoDto userInfoDto) throws Exception {
+		QueryWrapper<OnlineTpl> queryWrapper = new QueryWrapper<>();
+		queryWrapper.eq("list_id", model.getGridKey());
+		queryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+		OnlineTpl onlineTpl = this.onlineTplMapper.selectOne(queryWrapper, false);
+		Map<String, List<String>> noViewAuthCells = new HashMap<>();
+		if(userInfoDto !=null && userInfoDto.getUserId() != null && onlineTpl.getCreator() != null && onlineTpl != null && onlineTpl.getCreator().longValue() != userInfoDto.getUserId().longValue()) {
+			//获取该用户没有查看权限的单元格
+			Map<String, List<ReportRangeAuth>> noViewAauthRange = this.iReportRangeAuthUserService.getUserNoAuthRange(model.getGridKey(), userInfoDto);
+			if(noViewAauthRange != null) {
+				for (String key : noViewAauthRange.keySet()) {
+					List<ReportRangeAuth> auths = noViewAauthRange.get(key);
+					for (int i = 0; i < auths.size(); i++) {
+						JSONArray rowsNo = JSON.parseArray(auths.get(i).getRowsNo());
+						JSONArray colsNo = JSON.parseArray(auths.get(i).getColsNo());
+						int startr = rowsNo.getIntValue(0);
+						int endr = rowsNo.getIntValue(1);
+						int startc = colsNo.getIntValue(0);
+						int endc = colsNo.getIntValue(1);
+						List<String> cells = null;
+						if(noViewAuthCells.containsKey(key)) {
+							cells = noViewAuthCells.get(key);
+						}else {
+							cells = new ArrayList<>();
+							noViewAuthCells.put(key, cells);
+						}
+						for (int j = startr; j <= endr; j++) {
+							for (int k = startc; k < endc; k++) {
+								String cellKey = j+"_"+k;
+								cells.add(cellKey);
+							}
+						}
+					}
+				}
+			}
+		}
 		String blockIdName = this.getIdNameByListId(model.getGridKey());
 		String name = blockIdName.split("_")[1];
 		List<String> keys = redisUtil.getKeys(RedisPrefixEnum.DOCOMENTDATA.getCode()+model.getGridKey()+"_");
@@ -1993,8 +2028,12 @@ public class CoeditServiceImpl extends ServiceImpl<LuckysheetMapper, Luckysheet>
 				Luckysheet redisCache = JSON.parseObject(String.valueOf(list.get(i)),Luckysheet.class);
 				if(redisCache != null) {
 					mesSheetConfig = new MesSheetConfig();
+					mesSheetConfig.setSheetIndex(redisCache.getSheetIndex());
 					String sheetName = redisCache.getSheetName();
 					mesSheetConfig.setSheetname(sheetName);
+					if(noViewAuthCells.containsKey(mesSheetConfig.getSheetIndex())) {
+						mesSheetConfig.setNoViewAuthCells(noViewAuthCells.get(mesSheetConfig.getSheetIndex()));
+					}
 					if(StringUtil.isNotEmpty(redisCache.getHyperlink()))
 					{
 						Map<String, Map<String, Object>> hyperlink = JSON.parseObject(redisCache.getHyperlink(), Map.class);
