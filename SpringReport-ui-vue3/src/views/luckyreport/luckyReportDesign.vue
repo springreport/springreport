@@ -919,7 +919,7 @@
                   />
                 </div>
               </el-collapse-item>
-              <el-collapse-item title="常规配置" name="sheetBlock">
+              <el-collapse-item title="循环块配置" name="sheetBlock">
                 <div class="right-dataset-title df-c-b">
                   <span class="attr-dataset-title">循环块记录</span>
                   <el-button class="addBtn" @click="addBlock"
@@ -964,6 +964,44 @@
                       style="min-width: 220px; max-width: 220px; margin: 0"
                       >分组属性：{{ o.groupProperty }}</p
                     >
+                  </el-collapse-item>
+                </el-collapse>
+              </el-collapse-item>
+              <el-collapse-item title="图片配置" name="sheetImages">
+                <el-collapse
+                  v-if="sheetImages && Object.keys(sheetImages).length>0"
+                  class="sub-collapse"
+                >
+                  <el-collapse-item
+                    v-for="(o, index) in sheetImages"
+                    :key="index"
+                  >
+                    <template #title>
+                      图片
+                    </template>
+                    <p
+                      class="img-tag"
+                      style="min-width: 220px; max-width: 220px"
+                    >
+                     <el-image
+                    style="width: 200px; height: 100px"
+                    :src="o.src"
+                    :fit="'fill'"></el-image>
+                    </p>
+                    <p
+                      class="switch-tag"
+                      style="min-width: 220px; max-width: 220px"
+                    >
+                      锁定：<el-switch v-model="o.isLocked" @change="changePictureLockStatus(o,index)"/>
+                    </p>
+                    <p
+                      v-if="o.aggregateType == 'group'"
+                      class="column-tag"
+                      :title="o.groupProperty"
+                      style="min-width: 220px; max-width: 220px"
+                    >
+                      分组属性：{{ o.groupProperty }}
+                    </p>
                   </el-collapse-item>
                 </el-collapse>
               </el-collapse-item>
@@ -3131,6 +3169,12 @@
       line-height: 14px;
       border: 0;
       padding: 0;
+    }
+    .img-tag{
+
+    }
+    .switch-tag{
+      height:40px
     }
   }
 

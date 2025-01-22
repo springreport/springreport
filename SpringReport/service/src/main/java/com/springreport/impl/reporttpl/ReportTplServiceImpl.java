@@ -3735,6 +3735,11 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		newConfig.put(LuckySheetPropsEnum.ROWHIDDEN.getCode(), rowhidden);
 		newConfig.put(LuckySheetPropsEnum.COLHIDDEN.getCode(), colhidden);
 		newConfig.put("authority", authority);
+		for(String key:configColumnLen.keySet()) {
+			if(!columnlen.containsKey(key)) {
+				columnlen.put(key, configColumnLen.get(key));
+			}
+		}
 		if(!ListUtil.isEmpty(borderInfos))
 		{
 			newConfig.put(LuckySheetPropsEnum.BORDERINFO.getCode(), borderInfos);

@@ -206,6 +206,7 @@ export default {
       },
       // blockData:[],//循环块数据
       sheetBlockData: [],
+      sheetImages:{},
       blockData: {}, // 循环块数据
       datasourceType: '1', // 1数据库 2api
       dragEndR: 0, // 拖拽停止单元格横坐标
@@ -373,7 +374,8 @@ export default {
           changeReportAttr: this.changeReportAttr,
           changeBorder: this.saveTplCache,
           afterMergeOperation: this.saveTplCache,
-          afterInsertImg: this.saveTplCache,
+          afterInsertImg: this.afterInsertImg,
+          imageDeleteAfter:this.afterInsertImg,
           afterMoveImg: this.saveTplCache,
           afterResizeImg: this.saveTplCache,
           afterCropImg: this.saveTplCache,
@@ -416,7 +418,8 @@ export default {
           viewAttachment: this.viewAttachment,
           createVChart: this.createVChart,
           editVChart: this.editVChart,
-          activeVChart: this.activeVChart
+          activeVChart: this.activeVChart,
+          afterInitImg:this.afterInitImg,
         }
       },
       settingModalConfig: {
@@ -4279,7 +4282,7 @@ export default {
       this.showAuthInfoMsg()
     },
     loadDataAfter() {
-      this.showAuthInfoMsg()
+      this.showAuthInfoMsg();
     },
     showAuthInfoMsg() {
       if (!this.isCreator) {
@@ -4548,6 +4551,34 @@ export default {
         this.settingModalForm[17].rules.required = false
       }
     },
+    afterInitImg(){
+      let luckysheetFile = luckysheet.getSheet();
+      this.sheetImages = luckysheetFile.images
+      for(var key in this.sheetImages) {
+        let element = document.getElementById(key);
+        if(element){
+          if(this.sheetImages[key].isLocked){
+            element.style.pointerEvents="none";
+          }else{
+            element.style.pointerEvents="auto";
+          }
+        }
+      }
+    },
+    changePictureLockStatus(o,index){
+      let element = document.getElementById(index);
+      if(element){
+        if(o.isLocked){
+          element.style.pointerEvents="none";
+        }else{
+          element.style.pointerEvents="auto";
+        }
+      }
+    },
+    afterInsertImg(){
+      this.afterInitImg();
+      this.saveTplCache();
+    }
   },
   watch: {
     'settingFormData.waterMarkImgs': function(newValue, oldValue) {

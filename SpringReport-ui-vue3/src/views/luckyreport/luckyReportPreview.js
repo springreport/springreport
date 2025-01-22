@@ -136,6 +136,7 @@ export default {
           uploadFileClick: this.uploadFileClick,
           editVChart: this.editVChart,
           activeVChart: this.activeVChart,
+          afterInitImg:this.afterInitImg,
         },
       },
       //modal配置 start
@@ -2966,6 +2967,20 @@ export default {
     },
     closeSearch() {
       this.drawer = false;
+    },
+    afterInitImg(){
+      let luckysheetFile = luckysheet.getSheet();
+      this.sheetImages = luckysheetFile.images
+      for(var key in this.sheetImages) {
+        let element = document.getElementById(key);
+        if(element){
+          if(this.sheetImages[key].isLocked){
+            element.style.pointerEvents="none";
+          }else{
+            element.style.pointerEvents="auto";
+          }
+        }
+      }
     },
   },
 };
