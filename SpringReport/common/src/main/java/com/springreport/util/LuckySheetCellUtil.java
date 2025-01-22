@@ -181,7 +181,7 @@ public class LuckySheetCellUtil {
 					int r = cell.getAddress().getRow();
 					int c = cell.getAddress().getColumn();
 					String key = r+"_"+c;
-					if(noViewAuthCells.contains(key)) {
+					if(noViewAuthCells!=null && noViewAuthCells.contains(key)) {
 						continue;
 					}
 					if(cellStyleMap.size()<64000)
