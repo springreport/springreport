@@ -141,7 +141,7 @@ public class Constants {
      * @author caiyang
      * @date 2023-01-06 02:30:07 
      */  
-    public static final double DEFAULT_LUCKYSHEET_CELL_WIDTH = 73;
+    public static final double DEFAULT_LUCKYSHEET_CELL_WIDTH = 74;
     
     /**  
      * @Fields DEFAULT_LUCKYSHEET_CELL_HEIGHT : luckysheet单元格默认高度

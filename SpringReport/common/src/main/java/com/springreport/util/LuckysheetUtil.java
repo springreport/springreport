@@ -652,7 +652,7 @@ public class LuckysheetUtil {
 			}
 			result = result +temp;
 		}
-		result = result + c - hiddenCount;
+		result = result  - hiddenCount;
 		return Math.ceil(result);
 	}
 	
@@ -939,10 +939,10 @@ public class LuckysheetUtil {
 		int c = 0;
 		double temp = width;//用于记录上次计算完以后的值，该值返回去计算偏移量
 		while(true) {
-			if(colhidden.containsKey(c)) {
+			if(colhidden.containsKey(String.valueOf(c))) {
 				c = c + 1;
 			}else if(columnlen.containsKey(String.valueOf(c))) {
-				width = width - Double.parseDouble(String.valueOf(columnlen.get(String.valueOf(c))));
+				width = width - Double.parseDouble(String.valueOf(columnlen.get(String.valueOf(c))))-1;
 				c = c + 1;
 			}else {
 				width = width - Constants.DEFAULT_LUCKYSHEET_CELL_WIDTH;
@@ -987,7 +987,7 @@ public class LuckysheetUtil {
 			if(rowhidden.containsKey(r)) {
 				r = r + 1;
 			}else if(rowlen.containsKey(String.valueOf(r))) {
-				height = height - Double.parseDouble(String.valueOf(rowlen.get(String.valueOf(r))));
+				height = height - Double.parseDouble(String.valueOf(rowlen.get(String.valueOf(r)))) - 1;
 				r = r + 1;
 			}else {
 				height = height - Constants.DEFAULT_LUCKYSHEET_CELL_HEIGHT;
