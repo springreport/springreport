@@ -735,7 +735,7 @@ INSERT INTO `report_tpl_dataset` VALUES (1856260107956994050, NULL, 2, 'ds001', 
 INSERT INTO `report_tpl_dataset` VALUES (1856262181025300481, NULL, 1, 'ds001', 1790351730387464194, 1855943109243531266, 'select\n*\nfrom\nsys_payment_notice', '[]', 1, '[]', '[]', 2, NULL, 1, 1404697301888294914, '2024-11-12 17:06:06', NULL, '2024-11-12 17:06:06', 1, NULL, NULL, NULL);
 INSERT INTO `report_tpl_dataset` VALUES (1856262355088916481, 'SR00000000', 1, 'ds002_v', 1790351730387464194, 1855943109243531266, 'select\n*\nfrom\nsys_payment_order', '[]', 1, '[]', '[]', 2, NULL, 1, 1404697301888294914, '2024-11-12 17:06:48', 1404697301888294914, '2024-11-12 17:07:39', 1, NULL, NULL, NULL);
 INSERT INTO `report_tpl_dataset` VALUES (1856262483224903681, NULL, 1, 'ds003_v', 1790351730387464194, 1855943109243531266, 'select\n*\nfrom\nsys_payment_order_detail', '[]', 1, '[]', '[]', 2, NULL, 1, 1404697301888294914, '2024-11-12 17:07:18', NULL, '2024-11-12 17:07:18', 1, NULL, NULL, NULL);
-
+ALTER TABLE report_tpl_dataset ADD COLUMN group_id bigint DEFAULT NULL COMMENT '分组id';
 -- ----------------------------
 -- Table structure for report_tpl_datasource
 -- ----------------------------
