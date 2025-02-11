@@ -656,7 +656,7 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 					}else {
 						resLuckySheetDataDto.setFrozen(new HashMap<String, Object>());
 					}
-					resLuckySheetDataDto.setCellDatasourceConfig(cellDatasourceConfig);
+//					resLuckySheetDataDto.setCellDatasourceConfig(cellDatasourceConfig);
 					resLuckySheetDataDto.setTableKeys(tableKeys);
 				}
 				//获取打印设置
@@ -3805,8 +3805,12 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 					ReportDataDetailDto reportDataDetailDto = new ReportDataDetailDto();
 					List<ReportDataColumnDto> keys = new ArrayList<>();
 					List<ReportDataColumnDto> columns  = new ArrayList<>();
+					JSONObject autoFillAttrs = new JSONObject();
 					Set<String> mapKeys = datas.keySet();
 					for (String key : mapKeys) {
+						if("isSRrowChanged".equals(key)) {
+							continue;
+						}
 						String reculateKey = o + "|" + key;
 						ReportDataColumnDto dataColumnDto = new ReportDataColumnDto();
 						if(model.getDatasKey() != null && !model.getDatasKey().isEmpty())
@@ -3893,8 +3897,17 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 							columns.add(dataColumnDto);
 						}
 					}
+					if(model.getAutoFillAttrs() != null && model.getAutoFillAttrs().getJSONObject(sheetIndex) != null) {
+						JSONObject autoFills = model.getAutoFillAttrs().getJSONObject(sheetIndex);
+						autoFills.forEach((key, value) -> {
+						    if(key.startsWith(datasourceId+"|")) {
+						    	autoFillAttrs.put(key, value);
+						    }
+						});
+					}
 					reportDataDetailDto.setColumns(columns);
 					reportDataDetailDto.setKeys(keys);
+					reportDataDetailDto.setAutoFillAttrs(autoFillAttrs);
 					tableList.add(reportDataDetailDto);
 				}
 			}
@@ -3907,7 +3920,7 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 				ReportDatasource reportDatasource = this.iReportDatasourceService.getById(Long.valueOf(datasourceId));
 				DataSourceConfig dataSourceConfig = new DataSourceConfig(Long.valueOf(datasourceId), reportDatasource.getDriverClass(), reportDatasource.getJdbcUrl(), reportDatasource.getUserName(), reportDatasource.getPassword(), null);
 				DataSource dataSource = JdbcUtils.getDataSource(dataSourceConfig);
-				ReportDataUtil.reportData(dataSource,reportDataDetails.get(datasourceId),reportDatasource.getType());
+				ReportDataUtil.reportData(dataSource,reportDataDetails.get(datasourceId),reportDatasource.getType(),userInfoDto);
 			}
 		}
 		result.setStatusMsg(MessageUtil.getValue("info.reportdata"));

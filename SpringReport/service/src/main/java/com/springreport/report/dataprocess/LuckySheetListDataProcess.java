@@ -66,7 +66,7 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 	@Override
 	public List<LuckySheetBindData> process(List<LuckysheetReportCell> variableCells, List<Map<String, Object>> data,String datasetName,
 			Map<String, Map<String, List<List<Map<String, Object>>>>> processedCells,Map<String, LuckySheetBindData> blockBindDatas,
-			Map<String, Object> subtotalCellDatas,Map<String, Object> subtotalCellMap,String sheetIndex,Map<String, LuckySheetBindData> cellBindData,Map<String, Integer> subTotalDigits) {
+			Map<String, Object> subtotalCellDatas,Map<String, Object> subtotalCellMap,String sheetIndex,Map<String, LuckySheetBindData> cellBindData,Map<String, Integer> subTotalDigits,int tplType) {
 		List<LuckySheetBindData> bindDatas = new ArrayList<LuckySheetBindData>();
 		if(!ListUtil.isEmpty(data))
 		{
@@ -81,6 +81,7 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 			for (int i = 0; i < variableCells.size(); i++) {
 				String key = variableCells.get(i).getSheetId() + "-" + variableCells.get(i).getCoordsx()+"_"+variableCells.get(i).getCoordsy();
 				bindData = new LuckySheetBindData();
+				bindData.setTplType(tplType);
 				bindData.setSheetId(variableCells.get(i).getSheetId());
 				bindData.setReportCellId(variableCells.get(i).getId());
 				bindData.setCoordsx(variableCells.get(i).getCoordsx());
@@ -110,6 +111,22 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 				bindData.setIsDict(variableCells.get(i).getIsDict());
 				bindData.setDatasourceId(variableCells.get(i).getDatasourceId());
 				bindData.setDictType(variableCells.get(i).getDictType());
+				if(StringUtil.isNotEmpty(variableCells.get(i).getFormsAttrs())) {
+					//填报设置如果设置了下拉单选数据字典，则以填报设置为准
+					JSONObject formsAttrs = JSON.parseObject(variableCells.get(i).getFormsAttrs());
+					if(!StringUtil.isEmptyMap(formsAttrs)) {
+						String valueType = formsAttrs.getString("valueType");
+						if("4".equals(valueType)) {
+							String datasourceId = formsAttrs.getString("datasourceId");
+							String dictType = formsAttrs.getString("dictType");
+							if(StringUtil.isNotEmpty(datasourceId) && StringUtil.isNotEmpty(dictType)) {
+								bindData.setIsDict(true);
+								bindData.setDatasourceId(Long.parseLong(datasourceId));
+								bindData.setDictType(dictType);
+							}
+						}
+					}
+				}
 				bindData.setAlternateFormat(variableCells.get(i).getAlternateFormat());
 				bindData.setAlternateFormatFcOdd(variableCells.get(i).getAlternateFormatFcOdd());
 				bindData.setAlternateFormatFcEven(variableCells.get(i).getAlternateFormatFcEven());

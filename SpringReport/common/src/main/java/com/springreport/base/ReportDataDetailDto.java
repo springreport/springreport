@@ -2,6 +2,8 @@ package com.springreport.base;
 
 import java.util.List;
 
+import com.alibaba.fastjson.JSONObject;
+
 import lombok.Data;
 
 /**  
@@ -26,4 +28,11 @@ public class ReportDataDetailDto {
 	 * @date 2022-11-23 07:56:16 
 	 */  
 	private List<ReportDataColumnDto> columns;
+	
+	/**  
+	 * @Fields autoFillAttrs : 自动填充列
+	 * @author caiyang
+	 * @date 2025-02-05 09:24:36 
+	 */  
+	private JSONObject autoFillAttrs;
 }

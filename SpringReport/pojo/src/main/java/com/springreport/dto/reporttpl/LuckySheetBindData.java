@@ -510,4 +510,11 @@ public class LuckySheetBindData {
      * @date 2024-12-31 11:26:00 
      */  
     private Integer cellFillType = 1;
+    
+    /**  
+     * @Fields tplType : 是否是填报数据 1是 2否
+     * @author caiyang
+     * @date 2025-01-31 03:00:27 
+     */  
+    private int tplType = 1;
 }

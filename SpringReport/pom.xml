@@ -14,7 +14,7 @@
 		<module>common</module>
 	</modules>
 	<properties>
-		<revision>2.3.1</revision>
+		<revision>2.3.2</revision>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<spring-boot.version>2.7.12</spring-boot.version>
 		<mysql.version>8.0.33</mysql.version>
