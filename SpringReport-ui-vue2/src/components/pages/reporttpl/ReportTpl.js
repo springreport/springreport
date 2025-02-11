@@ -56,7 +56,7 @@ export default {
               { label: '编辑', type: 'text', auth: 'reportTpl_update', handle: (row) => this.showModal(this.commonConstants.modalType.update, row.id, row.type) },
               { label: '删除', type: 'danger', auth: 'reportTpl_delete', handle: (row) => this.deleteOne(row.id, row.type) },
               { label: '复制', type: 'text', auth: 'reportTpl_copy', handle: (row) => this.copyReport(row), show: (row) => this.isShowBtn(row) },
-              { label: '报表设计', type: 'text', auth: 'reportTpl_reportDesign', handle: (row) => this.routerTo(row.tplType == '1' ? 'luckyReportDesign' : 'luckyReportFroms', row), show: (row) => this.isShowBtn(row) },
+              { label: '报表设计', type: 'text', auth: 'reportTpl_reportDesign', handle: (row) => this.routerTo('luckyReportDesign', row), show: (row) => this.isShowBtn(row) },
               { label: '修改密码', type: 'text', auth: 'reportTpl_changePwd', show: (row) => this.isShowChangePwd(row), handle: (row) => this.showChangePwd(row) },
               { label: '报表查看(pc)', type: 'text', auth: 'reportTpl_reportView', handle: (row) => this.routerTo('luckyReportPreview', row), show: (row) => this.isShowBtn(row) },
               { label: '报表查看(手机)', type: 'text', auth: 'reportTpl_reportView', show: (row) => this.isShowShare(row), handle: (row) => this.routerTo('h5ReportPreview', row) },

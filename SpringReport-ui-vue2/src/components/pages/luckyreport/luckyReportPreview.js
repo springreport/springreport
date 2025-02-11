@@ -178,7 +178,9 @@ export default {
       cellDatasourceConfigs: {}, // 原始单元格绑定的数据源信息
       cellAllowEditConfigs: {}, // 原始单元格是否可编辑配置信息
       sheetTableKeys: {}, // 表格主键
+      sheetAutoFillAttrs:{},//表格自动填充字段
       rowDatas: {}, // 与数据集绑定的数据
+      changedRowDatas:{},//修改过的数据
       datasKey: {}, // 数据主键信息
       dictDatas: {}, // 数据字典值
       basicData: {}, // 原始单元格数据
@@ -341,6 +343,7 @@ export default {
         const urlParams = { ...this.$route.query }
         delete urlParams['tplId']
         delete urlParams['token']
+        delete urlParams['thirdPartyType']
         urlParamsLength = Object.keys(urlParams).length
       }
       const obj = {
@@ -517,6 +520,7 @@ export default {
             this.pageParam.currentPage = response.responseData.pagination.currentPage
             this.pageParam.pageCount = response.responseData.pagination.pageCount
           }
+          console.log(this.reportForm)
           this.$nextTick(() => {
             // this.initLuckySheet();
             this.getReportData(1)
@@ -655,10 +659,10 @@ export default {
               this.extraCustomCellConfigs[element.sheetIndex] = element.extraCustomCellConfigs
               this.extendCellOrigins[element.sheetIndex] = element.extendCellOrigin
               this.columnStartCoords[element.sheetIndex] = element.columnStartCoords
-              this.cellDatasourceConfigs[element.sheetIndex] = element.cellDatasourceConfig
+              this.cellDatasourceConfigs[element.sheetIndex] = element.cellDatasourceConfigs
               this.sheetTableKeys[element.sheetIndex] = element.tableKeys
+              this.sheetAutoFillAttrs[element.sheetIndex] = element.autoFillAttrs
               this.cellAllowEditConfigs[element.sheetIndex] = element.allowEditConfigs
-
               // if(element.pagination && Object.keys(element.pagination).length>0)
               // {
               //     this.setPagination(element.pagination,response.responseData.isParamMerge,element.mergePagination);
@@ -1186,56 +1190,58 @@ export default {
       var sheetIndex = luckysheet.getSheet().index
       var that = this
       // 判断该单元格是否可编辑
-      if (this.cellAllowEditConfigs[sheetIndex]) {
-        var orginCell = this.extendCellOrigins[sheetIndex][key]
-        if (orginCell) {
-          var allowEdit = this.cellAllowEditConfigs[sheetIndex][orginCell.r + '_' + orginCell.c]
-          if (!allowEdit) {
-            this.commonUtil.showMessage({ message: '该单元格不允许进行编辑。', type: 'error' })
-            return false
-          }
-        }
-      }
-      that.editBeforeValue = luckysheet.getCellValue(r, c)
-      if (this.extendCellOrigins[sheetIndex]) {
-        var orginCell = this.extendCellOrigins[sheetIndex][key]
-        if (!orginCell) {
-          orginCell = this.getNewCellExtendOrigins(sheetIndex, r, c)
-        }
-        if (orginCell && this.extraCustomCellConfigs[sheetIndex]) {
-          var key2 = orginCell.r + '_' + orginCell.c
-          this.rules = {}
-          this.cellConfig = this.extraCustomCellConfigs[sheetIndex][key2]
-          if (this.cellConfig.require) {
-            this.rules.required = true
-          }
-          if (this.cellConfig.valueType == '1') { // 文本
-            // this.textValidateRules();
-          } else if (this.cellConfig.valueType == '2') {
-            // 数值
-            // this.numberValidateRules();
-          } else if (this.cellConfig.valueType == '3') {
-            // 日期
-            this.dateValidRules()
-            this.editDialog = true
-            luckysheet.setCellFormat(that.editR, that.editC, 'ct', { fa: '@', t: 's' })
-            setTimeout(function() {
-              luckysheet.exitEditMode()
-              luckysheet.setCellValue(that.editR, that.editC, that.editBeforeValue, { isRefresh: false })
-              luckysheet.setRangeShow({ row: [that.editR, that.editR], column: [that.editC, that.editC] })
-            }, 0)
-          } else if (this.cellConfig.valueType == '4') {
-            // 下拉选择
-            this.selectValidRules()
-            if (this.cellConfig.datasourceId && this.cellConfig.dictType) {
-              this.getDictTypeDatas()
+      if(this.tplType == 2){
+        if (this.cellAllowEditConfigs[sheetIndex]) {
+          var orginCell = this.extendCellOrigins[sheetIndex][key]
+          if (orginCell) {
+            var allowEdit = this.cellAllowEditConfigs[sheetIndex][orginCell.r + '_' + orginCell.c]
+            if (!allowEdit) {
+              this.commonUtil.showMessage({ message: '该单元格不允许进行编辑。', type: 'error' })
+              return false
             }
-            this.editDialog = true
-            setTimeout(function() {
-              luckysheet.exitEditMode()
-              luckysheet.setCellValue(that.editR, that.editC, that.editBeforeValue, { isRefresh: false })
-              luckysheet.setRangeShow({ row: [that.editR, that.editR], column: [that.editC, that.editC] })
-            }, 0)
+          }
+        }
+        that.editBeforeValue = luckysheet.getCellValue(r, c)
+        if (this.extendCellOrigins[sheetIndex]) {
+          var orginCell = this.extendCellOrigins[sheetIndex][key]
+          if (!orginCell) {
+            orginCell = this.getNewCellExtendOrigins(sheetIndex, r, c)
+          }
+          if (orginCell && this.extraCustomCellConfigs[sheetIndex]) {
+            var key2 = orginCell.r + '_' + orginCell.c
+            this.rules = {}
+            this.cellConfig = this.extraCustomCellConfigs[sheetIndex][key2]
+            if (this.cellConfig.require) {
+              this.rules.required = true
+            }
+            if (this.cellConfig.valueType == '1') { // 文本
+              // this.textValidateRules();
+            } else if (this.cellConfig.valueType == '2') {
+              // 数值
+              // this.numberValidateRules();
+            } else if (this.cellConfig.valueType == '3') {
+              // 日期
+              this.dateValidRules()
+              this.editDialog = true
+              luckysheet.setCellFormat(that.editR, that.editC, 'ct', { fa: '@', t: 's' })
+              setTimeout(function() {
+                luckysheet.exitEditMode()
+                luckysheet.setCellValue(that.editR, that.editC, that.editBeforeValue, { isRefresh: false })
+                luckysheet.setRangeShow({ row: [that.editR, that.editR], column: [that.editC, that.editC] })
+              }, 0)
+            } else if (this.cellConfig.valueType == '4') {
+              // 下拉选择
+              this.selectValidRules()
+              if (this.cellConfig.datasourceId && this.cellConfig.dictType) {
+                this.getDictTypeDatas()
+              }
+              this.editDialog = true
+              setTimeout(function() {
+                luckysheet.exitEditMode()
+                luckysheet.setCellValue(that.editR, that.editC, that.editBeforeValue, { isRefresh: false })
+                luckysheet.setRangeShow({ row: [that.editR, that.editR], column: [that.editC, that.editC] })
+              }, 0)
+            }
           }
         }
       }
@@ -1520,46 +1526,43 @@ export default {
           headers.shareUser = this.shareUser
           obj.url = this.apis.previewReport.shareReportDataApi
         }
-        var that = this
-        let bassicMd5 = this.$md5(JSON.stringify(this.basicRowDatas))// 旧数据md5值
-        let rowMd5 = this.$md5(JSON.stringify(this.rowDatas))// 新数据md5值
+        // var that = this
+        // let bassicMd5 = this.$md5(JSON.stringify(this.basicRowDatas))// 旧数据md5值
+        // let rowMd5 = this.$md5(JSON.stringify(this.rowDatas))// 新数据md5值
         const reportDatas = {}// 上报的数据
         const originalDatas = {}// 原始数据
-        if (bassicMd5 == rowMd5) { // 说明值未发生变化，直接返回
+        if (Object.keys(this.changedRowDatas).length === 0) { // 说明值未发生变化，直接返回
           this.commonUtil.showMessage({ message: '未修改过数据，无需提交数据。', type: 'warning' })
           return
         } else {
-          for (var key in this.rowDatas) {
+          for (var key in this.changedRowDatas) {
             if (this.basicRowDatas[key]) {
-              bassicMd5 = this.$md5(JSON.stringify(this.basicRowDatas[key]))// 旧数据md5值
-              rowMd5 = this.$md5(JSON.stringify(this.rowDatas[key]))// 旧数据md5值
-              if (bassicMd5 != rowMd5) {
-                originalDatas[key] = this.basicRowDatas[key]
-                reportDatas[key] = this.rowDatas[key]
-              }
+              originalDatas[key] = this.basicRowDatas[key]
+              reportDatas[key] = this.changedRowDatas[key]
             } else {
-              if (this.checkRequiredAttr(key, this.rowDatas[key])) {
-                reportDatas[key] = this.rowDatas[key]
-              } else {
-                var data = this.addDataCoords[key]
-                if (data) {
-                  const cellExtend = data.cellExtend
-                  const name = data.name
-                  const r = data.r
-                  const c = data.c
-                  if (cellExtend == 3) {
-                    this.commonUtil.showMessage({ message: '【' + name + '】的第' + (c + 1) + '列有必填项未填写，请填写完全后再提交。', type: 'error' })
-                  } else {
-                    this.commonUtil.showMessage({ message: '【' + name + '】的第' + (r + 1) + '行有必填项未填写，请填写完全后再提交。', type: 'error' })
-                  }
-                  this.addDataCoords = {}
-                  return
-                } else {
-                  this.commonUtil.showMessage({ message: '有必填项未填写，请填写完全后再提交。', type: 'error' })
-                  this.addDataCoords = {}
-                  return
-                }
-              }
+              reportDatas[key] = this.changedRowDatas[key]
+              // if (true) {
+              //   reportDatas[key] = this.rowDatas[key]
+              // } else {
+              //   var data = this.addDataCoords[key]
+              //   if (data) {
+              //     const cellExtend = data.cellExtend
+              //     const name = data.name
+              //     const r = data.r
+              //     const c = data.c
+              //     if (cellExtend == 3) {
+              //       this.commonUtil.showMessage({ message: '【' + name + '】的第' + (c + 1) + '列有必填项未填写，请填写完全后再提交。', type: 'error' })
+              //     } else {
+              //       this.commonUtil.showMessage({ message: '【' + name + '】的第' + (r + 1) + '行有必填项未填写，请填写完全后再提交。', type: 'error' })
+              //     }
+              //     this.addDataCoords = {}
+              //     return
+              //   } else {
+              //     this.commonUtil.showMessage({ message: '有必填项未填写，请填写完全后再提交。', type: 'error' })
+              //     this.addDataCoords = {}
+              //     return
+              //   }
+              // }
             }
           }
         }
@@ -1567,14 +1570,16 @@ export default {
         this.loading = true
         const obj = {
           url: this.apis.previewReport.reportDataApi,
-          params: { reportDatas: reportDatas, datasKey: this.datasKey, basicDatas: originalDatas, tplId: tplId, version: this.reportVersion, reCalculate: this.reCalculate },
+          params: { reportDatas: reportDatas, datasKey: this.datasKey, basicDatas: originalDatas, tplId: tplId, version: this.reportVersion, reCalculate: this.reCalculate,autoFillAttrs:this.sheetAutoFillAttrs },
           removeEmpty: false,
           callback: this.submitDatasCallback
         }
+        var that = this;
         this.commonUtil.doPost(obj, headers).then(response => {
           if (response.code == '200') {
             if (that.refreshPage == 1) {
-              that.$router.go(0)
+              // that.$router.go(0)
+              that.getReportData(2, true)
             } else {
               that.reportVersion = response.responseData.version
               var luckysheetfiles = luckysheet.getLuckysheetfile()
@@ -1588,6 +1593,9 @@ export default {
               that.submitBasicData = {}
               that.addDataCoords = {}
               that.formsDatasourceAttrs = {}
+              that.rowDatas = {};
+              that.changedRowDatas = {};
+              that.originalDatas = {};
             }
           }
         })
@@ -1627,11 +1635,21 @@ export default {
             var cellDatas = this.getCellDatas(luckysheetfile)
             this.submitBasicData[sheetIndex] = {}
             for (let t = 0; t < cellDatas.length; t++) {
+              let isChanged = false;
               var wrongMsg = []
               const element = cellDatas[t]
-              const r = element.r
-              const c = element.c
+              if(element.v && element.v.mc && !element.v.mc.rs){
+                continue;
+              }
+              var r = element.r
+              var c = element.c
               let v = element.v.m
+              var cs = 1;
+              var rs = 1;
+              if(element.v && element.v.mc && element.v.mc.rs){
+                cs = element.v.mc.cs;
+                rs = element.v.mc.rs;
+              }
               // 获取原始单元格的坐标信息
               let originCell = this.extendCellOrigins[sheetIndex][r + '_' + c]
               let isNew = false
@@ -1639,107 +1657,90 @@ export default {
                 originCell = this.getNewCellExtendOrigins(sheetIndex, r, c)
                 isNew = true
               }
+              if(element.v.v == null && element.v.ct && element.v.ct.t == 'inlineStr'){
+                let s  = element.v.ct.s;
+
+                if(s && s.length > 0){
+                  for (let t = 0; t < s.length; t++) {
+                    if(s[t].v){
+                      v = (v?v:"") + s[t].v;
+                    }
+                  }
+                }
+              }
               if (originCell) {
-                const cellDatasourceConfig = this.cellDatasourceConfigs[sheetIndex]
-                if (cellDatasourceConfig) {
-                  // 获取原始单元格自定义配置信息
-                  const extraConfig = this.extraCustomCellConfigs[sheetIndex][originCell.r + '_' + originCell.c]
-                  // 原始坐标对应的实际数据的起始坐标
-                  const startCoords = this.columnStartCoords[sheetIndex][originCell.r + '_' + originCell.c]
-                  // 获取原始单元格绑定的数据源信息
-                  const datasourceConfig = this.cellDatasourceConfigs[sheetIndex][originCell.r + '_' + originCell.c]
-                  if (extraConfig && startCoords && datasourceConfig) {
-                    var rowFlag = 0
-                    if (extraConfig.cellExtend == 1) { // 不扩展
-                      rowFlag = 0
-                    } else if (extraConfig.cellExtend == 2) { // 向右扩展
-                      rowFlag = c - originCell.c
-                    } else if (extraConfig.cellExtend == 3) { // 向下扩展
-                      rowFlag = r - originCell.r
-                    }
-                    const dictKey = sheetIndex + '_' + originCell.r + '_' + originCell.c
-                    if (this.dictDatas) {
-                      var dict = this.dictDatas[dictKey]
-                      if (dict) {
-                        v = dict[v]
+                const cellDatasourceConfigs = this.cellDatasourceConfigs[sheetIndex]
+                if (cellDatasourceConfigs && cellDatasourceConfigs.length > 0) {
+                  for (let index = 0; index < cellDatasourceConfigs.length; index++) {
+                    const cellDatasourceConfig = cellDatasourceConfigs[index];
+                    // 获取原始单元格自定义配置信息
+                    const extraConfig = this.extraCustomCellConfigs[sheetIndex][originCell.r + '_' + originCell.c]
+                    // 原始坐标对应的实际数据的起始坐标
+                    const startCoords = this.columnStartCoords[sheetIndex][originCell.r + '_' + originCell.c]
+                    // 获取原始单元格绑定的数据源信息
+                    const datasourceConfig = cellDatasourceConfig[originCell.r + '_' + originCell.c]
+                    if (extraConfig && startCoords && datasourceConfig) {
+                      var rowFlag = 0
+                      if (extraConfig.cellExtend == 1) { // 不扩展
+                        rowFlag = 0
+                      } else if (extraConfig.cellExtend == 2) { // 向右扩展
+                        rowFlag = c - originCell.c
+                      } else if (extraConfig.cellExtend == 3) { // 向下扩展
+                        rowFlag = r - originCell.r
                       }
-                    }
-                    const rowKey = sheetIndex + '|' + datasourceConfig.datasourceId + '|' + datasourceConfig.table + '|' + datasourceConfig.name + '|' + rowFlag
-                    if (extraConfig.unitTransfer && this.commonUtil.isNumber(v)) {
-                      var transferType = extraConfig.transferType
-                      var multiple = Number(extraConfig.multiple)
-                      var digit = Number(extraConfig.digit)
-                      var obj = {
-                        transferType: transferType,
-                        multiple: multiple,
-                        digit: digit
-                      }
-                      const columnKey = rowKey + '|' + datasourceConfig.columnName
-                      this.reCalculate[columnKey] = obj
-                    }
-                    var data = this.rowDatas[rowKey]
-                    var basicData = this.basicRowDatas[rowKey]
-                    if (data) {
-                      data[datasourceConfig.columnName] = (v == undefined ? null : v)
-                      if (isNew) {
-                        if (!this.addDataCoords[rowKey]) {
-                          this.addDataCoords[rowKey] = { r: r, c: c, extend: extraConfig.cellExtend, name: luckysheetfile.name }
+                      var rowKey = sheetIndex + '|' + datasourceConfig.datasourceId + '|' + datasourceConfig.table + '|' + datasourceConfig.name + '|' + rowFlag
+                      if(this.basicData && this.basicData[sheetIndex]){
+                        let originalV = this.basicData[sheetIndex][r+"_"+c];
+                        if(v != originalV){
+                          isChanged = true;
                         }
                       }
-                    } else {
-                      data = {}
-                      data[datasourceConfig.columnName] = (v == undefined ? null : v)
-                      this.rowDatas[rowKey] = data
-                      if (isNew) {
-                        if (!this.addDataCoords[rowKey]) {
-                          this.addDataCoords[rowKey] = { r: r, c: c, extend: extraConfig.cellExtend, name: luckysheetfile.name }
-                        }
-                      }
-                    }
-                    if (this.basicData[sheetIndex]) {
-                      var basicV = this.basicData[sheetIndex][r + '_' + c]
+                      const dictKey = sheetIndex + '_' + originCell.r + '_' + originCell.c
                       if (this.dictDatas) {
                         var dict = this.dictDatas[dictKey]
                         if (dict) {
-                          basicV = dict[basicV]
+                          v = dict[v]
                         }
                       }
-                      if (!isNew) {
-                        if (basicData) {
-                          basicData[datasourceConfig.columnName] = basicV
-                        } else {
-                          basicData = {}
-                          basicData[datasourceConfig.columnName] = basicV
-                          this.basicRowDatas[rowKey] = basicData
+                      if (extraConfig.unitTransfer && this.commonUtil.isNumber(v)) {
+                        var transferType = extraConfig.transferType
+                        var multiple = Number(extraConfig.multiple)
+                        var digit = Number(extraConfig.digit)
+                        var obj = {
+                          transferType: transferType,
+                          multiple: multiple,
+                          digit: digit
                         }
+                        const columnKey = rowKey + '|' + datasourceConfig.columnName
+                        this.reCalculate[columnKey] = obj
                       }
-                    }
-                    if (this.refreshPage == 2) {
-                      this.submitBasicData[sheetIndex][r + '_' + c] = v
-                    }
-                    if (extraConfig.require) {
-                      const attrKey = sheetIndex + '|' + datasourceConfig.datasourceId + '|' + datasourceConfig.table + '|' + datasourceConfig.name
-                      if (!this.formsDatasourceAttrs[sheetIndex]) {
-                        this.formsDatasourceAttrs[sheetIndex] = {}
-                        this.formsDatasourceAttrs[sheetIndex][attrKey] = []
+                      if(extraConfig.cellExtend == 3){//向下扩展
+                        sheetIndex + '|' + datasourceConfig.datasourceId + '|' + datasourceConfig.table + '|' + datasourceConfig.name + '|' + rowFlag
+                        for (let t = 0; t < rs; t++) {
+                          let flag = rowFlag + t;
+                          rowKey = sheetIndex + '|' + datasourceConfig.datasourceId + '|' + datasourceConfig.table + '|' + datasourceConfig.name + '|' + flag
+                          r = r + t;
+                          this.getRowDatas(r,c,sheetIndex,rowKey,extraConfig,datasourceConfig,luckysheetfile,originCell,wrongMsg,v,flag,isChanged,isNew,element.r,dictKey);
+                        }
+                      }else if(extraConfig.cellExtend == 2){//向右扩展
+                        let flag = rowFlag + t;
+                        rowKey = sheetIndex + '|' + datasourceConfig.datasourceId + '|' + datasourceConfig.table + '|' + datasourceConfig.name + '|' + flag
+                        c = c + t;
+                        this.getRowDatas(r,c,sheetIndex,rowKey,extraConfig,datasourceConfig,luckysheetfile,originCell,wrongMsg,v,flag,isChanged,isNew,element.r,element.c,dictKey);
+                      }else{
+                        this.getRowDatas(r,c,sheetIndex,rowKey,extraConfig,datasourceConfig,luckysheetfile,originCell,wrongMsg,v,rowFlag,isChanged,isNew,element.r,element.c,dictKey);
                       }
-                      this.formsDatasourceAttrs[sheetIndex][attrKey].push(datasourceConfig.columnName)
-                    }
-                    // 校验填入的数据格式
-                    this.dataVerify(r, c, originCell.r, originCell.c, v, sheetIndex, wrongMsg, rowFlag, extraConfig.cellExtend)
-                    if (wrongMsg && wrongMsg.length > 0) {
-                      msgMap[luckysheetfile.order + '_' + r + '_' + c] = wrongMsg
-                    }
-                    const tableKeys = this.sheetTableKeys[sheetIndex]
-                    if (tableKeys) {
-                      for (var tableKey in tableKeys) {
-                        var datasourceId = tableKey.split('|')[0]
-                        var tableName = tableKey.split('|')[1]
-                        var columnName = tableKey.split('|')[2]
-                        var name = tableKey.split('|')[3]
-                        const rowDatasKey = sheetIndex + '|' + datasourceId + '|' + tableName + '|' + name + '|' + rowFlag
-                        if (this.rowDatas[rowDatasKey] && !this.rowDatas[rowDatasKey][columnName]) {
-                          this.rowDatas[rowDatasKey][columnName] = null
+                      const tableKeys = this.sheetTableKeys[sheetIndex]
+                      if (tableKeys) {
+                        for (var tableKey in tableKeys) {
+                          var datasourceId = tableKey.split('|')[0]
+                          var tableName = tableKey.split('|')[1]
+                          var columnName = tableKey.split('|')[2]
+                          var name = tableKey.split('|')[3]
+                          const rowDatasKey = sheetIndex + '|' + datasourceId + '|' + tableName + '|' + name + '|' + rowFlag
+                          if (this.rowDatas[rowDatasKey] && !this.rowDatas[rowDatasKey][columnName]) {
+                            this.rowDatas[rowDatasKey][columnName] = null
+                          }
                         }
                       }
                     }
@@ -1762,6 +1763,72 @@ export default {
         }
       }
       return msgMap
+    },
+    getRowDatas(r,c,sheetIndex,rowKey,extraConfig,datasourceConfig,luckysheetfile,originCell,wrongMsg,v,rowFlag,isChanged,isNew,elementr,elementc,dictKey){
+      var data = this.rowDatas[rowKey]
+      var basicData = this.basicRowDatas[rowKey]
+      if (data) {
+        if (isChanged || datasourceConfig.isKey == 1) {
+          data[datasourceConfig.columnName] = (v == undefined ? null : v)
+        }
+
+        if (isNew) {
+          if (!this.addDataCoords[rowKey]) {
+            this.addDataCoords[rowKey] = { r: r, c: c, extend: extraConfig.cellExtend, name: luckysheetfile.name }
+          }
+        }
+      } else {
+        data = {}
+        if (isChanged || datasourceConfig.isKey == 1) {
+          data[datasourceConfig.columnName] = (v == undefined ? null : v)
+        }
+        this.rowDatas[rowKey] = data
+        if (isNew) {
+          if (!this.addDataCoords[rowKey]) {
+            this.addDataCoords[rowKey] = { r: r, c: c, extend: extraConfig.cellExtend, name: luckysheetfile.name }
+          }
+        }
+      }
+      if (!data.isSRrowChanged) {//用于标识行数据是否修改过
+        data.isSRrowChanged = isChanged;
+      }
+      if (data.isSRrowChanged) {
+        this.changedRowDatas[rowKey] = data;
+      }
+      if (this.basicData[sheetIndex]) {
+        var basicV = this.basicData[sheetIndex][elementr + '_' + elementc]
+        if (this.dictDatas) {
+          var dict = this.dictDatas[dictKey]
+          if (dict) {
+            basicV = dict[basicV]
+          }
+        }
+        if (!isNew && data.isSRrowChanged && isChanged) {
+          if (basicData) {
+            basicData[datasourceConfig.columnName] = basicV
+          } else {
+            basicData = {}
+            basicData[datasourceConfig.columnName] = basicV
+            this.basicRowDatas[rowKey] = basicData
+          }
+        }
+      }
+      if (this.refreshPage == 2) {
+        this.submitBasicData[sheetIndex][r + '_' + c] = v
+      }
+      if (extraConfig.require) {
+        const attrKey = sheetIndex + '|' + datasourceConfig.datasourceId + '|' + datasourceConfig.table + '|' + datasourceConfig.name
+        if (!this.formsDatasourceAttrs[sheetIndex]) {
+          this.formsDatasourceAttrs[sheetIndex] = {}
+          this.formsDatasourceAttrs[sheetIndex][attrKey] = []
+        }
+        this.formsDatasourceAttrs[sheetIndex][attrKey].push(datasourceConfig.columnName)
+      }
+      // 校验填入的数据格式
+      this.dataVerify(r, c, originCell.r, originCell.c, v, sheetIndex, wrongMsg, rowFlag, extraConfig.cellExtend)
+      if (wrongMsg && wrongMsg.length > 0) {
+        msgMap[luckysheetfile.order + '_' + r + '_' + c] = wrongMsg
+      }
     },
     // 获取新增单元格对应的原始数据
     // 获取x坐标相邻的单元格，最多获取5个相邻的单元格，如果获取不到那就忽略该单元格
@@ -2209,7 +2276,22 @@ export default {
             var width = that.clickCellPosition.end_c - that.clickCellPosition.start_c
             luckysheet.setCellValue(r, c, data.fileUri, { isRefresh: false })
             img.onload = () => {
-              that.ctx.drawImage(img, that.clickCellPosition.start_c + extraWidth, that.clickCellPosition.start_r + extraHeight, width, height)
+              let imgObj = JSON.parse(JSON.stringify(this.commonConstants.imgObj));
+              imgObj.originWidth = data.width;
+              imgObj.originHeight = data.height;
+              imgObj.default.width = width;
+              imgObj.default.height = height;
+              imgObj.default.left = that.clickCellPosition.start_c-3
+              imgObj.default.top = that.clickCellPosition.start_r
+              imgObj.crop.width = width;
+              imgObj.crop.height = height;
+              imgObj.src = data.fileUri;
+              if(!luckysheet.getSheet().images){
+                luckysheet.getSheet().images = {};
+              }
+              luckysheet.insertCellImage(imgObj);
+              console.log(luckysheet.getSheet())
+              evt.target.value = '';
             }
           }
         })

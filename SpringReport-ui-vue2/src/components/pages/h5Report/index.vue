@@ -8,11 +8,11 @@
       @click-right="onClickRight"
     >
       <template #left v-if="isDrill == 1">
-        <img class="back"  width="24px" height="24px" />
+        <img src="@/static/img/back.png" class="back"  width="24px" height="24px" />
       </template>
       <template #right>
         <img class="filter"
-          
+          src="@/static/img/filter.png"
           width="18px"
           height="18px"
           @click="openFilter"
@@ -79,10 +79,15 @@
 </template>
 
 <script>
+import Vue from "vue";
+import { Tab, Tabs, NavBar, Pagination } from "vant";
 import ReportTable from "./components/ReportTable.vue";
 import ReportChart from "./components/ReportChart.vue";
 import ReportFilter from "./components/ReportFilter.vue";
-
+Vue.use(Tab);
+Vue.use(Tabs);
+Vue.use(NavBar);
+Vue.use(Pagination);
 export default {
   name: "index",
   data() {
