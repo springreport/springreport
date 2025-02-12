@@ -520,7 +520,6 @@ export default {
             this.pageParam.currentPage = response.responseData.pagination.currentPage
             this.pageParam.pageCount = response.responseData.pagination.pageCount
           }
-          console.log(this.reportForm)
           this.$nextTick(() => {
             // this.initLuckySheet();
             this.getReportData(1)
@@ -2290,7 +2289,6 @@ export default {
                 luckysheet.getSheet().images = {};
               }
               luckysheet.insertCellImage(imgObj);
-              console.log(luckysheet.getSheet())
               evt.target.value = '';
             }
           }

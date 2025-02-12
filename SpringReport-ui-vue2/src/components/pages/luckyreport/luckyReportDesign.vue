@@ -1060,7 +1060,7 @@
                     active-text="是"
                     inactive-text="否"
                     :disabled="attrDisabled"
-                    @change="changeCellAttr('otherCellCompare')"
+                    @change="changeCellAttr('otherCellCompare','formsAttrs')"
                   />
                 </el-form-item>
                 <div
@@ -3740,7 +3740,7 @@
                 <el-button
                   class="addBtn"
                   @click="addDatasourceKey"
-                ><i class="el-icon-plus el-icon--left" />主键</el-button>
+                ><i class="el-icon-plus el-icon--left" />添加</el-button>
               </div>
               <el-table
                 :data="datasourceAttr.keys"
