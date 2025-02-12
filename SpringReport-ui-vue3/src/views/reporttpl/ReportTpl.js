@@ -120,7 +120,7 @@ export default {
                 type: 'primary',
                 auth: 'reportTpl_reportDesign',
                 handle: (row) =>
-                  this.routerTo(row.tplType == '1' ? 'luckyReportDesign' : 'luckyReportFroms', row),
+                  this.routerTo('luckyReportDesign', row),
                 show: (row) => this.isShowBtn(row),
               },
               {

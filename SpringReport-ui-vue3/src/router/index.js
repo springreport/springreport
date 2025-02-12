@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router';
 import Layout from '@/layouts/index.vue';
+import axios from 'axios';
 export const constantRoutes = [
   {
     path: '/login',
@@ -766,5 +767,7 @@ export function resetRouter() {
     }
   });
 }
+axios.defaults.timeout = 300000; // 毫秒
 
+axios.defaults.baseURL = "/SpringReport";
 export default router;
