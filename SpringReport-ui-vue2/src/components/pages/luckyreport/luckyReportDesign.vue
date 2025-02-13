@@ -804,7 +804,336 @@
                   </el-collapse-item>
                 </el-collapse>
               </el-collapse-item>
-
+              <el-collapse-item title="填报配置" name="fillSettings" v-if="tplType != 1">
+                <el-form-item
+                  label="允许修改"
+                  size="small"
+                  class="df-form-item"
+                >
+                  <el-switch
+                    v-model="cellForm.formsAttrs.allowEdit"
+                    active-text="是"
+                    inactive-text="否"
+                    :disabled="attrDisabled"
+                    @change="changeCellAttr('allowEdit','formsAttrs')"
+                  />
+                </el-form-item>
+                <el-form-item label="值类型">
+                  <el-select
+                    v-model="cellForm.formsAttrs.valueType"
+                    style="width: 100%"
+                    placeholder="值类型"
+                    size="small"
+                    :disabled="attrDisabled"
+                    @change="changeCellAttr('valueType','formsAttrs')"
+                  >
+                    <el-option label="文本" value="1" />
+                    <el-option label="数值" value="2" />
+                    <el-option label="日期时间" value="3" />
+                    <el-option label="下拉单选" value="4" />
+                  </el-select>
+                </el-form-item>
+                <div class="cus-collapse-content">
+                  <el-form-item
+                    label="必填项"
+                    size="small"
+                    class="df-form-item"
+                  >
+                    <el-switch
+                      v-model="cellForm.formsAttrs.require"
+                      active-text="是"
+                      inactive-text="否"
+                      :disabled="attrDisabled"
+                      @change="changeCellAttr('require','formsAttrs')"
+                    />
+                  </el-form-item>
+                  <el-form-item
+                    v-show="cellForm.formsAttrs.valueType == '1'"
+                    label="长度校验"
+                    size="small"
+                    class="df-form-item"
+                  >
+                    <el-switch
+                      v-model="cellForm.formsAttrs.lengthValid"
+                      active-text="是"
+                      inactive-text="否"
+                      :disabled="attrDisabled"
+                      @change="changeCellAttr('lengthValid','formsAttrs')"
+                    />
+                  </el-form-item>
+                  <el-form-item
+                    v-show="cellForm.formsAttrs.lengthValid && cellForm.formsAttrs.valueType == '1'"
+                    label="最小长度"
+                    size="small"
+                  >
+                    <el-input
+                      v-model="cellForm.formsAttrs.minLength"
+                      style="width: 100%"
+                      placeholder="最小长度"
+                      :disabled="attrDisabled"
+                      @input="changeCellAttr('minLength','formsAttrs')"
+                    />
+                  </el-form-item>
+                  <el-form-item
+                    v-show="cellForm.formsAttrs.lengthValid && cellForm.formsAttrs.valueType == '1'"
+                    label="最大长度"
+                    size="small"
+                  >
+                    <el-input
+                      v-model="cellForm.formsAttrs.maxLength"
+                      style="width: 100%"
+                      placeholder="最大长度"
+                      :disabled="attrDisabled"
+                      @input="changeCellAttr('maxLength','formsAttrs')"
+                    />
+                  </el-form-item>
+                  <el-form-item
+                    v-show="cellForm.formsAttrs.valueType == '1'"
+                    label="校验规则"
+                  >
+                    <el-select
+                      v-model="cellForm.formsAttrs.textValidRule"
+                      style="width: 100%"
+                      placeholder="校验规则"
+                      size="small"
+                      :disabled="attrDisabled"
+                      @change="changeCellAttr('textValidRule','formsAttrs')"
+                    >
+                      <el-option label="无" value="0" />
+                      <el-option label="邮箱" value="1" />
+                      <el-option label="手机号" value="2" />
+                      <el-option label="座机号" value="3" />
+                      <el-option label="身份证" value="4" />
+                      <el-option label="自定义" value="99" />
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item
+                    v-show="
+                      cellForm.formsAttrs.textValidRule == '99' &&
+                        cellForm.formsAttrs.valueType == '1'
+                    "
+                    label="正则表达式"
+                    size="small"
+                  >
+                    <el-input
+                      v-model="cellForm.formsAttrs.regex"
+                      style="width: 140px"
+                      placeholder="正则表达式"
+                      :disabled="attrDisabled"
+                      @input="changeCellAttr('regex')"
+                    />
+                  </el-form-item>
+                  <el-form-item
+                    v-show="cellForm.formsAttrs.valueType == '2'"
+                    label="大小校验"
+                    size="small"
+                    class="df-form-item"
+                  >
+                    <el-switch
+                      v-model="cellForm.formsAttrs.numberRangeValid"
+                      active-text="是"
+                      inactive-text="否"
+                      :disabled="attrDisabled"
+                      @change="changeCellAttr('numberRangeValid','formsAttrs')"
+                    />
+                  </el-form-item>
+                  <el-form-item
+                    v-show="
+                      cellForm.formsAttrs.valueType == '2' && cellForm.formsAttrs.numberRangeValid
+                    "
+                    label="最小值"
+                    size="small"
+                  >
+                    <el-input
+                      v-model="cellForm.formsAttrs.minValue"
+                      style="width: 100%"
+                      placeholder="最小值"
+                      :disabled="attrDisabled"
+                      @input="changeCellAttr('minValue','formsAttrs')"
+                    />
+                  </el-form-item>
+                  <el-form-item
+                    v-show="
+                      cellForm.formsAttrs.valueType == '2' && cellForm.formsAttrs.numberRangeValid
+                    "
+                    label="最大值"
+                    size="small"
+                  >
+                    <el-input
+                      v-model="cellForm.formsAttrs.maxValue"
+                      style="width: 100%"
+                      placeholder="最大值"
+                      :disabled="attrDisabled"
+                      @input="changeCellAttr('maxValue','formsAttrs')"
+                    />
+                  </el-form-item>
+                  <el-form-item
+                    v-show="cellForm.formsAttrs.valueType == '2'"
+                    label="小数位数"
+                    size="small"
+                  >
+                    <el-input
+                      v-model="cellForm.formsAttrs.digit"
+                      style="width: 100%"
+                      placeholder="小数位数"
+                      :disabled="attrDisabled"
+                      @input="changeCellAttr('digit','formsAttrs')"
+                    />
+                  </el-form-item>
+                  <el-form-item
+                    v-show="cellForm.formsAttrs.valueType == '3'"
+                    label="格式"
+                    size="small"
+                  >
+                    <!-- <el-input v-model="cellForm.dateFormat" style="width:150px"  placeholder="日期格式" @input="changeCellAttr('dateFormat')"></el-input> -->
+                    <el-select
+                      v-model="cellForm.formsAttrs.dateFormat"
+                      style="width: 100%"
+                      placeholder="日期格式"
+                      size="small"
+                      :disabled="attrDisabled"
+                      @change="changeCellAttr('dateFormat','formsAttrs')"
+                    >
+                      <el-option label="年-月-日" value="yyyy-MM-dd" />
+                      <el-option label="年-月" value="yyyy-MM" />
+                      <el-option label="年" value="yyyy" />
+                      <el-option
+                        label="年-月-日 时:分:秒"
+                        value="yyyy-MM-dd HH:mm:ss"
+                      />
+                      <el-option
+                        label="年-月-日 时:分"
+                        value="yyyy-MM-dd HH:mm"
+                      />
+                      <el-option label="时:分:秒" value="HH:mm:ss" />
+                      <el-option label="时:分" value="HH:mm" />
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item
+                    v-show="cellForm.formsAttrs.valueType == '4'"
+                    label="数据源"
+                  >
+                    <el-select
+                      v-model="cellForm.formsAttrs.datasourceId"
+                      style="width: 100%"
+                      placeholder="数据源"
+                      size="small"
+                      :disabled="attrDisabled"
+                      @change="changeCellAttr('datasourceId','formsAttrs')"
+                    >
+                      <el-option
+                        v-for="op in dataSource"
+                        :key="op.datasourceId"
+                        :label="op.dataSourceName"
+                        :value="op.datasourceId"
+                      />
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item
+                    v-show="cellForm.formsAttrs.valueType == '4'"
+                    label="字典类型"
+                  >
+                    <el-select
+                      v-model="cellForm.formsAttrs.dictType"
+                      style="width: 100%"
+                      placeholder="字典类型"
+                      size="small"
+                      :disabled="attrDisabled"
+                      @change="changeCellAttr('dictType','formsAttrs')"
+                    >
+                      <el-option
+                        v-for="op in dictTypes"
+                        :key="op.id"
+                        :label="op.dictType"
+                        :value="op.dictType"
+                      />
+                    </el-select>
+                  </el-form-item>
+                </div>
+                <el-form-item
+                  label="与其他单元格比较"
+                  size="small"
+                  class="df-form-item"
+                >
+                  <el-switch
+                    v-model="cellForm.formsAttrs.otherCellCompare"
+                    active-text="是"
+                    inactive-text="否"
+                    :disabled="attrDisabled"
+                    @change="changeCellAttr('otherCellCompare','formsAttrs')"
+                  />
+                </el-form-item>
+                <div
+                  v-if="cellForm.formsAttrs.otherCellCompare"
+                  class="right-dataset-title df-c-b"
+                >
+                  <span class="attr-dataset-title">比较单元格</span>
+                  <el-button
+                    class="addBtn"
+                    :disabled="attrDisabled"
+                    @click="addCompareCells"
+                  ><i class="el-icon-plus el-icon--left" />添加</el-button>
+                </div>
+                <el-collapse
+                  v-if="
+                    cellForm.formsAttrs.otherCellCompare &&
+                      cellForm.formsAttrs.compareCells &&
+                      cellForm.formsAttrs.compareCells.length > 0
+                  "
+                  class="sub-collapse"
+                >
+                  <el-collapse-item
+                    v-for="(o, index) in cellForm.formsAttrs.compareCells"
+                    :key="index"
+                  >
+                    <template slot="title">
+                      比较单元格{{ index + 1 }}
+                      <div
+                        class="right-block-el-icon-edit"
+                        title="编辑"
+                        :disabled="attrDisabled"
+                        @click.stop="editCompareCell(o, index)"
+                      />
+                      <div
+                        class="right-el-icon-delete"
+                        title="删除"
+                        :disabled="attrDisabled"
+                        @click.stop="deleteCompareCell(index)"
+                      />
+                    </template>
+                    <p
+                      class="column-tag"
+                      :title="o.sheetName"
+                      style="min-width: 220px; max-width: 220px"
+                    >
+                      sheet名称：{{ o.sheetName }}
+                    </p>
+                    <p
+                      class="column-tag"
+                      style="min-width: 220px; max-width: 220px"
+                    >
+                      坐标：{{ o.coordinate }}
+                    </p>
+                    <p
+                      class="column-tag"
+                      style="min-width: 220px; max-width: 220px"
+                    >
+                      单元格类型：{{
+                        commonUtil.getDictionaryValueName(
+                          "cellType",
+                          o.cellType
+                        )
+                      }}
+                    </p>
+                    <p
+                      class="column-tag"
+                      style="min-width: 220px; max-width: 220px"
+                    >
+                      比较类型：{{ o.compareType }}
+                    </p>
+                  </el-collapse-item>
+                </el-collapse>
+              </el-collapse-item>
               <el-collapse-item title="分组小计链" name="groupSubtotal">
                 <div class="right-dataset-title df-c-b">
                   <span class="attr-dataset-title">分组小计链</span>
@@ -849,7 +1178,7 @@
                   </el-collapse-item>
                 </el-collapse>
               </el-collapse-item>
-
+              
               <el-collapse-item title="单元格过滤条件" name="cellFilter">
                 <div class="df" style="padding: 8px 0 16px 0">
                   <span class="cell-label">判断查询</span>
@@ -1716,7 +2045,7 @@
               </el-form-item>
               <el-form-item
                 v-if="
-                  paramForm.paramType == 'select' && paramForm.selectType == '2'
+                  (paramForm.paramType == 'select' || paramForm.paramType == 'mutiselect' || paramForm.paramType == 'treeSelect' || paramForm.paramType == 'multiTreeSelect') && (paramForm.selectType == '2' || paramForm.paramType == 'treeSelect' || paramForm.paramType == 'multiTreeSelect')
                 "
                 key="isRelyOnParams"
                 label="是否依赖其他参数"
@@ -1734,8 +2063,8 @@
               </el-form-item>
               <el-form-item
                 v-if="
-                  paramForm.paramType == 'select' &&
-                    paramForm.selectType == '2' &&
+                  (paramForm.paramType == 'select' || paramForm.paramType == 'mutiselect' || paramForm.paramType == 'treeSelect' || paramForm.paramType == 'multiTreeSelect') &&
+                    (paramForm.selectType == '2' || paramForm.paramType == 'treeSelect' || paramForm.paramType == 'multiTreeSelect') &&
                     paramForm.isRelyOnParams == '1'
                 "
                 key="relyOnParams"
@@ -3017,13 +3346,12 @@
     <el-drawer
       :title="authTitle"
       :visible.sync="addAuthVisiable"
-      width="650px"
-      height="80%"
       custom-class="handle-drawer"
       class="handle-drawer"
       :modal="true"
       :close-on-click-modal="false"
       @close="closeAddAuth"
+      size="100%"
     >
       <el-form
         ref="addAuthRef"
@@ -3075,6 +3403,7 @@
       custom-class="handle-drawer"
       class="handle-drawer"
       @close="closeAuthDialog"
+      size="100%"
     >
       <div v-if="authedRange && authedRange.length > 0" class="el-dialog-div">
         <div v-for="(item, index) in authedRange" :key="index">
@@ -3185,6 +3514,547 @@
           size="small"
           :loading="groupHandleLoading"
           @click="addOrEditGroup()"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog
+      title="单元格比较"
+      :visible.sync="cellCompareVisiable"
+      width="30%"
+      height="80%"
+      :close-on-click-modal="false"
+      @close="closeCompareCells"
+    >
+      <el-form
+        ref="compareRef"
+        :model="cellCompareForm"
+        class="demo-form-inline"
+        label-position="top"
+      >
+        <el-form-item
+          label="sheet名称"
+          prop="sheetName"
+          :rules="filter_rules('sheet名称', { required: true })"
+        >
+          <el-select
+            v-model="cellCompareForm.sheetName"
+            placeholder="sheet名称"
+            size="small"
+            @focus="onfocuseSheet"
+          >
+            <el-option
+              v-for="op in sheets"
+              :key="op.value"
+              :label="op.label"
+              :value="op.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          label="坐标"
+          prop="coordinate"
+          :rules="filter_rules('坐标', { required: true })"
+        >
+          <el-input
+            v-model="cellCompareForm.coordinate"
+            placeholder="坐标"
+            size="small"
+          />
+        </el-form-item>
+        <el-form-item
+          label="单元格类型"
+          prop="cellType"
+          :rules="filter_rules('单元格类型', { required: true })"
+        >
+          <el-select
+            v-model="cellCompareForm.cellType"
+            placeholder="单元格类型"
+            size="small"
+          >
+            <el-option
+              v-for="op in selectUtil.cellType"
+              :key="op.value"
+              :label="op.label"
+              :value="op.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          label="比较类型"
+          prop="compareType"
+          :rules="filter_rules('比较类型', { required: true })"
+        >
+          <el-select
+            v-model="cellCompareForm.compareType"
+            placeholder="比较类型"
+            size="small"
+          >
+            <el-option
+              v-for="op in selectUtil.operate"
+              :key="op.value"
+              :label="op.label"
+              :value="op.value"
+            />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="small" @click="closeCompareCells">取 消</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          @click="confirmAddCompareCells"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-drawer
+      title="填报属性"
+      :visible.sync="datasourceDialog"
+      size="100%"
+      :modal="false"
+      :modal-append-to-body="false"
+      custom-class="test"
+      :close-on-press-escape="false"
+      :wrapper-closable="false"
+      class="handle-drawer"
+      @close="closeDatasourceDialog"
+      style="border: 1px solid #eee;"
+    >
+      <div class="table-box df">
+        <div class="table-box-left">
+          <div class="table-header df-c-b">
+            <span class="attr-dataset-title">填报属性（{{ datasources.length }}）</span>
+            <el-button
+              class="addBtn"
+              @click="addDatasourceAttr"
+            ><i class="el-icon-plus el-icon--left" />添加</el-button>
+          </div>
+          <div class="table-body">
+            <div v-for="(o, index) in datasources" :key="index">
+              <div
+                class="df-c dataset-attr"
+                :class="o.isActive ? 'dataset-attr-active' : ''"
+                style="position: relative"
+              >
+                <span
+                  class="dataset-name2 overflow-text"
+                  :title="o.name"
+                  @click="clickAttrName(o, index)"
+                >{{ o.name }}</span>
+                <div class="action-box df-c">
+                  <div
+                    class="action action-edit"
+                    @click="editDatasourceAttr(o)"
+                  />
+                  <div
+                    class="action action-del"
+                    @click="deleteDatasourceAttr(index)"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="table-box-right">
+          <div v-show="datasourceAttr.name">
+            <el-form
+              :model="datasourceAttr"
+              class="table-form"
+              label-width="42px"
+              label-position="left"
+            >
+              <el-form-item label="数据源" prop="datasourceId">
+                <el-select
+                  v-model="datasourceAttr.datasourceId"
+                  style="width: 100%"
+                  placeholder="数据源"
+                  size="small"
+                  @change="getFormsDatabaseTables"
+                >
+                  <el-option
+                    v-for="op in dataSource"
+                    :key="op.datasourceId"
+                    :label="op.dataSourceName"
+                    :value="op.datasourceId"
+                  />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="表" prop="table">
+                <el-select
+                  v-model="datasourceAttr.table"
+                  style="width: 100%"
+                  placeholder="表"
+                  size="small"
+                  filterable
+                  @change="getFormsTableColumns"
+                >
+                  <el-option
+                    v-for="op in dataSourceTables"
+                    :key="op.value"
+                    :label="op.name"
+                    :value="op.value"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-form>
+
+            <div class="table-card">
+              <div class="table-header df-c">
+                <span class="attr-dataset-title">表属性单元格关联</span>
+                <el-button
+                  class="addBtn"
+                  @click="addDatasourceColumn"
+                ><i class="el-icon-plus el-icon--left" />添加</el-button>
+              </div>
+
+              <el-table
+                :data="datasourceAttr.tableDatas"
+                border
+                style="width: 100%"
+                align="center"
+                height="280"
+                size="small"
+                :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+              >
+                <el-table-column prop="columnName" label="列名" align="center" />
+                <el-table-column
+                  prop="cellCoords"
+                  label="单元格坐标"
+                  align="center"
+                />
+                <el-table-column label="操作" align="center">
+                  <template slot-scope="scope">
+                    <el-button
+                      type="text"
+                      size="small"
+                      @click="deleteDatasourceColumn(scope.$index)"
+                    >删除</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+
+            <div class="table-card" style="margin-top: 12px">
+              <div class="table-header df-c">
+                <span class="attr-dataset-title">表主键</span>
+                <el-button
+                  class="addBtn"
+                  @click="addDatasourceKey"
+                ><i class="el-icon-plus el-icon--left" />添加</el-button>
+              </div>
+              <el-table
+                :data="datasourceAttr.keys"
+                border
+                style="width: 100%"
+                height="200"
+                align="center"
+                size="small"
+                :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+              >
+                <el-table-column
+                  prop="columnName"
+                  label="主键属性"
+                  align="center"
+                />
+                <el-table-column prop="idType" label="主键规则" align="center">
+                  <template slot-scope="scope">
+                    <span>
+                      <span v-if="scope.row.idType == '1'">自定义填写</span>
+                      <span v-else-if="scope.row.idType == '2'">雪花算法</span>
+                      <span v-else>自增主键</span>
+                    </span>
+                  </template>
+                </el-table-column>
+                <el-table-column label="操作" align="center">
+                  <template slot-scope="scope">
+                    <el-button
+                      type="text"
+                      size="small"
+                      @click="deleteDatasourceKey(scope.$index)"
+                    >删除</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+            <div class="table-card" style="margin-top: 12px">
+              <div class="table-header df-c">
+                <span class="attr-dataset-title">自动填充字段</span>
+                <el-button
+                  class="addBtn"
+                  @click="addAutoFillAttr"
+                ><i class="el-icon-plus el-icon--left" />添加</el-button>
+              </div>
+              <el-table
+                :data="datasourceAttr.autoFillAttrs"
+                border
+                style="width: 100%"
+                height="200"
+                align="center"
+                size="small"
+                :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+              >
+                <el-table-column
+                  prop="columnName"
+                  label="列名"
+                  align="center"
+                />
+                <el-table-column prop="fillType" label="填充内容" align="center">
+                  <template slot-scope="scope">
+                    <span>
+                      <span v-if="scope.row.fillType == '1'">系统时间</span>
+                      <span v-else-if="scope.row.fillType == '2'">用户id</span>
+                      <span v-else-if="scope.row.fillType == '3'">用户名</span>
+                      <span v-else>商户号</span>
+                    </span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="fillStrategy" label="填充策略" align="center">
+                  <template slot-scope="scope">
+                    <span>
+                      <span v-if="scope.row.fillStrategy == '1'">插入数据</span>
+                      <span v-else-if="scope.row.fillStrategy == '2'">更新数据</span>
+                      <span v-else-if="scope.row.fillStrategy == '3'">插入/更新数据</span>
+                      <span v-else>商户号</span>
+                    </span>
+                  </template>
+                </el-table-column>
+                <el-table-column label="操作" align="center">
+                  <template slot-scope="scope">
+                    <el-button
+                      type="text"
+                      size="small"
+                      @click="deleteAutoFillAttr(scope.$index)"
+                    >删除</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="handle-drawer__footer">
+        <el-button size="small" @click="closeDatasourceDialog">取 消</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          @click="confirmAddDatasource"
+        >确 定</el-button>
+      </span>
+    </el-drawer>
+    <el-dialog
+      title="添加数据源绑定"
+      :visible.sync="datasourceAttrDialog"
+      width="30%"
+      height="80%"
+      :close-on-click-modal="false"
+      @close="closeDatasourceAttr"
+    >
+      <el-form
+        ref="datasourceAttrRef"
+        label-position="top"
+        :model="datasourceAttrForm"
+        class="demo-form-inline"
+      >
+        <el-form-item
+          label="绑定名称"
+          prop="name"
+          :rules="filter_rules('绑定名称', { required: true })"
+        >
+          <el-input
+            v-model="datasourceAttrForm.name"
+            placeholder="绑定名称"
+            size="small"
+          />
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="small" @click="closeDatasourceAttr">取 消</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          @click="confirmDatasourceAttr"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog
+      title="添加属性关联"
+      :visible.sync="datasourceColumnDialog"
+      width="30%"
+      height="80%"
+      :close-on-click-modal="false"
+      @close="closeDatasourceColumn"
+    >
+      <el-form
+        ref="datasourceColumnRef"
+        label-position="top"
+        :model="datasourceColumnForm"
+        class="demo-form-inline"
+      >
+        <el-form-item label="列名" prop="columnName">
+          <el-select
+            v-model="datasourceColumnForm.columnName"
+            style="width: 100%"
+            placeholder="列名"
+            size="small"
+            filterable
+            :rules="filter_rules('列名', { required: true })"
+          >
+            <el-option
+              v-for="op in tableColumns"
+              :key="op.columnName"
+              :label="op.columnName"
+              :value="op.columnName"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          label="单元格坐标"
+          prop="cellCoords"
+          :rules="filter_rules('单元格坐标', { required: true })"
+        >
+          <el-input
+            v-model="datasourceColumnForm.cellCoords"
+            placeholder="单元格坐标"
+            size="small"
+          />
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="small" @click="closeDatasourceColumn">取 消</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          @click="confirmDatasourceColumn"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog
+      title="添加主键"
+      :visible.sync="datasourceKeyDialog"
+      width="30%"
+      height="80%"
+      :close-on-click-modal="false"
+      @close="closeDatasourceKey"
+    >
+      <el-form
+        ref="datasourceKeyRef"
+        label-position="top"
+        :model="datasourceKeyForm"
+        class="demo-form-inline"
+      >
+        <el-form-item label="主键列名" prop="columnName">
+          <el-select
+            v-model="datasourceKeyForm.columnName"
+            style="width: 100%"
+            placeholder="列名"
+            filterable
+            size="small"
+            :rules="filter_rules('列名', { required: true })"
+          >
+            <el-option
+              v-for="op in tableColumns"
+              :key="op.columnName"
+              :label="op.columnName"
+              :value="op.columnName"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          label="主键生成规则"
+          prop="idType"
+          :rules="filter_rules('主键生成规则', { required: true })"
+        >
+          <el-select
+            v-model="datasourceKeyForm.idType"
+            style="width: 100%"
+            placeholder="主键生成规则"
+            size="small"
+          >
+            <el-option label="自定义填写" value="1" />
+            <el-option label="雪花算法" value="2" />
+            <el-option label="自增主键" value="3" />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="small" @click="closeDatasourceKey">取 消</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          @click="confirmDatasourceKey"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog
+      title="添加自动填充列"
+      :visible.sync="autoFillDialog"
+      width="30%"
+      height="80%"
+      :close-on-click-modal="false"
+      @close="closeAutoFillAttr"
+    >
+      <el-form
+        ref="autoFillRef"
+        label-position="top"
+        :model="autoFillForm"
+        class="demo-form-inline"
+      >
+        <el-form-item label="列名" prop="columnName" :rules="filter_rules('列名', { required: true })">
+          <el-select
+            v-model="autoFillForm.columnName"
+            style="width: 100%"
+            placeholder="列名"
+            filterable
+            size="small"
+          >
+            <el-option
+              v-for="op in tableColumns"
+              :key="op.columnName"
+              :label="op.columnName"
+              :value="op.columnName"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          label="填充类型"
+          prop="fillType"
+          :rules="filter_rules('填充类型', { required: true })"
+        >
+          <el-select
+            v-model="autoFillForm.fillType"
+            style="width: 100%"
+            placeholder="填充类型"
+            size="small"
+          >
+            <el-option label="系统时间" value="1" />
+            <el-option label="用户id" value="2" />
+            <el-option label="用户名" value="3" />
+            <el-option label="商户号" value="4" />
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          label="填充策略"
+          prop="fillType"
+          :rules="filter_rules('填充策略', { required: true })"
+        >
+          <el-select
+            v-model="autoFillForm.fillStrategy"
+            style="width: 100%"
+            placeholder="填充类型"
+            size="small"
+          >
+            <el-option label="插入数据" value="1" />
+            <el-option label="更新数据" value="2" />
+            <el-option label="插入/更新数据" value="3" />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="small" @click="closeAutoFillAttr">取 消</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          @click="confirmAutoFillAttr"
         >确 定</el-button>
       </span>
     </el-dialog>
@@ -4088,6 +4958,123 @@
   /*定义滚动条的宽度*/
   .config-box::-webkit-scrollbar {
     width: 0;
+  }
+}
+.cus-collapse-content {
+  border-radius: 4px;
+  border: 0.5px solid rgba(23, 183, 148, 0.1);
+  background: rgba(23, 183, 148, 0.05);
+  padding: 8px 10px;
+}
+::v-deep .handle-drawer{
+  width: 36%;
+  left: unset;
+  // border: 1px solid #eee;
+}
+::v-deep .handle-drawer .el-drawer__body {
+  // background-color: #f7f9fc;
+  padding: 8px 10px 52px !important;
+}
+.table-box {
+  .table-box-left {
+    width: 200px;
+    margin-right: 10px;
+    flex-shrink: 0;
+  }
+  .table-box-left {
+    .table-header {
+      border-radius: 6px 6px 0px 0px;
+      padding: 0px 8px 0px 16px;
+      height: 40px;
+      background: #fff;
+      /* border */
+      box-shadow: 0px -1px 0px 0px #eef2f5 inset;
+      border-bottom: #eef2f5;
+    }
+
+    .table-body {
+      padding: 8px 16px;
+      background: #fff;
+      border-radius: 0px 0px 6px 6px;
+      height: calc(100% - 56px);
+      &::-webkit-scrollbar {
+        width: 5px;
+      }
+      .dataset-attr {
+        padding: 7px 8px;
+        border-radius: 4px;
+        background: #f5f7fa;
+        margin-bottom: 8px;
+        cursor: pointer;
+
+        .dataset-name2 {
+          font-size: 12px;
+          color: #3c3c3c;
+          line-height: 18px; /* 150% */
+          flex: 1;
+          margin-right: 4px;
+        }
+
+        .action-box {
+          .action {
+            width: 18px;
+            height: 18px;
+            background-size: 100% 100%;
+          }
+          .action-edit {
+            background-image: url("~@/static/img/sheet/dataset-edit.png");
+            margin-right: 4px;
+          }
+          .action-del {
+            background-image: url("~@/static/img/sheet/dataset-del.png");
+          }
+        }
+      }
+      .dataset-attr:hover,
+      .dataset-attr-active {
+        background: $--color-primary;
+        .dataset-name2{
+          color: #fff;
+        }
+        .action-edit {
+          background-image: url("~@/static/img/sheet/dataset-edit-active.png") !important;
+        }
+        .action-del {
+          background-image: url("~@/static/img/sheet/dataset-del-active.png") !important;
+        }
+      }
+    }
+  }
+  .table-box-right {
+    width: calc(100% - 210px);
+    .table-form {
+      padding: 0 14px 0 26px;
+    }
+    ::v-deep .el-form-item {
+      display: flex;
+      align-items: center;
+      .el-form-item__content {
+        margin-left: 16px !important;
+        flex: 1;
+      }
+    }
+    ::v-deep .el-form-item__label {
+      color: #292e33 !important;
+      font-weight: normal !important;
+      line-height: 32px !important;
+      height: 32px !important;
+      margin-bottom: 0 !important;
+    }
+    .table-card {
+      padding: 18px 14px;
+      background: #fff;
+      .table-header {
+        margin-bottom: 24px;
+        .attr-dataset-title {
+          margin-right: 12px;
+        }
+      }
+    }
   }
 }
 </style>

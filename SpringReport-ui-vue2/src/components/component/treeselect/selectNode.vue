@@ -16,6 +16,7 @@
         @clear="removeSelectedNode"
         :size="size"
         @focus="selectFocus"
+        style="width:100%"
         >
         <el-option :value="valueModel" :label="labelModel" style="height: auto">
             <el-tree
@@ -31,6 +32,7 @@
             :current-node-key="value"
             :default-expanded-keys="expandedKeys"
             :check-strictly="true"
+            style="width:100%"
             >
             </el-tree>
         </el-option>
@@ -94,6 +96,11 @@
                 default: () => {},
             },
             item: {
+                type: Object,
+                default: () => ({
+                }),
+            },
+            data: {
                 type: Object,
                 default: () => ({
                 }),
@@ -179,7 +186,7 @@
                 this.$emit('change', null, null);
             },
             selectFocus(){
-                this.focusMethod(this.item);
+                this.focusMethod(this.item,this.data);
             },
         },
         

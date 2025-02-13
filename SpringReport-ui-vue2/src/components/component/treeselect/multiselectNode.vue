@@ -17,6 +17,7 @@
         :size="size"
         @focus="selectFocus"
         @clear="removeSelectedNode"
+        style="width:100%"
         >
         <el-option :value="valueModel"  style="height: auto">
             <el-tree
@@ -33,6 +34,7 @@
             :check-strictly="checkStrictly"
             :default-checked-keys="value"
             @check-change="handleCheckChange"
+            style="width:100%"
             >
             </el-tree>
         </el-option>
@@ -77,6 +79,11 @@
                 
             },
             item: {
+                type: Object,
+                default: () => ({
+                }),
+            },
+            data: {
                 type: Object,
                 default: () => ({
                 }),
@@ -169,7 +176,7 @@
                 this.$refs.tree.setCheckedKeys([]);
             },
             selectFocus(){
-                this.focusMethod(this.item);
+                this.focusMethod(this.item,this.data);
             }
         },
         

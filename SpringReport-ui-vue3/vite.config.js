@@ -110,13 +110,11 @@ export default defineConfig({
       strict: false,
     },
     proxy: {
-      '/api': {
+      '/SpringReport/api': {
         target: 'http://localhost:9099/springReport',
         changeOrigin: true,
         ws: true,
-        pathRewrite: {
-          '^/api': '/api'
-        }
+        rewrite: (path) => path.replace(/^\/SpringReport/, "")
       },
       '/geoJson': {
         target: 'https://www.springreport.vip/',

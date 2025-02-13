@@ -176,6 +176,7 @@ public class LuckysheetReportFormsHisServiceImpl extends ServiceImpl<LuckysheetR
 		if(reportDatas != null)
 		{
 			reportDatas.forEach((key, value) -> {
+				value.remove("isSRrowChanged");
 				LuckysheetReportFormsHis formsHis = new LuckysheetReportFormsHis();
 				formsHis.setTplId(tplId);
 				String sheetIndex = key.split("\\|")[0];

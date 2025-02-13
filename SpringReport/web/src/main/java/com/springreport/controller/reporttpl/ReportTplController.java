@@ -45,12 +45,12 @@ import com.springreport.enums.DelFlagEnum;
 import com.springreport.enums.RedisPrefixEnum;
 import com.springreport.enums.YesNoEnum;
 import com.springreport.exception.BizException;
-import com.springreport.util.JsonUtil;
 import com.springreport.util.MessageUtil;
 import com.springreport.util.Pako_GzipUtils;
 import com.springreport.util.RedisUtil;
 import com.springreport.util.StringUtil;
 
+import cn.hutool.json.JSONUtil;
 import net.sf.jsqlparser.JSQLParserException;
 
 import com.alibaba.fastjson.JSONArray;
@@ -302,7 +302,7 @@ public class ReportTplController extends BaseController {
 		Response response = new Response();
 		response.setCode("200");
 		response.setResponseData(result);
-		resultStr=JsonUtil.toJson(response);
+		resultStr=JSONUtil.toJsonStr(response);
 		try {
 	         byte dest[]= Pako_GzipUtils.compress2(resultStr);
 	         OutputStream out=httpServletResponse.getOutputStream();
@@ -375,7 +375,7 @@ public class ReportTplController extends BaseController {
 		Response response = new Response();
 		response.setCode("200");
 		response.setResponseData(result);
-		resultStr=JsonUtil.toJson(response);
+		resultStr=JSONUtil.toJsonStr(response);
 		try {
 	         byte dest[]= Pako_GzipUtils.compress2(resultStr);
 	         OutputStream out=httpServletResponse.getOutputStream();
@@ -949,7 +949,7 @@ public class ReportTplController extends BaseController {
 		Response response = new Response();
 		response.setCode("200");
 		response.setResponseData(result);
-		resultStr=JsonUtil.toJson(response);
+		resultStr=JSONUtil.toJsonStr(response);
 		try {
 	         byte dest[]= Pako_GzipUtils.compress2(resultStr);
 	         OutputStream out=httpServletResponse.getOutputStream();

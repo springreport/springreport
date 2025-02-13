@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
  /**  
 * @Description: report_forms_datasource_attrs - 填报绑定的数据源属性
 * @author 
-* @date 2022-11-17 11:15:22
+* @date 2025-02-01 11:26:01
 * @version V1.0  
  */
 @Data
@@ -39,7 +39,7 @@ public class ReportFormsDatasourceAttrs extends PageEntity {
     @TableField("report_forms_datasource_id")
     private Long reportFormsDatasourceId;
 
-    /** type - 列类型 1关联单元格列 2主键列 */
+    /** type - 列类型 1关联单元格列 2主键列 3 自动填充列 */
     @TableField("type")
     private Integer type;
 
@@ -72,7 +72,7 @@ public class ReportFormsDatasourceAttrs extends PageEntity {
     private Date createTime;
 
     /** updater - 更新人 */
-   @TableField(value = "updater",fill = FieldFill.INSERT_UPDATE)
+    @TableField(value = "updater",fill = FieldFill.INSERT_UPDATE)
     private Long updater;
 
     /** update_time - 更新时间 */
@@ -82,4 +82,12 @@ public class ReportFormsDatasourceAttrs extends PageEntity {
     /** del_flag - 删除标记 1未删除 2已删除 */
     @TableField("del_flag")
     private Integer delFlag;
+
+    /** fill_strategy - 填充策略 1 插入 2更新 3插入/更新数据 */
+    @TableField("fill_strategy")
+    private Integer fillStrategy;
+
+    /** fill_type - 填充类型 1系统时间 2用户id 3用户名 4商户号 */
+    @TableField("fill_type")
+    private Integer fillType;
 }

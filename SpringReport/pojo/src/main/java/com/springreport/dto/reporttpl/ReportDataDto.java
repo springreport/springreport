@@ -50,4 +50,11 @@ public class ReportDataDto {
 	 * @date 2023-07-26 08:14:10 
 	 */  
 	private JSONObject reCalculate;
+	
+	/**  
+	 * @Fields autoFillAttrs : 自动填充属性
+	 * @author caiyang
+	 * @date 2025-02-05 09:15:01 
+	 */  
+	private JSONObject autoFillAttrs;
 }

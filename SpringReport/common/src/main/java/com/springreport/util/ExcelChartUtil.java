@@ -750,6 +750,9 @@ public class ExcelChartUtil {
     
     public static List<JSONArray> groupChartData(JSONObject chartOptions) {
     	List<JSONArray> result = new ArrayList<>();
+    	if(chartOptions.getJSONObject("defaultOption") == null || chartOptions.getJSONObject("defaultOption").getJSONObject("spec") == null) {
+    		return result;
+    	}
     	JSONArray values = chartOptions.getJSONObject("defaultOption").getJSONObject("spec").getJSONObject("data").getJSONArray("values");
     	boolean rangeConfigCheck = chartOptions.getBooleanValue("rangeConfigCheck");
     	if(ListUtil.isNotEmpty(values)) {

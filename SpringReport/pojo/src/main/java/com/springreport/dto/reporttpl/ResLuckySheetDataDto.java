@@ -124,7 +124,7 @@ public class ResLuckySheetDataDto {
 	 * @author caiyang
 	 * @date 2022-11-22 02:11:37 
 	 */  
-	private Map<String, JSONObject> cellDatasourceConfig;
+	private List<Map<String, JSONObject>> cellDatasourceConfigs;
 	
 	/**  
 	 * @Fields tableKeys : 表格主键
@@ -286,6 +286,13 @@ public class ResLuckySheetDataDto {
      * @date 2024-09-06 09:09:37 
      */  
     private JSONArray wrapDatas;
+    
+    /**  
+     * @Fields autoFillAttrs : 自动填充属性
+     * @author caiyang
+     * @date 2025-02-05 08:50:22 
+     */  
+    private Map<String, JSONObject> autoFillAttrs;
 
 	public Map<String, Integer> getMaxXAndY() {
 		if(maxXAndY == null)

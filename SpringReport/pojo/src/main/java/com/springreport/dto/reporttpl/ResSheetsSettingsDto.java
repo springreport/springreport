@@ -67,4 +67,11 @@ public class ResSheetsSettingsDto {
      */  
     private Integer isThirdParty = YesNoEnum.NO.getCode();
     
+    /**  
+     * @Fields tplType : 报表类型 1展示报表 2填报报表
+     * @author caiyang
+     * @date 2025-01-25 12:02:43 
+     */  
+    private Integer tplType = 1;
+    
 }

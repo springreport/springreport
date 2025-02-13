@@ -364,6 +364,35 @@ commonConstants.systemParam = [
 ]
 commonConstants.attachPreviewExt = ["xlsx","docx","pdf","json","csv"];
 
+
+commonConstants.imgObj = {
+	"type": "1",
+	"src": "",
+	"originWidth": 300,
+	"originHeight": 200,
+	"default": {
+		"width": 74,
+		"height": 20,
+		"left": 74,
+		"top": 100
+	},
+	"crop": {
+		"width": 74,
+		"height": 20,
+		"offsetLeft": 0,
+		"offsetTop": 0
+	},
+	"isFixedPos": false,
+	"fixedLeft": 120,
+	"fixedTop": 190,
+	"border": {
+		"width": 0,
+		"radius": 0,
+		"style": "solid",
+		"color": "#000"
+	}
+}
+
 //项目的路由
 commonConstants.routers = [
   {

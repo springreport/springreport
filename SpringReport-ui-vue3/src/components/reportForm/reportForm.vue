@@ -201,11 +201,32 @@
                   </el-select>
                   <!-- 多选下拉框 -->
                   <el-select
-                    v-if="item.paramType === 'mutiselect' || item.componentType === 'mutiselect'"
+                    v-if="(item.paramType === 'mutiselect' || item.componentType === 'mutiselect') &&
+                        item.isRelyOnParams !== 1"
                     v-model="searchData.params[i].params[index][item.paramCode]"
                     :size="item.size"
                     :multiple="true"
                     @focus="getSelectData(item)"
+                    clearable
+                  >
+                    <el-option
+                      v-for="op in item.selectData"
+                      :label="op.name"
+                      :value="op.value"
+                      :key="op.value"
+                    ></el-option>
+                  </el-select>
+                  <el-select
+                    v-if="(item.paramType === 'mutiselect' || item.componentType === 'mutiselect') &&
+                        item.isRelyOnParams === 1"
+                    v-model="searchData.params[i].params[index][item.paramCode]"
+                    :size="item.size"
+                    :multiple="true"
+                    @focus="getRelyOnParamys(
+                        item,
+                        searchData.params[i],
+                        searchData.params[i].params[index])"
+                    clearable
                   >
                     <el-option
                       v-for="op in item.selectData"
@@ -258,7 +279,7 @@
                     check-on-click-node
                     :check-strictly="item.checkStrictly == 1 ? false : true"
                     clearable
-                    @focus="getTreeData(item)"
+                    @focus="getTreeData(item,searchData.params[i])"
                   />
                   <el-tree-select
                     v-if="item.paramType === 'treeSelect' || item.componentType === 'treeSelect'"
@@ -268,7 +289,7 @@
                     :props="{ parent: 'pid', label: 'name', children: 'children' }"
                     clearable
                     :check-strictly="true"
-                    @focus="getTreeData(item)"
+                    @focus="getTreeData(item,searchData.params[i])"
                   />
                 </el-form-item>
                 <el-form-item>
@@ -365,11 +386,31 @@
                 </el-select>
                 <!-- 多选下拉框 -->
                 <el-select
-                  v-if="item.paramType === 'mutiselect' || item.componentType === 'mutiselect'"
+                  v-if="(item.paramType === 'mutiselect' || item.componentType === 'mutiselect') &&
+                      item.isRelyOnParams !== 1"
                   v-model="searchData.params[0].params[index][item.paramCode]"
                   :size="item.size"
                   :multiple="true"
                   @focus="getSelectData(item)"
+                >
+                  <el-option
+                    v-for="op in item.selectData"
+                    :label="op.name"
+                    :value="op.value"
+                    :key="op.value"
+                  ></el-option>
+                </el-select>
+                <el-select
+                  v-if="(item.paramType === 'mutiselect' || item.componentType === 'mutiselect') &&
+                      item.isRelyOnParams === 1"
+                  v-model="searchData.params[0].params[index][item.paramCode]"
+                  :size="item.size"
+                  :multiple="true"
+                  @focus="getRelyOnParamys(
+                      item,
+                      searchData.params[0],
+                      searchData.params[0].params[index]
+                    )"
                 >
                   <el-option
                     v-for="op in item.selectData"
@@ -421,7 +462,7 @@
                   check-on-click-node
                   :check-strictly="item.checkStrictly == 1 ? false : true"
                   clearable
-                  @focus="getTreeData(item)"
+                  @focus="getTreeData(item,searchData.params[0])"
                 />
                 <el-tree-select
                   v-if="item.paramType === 'treeSelect' || item.componentType === 'treeSelect'"
@@ -431,7 +472,7 @@
                   :props="{ parent: 'pid', label: 'name', children: 'children' }"
                   clearable
                   :check-strictly="true"
-                  @focus="getTreeData(item)"
+                  @focus="getTreeData(item,searchData.params[0])"
                 />
               </el-form-item>
             </div>
@@ -637,7 +678,7 @@
         });
       },
       getRelyOnParamys(item, data, modelData) {
-        var relyOnValue = '';
+        var relyOnValue = null;
         for (let index = 0; index < data.params.length; index++) {
           const element = data.params[index];
           if (element.hasOwnProperty(item.relyOnParams)) {
@@ -700,13 +741,24 @@
           }
         }
       },
-      getTreeData(item) {
-        if (!item.init) {
+      getTreeData(item,data) {
+        console.log(1)
+        if (!item.init || item.isRelyOnParams == 1) {
           var params = {
             selectContent: item.selectContent,
             datasourceId: item.datasourceId,
             params: {},
           };
+          if(item.isRelyOnParams == 1){
+            var relyOnValue = null;
+            for (let index = 0; index < data.params.length; index++) {
+              const element = data.params[index]
+              if (element.hasOwnProperty(item.relyOnParams)) {
+                relyOnValue = element[item.relyOnParams]
+              }
+            }
+            params.params[item.relyOnParams] = relyOnValue
+          }
           var obj = {
             url: '/api/reportTplDataset/getTreeSelectData',
             params: params,

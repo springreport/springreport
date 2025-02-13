@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
  /**  
 * @Description: luckysheet_report_cell - 
 * @author 
-* @date 2024-01-27 11:01:12
+* @date 2025-01-24 08:15:17
 * @version V1.0  
  */
 @Data
@@ -298,8 +298,12 @@ public class LuckysheetReportCell extends PageEntity {
     /** subtotal_attrs - 小计属性 */
     @TableField("subtotal_attrs")
     private String subtotalAttrs;
-    
+
     /** cell_fill_type - 数据填充方式 1插入 2覆盖 */
     @TableField("cell_fill_type")
     private Integer cellFillType;
+
+    /** forms_attrs - 填报属性配置 */
+    @TableField("forms_attrs")
+    private String formsAttrs;
 }

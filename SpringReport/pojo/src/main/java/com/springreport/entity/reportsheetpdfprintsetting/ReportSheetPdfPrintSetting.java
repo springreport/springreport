@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
  /**  
 * @Description: report_sheet_pdf_print_setting - 
 * @author 
-* @date 2024-12-27 05:32:06
+* @date 2025-02-10 02:03:13
 * @version V1.0  
  */
 @Data
@@ -130,4 +130,24 @@ public class ReportSheetPdfPrintSetting extends PageEntity {
     /** fixed_header_end - 固定表头结束行 */
     @TableField("fixed_header_end")
     private Integer fixedHeaderEnd;
+
+    /** custom_margin - 自定义页边距 1是 2否 */
+    @TableField("custom_margin")
+    private Integer customMargin;
+
+    /** left_margin - 左边距 */
+    @TableField("left_margin")
+    private Integer leftMargin;
+
+    /** right_margin - 右边距 */
+    @TableField("right_margin")
+    private Integer rightMargin;
+
+    /** top_margin - 上边距 */
+    @TableField("top_margin")
+    private Integer topMargin;
+
+    /** bottom_margin - 下边距 */
+    @TableField("bottom_margin")
+    private Integer bottomMargin;
 }

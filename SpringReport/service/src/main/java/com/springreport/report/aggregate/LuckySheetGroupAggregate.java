@@ -161,6 +161,7 @@ public class LuckySheetGroupAggregate extends Aggregate<LuckysheetReportCell,Luc
 							}
 						}
 					}
+					bindDatas = datas;
 					bindData.setDatas(datas);
 					if(bindData.getIsConditions().intValue() == YesNoEnum.NO.getCode().intValue()) {
 						filterDatas = datas;

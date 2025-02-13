@@ -38,10 +38,52 @@ export default {
   },
   data() {
     return {
+      autoFillDialog:false,
+      autoFillForm: {
+        columnName: '', // 数据列
+        fillType: '',// 1 系统时间 2用户id 3用户名 4商户号 
+        fillStrategy:'',//1 插入 2更新 3插入更新
+      },
+      tplType:1,
+      sheetDatasource: {}, // sheet填报属性
+      datasources: [],
+      datasourceAttr: {
+        name: '', // 名称
+        datasourceId: '', // 数据源id
+        table: '', // 表名
+        keys: [], // 主键
+        tableDatas: [],// 属性对应关系
+        autoFillAttrs:[],//自动填充列
+      },
+      datasourceDialog: false,
+      datasourceAttrDialog: false,
+      isEditDatasourceAttr: false,
+      datasourceAttrForm: {
+        name: ''
+      },
+      datasourceColumnDialog: false,
+      datasourceColumnForm: {
+        columnName: '', // 数据列
+        cellCoords: ''// 单元格坐标
+      },
+      datasourceKeyDialog: false,
+      datasourceKeyForm: {
+        columnName: '', // 数据列
+        idType: ''// 1 自定义填写 2雪花算法 3自增主键
+      },
+      sheets:[],
+      cellCompareVisiable:false,
+      cellCompareForm: {
+        sheetName: '',
+        coordinate: '',
+        cellType: '',
+        compareType: '',
+        index: null
+      },
       isThirdParty:2,//是否第三方iframe调用
       rightOpen: true, // 左侧展开
       leftOpen: true, // 右侧展开
-      rightFormCollapse: ['generalConfig', 'subtotalCells', 'subtotalAttribute', 'groupSubtotal', 'cellFilter', 'cellHide'],
+      rightFormCollapse: ['generalConfig', 'subtotalCells', 'subtotalAttribute', 'groupSubtotal', 'cellFilter', 'cellHide','fillSettings'],
       rightFormCollapse2: ['generalConfig', 'sheetBlock'],
       groupSetVisible: false, // 分组设置弹框
       groupList: [],
@@ -253,6 +295,26 @@ export default {
         subTotalCalc: [], // 小计分组链
         subTotalAttrs: [],// 小计属性
         cellFillType:1,//数据填充方式 1插入 2覆盖
+        formsAttrs:{
+          valueType: '1', // 值类型 1文本 2数值 3日期 4下拉单选
+          require: false, // 必填项
+          lengthValid: false, // 长度校验
+          minLength: null, // 最小长度
+          maxLength: null, // 最大长度
+          textValidRule: '0', // 文本校验规则 0无 1邮箱 2手机号 3座机号 4身份证 99自定义
+          regex: '', // 自定义正则表达式
+          numberRangeValid: false, // 数值大小校验
+          minValue: null, // 最小值
+          maxValue: null, // 最大值
+          digit: '0', // 小数位数
+          dateFormat: 'yyyy-MM-dd', // 日期格式
+          datasourceId: '', // 下拉选择数据源
+          dictType: '', // 数据字典类型
+          allowEdit: true, // 是否允许编辑
+          otherCellCompare: false,
+          cellType: '1',
+          compareCells: [],
+        },//填报配置
       },
       delSheetsIndex: [], // 删除的sheet index
       xAxisVisiable: false,
@@ -420,6 +482,7 @@ export default {
           editVChart: this.editVChart,
           activeVChart: this.activeVChart,
           afterInitImg:this.afterInitImg,
+          datasourceClick: this.datasourceClick,
         }
       },
       settingModalConfig: {
@@ -449,6 +512,11 @@ export default {
         { type: 'Select', label: '固定表头', prop: 'fixedHeader', rules: { required: true }, options: this.selectUtil.yesNo, change: this.changeFixedHeader },
         { type: 'Input', label: '固定表头起始行', prop: 'fixedHeaderStart', rules: { required: true,type:'positiveInt'}},
         { type: 'Input', label: '固定表头结束行', prop: 'fixedHeaderEnd', rules: { required: true ,type:'positiveInt'}},
+        { type: 'Select', label: '自定义页边距', prop: 'customMargin', rules: { required: true }, options: this.selectUtil.yesNo, change: this.changeCustomMargin },
+        { type: 'Input', label: '左边距', prop: 'leftMargin', rules: { required: true,type:'positiveInt'}},
+        { type: 'Input', label: '右边距', prop: 'rightMargin', rules: { required: true ,type:'positiveInt'}},
+        { type: 'Input', label: '上边距', prop: 'topMargin', rules: { required: true,type:'positiveInt'}},
+        { type: 'Input', label: '下边距', prop: 'bottomMargin', rules: { required: true ,type:'positiveInt'}},
       ],
       settingFormData: {
         pageType: null, // 纸张类型
@@ -468,7 +536,12 @@ export default {
         horizontalPageColumn: null,
         fixedHeader:null,
         fixedHeaderStart:null,
-        fixedHeaderEnd:null
+        fixedHeaderEnd:null,
+        customMargin:null,
+        leftMargin:null,
+        rightMargin:null,
+        topMargin:null,
+        bottomMargin:null,
       },
       defaultSettingFormData: {
         pageType: 2, // 纸张类型
@@ -485,7 +558,15 @@ export default {
         pageShow: 1,
         pagePosition: 2,
         horizontalPage: 2,
-        horizontalPageColumn: ''
+        horizontalPageColumn: '',
+        fixedHeader:null,
+        fixedHeaderStart:null,
+        fixedHeaderEnd:null,
+        customMargin:null,
+        leftMargin:null,
+        rightMargin:null,
+        topMargin:null,
+        bottomMargin:null,
       },
       // modal 数据 end
       // modal 按钮 start
@@ -677,6 +758,9 @@ export default {
       const reportTplId = this.$route.query.tplId// reportTplId
       var options = this.sheetOptions
       options.isReport = true
+      if(this.tplType != 1){
+        this.sheetOptions.showtoolbarConfig.datasource = true;
+      }
       if(this.isThirdParty != 1){
         options.allowUpdate = true
         options.gridKey = 'designMode-' + reportTplId
@@ -810,6 +894,11 @@ export default {
         } else {
           // this.getDrillReport();
         }
+        if(cellFormData.formsAttrs){
+          this.cellForm.formsAttrs = cellFormData.formsAttrs;
+        }else{
+          this.cellForm.formsAttrs = {};
+        }
       } else {
         this.cellForm.cellExtend = 1
         this.cellForm.aggregateType = 'list'
@@ -845,6 +934,7 @@ export default {
         this.cellForm.subTotalCalc = []
         this.cellForm.subTotalAttrs = []
         this.cellForm.cellFillType = 1
+        this.cellForm.formsAttrs = {};
         // this.getDrillReport();
       }
       if (this.cellForm.datasourceId) {
@@ -1441,7 +1531,7 @@ export default {
               paramRequired: this.paramForm.paramRequired,
               selectType: this.paramForm.selectType,
               selectContent: this.paramForm.selectContent,
-              isRelyOnParams: this.paramForm.isRelyOnParams == '' ? '2' : this.paramForm.isRelyOnParam,
+              isRelyOnParams: this.paramForm.isRelyOnParams ? '2' : this.paramForm.isRelyOnParam,
               relyOnParams: this.paramForm.relyOnParams,
               paramHidden: this.paramForm.paramHidden,
               checkStrictly: this.paramForm.checkStrictly == '' ? '' : this.paramForm.checkStrictly,
@@ -1755,6 +1845,7 @@ export default {
             cellDatas = cellDatas.concat(borderCellDatas)
             var dataVerificationCells = this.getEmptyDataVerificationCells(configs.dataVerification, cellDatas)
             cellDatas = cellDatas.concat(dataVerificationCells)
+            var datasourceConfig = this.getDatasourceConfig(luckysheetfile.index)
             if (cellDatas && cellDatas.length > 0) {
               var sheetCellFormats = this.cellFormats[luckysheetfile.index]
               if (sheetCellFormats) {
@@ -1823,6 +1914,7 @@ export default {
             configs.chartXaxisData = chartXaxisData
             configs.chartCells = chartCells
             configs.xxbtScreenShot = xxbtScreenShot
+            configs.datasourceConfig = datasourceConfig
             var printSettings = this.sheetPrintSettings[luckysheetfiles[index].index]
             if (printSettings) {
               configs.printSettings = printSettings
@@ -2295,6 +2387,7 @@ export default {
             _this.sheetOptions.data = []
             _this.tplName = response.responseData.tplName
             document.title = response.responseData.tplName
+            _this.tplType = response.responseData.tplType;
             _this.sheetRangeAuth = response.responseData.sheetRangeAuth
             _this.isCreator = response.responseData.creator
             _this.creatorName = response.responseData.creatorName
@@ -2352,7 +2445,16 @@ export default {
                   _this.chartxAxisData = element.chartXaxisData
                 }
               }
+              if (element.datasourceConfig && element.datasourceConfig.length > 0) {
+                this.sheetDatasource[element.sheetIndex] = element.datasourceConfig
+              }
               if (element.reportSheetPdfPrintSetting) {
+                element.reportSheetPdfPrintSetting.fixedHeaderEnd = element.reportSheetPdfPrintSetting.fixedHeaderEnd + '';
+                element.reportSheetPdfPrintSetting.fixedHeaderStart = element.reportSheetPdfPrintSetting.fixedHeaderStart + '';
+                element.reportSheetPdfPrintSetting.leftMargin = element.reportSheetPdfPrintSetting.leftMargin + '';
+                element.reportSheetPdfPrintSetting.rightMargin = element.reportSheetPdfPrintSetting.rightMargin + '';
+                element.reportSheetPdfPrintSetting.topMargin = element.reportSheetPdfPrintSetting.topMargin + '';
+                element.reportSheetPdfPrintSetting.bottomMargin = element.reportSheetPdfPrintSetting.bottomMargin + '';
                 _this.sheetPrintSettings[element.sheetIndex] = element.reportSheetPdfPrintSetting
               }
             }
@@ -2856,30 +2958,45 @@ export default {
       }
     },
     //
-    changeCellAttr(attr) {
+    changeCellAttr(attr,attr2) {
       var cells = this.getSelectRangeCells()
       if (cells && cells.length > 0) {
         for (let index = 0; index < cells.length; index++) {
           const element = cells[index]
           var obj = this.getExtraCustomCellConfigs(element[0], element[1])
           if (obj) {
-            obj[attr] = this.cellForm[attr]
+            if(attr2){
+              if(!obj[attr2]){
+                obj[attr2] = {};
+              }
+              obj[attr2][attr] = this.cellForm[attr2][attr]
+            }else{
+              obj[attr] = this.cellForm[attr]
+            }
           } else {
             obj = {}
-            obj[attr] = this.cellForm[attr]
+            if(attr2){
+              obj[attr2] = {};
+              if(!this.cellForm[attr2]){
+                this.cellForm[attr2] = {};
+              }
+              obj[attr2][attr] = this.cellForm[attr2][attr]
+            }else{
+              obj[attr] = this.cellForm[attr]
+            }
           }
           this.setExtraCustomCellConfigs(element[0], element[1], obj)
         }
         var obj = {
           cells: cells,
-          value: this.cellForm[attr]
+          value: attr2?this.cellForm[attr2][attr]:this.cellForm[attr]
         }
         const sheetIndex = luckysheet.getSheet().index
-        luckysheet.sendServerMsg('reportDesign', sheetIndex, obj, { 'k': attr })
+        luckysheet.sendServerMsg('reportDesign', sheetIndex, obj, { 'k': attr2?(attr2+"_"+attr):attr })
         this.saveTplCache()
       }
       if (attr == 'datasourceId') {
-        this.getDatasourceAttr()
+        this.getDatasourceAttr(attr2)
       } else if (attr == 'isDrill') {
         if (this.cellForm[attr]) {
           this.getDrillReport()
@@ -2887,10 +3004,10 @@ export default {
       }
     },
     // 获取数据源的数据字典类型
-    getDatasourceAttr() {
+    getDatasourceAttr(attr2) {
       const obj = {
         url: this.apis.reportDatasourceDictType.getDatasourceDictTypesApi,
-        params: { datasourceId: this.cellForm.datasourceId },
+        params: { datasourceId: attr2=='formsAttrs'?this.cellForm.formsAttrs.datasourceId:this.cellForm.datasourceId},
         removeEmpty: false
       }
       this.commonUtil.doPost(obj).then(response => {
@@ -3405,6 +3522,11 @@ export default {
           printSettings.fixedHeader = that.settingFormData.fixedHeader
           printSettings.fixedHeaderStart = that.settingFormData.fixedHeaderStart
           printSettings.fixedHeaderEnd = that.settingFormData.fixedHeaderEnd
+          printSettings.customMargin = that.settingFormData.customMargin
+          printSettings.leftMargin = that.settingFormData.leftMargin
+          printSettings.rightMargin = that.settingFormData.rightMargin
+          printSettings.topMargin = that.settingFormData.topMargin
+          printSettings.bottomMargin = that.settingFormData.bottomMargin
           if (printSettings.horizontalPage == 1) {
             luckysheet.addLuckysheetDivider(printSettings.horizontalPageColumn)
           } else {
@@ -3520,161 +3642,229 @@ export default {
       }
     },
     changeReportAttr(data) {
-      const k = data.k
-      const sheetIndex = data.i
-      const currentIndex = luckysheet.getSheet().index
-      const v = data.v
-      const cells = v.cells
-      const value = v.value
-      if (k == 'isParamMerge') { // 参数合并
-        this.isParamMerge = value
-      } else if (k == 'addBlock') { // 添加循环块
+      let k = data.k;
+      let k2 = null;
+      if(data.k.indexOf("_")>=0){
+        k = data.k.split("_")[1];
+        k2 =  data.k.split("_")[0];
+      }
+      let sheetIndex = data.i;
+      const currentIndex = luckysheet.getSheet().index;
+      let v = data.v;
+      let cells = v.cells;
+      let value = v.value;
+      if ('isParamMerge' == k) {
+        //参数合并
+        this.isParamMerge = value;
+      } else if ('addBlock' == k) {
+        //添加循环块
         if (!this.blockData[sheetIndex]) {
-          this.blockData[sheetIndex] = []
+          this.blockData[sheetIndex] = [];
         }
-        this.blockData[sheetIndex].push(value)
+        this.blockData[sheetIndex].push(value);
         if (currentIndex == sheetIndex) {
-          this.sheetBlockData = this.blockData[sheetIndex]
+          this.sheetBlockData = this.blockData[sheetIndex];
         }
-      } else if (k == 'editBlock') { // 编辑循环块
-        const index = value.index
-        delete value['index']
-        this.$set(this.blockData[sheetIndex], index, value)
+      } else if ('editBlock' == k) {
+        //编辑循环块
+        let index = value.index;
+        delete value['index'];
+        this.blockData[sheetIndex][index] = value;
+        // this.$set(this.blockData[sheetIndex],index,value);
         if (currentIndex == sheetIndex) {
-          this.sheetBlockData = this.blockData[sheetIndex]
+          this.sheetBlockData = this.blockData[sheetIndex];
         }
-      } else if (k == 'deleteBlock') {
-        this.blockData[sheetIndex].splice(value, 1)
+      } else if ('deleteBlock' == k) {
+        this.blockData[sheetIndex].splice(value, 1);
         if (currentIndex == sheetIndex) {
-          this.sheetBlockData = this.blockData[sheetIndex]
+          this.sheetBlockData = this.blockData[sheetIndex];
         }
-      } else if (k == 'addXaxis') {
-        this.getSheetCharts()
-        // 添加x轴坐标
+      } else if ('addXaxis' == k) {
+        this.getSheetCharts();
+        //添加x轴坐标
         if (!this.sheetChartxAxisDatas[sheetIndex]) {
-          this.sheetChartxAxisDatas[sheetIndex] = []
+          this.sheetChartxAxisDatas[sheetIndex] = [];
         }
-        this.sheetChartxAxisDatas[sheetIndex].push(value)
+        this.sheetChartxAxisDatas[sheetIndex].push(value);
         if (currentIndex == sheetIndex) {
-          this.chartxAxisData = this.sheetChartxAxisDatas[sheetIndex]
+          this.chartxAxisData = this.sheetChartxAxisDatas[sheetIndex];
         }
-      } else if (k == 'editXaxis') {
-        this.getSheetCharts()
-        // 修改x轴坐标
-        const index = value.index
-        delete value['index']
-        this.$set(this.sheetChartxAxisDatas[sheetIndex], index, value)
+      } else if ('editXaxis' == k) {
+        this.getSheetCharts();
+        //修改x轴坐标
+        let index = value.index;
+        delete value['index'];
+        this.sheetChartxAxisDatas[sheetIndex][index] = value;
+        // this.$set(this.sheetChartxAxisDatas[sheetIndex],index,value);
         if (currentIndex == sheetIndex) {
-          this.chartxAxisData = this.sheetChartxAxisDatas[sheetIndex]
+          this.chartxAxisData = this.sheetChartxAxisDatas[sheetIndex];
         }
-      } else if (k == 'deletexAxis') {
-        // 删除x轴数据
-        this.sheetChartxAxisDatas[sheetIndex].splice(value, 1)
+      } else if ('deletexAxis' == k) {
+        //删除x轴数据
+        this.sheetChartxAxisDatas[sheetIndex].splice(value, 1);
         if (currentIndex == sheetIndex) {
-          this.chartxAxisData = this.sheetChartxAxisDatas[sheetIndex]
+          this.chartxAxisData = this.sheetChartxAxisDatas[sheetIndex];
         }
-      } else if (k == 'printSettings') {
-        // 打印设置
-        var printSettings = this.sheetPrintSettings[sheetIndex]
+      } else if ('printSettings' == k) {
+        //打印设置
+        var printSettings = this.sheetPrintSettings[sheetIndex];
         if (!printSettings) {
-          printSettings = {}
-          this.sheetPrintSettings[sheetIndex] = printSettings
+          printSettings = {};
+          this.sheetPrintSettings[sheetIndex] = printSettings;
         }
-        printSettings.pageType = value.pageType
-        printSettings.pageLayout = value.pageLayout
-        printSettings.pageHeaderShow = value.pageHeaderShow
-        printSettings.pageHeaderContent = value.pageHeaderContent
-        printSettings.pageHeaderPosition = value.pageHeaderPosition
-        printSettings.waterMarkShow = value.waterMarkShow
-        printSettings.waterMarkType = value.waterMarkType
-        printSettings.waterMarkContent = value.waterMarkContent
-        printSettings.waterMarkImg = value.waterMarkImg
-        printSettings.waterMarkOpacity = value.waterMarkOpacity
-        printSettings.pageShow = value.pageShow
-        printSettings.pagePosition = value.pagePosition
-        printSettings.horizontalPage = value.horizontalPage
-        printSettings.horizontalPageColumn = value.horizontalPageColumn
+        printSettings.pageType = value.pageType;
+        printSettings.pageLayout = value.pageLayout;
+        printSettings.pageHeaderShow = value.pageHeaderShow;
+        printSettings.pageHeaderContent = value.pageHeaderContent;
+        printSettings.pageHeaderPosition = value.pageHeaderPosition;
+        printSettings.waterMarkShow = value.waterMarkShow;
+        printSettings.waterMarkType = value.waterMarkType;
+        printSettings.waterMarkContent = value.waterMarkContent;
+        printSettings.waterMarkImg = value.waterMarkImg;
+        printSettings.waterMarkOpacity = value.waterMarkOpacity;
+        printSettings.pageShow = value.pageShow;
+        printSettings.pagePosition = value.pagePosition;
+        printSettings.horizontalPage = value.horizontalPage;
+        printSettings.horizontalPageColumn = value.horizontalPageColumn;
         if (currentIndex == sheetIndex && this.settingModalConfig.show) {
-          this.settingFormData.pageType = value.pageType
-          this.settingFormData.pageLayout = value.pageLayout
-          this.settingFormData.pageHeaderShow = value.pageHeaderShow
-          this.settingFormData.pageHeaderContent = value.pageHeaderContent
-          this.settingFormData.pageHeaderPosition = value.pageHeaderPosition
-          this.settingFormData.waterMarkShow = value.waterMarkShow
-          this.settingFormData.waterMarkType = value.waterMarkType
-          this.settingFormData.waterMarkContent = value.waterMarkContent
-          this.settingFormData.waterMarkImg = value.waterMarkImg
-          this.settingFormData.waterMarkOpacity = value.waterMarkOpacity
-          this.settingFormData.pageShow = value.pageShow
-          this.settingFormData.pagePosition = value.pagePosition
-          this.settingFormData.horizontalPage = value.horizontalPage
-          this.settingFormData.horizontalPageColumn = value.horizontalPageColumn
-          this.changePageHeaderShow()
-          this.changeWaterMarkShow()
-          this.changePageShow()
-          this.changeHorizontalPage()
-          this.changeFixedHeader()
+          this.settingFormData.pageType = value.pageType;
+          this.settingFormData.pageLayout = value.pageLayout;
+          this.settingFormData.pageHeaderShow = value.pageHeaderShow;
+          this.settingFormData.pageHeaderContent = value.pageHeaderContent;
+          this.settingFormData.pageHeaderPosition = value.pageHeaderPosition;
+          this.settingFormData.waterMarkShow = value.waterMarkShow;
+          this.settingFormData.waterMarkType = value.waterMarkType;
+          this.settingFormData.waterMarkContent = value.waterMarkContent;
+          this.settingFormData.waterMarkImg = value.waterMarkImg;
+          this.settingFormData.waterMarkOpacity = value.waterMarkOpacity;
+          this.settingFormData.pageShow = value.pageShow;
+          this.settingFormData.pagePosition = value.pagePosition;
+          this.settingFormData.horizontalPage = value.horizontalPage;
+          this.settingFormData.horizontalPageColumn = value.horizontalPageColumn;
+          this.changePageHeaderShow();
+          this.changeWaterMarkShow();
+          this.changePageShow();
+          this.changeHorizontalPage();
         }
-      } else if (k == 'datasetChanged') {
-        this.getTplGroupDatasets();
-        this.commonUtil.showMessage({ message: '报表数据集更新，数据集名称：' + v.datasetName + '，操作人：' + data.userName, type: this.commonConstants.messageType.warning })
-      } else if (k == 'sheetNotExist') {
-        this.commonUtil.showMessage({ message: '该sheet页已经被删除，请尝试刷新页面获取最新的模板数据', type: this.commonConstants.messageType.warning })
-      } else if (k == 'deleteDataSet') {
+      } else if ('datasetChanged' == k) {
+        this.getDataSets();
+        this.commonUtil.showMessage({
+          message: '报表数据集更新，数据集名称：' + v.datasetName + '，操作人：' + data.userName,
+          type: this.commonConstants.messageType.warning,
+        });
+      } else if ('sheetNotExist' == k) {
+        this.commonUtil.showMessage({
+          message: '该sheet页已经被删除，请尝试刷新页面获取最新的模板数据',
+          type: this.commonConstants.messageType.warning,
+        });
+      } else if ('deleteDataSet' == k) {
         if (this.datasets && this.datasets.length > 0) {
           for (let index = 0; index < this.datasets.length; index++) {
-            const element = this.datasets[index]
+            const element = this.datasets[index];
             if (element.id == value.id) {
-              this.commonUtil.showMessage({ message: '报表数据集【' + element.datasetName + '】被删除，操作人：' + value.userName, type: this.commonConstants.messageType.warning })
-              this.datasets.splice(index, 1)
-              break
+              this.commonUtil.showMessage({
+                message:
+                  '报表数据集【' + element.datasetName + '】被删除，操作人：' + value.userName,
+                type: this.commonConstants.messageType.warning,
+              });
+              this.datasets.splice(index, 1);
+              break;
             }
           }
         }
-      } else if (k == 'refreshAuth') {
-        // 更新权限
-        if (!this.isCreator) {
-          this.getTplAuth()
-        }
-      } else {
-        if (cells && cells.length > 0) {
-          var selectedRanges = luckysheet.getRange()
-          var currentr = selectedRanges[0].row[0]
-          var currentc = selectedRanges[0].column[0]
-          for (let index = 0; index < cells.length; index++) {
-            const r = cells[index][0]
-            const c = cells[index][1]
-            var obj = this.getExtraCustomCellConfigs(r, c, sheetIndex)
-            if (obj) {
-              obj[k] = value
-              if (k == 'cellExtend') {
-                if (obj.cellExtend == 4) {
-                  obj.dataFrom = 3
-                }
-              }
-            } else {
-              obj = {}
-              obj[k] = value
-              if (k == 'cellExtend') {
-                if (obj.cellExtend == 4) {
-                  obj.dataFrom = 3
+      } else if (k == 'datasourceChanged') {
+        const sheetName = v.sheetName
+        this.sheetDatasource[sheetIndex] = value
+        if (sheetIndex == currentIndex) {
+          this.commonUtil.showMessage({ message: '【' + sheetName + '】绑定数据源属性发生变更，操作人：' + data.userName, type: this.commonConstants.messageType.warning })
+          if (this.datasourceDialog) {
+            if (value) {
+              this.datasources = JSON.parse(JSON.stringify(value))
+              for (let index = 0; index < this.datasources.length; index++) {
+                const element = this.datasources[index]
+                element.isActive = false
+                if (index == 0) {
+                  element.isActive = true
+                  this.datasourceAttr = element
+                  if (this.datasourceAttr.datasourceId) {
+                    this.getFormsDatabaseTables()
+                    if (this.datasourceAttr.table) {
+                      this.getFormsTableColumns()
+                    }
+                  }
                 }
               }
             }
+          }
+        }
+      }else if ('refreshAuth' == k) {
+        //更新权限
+        if (!this.isCreator) {
+          this.getTplAuth();
+        }
+      } else {
+        if (cells && cells.length > 0) {
+          var selectedRanges = luckysheet.getRange();
+          var currentr = selectedRanges[0].row[0];
+          var currentc = selectedRanges[0].column[0];
+          for (let index = 0; index < cells.length; index++) {
+            const r = cells[index][0];
+            const c = cells[index][1];
+            var obj = this.getExtraCustomCellConfigs(r, c, sheetIndex);
+            if (obj) {
+              if(k2){
+                if(!obj[k2]){
+                  obj[k2] = {};
+                }
+                obj[k2][k] = value;
+              }else{
+                obj[k] = value;
+              }
+              if (k == 'cellExtend') {
+                if (obj.cellExtend == 4) {
+                  obj.dataFrom = 3;
+                }
+              }
+            } else {
+              obj = {};
+              if(k2){
+                if(!obj[k2]){
+                  obj[k2] = {};
+                }
+                obj[k2][k] = value;
+              }else{
+                obj[k] = value;
+              }
+              
+              if (k == 'cellExtend') {
+                if (obj.cellExtend == 4) {
+                  obj.dataFrom = 3;
+                }
+              }
+            }
+            this.extraCustomCellConfigs[sheetIndex][r + '_' + c] = obj;
             if (sheetIndex == currentIndex) {
               if (currentr == r && currentc == c) {
-                this.cellForm[k] = value
+                if(k2){
+                  if(!this.cellForm[k2]){
+                    this.cellForm[k2] = {}
+                  }
+                  this.cellForm[k2][k] = value;
+                }else{
+                  this.cellForm[k] = value;
+                }
                 if (k == 'cellExtend') {
                   if (value == 4) {
-                    this.cellForm.dataFrom = 3
+                    this.cellForm.dataFrom = 3;
                   }
                 } else if (k == 'datasourceId') {
-                  this.getDatasourceAttr()
+                  this.getDatasourceAttr(k2);
                 } else if (k == 'isDrill') {
                   if (value) {
-                    this.getDrillReport()
+                    this.getDrillReport();
                   }
                 }
+                this.$forceUpdate()
               }
             }
           }
@@ -4322,6 +4512,11 @@ export default {
         that.settingFormData.fixedHeader = printSettings.fixedHeader
         that.settingFormData.fixedHeaderStart = printSettings.fixedHeaderStart
         that.settingFormData.fixedHeaderEnd = printSettings.fixedHeaderEnd
+        that.settingFormData.customMargin = printSettings.customMargin
+        that.settingFormData.leftMargin = printSettings.leftMargin
+        that.settingFormData.rightMargin = printSettings.rightMargin
+        that.settingFormData.topMargin = printSettings.topMargin
+        that.settingFormData.bottomMargin = printSettings.bottomMargin
       } else {
         that.settingFormData = { ...that.defaultSettingFormData }
       }
@@ -4330,6 +4525,7 @@ export default {
       that.changePageShow()
       that.changeHorizontalPage()
       that.changeFixedHeader();
+      this.changeCustomMargin()
     },
     uploadFileClick(type) {
       this.uploadType = type
@@ -4578,7 +4774,385 @@ export default {
     afterInsertImg(){
       this.afterInitImg();
       this.saveTplCache();
-    }
+    },
+    addCompareCells() {
+      this.cellCompareVisiable = true
+    },
+    closeCompareCells() {
+      this.cellCompareVisiable = false
+      this.$refs['compareRef'].resetFields()// 校验重置
+      this.commonUtil.clearObj(this.cellCompareForm)
+    },
+    onfocuseSheet() {
+      var luckysheetfiles = luckysheet.getLuckysheetfile()
+      this.sheets = []
+      for (let index = 0; index < luckysheetfiles.length; index++) {
+        const luckysheetfile = luckysheetfiles[index]
+        var obj = {
+          label: luckysheetfile.name,
+          value: luckysheetfile.name
+        }
+        this.sheets.push(obj)
+      }
+    },
+    confirmAddCompareCells() {
+      this.$refs['compareRef'].validate((valid) => {
+        if (valid) {
+          if (this.cellCompareForm.index != null) {
+            this.cellForm.formsAttrs.compareCells[this.cellCompareForm.index].sheetName = this.cellCompareForm.sheetName
+            this.cellForm.formsAttrs.compareCells[this.cellCompareForm.index].coordinate = this.cellCompareForm.coordinate
+            this.cellForm.formsAttrs.compareCells[this.cellCompareForm.index].cellType = this.cellCompareForm.cellType
+            this.cellForm.formsAttrs.compareCells[this.cellCompareForm.index].compareType = this.cellCompareForm.compareType
+          } else {
+            var obj = {
+              sheetName: this.cellCompareForm.sheetName,
+              coordinate: this.cellCompareForm.coordinate,
+              cellType: this.cellCompareForm.cellType,
+              compareType: this.cellCompareForm.compareType
+            }
+            if (!this.cellForm.formsAttrs.compareCells) {
+              this.cellForm.formsAttrs.compareCells = []
+            }
+            this.cellForm.formsAttrs.compareCells.push(obj)
+          }
+          this.changeCellAttr('compareCells','formsAttrs')
+          this.closeCompareCells()
+        }
+      })
+    },
+    editCompareCell(obj, index) {
+      if (this.attrDisabled) {
+        return
+      }
+      this.cellCompareVisiable = true
+      this.cellCompareForm.index = index
+      this.cellCompareForm.sheetName = obj.sheetName
+      this.cellCompareForm.coordinate = obj.coordinate
+      this.cellCompareForm.cellType = obj.cellType
+      this.cellCompareForm.compareType = obj.compareType
+    },
+    deleteCompareCell(index) {
+      if (this.attrDisabled) {
+        return
+      }
+      this.cellForm.formsAttrs.compareCells.splice(index, 1)
+      var cells = this.getSelectRangeCells()
+      if (cells && cells.length > 0) {
+        var obj = {
+          cells: cells,
+          value: this.cellForm.formsAttrs['compareCells']
+        }
+        const sheetIndex = luckysheet.getSheet().index
+        luckysheet.sendServerMsg('reportDesign', sheetIndex, obj, { 'k': 'formsAttrs_compareCells' })
+        this.saveTplCache()
+      }
+    },
+    datasourceClick() {
+      var that = this
+      // 绑定数据源属性
+      var sheetIndex = luckysheet.getSheet().index
+      var datasource = that.sheetDatasource[sheetIndex]
+      if (datasource) {
+        that.datasources = JSON.parse(JSON.stringify(datasource))
+        for (let index = 0; index < that.datasources.length; index++) {
+          const element = that.datasources[index]
+          element.isActive = false
+          if (index == 0) {
+            element.isActive = true
+            that.datasourceAttr = element
+            if (that.datasourceAttr.datasourceId) {
+              that.getFormsDatabaseTables()
+              if (that.datasourceAttr.table) {
+                that.getFormsTableColumns()
+              }
+            }
+          }
+        }
+      } else {
+        that.datasources = []
+        that.datasourceAttr = {
+          name: '', // 名称
+          datasourceId: '', // 数据源id
+          table: '', // 表名
+          keys: [], // 主键
+          tableDatas: []// 属性对应关系
+        }
+      }
+      that.datasourceDialog = true
+    },
+    closeDatasourceDialog() {
+      this.datasourceDialog = false
+    },
+    confirmAddDatasource() {
+      var sheetIndex = luckysheet.getSheet().index
+      if (this.datasources && this.datasources.length > 0) {
+        this.sheetDatasource[sheetIndex] = JSON.parse(JSON.stringify(this.datasources))
+        this.datasources = []
+        this.closeDatasourceDialog()
+      } else {
+        this.datasources = []
+        this.sheetDatasource[sheetIndex] = JSON.parse(JSON.stringify(this.datasources))
+        this.closeDatasourceDialog()
+      }
+      var obj = {
+        cells: {},
+        sheetName: luckysheet.getSheet().name,
+        value: this.sheetDatasource[sheetIndex]
+      }
+      luckysheet.sendServerMsg('reportDesign', sheetIndex, obj, { 'k': 'datasourceChanged' })
+      this.saveTplCache()
+    },
+    // 添加绑定属性
+    addDatasourceAttr() {
+      this.datasourceAttrDialog = true
+      this.isEditDatasourceAttr = false
+    },
+    editDatasourceAttr() {
+      this.datasourceAttrDialog = true
+      this.isEditDatasourceAttr = true
+      this.datasourceAttrForm.name = this.datasourceAttr.name
+    },
+    deleteDatasourceAttr(index) {
+      this.datasources.splice(index, 1)
+      var isActive = false
+      if (this.datasources && this.datasources.length > 0) {
+        for (let index = 0; index < this.datasources.length; index++) {
+          const element = this.datasources[index]
+          if (element.isActive) {
+            isActive = true
+          }
+        }
+        if (!isActive) {
+          this.datasources[0].isActive = true
+          this.datasourceAttr = this.datasources[0]
+        }
+      } else {
+        this.commonUtil.clearObj(this.datasourceAttr)
+      }
+    },
+    closeDatasourceAttr() {
+      this.datasourceAttrDialog = false
+    },
+    confirmDatasourceAttr() {
+      this.$refs['datasourceAttrRef'].validate((valid) => {
+        if (valid) {
+          if (!this.isEditDatasourceAttr) {
+            var sheetIndex = luckysheet.getSheet().index
+            var sheetAttrs = this.sheetDatasource[sheetIndex]
+            if (sheetAttrs) {
+              var obj = {
+                name: this.datasourceAttrForm.name, // 名称
+                datasourceId: '', // 数据源id
+                table: '', // 表名
+                keys: [], // 主键
+                tableDatas: []// 属性对应关系
+              }
+              sheetAttrs.push(obj)
+            } else {
+              sheetAttrs = []
+              var obj = {
+                name: this.datasourceAttrForm.name, // 名称
+                datasourceId: '', // 数据源id
+                table: '', // 表名
+                keys: [], // 主键
+                tableDatas: []// 属性对应关系
+              }
+              sheetAttrs.push(obj)
+              this.sheetDatasource[sheetIndex] = sheetAttrs
+            }
+            this.datasources = this.sheetDatasource[sheetIndex]
+            var isActive = false
+            for (let index = 0; index < this.datasources.length; index++) {
+              const element = this.datasources[index]
+              if (element.isActive) {
+                isActive = true
+              }
+            }
+            if (!isActive) {
+              this.datasources[0].isActive = true
+              this.datasourceAttr = this.datasources[0]
+            }
+          } else {
+            this.datasourceAttr.name = this.datasourceAttrForm.name
+          }
+          this.closeDatasourceAttr()
+          this.commonUtil.clearObj(this.datasourceAttrForm)
+        } else {
+          return false
+        }
+      })
+    },
+    // 填报属性左侧名字点击事件
+    clickAttrName(object) {
+      for (let index = 0; index < this.datasources.length; index++) {
+        const element = this.datasources[index]
+        element.isActive = false
+      }
+      object.isActive = true
+      this.$forceUpdate()
+      this.datasourceAttr = object
+    },
+    // 填报属性数据源下拉事件
+    getFormsDatabaseTables() {
+      var obj = {
+        params: { id: this.datasourceAttr.datasourceId },
+        url: this.apis.reportDatasource.getDatabseTablesApi
+      }
+      this.commonUtil.doPost(obj).then(response => {
+        if (response.code == '200') {
+          this.dataSourceTables = response.responseData
+        }
+      })
+    },
+    // 获取表对应的列
+    getFormsTableColumns() {
+      var key = this.datasourceAttr.datasourceId + '_' + this.datasourceAttr.table
+      var columns = this.datasourceTableColumns[key]
+      if (columns) {
+        this.tableColumns = columns
+      } else {
+        var obj = {
+          params: { datasourceId: this.datasourceAttr.datasourceId, tplSql: 'select * from ' + this.datasourceAttr.table, sqlType: 1 },
+          url: this.apis.reportDesign.execSqlApi
+        }
+        this.commonUtil.doPost(obj).then(response => {
+          if (response.code == '200') {
+            this.datasourceTableColumns[key] = response.responseData
+            this.tableColumns = this.datasourceTableColumns[key]
+          }
+        })
+      }
+    },
+    addDatasourceColumn() {
+      if (!this.datasourceAttr.datasourceId) {
+        this.commonUtil.showMessage({ message: '请选择数据源', type: this.commonConstants.messageType.error })
+        return
+      }
+      if (!this.datasourceAttr.table) {
+        this.commonUtil.showMessage({ message: '请选择表', type: this.commonConstants.messageType.error })
+        return
+      }
+      this.datasourceColumnDialog = true
+    },
+    closeDatasourceColumn() {
+      this.datasourceColumnDialog = false
+    },
+    deleteDatasourceColumn(index) {
+      this.datasourceAttr.tableDatas.splice(index, 1)
+    },
+    confirmDatasourceColumn() {
+      this.$refs['datasourceColumnRef'].validate((valid) => {
+        if (valid) {
+          var obj = {
+            columnName: this.datasourceColumnForm.columnName,
+            cellCoords: this.datasourceColumnForm.cellCoords
+          }
+          this.datasourceAttr.tableDatas.push(obj)
+          this.closeDatasourceColumn()
+          this.commonUtil.clearObj(this.datasourceColumnForm)
+        } else {
+          return false
+        }
+      })
+    },
+    addDatasourceKey() {
+      if (!this.datasourceAttr.datasourceId) {
+        this.commonUtil.showMessage({ message: '请选择数据源', type: this.commonConstants.messageType.error })
+        return
+      }
+      if (!this.datasourceAttr.table) {
+        this.commonUtil.showMessage({ message: '请选择表', type: this.commonConstants.messageType.error })
+        return
+      }
+      this.datasourceKeyDialog = true
+    },
+    deleteDatasourceKey(index) {
+      this.datasourceAttr.keys.splice(index, 1)
+    },
+    closeDatasourceKey() {
+      this.datasourceKeyDialog = false
+    },
+    confirmDatasourceKey() {
+      this.$refs['datasourceKeyRef'].validate((valid) => {
+        if (valid) {
+          var obj = {
+            columnName: this.datasourceKeyForm.columnName,
+            idType: this.datasourceKeyForm.idType
+          }
+          this.datasourceAttr.keys.push(obj)
+          this.closeDatasourceKey()
+          this.commonUtil.clearObj(this.datasourceKeyForm)
+        } else {
+          return false
+        }
+      })
+    },
+    getDatasourceConfig(sheetIndex) {
+      var datasourceConfig = this.sheetDatasource[sheetIndex]
+      if (datasourceConfig) {
+        return datasourceConfig
+      } else {
+        return null
+      }
+    },
+    addAutoFillAttr() {
+      if (!this.datasourceAttr.datasourceId) {
+        this.commonUtil.showMessage({ message: '请选择数据源', type: this.commonConstants.messageType.error })
+        return
+      }
+      if (!this.datasourceAttr.table) {
+        this.commonUtil.showMessage({ message: '请选择表', type: this.commonConstants.messageType.error })
+        return
+      }
+      this.autoFillDialog = true
+    },
+    confirmAutoFillAttr() {
+      var that = this;
+      this.$refs['autoFillRef'].validate((valid) => {
+        if (valid) {
+          var obj = {
+            columnName: that.autoFillForm.columnName,
+            fillType: that.autoFillForm.fillType,
+            fillStrategy: that.autoFillForm.fillStrategy,
+          }
+          if(!that.datasourceAttr.autoFillAttrs){
+            that.datasourceAttr.autoFillAttrs = [];
+          }
+          that.datasourceAttr.autoFillAttrs.push(obj)
+          that.closeAutoFillAttr()
+        } else {
+          return false
+        }
+      })
+    },
+    closeAutoFillAttr() {
+      this.commonUtil.clearObj(this.autoFillForm)
+      this.autoFillDialog = false
+    },
+    deleteAutoFillAttr(index) {
+      this.datasourceAttr.autoFillAttrs.splice(index, 1)
+    },
+    changeCustomMargin(){
+      if (this.settingFormData.customMargin == 1) {
+        this.settingModalForm[19].show = true
+        this.settingModalForm[19].rules.required = true
+        this.settingModalForm[20].show = true
+        this.settingModalForm[20].rules.required = true
+        this.settingModalForm[21].show = true
+        this.settingModalForm[21].rules.required = true
+        this.settingModalForm[22].show = true
+        this.settingModalForm[22].rules.required = true
+      } else {
+        this.settingModalForm[19].show = false
+        this.settingModalForm[19].rules.required = false
+        this.settingModalForm[20].show = false
+        this.settingModalForm[20].rules.required = false
+        this.settingModalForm[21].show = false
+        this.settingModalForm[21].rules.required = false
+        this.settingModalForm[22].show = false
+        this.settingModalForm[22].rules.required = false
+      }
+    },
   },
   watch: {
     'settingFormData.waterMarkImgs': function(newValue, oldValue) {

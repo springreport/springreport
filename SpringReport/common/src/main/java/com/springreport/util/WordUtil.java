@@ -82,6 +82,7 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTblLayoutType;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTblPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTText;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STBorder;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STLineSpacingRule;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STNumberFormat;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STPageOrientation;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STStyleType;
@@ -258,14 +259,27 @@ public class WordUtil {
     		paragraph.setAlignment(ParagraphAlignment.LEFT);
     	}
     	if(rowMargin != null) {
-    		paragraph.setSpacingBefore((int) (rowMargin/2*240));
-    		paragraph.setSpacingAfter((int) (rowMargin/2*240));
+    		setSingleLineSpacing(paragraph,rowMargin);
     	}
     	if(StringUtil.isNotEmpty(titleStyle)) {
     		paragraph.setStyle(titleStyle);
     	}
     	
     }
+    
+    public static void setSingleLineSpacing(XWPFParagraph paragraph,Float rowMargin) {
+        CTP ctp = paragraph.getCTP();
+        CTPPr ppr = ctp.isSetPPr() ? ctp.getPPr() : ctp.addNewPPr();
+        CTSpacing spacing = ppr.isSetSpacing()? ppr.getSpacing() : ppr.addNewSpacing();
+        spacing.setAfter(BigInteger.valueOf(0));
+        spacing.setBefore(BigInteger.valueOf(0));
+        //注意设置行距类型为 EXACT
+        spacing.setLineRule(STLineSpacingRule.EXACT);
+        //1磅数是20
+        spacing.setLine(BigInteger.valueOf((long) (rowMargin*350)));
+    }
+
+
     
     private static void setRunText(XWPFRun run,JSONObject content,String type,boolean ignoreStartn) {
     	String value = content.getString("value");//内容

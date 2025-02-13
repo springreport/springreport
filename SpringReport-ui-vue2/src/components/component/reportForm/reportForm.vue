@@ -227,14 +227,40 @@
                   <!-- 多选下拉框 -->
                   <el-select
                     v-if="
-                      item.paramType === 'mutiselect' ||
-                        item.componentType === 'mutiselect'
+                      (item.paramType === 'mutiselect' ||
+                        item.componentType === 'mutiselect')&&
+                        item.isRelyOnParams !== 1
                     "
                     v-model="searchData.params[i].params[index][item.paramCode]"
                     size="mini"
                     :multiple="true"
                     style="width: 100%"
                     @focus="getSelectData(item)"
+                    clearable
+                  >
+                    <el-option
+                      v-for="op in item.selectData"
+                      :key="op.value"
+                      :label="op.name"
+                      :value="op.value"
+                    />
+                  </el-select>
+                  <el-select
+                    v-if="
+                      (item.paramType === 'mutiselect' ||
+                        item.componentType === 'mutiselect')&&
+                        item.isRelyOnParams === 1
+                    "
+                    v-model="searchData.params[i].params[index][item.paramCode]"
+                    size="mini"
+                    :multiple="true"
+                    style="width: 100%"
+                    @focus="getRelyOnParamys(
+                        item,
+                        searchData.params[i],
+                        searchData.params[i].params[index]
+                      )"
+                    clearable
                   >
                     <el-option
                       v-for="op in item.selectData"
@@ -278,6 +304,7 @@
                     :options="item.selectData"
                     :lazy="false"
                     :item="item"
+                    :data="searchData.params[i]"
                     :focus-method="getTreeData"
                     :check-strictly="item.checkStrictly == 1 ? false : true"
                   />
@@ -297,6 +324,7 @@
                     }"
                     :options="item.selectData"
                     :item="item"
+                    :data="searchData.params[i]"
                     :focus-method="getTreeData"
                     :lazy="false"
                     :clearable="true"
@@ -390,14 +418,43 @@
                 <!-- 多选下拉框 -->
                 <el-select
                   v-if="
-                    item.paramType === 'mutiselect' ||
-                      item.componentType === 'mutiselect'
+                    (item.paramType === 'mutiselect' ||
+                      item.componentType === 'mutiselect')
+                      &&
+                      item.isRelyOnParams !== 1
                   "
                   v-model="searchData.params[0].params[index][item.paramCode]"
                   style="width: 100%"
                   size="mini"
                   :multiple="true"
                   @focus="getSelectData(item)"
+                  clearable
+                >
+                  <el-option
+                    v-for="op in item.selectData"
+                    :key="op.value"
+                    :label="op.name"
+                    :value="op.value"
+                  />
+                </el-select>
+                <!-- 多选下拉框 -->
+                <el-select
+                  v-if="
+                    (item.paramType === 'mutiselect' ||
+                      item.componentType === 'mutiselect')
+                      &&
+                      item.isRelyOnParams === 1
+                  "
+                  v-model="searchData.params[0].params[index][item.paramCode]"
+                  style="width: 100%"
+                  size="mini"
+                  :multiple="true"
+                  @focus="getRelyOnParamys(
+                      item,
+                      searchData.params[0],
+                      searchData.params[0].params[index]
+                    )"
+                  clearable
                 >
                   <el-option
                     v-for="op in item.selectData"
@@ -441,6 +498,7 @@
                   :options="item.selectData"
                   :lazy="false"
                   :item="item"
+                  :data="searchData.params[0]"
                   :focus-method="getTreeData"
                   :check-strictly="item.checkStrictly == 1 ? false : true"
                 />
@@ -463,6 +521,7 @@
                   :clearable="true"
                   size="mini"
                   :item="item"
+                  :data="searchData.params[0]"
                   :focus-method="getTreeData"
                 />
               </el-form-item>
@@ -635,7 +694,7 @@ export default {
       }
     },
     getRelyOnParamys(item, data, modelData) {
-      var relyOnValue = ''
+      var relyOnValue = null;
       for (let index = 0; index < data.params.length; index++) {
         const element = data.params[index]
         if (element.hasOwnProperty(item.relyOnParams)) {
@@ -673,12 +732,22 @@ export default {
     closeSearch(){
       this.$parent.closeSearch()
     },
-    getTreeData(item) {
-      if (!item.init) {
+    getTreeData(item,data) {
+      if (!item.init || item.isRelyOnParams == 1) {
         var params = {
           selectContent: item.selectContent,
           datasourceId: item.datasourceId,
           params: {}
+        }
+        if(item.isRelyOnParams == 1){
+          var relyOnValue = null;
+          for (let index = 0; index < data.params.length; index++) {
+            const element = data.params[index]
+            if (element.hasOwnProperty(item.relyOnParams)) {
+              relyOnValue = element[item.relyOnParams]
+            }
+          }
+          params.params[item.relyOnParams] = relyOnValue
         }
         var obj = {
           url: '/api/reportTplDataset/getTreeSelectData',
