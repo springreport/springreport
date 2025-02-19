@@ -8,23 +8,21 @@
 -->
 <template>
   <div class="container">
-    <!-- <div class="left">
+    <div class="left">
       <el-tree
         :data="pageData.treeData"
         :props="pageData.defaultProps"
         @node-click="handleNodeClick"
         default-expand-all
       ></el-tree>
-    </div> -->
+    </div>
     <div class="_tablepage">
-      <searchForm
-        :table-handles="pageData.tableHandles"
-      />
+     <searchForm :search-form="pageData.searchForm" :search-data="pageData.queryData" :search-handle="pageData.searchHandle" :table-handles="pageData.tableHandles" />
       <cusTable
         ref="custable"
         :is-selection="false"
         :is-index="false"
-        :is-pagination="false"
+        :is-pagination="true"
         :is-handle="true"
         :table-cols="pageData.tableCols"
         :table-data="pageData.tableData"
@@ -32,7 +30,6 @@
         :lazy="pageData.lazy"
         @handleCurrentChange="searchtablelist()"
         @selectChange="selectChange"
-        @load="loadData"
       />
     </div>
   </div>

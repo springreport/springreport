@@ -3804,9 +3804,12 @@
                       <span v-if="scope.row.fillType == '1'">系统时间</span>
                       <span v-else-if="scope.row.fillType == '2'">用户id</span>
                       <span v-else-if="scope.row.fillType == '3'">用户名</span>
-                      <span v-else>商户号</span>
+                      <span v-else-if="scope.row.fillType == '4'">商户号</span>
+                      <span v-else>自定义</span>
                     </span>
                   </template>
+                </el-table-column>
+                <el-table-column prop="fillValue" label="填充值" align="center">
                 </el-table-column>
                 <el-table-column prop="fillStrategy" label="填充策略" align="center">
                   <template slot-scope="scope">
@@ -3814,7 +3817,6 @@
                       <span v-if="scope.row.fillStrategy == '1'">插入数据</span>
                       <span v-else-if="scope.row.fillStrategy == '2'">更新数据</span>
                       <span v-else-if="scope.row.fillStrategy == '3'">插入/更新数据</span>
-                      <span v-else>商户号</span>
                     </span>
                   </template>
                 </el-table-column>
@@ -3824,6 +3826,50 @@
                       type="text"
                       size="small"
                       @click="deleteAutoFillAttr(scope.$index)"
+                    >删除</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+
+            <div class="table-card" style="margin-top: 12px">
+              <div class="table-header df-c">
+                <span class="attr-dataset-title">数据删除方式</span>
+                <el-button
+                  class="addBtn"
+                  @click="addDeleteType"
+                ><i class="el-icon-plus el-icon--left" />添加</el-button>
+              </div>
+              <el-table
+                :data="datasourceAttr.deleteTypes"
+                border
+                style="width: 100%"
+                height="200"
+                align="center"
+                size="small"
+                :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+              >
+                <el-table-column prop="deleteType" label="删除方式" align="center">
+                  <template slot-scope="scope">
+                    <span>
+                      <span v-if="scope.row.deleteType == '1'">物理删除</span>
+                      <span v-else-if="scope.row.deleteType == '2'">逻辑删除</span>
+                    </span>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="columnName"
+                  label="列名"
+                  align="center"
+                />
+                <el-table-column prop="deleteValue" label="删除值" align="center">
+                </el-table-column>
+                <el-table-column label="操作" align="center">
+                  <template slot-scope="scope">
+                    <el-button
+                      type="text"
+                      size="small"
+                      @click="deleteDeleteType(scope.$index)"
                     >删除</el-button>
                   </template>
                 </el-table-column>
@@ -4030,7 +4076,18 @@
             <el-option label="用户id" value="2" />
             <el-option label="用户名" value="3" />
             <el-option label="商户号" value="4" />
+            <el-option label="自定义值" value="99" />
           </el-select>
+        </el-form-item>
+        <el-form-item v-if="autoFillForm.fillType == '99'"
+          label="填充值"
+          prop="fillValue"
+          :rules="filter_rules('填充值', { required: true })"
+        >
+          <el-input
+              v-model="autoFillForm.fillValue"
+              placeholder="填充值"
+            />
         </el-form-item>
         <el-form-item
           label="填充策略"
@@ -4055,6 +4112,71 @@
           type="primary"
           size="small"
           @click="confirmAutoFillAttr"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog
+      title="添加删除方式"
+      :visible.sync="deleteTypeDialog"
+      width="30%"
+      height="80%"
+      :close-on-click-modal="false"
+      @close="closeDeleteType"
+    >
+      <el-form
+        ref="deleteTypeRef"
+        label-position="top"
+        :model="deleteTypeForm"
+        class="demo-form-inline"
+      >
+        <el-form-item label="删除方式" prop="deleteType" :rules="filter_rules('删除方式', { required: true })">
+          <el-select
+            v-model="deleteTypeForm.deleteType"
+            style="width: 100%"
+            placeholder="删除方式"
+            filterable
+            size="small"
+          >
+            <el-option label="物理删除" value="1" />
+            <el-option label="逻辑删除" value="2" />
+          </el-select>
+        </el-form-item>
+        <el-form-item v-if="deleteTypeForm.deleteType == '2'"
+          label="数据列"
+          prop="columnName"
+          :rules="filter_rules('数据列', { required: true })"
+        >
+          <el-select
+            v-model="deleteTypeForm.columnName"
+            style="width: 100%"
+            placeholder="数据列"
+            size="small"
+          >
+           <el-option
+              v-for="op in tableColumns"
+              :key="op.columnName"
+              :label="op.columnName"
+              :value="op.columnName"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item v-if="deleteTypeForm.deleteType == '2'"
+          label="删除值"
+          prop="deleteValue"
+          :rules="filter_rules('删除值', { required: true })"
+        >
+          <el-input
+              v-model="deleteTypeForm.deleteValue"
+              placeholder="删除值"
+            />
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="small" @click="closeDeleteType">取 消</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          @click="confirmDeleteType"
         >确 定</el-button>
       </span>
     </el-dialog>

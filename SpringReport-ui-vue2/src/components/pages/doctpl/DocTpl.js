@@ -3,6 +3,11 @@ export default {
   data() {
     return {
       pageData: {
+        defaultProps: {
+          children: 'children',
+          label: 'label'
+        },
+        treeData: [],
         // 查询表单内容 start
         searchForm: [
           { type: 'Input', label: '模板标识', prop: 'tplCode' },
@@ -126,7 +131,8 @@ export default {
     if(!thirdPartyType){
       this.searchtablelist()
       this.getReportDatasource()
-      this.getReportType()
+      this.getReportType();
+      this.getReportTypeTree()
     }
   },
   mounted() {
@@ -135,6 +141,7 @@ export default {
       this.searchtablelist()
       this.getReportDatasource()
       this.getReportType()
+      this.getReportTypeTree()
     }
   },
   methods: {
@@ -152,12 +159,7 @@ export default {
       var that = this
       that.pageData.tableData = []
       this.commonUtil.getTableList(obj).then(response => {
-        // this.commonUtil.tableAssignment(response,this.pageData.tablePage,this.pageData.tableData);
-        that.pageData.tableData = response.responseData
-        that.$nextTick(() => {
-          that.$refs.custable.$refs.cesTable.doLayout()
-        })
-        // that.getReportType()
+        this.commonUtil.tableAssignment(response,this.pageData.tablePage,this.pageData.tableData);
       })
     },
     resetSearch() {
@@ -263,6 +265,7 @@ export default {
               this.closeFolderModal()
               this.searchtablelist()
               this.getReportType()
+              this.getReportTypeTree();
             }
           })
         } else {
@@ -380,6 +383,54 @@ export default {
           this.pageData.modalForm[5].options = response.responseData
         }
       })
+    },
+    getReportTypeTree() {
+      var obj = {
+        params: {"type":"2"},
+        removeEmpty: false,
+        url: this.apis.reportType.getReportTypeTreeApi
+      }
+      this.commonUtil.doPost(obj).then(response => {
+        if (response.code == '200') {
+          this.pageData.treeData = response.responseData
+        }
+      })
+    },
+    handleNodeClick(data) {
+      if (data.id == '1') {
+        this.pageData.queryData.reportType = ''
+      } else {
+        this.pageData.queryData.reportType = data.id
+      }
+      this.searchtablelist()
+    },
+    removeNode(node, data){
+      const obj = {
+        url: this.apis.reportType.deleteOneApi,
+        messageContent: this.commonUtil.getMessageFromList('confirm.delete', null),
+        callback: this.removeNodeCallBack,
+        params: { id: data.id },
+        type: 'get'
+      }
+      var checkObj = {
+        params: { reportType: data.id },
+        url: this.apis.docTpl.getChildrenApi
+      }
+      this.commonUtil.doPost(checkObj).then(response => {
+        if (response.code == '200') {
+          if (response.responseData && response.responseData.length > 0) {
+            this.commonUtil.showMessage({ message: '该目录下有文档，不允许删除！', type: this.commonConstants.messageType.error })
+          } else {
+            // 弹出删除确认框
+            this.commonUtil.showConfirm(obj)
+          }
+        }
+      })
+    },
+    removeNodeCallBack(){
+      this.searchtablelist()
+      this.getReportType()
+      this.getReportTypeTree();
     }
   }
 }
