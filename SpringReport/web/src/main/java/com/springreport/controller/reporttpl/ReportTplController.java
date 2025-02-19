@@ -102,9 +102,9 @@ public class ReportTplController extends BaseController {
 	@RequestMapping(value = "/getTableList",method = RequestMethod.POST)
 	@MethodLog(module="ReportTpl",remark="获取页面表格数据",operateType=Constants.OPERATE_TYPE_SEARCH)
 	@RequiresPermissions(value = {"reportTpl_search","viewReport_Search"})
-	public Response getTableList(@RequestBody ReportType model)
+	public Response getTableList(@RequestBody ReportTpl model)
 	{
-		List<ReportTplTreeDto> result = iReportTplService.tablePagingQuery(model);
+		PageEntity result = iReportTplService.tablePagingQuery(model);
 		return Response.success(result);
 	}
 	
@@ -991,5 +991,21 @@ public class ReportTplController extends BaseController {
 	{
 		JSONObject result = this.iReportTplService.getTplAuth(model, userInfoDto);
 		return Response.success(result);
+	}
+	
+	/**  
+	 * @MethodName: deleteReportData
+	 * @Description: 填报报表删除数据
+	 * @author caiyang
+	 * @param model
+	 * @param userInfoDto
+	 * @return Response
+	 * @date 2025-02-17 12:09:52 
+	 */ 
+	@RequestMapping(value = "/deleteReportData",method = RequestMethod.POST)
+	@MethodLog(module="ReportTpl",remark="填报报表删除数据",operateType=Constants.OPERATE_TYPE_DELETE)
+	public Response deleteReportData(@RequestBody JSONObject model,@LoginUser UserInfoDto userInfoDto) {
+		BaseEntity result = this.iReportTplFormsService.deleteReportData(model,userInfoDto);
+		return Response.success(result,result.getStatusMsg());
 	}
 }

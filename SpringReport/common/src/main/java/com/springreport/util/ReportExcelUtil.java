@@ -1410,6 +1410,10 @@ public class ReportExcelUtil {
 				String chartId = jsonObject.getString("chart_id");
 				JSONObject chartOptions = jsonObject.getJSONObject("chartOptions");
 				JSONObject defaultOption = chartOptions.getJSONObject("defaultOption");
+				JSONArray values = chartOptions.getJSONObject("defaultOption").getJSONObject("spec").getJSONObject("data").getJSONArray("values");
+				if(ListUtil.isEmpty(values)) {
+					continue;
+				}
 				String chartAllType = chartOptions.getString("chartAllType");
 				JSONObject chartCell = null;
 				int r = 0;

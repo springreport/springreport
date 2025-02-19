@@ -35,4 +35,11 @@ public class ReportDataDetailDto {
 	 * @date 2025-02-05 09:24:36 
 	 */  
 	private JSONObject autoFillAttrs;
+	
+	/**  
+	 * @Fields isInsert : 是否是插入数据
+	 * @author caiyang
+	 * @date 2025-02-18 09:10:45 
+	 */  
+	private boolean isInsert = false;
 }

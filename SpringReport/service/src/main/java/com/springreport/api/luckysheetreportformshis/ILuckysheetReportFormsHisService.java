@@ -4,6 +4,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.springreport.entity.luckysheetreportformshis.LuckysheetReportFormsHis;
 import com.springreport.base.BaseEntity;
@@ -81,4 +82,16 @@ public interface ILuckysheetReportFormsHisService extends IService<LuckysheetRep
 	 * @date 2023-01-29 04:10:44 
 	 */  
 	void saveReportHis(Map<String, Map<String, Object>> reportDatas,Map<String, Map<String, Object>> basicDatas,Long tplId,String ip,UserInfoDto userInfoDto);
+
+	/**  
+	 * @MethodName: saveDeleteHis
+	 * @Description: 保存删除历史
+	 * @author caiyang
+	 * @param model
+	 * @param tplId
+	 * @param ip
+	 * @param userInfoDto void
+	 * @date 2025-02-18 09:36:48 
+	 */ 
+	void saveDeleteHis(JSONObject model,String ip,UserInfoDto userInfoDto);
 }

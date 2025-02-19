@@ -1,5 +1,6 @@
 package com.springreport.api.reporttpl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.springreport.base.BaseEntity;
 import com.springreport.base.UserInfoDto;
 import com.springreport.dto.reporttpl.MesGenerateReportDto;
@@ -32,5 +33,16 @@ public interface IReportTplFormsService {
 	 * @date 2022-11-23 07:22:57 
 	 */  
 	BaseEntity reportData(ReportDataDto model,UserInfoDto userInfoDto);
+	
+	/**  
+	 * @MethodName: deleteReportData
+	 * @Description: 填报报表删除数据
+	 * @author caiyang
+	 * @param model
+	 * @param userInfoDto
+	 * @return BaseEntity
+	 * @date 2025-02-17 12:22:43 
+	 */ 
+	BaseEntity deleteReportData(JSONObject model,UserInfoDto userInfoDto);
 	
 }

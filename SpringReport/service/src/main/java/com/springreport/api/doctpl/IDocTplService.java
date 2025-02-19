@@ -37,7 +37,7 @@ public interface IDocTplService extends IService<DocTpl> {
 	* @return BaseEntity 
 	* @throws 
 	*/ 
-	List<DocTplTreeDto> tablePagingQuery(ReportType model);
+	PageEntity tablePagingQuery(DocTpl model);
 	
 	List<DocTplTreeDto> getChildren(DocTpl model);
 

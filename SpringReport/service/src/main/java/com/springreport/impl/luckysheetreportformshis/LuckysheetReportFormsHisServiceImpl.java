@@ -4,6 +4,7 @@ import com.springreport.entity.luckysheetreportformshis.LuckysheetReportFormsHis
 import com.springreport.mapper.luckysheetreportformshis.LuckysheetReportFormsHisMapper;
 import com.springreport.api.luckysheetreportformshis.ILuckysheetReportFormsHisService;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
@@ -211,5 +212,45 @@ public class LuckysheetReportFormsHisServiceImpl extends ServiceImpl<LuckysheetR
 			this.saveBatch(luckysheetReportFormsHises);
 		}
 		
+	}
+
+
+	/**  
+	 * @MethodName: saveDeleteHis
+	 * @Description: 保存删除历史
+	 * @author caiyang
+	 * @param model
+	 * @param tplId
+	 * @param ip
+	 * @param userInfoDto
+	 * @see com.springreport.api.luckysheetreportformshis.ILuckysheetReportFormsHisService#saveDeleteHis(com.alibaba.fastjson.JSONObject, java.lang.Long, java.lang.String, com.springreport.base.UserInfoDto)
+	 * @date 2025-02-18 09:37:02 
+	 */
+	@Override
+	@Async
+	public void saveDeleteHis(JSONObject model, String ip, UserInfoDto userInfoDto) {
+		LuckysheetReportFormsHis formsHis = new LuckysheetReportFormsHis();
+		Date current = new Date();
+		formsHis.setTplId(model.getLong("tplId"));
+		String sheetIndex = model.getString("sheetIndex");
+		String datasourceId = model.getString("datasourceId");
+		String tableName = model.getString("table");
+		String column = model.getString("column");
+		Object value = model.get("value");
+		JSONObject reportData = new JSONObject();
+		reportData.put(column, value);
+		formsHis.setSheetIndex(sheetIndex);
+		formsHis.setDatasourceId(Long.parseLong(datasourceId));
+		formsHis.setTableName(tableName);
+		formsHis.setReportData(JSON.toJSONString(reportData, SerializerFeature.WriteMapNullValue));
+		formsHis.setBasicData(JSON.toJSONString(reportData, SerializerFeature.WriteMapNullValue));
+		formsHis.setOperateIp(ip);
+		formsHis.setChangeDataBefore(JSON.toJSONString(reportData, SerializerFeature.WriteMapNullValue));
+		formsHis.setChangeDataAfter("{}");
+		formsHis.setCreator(userInfoDto.getUserId());
+		formsHis.setUpdater(userInfoDto.getUserId());
+		formsHis.setCreateTime(current);
+		formsHis.setUpdateTime(current);
+		this.save(formsHis);
 	}
 }

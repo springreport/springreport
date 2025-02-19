@@ -34,9 +34,7 @@
 		<if test="reportType !=null">
 			and t1.report_type = #{reportType,jdbcType=BIGINT}
 		</if>
-		<if test="reportType ==null">
-			and t1.report_type is null
-		</if>
+		
 	</where>
 	GROUP BY
 	t1.id

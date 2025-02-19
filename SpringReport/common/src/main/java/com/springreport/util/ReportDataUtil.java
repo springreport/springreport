@@ -679,8 +679,8 @@ public class ReportDataUtil {
 	    				 List<ReportDataColumnDto> keys = details.get(i).getKeys();
 	    				 List<ReportDataColumnDto> columns = details.get(i).getColumns();
 	    				 JSONObject autoFillAttrs = details.get(i).getAutoFillAttrs();
-	    				 if(ListUtil.isEmpty(keys))
-	    				 {//没有设置主键，则是新增数据
+	    				 if(details.get(i).isInsert())
+	    				 {//新增数据
 	    					 processInsertSql(columns,sqlParamsMap,tableName,autoFillAttrs,userInfoDto);
 	    				 }else {
 	    					 //主键有数据，则是更新数据，没有数据则是新增数据
@@ -824,6 +824,8 @@ public class ReportDataUtil {
 		    		  params.add(userInfoDto.getUserName());  
 		    	  }else if(fillType == 4) {//商户号
 		    		  params.add(userInfoDto.getMerchantNo());  
+		    	  }else if(fillType == 99) {//自定义数据
+		    		  params.add(attr.get("fillValue"));  
 		    	  }
 		    	  columnSql = columnSql + "," + columnName;
 		    	  paramSql = paramSql + "," + "?"; 
@@ -885,6 +887,8 @@ public class ReportDataUtil {
 		    		  params.add(userInfoDto.getUserName());  
 		    	  }else if(fillType == 4) {//商户号
 		    		  params.add(userInfoDto.getMerchantNo());  
+		    	  }else if(fillType == 99) {//自定义数据
+		    		  params.add(attr.get("fillValue"));  
 		    	  }
 		    	  columnSql = columnSql + "," + columnName + " = ?";
 		      }
@@ -911,5 +915,49 @@ public class ReportDataUtil {
 		 }else {
 			 sqlParamsMap.get(sql).add(params);
 		 }
+	}
+	
+	/**  
+	 * @MethodName: deleteData
+	 * @Description: 删除数据
+	 * @author caiyang
+	 * @param dataSource
+	 * @param mapDetails
+	 * @param type
+	 * @param userInfoDto void
+	 * @date 2025-02-17 12:41:01 
+	 */ 
+	public static void deleteData(DataSource dataSource,JSONObject params,UserInfoDto userInfoDto) {
+		String column = params.getString("column");
+		Object value = params.get("value");
+		String table = params.getString("table");
+		String deleteType = params.getString("deleteType");
+		String deleteColumn = params.getString("deleteColumn");
+		Object deleteValue = params.get("deleteValue");
+		String sql = "";
+		if("1".equals(deleteType)) {//物理删除
+			sql = "delete from " + table + " where " + column +" = ?";
+		}else {//逻辑删除
+			sql = "update " + table + " set " + deleteColumn + " = ?"  + " where " + column +" = ?";
+		}
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		try {
+			conn = dataSource.getConnection();
+			conn.setAutoCommit(false);
+			stmt = conn.prepareStatement(sql);
+			if("1".equals(deleteType)) {//物理删除
+				stmt.setObject(1, value);
+			}else {
+				stmt.setObject(1, deleteValue);
+				stmt.setObject(2, value);
+			}
+			stmt.execute();
+			conn.commit();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+            JdbcUtils.releaseJdbcResource(conn,stmt, null);
+        }
 	}
 }
