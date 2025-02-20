@@ -903,7 +903,7 @@ public class ReportDataUtil {
 			{
 				whereSql = whereSql + keys.get(j).getColumnName() + " = ?";
 			}else {
-				whereSql = whereSql + "AND " + keys.get(j).getColumnName() + " = ?";
+				whereSql = whereSql + " AND " + keys.get(j).getColumnName() + " = ?";
 			}
 		}
 		String sql = "UPDATE " + tableName + " SET " + columnSql + " where " + whereSql;

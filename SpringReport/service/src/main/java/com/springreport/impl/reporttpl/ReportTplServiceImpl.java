@@ -1346,7 +1346,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 											}else {
 												cellAggregate = "list";
 											}
-											if(cellExtend.intValue() != cells.get(0).getCellExtend().intValue())
+											if(cells.get(0).getCellExtend() != null && cellExtend.intValue() != cells.get(0).getCellExtend().intValue())
 											{
 												throw new BizException(StatusCode.FAILURE,"填报属性【"+ config.getString("name") +"】绑定的单元格扩展方向属性必须一致。");
 											}

@@ -3807,8 +3807,11 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 					List<ReportDataColumnDto> columns  = new ArrayList<>();
 					JSONObject autoFillAttrs = new JSONObject();
 					Set<String> mapKeys = datas.keySet();
+					if(datas.containsKey("isSRInsertData")) {
+						reportDataDetailDto.setInsert((boolean) datas.get("isSRInsertData"));
+					}
 					for (String key : mapKeys) {
-						if("isSRrowChanged".equals(key)) {
+						if("isSRrowChanged".equals(key) || "isSRInsertData".equals(key)) {
 							continue;
 						}
 						String reculateKey = o + "|" + key;
@@ -3829,7 +3832,6 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 									{	
 										dataColumnDto.setData(IdWorker.getIdStr());
 										columns.add(dataColumnDto);
-										reportDataDetailDto.setInsert(true);
 									}
 								}
 								keys.add(dataColumnDto);

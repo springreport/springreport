@@ -2025,6 +2025,9 @@ export default {
                     // 获取原始单元格绑定的数据源信息
                     const datasourceConfig = cellDatasourceConfig[originCell.r + '_' + originCell.c]
                     if (extraConfig && startCoords && datasourceConfig) {
+                      if(datasourceConfig.isKey == 1 && v == "删除"){
+                        continue;
+                      }
                       var rowFlag = 0
                       if (extraConfig.cellExtend == 1) { // 不扩展
                         rowFlag = 0
@@ -2116,6 +2119,9 @@ export default {
       if (data) {
         if (isChanged || datasourceConfig.isKey == 1) {
           data[datasourceConfig.columnName] = (v == undefined ? null : v)
+          if (isNew) {
+            data.isSRInsertData = true;
+          }
         }
 
         if (isNew) {
@@ -2127,6 +2133,9 @@ export default {
         data = {}
         if (isChanged || datasourceConfig.isKey == 1) {
           data[datasourceConfig.columnName] = (v == undefined ? null : v)
+          if (isNew) {
+            data.isSRInsertData = true;
+          }
         }
         this.rowDatas[rowKey] = data
         if (isNew) {

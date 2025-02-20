@@ -18,6 +18,7 @@
       <span slot-scope="{ node, data }">
         <div class="set-group df-c" @click="groupSetVisible = true" style="fontSize:14px">
                 <img
+                  v-if="data.id != '1'"
                   src="@/static/img/sheet/del.png"
                   width="14px"
                   height="14px"

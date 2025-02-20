@@ -4453,6 +4453,7 @@
     }
   }
   .table-warp{
+    width:96%;
     padding: 10px;
     border: 1px solid #eee;
     .table-title{
@@ -5047,6 +5048,7 @@
 }
 ::v-deep .vue-codemirror .CodeMirror {
   border: 1px solid #eee;
+  width: 96%;
 }
 
 .config-panel {
