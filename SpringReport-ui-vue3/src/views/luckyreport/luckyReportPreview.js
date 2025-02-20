@@ -181,6 +181,7 @@ export default {
       cellAllowEditConfigs: {}, //原始单元格是否可编辑配置信息
       sheetTableKeys: {}, //表格主键
       sheetAutoFillAttrs:{},//表格自动填充字段
+      sheetDeleteTypes:{},//表格删除规则
       rowDatas: {}, //与数据集绑定的数据
       changedRowDatas:{},//修改过的数据
       datasKey: {}, //数据主键信息
@@ -398,7 +399,7 @@ export default {
           size: 'small',
         },
         {
-          label: '重置',
+          label: '清除条件',
           drawerBtn: true,
           icon: 'icon-refresh',
           type: '',
@@ -790,6 +791,7 @@ export default {
               this.sheetTableKeys[element.sheetIndex] = element.tableKeys;
               this.sheetAutoFillAttrs[element.sheetIndex] = element.autoFillAttrs
               this.cellAllowEditConfigs[element.sheetIndex] = element.allowEditConfigs;
+              this.sheetDeleteTypes[element.sheetIndex] = element.deleteTypes
               // if(element.pagination && Object.keys(element.pagination).length>0)
               // {
               //     this.setPagination(element.pagination,response.responseData.isParamMerge,element.mergePagination);
@@ -874,8 +876,8 @@ export default {
             this.sheetOptions.gridKey = 'reportFormsMode-' + reportTplId;
             this.sheetOptions.updateUrl =
               location.protocol === 'https:'
-                ? 'wss' + '://' + location.host + '/api/coedit/websocket/luckysheet'
-                : 'ws' + '://' + location.host + '/api/coedit/websocket/luckysheet';
+                ? 'wss' + '://' + location.host + '/SpringReport/api/coedit/websocket/luckysheet'
+                : 'ws' + '://' + location.host + '/SpringReport/api/coedit/websocket/luckysheet';
             luckysheet.setServerAttr('reportType', this.tplType);
           }
           this.refreshPage = response.responseData.refreshPage;
@@ -1151,6 +1153,15 @@ export default {
       var r = postion.r;
       var c = postion.c;
       var index = sheetFile.index;
+      if(this.tplType == 2){
+        if(cell != null){
+          var m = cell.m;
+          if(m == "删除"){
+            this.deleteReportData(r,c);
+            return ;
+          }
+        }
+      }
       var cellDrill = this.sheetDrillCells[index];
       if (cellDrill) {
         var key = r + '_' + c;
@@ -2049,18 +2060,19 @@ export default {
                         this.reCalculate[columnKey] = obj
                       }
                       if(extraConfig.cellExtend == 3){//向下扩展
-                        sheetIndex + '|' + datasourceConfig.datasourceId + '|' + datasourceConfig.table + '|' + datasourceConfig.name + '|' + rowFlag
-                        for (let t = 0; t < rs; t++) {
-                          let flag = rowFlag + t;
+                        for (let m = 0; m < rs; m++) {
+                          let flag = rowFlag + m;
                           rowKey = sheetIndex + '|' + datasourceConfig.datasourceId + '|' + datasourceConfig.table + '|' + datasourceConfig.name + '|' + flag
-                          r = r + t;
-                          this.getRowDatas(r,c,sheetIndex,rowKey,extraConfig,datasourceConfig,luckysheetfile,originCell,wrongMsg,v,flag,isChanged,isNew,element.r,dictKey);
+                          r = r + m;
+                          this.getRowDatas(r,c,sheetIndex,rowKey,extraConfig,datasourceConfig,luckysheetfile,originCell,wrongMsg,v,flag,isChanged,isNew,element.r,element.c,dictKey);
                         }
                       }else if(extraConfig.cellExtend == 2){//向右扩展
-                        let flag = rowFlag + t;
-                        rowKey = sheetIndex + '|' + datasourceConfig.datasourceId + '|' + datasourceConfig.table + '|' + datasourceConfig.name + '|' + flag
-                        c = c + t;
-                        this.getRowDatas(r,c,sheetIndex,rowKey,extraConfig,datasourceConfig,luckysheetfile,originCell,wrongMsg,v,flag,isChanged,isNew,element.r,element.c,dictKey);
+                        for (let m = 0; m < cs; m++) {
+                          let flag = rowFlag + m;
+                          rowKey = sheetIndex + '|' + datasourceConfig.datasourceId + '|' + datasourceConfig.table + '|' + datasourceConfig.name + '|' + flag
+                          c = c + m;
+                          this.getRowDatas(r,c,sheetIndex,rowKey,extraConfig,datasourceConfig,luckysheetfile,originCell,wrongMsg,v,flag,isChanged,isNew,element.r,element.c,dictKey);
+                        }
                       }else{
                         this.getRowDatas(r,c,sheetIndex,rowKey,extraConfig,datasourceConfig,luckysheetfile,originCell,wrongMsg,v,rowFlag,isChanged,isNew,element.r,element.c,dictKey);
                       }
@@ -2968,5 +2980,70 @@ export default {
         }
       }
     },
+    deleteReportData(r,c){
+      const sheetIndex = luckysheet.getSheet().index
+      let originCell = this.extendCellOrigins[sheetIndex][r + '_' + c]
+      if (originCell){
+        const cellDatasourceConfigs = this.cellDatasourceConfigs[sheetIndex]
+        for (let index = 0; index < cellDatasourceConfigs.length; index++) {
+          const cellDatasourceConfig = cellDatasourceConfigs[index];
+          // 获取原始单元格自定义配置信息
+          const extraConfig = this.extraCustomCellConfigs[sheetIndex][originCell.r + '_' + originCell.c]
+          // 原始坐标对应的实际数据的起始坐标
+          const startCoords = this.columnStartCoords[sheetIndex][originCell.r + '_' + originCell.c]
+          // 获取原始单元格绑定的数据源信息
+          const datasourceConfig = cellDatasourceConfig[originCell.r + '_' + originCell.c]
+          let str = startCoords.r;
+          let stc = startCoords.c;
+          if (extraConfig && startCoords && datasourceConfig) {
+            var rowFlag = 0
+            if (extraConfig.cellExtend == 1) { // 不扩展
+              rowFlag = 0
+            } else if (extraConfig.cellExtend == 2) { // 向右扩展
+              rowFlag = c - originCell.c
+              stc = stc + rowFlag;
+            } else if (extraConfig.cellExtend == 3) { // 向下扩展
+              rowFlag = r - originCell.r
+              str = str + rowFlag;
+            }
+            let m = luckysheet.getCellValue(str,stc,{type:"m"})
+            if(m){
+              let params = {
+                value:m,
+                column:datasourceConfig.columnName,
+                datasourceId:datasourceConfig.datasourceId,
+                table:datasourceConfig.table,
+                sheetIndex:sheetIndex,
+                tplId:this.currentTplId
+              }
+              if(this.sheetDeleteTypes[sheetIndex]){
+                let obj = this.sheetDeleteTypes[sheetIndex];
+                var flag = datasourceConfig.datasourceId + "|" + datasourceConfig.table + "|" + datasourceConfig.name;
+                if(obj[flag]){
+                  params.deleteType = obj[flag].deleteType;
+                  params.deleteColumn = obj[flag].columnName;
+                  params.deleteValue = obj[flag].deleteValue;
+                }else{
+                  params.deleteType = 1;//物理删除
+                }
+              }else{
+                params.deleteType = 1;//物理删除
+              }
+              const obj = {
+                url: this.apis.reportDesign.deleteReportDataApi,
+                messageContent: this.commonUtil.getMessageFromList('confirm.delete', null),
+                callback: this.getReportData,
+                params: params,
+                type: 'post'
+              }
+              this.commonUtil.showConfirm(obj)
+            }
+          }
+        }
+      }
+    },
+    deleteReportDataCallback(){
+      this.getReportData(2,true)
+    }
   },
 };

@@ -30,8 +30,8 @@ export default {
             auth: 'sysMerchant_search',
           },
           {
-            label: '重置',
-            type: 'warning',
+            label: '清除条件',
+            type: '',
             handle: () => this.resetSearch(),
             auth: 'sysMerchant_search',
           },

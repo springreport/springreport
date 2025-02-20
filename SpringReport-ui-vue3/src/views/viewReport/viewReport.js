@@ -24,7 +24,13 @@ export default {
           //查询表单按钮start
           lazy:true,
           searchHandle:[
-            {label:'刷新',type:'primary',handle:()=>this.searchtablelist(),auth:'viewReport_Search'},
+            {label:'查询',type:'primary',handle:()=>this.searchtablelist(),auth:'viewReport_Search'},
+            {
+              label: '清除条件',
+              type: '',
+              handle: () => this.resetSearch(),
+              auth: 'viewReport_Search',
+            },
           ],
           //查询表单按钮end
           //表格数据start
@@ -62,7 +68,7 @@ export default {
     mounted() {
       this.searchtablelist();
       // this.getReportType();
-      // this.getReportTypeTree();
+      this.getReportTypeTree();
     },
     methods:{
       /**
@@ -79,13 +85,11 @@ export default {
         var that = this;
         that.pageData.tableData = []
         this.commonUtil.getTableList(obj).then(response=>{
-          that.pageData.tableData = response.responseData
+          this.commonUtil.tableAssignment(response,this.pageData.tablePage,this.pageData.tableData);
         });
       },
       resetSearch(){
-        var reportType = this.pageData.queryData.reportType;
         this.commonUtil.clearObj(this.pageData.queryData);
-        this.pageData.queryData.reportType = reportType;
         this.searchtablelist();
       },
       selectChange(rows){
@@ -112,7 +116,7 @@ export default {
       },
       getReportTypeTree(){
         var obj = {
-          params:{},
+          params: {"type":"1"},
           removeEmpty:false,
           url:this.apis.reportType.getReportTypeTreeApi
         }

@@ -29,8 +29,8 @@ export default {
             auth: 'sysDept_search',
           },
           {
-            label: '重置',
-            type: 'warning',
+            label: '清除条件',
+            type: '',
             handle: () => this.resetSearch(),
             auth: 'sysDept_search',
           },
