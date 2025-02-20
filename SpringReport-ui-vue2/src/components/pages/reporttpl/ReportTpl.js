@@ -19,11 +19,11 @@ export default {
         queryData: {
           tplCode: '', // 模板标识
           tplName: '', // 模板名称
-          reportType: ''// 报表类型
+          reportType: null// 报表类型
         },
         // 查询条件 end
         // 查询表单按钮start
-        lazy: true,
+        lazy: false,
         searchHandle: [
           { label: '查询', type: 'primary', handle: () => this.searchtablelist(), auth: 'reportTpl_search' },
           { label: '重置', type: 'warning', handle: () => this.resetSearch(), auth: 'reportTpl_search' }
@@ -256,7 +256,7 @@ export default {
       this.getReportType()
       this.getReportDatasource()
     }
-    // this.getReportTypeTree();
+    this.getReportTypeTree();
     // this.getRoles();
   },
   mounted() {
@@ -266,6 +266,7 @@ export default {
       this.searchtablelist()
       this.getReportType()
       this.getReportDatasource()
+      this.getReportTypeTree();
     }
     // this.getReportTypeTree();
     // this.getRoles();
@@ -285,17 +286,14 @@ export default {
       var that = this
       that.pageData.tableData = []
       this.commonUtil.getTableList(obj).then(response => {
-        that.pageData.tableData = response.responseData
-        that.$nextTick(() => {
-          that.$refs.custable.$refs.cesTable.doLayout()
-        })
+        this.commonUtil.tableAssignment(response,this.pageData.tablePage,this.pageData.tableData);
         that.getReportType()
       })
     },
     resetSearch() {
-      var reportType = this.pageData.queryData.reportType
+      // var reportType = this.pageData.queryData.reportType
       this.commonUtil.clearObj(this.pageData.queryData)
-      this.pageData.queryData.reportType = reportType
+      // this.pageData.queryData.reportType = reportType
       this.searchtablelist()
     },
     /**
@@ -413,6 +411,7 @@ export default {
               this.closeFolderModal()
               this.searchtablelist()
               this.getReportType()
+              this.getReportTypeTree();
             }
           })
         } else {
@@ -613,7 +612,7 @@ export default {
     },
     getReportTypeTree() {
       var obj = {
-        params: {},
+        params: {"type":"1"},
         removeEmpty: false,
         url: this.apis.reportType.getReportTypeTreeApi
       }
@@ -724,6 +723,34 @@ export default {
       } else {
         return true
       }
+    },
+    removeNode(node, data){
+      const obj = {
+        url: this.apis.reportType.deleteOneApi,
+        messageContent: this.commonUtil.getMessageFromList('confirm.delete', null),
+        callback: this.removeNodeCallBack,
+        params: { id: data.id },
+        type: 'get'
+      }
+      var checkObj = {
+        params: { reportType: data.id },
+        url: this.apis.reportTpl.getChildrenApi
+      }
+      this.commonUtil.doPost(checkObj).then(response => {
+        if (response.code == '200') {
+          if (response.responseData && response.responseData.length > 0) {
+            this.commonUtil.showMessage({ message: '该目录下有文档，不允许删除！', type: this.commonConstants.messageType.error })
+          } else {
+            // 弹出删除确认框
+            this.commonUtil.showConfirm(obj)
+          }
+        }
+      })
+    },
+    removeNodeCallBack(){
+      this.searchtablelist()
+      this.getReportType()
+      this.getReportTypeTree();
     }
   }
 }

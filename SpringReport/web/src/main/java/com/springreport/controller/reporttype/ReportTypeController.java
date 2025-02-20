@@ -170,7 +170,7 @@ public class ReportTypeController extends BaseController {
 		List<TreeDto> result = new ArrayList<>();
 		TreeDto parentTreeDto = new TreeDto();
 		parentTreeDto.setId(1L);
-		parentTreeDto.setLabel("报表分类");
+		parentTreeDto.setLabel("报表目录");
 		List<TreeDto> reportTypeTrees = new ArrayList<>();
 		List<ReportType> reportTypes = this.iReportTypeService.getReportType(reportType);
 		if(!ListUtil.isEmpty(reportTypes))

@@ -134,7 +134,6 @@ export default {
       }
       this.commonUtil.getTableList(obj).then(response => {
         this.commonUtil.tableAssignment(response, this.pageData.tablePage, this.pageData.tableData)
-        console.log(response)
         this.$nextTick(() => {
           this.$refs.custable.$refs.cesTable.doLayout()
         })

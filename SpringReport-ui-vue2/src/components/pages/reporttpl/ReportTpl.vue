@@ -8,23 +8,34 @@
 -->
 <template>
   <div class="container">
-    <!-- <div class="left">
+    <div class="left">
       <el-tree
         :data="pageData.treeData"
         :props="pageData.defaultProps"
         @node-click="handleNodeClick"
         default-expand-all
-      ></el-tree>
-    </div> -->
+      >
+      <span slot-scope="{ node, data }">
+        <div class="set-group df-c" @click="groupSetVisible = true" style="fontSize:14px">
+                <img
+                  v-if="data.id != '1'"
+                  src="@/static/img/sheet/del.png"
+                  width="14px"
+                  height="14px"
+                  @click="() => removeNode(node, data)"
+                >
+                <div class="setting-text">{{ node.label }}</div>
+              </div>
+      </span>
+      </el-tree>
+    </div>
     <div class="_tablepage">
-      <searchForm
-        :table-handles="pageData.tableHandles"
-      />
+      <searchForm :search-form="pageData.searchForm" :search-data="pageData.queryData" :search-handle="pageData.searchHandle" :table-handles="pageData.tableHandles" />
       <cusTable
         ref="custable"
         :is-selection="false"
         :is-index="false"
-        :is-pagination="false"
+        :is-pagination="true"
         :is-handle="true"
         :table-cols="pageData.tableCols"
         :table-data="pageData.tableData"
@@ -32,7 +43,6 @@
         :lazy="pageData.lazy"
         @handleCurrentChange="searchtablelist()"
         @selectChange="selectChange"
-        @load="loadData"
       />
       <modal
         ref="modalRef"

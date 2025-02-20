@@ -38,10 +38,17 @@ export default {
   },
   data() {
     return {
+      deleteTypeDialog:false,//数据删除方式dialog
+      deleteTypeForm: {
+        deleteType: '', // 删除方式 1物理删除 2逻辑删除
+        columnName: '',// 数据列 逻辑删除时需要设置
+        deleteValue:'',//删除值 逻辑删除时需要设置
+      },
       autoFillDialog:false,
       autoFillForm: {
         columnName: '', // 数据列
         fillType: '',// 1 系统时间 2用户id 3用户名 4商户号 
+        fillValue:'',//填充值
         fillStrategy:'',//1 插入 2更新 3插入更新
       },
       tplType:1,
@@ -54,6 +61,7 @@ export default {
         keys: [], // 主键
         tableDatas: [],// 属性对应关系
         autoFillAttrs:[],//自动填充列
+        deleteTypes:[],//删除方式
       },
       datasourceDialog: false,
       datasourceAttrDialog: false,
@@ -1233,6 +1241,40 @@ export default {
           }
         }
         this.extraCustomCellConfigs[sheetIndex] = sheetExtraCustomCellConfigs
+        if (this.sheetDatasource && this.sheetDatasource[sheetIndex] && this.sheetDatasource[sheetIndex].length > 0) {
+          for (let index = 0; index < this.sheetDatasource[sheetIndex].length; index++) {
+            const datasource = this.sheetDatasource[sheetIndex][index]
+            var tableDatas = datasource.tableDatas
+            var newTableDatas = []
+            if (tableDatas && tableDatas.length > 0) {
+              for (let index = 0; index < tableDatas.length; index++) {
+                const element = tableDatas[index]
+                var cellCoords = element.cellCoords
+                var coords = this.commonUtil.getCoordsFromColumnName(cellCoords, true)
+                var r = coords[0]
+                var c = coords[1]
+                if (direction == 'lefttop') {
+                  if (r >= coordinate) {
+                    var newR = r + count
+                    element.cellCoords = this.commonUtil.getColumnFromCoords(newR, c)
+                    newTableDatas.push(element)
+                  } else {
+                    newTableDatas.push(element)
+                  }
+                } else {
+                  if (r > coordinate) {
+                    var newR = r + count
+                    element.cellCoords = this.commonUtil.getColumnFromCoords(newR, c)
+                    newTableDatas.push(element)
+                  } else {
+                    newTableDatas.push(element)
+                  }
+                }
+              }
+              datasource.tableDatas = newTableDatas
+            }
+          }
+        }
         if (isSaveCache) {
           this.saveTplCache()
         }
@@ -1281,9 +1323,43 @@ export default {
           }
         }
         this.extraCustomCellConfigs[sheetIndex] = sheetExtraCustomCellConfigs
-        if (isSaveCache) {
-          this.saveTplCache()
+      }
+      if (this.sheetDatasource && this.sheetDatasource[sheetIndex] && this.sheetDatasource[sheetIndex].length > 0) {
+        for (let index = 0; index < this.sheetDatasource[sheetIndex].length; index++) {
+          const datasource = this.sheetDatasource[sheetIndex][index]
+          var tableDatas = datasource.tableDatas
+          var newTableDatas = []
+          if (tableDatas && tableDatas.length > 0) {
+            for (let index = 0; index < tableDatas.length; index++) {
+              const element = tableDatas[index]
+              var cellCoords = element.cellCoords
+              var coords = this.commonUtil.getCoordsFromColumnName(cellCoords, true)
+              var r = coords[0]
+              var c = coords[1]
+              if (direction == 'lefttop') {
+                if (c >= coordinate) {
+                  var newC = c + count
+                  element.cellCoords = this.commonUtil.getColumnFromCoords(r, newC)
+                  newTableDatas.push(element)
+                } else {
+                  newTableDatas.push(element)
+                }
+              } else {
+                if (c > coordinate) {
+                  var newC = c + count
+                  element.cellCoords = this.commonUtil.getColumnFromCoords(r, newC)
+                  newTableDatas.push(element)
+                } else {
+                  newTableDatas.push(element)
+                }
+              }
+            }
+            datasource.tableDatas = newTableDatas
+          }
         }
+      }
+      if (isSaveCache) {
+        this.saveTplCache()
       }
     },
     // 删除行
@@ -1323,9 +1399,33 @@ export default {
           }
         }
         this.extraCustomCellConfigs[sheetIndex] = sheetExtraCustomCellConfigs
-        if (isSaveCache) {
-          this.saveTplCache()
+      }
+      if (this.sheetDatasource && this.sheetDatasource[sheetIndex] && this.sheetDatasource[sheetIndex].length > 0) {
+        for (let index = 0; index < this.sheetDatasource[sheetIndex].length; index++) {
+          const datasource = this.sheetDatasource[sheetIndex][index]
+          var tableDatas = datasource.tableDatas
+          var newTableDatas = []
+          if (tableDatas && tableDatas.length > 0) {
+            for (let index = 0; index < tableDatas.length; index++) {
+              const element = tableDatas[index]
+              var cellCoords = element.cellCoords
+              var coords = this.commonUtil.getCoordsFromColumnName(cellCoords, true)
+              var r = coords[0]
+              var c = coords[1]
+              if (r < start) {
+                newTableDatas.push(element)
+              } else if (r > end) {
+                var newR = r - (end - start + 1)
+                element.cellCoords = this.commonUtil.getColumnFromCoords(newR, c)
+                newTableDatas.push(element)
+              }
+            }
+            datasource.tableDatas = newTableDatas
+          }
         }
+      }
+      if (isSaveCache) {
+        this.saveTplCache()
       }
     },
     // 删除列
@@ -1366,9 +1466,33 @@ export default {
           }
         }
         this.extraCustomCellConfigs[sheetIndex] = sheetExtraCustomCellConfigs
-        if (isSaveCache) {
-          this.saveTplCache()
+      }
+      if (this.sheetDatasource && this.sheetDatasource[sheetIndex] && this.sheetDatasource[sheetIndex].length > 0) {
+        for (let index = 0; index < this.sheetDatasource[sheetIndex].length; index++) {
+          const datasource = this.sheetDatasource[sheetIndex][index]
+          var tableDatas = datasource.tableDatas
+          var newTableDatas = []
+          if (tableDatas && tableDatas.length > 0) {
+            for (let index = 0; index < tableDatas.length; index++) {
+              const element = tableDatas[index]
+              var cellCoords = element.cellCoords
+              var coords = this.commonUtil.getCoordsFromColumnName(cellCoords, true)
+              var r = coords[0]
+              var c = coords[1]
+              if (c < start) {
+                newTableDatas.push(element)
+              } else if (c > end) {
+                var newC = c - (end - start + 1)
+                element.cellCoords = this.commonUtil.getColumnFromCoords(r, newC)
+                newTableDatas.push(element)
+              }
+            }
+            datasource.tableDatas = newTableDatas
+          }
         }
+      }
+      if (isSaveCache) {
+        this.saveTplCache()
       }
     },
     // 获取数据集
@@ -2969,9 +3093,9 @@ export default {
               if(!obj[attr2]){
                 obj[attr2] = {};
               }
-              obj[attr2][attr] = this.cellForm[attr2][attr]
+              obj[attr2][attr] = JSON.parse(JSON.stringify(this.cellForm[attr2][attr]))
             }else{
-              obj[attr] = this.cellForm[attr]
+              obj[attr] =  JSON.parse(JSON.stringify(this.cellForm[attr]))
             }
           } else {
             obj = {}
@@ -2980,9 +3104,9 @@ export default {
               if(!this.cellForm[attr2]){
                 this.cellForm[attr2] = {};
               }
-              obj[attr2][attr] = this.cellForm[attr2][attr]
+              obj[attr2][attr] =  JSON.parse(JSON.stringify(this.cellForm[attr2][attr]))
             }else{
-              obj[attr] = this.cellForm[attr]
+              obj[attr] =  JSON.parse(JSON.stringify(this.cellForm[attr]))
             }
           }
           this.setExtraCustomCellConfigs(element[0], element[1], obj)
@@ -3326,6 +3450,48 @@ export default {
                 delete map[r + '_' + c]
               }
             }
+          }
+        }
+      }
+      if (this.sheetDatasource && this.sheetDatasource[sheetIndex] && this.sheetDatasource[sheetIndex].length > 0) {
+        for (let index = 0; index < this.sheetDatasource[sheetIndex].length; index++) {
+          const datasource = this.sheetDatasource[sheetIndex][index]
+          var tableDatas = datasource.tableDatas
+          var newTableDatas = []
+          if (tableDatas && tableDatas.length > 0) {
+            for (let index = 0; index < tableDatas.length; index++) {
+              const element = tableDatas[index]
+              var cellCoords = element.cellCoords
+              var coords = this.commonUtil.getCoordsFromColumnName(cellCoords, true)
+              var r = coords[0]
+              var c = coords[1]
+              if (type == 'moveLeft') {
+                if (r >= str && r <= edr) {
+                  if (c > edc) {
+                    var newc = c - (edc - stc + 1)
+                    element.cellCoords = this.commonUtil.getColumnFromCoords(r, newc)
+                    newTableDatas.push(element)
+                  } else if (c < stc) {
+                    newTableDatas.push(element)
+                  }
+                } else {
+                  newTableDatas.push(element)
+                }
+              } else if (type == 'moveUp') {
+                if (c >= stc && c <= edc) {
+                  if (r > edr) {
+                    var newr = r - (edr - str + 1)
+                    element.cellCoords = this.commonUtil.getColumnFromCoords(newr, c)
+                    newTableDatas.push(element)
+                  } else if (r < str) {
+                    newTableDatas.push(element)
+                  }
+                } else {
+                  newTableDatas.push(element)
+                }
+              }
+            }
+            datasource.tableDatas = newTableDatas
           }
         }
       }
@@ -4875,7 +5041,9 @@ export default {
           datasourceId: '', // 数据源id
           table: '', // 表名
           keys: [], // 主键
-          tableDatas: []// 属性对应关系
+          tableDatas: [],// 属性对应关系
+          autoFillAttrs:[],
+          deleteTypes:[],
         }
       }
       that.datasourceDialog = true
@@ -5114,6 +5282,7 @@ export default {
             columnName: that.autoFillForm.columnName,
             fillType: that.autoFillForm.fillType,
             fillStrategy: that.autoFillForm.fillStrategy,
+            fillValue: that.autoFillForm.fillValue,
           }
           if(!that.datasourceAttr.autoFillAttrs){
             that.datasourceAttr.autoFillAttrs = [];
@@ -5153,6 +5322,47 @@ export default {
         this.settingModalForm[22].rules.required = false
       }
     },
+    addDeleteType() {
+      if (!this.datasourceAttr.datasourceId) {
+        this.commonUtil.showMessage({ message: '请选择数据源', type: this.commonConstants.messageType.error })
+        return
+      }
+      if (!this.datasourceAttr.table) {
+        this.commonUtil.showMessage({ message: '请选择表', type: this.commonConstants.messageType.error })
+        return
+      }
+      if(this.datasourceAttr.deleteTypes && this.datasourceAttr.deleteTypes.length>0){
+        this.commonUtil.showMessage({ message: '只能添加一条删除规则，请先删除再添加。', type: this.commonConstants.messageType.error })
+        return
+      }
+      this.deleteTypeDialog = true
+    },
+    closeDeleteType(){
+      this.commonUtil.clearObj(this.deleteTypeForm)
+      this.deleteTypeDialog = false
+    },
+    confirmDeleteType(){
+      var that = this;
+      this.$refs['deleteTypeRef'].validate((valid) => {
+        if (valid) {
+          var obj = {
+            deleteType: that.deleteTypeForm.deleteType,
+            columnName: that.deleteTypeForm.columnName,
+            deleteValue: that.deleteTypeForm.deleteValue,
+          }
+          if(!that.datasourceAttr.deleteTypes){
+            that.datasourceAttr.deleteTypes = [];
+          }
+          that.datasourceAttr.deleteTypes.push(obj)
+          that.closeDeleteType()
+        } else {
+          return false
+        }
+      })
+    },
+    deleteDeleteType(index){
+      this.datasourceAttr.deleteTypes.splice(index, 1)
+    }
   },
   watch: {
     'settingFormData.waterMarkImgs': function(newValue, oldValue) {

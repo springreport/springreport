@@ -293,6 +293,13 @@ public class ResLuckySheetDataDto {
      * @date 2025-02-05 08:50:22 
      */  
     private Map<String, JSONObject> autoFillAttrs;
+    
+    /**  
+     * @Fields deleteTypes : 删除规则
+     * @author caiyang
+     * @date 2025-02-17 02:58:15 
+     */  
+    private Map<String, JSONObject> deleteTypes;;
 
 	public Map<String, Integer> getMaxXAndY() {
 		if(maxXAndY == null)

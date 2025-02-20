@@ -30,6 +30,7 @@ import com.deepoove.poi.config.Configure;
 import com.deepoove.poi.config.ConfigureBuilder;
 import com.deepoove.poi.plugin.table.LoopColumnTableRenderPolicy;
 import com.deepoove.poi.plugin.table.LoopRowTableRenderPolicy;
+import com.github.pagehelper.PageHelper;
 
 import org.apache.poi.openxml4j.util.ZipSecureFile;
 import org.apache.poi.wp.usermodel.HeaderFooterType;
@@ -103,6 +104,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import com.springreport.base.BaseEntity;
 import com.springreport.base.DocChartSettingDto;
+import com.springreport.base.PageEntity;
 import com.springreport.base.TDengineConnection;
 import com.springreport.base.UserInfoDto;
 import com.springreport.constants.StatusCode;
@@ -230,38 +232,17 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 	* @throws 
 	*/ 
 	@Override
-	public List<DocTplTreeDto> tablePagingQuery(ReportType model) {
-		List<DocTplTreeDto> result = new ArrayList<>();
+	public PageEntity tablePagingQuery(DocTpl model) {
+		PageEntity result = new PageEntity();
 		model.setDelFlag(DelFlagEnum.UNDEL.getCode());
-		QueryWrapper<ReportType> typeQueryWrapper = new QueryWrapper<>();
-		if(this.merchantmode == YesNoEnum.YES.getCode()) {
-			typeQueryWrapper.eq("merchant_no", model.getMerchantNo());
-		}
-		typeQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
-		typeQueryWrapper.eq("type", 2);
-		List<ReportType> list = this.iReportTypeService.list(typeQueryWrapper);
-		if(ListUtil.isNotEmpty(list)) {
-			DocTplTreeDto docTplTreeDto = null;
+		com.github.pagehelper.Page<?> page = PageHelper.startPage(model.getCurrentPage(), model.getPageSize()); //分页条件
+		List<DocTplDto> list = this.baseMapper.getTableList(model);
+		if(!ListUtil.isEmpty(list))
+		{
 			for (int i = 0; i < list.size(); i++) {
-				docTplTreeDto = new DocTplTreeDto();
-				docTplTreeDto.setId(list.get(i).getId());
-				docTplTreeDto.setTplCode(list.get(i).getReportTypeName());
-				docTplTreeDto.setTplName(list.get(i).getReportTypeName());
-				docTplTreeDto.setIcon("iconfont icon-wenjianjiakai");
-				docTplTreeDto.setType("1");
-				result.add(docTplTreeDto);
-			}
-		}
-		DocTpl docTpl = new DocTpl();
-		docTpl.setDelFlag(DelFlagEnum.UNDEL.getCode());
-		List<DocTplDto> tpls = this.baseMapper.getTableList(docTpl);
-		if(ListUtil.isNotEmpty(tpls)) {
-			DocTplTreeDto docTplTreeDto = null;
-			for (int i = 0; i < tpls.size(); i++) {
-				docTplTreeDto = new DocTplTreeDto();
-				if(StringUtil.isNotEmpty(tpls.get(i).getDatasourceId()))
+				if(StringUtil.isNotEmpty(list.get(i).getDatasourceId()))
 				{
-					String[] datasourceIds = tpls.get(i).getDatasourceId().split(",");
+					String[] datasourceIds = list.get(i).getDatasourceId().split(",");
 					List<String> ids = Arrays.asList(datasourceIds);
 					QueryWrapper<ReportDatasource> queryWrapper = new QueryWrapper<>();
 					queryWrapper.in("id", ids);
@@ -280,17 +261,16 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 								dataSourceCode = dataSourceCode + "," + datasources.get(j).getCode();
 							}
 						}
-						tpls.get(i).setDataSourceName(dataSourceName);
-						tpls.get(i).setDataSourceCode(dataSourceCode);
+						list.get(i).setDataSourceName(dataSourceName);
+						list.get(i).setDataSourceCode(dataSourceCode);
 					}
 				}
-				BeanUtils.copyProperties(tpls.get(i), docTplTreeDto);
-				docTplTreeDto.setIcon("iconfont icon-Word");
-				docTplTreeDto.setType("2");
-				docTplTreeDto.setHasChildren(false);
-				result.add(docTplTreeDto);
 			}
 		}
+		result.setData(list);
+		result.setTotal(page.getTotal());
+		result.setCurrentPage(model.getCurrentPage());
+		result.setPageSize(model.getPageSize());
 		return result;
 	}
 

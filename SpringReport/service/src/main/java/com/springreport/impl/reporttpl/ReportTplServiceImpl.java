@@ -359,28 +359,45 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 	* @throws 
 	*/ 
 	@Override
-	public List<ReportTplTreeDto> tablePagingQuery(ReportType model) {
-		List<ReportTplTreeDto> result = new ArrayList<>();
+	public PageEntity tablePagingQuery(ReportTpl model) {
+		PageEntity result = new PageEntity();
 		model.setDelFlag(DelFlagEnum.UNDEL.getCode());
-		QueryWrapper<ReportType> queryWrapper = new QueryWrapper<>();
-		if(this.merchantmode == YesNoEnum.YES.getCode()) {
-			queryWrapper.eq("merchant_no", model.getMerchantNo());
-		}
-		queryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
-		queryWrapper.eq("type", 1);
-		List<ReportType> list = this.iReportTypeService.list(queryWrapper);
-		if(ListUtil.isNotEmpty(list)) {
-			ReportTplTreeDto reportTplTreeDto = null;
+		com.github.pagehelper.Page<?> page = PageHelper.startPage(model.getCurrentPage(), model.getPageSize()); //分页条件
+		List<ReportTplDto> list = this.baseMapper.getTableList(model);
+		if(!ListUtil.isEmpty(list))
+		{
 			for (int i = 0; i < list.size(); i++) {
-				reportTplTreeDto = new ReportTplTreeDto();
-				reportTplTreeDto.setId(list.get(i).getId());
-				reportTplTreeDto.setTplCode(list.get(i).getReportTypeName());
-				reportTplTreeDto.setTplName(list.get(i).getReportTypeName());
-				reportTplTreeDto.setIcon("iconfont icon-wenjianjiakai");
-				reportTplTreeDto.setType("1");
-				result.add(reportTplTreeDto);
+				if(StringUtil.isNotEmpty(list.get(i).getDatasourceId()))
+				{
+					String[] datasourceIds = list.get(i).getDatasourceId().split(",");
+					List<String> ids = Arrays.asList(datasourceIds);
+					QueryWrapper<ReportDatasource> queryWrapper = new QueryWrapper<>();
+					queryWrapper.in("id", ids);
+					List<ReportDatasource> datasources = this.iReportDatasourceService.list(queryWrapper);
+					if(!ListUtil.isEmpty(datasources))
+					{
+						String dataSourceName = "";
+						String dataSourceCode = "";
+						for (int j = 0; j < datasources.size(); j++) {
+							if(j == 0)
+							{
+								dataSourceName = dataSourceName + datasources.get(j).getName();
+								dataSourceCode = dataSourceCode + datasources.get(j).getCode();
+							}else {
+								dataSourceName = dataSourceName + "," + datasources.get(j).getName();
+								dataSourceCode = dataSourceCode + "," + datasources.get(j).getCode();
+							}
+						}
+						list.get(i).setDataSourceName(dataSourceName);
+						list.get(i).setDataSourceCode(dataSourceCode);
+					}
+				}
 			}
 		}
+		result.setData(list);
+		result.setTotal(page.getTotal());
+		result.setCurrentPage(model.getCurrentPage());
+		result.setPageSize(model.getPageSize());
 		return result;
 	}
 	
@@ -1287,8 +1304,8 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 					reportFormsDatasource.setTableName(config.getString("table"));
 					formsDatasources.add(reportFormsDatasource);
 					JSONArray tableDatas = config.getJSONArray("tableDatas");
-					Integer cellExtend = null;//扩展方向
-					String aggregateType = null;//聚合方式
+					Integer cellExtend = 1;//扩展方向
+					String aggregateType = "list";//聚合方式
 					if(!ListUtil.isEmpty(tableDatas))
 					{
 						for (int j = 0; j < tableDatas.size(); j++) {
@@ -1314,7 +1331,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 									{
 										if(j == 0)
 										{
-											cellExtend = cells.get(0).getCellExtend();
+											cellExtend = cells.get(0).getCellExtend()==null?1:cells.get(0).getCellExtend();
 											if(StringUtil.isNotEmpty(cells.get(0).getAggregateType()))
 											{
 												aggregateType = cells.get(0).getAggregateType();
@@ -1329,7 +1346,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 											}else {
 												cellAggregate = "list";
 											}
-											if(cellExtend.intValue() != cells.get(0).getCellExtend().intValue())
+											if(cells.get(0).getCellExtend() != null && cellExtend.intValue() != cells.get(0).getCellExtend().intValue())
 											{
 												throw new BizException(StatusCode.FAILURE,"填报属性【"+ config.getString("name") +"】绑定的单元格扩展方向属性必须一致。");
 											}
@@ -1386,6 +1403,20 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 							reportFormsDatasourceAttrs.setColumnName(autoFillAttr.getString("columnName"));
 							reportFormsDatasourceAttrs.setFillType(autoFillAttr.getInteger("fillType"));
 							reportFormsDatasourceAttrs.setFillStrategy(autoFillAttr.getInteger("fillStrategy"));
+							reportFormsDatasourceAttrs.setFillValue(autoFillAttr.getString("fillValue"));
+							formsDatasourceAttrs.add(reportFormsDatasourceAttrs);
+						}
+					}
+					JSONArray deleteTypes = config.getJSONArray("deleteTypes");
+					if(!ListUtil.isEmpty(deleteTypes)) {
+						for (int j = 0; j < deleteTypes.size(); j++) {
+							JSONObject deleteType = deleteTypes.getJSONObject(j);
+							ReportFormsDatasourceAttrs reportFormsDatasourceAttrs = new ReportFormsDatasourceAttrs();
+							reportFormsDatasourceAttrs.setReportFormsDatasourceId(reportFormsDatasource.getId());
+							reportFormsDatasourceAttrs.setType(4);
+							reportFormsDatasourceAttrs.setColumnName(deleteType.getString("columnName"));
+							reportFormsDatasourceAttrs.setDeleteType(deleteType.getInteger("deleteType"));
+							reportFormsDatasourceAttrs.setDeleteValue(deleteType.getString("deleteValue"));
 							formsDatasourceAttrs.add(reportFormsDatasourceAttrs);
 						}
 					}
@@ -2474,6 +2505,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 						JSONArray tableDatas = new JSONArray();
 						JSONArray keys = new JSONArray();
 						JSONArray autoFillAttrs = new JSONArray();
+						JSONArray deleteTypes = new JSONArray();
 						if(!ListUtil.isEmpty(formsDatasourceAttrs))
 						{
 							for (int j = 0; j < formsDatasourceAttrs.size();j++) {
@@ -2490,13 +2522,20 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 									jsonObject.put("columnName", formsDatasourceAttrs.get(j).getColumnName());
 									jsonObject.put("fillType", formsDatasourceAttrs.get(j).getFillType());
 									jsonObject.put("fillStrategy", formsDatasourceAttrs.get(j).getFillStrategy());
+									jsonObject.put("fillValue", formsDatasourceAttrs.get(j).getFillValue());
 									autoFillAttrs.add(jsonObject);
+								}else if(formsDatasourceAttrs.get(j).getType().intValue() == 4){
+									jsonObject.put("columnName", formsDatasourceAttrs.get(j).getColumnName());
+									jsonObject.put("deleteType", formsDatasourceAttrs.get(j).getDeleteType());
+									jsonObject.put("deleteValue", formsDatasourceAttrs.get(j).getDeleteValue());
+									deleteTypes.add(jsonObject);
 								}
 							}
 						}
 						datasourceConfig.put("tableDatas", tableDatas);
 						datasourceConfig.put("keys", keys);
 						datasourceConfig.put("autoFillAttrs", autoFillAttrs);
+						datasourceConfig.put("deleteTypes", deleteTypes);
 						datasourceConfigs.add(datasourceConfig);
 					}
 				}
@@ -3153,6 +3192,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				List<Map<String, JSONObject>> cellDatasourceConfigs = new ArrayList<>();
 				Map<String, JSONObject> tableKeys = new HashMap<>();//主键字段
 				Map<String, JSONObject> autoFillAttrs = new HashMap<>();//自动填充字段
+				Map<String, JSONObject> deleteTypes = new HashMap<>();//删除规则
 				if(!ListUtil.isEmpty(reportFormsDatasources))
 				{
 					for (int i = 0; i < reportFormsDatasources.size(); i++) {
@@ -3201,6 +3241,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 									jsonObject.put("columnName", formsDatasourceAttrs.get(j).getColumnName());
 									jsonObject.put("fillType", formsDatasourceAttrs.get(j).getFillType());
 									jsonObject.put("fillStrategy", formsDatasourceAttrs.get(j).getFillStrategy());
+									jsonObject.put("fillValue", formsDatasourceAttrs.get(j).getFillValue());
 									jsonObject.put("datasourceId", String.valueOf(reportFormsDatasources.get(i).getDatasourceId()));
 									jsonObject.put("table", reportFormsDatasources.get(i).getTableName());
 									jsonObject.put("name", reportFormsDatasources.get(i).getName());
@@ -3208,6 +3249,18 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 											+  reportFormsDatasources.get(i).getTableName() + "|"
 											+ formsDatasourceAttrs.get(j).getColumnName()+"|"+reportFormsDatasources.get(i).getName();
 									autoFillAttrs.put(key, jsonObject);
+								}else if(formsDatasourceAttrs.get(j).getType().intValue() == 4){
+									//删除规则
+									jsonObject.put("columnName", formsDatasourceAttrs.get(j).getColumnName());
+									jsonObject.put("deleteType", formsDatasourceAttrs.get(j).getDeleteType());
+									jsonObject.put("deleteValue", formsDatasourceAttrs.get(j).getDeleteValue());
+									jsonObject.put("datasourceId", String.valueOf(reportFormsDatasources.get(i).getDatasourceId()));
+									jsonObject.put("table", reportFormsDatasources.get(i).getTableName());
+									jsonObject.put("name", reportFormsDatasources.get(i).getName());
+									String key = String.valueOf(reportFormsDatasources.get(i).getDatasourceId()) + "|"
+											+  reportFormsDatasources.get(i).getTableName() + "|"
+											+ reportFormsDatasources.get(i).getName();
+									deleteTypes.put(key, jsonObject);
 								}
 							}
 							cellDatasourceConfigs.add(cellDatasourceConfig);
@@ -3233,6 +3286,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 					resLuckySheetDataDto.setCellDatasourceConfigs(cellDatasourceConfigs);
 					resLuckySheetDataDto.setTableKeys(tableKeys);
 					resLuckySheetDataDto.setAutoFillAttrs(autoFillAttrs);
+					resLuckySheetDataDto.setDeleteTypes(deleteTypes);
 				}
 				JSONArray chart = new JSONArray();
 				if(StringUtil.isNotEmpty(sheets.get(t).getChart()))
@@ -3971,6 +4025,13 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				if(allCells.get(i).getCellFillType().intValue() == 2) {
 					coverCells.put(allCells.get(i).getCoordsx() + "_" + allCells.get(i).getCoordsy(), bindData);
 				}
+			}else {
+				processExtendCellOrigin(extendCellOrigin,allCells.get(i));
+				String originCell = allCells.get(i).getCoordsx() + LuckySheetPropsEnum.COORDINATECONNECTOR.getCode() + allCells.get(i).getCoordsy();
+				JSONObject jsonObject = new JSONObject();
+				jsonObject.put("r", allCells.get(i).getCoordsx());
+				jsonObject.put("c", allCells.get(i).getCoordsy());
+				columnStartCoords.put(originCell, jsonObject);
 			}
 			if(StringUtil.isNotEmpty(allCells.get(i).getFormsAttrs())) {
 				JSONObject extraCustomCellConfig = objectMapper.readValue(StringUtil.isNullOrEmpty(allCells.get(i).getFormsAttrs())?"{}":allCells.get(i).getFormsAttrs(), JSONObject.class);
@@ -4772,7 +4833,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		
 		luckySheetBindData.getCellData().put(LuckySheetPropsEnum.R.getCode(), rowAndCol.get("maxX"));
 		luckySheetBindData.getCellData().put(LuckySheetPropsEnum.C.getCode(), rowAndCol.get("maxY"));
-		this.processExtendCellOrigin(extendCellOrigin, luckySheetBindData, rowAndCol);
+		this.processExtendCellOrigin(extendCellOrigin, luckySheetBindData, rowAndCol,luckySheetBindData.getIsRelyCell());
 		this.processColumnStartCoords(columnStartCoords, luckySheetBindData, rowAndCol);
 		boolean isImg = false;
 		Map<String, Object> cellConfig = (Map<String, Object>) luckySheetBindData.getCellData().get(LuckySheetPropsEnum.CELLCONFIG.getCode());
@@ -4839,10 +4900,10 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		{
 			if(luckySheetBindData.getIsRelyCell().intValue() == 1 && "list".equals(luckySheetBindData.getLastAggregateType())) {
 				if(luckySheetBindData.getLastCoordsx() == null) {
-					String formula = SheetUtil.calculateFormula(String.valueOf(cellConfig.get("f")),0, 2);
+					String formula = SheetUtil.calculateFormula(String.valueOf(cellConfig.get("f")),0, luckySheetBindData.getRelyCellExtend().intValue()==2?1:2);
 					cellConfig.put("f", formula);
 				}else {
-					String formula = SheetUtil.calculateFormula(String.valueOf(cellConfig.get("f")),luckySheetBindData.getRowSpan(), 2);
+					String formula = SheetUtil.calculateFormula(String.valueOf(cellConfig.get("f")),luckySheetBindData.getRowSpan(), luckySheetBindData.getRelyCellExtend().intValue()==2?1:2);
 					cellConfig.put("f", formula);
 				}
 			}
@@ -7619,8 +7680,19 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         String format = LuckysheetUtil.getCellFormat(luckySheetBindData.getCellData());
     	Object v = LuckysheetUtil.formatValue(format, value);
     	if(YesNoEnum.YES.getCode().intValue() == luckySheetBindData.getIsFunction().intValue() && "list".equals(luckySheetBindData.getAggregateType())) {
-    		int rowSpan = luckySheetBindData.getRowSpan();
-    		value = SheetUtil.calculateFormula(property,rowSpan*j, 2);
+    		if(luckySheetBindData.getIsRelyCell().intValue() == YesNoEnum.YES.getCode().intValue()) {
+    			if(luckySheetBindData.getLastCoordsx() == null) {
+    				int rowSpan = luckySheetBindData.getRowSpan();
+            		value = SheetUtil.calculateFormula(property,0, 2);
+    			}else {
+    				int rowSpan = luckySheetBindData.getRowSpan();
+            		value = SheetUtil.calculateFormula(property,rowSpan*luckySheetBindData.getRelyIndex(), 2);
+    			}
+    		}else {
+    			int rowSpan = luckySheetBindData.getRowSpan();
+        		value = SheetUtil.calculateFormula(property,rowSpan*j, 2);
+    		}
+    		
     	}
     	((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.CELLVALUE.getCode(), v);
     	((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.CELLVALUEM.getCode(), v);
@@ -8694,8 +8766,18 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         String format = LuckysheetUtil.getCellFormat(luckySheetBindData.getCellData());
     	Object v = LuckysheetUtil.formatValue(format, value);
     	if(YesNoEnum.YES.getCode().intValue() == luckySheetBindData.getIsFunction().intValue() && "list".equals(luckySheetBindData.getAggregateType())) {
-    		int colSpan = luckySheetBindData.getColSpan();
-    		value = SheetUtil.calculateFormula(property,colSpan*j, 1);
+    		if(luckySheetBindData.getIsRelyCell().intValue() == YesNoEnum.YES.getCode().intValue()) {
+    			if(luckySheetBindData.getLastCoordsx() == null) {
+        			int colSpan = luckySheetBindData.getColSpan();
+            		value = SheetUtil.calculateFormula(property,0, 1);
+        		}else {
+        			int colSpan = luckySheetBindData.getColSpan();
+            		value = SheetUtil.calculateFormula(property,colSpan*luckySheetBindData.getRelyIndex(), 1);
+        		}
+    		}else {
+    			int colSpan = luckySheetBindData.getColSpan();
+        		value = SheetUtil.calculateFormula(property,colSpan*j, 1);
+    		}
     	}
     	((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.CELLVALUE.getCode(), v);
     	((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.CELLVALUEM.getCode(), v);
@@ -11789,8 +11871,10 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		Long tplId = model.getId();
 		ReportTpl reportTpl = this.getById(tplId);
 		String end = DateUtil.getLastSixDigits();
-		reportTpl.setTplCode(reportTpl.getTplCode()+"_copy_"+end);
-		reportTpl.setTplName(reportTpl.getTplName()+"_copy_"+end);
+		String newCode = reportTpl.getTplCode()+"_copy_"+end;
+		String newName = reportTpl.getTplName()+"_copy_"+end;
+		reportTpl.setTplCode(newCode);
+		reportTpl.setTplName(newName);
 		reportTpl.setId(null);
 		//保存报表
 		this.save(reportTpl);
@@ -11836,8 +11920,8 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		{
 			for (int i = 0; i < reportTplSheets.size(); i++) {
 				Long sheetId = reportTplSheets.get(i).getId();
-				if(reportTpl.getTplType().intValue() == 1)
-				{//展示报表,获取luckysheet_report_cell中的数据和luckysheet_report_block_cell中的数据
+//				if(reportTpl.getTplType().intValue() == 1)
+//				{//展示报表,获取luckysheet_report_cell中的数据和luckysheet_report_block_cell中的数据
 					QueryWrapper<LuckysheetReportCell> reportCellQueryWrapper = new QueryWrapper<>();
 					reportCellQueryWrapper.eq("sheet_id", reportTplSheets.get(i).getId());
 					reportCellQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
@@ -11883,37 +11967,6 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 						}
 						insertLuckysheetReportCells.addAll(luckysheetReportCells);
 					}
-				}else {//填报报表
-					//填报单元格信息获取
-					QueryWrapper<LuckysheetReportFormsCell> formsCellQueryWrapper = new QueryWrapper<>();
-					formsCellQueryWrapper.eq("sheet_id", sheetId);
-					formsCellQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
-					List<LuckysheetReportFormsCell> formsCells = this.iLuckysheetReportFormsCellService.list(formsCellQueryWrapper);
-					String sheetIndex = reportTplSheets.get(i).getSheetIndex();
-					reportTplSheets.get(i).setId(IdWorker.getId());
-					reportTplSheets.get(i).setTplId(reportTpl.getId());
-					reportTplSheets.get(i).setSheetIndex("Sheet"+UUIDUtil.getUUID());
-					String calcChain = reportTplSheets.get(i).getCalcChain();
-					if(StringUtil.isNotEmpty(calcChain))
-					{
-						calcChain = calcChain.replaceAll(sheetIndex, reportTplSheets.get(i).getSheetIndex());
-					}
-					reportTplSheets.get(i).setCalcChain(calcChain);
-					String alternateformatSave = reportTplSheets.get(i).getAlternateformatSave();
-					if(StringUtil.isNotEmpty(alternateformatSave))
-					{
-						alternateformatSave = alternateformatSave.replaceAll(sheetIndex, reportTplSheets.get(i).getSheetIndex());
-					}
-					reportTplSheets.get(i).setAlternateformatSave(alternateformatSave);
-					if(!ListUtil.isEmpty(formsCells))
-					{
-						for (int j = 0; j < formsCells.size(); j++) {
-							formsCells.get(j).setId(null);
-							formsCells.get(j).setTplId(reportTpl.getId());
-							formsCells.get(j).setSheetId(reportTplSheets.get(i).getId());
-						}
-						insertLuckysheetReportFormsCells.addAll(formsCells);
-					}
 					//关联数据源和数据源属性获取
 					QueryWrapper<ReportFormsDatasource> formsDatasourceQueryWrapper = new QueryWrapper<>();
 					formsDatasourceQueryWrapper.eq("sheet_id", sheetId);
@@ -11938,7 +11991,39 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 						}
 						insertFormsDatasources.addAll(formsDatasources);
 					}
-				}
+//				}else {//填报报表
+//					//填报单元格信息获取
+//					QueryWrapper<LuckysheetReportFormsCell> formsCellQueryWrapper = new QueryWrapper<>();
+//					formsCellQueryWrapper.eq("sheet_id", sheetId);
+//					formsCellQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+//					List<LuckysheetReportFormsCell> formsCells = this.iLuckysheetReportFormsCellService.list(formsCellQueryWrapper);
+//					String sheetIndex = reportTplSheets.get(i).getSheetIndex();
+//					reportTplSheets.get(i).setId(IdWorker.getId());
+//					reportTplSheets.get(i).setTplId(reportTpl.getId());
+//					reportTplSheets.get(i).setSheetIndex("Sheet"+UUIDUtil.getUUID());
+//					String calcChain = reportTplSheets.get(i).getCalcChain();
+//					if(StringUtil.isNotEmpty(calcChain))
+//					{
+//						calcChain = calcChain.replaceAll(sheetIndex, reportTplSheets.get(i).getSheetIndex());
+//					}
+//					reportTplSheets.get(i).setCalcChain(calcChain);
+//					String alternateformatSave = reportTplSheets.get(i).getAlternateformatSave();
+//					if(StringUtil.isNotEmpty(alternateformatSave))
+//					{
+//						alternateformatSave = alternateformatSave.replaceAll(sheetIndex, reportTplSheets.get(i).getSheetIndex());
+//					}
+//					reportTplSheets.get(i).setAlternateformatSave(alternateformatSave);
+//					if(!ListUtil.isEmpty(formsCells))
+//					{
+//						for (int j = 0; j < formsCells.size(); j++) {
+//							formsCells.get(j).setId(null);
+//							formsCells.get(j).setTplId(reportTpl.getId());
+//							formsCells.get(j).setSheetId(reportTplSheets.get(i).getId());
+//						}
+//						insertLuckysheetReportFormsCells.addAll(formsCells);
+//					}
+//					
+//				}
 				//获取chart配置信息
 				QueryWrapper<ReportTplSheetChart> sheetChartQueryWrapper = new QueryWrapper<>();
 				sheetChartQueryWrapper.eq("tpl_id", tplId);
@@ -11994,7 +12079,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				this.iReportTplSheetChartService.saveBatch(reportTplSheetCharts);
 			}
 		}
-		result.setStatusMsg(MessageUtil.getValue("info.copy"));
+		result.setStatusMsg(MessageUtil.getValue("info.copy",new String[] {newName}));
 		return result;
 	}
 	
@@ -13773,6 +13858,30 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		}
 		return false;
 	}
+	private void processExtendCellOrigin(Map<String, JSONObject> extendCellOrigin,LuckysheetReportCell luckysheetReportCell)
+	{
+		String cellFlag = luckysheetReportCell.getCoordsx() + LuckySheetPropsEnum.COORDINATECONNECTOR.getCode() + luckysheetReportCell.getCoordsy();
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("r", luckysheetReportCell.getCoordsx());
+		jsonObject.put("c", luckysheetReportCell.getCoordsy());
+		Map<String, Object> cellData = JSON.parseObject(luckysheetReportCell.getCellData(), Map.class);
+		if(cellData.get("v") != null)
+		{
+			Map<String, Object> v = (Map<String, Object>) cellData.get("v");
+			Object bg = v.get("bg");
+			if(bg != null)
+			{
+				jsonObject.put("bg", bg);
+			}
+			Object ps = v.get("ps");
+			if(ps != null)
+			{
+				jsonObject.put("ps", ps);
+			}
+		}
+		
+		extendCellOrigin.put(cellFlag, jsonObject);
+	}
 	
 	/**  
 	 * @MethodName: processExtendCellOrigin
@@ -13790,6 +13899,41 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("r", luckySheetBindData.getCoordsx());
 		jsonObject.put("c", luckySheetBindData.getCoordsy());
+		Map<String, Object> cellData = luckySheetBindData.getCellData();
+		if(cellData.get("v") != null)
+		{
+			Map<String, Object> v = (Map<String, Object>) cellData.get("v");
+			Object bg = v.get("bg");
+			if(bg != null)
+			{
+				jsonObject.put("bg", bg);
+			}
+			Object ps = v.get("ps");
+			if(ps != null)
+			{
+				jsonObject.put("ps", ps);
+			}
+		}
+		
+		extendCellOrigin.put(cellFlag, jsonObject);
+	}
+	
+	private void processExtendCellOrigin(Map<String, JSONObject> extendCellOrigin,LuckySheetBindData luckySheetBindData,Map<String, Integer> rowAndCol,Integer isRely)
+	{
+		String cellFlag = rowAndCol.get("maxX") + LuckySheetPropsEnum.COORDINATECONNECTOR.getCode() + rowAndCol.get("maxY");
+		JSONObject jsonObject = new JSONObject();
+		String m = "";
+		if(luckySheetBindData.getCellData() != null && luckySheetBindData.getCellData().get("v") != null) {
+			Map<String, Object> vObj = (Map<String, Object>) luckySheetBindData.getCellData().get("v");
+			m = String.valueOf(vObj.get("m"));
+		}
+		if(isRely.intValue() == 1 && "删除".equals(m)) {
+			jsonObject.put("r", luckySheetBindData.getRelyCoordsx());
+			jsonObject.put("c", luckySheetBindData.getRelyCoordsy());
+		}else {
+			jsonObject.put("r", luckySheetBindData.getCoordsx());
+			jsonObject.put("c", luckySheetBindData.getCoordsy());
+		}
 		Map<String, Object> cellData = luckySheetBindData.getCellData();
 		if(cellData.get("v") != null)
 		{

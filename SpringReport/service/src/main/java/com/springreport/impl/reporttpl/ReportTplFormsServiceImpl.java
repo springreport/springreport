@@ -3807,8 +3807,11 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 					List<ReportDataColumnDto> columns  = new ArrayList<>();
 					JSONObject autoFillAttrs = new JSONObject();
 					Set<String> mapKeys = datas.keySet();
+					if(datas.containsKey("isSRInsertData")) {
+						reportDataDetailDto.setInsert((boolean) datas.get("isSRInsertData"));
+					}
 					for (String key : mapKeys) {
-						if("isSRrowChanged".equals(key)) {
+						if("isSRrowChanged".equals(key) || "isSRInsertData".equals(key)) {
 							continue;
 						}
 						String reculateKey = o + "|" + key;
@@ -4336,7 +4339,6 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 					params.put(reportTplDataset.getCurrentPageAttr(), Integer.valueOf(String.valueOf(mesGenerateReportDto.getPagination().get("currentPage"))));
 					params.put(reportTplDataset.getPageCountAttr(), Integer.valueOf(String.valueOf(mesGenerateReportDto.getPagination().get("pageCount"))));
 				}
-				
 			}
 			if("post".equals(reportDatasource.getApiRequestType()))
 			{
@@ -4374,5 +4376,28 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 		resultMap.put("datas", datas);
 		resultMap.put("params", params);
 		return resultMap;
+	}
+
+	/**  
+	 * @MethodName: deleteReportData
+	 * @Description: 填报报表删除数据
+	 * @author caiyang
+	 * @param model
+	 * @param userInfoDto
+	 * @return
+	 * @see com.springreport.api.reporttpl.IReportTplFormsService#deleteReportData(com.alibaba.fastjson.JSONObject, com.springreport.base.UserInfoDto)
+	 * @date 2025-02-17 12:26:37 
+	 */
+	@Override
+	public BaseEntity deleteReportData(JSONObject model, UserInfoDto userInfoDto) {
+		BaseEntity result = new BaseEntity();
+		Long datasourceId = model.getLongValue("datasourceId");
+		ReportDatasource reportDatasource = this.iReportDatasourceService.getById(Long.valueOf(datasourceId));
+		DataSourceConfig dataSourceConfig = new DataSourceConfig(Long.valueOf(datasourceId), reportDatasource.getDriverClass(), reportDatasource.getJdbcUrl(), reportDatasource.getUserName(), reportDatasource.getPassword(), null);
+		DataSource dataSource = JdbcUtils.getDataSource(dataSourceConfig);
+		ReportDataUtil.deleteData(dataSource, model, userInfoDto);
+		String ip = CusAccessObjectUtil.getIpAddress(httpServletRequest);
+		this.iLuckysheetReportFormsHisService.saveDeleteHis(model,ip,userInfoDto);
+		return result;
 	}
 }

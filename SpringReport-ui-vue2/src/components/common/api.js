@@ -92,7 +92,8 @@ api.reportDesign = {
   insertGroupApi: '/api/reportTplDatasetGroup/insert', // 新增分组
   updateGroupApi: '/api/reportTplDatasetGroup/update', // 修改分组
   deleteGroupApi: '/api/reportTplDatasetGroup/delete', // 删除分组
-  getTplGroupDatasetsApi: '/api/reportTplDataset/getTplGroupDatasets'// 获取分组数据集
+  getTplGroupDatasetsApi: '/api/reportTplDataset/getTplGroupDatasets',// 获取分组数据集
+  deleteReportDataApi:'/api/reportTpl/deleteReportData',//填报报表删除数据
 }
 
 // 预览报表对应的api

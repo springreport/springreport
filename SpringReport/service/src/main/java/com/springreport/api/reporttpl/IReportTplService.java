@@ -51,7 +51,7 @@ public interface IReportTplService extends IService<ReportTpl> {
 	* @return BaseEntity 
 	* @throws 
 	*/ 
-	List<ReportTplTreeDto> tablePagingQuery(ReportType model);
+	PageEntity tablePagingQuery(ReportTpl model);
 	
 	List<ReportTplTreeDto> getChildren(ReportTpl model);
 

@@ -84,6 +84,9 @@ public class ExcelChartUtil {
 			chart.setTitleOverlay(false);
 		}
 		List<JSONArray> chartData = groupChartData(chartOptions);
+		if(ListUtil.isEmpty(chartData)) {
+			return;
+		}
 		JSONObject chartLegend = getLegend(chartOptions,chartData);
 		boolean show = chartLegend.getBooleanValue("show");
 		if(show)
@@ -253,6 +256,9 @@ public class ExcelChartUtil {
 			chart.setTitleOverlay(false);
 		}
 		List<JSONArray> chartData = groupChartData(chartOptions);
+		if(ListUtil.isEmpty(chartData)) {
+			return;
+		}
 		JSONObject chartLegend = getLegend(chartOptions,chartData);
 		boolean show = chartLegend.getBooleanValue("show");
 		if(show)
@@ -354,6 +360,9 @@ public class ExcelChartUtil {
 			chart.setTitleOverlay(false);
 		}
 		List<JSONArray> chartData = groupChartData(chartOptions);
+		if(ListUtil.isEmpty(chartData)) {
+			return;
+		}
 		JSONObject chartLegend = getLegend(chartOptions,chartData);
 		boolean show = chartLegend.getBooleanValue("show");
 		if(show)
@@ -428,6 +437,9 @@ public class ExcelChartUtil {
 			chart.setTitleOverlay(false);
 		}
 		List<JSONArray> chartData = groupChartData(chartOptions);
+		if(ListUtil.isEmpty(chartData)) {
+			return;
+		}
 		JSONObject chartLegend = getLegend(chartOptions,chartData);
 		boolean show = chartLegend.getBooleanValue("show");
 		if(show)
@@ -504,6 +516,9 @@ public class ExcelChartUtil {
 			chart.setTitleOverlay(false);
 		}
 		List<JSONArray> chartData = groupChartData(chartOptions);
+		if(ListUtil.isEmpty(chartData)) {
+			return;
+		}
 		JSONObject chartLegend = getLegend(chartOptions,chartData);
 		boolean show = chartLegend.getBooleanValue("show");
 		if(show)
@@ -689,15 +704,28 @@ public class ExcelChartUtil {
     					str = str + 1;
     				}
     			}
-    			if(axisDataSize < (edc-stc+1))
-    			{
-    				edc = stc+axisDataSize-1;
+    			if(axisDataSize != 0 && (edc-stc+1)%axisDataSize==0) {
+    				int multiple = (edc-stc+1)/axisDataSize;
+    				XDDFNumericalDataSource<Double> area = null;
+    				for (int t = 1; t <= multiple; t++) {
+    					edc = axisDataSize + stc - 1;
+    					for (int i = str; i <= edr; i++) {
+            				area = XDDFDataSourcesFactory.fromNumericCellRange(sheet, new CellRangeAddress(i, i, stc, edc));
+            				result.add(area);
+        				}
+    					stc = edc;
+					}
+    			}else {
+    				if(axisDataSize < (edc-stc+1))
+        			{
+        				edc = stc+axisDataSize-1;
+        			}
+        			XDDFNumericalDataSource<Double> area = null;
+        			for (int i = str; i <= edr; i++) {
+        				area = XDDFDataSourcesFactory.fromNumericCellRange(sheet, new CellRangeAddress(i, i, stc, edc));
+        				result.add(area);
+    				}
     			}
-    			XDDFNumericalDataSource<Double> area = null;
-    			for (int i = str; i <= edr; i++) {
-    				area = XDDFDataSourcesFactory.fromNumericCellRange(sheet, new CellRangeAddress(i, i, stc, edc));
-    				result.add(area);
-				}
     		}else {
     			int str = row.getIntValue(0);
     			int edr = row.getIntValue(1);
@@ -713,15 +741,28 @@ public class ExcelChartUtil {
     					str = str + 1;
     				}
     			}
-    			if(axisDataSize < (edr-str+1))
-    			{
-    				edr = str+axisDataSize-1;
+    			if(axisDataSize != 0 && (edr-str+1)%axisDataSize==0) {
+    				int multiple = (edr-str+1)/axisDataSize;
+    				XDDFNumericalDataSource<Double> area = null;
+    				for (int t = 1; t <= multiple; t++) {
+    					edr = str+axisDataSize-1;
+            			for (int i = stc; i <= edc; i++) {
+            				area = XDDFDataSourcesFactory.fromNumericCellRange(sheet, new CellRangeAddress(str, edr, i, i));
+            				result.add(area);
+        				}
+            			str = edr+1;
+    				}
+    			}else {
+    				if(axisDataSize < (edr-str+1))
+        			{
+        				edr = str+axisDataSize-1;
+        			}
+    				XDDFNumericalDataSource<Double> area = null;
+        			for (int i = stc; i <= edc; i++) {
+        				area = XDDFDataSourcesFactory.fromNumericCellRange(sheet, new CellRangeAddress(str, edr, i, i));
+        				result.add(area);
+    				}
     			}
-    			XDDFNumericalDataSource<Double> area = null;
-    			for (int i = stc; i <= edc; i++) {
-    				area = XDDFDataSourcesFactory.fromNumericCellRange(sheet, new CellRangeAddress(str, edr, i, i));
-    				result.add(area);
-				}
     		}
     	}
     	return result;

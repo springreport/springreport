@@ -62,7 +62,7 @@ export default {
   activated() {
     this.searchtablelist()
     // this.getReportType();
-    // this.getReportTypeTree();
+    this.getReportTypeTree();
   },
   methods: {
     /**
@@ -79,16 +79,11 @@ export default {
       var that = this
       that.pageData.tableData = []
       this.commonUtil.getTableList(obj).then(response => {
-        that.pageData.tableData = response.responseData
-        that.$nextTick(() => {
-          that.$refs.custable.$refs.cesTable.doLayout()
-        })
+        this.commonUtil.tableAssignment(response,this.pageData.tablePage,this.pageData.tableData);
       })
     },
     resetSearch() {
-      var reportType = this.pageData.queryData.reportType
       this.commonUtil.clearObj(this.pageData.queryData)
-      this.pageData.queryData.reportType = reportType
       this.searchtablelist()
     },
     selectChange(rows) {
@@ -114,7 +109,7 @@ export default {
     },
     getReportTypeTree() {
       var obj = {
-        params: {},
+        params: {"type":"1"},
         removeEmpty: false,
         url: this.apis.reportType.getReportTypeTreeApi
       }

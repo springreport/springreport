@@ -296,7 +296,7 @@ public class LuckySheetBindData {
     private Integer isRelyCell = YesNoEnum.NO.getCode();
     
     /**  
-     * @Fields relyCellExtend : 依赖单元格的扩展方向 单元格扩展方向 1不扩展 2纵向扩展 3横向扩展 4交叉扩展
+     * @Fields relyCellExtend : 依赖单元格的扩展方向 单元格扩展方向 1不扩展 3纵向扩展 2横向扩展 4交叉扩展
      * @author caiyang
      * @date 2023-03-03 04:40:22 
      */  
