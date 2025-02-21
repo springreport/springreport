@@ -1328,6 +1328,7 @@
               :component="chartOptions"
               :datasets="datasets"
               :isPreview="false"
+              :is-coedit="false"
             ></vchartsetting>
           </div>
         </div>
