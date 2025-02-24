@@ -4026,14 +4026,13 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				if(allCells.get(i).getCellFillType().intValue() == 2) {
 					coverCells.put(allCells.get(i).getCoordsx() + "_" + allCells.get(i).getCoordsy(), bindData);
 				}
-			}else {
-				processExtendCellOrigin(extendCellOrigin,allCells.get(i));
-				String originCell = allCells.get(i).getCoordsx() + LuckySheetPropsEnum.COORDINATECONNECTOR.getCode() + allCells.get(i).getCoordsy();
-				JSONObject jsonObject = new JSONObject();
-				jsonObject.put("r", allCells.get(i).getCoordsx());
-				jsonObject.put("c", allCells.get(i).getCoordsy());
-				columnStartCoords.put(originCell, jsonObject);
 			}
+			processExtendCellOrigin(extendCellOrigin,allCells.get(i));
+			String originCell = allCells.get(i).getCoordsx() + LuckySheetPropsEnum.COORDINATECONNECTOR.getCode() + allCells.get(i).getCoordsy();
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("r", allCells.get(i).getCoordsx());
+			jsonObject.put("c", allCells.get(i).getCoordsy());
+			columnStartCoords.put(originCell, jsonObject);
 			if(StringUtil.isNotEmpty(allCells.get(i).getFormsAttrs())) {
 				JSONObject extraCustomCellConfig = objectMapper.readValue(StringUtil.isNullOrEmpty(allCells.get(i).getFormsAttrs())?"{}":allCells.get(i).getFormsAttrs(), JSONObject.class);
 				boolean allowEdit = extraCustomCellConfig.getBooleanValue("allowEdit");
