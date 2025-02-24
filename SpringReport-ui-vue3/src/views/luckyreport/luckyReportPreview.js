@@ -676,6 +676,8 @@ export default {
       });
     },
     sendReportDataRequest(isInit, isCurrent) {
+      this.changedRowDatas = {};
+      this.rowDatas = {};
       const that = this;
       let apiHeaders = {};
       if (that.apiHeaders && that.apiHeaders.length > 0) {
@@ -2067,17 +2069,17 @@ export default {
                           let flag = rowFlag + m;
                           rowKey = sheetIndex + '|' + datasourceConfig.datasourceId + '|' + datasourceConfig.table + '|' + datasourceConfig.name + '|' + flag
                           r = r + m;
-                          this.getRowDatas(r,c,sheetIndex,rowKey,extraConfig,datasourceConfig,luckysheetfile,originCell,wrongMsg,v,flag,isChanged,isNew,element.r,element.c,dictKey);
+                          this.getRowDatas(r,c,sheetIndex,rowKey,extraConfig,datasourceConfig,luckysheetfile,originCell,wrongMsg,v,flag,isChanged,isNew,element.r,element.c,dictKey,msgMap);
                         }
                       }else if(extraConfig.cellExtend == 2){//向右扩展
                         for (let m = 0; m < cs; m++) {
                           let flag = rowFlag + m;
                           rowKey = sheetIndex + '|' + datasourceConfig.datasourceId + '|' + datasourceConfig.table + '|' + datasourceConfig.name + '|' + flag
                           c = c + m;
-                          this.getRowDatas(r,c,sheetIndex,rowKey,extraConfig,datasourceConfig,luckysheetfile,originCell,wrongMsg,v,flag,isChanged,isNew,element.r,element.c,dictKey);
+                          this.getRowDatas(r,c,sheetIndex,rowKey,extraConfig,datasourceConfig,luckysheetfile,originCell,wrongMsg,v,flag,isChanged,isNew,element.r,element.c,dictKey,msgMap);
                         }
                       }else{
-                        this.getRowDatas(r,c,sheetIndex,rowKey,extraConfig,datasourceConfig,luckysheetfile,originCell,wrongMsg,v,rowFlag,isChanged,isNew,element.r,element.c,dictKey);
+                        this.getRowDatas(r,c,sheetIndex,rowKey,extraConfig,datasourceConfig,luckysheetfile,originCell,wrongMsg,v,rowFlag,isChanged,isNew,element.r,element.c,dictKey,msgMap);
                       }
                       const tableKeys = this.sheetTableKeys[sheetIndex]
                       if (tableKeys) {
@@ -2113,7 +2115,7 @@ export default {
       }
       return msgMap;
     },
-    getRowDatas(r,c,sheetIndex,rowKey,extraConfig,datasourceConfig,luckysheetfile,originCell,wrongMsg,v,rowFlag,isChanged,isNew,elementr,elementc,dictKey){
+    getRowDatas(r,c,sheetIndex,rowKey,extraConfig,datasourceConfig,luckysheetfile,originCell,wrongMsg,v,rowFlag,isChanged,isNew,elementr,elementc,dictKey,msgMap){
       var data = this.rowDatas[rowKey]
       var basicData = this.basicRowDatas[rowKey]
       if (data) {
