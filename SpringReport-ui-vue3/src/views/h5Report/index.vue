@@ -577,5 +577,8 @@ export default {
     background: #d4f6ef;
   }
 }
-
+:deep(.xxbt_img) {
+  width: 100%;
+  height: auto;
+}
 </style>

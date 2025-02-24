@@ -64,7 +64,7 @@ INSERT INTO `doc_tpl` VALUES (1789220007910055938, 'SR00000000', 'tpl002(请勿�
 INSERT INTO `doc_tpl` VALUES (1789221186438176769, 'SR00000000', 'tpl003(请勿修改)', '区块对嵌套列表(请勿修改)', 1404697301888294914, '2024-05-11 17:09:08', 1404697301888294914, '2024-11-12 16:57:28', 1, 1, 1856227113871425538);
 INSERT INTO `doc_tpl` VALUES (1790351730387464194, 'SR00000000', 'tpl004(请勿修改)', '付款通知书(请勿修改)', 1542700042843824129, '2024-05-14 20:01:30', 1404697301888294914, '2024-11-12 14:47:18', 1, 1, 1856227113871425538);
 INSERT INTO `doc_tpl` VALUES (1856228354378776577, 'SR00000000', 'lennor-test', 'lennor-test', 1542700042843824129, '2024-11-12 14:51:41', 1404697301888294914, '2024-11-12 17:20:17', 2, 1, 1856227113871425538);
-
+ALTER TABLE doc_tpl ADD COLUMN firstpage_header_footer_show tinyint(4) DEFAULT 1 COMMENT '首页页眉页脚是否显示 1是 2否'; 
 -- ----------------------------
 -- Table structure for doc_tpl_charts
 -- ----------------------------
@@ -537,6 +537,11 @@ INSERT INTO `report_forms_datasource_attrs` VALUES (1856171687373684742, 1856171
 INSERT INTO `report_forms_datasource_attrs` VALUES (1856171687373684743, 1856171687319158786, 1, 2, 9, 'J3', 'create_time', 1, 1404697301888294915, '2024-11-12 11:06:31', NULL, '2024-11-12 11:06:31', 1);
 INSERT INTO `report_forms_datasource_attrs` VALUES (1856171687373684744, 1856171687319158786, 1, 2, 3, 'D3', 'age', 1, 1404697301888294915, '2024-11-12 11:06:31', NULL, '2024-11-12 11:06:31', 1);
 INSERT INTO `report_forms_datasource_attrs` VALUES (1856171687377879041, 1856171687319158786, 2, NULL, NULL, NULL, 'id', 2, 1404697301888294915, '2024-11-12 11:06:31', NULL, '2024-11-12 11:06:31', 1);
+ALTER TABLE report_forms_datasource_attrs ADD COLUMN fill_strategy tinyint(4) DEFAULT 1 COMMENT '填充策略 1 插入 2更新 3插入/更新数据'; 
+ALTER TABLE report_forms_datasource_attrs ADD COLUMN fill_type tinyint(4) DEFAULT 1 COMMENT '填充类型 1系统时间 2用户id 3用户名 4商户号'; 
+ALTER TABLE report_forms_datasource_attrs ADD COLUMN fill_value varchar(50) DEFAULT NULL COMMENT '填充值'; 
+ALTER TABLE report_forms_datasource_attrs ADD COLUMN delete_type tinyint(4) DEFAULT 1 COMMENT '删除方式 1物理删除 2逻辑删除'; 
+ALTER TABLE report_forms_datasource_attrs ADD COLUMN delete_value varchar(50) DEFAULT NULL COMMENT '删除值'; 
 
 -- ----------------------------
 -- Table structure for report_range_auth
@@ -618,6 +623,14 @@ CREATE TABLE `report_sheet_pdf_print_setting`  (
   `horizontal_page_column` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL COMMENT '分页列，多个列用,隔开',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Dynamic;
+ALTER TABLE report_sheet_pdf_print_setting ADD COLUMN fixed_header tinyint(4) DEFAULT 2 COMMENT '固定表头 1是 2否'; 
+ALTER TABLE report_sheet_pdf_print_setting ADD COLUMN fixed_header_start int(8) DEFAULT NULL COMMENT '固定表头起始行'; 
+ALTER TABLE report_sheet_pdf_print_setting ADD COLUMN fixed_header_end int(8) DEFAULT NULL COMMENT '固定表头结束行'; 
+ALTER TABLE report_sheet_pdf_print_setting ADD COLUMN custom_margin tinyint(4) DEFAULT 2 COMMENT '自定义页边距 1是 2否'; 
+ALTER TABLE report_sheet_pdf_print_setting ADD COLUMN left_margin int(6) DEFAULT 36 COMMENT '左边距'; 
+ALTER TABLE report_sheet_pdf_print_setting ADD COLUMN right_margin int(6) DEFAULT 36 COMMENT '右边距'; 
+ALTER TABLE report_sheet_pdf_print_setting ADD COLUMN top_margin int(6) DEFAULT 36 COMMENT '上边距'; 
+ALTER TABLE report_sheet_pdf_print_setting ADD COLUMN bottom_margin int(6) DEFAULT 36 COMMENT '下边距'; 
 
 -- ----------------------------
 -- Table structure for report_tpl
@@ -736,6 +749,7 @@ INSERT INTO `report_tpl_dataset` VALUES (1856262181025300481, NULL, 1, 'ds001', 
 INSERT INTO `report_tpl_dataset` VALUES (1856262355088916481, 'SR00000000', 1, 'ds002_v', 1790351730387464194, 1855943109243531266, 'select\n*\nfrom\nsys_payment_order', '[]', 1, '[]', '[]', 2, NULL, 1, 1404697301888294914, '2024-11-12 17:06:48', 1404697301888294914, '2024-11-12 17:07:39', 1, NULL, NULL, NULL);
 INSERT INTO `report_tpl_dataset` VALUES (1856262483224903681, NULL, 1, 'ds003_v', 1790351730387464194, 1855943109243531266, 'select\n*\nfrom\nsys_payment_order_detail', '[]', 1, '[]', '[]', 2, NULL, 1, 1404697301888294914, '2024-11-12 17:07:18', NULL, '2024-11-12 17:07:18', 1, NULL, NULL, NULL);
 ALTER TABLE report_tpl_dataset ADD COLUMN group_id bigint DEFAULT NULL COMMENT '分组id';
+ALTER TABLE report_tpl_dataset ADD COLUMN sub_param_attrs varchar(200) DEFAULT NULL COMMENT '主表传递给子表的参数属性'; 
 -- ----------------------------
 -- Table structure for report_tpl_datasource
 -- ----------------------------
@@ -1651,6 +1665,8 @@ INSERT INTO `luckysheet_report_cell` VALUES (1856257501784260621, 18562575017129
 INSERT INTO `luckysheet_report_cell` VALUES (1856257501784260622, 1856257501712957441, 1856257501784260609, 'ds001', 2, 6, 3, 'ds001.${name6}', '{\"r\":2,\"c\":6,\"v\":{\"ff\":1,\"ct\":{\"t\":\"s\",\"fa\":\"@\"},\"bg\":null,\"v\":\"ds001.${name6}\",\"bl\":0,\"it\":0,\"ht\":1,\"m\":\"ds001.${name6}\",\"fs\":9,\"fc\":\"rgb(0, 0, 0)\",\"vt\":0}}', 2, 'group', '', 2, NULL, 2, 1, 1, 1, 2, NULL, NULL, 1, b'0', 2, b'0', '>=', NULL, NULL, NULL, 2, NULL, b'0', NULL, NULL, 2, NULL, NULL, NULL, NULL, 2, '[]', 'and', 2, 'and', '[]', 2, '', '', 2, 2, '{}', b'0', NULL, NULL, b'0', 1, '100', 1542700042843824129, '2024-11-12 16:47:31', 1404697301888294915, '2024-11-12 16:47:31', 1, b'0', '[]', b'0', '[]', '[]');
 INSERT INTO `luckysheet_report_cell` VALUES (1856257501784260623, 1856257501712957441, 1856257501784260609, 'ds001', 2, 7, 3, 'ds001.${name7}', '{\"r\":2,\"c\":7,\"v\":{\"ff\":1,\"ct\":{\"t\":\"s\",\"fa\":\"@\"},\"bg\":null,\"v\":\"ds001.${name7}\",\"bl\":0,\"it\":0,\"ht\":1,\"m\":\"ds001.${name7}\",\"fs\":9,\"fc\":\"rgb(0, 0, 0)\",\"vt\":0}}', 2, 'group', '', 2, NULL, 2, 1, 1, 1, 2, NULL, NULL, 1, b'0', 2, b'0', '>=', NULL, NULL, NULL, 2, NULL, b'0', NULL, NULL, 2, NULL, NULL, NULL, NULL, 2, '[]', 'and', 2, 'and', '[]', 2, '', '', 2, 2, '{}', b'0', NULL, NULL, b'0', 1, '100', 1542700042843824129, '2024-11-12 16:47:31', 1404697301888294915, '2024-11-12 16:47:31', 1, b'0', '[]', b'0', '[]', '[]');
 
+ALTER TABLE luckysheet_report_cell ADD COLUMN cell_fill_type tinyint(4) DEFAULT 1 COMMENT '数据填充方式 1插入 2覆盖'; 
+ALTER TABLE luckysheet_report_cell ADD COLUMN forms_attrs text DEFAULT NULL COMMENT '填报属性配置'; 
 -- ----------------------------
 -- Table structure for luckysheet_report_forms_cell
 -- ----------------------------
