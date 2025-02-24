@@ -537,20 +537,20 @@ export default {
     }
   }
 }
-:deep(.van-tabs__line) {
+::v-deep .van-tabs__line {
   bottom: 20px !important;
 }
-:deep(.el-form-item__error) {
+::v-deep .el-form-item__error {
   padding-top: 0px !important;
 }
-:deep(.el-pagination)
+::v-deep .el-pagination
 {
   width:100%;
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.el-scrollbar :deep(.el-scrollbar__view){
+.el-scrollbar ::v-deep .el-scrollbar__view{
     height:100% !important;
   }
 .bottom-tab {
@@ -582,5 +582,8 @@ export default {
     background: #d4f6ef;
   }
 }
-
+::v-deep .xxbt_img {
+  width: 100%;
+  height: auto;
+}
 </style>

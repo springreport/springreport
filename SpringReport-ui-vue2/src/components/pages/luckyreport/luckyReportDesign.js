@@ -2103,18 +2103,19 @@ export default {
             if (element.v && element.v.xxbt == 1 && element.v.v && element.v.v.split('|').length > 1 && element.v.v.split('|').length < 5) {
               const r = element.r
               const c = element.c
-              // let rs = 1;
-              // let cs = 1;
-              // if(element.v && element.v.mc && element.v.mc.rs && element.v.mc.cs)
-              // {
-              //   rs = element.v.mc.rs;
-              //   cs = element.v.mc.cs;
-              // }
-              // let start = this.commonUtil.getColumnFromCoords(r,c);
-              // let end = this.commonUtil.getColumnFromCoords(r+rs-1,c+cs-1);
-              // let range = start+":"+end;
-              // let src = luckysheet.getScreenshot({range:range},false);
+              let rs = 1;
+              let cs = 1;
+              if(element.v && element.v.mc && element.v.mc.rs && element.v.mc.cs)
+              {
+                rs = element.v.mc.rs;
+                cs = element.v.mc.cs;
+              }
+              let start = this.commonUtil.getColumnFromCoords(r,c);
+              let end = this.commonUtil.getColumnFromCoords(r+rs-1,c+cs-1);
+              let range = start+":"+end;
+              let src = luckysheet.getScreenshot({range:range},false);
               screenShots[r + '_' + c] = element.v.v
+              screenShots[r + '_' + c + "_screenshot"] = src
             }
           }
         }

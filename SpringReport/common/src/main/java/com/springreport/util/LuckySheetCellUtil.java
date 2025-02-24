@@ -577,10 +577,16 @@ public class LuckySheetCellUtil {
 		String md5Key = Md5Util.generateMd5(JSONObject.toJSONString(styleMap));
 		XSSFCellStyle cellStyle = cellStyleMap.get(md5Key);
 		int r = (int) cellData.get("r");
+		int c = (int) cellData.get("c");
 		String tb = String.valueOf(styleMap.get("tb"));
 		if("2".equals(tb)) {
 			if(!wrapText.containsKey(r+"")) {
 				wrapText.put(r+"", 0);
+			}
+			if(styleMap.containsKey("ls")) {
+				wrapText.put(r+"_"+c+"_ls", (Integer) styleMap.get("ls"));
+			}else {
+				wrapText.put(r+"_"+c+"_ls", 0);
 			}
 		}
 		if(cellStyle != null)
@@ -846,6 +852,10 @@ public class LuckySheetCellUtil {
 		if(cellConfig.containsKey(LuckySheetPropsEnum.TEXTWRAPMODE.getCode())) {
 			String tb = String.valueOf(cellConfig.get(LuckySheetPropsEnum.TEXTWRAPMODE.getCode()));
 			result.put("tb", tb);
+		}
+		if(cellConfig.containsKey(LuckySheetPropsEnum.LINESPACE.getCode())) {
+			int ls = Integer.parseInt(String.valueOf(cellConfig.get(LuckySheetPropsEnum.LINESPACE.getCode())));
+			result.put("ls", ls);
 		}
 		result.put("isLock", isLock);
 		try {
