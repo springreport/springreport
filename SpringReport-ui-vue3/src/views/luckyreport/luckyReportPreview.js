@@ -2044,6 +2044,10 @@ export default {
                         if(v != originalV){
                           isChanged = true;
                         }
+                      }else{
+                        if(v != null && v != ""){
+                          isChanged = true;
+                        }
                       }
                       const dictKey = sheetIndex + '_' + originCell.r + '_' + originCell.c
                       if (this.dictDatas) {
