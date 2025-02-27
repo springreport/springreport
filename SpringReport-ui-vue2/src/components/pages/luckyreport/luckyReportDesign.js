@@ -5160,6 +5160,7 @@ export default {
       object.isActive = true
       this.$forceUpdate()
       this.datasourceAttr = object
+      this.getFormsTableColumns();
     },
     // 填报属性数据源下拉事件
     getFormsDatabaseTables() {
@@ -5175,6 +5176,9 @@ export default {
     },
     // 获取表对应的列
     getFormsTableColumns() {
+      if(!this.datasourceAttr.datasourceId){
+        return;
+      }
       var key = this.datasourceAttr.datasourceId + '_' + this.datasourceAttr.table
       var columns = this.datasourceTableColumns[key]
       if (columns) {
