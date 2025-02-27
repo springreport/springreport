@@ -681,7 +681,7 @@ public class ReportDataUtil {
 	    				 JSONObject autoFillAttrs = details.get(i).getAutoFillAttrs();
 	    				 if(details.get(i).isInsert())
 	    				 {//新增数据
-	    					 processInsertSql(columns,sqlParamsMap,tableName,autoFillAttrs,userInfoDto);
+	    					 processInsertSql(columns,sqlParamsMap,tableName,autoFillAttrs,userInfoDto,details.get(i).getDatasoaurceId(),details.get(i).getFormsName());
 	    				 }else {
 	    					 //主键有数据，则是更新数据，没有数据则是新增数据
 	    					 boolean isInsert = false;//是否是插入数据，如果有主键为空，则就认为是插入数据
@@ -692,7 +692,7 @@ public class ReportDataUtil {
 	    						 }
 	    					 }
 	    					 if(isInsert || ListUtil.isEmpty(keys)) {
-	    						 processInsertSql(columns,sqlParamsMap,tableName,autoFillAttrs,userInfoDto);
+	    						 processInsertSql(columns,sqlParamsMap,tableName,autoFillAttrs,userInfoDto,details.get(i).getDatasoaurceId(),details.get(i).getFormsName());
 	    					 }else {
 	    						 //keys如果是多个，需要先查询看一下是否有数据，有则更新，没有则新增
 	    						 if(ListUtil.isNotEmpty(keys) && keys.size() >1) {
@@ -727,17 +727,17 @@ public class ReportDataUtil {
 	 		    						rs = ps.executeQuery();
 	 		    						if(!rs.next())
 	 		    						{//没有数据，新增
-	 		    							processInsertSql(columns,sqlParamsMap,tableName,autoFillAttrs,userInfoDto);
+	 		    							processInsertSql(columns,sqlParamsMap,tableName,autoFillAttrs,userInfoDto,details.get(i).getDatasoaurceId(),details.get(i).getFormsName());
 	 		    						}else {
 	 		    							//有数据，更新
-	 		    							processUpdateSql(columns,keys,sqlParamsMap,tableName,autoFillAttrs,userInfoDto);
+	 		    							processUpdateSql(columns,keys,sqlParamsMap,tableName,autoFillAttrs,userInfoDto,details.get(i).getDatasoaurceId(),details.get(i).getFormsName());
 	 		    						}
 	 		    						ps.close();	
 	 	    						}else {
-	 	    							processInsertSql(columns,sqlParamsMap,tableName,autoFillAttrs,userInfoDto);
+	 	    							processInsertSql(columns,sqlParamsMap,tableName,autoFillAttrs,userInfoDto,details.get(i).getDatasoaurceId(),details.get(i).getFormsName());
 	 	    						}
 	    						 }else {
-	    							 processUpdateSql(columns,keys,sqlParamsMap,tableName,autoFillAttrs,userInfoDto); 
+	    							 processUpdateSql(columns,keys,sqlParamsMap,tableName,autoFillAttrs,userInfoDto,details.get(i).getDatasoaurceId(),details.get(i).getFormsName()); 
 	    						 }
 	    					 }
 	    						
@@ -789,7 +789,7 @@ public class ReportDataUtil {
 	 * @return void
 	 * @date 2022-11-24 10:33:19 
 	 */  
-	private static void processInsertSql(List<ReportDataColumnDto> columns,Map<String, List<List<Object>>> sqlParamsMap,String tableName,JSONObject autoFillAttrs,UserInfoDto userInfoDto)
+	private static void processInsertSql(List<ReportDataColumnDto> columns,Map<String, List<List<Object>>> sqlParamsMap,String tableName,JSONObject autoFillAttrs,UserInfoDto userInfoDto,String datasourceId,String formsName)
 	{
 		List<Object> params = new ArrayList<>();
 		String columnSql = "";
@@ -805,14 +805,18 @@ public class ReportDataUtil {
 				 paramSql = paramSql + "," + "?"; 
 			 }
 		 }
+		String attrKey = datasourceId + "|" + tableName + "|" + formsName;
 		for (String key : autoFillAttrs.keySet()) {
+			  if(!key.contains(attrKey)) {
+				  continue;
+			  }
 		      JSONObject attr = autoFillAttrs.getJSONObject(key);
 		      int fillStrategy = attr.getIntValue("fillStrategy");
 		      if(fillStrategy == 1 || fillStrategy == 3) {
 		    	  String columnName = attr.getString("columnName");
 		    	  int fillType = attr.getIntValue("fillType");
 		    	  if(fillType == 1) {//系统时间
-		    		  params.add(new Date());  
+		    		  params.add(DateUtil.string2SqlTimestamp(DateUtil.getNow(),DateUtil.FORMAT_FULL) );  
 		    	  }else if(fillType == 2) {//用户id
 		    		  params.add(userInfoDto.getUserId());  
 		    	  }else if(fillType == 3) {//用户名
@@ -847,7 +851,7 @@ public class ReportDataUtil {
 	 * @return void
 	 * @date 2022-11-24 10:55:16 
 	 */  
-	private static void processUpdateSql(List<ReportDataColumnDto> columns,List<ReportDataColumnDto> keys,Map<String, List<List<Object>>> sqlParamsMap,String tableName,JSONObject autoFillAttrs,UserInfoDto userInfoDto)
+	private static void processUpdateSql(List<ReportDataColumnDto> columns,List<ReportDataColumnDto> keys,Map<String, List<List<Object>>> sqlParamsMap,String tableName,JSONObject autoFillAttrs,UserInfoDto userInfoDto,String datasourceId,String formsName)
 	{
 		List<Object> params = new ArrayList<>();
 		String columnSql = "";
@@ -868,7 +872,11 @@ public class ReportDataUtil {
 				columnSql = columnSql + "," + columns.get(j).getColumnName() + " = ?";
 			}
 		}
+		String attrKey = datasourceId + "|" + tableName + "|" + formsName;
 		for (String key : autoFillAttrs.keySet()) {
+			  if(!key.contains(attrKey)) {
+				  continue;
+			  }
 		      JSONObject attr = autoFillAttrs.getJSONObject(key);
 		      int fillStrategy = attr.getIntValue("fillStrategy");
 		      if(fillStrategy == 2 || fillStrategy == 3) {
