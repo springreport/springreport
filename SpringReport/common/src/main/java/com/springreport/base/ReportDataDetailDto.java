@@ -42,4 +42,25 @@ public class ReportDataDetailDto {
 	 * @date 2025-02-18 09:10:45 
 	 */  
 	private boolean isInsert = false;
+	
+	/**  
+	 * @Fields datasoaurceId : 数据源id
+	 * @author caiyang
+	 * @date 2025-02-26 05:16:53 
+	 */  
+	private String datasoaurceId;
+	
+	/**  
+	 * @Fields tableName : 表名称
+	 * @author caiyang
+	 * @date 2025-02-26 05:17:00 
+	 */  
+	private String tableName;
+	
+	/**  
+	 * @Fields formsName : 填报属性名称
+	 * @author caiyang
+	 * @date 2025-02-26 05:17:09 
+	 */  
+	private String formsName;
 }
