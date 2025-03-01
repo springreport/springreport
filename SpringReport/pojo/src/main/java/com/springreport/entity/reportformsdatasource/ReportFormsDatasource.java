@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
  /**  
 * @Description: report_forms_datasource - 填报绑定的数据源
 * @author 
-* @date 2022-11-17 08:18:32
+* @date 2025-02-27 02:32:08
 * @version V1.0  
  */
 @Data
@@ -64,7 +64,7 @@ public class ReportFormsDatasource extends PageEntity {
     private Date createTime;
 
     /** updater - 更新人 */
-   @TableField(value = "updater",fill = FieldFill.INSERT_UPDATE)
+    @TableField(value = "updater",fill = FieldFill.INSERT_UPDATE)
     private Long updater;
 
     /** update_time - 更新时间 */
@@ -74,4 +74,8 @@ public class ReportFormsDatasource extends PageEntity {
     /** del_flag - 删除标记 1未删除 2已删除 */
     @TableField("del_flag")
     private Integer delFlag;
+
+    /** is_main - 是否主数据集 1是 2否 */
+    @TableField("is_main")
+    private Integer isMain;
 }
