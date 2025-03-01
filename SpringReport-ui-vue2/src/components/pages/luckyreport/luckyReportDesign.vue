@@ -3967,13 +3967,15 @@
         >确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog
+    <el-drawer
       title="添加属性关联"
       :visible.sync="datasourceColumnDialog"
-      width="30%"
-      height="80%"
+      custom-class="handle-drawer"
+      class="handle-drawer"
+      :modal="false"
       :close-on-click-modal="false"
       @close="closeDatasourceColumn"
+      size="100%"
     >
       <el-form
         ref="datasourceColumnRef"
@@ -4010,15 +4012,15 @@
           />
         </el-form-item>
       </el-form>
-      <span slot="footer" class="dialog-footer">
+      <div class="handle-drawer__footer">
         <el-button size="small" @click="closeDatasourceColumn">取 消</el-button>
         <el-button
           type="primary"
           size="small"
           @click="confirmDatasourceColumn"
         >确 定</el-button>
-      </span>
-    </el-dialog>
+      </div>
+    </el-drawer>
     <el-dialog
       title="添加主键"
       :visible.sync="datasourceKeyDialog"

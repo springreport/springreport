@@ -572,6 +572,7 @@ export default {
     },
     sendReportDataRequest(isInit, isCurrent) {
       this.changedRowDatas = {};
+      this.mainRowDatas = {};
       this.rowDatas = {};
       const that = this
       const apiHeaders = {}

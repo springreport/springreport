@@ -3092,6 +3092,12 @@ export default {
           }
         }
       }
+      if(this.datasourceColumnDialog){
+        const rangeAxis = luckysheet.getRangeAxis();
+        if(rangeAxis && rangeAxis.length > 0){
+          this.datasourceColumnForm.cellCoords = rangeAxis[0].split(":")[0];
+        }
+      }
     },
     //
     changeCellAttr(attr,attr2) {
@@ -5164,7 +5170,6 @@ export default {
     },
     // 填报属性左侧名字点击事件
     clickAttrName(object) {
-      console.log(object)
       for (let index = 0; index < this.datasources.length; index++) {
         const element = this.datasources[index]
         element.isActive = false
@@ -5216,6 +5221,10 @@ export default {
       if (!this.datasourceAttr.table) {
         this.commonUtil.showMessage({ message: '请选择表', type: this.commonConstants.messageType.error })
         return
+      }
+      const rangeAxis = luckysheet.getRangeAxis();
+      if(rangeAxis && rangeAxis.length > 0){
+        this.datasourceColumnForm.cellCoords = rangeAxis[0].split(":")[0];
       }
       this.datasourceColumnDialog = true
     },
