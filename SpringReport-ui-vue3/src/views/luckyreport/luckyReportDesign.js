@@ -3321,6 +3321,12 @@ export default {
           }
         }
       }
+      if(this.datasourceColumnDialog){
+        const rangeAxis = luckysheet.getRangeAxis();
+        if(rangeAxis && rangeAxis.length > 0){
+          this.datasourceColumnForm.cellCoords = rangeAxis[0].split(":")[0];
+        }
+      }
     },
     //
     changeCellAttr(attr,attr2) {
@@ -5587,6 +5593,10 @@ export default {
       if (!this.datasourceAttr.table) {
         this.commonUtil.showMessage({ message: '请选择表', type: this.commonConstants.messageType.error })
         return
+      }
+      const rangeAxis = luckysheet.getRangeAxis();
+      if(rangeAxis && rangeAxis.length > 0){
+        this.datasourceColumnForm.cellCoords = rangeAxis[0].split(":")[0];
       }
       this.datasourceColumnDialog = true
     },

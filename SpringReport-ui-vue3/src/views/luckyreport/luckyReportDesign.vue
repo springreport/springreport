@@ -3381,13 +3381,18 @@
       </span>
       </template>
     </el-dialog>
-    <el-dialog
+    <el-drawer
       title="添加属性关联"
       v-model="datasourceColumnDialog"
-      width="30%"
-      height="80%"
-      :close-on-click-modal="false"
+      size="36%"
+      :modal="false"
+      :modal-append-to-body="false"
+      modal-class="drawer-modal"
+      :close-on-press-escape="false"
+      :wrapper-closable="false"
+      class="handle-drawer"
       @close="closeDatasourceColumn"
+      style="border: 1px solid #eee;"
     >
       <el-form
         ref="datasourceColumnRef"
@@ -3424,8 +3429,7 @@
           />
         </el-form-item>
       </el-form>
-      <template #footer>
-      <span  class="dialog-footer">
+      <span  class="handle-drawer__footer">
         <el-button size="small" @click="closeDatasourceColumn">取 消</el-button>
         <el-button
           type="primary"
@@ -3433,8 +3437,7 @@
           @click="confirmDatasourceColumn"
         >确 定</el-button>
       </span>
-      </template>
-    </el-dialog>
+    </el-drawer>
     <el-dialog
       title="添加主键"
       v-model="datasourceKeyDialog"
