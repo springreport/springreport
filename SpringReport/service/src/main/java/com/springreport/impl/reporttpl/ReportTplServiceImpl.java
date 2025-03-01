@@ -1304,6 +1304,12 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 					reportFormsDatasource.setTplId(mesLuckySheetsTplDto.getTplId());
 					reportFormsDatasource.setSheetId(reportTplSheet.getId());
 					reportFormsDatasource.setTableName(config.getString("table"));
+					boolean isMain = config.getBooleanValue("isMain");
+					if(isMain) {
+						reportFormsDatasource.setIsMain(YesNoEnum.YES.getCode());
+					}else {
+						reportFormsDatasource.setIsMain(YesNoEnum.NO.getCode());
+					}
 					formsDatasources.add(reportFormsDatasource);
 					JSONArray tableDatas = config.getJSONArray("tableDatas");
 					Integer cellExtend = 1;//扩展方向
@@ -1419,6 +1425,21 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 							reportFormsDatasourceAttrs.setColumnName(deleteType.getString("columnName"));
 							reportFormsDatasourceAttrs.setDeleteType(deleteType.getInteger("deleteType"));
 							reportFormsDatasourceAttrs.setDeleteValue(deleteType.getString("deleteValue"));
+							formsDatasourceAttrs.add(reportFormsDatasourceAttrs);
+						}
+					}
+					JSONArray mainAttrs = config.getJSONArray("mainAttrs");
+					if(!ListUtil.isEmpty(mainAttrs)) {
+						for (int j = 0; j < mainAttrs.size(); j++) {
+							JSONObject mainAttr = mainAttrs.getJSONObject(j);
+							ReportFormsDatasourceAttrs reportFormsDatasourceAttrs = new ReportFormsDatasourceAttrs();
+							reportFormsDatasourceAttrs.setReportFormsDatasourceId(reportFormsDatasource.getId());
+							reportFormsDatasourceAttrs.setType(5);
+							reportFormsDatasourceAttrs.setColumnName(mainAttr.getString("columnName"));
+							reportFormsDatasourceAttrs.setMainColumn(mainAttr.getString("mainColumn"));
+							reportFormsDatasourceAttrs.setMainName(mainAttr.getString("mainName"));
+							reportFormsDatasourceAttrs.setMainDatasourceId(mainAttr.getLong("mainDatasourceId"));
+							reportFormsDatasourceAttrs.setMainTable(mainAttr.getString("mainTable"));
 							formsDatasourceAttrs.add(reportFormsDatasourceAttrs);
 						}
 					}
@@ -2504,10 +2525,12 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 						datasourceConfig.put("name", reportFormsDatasources.get(i).getName());
 						datasourceConfig.put("datasourceId", String.valueOf(reportFormsDatasources.get(i).getDatasourceId()));
 						datasourceConfig.put("table", reportFormsDatasources.get(i).getTableName());
+						datasourceConfig.put("isMain", reportFormsDatasources.get(i).getIsMain()!=null&&reportFormsDatasources.get(i).getIsMain().intValue() == 1?true:false);
 						JSONArray tableDatas = new JSONArray();
 						JSONArray keys = new JSONArray();
 						JSONArray autoFillAttrs = new JSONArray();
 						JSONArray deleteTypes = new JSONArray();
+						JSONArray mainAttrs = new JSONArray();
 						if(!ListUtil.isEmpty(formsDatasourceAttrs))
 						{
 							for (int j = 0; j < formsDatasourceAttrs.size();j++) {
@@ -2531,6 +2554,13 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 									jsonObject.put("deleteType", formsDatasourceAttrs.get(j).getDeleteType());
 									jsonObject.put("deleteValue", formsDatasourceAttrs.get(j).getDeleteValue());
 									deleteTypes.add(jsonObject);
+								}else if(formsDatasourceAttrs.get(j).getType().intValue() == 5){
+									jsonObject.put("columnName", formsDatasourceAttrs.get(j).getColumnName());
+									jsonObject.put("mainColumn", formsDatasourceAttrs.get(j).getMainColumn());
+									jsonObject.put("mainName", formsDatasourceAttrs.get(j).getMainName());
+									jsonObject.put("mainDatasourceId", formsDatasourceAttrs.get(j).getMainDatasourceId());
+									jsonObject.put("mainTable", formsDatasourceAttrs.get(j).getMainTable());
+									mainAttrs.add(jsonObject);
 								}
 							}
 						}
@@ -2538,6 +2568,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 						datasourceConfig.put("keys", keys);
 						datasourceConfig.put("autoFillAttrs", autoFillAttrs);
 						datasourceConfig.put("deleteTypes", deleteTypes);
+						datasourceConfig.put("mainAttrs", mainAttrs);
 						datasourceConfigs.add(datasourceConfig);
 					}
 				}
@@ -3196,9 +3227,15 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				Map<String, JSONObject> tableKeys = new HashMap<>();//主键字段
 				Map<String, JSONObject> autoFillAttrs = new HashMap<>();//自动填充字段
 				Map<String, JSONObject> deleteTypes = new HashMap<>();//删除规则
+				Map<String, JSONArray> mainAttrs = new HashMap<>();//主子表关联规则
+				Map<String,Object> mainDatasource = new HashMap<>();//主表数据源
 				if(!ListUtil.isEmpty(reportFormsDatasources))
 				{
 					for (int i = 0; i < reportFormsDatasources.size(); i++) {
+						if(reportFormsDatasources.get(i).getIsMain().intValue() == YesNoEnum.YES.getCode().intValue()) {
+							mainDatasource.put(reportFormsDatasources.get(i).getDatasourceId()+"|"+reportFormsDatasources.get(i).getName()
+									+"|"+reportFormsDatasources.get(i).getTableName(), 1);
+						}
 						Map<String, JSONObject> cellDatasourceConfig = new HashMap<>();
 						List<String> keys = new ArrayList<>();
 						QueryWrapper<ReportFormsDatasourceAttrs> attrsQueryWrapper = new QueryWrapper<>();
@@ -3264,6 +3301,28 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 											+  reportFormsDatasources.get(i).getTableName() + "|"
 											+ reportFormsDatasources.get(i).getName();
 									deleteTypes.put(key, jsonObject);
+								}else if(formsDatasourceAttrs.get(j).getType().intValue() == 5){
+									//主子表
+									jsonObject.put("columnName", formsDatasourceAttrs.get(j).getColumnName());
+									jsonObject.put("mainColumn", formsDatasourceAttrs.get(j).getMainColumn());
+									jsonObject.put("mainName", formsDatasourceAttrs.get(j).getMainName());
+									jsonObject.put("mainDatasourceId", String.valueOf(formsDatasourceAttrs.get(j).getMainDatasourceId()));
+									jsonObject.put("mainTable", formsDatasourceAttrs.get(j).getMainTable());
+									jsonObject.put("mainName", formsDatasourceAttrs.get(j).getMainName());
+									String key = String.valueOf(reportFormsDatasources.get(i).getDatasourceId()) + "|"
+											+  reportFormsDatasources.get(i).getName() + "|"
+											+ reportFormsDatasources.get(i).getTableName();
+									if(!mainAttrs.containsKey(key)) {
+										mainAttrs.put(key, new JSONArray());
+									}
+									mainAttrs.get(key).add(jsonObject);
+									key = String.valueOf(formsDatasourceAttrs.get(j).getMainDatasourceId()) + "|"
+											+  formsDatasourceAttrs.get(j).getMainName() + "|"
+											+ formsDatasourceAttrs.get(j).getMainTable();
+									if(mainDatasource.containsKey(key)) {
+										key = key + "|" + formsDatasourceAttrs.get(j).getMainColumn();
+										mainDatasource.put(key, 1);
+									}
 								}
 							}
 							cellDatasourceConfigs.add(cellDatasourceConfig);
@@ -3290,6 +3349,8 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 					resLuckySheetDataDto.setTableKeys(tableKeys);
 					resLuckySheetDataDto.setAutoFillAttrs(autoFillAttrs);
 					resLuckySheetDataDto.setDeleteTypes(deleteTypes);
+					resLuckySheetDataDto.setMainDatasource(mainDatasource);
+					resLuckySheetDataDto.setMainAttrs(mainAttrs);
 				}
 				JSONArray chart = new JSONArray();
 				if(StringUtil.isNotEmpty(sheets.get(t).getChart()))

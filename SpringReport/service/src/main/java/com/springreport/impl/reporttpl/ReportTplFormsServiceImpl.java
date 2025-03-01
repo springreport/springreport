@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -3744,6 +3745,16 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 	 * @see com.springreport.api.reporttpl.IReportTplFormsService#reportData(com.springreport.dto.reporttpl.ReportDataDto)
 	 * @date 2022-11-23 07:23:23 
 	 */  
+	/**  
+	 * @MethodName: reportData
+	 * @Description: TODO
+	 * @author caiyang
+	 * @param model
+	 * @param userInfoDto
+	 * @return
+	 * @see com.springreport.api.reporttpl.IReportTplFormsService#reportData(com.springreport.dto.reporttpl.ReportDataDto, com.springreport.base.UserInfoDto)
+	 * @date 2025-02-28 01:55:22 
+	 */
 	@Override
 	@Transactional
 	public BaseEntity reportData(ReportDataDto model,UserInfoDto userInfoDto) {
@@ -3765,6 +3776,32 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 					throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.reportversion.change", null));
 				}
 			}
+		}
+		if(model.getMainRowDatas() == null) {
+			model.setMainRowDatas(new JSONObject());
+		}
+		LinkedHashMap<String, Map<String, Object>> mainReportDatas = new LinkedHashMap<>();//主数据集
+		LinkedHashMap<String, Map<String, Object>> reportDatas = new LinkedHashMap<>();//主数据集
+		if(model.getReportDatas() != null && !model.getReportDatas().isEmpty()&&!StringUtil.isEmptyMap(model.getMainDatasources())) {
+			Set<String> set = model.getReportDatas().keySet();
+			for (String o : set) {
+				String sheetIndex = o.split("\\|")[0];
+				String datasourceId = o.split("\\|")[1];
+				String table = o.split("\\|")[2];
+				String name = o.split("\\|")[3];
+				if(model.getMainDatasources().containsKey(sheetIndex)) {
+					String key = datasourceId + "|" + name + "|" + table;
+					if(model.getMainDatasources().getJSONObject(sheetIndex).containsKey(key)) {
+						mainReportDatas.put(o, model.getReportDatas().get(o));
+					}else {
+						reportDatas.put(o, model.getReportDatas().get(o));
+					}
+				}else {
+					reportDatas.put(o, model.getReportDatas().get(o));
+				}
+			}
+			mainReportDatas.putAll(reportDatas);
+			model.setReportDatas(mainReportDatas);
 		}
 		if(model.getReportDatas() != null && !model.getReportDatas().isEmpty())
 		{
@@ -3807,6 +3844,8 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 					List<ReportDataColumnDto> columns  = new ArrayList<>();
 					JSONObject autoFillAttrs = new JSONObject();
 					Set<String> mapKeys = datas.keySet();
+					reportDataDetailDto.setDatasoaurceId(datasourceId);
+					reportDataDetailDto.setFormsName(name);
 					if(datas.containsKey("isSRInsertData")) {
 						reportDataDetailDto.setInsert((boolean) datas.get("isSRInsertData"));
 					}
@@ -3815,6 +3854,7 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 							continue;
 						}
 						String reculateKey = o + "|" + key;
+						String mainkey = datasourceId + "|" + name + "|" + table + "|" + key;
 						ReportDataColumnDto dataColumnDto = new ReportDataColumnDto();
 						if(model.getDatasKey() != null && !model.getDatasKey().isEmpty())
 						{
@@ -3831,7 +3871,14 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 									if(String.valueOf(model.getDatasKey().get(tableKeyFlag).get("idType")).equals("2"))
 									{	
 										dataColumnDto.setData(IdWorker.getIdStr());
+										reportDataDetailDto.setInsert(true);
 										columns.add(dataColumnDto);
+										if(!StringUtil.isEmptyMap(model.getMainDatasources())) {
+											if(model.getMainDatasources().containsKey(sheetIndex) 
+													&& model.getMainDatasources().getJSONObject(sheetIndex).containsKey(mainkey)) {
+												model.getMainRowDatas().put(sheetIndex + "|"+mainkey, dataColumnDto.getData());
+											}
+										}
 									}
 								}
 								keys.add(dataColumnDto);
@@ -3898,6 +3945,31 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 								dataColumnDto.setData(datas.get(key));
 							}
 							columns.add(dataColumnDto);
+						}
+					}
+					if(!StringUtil.isEmptyMap(model.getMainAttrs()) && model.getMainAttrs().containsKey(sheetIndex)) {
+						String mainAttrKey = datasourceId + "|" + name + "|" + table;
+						JSONObject mainAttr = model.getMainAttrs().getJSONObject(sheetIndex);
+						if(mainAttr.containsKey(mainAttrKey)) {
+							JSONArray attrs = mainAttr.getJSONArray(mainAttrKey);
+							if(ListUtil.isNotEmpty(attrs)) {
+								ReportDataColumnDto dataColumnDto = null;
+								for (int i = 0; i < attrs.size(); i++) {
+									JSONObject jsonObject = attrs.getJSONObject(i);
+									String columnName = jsonObject.getString("columnName");
+									String mainColumn = jsonObject.getString("mainColumn");
+									String mainTable = jsonObject.getString("mainTable");
+									String mainName = jsonObject.getString("mainName");
+									String mainDatasourceId = jsonObject.getString("mainDatasourceId");
+									String mainRowDataKey = sheetIndex + "|" + mainDatasourceId + "|" + mainName + "|" + mainTable + "|" + mainColumn;
+									if(model.getMainRowDatas().containsKey(mainRowDataKey)) {
+										dataColumnDto = new ReportDataColumnDto();
+										dataColumnDto.setColumnName(columnName);
+										dataColumnDto.setData(model.getMainRowDatas().get(mainRowDataKey));
+										columns.add(dataColumnDto);
+									}
+								}
+							}
 						}
 					}
 					if(model.getAutoFillAttrs() != null && model.getAutoFillAttrs().getJSONObject(sheetIndex) != null) {

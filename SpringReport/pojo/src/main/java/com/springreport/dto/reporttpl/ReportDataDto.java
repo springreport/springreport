@@ -57,4 +57,25 @@ public class ReportDataDto {
 	 * @date 2025-02-05 09:15:01 
 	 */  
 	private JSONObject autoFillAttrs;
+	
+	/**  
+	 * @Fields mainAttrs : 主子表配置
+	 * @author caiyang
+	 * @date 2025-02-27 08:51:09 
+	 */  
+	private JSONObject mainAttrs;
+	
+	/**  
+	 * @Fields mainDatasources : 主数据的数据源
+	 * @author caiyang
+	 * @date 2025-02-27 08:50:58 
+	 */  
+	private JSONObject mainDatasources;
+	
+	/**  
+	 * @Fields mainRowDatas : 主数据源数据
+	 * @author caiyang
+	 * @date 2025-02-28 01:51:37 
+	 */  
+	private JSONObject mainRowDatas;
 }

@@ -12,7 +12,6 @@ import lombok.Data;
 
 @Data
 public class ResLuckySheetDataDto {
-
 	
 	/**  
 	 * @Fields hyperlinks : 超链接
@@ -299,7 +298,21 @@ public class ResLuckySheetDataDto {
      * @author caiyang
      * @date 2025-02-17 02:58:15 
      */  
-    private Map<String, JSONObject> deleteTypes;;
+    private Map<String, JSONObject> deleteTypes;
+    
+    /**  
+     * @Fields mainDatasource : 主表数据源
+     * @author caiyang
+     * @date 2025-02-27 05:00:39 
+     */  
+    private Map<String,Object> mainDatasource;
+    
+    /**  
+     * @Fields mainAttrs : 主子表配置
+     * @author caiyang
+     * @date 2025-02-27 05:37:23 
+     */  
+    Map<String, JSONArray> mainAttrs;
 
 	public Map<String, Integer> getMaxXAndY() {
 		if(maxXAndY == null)
