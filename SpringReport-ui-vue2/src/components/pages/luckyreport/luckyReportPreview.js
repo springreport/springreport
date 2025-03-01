@@ -180,12 +180,15 @@ export default {
       sheetTableKeys: {}, // 表格主键
       sheetAutoFillAttrs:{},//表格自动填充字段
       sheetDeleteTypes:{},//表格删除规则
+      sheetMainAttrs:{},//主子表规则
+      sheetMainDatasources:{},//主表数据源
       rowDatas: {}, // 与数据集绑定的数据
       changedRowDatas:{},//修改过的数据
       datasKey: {}, // 数据主键信息
       dictDatas: {}, // 数据字典值
       basicData: {}, // 原始单元格数据
       basicRowDatas: {}, // 与数据集绑定的原始数据
+      mainRowDatas:{},//主数据集属性对应的数据
       submitBasicData: {}, // 页面不刷时，记录提交时的数据，将该数据作为下一次提交的原始数据
       editDialog: false,
       editForm: {
@@ -666,6 +669,8 @@ export default {
               this.sheetAutoFillAttrs[element.sheetIndex] = element.autoFillAttrs
               this.sheetDeleteTypes[element.sheetIndex] = element.deleteTypes
               this.cellAllowEditConfigs[element.sheetIndex] = element.allowEditConfigs
+              this.sheetMainAttrs[element.sheetIndex] = element.mainAttrs
+              this.sheetMainDatasources[element.sheetIndex] = element.mainDatasource
               // if(element.pagination && Object.keys(element.pagination).length>0)
               // {
               //     this.setPagination(element.pagination,response.responseData.isParamMerge,element.mergePagination);
@@ -1584,7 +1589,9 @@ export default {
         this.loading = true
         const obj = {
           url: this.apis.previewReport.reportDataApi,
-          params: { reportDatas: reportDatas, datasKey: this.datasKey, basicDatas: originalDatas, tplId: tplId, version: this.reportVersion, reCalculate: this.reCalculate,autoFillAttrs:this.sheetAutoFillAttrs },
+          params: { reportDatas: reportDatas, datasKey: this.datasKey, basicDatas: originalDatas, 
+            tplId: tplId, version: this.reportVersion, reCalculate: this.reCalculate,autoFillAttrs:this.sheetAutoFillAttrs, 
+            mainAttrs:this.sheetMainAttrs,mainDatasources:this.sheetMainDatasources,mainRowDatas:this.mainRowDatas},
           removeEmpty: false,
           callback: this.submitDatasCallback
         }
@@ -1706,6 +1713,15 @@ export default {
                         rowFlag = r - originCell.r
                       }
                       var rowKey = sheetIndex + '|' + datasourceConfig.datasourceId + '|' + datasourceConfig.table + '|' + datasourceConfig.name + '|' + rowFlag
+                      var mainKey = datasourceConfig.datasourceId + '|' + datasourceConfig.name + '|' + datasourceConfig.table + '|' + datasourceConfig.columnName;
+                      if(v != null && v != "" && this.sheetMainDatasources[sheetIndex]){
+                        if(this.sheetMainDatasources[sheetIndex]){
+                          if(this.sheetMainDatasources[sheetIndex][mainKey]){
+                            mainKey = sheetIndex + "|" + mainKey;
+                            this.mainRowDatas[mainKey] = v;
+                          }
+                        }
+                      }
                       if(this.basicData && this.basicData[sheetIndex]){
                         let originalV = this.basicData[sheetIndex][r+"_"+c];
                         if(v != originalV){
@@ -2173,6 +2189,9 @@ export default {
     },
     // 数字类型校验
     numberValid(cellConfig, v, wrongMsg, key) {
+      if(!v){
+        return;
+      }
       if (!this.commonUtil.isNaN(v)) {
         wrongMsg.push('请输入数字格式的数据。')
       } else {

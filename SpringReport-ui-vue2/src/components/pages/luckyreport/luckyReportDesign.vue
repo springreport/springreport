@@ -3700,6 +3700,12 @@
 
             <div class="table-card">
               <div class="table-header df-c">
+                <span class="attr-dataset-title">主数据集</span>
+                <el-switch
+                    v-model="datasourceAttr.isMain"
+                  />
+              </div>
+              <div class="table-header df-c">
                 <span class="attr-dataset-title">表属性单元格关联</span>
                 <el-button
                   class="addBtn"
@@ -3771,6 +3777,45 @@
                       type="text"
                       size="small"
                       @click="deleteDatasourceKey(scope.$index)"
+                    >删除</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+            <div class="table-card" style="margin-top: 12px" v-if="!datasourceAttr.isMain">
+              <div class="table-header df-c">
+                <span class="attr-dataset-title">主子表关联</span>
+                <el-button
+                  class="addBtn"
+                  @click="addMainAttr"
+                ><i class="el-icon-plus el-icon--left" />添加</el-button>
+              </div>
+              <el-table
+                :data="datasourceAttr.mainAttrs"
+                border
+                style="width: 100%"
+                height="200"
+                align="center"
+                size="small"
+                :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+              >
+                <el-table-column
+                  prop="mainName"
+                  label="数据源属性"
+                  align="center"
+                />
+                <el-table-column prop="mainTable" label="主表" align="center">
+                </el-table-column>
+                <el-table-column prop="mainColumn" label="主表字段" align="center">
+                </el-table-column>
+                <el-table-column prop="columnName" label="子表字段" align="center">
+                </el-table-column>
+                <el-table-column label="操作" align="center">
+                  <template slot-scope="scope">
+                    <el-button
+                      type="text"
+                      size="small"
+                      @click="deleteMainAttr(scope.$index)"
                     >删除</el-button>
                   </template>
                 </el-table-column>
@@ -4177,6 +4222,93 @@
           type="primary"
           size="small"
           @click="confirmDeleteType"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog
+      title="添加主子表关联"
+      :visible.sync="datasourceMainDialog"
+      width="30%"
+      height="80%"
+      :close-on-click-modal="false"
+      @close="closeMainForm"
+    >
+      <el-form
+        ref="datasourceMainRef"
+        label-position="top"
+        :model="datasourceMainForm"
+        class="demo-form-inline"
+      >
+       <el-form-item label="主数据源" prop="columnName">
+          <el-select
+            v-model="datasourceMainForm.mainName"
+            style="width: 100%"
+            placeholder="主数据源"
+            size="small"
+            filterable
+            :rules="filter_rules('主数据源', { required: true })"
+            @change="changeMainName"
+          >
+            <el-option
+              v-for="op in datasources"
+              :key="op.name"
+              :label="op.name"
+              :value="op.name"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          label="主表名称"
+          prop="mainTable"
+          :rules="filter_rules('主表名称', { required: true })"
+        >
+          <el-input
+            v-model="datasourceMainForm.mainTable"
+            placeholder="主表名称"
+            size="small" disabled
+          />
+        </el-form-item>
+        <el-form-item label="主表主键列" prop="columnName">
+          <el-select
+            v-model="datasourceMainForm.mainColumn"
+            style="width: 100%"
+            placeholder="主表主键列"
+            size="small"
+            filterable
+            :rules="filter_rules('主表主键列', { required: true })"
+          >
+            <el-option
+              v-for="op in tableMainColumns"
+              :key="op.columnName"
+              :label="op.columnName"
+              :value="op.columnName"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="子表列" prop="columnName">
+          <el-select
+            v-model="datasourceMainForm.columnName"
+            style="width: 100%"
+            placeholder="列名"
+            size="small"
+            filterable
+            :rules="filter_rules('列名', { required: true })"
+          >
+            <el-option
+              v-for="op in tableColumns"
+              :key="op.columnName"
+              :label="op.columnName"
+              :value="op.columnName"
+            />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="small" @click="closeMainForm">取 消</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          @click="confirmMainAttr"
         >确 定</el-button>
       </span>
     </el-dialog>
