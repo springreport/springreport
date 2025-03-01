@@ -83,6 +83,8 @@ export default {
         tableDatas: [],// 属性对应关系
         autoFillAttrs:[],//自动填充列
         deleteTypes:[],//删除方式
+        isMain:false,//主数据集
+        mainAttrs:[],//主子关联
       },
       datasourceDialog: false,
       datasourceAttrDialog: false,
@@ -100,6 +102,15 @@ export default {
         columnName: '', // 数据列
         idType: ''// 1 自定义填写 2雪花算法 3自增主键
       },
+      datasourceMainDialog: false,
+      datasourceMainForm: {
+        columnName: '', // 数据列
+        mainColumn: '',// 主表数据列
+        mainAttrName:'',//主表数据源属性名称
+        mainDatasourceId:'',//主表数据源id
+        mainTable:'',//主表表名称
+      },
+      tableMainColumns:[],
       sheets:[],
       cellCompareVisiable:false,
       cellCompareForm: {
@@ -5739,6 +5750,48 @@ export default {
     },
     deleteDeleteType(index){
       this.datasourceAttr.deleteTypes.splice(index, 1)
-    }
+    },
+    addMainAttr(){
+      this.datasourceMainDialog = true;
+    },
+    changeMainName(){
+      for (let index = 0; index < this.datasources.length; index++) {
+        const element = this.datasources[index];
+        if(element.name == this.datasourceMainForm.mainName){
+          this.tableMainColumns = element.keys;
+          this.datasourceMainForm.mainTable = element.table;
+          this.datasourceMainForm.mainDatasourceId = element.datasourceId;
+        }
+      }
+    },
+    closeMainForm(){
+      this.commonUtil.clearObj(this.datasourceMainForm)
+      this.datasourceMainDialog = false;
+    },
+    confirmMainAttr(){
+      var that = this;
+      this.$refs['datasourceMainRef'].validate((valid) => {
+        if (valid) {
+          var obj = {
+            columnName: that.datasourceMainForm.columnName,
+            mainColumn: that.datasourceMainForm.mainColumn,
+            mainName: that.datasourceMainForm.mainName,
+            mainDatasourceId: that.datasourceMainForm.mainDatasourceId,
+            mainTable: that.datasourceMainForm.mainTable,
+          }
+          if(!that.datasourceAttr.mainAttrs){
+            that.datasourceAttr.mainAttrs = [];
+          }
+          console.log(obj)
+          that.datasourceAttr.mainAttrs.push(obj)
+          that.closeMainForm()
+        } else {
+          return false
+        }
+      })
+    },
+    deleteMainAttr(index) {
+      this.datasourceAttr.mainAttrs.splice(index, 1)
+    },
   },
 };
