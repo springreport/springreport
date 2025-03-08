@@ -1151,7 +1151,8 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 	 * @throws Exception Object
 	 * @date 2024-05-07 04:42:27 
 	 */ 
-	private Object getDatasetDatas(MesGenerateReportDto mesGenerateReportDto,ReportDatasetDto reportTplDataset,List<Map<String, String>> reportSqls,
+	@Override
+	public Object getDatasetDatas(MesGenerateReportDto mesGenerateReportDto,ReportDatasetDto reportTplDataset,List<Map<String, String>> reportSqls,
 			Map<String, List<String>> paramsType,UserInfoDto userInfoDto,Map<String, String> apiCache,Map<String, Object> subParams) throws Exception {
 		Map<String, String> sqlMap = new HashMap<>();
 		List<Map<String, Object>> datas = null;

@@ -803,7 +803,7 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 											params.get(j).setParamDefault(date);
 										}else if(DateUtil.FORMAT_YEAR.equals(dateFormat))
 										{
-											String date = DateUtil.addYear(days, DateUtil.getNow(DateUtil.FORMAT_LONOGRAM),DateUtil.FORMAT_YEARMONTH);
+											String date = DateUtil.addYear(days, DateUtil.getNow(DateUtil.FORMAT_LONOGRAM),DateUtil.FORMAT_YEAR);
 											params.get(j).setParamDefault(date);
 										}else {
 											String date = DateUtil.addDays(days, DateUtil.getNow(),StringUtil.isNotEmpty(params.get(j).getDateFormat())?dateFormat:DateUtil.FORMAT_LONOGRAM);

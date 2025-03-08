@@ -66,7 +66,7 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 	@Override
 	public List<LuckySheetBindData> process(List<LuckysheetReportCell> variableCells, List<Map<String, Object>> data,String datasetName,
 			Map<String, Map<String, List<List<Map<String, Object>>>>> processedCells,Map<String, LuckySheetBindData> blockBindDatas,
-			Map<String, Object> subtotalCellDatas,Map<String, Object> subtotalCellMap,String sheetIndex,Map<String, LuckySheetBindData> cellBindData,Map<String, Integer> subTotalDigits,int tplType) {
+			Map<String, Object> subtotalCellDatas,Map<String, Object> subtotalCellMap,String sheetIndex,Map<String, LuckySheetBindData> cellBindData,Map<String, Integer> subTotalDigits,int tplType,List<String> subTotalCellCoords) {
 		List<LuckySheetBindData> bindDatas = new ArrayList<LuckySheetBindData>();
 		if(!ListUtil.isEmpty(data))
 		{
@@ -295,6 +295,7 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 				}
 				if(bindData.getIsSubtotal())
 				{
+					subTotalCellCoords.add(0,bindData.getCoordsx()+"-"+bindData.getCoordsy());
 					if(StringUtil.isNotEmpty(bindData.getSubtotalCells()))
 					{
 						JSONArray subtotalCells = JSON.parseArray(bindData.getSubtotalCells());
@@ -316,7 +317,7 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 									String type = subtotalCell.getString("type");
 									int c = SheetUtil.excelColStrToNum(SheetUtil.getColumnFlag(coords)) - 1;
 									int r = SheetUtil.getRowNum(coords) - 1;
-									String dataKey = variableCells.get(i).getSheetId()+"-"+(index-1)+"-"+r+"-"+c;
+									String dataKey = variableCells.get(i).getSheetId()+"-"+(index-1)+"-"+r+"-"+c+"-"+bindData.getCoordsx()+"-"+bindData.getCoordsy();
 									String cellTypeKey = "cellType-"+dataKey;
 									JSONObject cellType = new JSONObject();
 									if(subtotalAttr != null)

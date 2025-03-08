@@ -272,5 +272,23 @@ public enum RedisPrefixEnum implements BaseCharEnum{
 		public String getName() {
 			return "第三方token缓存";
 		}
+	},
+	ONLYOFFICEDOCKEY{
+		public String getCode() {
+			return "onlyofficeDocKey:";
+		}
+
+		public String getName() {
+			return "onlyoffice文档key";
+		}
+	},
+	ONLYOFFICELOCKKEY{
+		public String getCode() {
+			return "onlyofficeLockKey:";
+		}
+
+		public String getName() {
+			return "onlyoffice锁key";
+		}
 	}
 }

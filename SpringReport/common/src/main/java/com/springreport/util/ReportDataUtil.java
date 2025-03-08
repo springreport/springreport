@@ -883,7 +883,7 @@ public class ReportDataUtil {
 		    	  String columnName = attr.getString("columnName");
 		    	  int fillType = attr.getIntValue("fillType");
 		    	  if(fillType == 1) {//系统时间
-		    		  params.add(new Date());  
+		    		  params.add(DateUtil.string2SqlTimestamp(DateUtil.getNow(),DateUtil.FORMAT_FULL) );
 		    	  }else if(fillType == 2) {//用户id
 		    		  params.add(userInfoDto.getUserId());  
 		    	  }else if(fillType == 3) {//用户名
