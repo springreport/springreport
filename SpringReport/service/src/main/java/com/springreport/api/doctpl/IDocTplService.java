@@ -21,6 +21,7 @@ import com.springreport.dto.doctpl.DocTplDto;
 import com.springreport.dto.doctpl.DocTplSettingsDto;
 import com.springreport.dto.doctpl.DocTplTreeDto;
 import com.springreport.dto.reporttpl.MesGenerateReportDto;
+import com.springreport.dto.reporttpldataset.ReportDatasetDto;
 
  /**  
 * @Description: DocTpl服务接口
@@ -135,4 +136,22 @@ public interface IDocTplService extends IService<DocTpl> {
 	 * @date 2024-09-28 07:19:54 
 	 */ 
 	DocDto uploadDocx(MultipartFile file) throws Exception;
+	
+	/**  
+	 * @MethodName: getDatasetDatas
+	 * @Description: 获取数据集数据
+	 * @author caiyang
+	 * @param mesGenerateReportDto
+	 * @param reportTplDataset
+	 * @param reportSqls
+	 * @param paramsType
+	 * @param userInfoDto
+	 * @param apiCache
+	 * @param subParams
+	 * @return
+	 * @throws Exception Object
+	 * @date 2025-03-04 11:38:43 
+	 */ 
+	Object getDatasetDatas(MesGenerateReportDto mesGenerateReportDto,ReportDatasetDto reportTplDataset,List<Map<String, String>> reportSqls,
+			Map<String, List<String>> paramsType,UserInfoDto userInfoDto,Map<String, String> apiCache,Map<String, Object> subParams) throws Exception;
 }

@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.math.BigInteger;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
 
@@ -95,6 +97,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.deepoove.poi.util.TableTools;
 import com.springreport.base.DocChartSettingDto;
+import com.springreport.base.MergeColDto;
 import com.springreport.enums.TitleLevelEnum;
 import com.springreport.enums.YesNoEnum;
 import com.springreport.excel2pdf.BarCodeUtil;
@@ -565,6 +568,7 @@ public class WordUtil {
 				
 			}
 		}
+    	List<MergeColDto> mergeCellsHorizonal = new ArrayList<MergeColDto>();
     	for (int i = trList.size()-1; i >= 0; i--) {
     		JSONArray tdList = trList.getJSONObject(i).getJSONArray("tdList");
     		for (int j = tdList.size()-1; j >= 0; j--) {
@@ -577,8 +581,21 @@ public class WordUtil {
 				int colspan = cellInfo.getIntValue("colspan");
 				if(colspan > 1) {
 					for (int k = 0; k < rowspan; k++) {
-						TableTools.mergeCellsHorizonal(xwpfTable, i+k, j, j+colspan-1);
+						MergeColDto mergeColDto = new MergeColDto();
+						mergeColDto.setRow(i+k);
+						mergeColDto.setFrom(j);
+						mergeColDto.setTo(j+colspan-1);
+						mergeCellsHorizonal.add(mergeColDto);
 					}
+				}
+    		}
+    	}
+    	if(ListUtil.isNotEmpty(mergeCellsHorizonal)) {
+    		Map<Integer, List<MergeColDto>> groupBy = mergeCellsHorizonal.stream().collect(Collectors.groupingBy(MergeColDto::getRow));
+    		for (List<MergeColDto> value : groupBy.values()) {
+    			value.sort(Comparator.comparing(MergeColDto::getFrom).reversed());
+    			for (int i = 0; i < value.size(); i++) {
+    				TableTools.mergeCellsHorizonal(xwpfTable, value.get(i).getRow(), value.get(i).getFrom(),value.get(i).getTo());
 				}
     		}
     	}

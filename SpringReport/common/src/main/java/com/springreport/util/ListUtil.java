@@ -16,9 +16,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.springreport.enums.ConditionTypeEnum;
 import com.springreport.enums.OperatorEnum;
 
@@ -676,6 +676,31 @@ public class ListUtil {
 	 */
 	public static int getEndIndex(int pageNum,int pageSize){
 		return pageNum*pageSize;
+	}
+	
+	public static List<List<Map<String, Object>>> groupDatas(List<Map<String, Object>> datas,List<String> attrs){
+		List<List<Map<String, Object>>> result = new ArrayList<>();
+		if(ListUtil.isNotEmpty(datas) && ListUtil.isNotEmpty(attrs)) {
+			Map<String, List<Map<String, Object>>> dataMap = new LinkedHashMap<>();
+			for (int j = 0; j < attrs.size(); j++) {
+				for (int i = 0; i < datas.size(); i++) {
+					List<Map<String, Object>> rowList = null;
+					String key = String.valueOf(datas.get(i).get(attrs.get(j)));
+					if (dataMap.containsKey(key)) {
+						rowList = dataMap.get(key);
+					}else {
+						rowList = new ArrayList<>();
+						dataMap.put(key, rowList);
+					}
+					rowList.add(datas.get(i));
+				}
+			}
+			Iterator<Entry<String, List<Map<String, Object>>>> entries = dataMap.entrySet().iterator();
+			while(entries.hasNext()){
+				result.add(entries.next().getValue());
+			}
+		}
+		return result;
 	}
 	
 	public static void main(String[] args) {

@@ -18,7 +18,7 @@ public class ReportTplDatasetDto extends ReportTplDataset{
 	private boolean initSelectData = false;
 	
 	/**  
-	 * @Fields reportType : 类型 1excel 2doc
+	 * @Fields reportType : 类型 1excel 2doc 3 onlyoffice
 	 * @author caiyang
 	 * @date 2024-05-09 11:16:15 
 	 */  

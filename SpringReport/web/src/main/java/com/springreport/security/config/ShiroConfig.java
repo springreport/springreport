@@ -77,6 +77,7 @@ public class ShiroConfig {
 			map.put("/springReport/api/coedit/websocket/luckysheet", Constants.PUBLIC_STRING); 
 			map.put("/springReport/api/reportTpl/getShareSheetPdfStream", Constants.PUBLIC_STRING); 
 			map.put("/springReport/api/login/getMerchantMode", Constants.PUBLIC_STRING); 
+			map.put("/springReport/api/docOnlyOffice/callback", Constants.PUBLIC_STRING); 
 			
 	        map.put("/**", Constants.JWT_STRING); 
 //			shiroFilterFactoryBean.setFilterChainDefinitionMap(chainDefinitionSectionMetaSource.getObject());
