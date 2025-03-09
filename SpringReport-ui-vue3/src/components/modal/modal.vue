@@ -230,6 +230,8 @@
               :action="item.action"
               :prop="item.prop"
               @fileUpdate="fileUpdate"
+              :uploadUrl="item.uploadUrl"
+              :listType="item.listType"
             ></fileUpload>
             <el-button type="primary" v-if="item.type === 'Button'" @click="item.click">{{
               item.buttonText

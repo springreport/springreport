@@ -19,7 +19,7 @@ import VChart from '@visactor/vchart';
 const commonUtil = {
 
 }
-commonUtil.baseUrl="/";
+commonUtil.baseUrl="/SpringReport";
 
 // commonUtil.codeValues={};//报错所有数据字典值，数据字典值表的id为key，valueName为值
 

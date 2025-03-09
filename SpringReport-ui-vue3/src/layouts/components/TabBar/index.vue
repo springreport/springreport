@@ -107,9 +107,7 @@
       };
 
       const scrollIntoView = (path) => {
-        console.log(path);
         const currentEle = document.querySelector(`.${path.split('?')[0].replaceAll('/', '')}`);
-        console.log(currentEle);
         if (currentEle) {
           currentEle.scrollIntoView({
             behavior: 'smooth', // 平滑滚动

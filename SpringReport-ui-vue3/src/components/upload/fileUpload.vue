@@ -30,11 +30,6 @@
 function noop() {
 }
 export default{
-    data(){
-            return{
-                
-            }
-        },
     methods: {
         removeFile(file, fileList) {//上传文件删除方法
             this.$emit('update:fileList', fileList);
@@ -96,10 +91,10 @@ export default{
         }
     },
     props: {
-            // action:{
-            //    type: String,
-            //     default: this.action
-            // },
+            uploadUrl:{
+               type: String,
+                default: '/api/common/upload'
+            },
             accept: {
                 type: String,
                 default: '*'
@@ -157,7 +152,7 @@ export default{
         },
     data() {
             return {
-                action: '/api/common/upload',
+                action: this.commonUtil.baseUrl+this.uploadUrl,
                 headers:{Authorization:localStorage.getItem(this.commonConstants.sessionItem.authorization)}
             };
         }

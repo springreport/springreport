@@ -588,6 +588,14 @@ commonConstants.routers = [
           title: "大屏模板管理",
         },
       },
+      {
+        path: "/doconlyoffice",
+        name: "doconlyoffice",
+        component: () => import("@/components/pages/doconlyoffice/DocOnlyOffice.vue"),
+        meta: {
+          title: "Word报表(onlyoffice)",
+        },
+      },
       // {
       //   path: "/slideTpl",
       //   name: "slideTpl",
@@ -676,6 +684,22 @@ commonConstants.routers = [
     path: "/docPreview",
     name: "docPreview",
     component: () => import("@/components/pages/editor/docPreview.vue"),
+    meta: {
+      title: "doc预览",
+    },
+  },
+  {
+    path: "/onlyOfficeDocDesign",
+    name: "onlyOfficeDocDesign",
+    component: () => import("@/components/pages/onlyoffice/docDesign.vue"),
+    meta: {
+      title: "doc设计",
+    },
+  },
+  {
+    path: "/onlyOfficeDocPreview",
+    name: "onlyOfficeDocPreview",
+    component: () => import("@/components/pages/onlyoffice/docPreview.vue"),
     meta: {
       title: "doc预览",
     },
