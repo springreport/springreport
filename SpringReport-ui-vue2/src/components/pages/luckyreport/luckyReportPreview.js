@@ -1213,6 +1213,9 @@ export default {
       if(this.tplType == 2){
         if (this.cellAllowEditConfigs[sheetIndex]) {
           var orginCell = this.extendCellOrigins[sheetIndex][key]
+          if (!orginCell) {
+            orginCell = this.getNewCellExtendOrigins(sheetIndex, r, c)
+          }
           if (orginCell) {
             var allowEdit = this.cellAllowEditConfigs[sheetIndex][orginCell.r + '_' + orginCell.c]
             if (!allowEdit) {
@@ -1876,14 +1879,14 @@ export default {
       }
     },
     // 获取新增单元格对应的原始数据
-    // 获取x坐标相邻的单元格，最多获取5个相邻的单元格，如果获取不到那就忽略该单元格
+    // 获取x坐标相邻的单元格，最多获取2个相邻的单元格，如果获取不到那就忽略该单元格
     getNewCellExtendOrigins(sheetIndex, r, c) {
       let originCell = null
       if (this.addExtendCellOrigins[sheetIndex] && this.addExtendCellOrigins[sheetIndex][r + '_' + c]) {
         originCell = this.addExtendCellOrigins[sheetIndex][r + '_' + c]
         return originCell
       }
-      for (let index = 1; index <= 5; index++) {
+      for (let index = 1; index <= 2; index++) {
         const prevr = r - index
         if (prevr < 0) {
           break
@@ -1910,7 +1913,7 @@ export default {
           }
         }
       }
-      for (let index = 1; index <= 5; index++) {
+      for (let index = 1; index <= 2; index++) {
         const prevc = c - index
         if (prevc < 0) {
           break

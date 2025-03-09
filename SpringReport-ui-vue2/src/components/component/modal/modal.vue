@@ -294,6 +294,8 @@
               :multiple="item.multiple"
               :readonly="item.readonly"
               :filesize="item.filesize"
+              :uploadUrl="item.uploadUrl"
+              :listType="item.listType"
             />
             <cusTable
               v-if="item.type === 'Table'"

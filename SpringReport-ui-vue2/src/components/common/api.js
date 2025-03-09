@@ -364,5 +364,17 @@ api.common = {
   uploadFileApi: '/api/common/uploadFile',
   parseXlsxByUrlApi: '/api/common/parseXlsxByUrl'
 }
-
+api.onlyoffice = {
+  listApi:"/api/docOnlyOffice/getTableList",//获取表格数据api
+  insertApi:"/api/docOnlyOffice/insert",//新增用api
+  updateApi:"/api/docOnlyOffice/update",//更新用api
+  getDetailApi:"/api/docOnlyOffice//getDetail",//获取详情用api
+  deleteOneApi:"/api/docOnlyOffice/delete",//单条删除api
+  deleteBatchApi:"/api/docOnlyOffice/deletebatch",//批量删除api
+  getChildrenApi:"/api/docOnlyOffice/getChildren",
+  getDocByIdApi:"/api/docOnlyOffice/getDocById",
+  getPreviewReportParamApi: '/api/docOnlyOffice/getReportDatasetsParam', // 获取数据集参数api
+  previewDocApi: '/api/docOnlyOffice/previewDoc', // 预览word文档api
+  callbackApi:'/SpringReport/api/onlyoffice/callback'
+}
 export default api

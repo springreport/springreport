@@ -99,10 +99,10 @@ export default{
         }
     },
     props: {
-            // action:{
-            //    type: String,
-            //     default: this.action
-            // },
+            uploadUrl:{
+               type: String,
+                default: '/api/common/upload'
+            },
             accept: {
                 type: String,
                 default: '*'
@@ -156,7 +156,7 @@ export default{
         },
     data() {
             return {
-                action: this.commonUtil.baseUrl+'/api/common/upload',
+                action: this.commonUtil.baseUrl+this.uploadUrl,
                 headers:{Authorization:localStorage.getItem(this.commonConstants.sessionItem.authorization)}
             };
         }
