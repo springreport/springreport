@@ -119,7 +119,6 @@
     },
     methods: {
       handleMonth(type) {
-        console.log(type);
         if (type === 'add') {
           this.currentMonth = this.currentMonth.clone().add(1, 'month');
         } else {
@@ -136,7 +135,6 @@
       getData() {
         const startDate = this.daysInMonth[0].format('YYYY-MM-DD');
         const endDate = this.daysInMonth[this.daysInMonth.length - 1].format('YYYY-MM-DD');
-        console.log(startDate, endDate);
         this.executed = [];
         this.paused = [];
         // 角标蓝色1是已执行 黄色2是已暂停

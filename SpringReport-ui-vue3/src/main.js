@@ -96,9 +96,17 @@ app.use(Pagination);
 app.use(Empty);
 app.use(VanImage);
 app.use(Popup);
-
+// var env = import.meta.env.VITE_BASE_NODE_ENV
+// var url = "";
+// if(env == "development"){
+//   url = 'http://192.168.0.105:9696/web-apps/apps/api/documents/api.js';
+// }else{
+//   url = 'http://192.168.0.105:9696/web-apps/apps/api/documents/api.js';
+// }
+// var script = document.createElement('script');
+// script.src = url;
+// document.body.appendChild(script);
 app.mount('#app');
-
 //自定义标签指令-按钮是否有权限展示start
 app.directive('has', {
   mounted: function (el, binding) {
