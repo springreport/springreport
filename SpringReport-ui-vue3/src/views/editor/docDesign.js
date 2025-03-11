@@ -1452,6 +1452,8 @@ export default {
           docTplCharts:this.docTplCharts,
           docTplCodes:this.docTplCodes,
           margins:JSON.stringify(paperMargin),
+          height:options.height,
+          width:options.width
         },
         removeEmpty:false,
         url:this.apis.docTpl.saveDocTplSettingsApi,
