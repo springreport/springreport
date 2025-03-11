@@ -109,21 +109,21 @@ export default {
     // 设置缩放
     setScale() {
       if (this.scaleTimer) {
-        clearTimeout(this.scaleTimer)
-      }
-      this.scaleTimer = setTimeout(() => {
-        const designWidth = this.screenProperties.width
-        const designHeight = this.screenProperties.height
-        const scaleX = window.innerWidth / designWidth
-        const scaleY = window.innerHeight / designHeight
-        const scale = Math.min(scaleX, scaleY)
-        console.log(window.innerHeight, designHeight * scale)
-        const offsetX = (window.innerWidth - designWidth * scale) / 2
-        const offsetY = (window.innerHeight - designHeight * scale) / 2
-        this.screenProperties.scale = scale
-        this.screenProperties.offsetX = offsetX
-        this.screenProperties.offsetY = offsetY
-      }, 100)
+             clearTimeout(this.scaleTimer)
+           }
+           this.scaleTimer = setTimeout(() => {
+             const designWidth = this.screenProperties.width
+             const designHeight = this.screenProperties.height
+             const scaleX = window.innerWidth / designWidth
+             const scaleY = window.innerHeight / designHeight
+             const scale = Math.min(scaleX, scaleY)
+             console.log(window.innerHeight, designHeight * scale)
+             const offsetX = (window.innerWidth - designWidth * scale) / 2
+             const offsetY = (window.innerHeight - designHeight * scale) / 2
+             this.screenProperties.scale = scale
+             this.screenProperties.offsetX = offsetX/scale
+             this.screenProperties.offsetY = offsetY/scale
+           }, 100) // 100可以替换为50，如果还嫌慢 直接去掉setTimeout延时器也行，本意是防抖
     },
     // 组件初始化
     async initComponent() {
