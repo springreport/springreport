@@ -448,7 +448,7 @@ export default {
           pivotTable: false, //'数据透视表'
           function: true, // '公式'
           frozenMode: true, // '冻结方式'
-          sortAndFilter: false, // '排序和筛选'
+          sortAndFilter: true, // '排序和筛选'
           conditionalFormat: true, // '条件格式'
           dataVerification: true, // '数据验证'
           splitColumn: false, // '分列'
