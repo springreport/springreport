@@ -1429,7 +1429,9 @@ export default {
           watermark: JSON.stringify(tplSettings.options.watermark),
           docTplCharts: this.docTplCharts,
           docTplCodes: this.docTplCodes,
-          margins: JSON.stringify(paperMargin)
+          margins: JSON.stringify(paperMargin),
+          height:options.height,
+          width:options.width
         },
         removeEmpty: false,
         url: this.apis.docTpl.saveDocTplSettingsApi
