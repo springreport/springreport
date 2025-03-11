@@ -4821,6 +4821,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				rowAndCol.put("maxY", luckySheetBindData.getCoordsy());
 				this.processDynamicRange(luckySheetBindData, dynamicRange, rowAndCol.get("maxX").intValue(), rowAndCol.get("maxY").intValue(), luckySheetBindData.getCellData());
 				this.processCoverCell(objectMapper, usedCells, luckySheetBindData, cellDatas, calcChain, dataRowLen, rowlen, dataColLen, columnlen, border, maxXAndY, maxCoordinate, borderInfo);
+				return;
 			}else {
 				String key = luckySheetBindData.getCoordsx()+"_"+luckySheetBindData.getCoordsy();
 				if(usedCells.containsKey(key)) {
@@ -4835,9 +4836,9 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 						cellData.clear();
 						cellData.putAll(coverCellData);
 					}
+					return;
 				}
 			}
-			return;
 		}
 		int verticalDataLenth = 1;
 		int horizontalDataLenth = 1;
@@ -13990,7 +13991,6 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 								|| CellExtendEnum.HORIZONTAL.getCode().intValue() == coverCellBindData.getCellExtend().intValue()) {
 							return true;
 						}
-						
 					}
 				}
 			}
