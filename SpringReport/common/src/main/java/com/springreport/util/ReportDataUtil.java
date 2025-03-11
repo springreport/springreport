@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -113,14 +114,14 @@ public class ReportDataUtil {
 		if(resultObj instanceof JSONObject)
 		{
 			list = new ArrayList<Map<String,Object>>();
-			Map<String, Object> map = JSONObject.parseObject(JSONObject.toJSONString(resultObj), Map.class);
+			Map<String, Object> map = JSONObject.parseObject(JSONObject.toJSONString(resultObj), LinkedHashMap.class);
 			list.add(map);
 		}else if(resultObj instanceof JSONArray){
 			JSONArray jsonArray = (JSONArray) resultObj;
 			Map<String, Object> map = null;
 			list = new ArrayList<Map<String,Object>>();
 			for (int i = 0; i < jsonArray.size(); i++) {
-				map = JSONObject.parseObject(JSONObject.toJSONString(jsonArray.get(i)), Map.class);
+				map = JSONObject.parseObject(JSONObject.toJSONString(jsonArray.get(i)), LinkedHashMap.class);
 				list.add(map);
 			}
 		}
@@ -152,7 +153,7 @@ public class ReportDataUtil {
             final int count = rsMataData.getColumnCount();
             result = new ArrayList<>();
             while(rs.next()){
-                Map<String, Object> map = new HashMap<String, Object>();
+                Map<String, Object> map = new LinkedHashMap<String, Object>();
                 for(int i = 0; i < count; i++){
                  map.put(rsMataData.getColumnLabel(i+1), rs.getObject(rsMataData.getColumnLabel(i+1)));
                 }
@@ -178,7 +179,7 @@ public class ReportDataUtil {
             final int count = rsMataData.getColumnCount();
             result = new ArrayList<>();
             while(rs.next()){
-                Map<String, Object> map = new HashMap<String, Object>();
+                Map<String, Object> map = new LinkedHashMap<String, Object>();
                 for(int i = 0; i < count; i++){
                  map.put(rsMataData.getColumnLabel(i+1), rs.getObject(rsMataData.getColumnLabel(i+1)));
                 }
@@ -206,7 +207,7 @@ public class ReportDataUtil {
             final int count = rsMataData.getColumnCount();
             result = new ArrayList<>();
             while(rs.next()){
-                Map<String, Object> map = new HashMap<String, Object>();
+                Map<String, Object> map = new LinkedHashMap<String, Object>();
                 for(int i = 0; i < count; i++){
                  map.put(rsMataData.getColumnLabel(i+1), rs.getObject(rsMataData.getColumnLabel(i+1)));
                 }
@@ -244,7 +245,7 @@ public class ReportDataUtil {
 					result = new ArrayList<>();
 					for (int i = 0; i < values.size(); i++) {
 						List<Object> rowValues = values.get(i);
-						Map<String, Object> map = new HashMap<>();
+						Map<String, Object> map = new LinkedHashMap<>();
 						for (int j = 0; j < rowValues.size(); j++) {
 							map.put(columns.get(j), rowValues.get(j));
 						}
@@ -367,7 +368,7 @@ public class ReportDataUtil {
 	            final int count = rsMataData.getColumnCount();
 	            result = new ArrayList<>();
 	            while(rs.next()){
-	                Map<String, Object> map = new HashMap<String, Object>();
+	                Map<String, Object> map = new LinkedHashMap<String, Object>();
 	                for(int i = 0; i < count; i++){
 	                 map.put(rsMataData.getColumnLabel(i+1), rs.getObject(rsMataData.getColumnLabel(i+1)));
 	                }
