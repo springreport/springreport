@@ -135,22 +135,22 @@ export const constantRoutes = [
   //     title: 'PPT预览',
   //   },
   // },
-   {
-    path: '/onlyOfficeDocDesign',
-    name: 'onlyOfficeDocDesign',
-    component: () => import('@/views/onlyoffice/docDesign.vue'),
-    meta: {
-      title: 'doc设计',
-    },
-  },
-  {
-    path: '/onlyOfficeDocPreview',
-    name: 'onlyOfficeDocPreview',
-    component: () => import('@/views/onlyoffice/docPreview.vue'),
-    meta: {
-      title: 'doc预览',
-    },
-  },
+  //  {
+  //   path: '/onlyOfficeDocDesign',
+  //   name: 'onlyOfficeDocDesign',
+  //   component: () => import('@/views/onlyoffice/docDesign.vue'),
+  //   meta: {
+  //     title: 'doc设计',
+  //   },
+  // },
+  // {
+  //   path: '/onlyOfficeDocPreview',
+  //   name: 'onlyOfficeDocPreview',
+  //   component: () => import('@/views/onlyoffice/docPreview.vue'),
+  //   meta: {
+  //     title: 'doc预览',
+  //   },
+  // },
   {
     path: '/',
     component: Layout,
@@ -357,14 +357,14 @@ export const constantRoutes = [
       //     icon: 'icon-word',
       //   },
       // },
-      {
-        path: "/doconlyoffice",
-        name: "doconlyoffice",
-        component: () => import("@/views/doconlyoffice/DocOnlyOffice.vue"),
-        meta: {
-          title: "Word报表(onlyoffice)",
-        },
-      },
+      // {
+      //   path: "/doconlyoffice",
+      //   name: "doconlyoffice",
+      //   component: () => import("@/views/doconlyoffice/DocOnlyOffice.vue"),
+      //   meta: {
+      //     title: "Word报表(onlyoffice)",
+      //   },
+      // },
     ],
   },
   {

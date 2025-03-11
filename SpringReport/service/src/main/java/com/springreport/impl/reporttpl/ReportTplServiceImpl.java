@@ -4821,6 +4821,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				rowAndCol.put("maxY", luckySheetBindData.getCoordsy());
 				this.processDynamicRange(luckySheetBindData, dynamicRange, rowAndCol.get("maxX").intValue(), rowAndCol.get("maxY").intValue(), luckySheetBindData.getCellData());
 				this.processCoverCell(objectMapper, usedCells, luckySheetBindData, cellDatas, calcChain, dataRowLen, rowlen, dataColLen, columnlen, border, maxXAndY, maxCoordinate, borderInfo);
+				return;
 			}else {
 				String key = luckySheetBindData.getCoordsx()+"_"+luckySheetBindData.getCoordsy();
 				if(usedCells.containsKey(key)) {
@@ -4835,9 +4836,9 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 						cellData.clear();
 						cellData.putAll(coverCellData);
 					}
+					return;
 				}
 			}
-			return;
 		}
 		int verticalDataLenth = 1;
 		int horizontalDataLenth = 1;
@@ -6917,9 +6918,6 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
             	}
             }else if(CellExtendEnum.HORIZONTAL.getCode().intValue() == luckySheetBindData.getCellExtend().intValue()){
             	//向右扩展单元格处理
-            	if(luckySheetBindData.getCoordsx() == 18) {
-            		System.err.println();
-            	}
             	boolean result = this.processHorizontalListGroupValue(j, maxCoordinate, luckySheetBindData, cellDatas, hyperlinks, dataRowLen, dataColLen, 
             			rowlen, columnlen, mergeMap, objectMapper,maxXAndY,borderInfo,borderConfig,borderInfos,calcChain,configRowLen,configColumnLen,
             			images,cellBindData,usedCells,flag,dicts,nowFunction,functionCellFormat,dataVerification,drillCells,rowhidden,colhidden,cellConditionFormat,dynamicRange,subTotalDigits,coverCells
@@ -13993,7 +13991,6 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 								|| CellExtendEnum.HORIZONTAL.getCode().intValue() == coverCellBindData.getCellExtend().intValue()) {
 							return true;
 						}
-						
 					}
 				}
 			}
