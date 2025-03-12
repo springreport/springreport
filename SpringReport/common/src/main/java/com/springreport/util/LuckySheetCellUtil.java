@@ -297,14 +297,22 @@ public class LuckySheetCellUtil {
 							}
 						}
 					}
-					if(cell.getCellType() == CellType.STRING && wrapText.containsKey(r+"")) {
+					if(cell.getCellType() == CellType.STRING ) {
 						String cellValueString = cell.getStringCellValue();
-						if(StringUtil.isNotEmpty(cellValueString)) {
-							if(cellValueString.length() > wrapText.get(r+"")) {
-								wrapText.put(r+"", cellValueString.length());
+						if(wrapText.containsKey(r+"_"+cell.getColumnIndex())) {
+							if(StringUtil.isNotEmpty(cellValueString)) {
+								wrapText.put(r+"_"+cell.getColumnIndex(), cellValueString.length());
 								wrapText.put("row_"+r,cell.getColumnIndex());
 							}
 						}
+//						else {
+//							XSSFFont font = wb.getFontAt(cell.getCellStyle().getFontIndex());
+//							if(StringUtil.isNotEmpty(cellValueString)) {
+//								wrapText.put(r+"", cellValueString.length());
+//								wrapText.put(r+"_value", cellValueString.length()*font.getFontHeightInPoints());
+//								wrapText.put("row_"+r,cell.getColumnIndex());
+//							}
+//						}
 					}
 				}
 				
@@ -581,7 +589,7 @@ public class LuckySheetCellUtil {
 		String tb = String.valueOf(styleMap.get("tb"));
 		if("2".equals(tb)) {
 			if(!wrapText.containsKey(r+"")) {
-				wrapText.put(r+"", 0);
+				wrapText.put(r+"_"+c, 0);
 			}
 			if(styleMap.containsKey("ls")) {
 				wrapText.put(r+"_"+c+"_ls", (Integer) styleMap.get("ls"));
