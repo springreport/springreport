@@ -306,4 +306,16 @@ public class LuckysheetReportCell extends PageEntity {
     /** forms_attrs - 填报属性配置 */
     @TableField("forms_attrs")
     private String formsAttrs;
+    
+    /** hloop_count - 横向循环次数 */
+    @TableField("hloop_count")
+    private Integer hloopCount;
+
+    /** hloop_empty_count - 横向循环间隔空行数 */
+    @TableField("hloop_empty_count")
+    private Integer hloopEmptyCount;
+
+    /** vloop_empty_count - 纵向循环间隔空行数 */
+    @TableField("vloop_empty_count")
+    private Integer vloopEmptyCount;
 }

@@ -1869,11 +1869,6 @@ export default {
       } else {
         const tplId = this.$route.query.tplId
         const headers = {}
-        if (this.isShare == 1) {
-          headers.shareCode = this.shareCode
-          headers.shareUser = this.shareUser
-          obj.url = this.apis.previewReport.shareReportDataApi
-        }
         // var that = this
         // let bassicMd5 = this.$md5(JSON.stringify(this.basicRowDatas))// 旧数据md5值
         // let rowMd5 = this.$md5(JSON.stringify(this.rowDatas))// 新数据md5值
@@ -1923,6 +1918,11 @@ export default {
             mainAttrs:this.sheetMainAttrs,mainDatasources:this.sheetMainDatasources,mainRowDatas:this.mainRowDatas},
           removeEmpty: false,
           callback: this.submitDatasCallback
+        }
+        if (this.isShare == 1) {
+          headers.shareCode = this.shareCode
+          headers.shareUser = this.shareUser
+          obj.url = this.apis.previewReport.shareReportDataApi
         }
         var that = this;
         this.commonUtil.doPost(obj, headers).then(response => {

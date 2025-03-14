@@ -244,7 +244,10 @@ export default {
         startCell: '',
         endCell: '',
         aggregateType: '', // 聚合方式
-        groupProperty: ''// 分组属性
+        groupProperty: '',// 分组属性
+        hloopCount:'',//横向循环次数
+        hloopEmptyCount:'',//横向循环间隔空行数
+        vloopEmptyCount:'',//纵向循环间隔空行数
       },
       cellConditionVisiable: false, // 单元格过滤条件对话框
       cellConditionForm: {
@@ -2013,7 +2016,10 @@ export default {
                   rs: blockInfos.rowspan,
                   cs: blockInfos.colspan,
                   aggregateType: blockInfos.aggregateType,
-                  groupProperty: blockInfos.groupProperty
+                  groupProperty: blockInfos.groupProperty,
+                  hloopCount: blockInfos.hloopCount,
+                  hloopEmptyCount: blockInfos.hloopEmptyCount,
+                  vloopEmptyCount: blockInfos.vloopEmptyCount,
                 }
                 reportTplBlockCells.push(reportTplBlockCell)
                 for (let i = 0; i < blockCells.length; i++) {
@@ -2609,6 +2615,11 @@ export default {
     },
     // 添加循环块
     addBlock() {
+      const rangeAxis = luckysheet.getRangeAxis();
+      if(rangeAxis && rangeAxis.length > 0){
+        this.blockForm.startCell = rangeAxis[0].split(":")[0];
+        this.blockForm.endCell = rangeAxis[0].split(":")[1];
+      }
       this.blockVisiable = true
     },
     // 关闭循环块对话框
@@ -2625,7 +2636,10 @@ export default {
             startCell: this.blockForm.startCell,
             endCell: this.blockForm.endCell,
             aggregateType: this.blockForm.aggregateType,
-            groupProperty: this.blockForm.groupProperty
+            groupProperty: this.blockForm.groupProperty,
+            hloopCount: this.blockForm.hloopCount,
+            hloopEmptyCount: this.blockForm.hloopEmptyCount,
+            vloopEmptyCount: this.blockForm.vloopEmptyCount,
           }
           var sheetIndex = luckysheet.getSheet().index
           var k = ''
@@ -2659,6 +2673,9 @@ export default {
       this.blockForm.endCell = obj.endCell
       this.blockForm.aggregateType = obj.aggregateType
       this.blockForm.groupProperty = obj.groupProperty
+      this.blockForm.hloopCount = obj.hloopCount
+      this.blockForm.hloopEmptyCount = obj.hloopEmptyCount
+      this.blockForm.vloopEmptyCount = obj.vloopEmptyCount
       this.blockVisiable = true
     },
     // 删除循环块
@@ -2686,12 +2703,18 @@ export default {
       var colspan = endy - starty + 1
       var aggregateType = blockData.aggregateType
       var groupProperty = blockData.groupProperty
+      var hloopCount = blockData.hloopCount
+      var hloopEmptyCount = blockData.hloopEmptyCount
+      var vloopEmptyCount = blockData.vloopEmptyCount
       result.startx = startx
       result.starty = starty
       result.rowspan = rowspan
       result.colspan = colspan
       result.aggregateType = aggregateType
       result.groupProperty = groupProperty
+      result.hloopCount = hloopCount
+      result.hloopEmptyCount = hloopEmptyCount
+      result.vloopEmptyCount = vloopEmptyCount
       return result
     },
     // 获取循环块的单元格

@@ -171,7 +171,7 @@
                 >
                   <div
                     v-for="fieldItem in displayFields"
-                    :key="fieldItem.columnName"
+                    :key="fieldItem.name"
                     class="dataset-item df-c-b"
                     @dragend="
                       endDraggable(datasetItem.datasetName, fieldItem.name)
@@ -180,9 +180,9 @@
                     <div
                       class="set-name overflow-text"
                       style="flex: 1"
-                      :title="fieldItem.columnName"
+                      :title="fieldItem.name"
                     >
-                      {{ fieldItem.columnName }}
+                      {{ fieldItem.name }}
                     </div>
                     <div class="action-box df-c">
                       <div
@@ -1438,6 +1438,27 @@
                       style="min-width: 220px; max-width: 220px"
                     >
                       分组属性：{{ o.groupProperty }}
+                    </p>
+                    <p
+                      class="column-tag"
+                      :title="o.hloopCount"
+                      style="min-width: 220px; max-width: 220px"
+                    >
+                      横向循环次数：{{ o.hloopCount }}
+                    </p>
+                    <p
+                      class="column-tag"
+                      :title="o.hloopEmptyCount"
+                      style="min-width: 220px; max-width: 220px"
+                    >
+                      横向循环间隔空行数：{{ o.hloopEmptyCount }}
+                    </p>
+                    <p
+                      class="column-tag"
+                      :title="o.vloopEmptyCount"
+                      style="min-width: 220px; max-width: 220px"
+                    >
+                      纵向循环间隔空行数：{{ o.vloopEmptyCount }}
                     </p>
                   </el-collapse-item>
                 </el-collapse>
@@ -2712,12 +2733,13 @@
         >确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog
-      title="循环块"
-      :visible.sync="blockVisiable"
-      width="30%"
-      height="80%"
+    <el-drawer
+     :visible.sync="blockVisiable"
+      custom-class="handle-drawer"
+      class="handle-drawer"
+      :modal="true"
       :close-on-click-modal="false"
+      size="100%"
       @close="closeBlockDialog"
     >
       <el-form
@@ -2778,21 +2800,57 @@
             size="small"
           />
         </el-form-item>
+        <el-form-item
+          key="hloopCount"
+          label="横向循环次数"
+          prop="hloopCount"
+          :rules="filter_rules('横向循环次数', { required: true,type:'positiveInt' })"
+        >
+          <el-input
+            v-model="blockForm.hloopCount"
+            placeholder="横向循环次数"
+            size="small"
+          />
+        </el-form-item>
+          <el-form-item
+          key="hloopEmptyCount"
+          label="横向循环间隔空行数"
+          prop="hloopEmptyCount"
+          :rules="filter_rules('横向循环间隔空行数', { required: true,type:'positiveInt' })"
+        >
+          <el-input
+            v-model="blockForm.hloopEmptyCount"
+            placeholder="横向循环间隔空行数"
+            size="small"
+          />
+        </el-form-item>
+        <el-form-item
+          key="vloopEmptyCount"
+          label="纵向循环间隔空行数"
+          prop="vloopEmptyCount"
+          :rules="filter_rules('纵向循环间隔空行数', { required: true,type:'positiveInt' })"
+        >
+          <el-input
+            v-model="blockForm.vloopEmptyCount"
+            placeholder="纵向循环间隔空行数"
+            size="small"
+          />
+        </el-form-item>
       </el-form>
       <el-alert
         title="说明：起始结束单元格为单元格的坐标，如起始单元格坐标为A1，结束单元格坐标为E20，则循环块范围为A1:E20"
         type="warning"
         :closable="false"
       />
-      <span slot="footer" class="dialog-footer">
+      <div class="handle-drawer__footer">
         <el-button size="small" @click="closeBlockDialog">取 消</el-button>
         <el-button
           type="primary"
           size="small"
           @click="confirmAddBlock"
         >确 定</el-button>
-      </span>
-    </el-dialog>
+      </div>
+    </el-drawer>
     <el-dialog
       title="单元格过滤"
       :visible.sync="cellConditionVisiable"

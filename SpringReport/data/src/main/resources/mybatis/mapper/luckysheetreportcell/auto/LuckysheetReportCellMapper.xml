@@ -72,6 +72,11 @@
 	 <result column="is_subtotal_calc" property="isSubtotalCalc" jdbcType="BIT" />
 	 <result column="subtotal_calc" property="subtotalCalc" jdbcType="LONGVARCHAR" />
 	 <result column="subtotal_attrs" property="subtotalAttrs" jdbcType="LONGVARCHAR" />
+	 <result column="cell_fill_type" property="cellFillType" jdbcType="TINYINT" />
+	 <result column="forms_attrs" property="formsAttrs" jdbcType="LONGVARCHAR" />
+	 <result column="hloop_count" property="hloopCount" jdbcType="INTEGER" />
+	 <result column="hloop_empty_count" property="hloopEmptyCount" jdbcType="INTEGER" />
+	 <result column="vloop_empty_count" property="vloopEmptyCount" jdbcType="INTEGER" />
   </resultMap>
 
   <sql id="sql_where_like">
@@ -275,11 +280,26 @@
 		<if test="subtotalAttrs !=null and subtotalAttrs !=''">
 			and subtotal_attrs like concat(concat("%",#{subtotalAttrs,jdbcType=LONGVARCHAR}),"%")
 		</if>
+		<if test="cellFillType !=null">
+			and cell_fill_type = #{cellFillType,jdbcType=TINYINT}
+		</if>
+		<if test="formsAttrs !=null and formsAttrs !=''">
+			and forms_attrs like concat(concat("%",#{formsAttrs,jdbcType=LONGVARCHAR}),"%")
+		</if>
+		<if test="hloopCount !=null">
+			and hloop_count = #{hloopCount,jdbcType=INTEGER}
+		</if>
+		<if test="hloopEmptyCount !=null">
+			and hloop_empty_count = #{hloopEmptyCount,jdbcType=INTEGER}
+		</if>
+		<if test="vloopEmptyCount !=null">
+			and vloop_empty_count = #{vloopEmptyCount,jdbcType=INTEGER}
+		</if>
 	</where>
   </sql>
   <!-- 字段集合 -->
   <sql id="Base_Column_List">
-    id,tpl_id,sheet_id,dataset_name,coordsx,coordsy,cell_extend,cell_value,cell_data,cell_value_type,aggregate_type,group_property,is_link,link_config,is_merge,row_span,col_span,cell_function,digit,group_summary_dependency_r,group_summary_dependency_c,data_from,is_group_merge,is_function,warning,warning_rules,warning_color,threshold,warning_content,is_relied,rely_cells,is_dict,datasource_id,dict_type,alternate_format,alternate_format_bc_odd,alternate_format_bc_even,alternate_format_fc_odd,alternate_format_fc_even,is_conditions,cell_conditions,filter_type,is_hidden_conditions,hidden_type,hidden_conditions,is_chart_attr,chart_ids,series_name,is_chart_cell,is_data_verification,data_verification,is_drill,drill_id,drill_attrs,unit_transfer,transfer_type,multiple,creator,create_time,updater,update_time,del_flag,is_subtotal,subtotal_cells,is_subtotal_calc,subtotal_calc,subtotal_attrs
+    id,tpl_id,sheet_id,dataset_name,coordsx,coordsy,cell_extend,cell_value,cell_data,cell_value_type,aggregate_type,group_property,is_link,link_config,is_merge,row_span,col_span,cell_function,digit,group_summary_dependency_r,group_summary_dependency_c,data_from,is_group_merge,is_function,warning,warning_rules,warning_color,threshold,warning_content,is_relied,rely_cells,is_dict,datasource_id,dict_type,alternate_format,alternate_format_bc_odd,alternate_format_bc_even,alternate_format_fc_odd,alternate_format_fc_even,is_conditions,cell_conditions,filter_type,is_hidden_conditions,hidden_type,hidden_conditions,is_chart_attr,chart_ids,series_name,is_chart_cell,is_data_verification,data_verification,is_drill,drill_id,drill_attrs,unit_transfer,transfer_type,multiple,creator,create_time,updater,update_time,del_flag,is_subtotal,subtotal_cells,is_subtotal_calc,subtotal_calc,subtotal_attrs,cell_fill_type,forms_attrs,hloop_count,hloop_empty_count,vloop_empty_count
   </sql>
 
   <!-- 根据条件模糊查询 -->

@@ -517,4 +517,13 @@ public class LuckySheetBindData {
      * @date 2025-01-31 03:00:27 
      */  
     private int tplType = 1;
+    
+    /** hloop_count - 横向循环次数 */
+    private Integer hloopCount;
+
+    /** hloop_empty_count - 横向循环间隔空行数 */
+    private Integer hloopEmptyCount;
+
+    /** vloop_empty_count - 纵向循环间隔空行数 */
+    private Integer vloopEmptyCount;
 }

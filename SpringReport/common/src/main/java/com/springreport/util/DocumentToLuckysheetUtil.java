@@ -456,6 +456,9 @@ public class DocumentToLuckysheetUtil {
 						 JSONArray conditionFormats = new JSONArray();
 						 for (int k = 0; k < ruleNum; k++) {
 							 XSSFConditionalFormattingRule rule = conditionalFormatting.getRule(k);
+							 if(rule.getPatternFormatting() == null) {
+								 continue;
+							 }
 							 Class<?> clazz = rule.getClass();
 							 Field field = clazz.getDeclaredField("_cfRule");
 							 field.setAccessible(true);
