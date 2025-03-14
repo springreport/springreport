@@ -162,9 +162,9 @@
                       <div
                         class="set-name overflow-text"
                         style="flex: 1"
-                        :title="element.columnName"
+                        :title="element.name"
                       >
-                        {{ element.columnName }}
+                        {{ element.name }}
                       </div>
                       <div class="action-box df-c">
                         <div
@@ -1277,6 +1277,27 @@
                       style="min-width: 220px; max-width: 220px; margin: 0"
                       >分组属性：{{ o.groupProperty }}</p
                     >
+                    <p
+                      class="column-tag"
+                      :title="o.hloopCount"
+                      style="min-width: 220px; max-width: 220px; margin: 0"
+                    >
+                      横向循环次数：{{ o.hloopCount }}
+                    </p>
+                    <p
+                      class="column-tag"
+                      :title="o.hloopEmptyCount"
+                      style="min-width: 220px; max-width: 220px; margin: 0"
+                    >
+                      横向循环间隔空行数：{{ o.hloopEmptyCount }}
+                    </p>
+                    <p
+                      class="column-tag"
+                      :title="o.vloopEmptyCount"
+                      style="min-width: 220px; max-width: 220px; margin: 0"
+                    >
+                      纵向循环间隔空行数：{{ o.vloopEmptyCount }}
+                    </p>
                   </el-collapse-item>
                 </el-collapse>
               </el-collapse-item>
@@ -2283,10 +2304,13 @@
         </span>
       </template>
     </el-dialog>
-    <el-dialog
+    <el-drawer
       title="循环块"
       v-model="blockVisiable"
-      width="30%"
+      width="650px"
+      custom-class="handle-drawer"
+      class="handle-drawer"
+      :modal="true"
       :close-on-click-modal="false"
       @close="closeBlockDialog"
     >
@@ -2321,6 +2345,39 @@
         <el-form-item label="分组属性" v-show="blockForm.aggregateType == 'group'">
           <el-input v-model="blockForm.groupProperty" placeholder="分组属性"></el-input>
         </el-form-item>
+        <el-form-item
+          key="hloopCount"
+          label="横向循环次数"
+          prop="hloopCount"
+          :rules="filter_rules('横向循环次数', { required: true,type:'positiveInt' })"
+        >
+          <el-input
+            v-model="blockForm.hloopCount"
+            placeholder="横向循环次数"
+          />
+        </el-form-item>
+          <el-form-item
+          key="hloopEmptyCount"
+          label="横向循环间隔空行数"
+          prop="hloopEmptyCount"
+          :rules="filter_rules('横向循环间隔空行数', { required: true,type:'positiveInt' })"
+        >
+          <el-input
+            v-model="blockForm.hloopEmptyCount"
+            placeholder="横向循环间隔空行数"
+          />
+        </el-form-item>
+        <el-form-item
+          key="vloopEmptyCount"
+          label="纵向循环间隔空行数"
+          prop="vloopEmptyCount"
+          :rules="filter_rules('纵向循环间隔空行数', { required: true,type:'positiveInt' })"
+        >
+          <el-input
+            v-model="blockForm.vloopEmptyCount"
+            placeholder="纵向循环间隔空行数"
+          />
+        </el-form-item>
       </el-form>
       <el-alert
         title="说明：起始结束单元格为单元格的坐标，如起始单元格坐标为A1，结束单元格坐标为E20，则循环块范围为A1:E20"
@@ -2328,13 +2385,11 @@
         :closable="false"
       >
       </el-alert>
-      <template #footer>
-        <span class="dialog-footer">
+      <div class="handle-drawer__footer">
           <el-button @click="closeBlockDialog">取 消</el-button>
           <el-button type="primary" @click="confirmAddBlock">确 定</el-button>
-        </span>
-      </template>
-    </el-dialog>
+      </div>
+    </el-drawer>
     <el-dialog
       title="单元格过滤"
       v-model="cellConditionVisiable"
