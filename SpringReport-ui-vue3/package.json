@@ -1,6 +1,6 @@
 {
   "name": "SpringReport",
-  "version": "2.3.2",
+  "version": "2.3.3",
   "scripts": {
     "lint": "eslint \"src/**/*.{js,vue}\"",
     "serve": "cross-env NODE_ENV=development vite",
