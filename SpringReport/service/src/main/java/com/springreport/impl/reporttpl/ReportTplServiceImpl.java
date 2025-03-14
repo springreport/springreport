@@ -3142,16 +3142,29 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 						for (int i = 0; i < fixedCells.size(); i++) {
 							this.isHiddenCol(fixedCells.get(i), configColhidden, viewParams);
 							bindData = new LuckySheetBindData();
+							bindData.setReportCellId(fixedCells.get(i).getId());
 							bindData.setCoordsx(fixedCells.get(i).getCoordsx());
 							bindData.setCoordsy(fixedCells.get(i).getCoordsy());
+							bindData.setCellExtend(fixedCells.get(i).getCellExtend());
 							bindData.setCellValueType(CellValueTypeEnum.FIXED.getCode());
 							bindData.setRowSpan(fixedCells.get(i).getRowSpan());
 							bindData.setColSpan(fixedCells.get(i).getColSpan());
 							bindData.setIsLink(fixedCells.get(i).getIsLink());
 							bindData.setIsMerge(fixedCells.get(i).getIsMerge());
 							bindData.setCellValue(fixedCells.get(i).getCellValue());
+							bindData.setIsFunction(fixedCells.get(i).getIsFunction());
+							bindData.setDatasetName(fixedCells.get(i).getDatasetName());
+							bindData.setIsGroupMerge(fixedCells.get(i).getIsGroupMerge());
+							bindData.setIsChartCell(fixedCells.get(i).getIsChartCell());
 							bindData.setIsDataVerification(fixedCells.get(i).getIsDataVerification());
 							bindData.setDataVerification(fixedCells.get(i).getDataVerification());
+							bindData.setUnitTransfer(fixedCells.get(i).getUnitTransfer());
+							bindData.setTransferType(fixedCells.get(i).getTransferType());
+							bindData.setMultiple(fixedCells.get(i).getMultiple());
+							bindData.setIsSubtotal(fixedCells.get(i).getIsSubtotal());
+							bindData.setSubtotalCells(fixedCells.get(i).getSubtotalCells());
+							bindData.setIsSubtotalCalc(fixedCells.get(i).getIsSubtotalCalc());
+							bindData.setSheetId(fixedCells.get(i).getSheetId());
 							bindData.setCellFillType(fixedCells.get(i).getCellFillType());
 							try {
 								bindData.setCellData(objectMapper.readValue(fixedCells.get(i).getCellData(), Map.class));
