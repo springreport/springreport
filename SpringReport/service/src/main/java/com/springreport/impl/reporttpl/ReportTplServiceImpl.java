@@ -11224,7 +11224,11 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		mesExportExcel.setPassword(mesGenerateReportDto.getPassword());
 		mesExportExcel.setSheetConfigs(sheetConfigs);
 		mesExportExcel.setChartsBase64(mesGenerateReportDto.getChartsBase64());
-		ReportExcelUtil.export(mesExportExcel,reportTpl.getTplName(),mesGenerateReportDto.getPassword(),httpServletResponse);
+		if(mesGenerateReportDto.isLarge()) {
+			ReportExcelUtil.largeExport(mesExportExcel,reportTpl.getTplName(),mesGenerateReportDto.getPassword(),httpServletResponse);
+		}else {
+			ReportExcelUtil.export(mesExportExcel,reportTpl.getTplName(),mesGenerateReportDto.getPassword(),httpServletResponse);
+		}
 	}
 
 

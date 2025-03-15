@@ -414,7 +414,8 @@ export default {
           label: '导出全部',
           icon: 'action-icon-export-all',
           downs: [
-            { label: '导出全部Excel', handle: () => this.exportExcel() },
+            { label: '导出全部Excel', handle: () => this.exportExcel(false) },
+            { label: '导出全部Excel(大数据)', handle: () => this.exportExcel(true) },
             { label: '导出全部PDF', handle: () => this.pdfExport(1) },
           ],
         },
@@ -996,7 +997,7 @@ export default {
         }
       });
     },
-    exportExcel: function () {
+    exportExcel: function (isLarge) {
       let tplId = this.currentTplId;
       var params = this.commonUtil.removePageParams(this.searchData.params);
       var obj = {
@@ -1038,6 +1039,7 @@ export default {
                   searchData: params,
                   isPatination: false,
                   pagination: this.pageParam,
+                  isLarge:isLarge
                 },
                 this.closeLoading,
                 headers
@@ -1057,6 +1059,7 @@ export default {
               searchData: params,
               isPatination: false,
               pagination: this.pageParam,
+              isLarge:isLarge
             },
             this.closeLoading,
             headers

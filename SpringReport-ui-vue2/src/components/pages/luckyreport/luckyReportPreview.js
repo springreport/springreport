@@ -367,7 +367,8 @@ export default {
         {
           btnType: 'dropDown', label: '导出全部', icon: 'action-icon action-icon-export-all',
           downs: [
-            { label: '导出全部Excel', handle: () => this.exportExcel() },
+            { label: '导出全部Excel', handle: () => this.exportExcel(false) },
+            { label: '导出全部Excel(大数据)', handle: () => this.exportExcel(true) },
             { label: '导出全部PDF', handle: () => this.pdfExport(1) }
           ]
         },
@@ -818,7 +819,7 @@ export default {
         }
       })
     },
-    exportExcel: function() {
+    exportExcel: function(isLarge) {
       const tplId = this.currentTplId
       var params = this.commonUtil.removePageParams(this.searchData.params)
       var obj = {
@@ -848,15 +849,16 @@ export default {
               }
             }
           }).then(({ value }) => {
-            this.commonUtil.downloadFile(this.isShare == 1 ? this.apis.previewReport.shareLuckySheetExportExcelApi : this.apis.previewReport.luckySheetExportExcelApi, { tplId: tplId, password: value, searchData: params, isPatination: false, pagination: this.pageParam }, this.closeLoading, headers)
+            this.commonUtil.downloadFile(this.isShare == 1 ? this.apis.previewReport.shareLuckySheetExportExcelApi : this.apis.previewReport.luckySheetExportExcelApi, { tplId: tplId, password: value, searchData: params, isPatination: false, pagination: this.pageParam,isLarge:isLarge }, this.closeLoading, headers)
           }).catch(() => {
             this.loading = false
           })
         } else {
-          this.commonUtil.downloadFile(this.isShare == 1 ? this.apis.previewReport.shareLuckySheetExportExcelApi : this.apis.previewReport.luckySheetExportExcelApi, { tplId: tplId, password: '', searchData: params, isPatination: false, pagination: this.pageParam }, this.closeLoading, headers)
+          this.commonUtil.downloadFile(this.isShare == 1 ? this.apis.previewReport.shareLuckySheetExportExcelApi : this.apis.previewReport.luckySheetExportExcelApi, { tplId: tplId, password: '', searchData: params, isPatination: false, pagination: this.pageParam,isLarge:isLarge }, this.closeLoading, headers)
         }
       })
     },
+    
     onTogglePager(page) {
       this.pageParam.currentPage = page.pageIndex
       this.pageParam.pageCount = page.pageSize
