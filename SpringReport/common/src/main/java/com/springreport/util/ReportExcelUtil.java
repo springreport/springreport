@@ -50,6 +50,7 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.PatternFormatting;
 import org.apache.poi.ss.usermodel.Picture;
 import org.apache.poi.ss.usermodel.ShapeTypes;
+import org.apache.poi.ss.usermodel.SheetConditionalFormatting;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellRangeAddressList;
@@ -388,6 +389,241 @@ public class ReportExcelUtil {
 	}
 	
 	/**  
+	 * @MethodName: largeExport
+	 * @Description: 大量数据导出
+	 * @author caiyang
+	 * @param mesExportExcel
+	 * @param filename
+	 * @param password
+	 * @param httpServletResponse
+	 * @throws Exception void
+	 * @date 2025-03-15 03:36:51 
+	 */ 
+	public static void largeExport(MesExportExcel mesExportExcel,String filename,String password,HttpServletResponse httpServletResponse) 
+			throws Exception{
+		httpServletResponse.setContentType("octets/stream");
+    	//设置文件名编码格式
+        filename = URLEncoder.encode(filename, "UTF-8");
+        httpServletResponse.addHeader("Content-Disposition", "attachment;filename=" +filename + ".xlsx");
+        httpServletResponse.addHeader("filename", filename + ".xlsx");
+        SXSSFWorkbook wb = new SXSSFWorkbook();
+        if(!ListUtil.isEmpty(mesExportExcel.getSheetConfigs())) {
+        	for (int i = 0; i < mesExportExcel.getSheetConfigs().size(); i++) {
+        		List<Map<String, Object>> cellDatas = mesExportExcel.getSheetConfigs().get(i).getCellDatas();
+        		Map<String, Integer> maxXAndY = mesExportExcel.getSheetConfigs().get(i).getMaxXAndY();
+        		Map<String, Map<String, Object>> hyperlinks = mesExportExcel.getSheetConfigs().get(i).getHyperlinks();
+        		List<Object> borderInfos = mesExportExcel.getSheetConfigs().get(i).getBorderInfos();
+        		Map<String, Object> rowlen = mesExportExcel.getSheetConfigs().get(i).getRowlen();
+        		Map<String, Object> columnlen = mesExportExcel.getSheetConfigs().get(i).getColumnlen();
+        		JSONObject frozen = mesExportExcel.getSheetConfigs().get(i).getFrozen();
+        		JSONObject images = mesExportExcel.getSheetConfigs().get(i).getBase64Images();
+        		List<JSONObject> imageDatas = mesExportExcel.getSheetConfigs().get(i).getImageDatas();
+        		String sheetname = mesExportExcel.getSheetConfigs().get(i).getSheetname();
+        		JSONObject colhidden = mesExportExcel.getSheetConfigs().get(i).getColhidden();
+        		JSONObject rowhidden = mesExportExcel.getSheetConfigs().get(i).getRowhidden();
+        		JSONObject dataVerification = mesExportExcel.getSheetConfigs().get(i).getDataVerification();
+        		JSONObject authority = mesExportExcel.getSheetConfigs().get(i).getAuthority();
+        		JSONObject filter = mesExportExcel.getSheetConfigs().get(i).getFilter();
+        		JSONArray xxbtCells = new JSONArray();//斜线表头单元格
+        		SXSSFSheet sheet = wb.createSheet(sheetname);
+        		List<String> noViewAuthCells = mesExportExcel.getSheetConfigs().get(i).getNoViewAuthCells();
+        		if(!StringUtil.isEmptyMap(filter))
+        		{
+        			String filterRange = getFilterRange(filter);
+        			CellRangeAddress c = CellRangeAddress.valueOf(filterRange);
+            		sheet.setAutoFilter(c);
+        		}
+        		sheet.setForceFormulaRecalculation(true);
+        		sheet.setRandomAccessWindowSize(-1);
+        		Map<String, String> unProtectCells = null;
+        		if(authority != null && authority.getIntValue("sheet") == 1)
+        		{
+        			unProtectCells = getUnProtectCells(authority);
+        		}
+        		if(colhidden != null && !colhidden.isEmpty())
+        		{
+        			for(String key:colhidden.keySet())
+        			{
+        				int value = colhidden.getIntValue(key);
+        				if(value == 0)
+        				{
+        					int column = Integer.parseInt(key);
+        					sheet.setColumnHidden(column, true);
+        				}
+        				
+        			}
+        		}
+        		if(frozen != null)
+                {
+                	String frozenType = frozen.getString("type");
+                	int row = 0;
+                	int column = 0;
+                	if(StringUtil.isNotEmpty(frozenType))
+                	{
+        	        	switch (frozenType) {
+        				case "row":
+        					sheet.createFreezePane(0, 1);
+        					break;
+        				case "column":
+        					sheet.createFreezePane(1, 0);
+        					break;
+        				case "both":
+        					sheet.createFreezePane(1, 1);
+        					break;
+        				case "rangeRow":
+        					row = frozen.getJSONObject("range").getIntValue("row_focus");
+        					sheet.createFreezePane(0, row+1);
+        					break;
+        				case "rangeColumn":
+        					column = frozen.getJSONObject("range").getIntValue("column_focus");
+        					sheet.createFreezePane(column+1,0);
+        				case "rangeBoth":
+        					row = frozen.getJSONObject("range").getIntValue("row_focus");
+        					column = frozen.getJSONObject("range").getIntValue("column_focus");
+        					sheet.createFreezePane(column+1, row+1);
+        				default:
+        					break;
+        				}
+                	}
+                }
+        		LuckySheetCellUtil2 cellUtil = new LuckySheetCellUtil2(wb, sheet);
+        		cellUtil.createCells(maxXAndY.get("maxX"), maxXAndY.get("maxY"),rowlen,rowhidden);
+        		if(columnlen != null)
+                {
+                	for (Map.Entry<String, Object> entry : columnlen.entrySet()) {
+                		BigDecimal wid = new BigDecimal(String.valueOf(entry.getValue()));
+                		BigDecimal excleWid=new BigDecimal(32);
+                		sheet.setColumnWidth(Integer.parseInt(String.valueOf(entry.getKey())), wid.multiply(excleWid).setScale(0,BigDecimal.ROUND_HALF_UP).intValue());//列宽px值
+                	}
+                }
+        		JSONArray barCodeCells = new JSONArray();//条形码单元格
+                JSONArray qrCodeCells = new JSONArray();//二维码单元格
+                Map<String, Integer> wrapText = new HashMap<>();
+                cellUtil.setCellValues(cellDatas,hyperlinks,borderInfos,unProtectCells,mesExportExcel.getSheetConfigs().get(i).getMerge(),mesExportExcel.getSheetConfigs().get(i).getIsCoedit(), dataVerification,xxbtCells,false,barCodeCells,qrCodeCells,wrapText,noViewAuthCells);
+                cellUtil.setRowHeight(maxXAndY.get("maxX"), rowlen, rowhidden, wrapText);
+                JSONObject rowlenObj = JSONObject.parseObject(JSONObject.toJSONString(rowlen));
+                JSONObject columnlenObj = JSONObject.parseObject(JSONObject.toJSONString(columnlen));
+                setImages(wb,sheet,images,columnlenObj,rowlenObj,rowhidden,colhidden,mesExportExcel.getImageInfos(),mesExportExcel.getBackImages());
+                insertUrlImg(wb,sheet,imageDatas);
+//                insertChart(wb, sheet, mesExportExcel.getSheetConfigs().get(i).getChart(),mesExportExcel.getSheetConfigs().get(i).getChartCells(),mesExportExcel.getSheetConfigs().get(i).getIsCoedit(),rowlenObj,rowhidden,columnlenObj,colhidden);
+                addDataVerification(sheet, dataVerification);
+                if(authority != null && authority.getIntValue("sheet") == 1)
+        		{
+        			sheet.protectSheet(StringUtil.isNotEmpty(authority.getString("password"))?authority.getString("password"):"");
+        		}
+                if(!ListUtil.isEmpty(xxbtCells))
+                {
+                	List<SlashLinePosition> slashes = new ArrayList<>();
+                	List<SlashLineText> slashTexts = new ArrayList<>();
+                	for (int j = 0; j < xxbtCells.size(); j++) {
+						JSONObject cellData = xxbtCells.getJSONObject(j);
+						int r = cellData.getIntValue("r");
+						int c = cellData.getIntValue("c");
+						int rs = 1;
+						int cs = 1;
+						String cellValue = "";
+						if(cellData.getJSONObject("v") != null)
+						{
+							JSONObject v = cellData.getJSONObject("v");
+							if(v.containsKey("mc"))
+							{
+								rs = v.getJSONObject("mc").getInteger("rs") != null?v.getJSONObject("mc").getInteger("rs"):1;
+								cs = v.getJSONObject("mc").getInteger("cs") != null?v.getJSONObject("mc").getInteger("cs"):1;
+							}
+							cellValue = v.getString("v");
+						}
+						getSlashLinePositionXlsx2(sheet,r,c,rs,cs,cellValue,slashes,slashTexts);
+					}
+//                	drawLineXlsx(sheet,slashes,slashTexts);
+                }
+                if(ListUtil.isNotEmpty(barCodeCells)) {
+                	for (int j = 0; j < barCodeCells.size(); j++) {
+                		JSONObject cellValue = barCodeCells.getJSONObject(j).getJSONObject(LuckySheetPropsEnum.CELLCONFIG.getCode());
+                		JSONObject mergeCell = cellValue.getJSONObject(LuckySheetPropsEnum.MERGECELLS.getCode());
+                		if(StringUtil.isNotEmpty(cellValue.getString("v"))) {
+                			byte[] barCodeByte = BarCodeUtil.generateBarcodeImage(cellValue.getString("v"), 200, 100);
+                    		if(mergeCell != null) {
+                    			if(mergeCell.containsKey(LuckySheetPropsEnum.ROWSPAN.getCode()) && mergeCell.containsKey(LuckySheetPropsEnum.COLSPAN.getCode())) {
+                    				int firstRow = Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.R.getCode())));
+        							int lastRow = Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.R.getCode()))) + Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.ROWSPAN.getCode()))) - 1;
+        							int firstCol = Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.C.getCode())));
+        							int lastCol = Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.C.getCode()))) + Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.COLSPAN.getCode()))) - 1;
+        							ReportExcelUtil.insertBarcode(wb, sheet, barCodeByte, firstRow, lastRow, firstCol, lastCol);
+                    			}
+                    		}else {
+                    			int r = barCodeCells.getJSONObject(j).getIntValue("r");
+    							int c = barCodeCells.getJSONObject(j).getIntValue("c");
+    							ReportExcelUtil.insertBarcode(wb, sheet, barCodeByte, r, r, c, c);
+                    		}
+                		}
+					}
+                }
+                if(ListUtil.isNotEmpty(qrCodeCells)) {
+                	for (int j = 0; j < qrCodeCells.size(); j++) {
+                		JSONObject cellValue = qrCodeCells.getJSONObject(j).getJSONObject(LuckySheetPropsEnum.CELLCONFIG.getCode());
+                		JSONObject mergeCell = cellValue.getJSONObject(LuckySheetPropsEnum.MERGECELLS.getCode());
+                		if(StringUtil.isNotEmpty(cellValue.getString("v"))) {
+                			byte[] barCodeByte = QRCodeUtil.generateQRCodeImage(cellValue.getString("v"), 256, 256);
+                    		if(mergeCell != null) {
+                    			if(mergeCell.containsKey(LuckySheetPropsEnum.ROWSPAN.getCode()) && mergeCell.containsKey(LuckySheetPropsEnum.COLSPAN.getCode())) {
+                    				int firstRow = Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.R.getCode())));
+        							int lastRow = Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.R.getCode()))) + Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.ROWSPAN.getCode()))) - 1;
+        							int firstCol = Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.C.getCode())));
+        							int lastCol = Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.C.getCode()))) + Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.COLSPAN.getCode()))) - 1;
+        							ReportExcelUtil.insertBarcode(wb, sheet, barCodeByte, firstRow, lastRow, firstCol, lastCol);
+                    			}
+                    		}else {
+                    			int r = qrCodeCells.getJSONObject(j).getIntValue("r");
+    							int c = qrCodeCells.getJSONObject(j).getIntValue("c");
+    							ReportExcelUtil.insertBarcode(wb, sheet, barCodeByte, r, r, c, c);
+                    		}
+                		}
+					}
+                }
+                processSheetConditionFormat(sheet, mesExportExcel.getSheetConfigs().get(i).getLuckysheetConditionformatSave());
+        	}
+        }
+        if(StringUtil.isNotEmpty(password))
+        {
+        	ZipSecureFile.setMinInflateRatio(-1.0d);
+        	ByteArrayOutputStream baos = new ByteArrayOutputStream();
+     	    wb.write(baos);
+     	    baos.flush();
+     	    ByteArrayInputStream workbookInput = new ByteArrayInputStream(baos.toByteArray());
+     	   try (POIFSFileSystem fs = new POIFSFileSystem()) {
+   	      	EncryptionInfo info = new EncryptionInfo(EncryptionMode.agile);
+   	          Encryptor enc = info.getEncryptor();
+   	          enc.confirmPassword(password);
+   	          try (OPCPackage opc = OPCPackage.open(workbookInput); OutputStream os = enc.getDataStream(fs)) {
+   	              opc.save(os);
+   	          } catch (Exception e) {
+   	              e.printStackTrace();
+   	          }
+   	          httpServletResponse.reset();
+   	          httpServletResponse.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8");
+   	          httpServletResponse.addHeader("Content-Disposition", "attachment;filename=" +filename + ".xlsx");
+   	          httpServletResponse.addHeader("filename", filename + ".xlsx");
+   	          fs.writeFilesystem(httpServletResponse.getOutputStream());
+   	      }
+        }else {
+        	 ServletOutputStream outputStream = httpServletResponse.getOutputStream();
+        	try {
+            	wb.write(outputStream);
+                outputStream.flush();
+                outputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    outputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+	}
+	
+	/**  
 	 * @MethodName: processSheetConditionFormat
 	 * @Description: 条件格式处理
 	 * @author caiyang
@@ -548,7 +784,307 @@ public class ReportExcelUtil {
 		}
 	}
 	
+	private static void processSheetConditionFormat(SXSSFSheet sheet,JSONArray conditionFormats) throws Exception {
+		if(ListUtil.isNotEmpty(conditionFormats)) {
+			for (int i = 0; i < conditionFormats.size(); i++) {
+				String type = conditionFormats.getJSONObject(i).getString("type");
+				if("default".equals(type)) {
+					String conditionName = conditionFormats.getJSONObject(i).getString("conditionName");
+					JSONArray conditionValue = conditionFormats.getJSONObject(i).getJSONArray("conditionValue");
+					JSONObject format = conditionFormats.getJSONObject(i).getJSONObject("format");
+					for (int j = 0; j < conditionFormats.getJSONObject(i).getJSONArray("cellrange").size(); j++) {
+						JSONArray row = conditionFormats.getJSONObject(i).getJSONArray("cellrange").getJSONObject(j).getJSONArray("row");
+						JSONArray column = conditionFormats.getJSONObject(i).getJSONArray("cellrange").getJSONObject(j).getJSONArray("column");
+						ConditionalFormattingRule rule = null;
+						if("lessThan".equals(conditionName)) {
+							rule = sheet.getSheetConditionalFormatting().createConditionalFormattingRule(ComparisonOperator.LT, conditionValue.getString(0));
+						}else if("greaterThan".equals(conditionName)) {
+							rule = sheet.getSheetConditionalFormatting().createConditionalFormattingRule(ComparisonOperator.GT, conditionValue.getString(0));
+						}else if("equal".equals(conditionName)) {
+							rule = sheet.getSheetConditionalFormatting().createConditionalFormattingRule(ComparisonOperator.EQUAL, conditionValue.getString(0));
+						}else if("betweenness".equals(conditionName)) {
+							rule = sheet.getSheetConditionalFormatting().createConditionalFormattingRule(ComparisonOperator.BETWEEN, conditionValue.getString(0),conditionValue.getString(1));
+						}else if("textContains".equals(conditionName)) {
+							//字符串包含
+							String col = SheetUtil.excelColIndexToStr(column.getIntValue(0)+1);
+							String ruleStr = "NOT(ISERROR(SEARCH(\"" + conditionValue.getString(0) + "\","+(col+(row.getIntValue(0)+1))+")))";
+							rule = sheet.getSheetConditionalFormatting().createConditionalFormattingRule(ruleStr);
+						}else if("occurrenceDate".equals(conditionName)) {
+							//发生日期，暂不支持 TODO
+						}else if("duplicateValue".equals(conditionName)) {
+							//重复值
+							rule = createConditionalFormattingRuleDuplicate(sheet.getSheetConditionalFormatting());
+						}else if("top10".equals(conditionName) || "top10%".equals(conditionName) || "last10%".equals(conditionName)
+							|| "last10".equals(conditionName) || "AboveAverage".equals(conditionName) || "SubAverage".equals(conditionName)) {
+							rule = createConditionalFormattingRuleRank(sheet.getSheetConditionalFormatting(),conditionName,conditionValue);
+						}
+						if(rule != null) {
+							String cellColor = format.getString("cellColor");
+							int[] rgb = null;
+							if(cellColor.contains("rgb")) {
+								rgb = StringUtil.rgbStringToRgb(cellColor);
+							}else {
+								rgb = StringUtil.hexToRgb(cellColor);
+							}
+							PatternFormatting patternFormatting = rule.createPatternFormatting();
+							patternFormatting.setFillBackgroundColor(new XSSFColor(new Color(rgb[0], rgb[1], rgb[2]),new DefaultIndexedColorMap()));
+							FontFormatting fontFormatting = rule.createFontFormatting();
+							String textColor = format.getString("textColor");
+							if(textColor.contains("rgb")) {
+								rgb = StringUtil.rgbStringToRgb(textColor);
+							}else {
+								rgb = StringUtil.hexToRgb(textColor);
+							}
+							fontFormatting.setFontColor(new XSSFColor(new Color(rgb[0], rgb[1], rgb[2]),new DefaultIndexedColorMap()));
+							CellRangeAddress[] regions = {
+								new CellRangeAddress(row.getIntValue(0), row.getIntValue(1), column.getIntValue(0), column.getIntValue(1))
+							};
+							sheet.getSheetConditionalFormatting().addConditionalFormatting(regions,rule);
+						}
+					}
+					
+				}else if("dataBar".equals(type)) {
+					//数据条
+					JSONArray format = conditionFormats.getJSONObject(i).getJSONArray("format");
+					int[] rgb = null;
+					if(format.getString(0).contains("rgb")) {
+						rgb = StringUtil.rgbStringToRgb(format.getString(0));
+					}else {
+						rgb = StringUtil.hexToRgb(format.getString(0));
+					}
+					ConditionalFormattingRule rule = sheet.getSheetConditionalFormatting().createConditionalFormattingRule(new XSSFColor(new Color(rgb[0], rgb[1], rgb[2]),new DefaultIndexedColorMap()));
+					XSSFDataBarFormatting dataBarFormatting = (XSSFDataBarFormatting) rule.getDataBarFormatting();
+					CellRangeAddress[] regions = new CellRangeAddress[conditionFormats.getJSONObject(i).getJSONArray("cellrange").size()];
+					for (int j = 0; j < conditionFormats.getJSONObject(i).getJSONArray("cellrange").size(); j++) {
+						JSONArray row = conditionFormats.getJSONObject(i).getJSONArray("cellrange").getJSONObject(j).getJSONArray("row");
+						JSONArray column = conditionFormats.getJSONObject(i).getJSONArray("cellrange").getJSONObject(j).getJSONArray("column");
+						regions[j] = new CellRangeAddress(row.getIntValue(0), row.getIntValue(1), column.getIntValue(0), column.getIntValue(1));
+					}
+					sheet.getSheetConditionalFormatting().addConditionalFormatting(regions,rule);
+					
+				}else if("colorGradation".equals(type)) {
+					//色阶
+					JSONArray format = conditionFormats.getJSONObject(i).getJSONArray("format");
+					ConditionalFormattingRule rule = sheet.getSheetConditionalFormatting().createConditionalFormattingColorScaleRule();
+					ColorScaleFormatting colorScaleFormatting = rule.getColorScaleFormatting();
+					colorScaleFormatting.setNumControlPoints(format.size());//设置几色阶
+					if(format.size() ==3) {//三色阶
+						//设置最小色阶
+						colorScaleFormatting.getThresholds()[0].setRangeType(org.apache.poi.ss.usermodel.ConditionalFormattingThreshold.RangeType.MIN);
+						// 设置两个颜色递进的形式 此处为百分比
+						colorScaleFormatting.getThresholds()[1].setRangeType(org.apache.poi.ss.usermodel.ConditionalFormattingThreshold.RangeType.PERCENTILE);
+						colorScaleFormatting.getThresholds()[1].setValue(50d);
+						// 设置最大色阶
+						colorScaleFormatting.getThresholds()[2].setRangeType(org.apache.poi.ss.usermodel.ConditionalFormattingThreshold.RangeType.MAX);
+						String color = format.getString(2);
+						if(color.contains("rgb")) {
+							int[] rgb = StringUtil.rgbStringToRgb(color);
+							color = StringUtil.rgb2Hex(rgb[0], rgb[1], rgb[2]);
+						}
+						((ExtendedColor)colorScaleFormatting.getColors()[0]).setARGBHex(color.replaceAll("#", ""));
+						color = format.getString(1);
+						if(color.contains("rgb")) {
+							int[] rgb = StringUtil.rgbStringToRgb(color);
+							color = StringUtil.rgb2Hex(rgb[0], rgb[1], rgb[2]);
+						}
+						((ExtendedColor)colorScaleFormatting.getColors()[1]).setARGBHex(color.replaceAll("#", ""));
+						color = format.getString(0);
+						if(color.contains("rgb")) {
+							int[] rgb = StringUtil.rgbStringToRgb(color);
+							color = StringUtil.rgb2Hex(rgb[0], rgb[1], rgb[2]);
+						}
+						((ExtendedColor)colorScaleFormatting.getColors()[2]).setARGBHex(color.replaceAll("#", ""));
+					}else if(format.size() ==2) {
+						//设置最小色阶
+						colorScaleFormatting.getThresholds()[0].setRangeType(org.apache.poi.ss.usermodel.ConditionalFormattingThreshold.RangeType.MIN);
+						// 设置最大色阶
+						colorScaleFormatting.getThresholds()[1].setRangeType(org.apache.poi.ss.usermodel.ConditionalFormattingThreshold.RangeType.MAX);
+						String color = format.getString(1);
+						if(color.contains("rgb")) {
+							int[] rgb = StringUtil.rgbStringToRgb(color);
+							color = StringUtil.rgb2Hex(rgb[0], rgb[1], rgb[2]);
+						}
+						((ExtendedColor)colorScaleFormatting.getColors()[0]).setARGBHex(color.replaceAll("#", ""));
+						color = format.getString(0);
+						if(color.contains("rgb")) {
+							int[] rgb = StringUtil.rgbStringToRgb(color);
+							color = StringUtil.rgb2Hex(rgb[0], rgb[1], rgb[2]);
+						}
+						((ExtendedColor)colorScaleFormatting.getColors()[1]).setARGBHex(color.replaceAll("#", ""));
+					}
+					CellRangeAddress[] regions = new CellRangeAddress[conditionFormats.getJSONObject(i).getJSONArray("cellrange").size()];
+					for (int j = 0; j < conditionFormats.getJSONObject(i).getJSONArray("cellrange").size(); j++) {
+						JSONArray row = conditionFormats.getJSONObject(i).getJSONArray("cellrange").getJSONObject(j).getJSONArray("row");
+						JSONArray column = conditionFormats.getJSONObject(i).getJSONArray("cellrange").getJSONObject(j).getJSONArray("column");
+						regions[j] = new CellRangeAddress(row.getIntValue(0), row.getIntValue(1), column.getIntValue(0), column.getIntValue(1));
+					}
+					
+					sheet.getSheetConditionalFormatting().addConditionalFormatting(regions,rule);
+				}else if("icons".equals(type)) {
+					//图标集
+					JSONObject format = conditionFormats.getJSONObject(i).getJSONObject("format");
+					ConditionalFormattingRule rule = createConditionalFormattingRuleIconSets(sheet.getSheetConditionalFormatting(),format);
+					CellRangeAddress[] regions = new CellRangeAddress[conditionFormats.getJSONObject(i).getJSONArray("cellrange").size()];
+					for (int j = 0; j < conditionFormats.getJSONObject(i).getJSONArray("cellrange").size(); j++) {
+						JSONArray row = conditionFormats.getJSONObject(i).getJSONArray("cellrange").getJSONObject(j).getJSONArray("row");
+						JSONArray column = conditionFormats.getJSONObject(i).getJSONArray("cellrange").getJSONObject(j).getJSONArray("column");
+						regions[j] = new CellRangeAddress(row.getIntValue(0), row.getIntValue(1), column.getIntValue(0), column.getIntValue(1));
+					}
+					sheet.getSheetConditionalFormatting().addConditionalFormatting(regions,rule);
+				}
+			}
+		}
+	}
+	
 	private static void getSlashLinePositionXlsx(XSSFSheet xssfSheet,int rowIndex,int colIndex,int rs,int cs,String v,List<SlashLinePosition> slashes
+			,List<SlashLineText> slashTexts){
+		int height = 0;
+		int width = 0;
+		Map<Integer, Integer> rowHeights = new LinkedHashMap<Integer, Integer>();
+		Map<Integer, Integer> colWidths = new LinkedHashMap<Integer, Integer>();
+		for (int i = 0; i < rs; i++) {
+			int rowHeight = xssfSheet.getRow(rowIndex+i).getHeight()*700;
+			rowHeights.put(rowIndex+i, rowHeight);
+			height = height + rowHeight;
+		}
+		for (int i = 0; i < cs; i++) {
+			int colWidth = xssfSheet.getColumnWidth(colIndex+i)*300;
+			colWidths.put(colIndex+i, colWidth);
+			width = width + colWidth;
+		}
+		String[] splits = v.split("\\|");
+		int lineCount = v.split("\\|").length - 1;
+		if(lineCount == 1)
+		{
+			SlashLinePosition slp1 = new SlashLinePosition(0, 0, width, height,rowIndex,colIndex,rowIndex+rs-1,colIndex+cs-1);
+			slashes.add(slp1);
+			int startx = 0;
+			int starty = 0;
+			if(rs > 1)
+			{
+				starty = 0;
+			}else {
+				starty = height/2;
+			}
+			SlashLineText slashLineText1 = new SlashLineText(startx, starty, colWidths.get(colIndex), rowHeights.get(rowIndex+rs-1), splits[0], rowIndex+rs-1, colIndex, rs, cs);
+			slashTexts.add(slashLineText1);
+			startx = 0;
+			starty = 0;
+			if(cs > 1)
+			{
+				startx = 0;
+			}else {
+				startx = width/2;
+			}
+			SlashLineText slashLineText2 = new SlashLineText(startx, starty, colWidths.get(colIndex+cs-1), rowHeights.get(rowIndex), splits[1], rowIndex, colIndex+cs-1, rs, cs);
+			slashTexts.add(slashLineText2);
+		}else if(lineCount == 2)
+		{
+			int rsMid = (int)Math.ceil(rs/2.0);
+			int csMid = (int)Math.floor(cs/2.0);
+			SlashLinePosition slp1 = new SlashLinePosition(0, 0, cs>1?getWidth(colWidths, colIndex, csMid):width/2, height,rowIndex,colIndex,rowIndex+rs-1,cs>1?colIndex+csMid-1:colIndex);
+			slashes.add(slp1);
+			int startx = 0;
+			int starty = 0;
+			if(rs > 1)
+			{
+				starty = 0;
+			}else {
+				starty = height/2;
+			}
+			SlashLineText slashLineText1 = new SlashLineText(0, starty, getWidth(colWidths, colIndex, csMid), rowHeights.get(rowIndex+rs-1), splits[0], rowIndex+rs-1, colIndex, rs, cs);
+			slashTexts.add(slashLineText1);
+			SlashLinePosition slp2 = new SlashLinePosition(0, 0, width, rs>1?getHeight(rowHeights, rowIndex, rsMid):height/2,rowIndex,colIndex,rs>1?rowIndex+rsMid-1:rowIndex,colIndex+cs-1);
+			slashes.add(slp2);
+			if(cs > 1)
+			{
+				startx = 0;
+			}else {
+				startx = width/2;
+			}
+			if(rs > 1)
+			{
+				starty = 0;
+			}else {
+				starty = height/2;
+			}
+			SlashLineText slashLineText2 = new SlashLineText(startx, starty, colWidths.get(colIndex+cs-1), rowHeights.get(rowIndex+rs-1), splits[1], rowIndex+rs-1,colIndex+cs-1, rs, cs);
+			slashTexts.add(slashLineText2);
+			startx = 0;
+			starty = 0;
+			if(cs > 1)
+			{
+				startx = 0;
+			}else {
+				startx = width/2;
+			}
+			SlashLineText slashLineText3 = new SlashLineText(startx, 0, colWidths.get(colIndex+cs-1), rowHeights.get(rowIndex), splits[2], rowIndex, colIndex+cs-1, rs, cs);
+			slashTexts.add(slashLineText3);
+		}else if(lineCount == 3) {
+			int rsMid = (int)Math.floor(rs/2.0);
+			int csMid = (int)Math.floor(cs/2.0);
+			SlashLinePosition slp1 = new SlashLinePosition(0, 0, cs>1?getWidth(colWidths, colIndex, csMid):width/2, height,rowIndex,colIndex,rowIndex+rs-1,cs>1?colIndex+csMid-1:colIndex);
+			slashes.add(slp1);
+			int startx = 0;
+			int starty = 0;
+			if(rs > 1)
+			{
+				starty = 0;
+			}else {
+				starty = height/2;
+			}
+			SlashLineText slashLineText1 = new SlashLineText(0, starty, getWidth(colWidths, colIndex, csMid), rowHeights.get(rowIndex+rs-1), splits[0], rowIndex+rs-1, colIndex, rs, cs);
+			slashTexts.add(slashLineText1);
+			SlashLinePosition slp2 = new SlashLinePosition(0, 0, width, height,rowIndex,colIndex,rowIndex+rs-1,colIndex+cs-1);
+			slashes.add(slp2);
+			startx = 0;
+			starty = 0;
+			if(cs > 1)
+			{
+				startx = 0;
+			}else {
+				startx = colWidths.get(colIndex)/2;
+			}
+			if(rs > 1)
+			{
+				starty = rowHeights.get(rowIndex+rs-1)*1/3;
+			}else {
+				starty = rowHeights.get(rowIndex)*3/5;
+			}
+			SlashLineText slashLineText2 = new SlashLineText(startx, starty, colWidths.get(colIndex+cs-1), rowHeights.get(rowIndex+rs-1), splits[1], rowIndex+rs-1, colIndex+cs-1, rs, cs);
+			slashTexts.add(slashLineText2);
+			SlashLinePosition slp3 = new SlashLinePosition(0, 0, width, rs>1?getHeight(rowHeights, rowIndex, rsMid):height/2,rowIndex,colIndex,rs>1?rowIndex+rsMid-1:rowIndex,colIndex+cs-1);
+			slashes.add(slp3);
+			startx = 0;
+			starty = 0;
+			if(cs > 1)
+			{
+				startx = colWidths.get(colIndex+cs-1)*1/3;
+			}else {
+				startx = colWidths.get(colIndex)*3/5;
+			}
+			if(rs > 1)
+			{
+				starty = 0;
+			}else {
+				starty = rowHeights.get(rowIndex)*2/5;
+			}
+			SlashLineText slashLineText3 = new SlashLineText(startx, starty, colWidths.get(colIndex+cs-1), rowHeights.get(rowIndex+rs-1), splits[2], rowIndex+rs-1, colIndex+cs-1, rs, cs);
+			slashTexts.add(slashLineText3);
+			startx = 0;
+			starty = 0;
+			if(cs > 1)
+			{
+				startx = 0;
+			}else {
+				startx = width/2;
+			}
+			SlashLineText slashLineText4 = new SlashLineText(startx, 0, colWidths.get(colIndex+cs-1), rowHeights.get(rowIndex), splits[3], rowIndex, colIndex+cs-1, rs, cs);
+			slashTexts.add(slashLineText4);
+		}
+	}
+	
+	private static void getSlashLinePositionXlsx2(SXSSFSheet xssfSheet,int rowIndex,int colIndex,int rs,int cs,String v,List<SlashLinePosition> slashes
 			,List<SlashLineText> slashTexts){
 		int height = 0;
 		int width = 0;
@@ -941,6 +1477,50 @@ public class ReportExcelUtil {
         }
 	}
 	
+	private static void setImages(SXSSFWorkbook wb,SXSSFSheet sheet,JSONObject images,JSONObject columnlenObject,JSONObject rowlenObject,JSONObject rowhidden,JSONObject colhidden,Map<String, Map<String, Object>> imageInfos,Map<String, String> backImages) {
+		//图片插入
+        if (images != null){
+        	Map<String, Object> map = images.getInnerMap();
+        	for(Map.Entry<String, Object> entry : map.entrySet()) {
+        		SXSSFDrawing patriarch = sheet.createDrawingPatriarch();
+        		 //图片信息
+                JSONObject iamgeData = (JSONObject) entry.getValue();
+                 //图片的位置宽 高 距离左 距离右
+                JSONObject imageDefault = ((JSONObject) iamgeData.get("default"));
+                Map<String, Object> colrowMap = getColRowMap(imageDefault,columnlenObject, rowlenObject,rowhidden,colhidden);
+                
+                XSSFClientAnchor anchor = new XSSFClientAnchor((int)colrowMap.get("dx1"), (int)colrowMap.get("dy1"), (int)colrowMap.get("dx2"), (int)colrowMap.get("dy2"), (int)colrowMap.get("col1"), (int)colrowMap.get("row1"), (int)colrowMap.get("col2"), (int)colrowMap.get("row2"));
+                anchor.setAnchorType(AnchorType.MOVE_AND_RESIZE);
+                byte[] decoderBytes = new byte[0];
+                boolean flag = true;
+                if (iamgeData.get("src") != null) {
+                	if(StringUtil.isImgUrl(String.valueOf(iamgeData.get("src"))))
+                	{
+                		decoderBytes = HttpUtil.downloadBytes(String.valueOf(iamgeData.get("src")));
+    				    flag = iamgeData.get("src").toString().contains(".png");
+                	}else {
+                		decoderBytes = Base64Decoder.decode(iamgeData.get("src").toString().split(";base64,")[1]);
+    				    flag = iamgeData.get("src").toString().split(";base64,")[0].contains("png");
+                	}
+                 	if(imageInfos != null) {
+                		colrowMap.put("pictureBytes", decoderBytes);
+                    	imageInfos.put(entry.getKey(), colrowMap);	
+                    }
+				}
+                if(backImages != null) {
+                	backImages.put((int)colrowMap.get("row1")+"_"+(int)colrowMap.get("col1"), "1");
+                }
+                Picture picture = null;
+                if (flag) {
+                	picture = patriarch.createPicture(anchor, wb.addPicture(decoderBytes, HSSFWorkbook.PICTURE_TYPE_PNG));
+                } else {
+                	picture = patriarch.createPicture(anchor, wb.addPicture(decoderBytes, HSSFWorkbook.PICTURE_TYPE_JPEG));
+                }
+//                picture.resize(0.96, 0.82);
+        	}
+        }
+	}
+	
 	public static void insertChart(XSSFWorkbook wb,XSSFSheet sheet,JSONArray jsonArray,JSONObject chartCells,LuckySheetCellUtil cellUtil) throws IOException
 	{
 		if(!ListUtil.isEmpty(jsonArray))
@@ -1162,6 +1742,30 @@ public class ReportExcelUtil {
     	}
     }
     
+    public static void insertUrlImg(SXSSFWorkbook workbook,SXSSFSheet sheet, List<JSONObject> imgDatas) {
+    	if(!ListUtil.isEmpty(imgDatas))
+    	{
+    		for (int i = 0; i < imgDatas.size(); i++) {
+    			JSONObject img = imgDatas.get(i);
+    			String url = img.getJSONObject("imgInfo").getString("src");
+    			int r = img.getIntValue("r");//横坐标
+				int c = img.getIntValue("c");//纵坐标
+				int isMerge = img.getIntValue("isMerge");
+				int endR = img.getIntValue("r");
+				int endC = img.getIntValue("c");
+				if(YesNoEnum.YES.getCode().intValue() == isMerge)
+				{
+					int rowSpan = img.getIntValue("rowSpan");
+					int colSpan = img.getIntValue("colSpan"); 
+					endR = endR + rowSpan - 1;
+					endC = endC + colSpan - 1;
+				}
+				byte[] bytes = HttpUtil.downloadBytes(url);
+				insertImg(workbook, sheet, bytes, r, endR, c, endC);
+			}
+    	}
+    }
+    
     /**
      * 插入图片
      *
@@ -1174,6 +1778,20 @@ public class ReportExcelUtil {
      * @param endColIndex   结束列号
      */
     public static void insertImg(XSSFWorkbook workbook, XSSFSheet sheet, byte[] picture, int beginRowIndex, int endRowIndex
+            , int beginColIndex, int endColIndex) {
+        //画图的顶级管理器，一个sheet只能获取一个（一定要注意这点）
+        Drawing drawing = sheet.getDrawingPatriarch();
+        if (drawing == null) {
+            drawing = sheet.createDrawingPatriarch();
+        }
+        //anchor主要用于设置图片的属性
+        ClientAnchor anchor = null;
+        anchor = new XSSFClientAnchor(0, 0, 255, 255, (short) beginColIndex, beginRowIndex, (short) (endColIndex + 1), endRowIndex + 1);
+        //插入图片
+        drawing.createPicture(anchor, workbook.addPicture(picture, Workbook.PICTURE_TYPE_JPEG));
+    }
+    
+    public static void insertImg(SXSSFWorkbook workbook, SXSSFSheet sheet, byte[] picture, int beginRowIndex, int endRowIndex
             , int beginColIndex, int endColIndex) {
         //画图的顶级管理器，一个sheet只能获取一个（一定要注意这点）
         Drawing drawing = sheet.getDrawingPatriarch();
@@ -1205,6 +1823,24 @@ public class ReportExcelUtil {
         //插入图片
         drawing.createPicture(anchor, workbook.addPicture(picture, Workbook.PICTURE_TYPE_PNG));
     }
+    public static void insertBarcode(SXSSFWorkbook workbook, SXSSFSheet sheet, byte[] picture, int beginRowIndex, int endRowIndex
+            , int beginColIndex, int endColIndex) {
+        //画图的顶级管理器，一个sheet只能获取一个（一定要注意这点）
+        Drawing drawing = sheet.getDrawingPatriarch();
+        if (drawing == null) {
+            drawing = sheet.createDrawingPatriarch();
+        }
+        //anchor主要用于设置图片的属性
+        ClientAnchor anchor = null;
+        anchor = new XSSFClientAnchor(0, 0, 255, 255, (short) beginColIndex, beginRowIndex, (short) (endColIndex + 1), endRowIndex + 1);
+        anchor.setAnchorType(AnchorType.MOVE_AND_RESIZE);
+        anchor.setDx1(Units.EMU_PER_PIXEL * 5);
+        anchor.setDx2(Units.EMU_PER_PIXEL *(-5));
+        anchor.setDy1(Units.EMU_PER_PIXEL *5);
+        anchor.setDy2(Units.EMU_PER_PIXEL *(-5));
+        //插入图片
+        drawing.createPicture(anchor, workbook.addPicture(picture, Workbook.PICTURE_TYPE_PNG));
+    }
     
     /**  
      * @MethodName: addDataVerification
@@ -1214,6 +1850,62 @@ public class ReportExcelUtil {
      * @date 2023-05-06 08:37:01 
      */  
     private static void addDataVerification(XSSFSheet sheet,JSONObject dataVerification) {
+    	if(dataVerification != null && !dataVerification.isEmpty())
+    	{
+    		DataValidationHelper helper = sheet.getDataValidationHelper();
+    		for(Map.Entry entry : dataVerification.entrySet()){
+    			String key = (String) entry.getKey();
+    			int r = Integer.parseInt(key.split("_")[0]);
+    			int c = Integer.parseInt(key.split("_")[1]);
+    			JSONObject value = (JSONObject) entry.getValue();
+    			String type = value.getString("type");
+    			String value1 = value.getString("value1");
+    			String value2 = value.getString("value2");
+    			DataValidationConstraint constraint = null;
+    			if("dropdown".equals(type))
+    			{//下拉
+    				if(value1.contains("$"))
+    				{
+    					constraint = helper.createFormulaListConstraint(value1);
+    				}else {
+    					constraint = helper.createExplicitListConstraint(value1.split(","));
+    				}
+    				
+    			}else if("number_integer".equals(type))
+    			{//整数
+    				String type2 = value.getString("type2");
+    				int operate = getNumberOperateType(type2);
+    				constraint = helper.createIntegerConstraint(operate, value1, value2);
+    			}else if("number_decimal".equals(type))
+    			{//小数
+    				String type2 = value.getString("type2");
+    				int operate = getNumberOperateType(type2);
+    				constraint = helper.createDecimalConstraint(operate, value1, value2);
+    			}else if("text_length".equals(type))
+    			{//长度
+    				String type2 = value.getString("type2");
+    				int operate = getNumberOperateType(type2);
+    				constraint = helper.createTextLengthConstraint(operate, value1, value2);
+    			}else if("date".equals(type)) {
+    				//日期
+    				String type2 = value.getString("type2");
+    				int operate = getDateOperateType(type2);
+    				constraint = helper.createDateConstraint(operate, value1, value2, DateUtil.FORMAT_LONOGRAM);
+    			}
+    			CellRangeAddressList addressList = new CellRangeAddressList(r,r,c,c);
+    			if(constraint != null)
+    			{
+    				DataValidation validation = helper.createValidation(constraint,addressList);
+        			validation.setSuppressDropDownArrow(true);
+                    validation.setShowErrorBox(true);
+                    sheet.addValidationData(validation);
+    			}
+    			
+    		}
+    	}
+    }
+    
+    private static void addDataVerification(SXSSFSheet sheet,JSONObject dataVerification) {
     	if(dataVerification != null && !dataVerification.isEmpty())
     	{
     		DataValidationHelper helper = sheet.getDataValidationHelper();
@@ -1485,10 +2177,10 @@ public class ReportExcelUtil {
 			}
 		}
 	}
-    private static XSSFConditionalFormattingRule createConditionalFormattingRuleDuplicate(XSSFSheetConditionalFormatting sheetCF) throws Exception {
+    private static XSSFConditionalFormattingRule createConditionalFormattingRuleDuplicate(SheetConditionalFormatting sheetConditionalFormatting) throws Exception {
     	  Field _sheet = XSSFSheetConditionalFormatting.class.getDeclaredField("_sheet");
     	  _sheet.setAccessible(true);
-    	  XSSFSheet sheet = (XSSFSheet)_sheet.get(sheetCF);
+    	  XSSFSheet sheet = (XSSFSheet)_sheet.get(sheetConditionalFormatting);
     	  Constructor constructor = XSSFConditionalFormattingRule.class.getDeclaredConstructor(XSSFSheet.class);
     	  constructor.setAccessible(true);
     	  XSSFConditionalFormattingRule rule = (XSSFConditionalFormattingRule)constructor.newInstance(sheet);
@@ -1499,10 +2191,10 @@ public class ReportExcelUtil {
     	  return rule;
     }
     
-    private static XSSFConditionalFormattingRule createConditionalFormattingRuleIconSets(XSSFSheetConditionalFormatting sheetCF,JSONObject format) throws Exception {
+    private static XSSFConditionalFormattingRule createConditionalFormattingRuleIconSets(SheetConditionalFormatting sheetConditionalFormatting,JSONObject format) throws Exception {
   	  Field _sheet = XSSFSheetConditionalFormatting.class.getDeclaredField("_sheet");
   	  _sheet.setAccessible(true);
-  	  XSSFSheet sheet = (XSSFSheet)_sheet.get(sheetCF);
+  	  XSSFSheet sheet = (XSSFSheet)_sheet.get(sheetConditionalFormatting);
   	  Constructor constructor = XSSFConditionalFormattingRule.class.getDeclaredConstructor(XSSFSheet.class);
   	  constructor.setAccessible(true);
   	  XSSFConditionalFormattingRule rule = (XSSFConditionalFormattingRule)constructor.newInstance(sheet);
@@ -1586,10 +2278,10 @@ public class ReportExcelUtil {
   	  return rule;
   }
     
-    private static XSSFConditionalFormattingRule createConditionalFormattingRuleRank(XSSFSheetConditionalFormatting sheetCF,String conditionName,JSONArray conditionValue) throws Exception {
+    private static XSSFConditionalFormattingRule createConditionalFormattingRuleRank(SheetConditionalFormatting sheetConditionalFormatting,String conditionName,JSONArray conditionValue) throws Exception {
     	Field _sheet = XSSFSheetConditionalFormatting.class.getDeclaredField("_sheet");
   	  _sheet.setAccessible(true);
-  	  XSSFSheet sheet = (XSSFSheet)_sheet.get(sheetCF);
+  	  XSSFSheet sheet = (XSSFSheet)_sheet.get(sheetConditionalFormatting);
   	  Constructor constructor = XSSFConditionalFormattingRule.class.getDeclaredConstructor(XSSFSheet.class);
   	  constructor.setAccessible(true);
   	  XSSFConditionalFormattingRule rule = (XSSFConditionalFormattingRule)constructor.newInstance(sheet);

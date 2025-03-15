@@ -197,4 +197,11 @@ public class MesGenerateReportDto {
 	 * @date 2024-05-09 08:26:24 
 	 */  
 	private JSONObject apiHeaders;
+	
+	/**  
+	 * @Fields isLarge : 是否是大量数据导出 默认否
+	 * @author caiyang
+	 * @date 2025-03-15 08:54:20 
+	 */  
+	private boolean isLarge = false;
 }

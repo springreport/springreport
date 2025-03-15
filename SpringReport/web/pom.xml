@@ -10,7 +10,7 @@
   <dependencies>
 		<dependency>
 			<groupId>com.springreport</groupId>
-			<artifactId>service</artifactId>
+			<artifactId>onlyoffice-service</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
