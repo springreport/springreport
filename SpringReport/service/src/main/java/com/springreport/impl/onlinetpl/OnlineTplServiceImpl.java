@@ -281,6 +281,7 @@ public class OnlineTplServiceImpl extends ServiceImpl<OnlineTplMapper, OnlineTpl
 		OnlineTpl data = this.getById(id);
 		if(data != null)
 		{
+			redisUtil.del(RedisPrefixEnum.COEDIT.getCode()+data.getListId());
 			this.mqProcessService.updateRedisConfigCache(MqTypeEnums.DELDOC.getCode(), null, null, data.getListId(), String.valueOf(data.getId()),null,null);
 			this.mqProcessService.batchProcessCellData(MqTypeEnums.DELDOC.getCode(), null, null, data.getListId(), String.valueOf(data.getId()));
 		}
