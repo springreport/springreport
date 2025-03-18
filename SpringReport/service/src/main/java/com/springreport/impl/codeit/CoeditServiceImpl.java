@@ -1942,17 +1942,20 @@ public class CoeditServiceImpl extends ServiceImpl<LuckysheetMapper, Luckysheet>
 
 	@Override
 	public String getIdByListId(String listId) {
-		String blockId = (String) redisUtil.get(RedisPrefixEnum.COEDIT.getCode()+listId);
-		if(StringUtil.isNullOrEmpty(blockId))
+		Object blockId = redisUtil.get(RedisPrefixEnum.COEDIT.getCode()+listId);
+		if(blockId == null)
 		{
 			QueryWrapper<OnlineTpl> onlineTplWrapper = new QueryWrapper<OnlineTpl>();
 			onlineTplWrapper.eq("list_id", listId);
 			onlineTplWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
 			OnlineTpl onlineTpl = this.onlineTplMapper.selectOne(onlineTplWrapper);
+			if(onlineTpl == null) {
+				throw new BizException(StatusCode.FAILURE, "文档不存在。");
+			}
 			blockId = String.valueOf(onlineTpl.getId());
 			redisUtil.set(RedisPrefixEnum.COEDIT.getCode()+listId, blockId, 240,TimeUnit.MINUTES);
 		}
-		return blockId;
+		return String.valueOf(blockId);
 	}
 	
 	private String getIdNameByListId(String listId) {
