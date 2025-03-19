@@ -33,7 +33,7 @@ public class GroupAddCalculate extends Calculate<GroupSummaryData>{
 			if(ListUtil.isNotEmpty(set))
 			{
 				for (String o : set) {
-		        	property = property.replace(o, datas.get(o)==null?"":String.valueOf(datas.get(o)));
+		        	property = property.replace(o, datas.get(o)==null?"0":StringUtil.isNullOrEmpty(String.valueOf(datas.get(o)))?"0":String.valueOf(datas.get(o)));
 		        }
 				try {
 					object = AviatorEvaluator.execute(property);

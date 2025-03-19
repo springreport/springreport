@@ -11,6 +11,7 @@ import com.springreport.dto.reporttpl.LuckySheetBindData;
 import com.springreport.util.CheckUtil;
 import com.springreport.util.ListUtil;
 import com.springreport.util.LuckysheetUtil;
+import com.springreport.util.StringUtil;
 
 /**
 * <p>Title: AddCalculate</p>
@@ -42,19 +43,19 @@ public class LuckySheetAddCalculate extends Calculate<LuckySheetBindData>{
 				}
 			}
 		}else {
-			String property = bindData.getProperty();
 			for (int i = 0; i < bindData.getDatas().size(); i++) {
 				for (int j = 0; j < bindData.getDatas().get(i).size(); j++) {
 					Map<String, Object> datas = ListUtil.getProperties(bindData.getProperty(), bindData.getDatas().get(i).get(j));
 					Set<String> set = datas.keySet();
 					String tempProperty = bindData.getProperty();
 					for (String o : set) {
-						tempProperty = tempProperty.replace(o, datas.get(o)==null?"":String.valueOf(datas.get(o)));
+						tempProperty = tempProperty.replace(o, datas.get(o)==null?"0":StringUtil.isNullOrEmpty(String.valueOf(datas.get(o)))?"0":String.valueOf(datas.get(o)));
 					}
 					Object object = null;
 					try {
 						object = AviatorEvaluator.execute(tempProperty);
 					} catch (Exception e) {
+						e.printStackTrace();
 					}
 					
 					if(CheckUtil.isNumber(String.valueOf(object)))

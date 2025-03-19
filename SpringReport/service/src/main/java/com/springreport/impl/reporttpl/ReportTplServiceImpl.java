@@ -4921,6 +4921,14 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				rowAndCol = new HashMap<String, Integer>();
 				rowAndCol.put("maxX", luckySheetBindData.getCoordsx());
 				rowAndCol.put("maxY", luckySheetBindData.getCoordsy());
+				Map<String, Object> merge = new HashMap<String, Object>();
+				merge.put(LuckySheetPropsEnum.R.getCode(), rowAndCol.get("maxX"));
+				merge.put(LuckySheetPropsEnum.C.getCode(), rowAndCol.get("maxY"));
+				merge.put(LuckySheetPropsEnum.ROWSPAN.getCode(), luckySheetBindData.getRowSpan());
+				merge.put(LuckySheetPropsEnum.COLSPAN.getCode(), luckySheetBindData.getColSpan());
+				if(YesNoEnum.YES.getCode().intValue() == luckySheetBindData.getIsMerge()) {
+					mergeMap.put(String.valueOf(rowAndCol.get("maxX"))+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+String.valueOf(rowAndCol.get("maxY")), merge);
+				}
 				this.processDynamicRange(luckySheetBindData, dynamicRange, rowAndCol.get("maxX").intValue(), rowAndCol.get("maxY").intValue(), luckySheetBindData.getCellData());
 				this.processCoverCell(objectMapper, usedCells, luckySheetBindData, cellDatas, calcChain, dataRowLen, rowlen, dataColLen, columnlen, border, maxXAndY, maxCoordinate, borderInfo);
 				return;
