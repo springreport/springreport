@@ -39,7 +39,16 @@
 			and t1.report_type = #{reportType,jdbcType=BIGINT}
 		</if>
 		<if test="delFlag !=null">
-			and t1.del_flag = #{delFlag,jdbcType=BIGINT}
+			and t1.del_flag = #{delFlag,jdbcType=TINYINT}
+		</if>
+		<if test="isTemplate !=null">
+			and t1.is_template = #{isTemplate,jdbcType=TINYINT}
+		</if>
+		<if test="isTemplate ==null">
+			and t1.is_template = 2
+		</if>
+		<if test="templateField !=null">
+			and t1.template_field = #{templateField,jdbcType=BIGINT}
 		</if>
 	</where>
 	GROUP BY

@@ -314,7 +314,7 @@ export default {
             type: 'Input',
             label: '属性值编码',
             prop: 'propCode',
-            rules: { required: true, type: 'letter' },
+            rules: { required: true},
           },
         ],
         resultPropModalData: {

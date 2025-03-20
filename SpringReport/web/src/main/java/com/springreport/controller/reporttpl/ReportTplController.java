@@ -172,7 +172,7 @@ public class ReportTplController extends BaseController {
 	*/ 
 	@RequestMapping(value = "/insert",method = RequestMethod.POST)
 	@MethodLog(module="ReportTpl",remark="新增",operateType=Constants.OPERATE_TYPE_ADD)
-	@Check({"tplCode:required#报表标识;length#报表标识#40","tplName:required#报表名称;length#报表名称#40","reportType:required#报表类型","dataSource:required#报表数据源"})
+	@Check({"tplCode:required#报表标识;length#报表标识#40","tplName:required#报表名称;length#报表名称#40"})
 	@RequiresPermissions(value = {"reportTpl_insert"})
 	public Response insert(@RequestBody ReportTplDto model) throws Exception
 	{
@@ -189,7 +189,7 @@ public class ReportTplController extends BaseController {
 	*/ 
 	@RequestMapping(value = "/update",method = RequestMethod.POST)
 	@MethodLog(module="ReportTpl",remark="更新",operateType=Constants.OPERATE_TYPE_UPDATE)
-	@Check({"id:required#主键ID","tplCode:required#报表标识;length#报表标识#40","tplName:required#报表名称;length#报表名称#40","reportType:required#报表类型","dataSource:required#报表数据源"})
+	@Check({"id:required#主键ID","tplCode:required#报表标识;length#报表标识#40","tplName:required#报表名称;length#报表名称#40"})
 	@RequiresPermissions(value = {"reportTpl_update"})
 	public Response update(@RequestBody ReportTplDto model) throws Exception
 	{
