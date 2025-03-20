@@ -142,4 +142,12 @@ public class ReportTpl extends PageEntity {
     /** coedit_flag - 开启协同 1是 2否 */
     @TableField("coedit_flag")
     private Integer coeditFlag;
+    
+    /** is_template - 是否是模板 1是 2否 */
+    @TableField("is_template")
+    private Integer isTemplate;
+    
+    /** template_field - 模板所属行业 */
+    @TableField("template_field")
+    private Long templateField;
 }

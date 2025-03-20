@@ -365,6 +365,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 	public PageEntity tablePagingQuery(ReportTpl model) {
 		PageEntity result = new PageEntity();
 		model.setDelFlag(DelFlagEnum.UNDEL.getCode());
+		model.setIsTemplate(model.getIsTemplate());
 		com.github.pagehelper.Page<?> page = PageHelper.startPage(model.getCurrentPage(), model.getPageSize()); //分页条件
 		List<ReportTplDto> list = this.baseMapper.getTableList(model);
 		if(!ListUtil.isEmpty(list))
@@ -506,6 +507,11 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		}
 		queryWrapper.eq("tpl_code", model.getTplCode());
 		queryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+		if(model.getIsTemplate() != null && model.getIsTemplate().intValue() == YesNoEnum.YES.getCode().intValue()) {
+			queryWrapper.eq("is_template", YesNoEnum.YES.getCode());
+		}else {
+			queryWrapper.eq("is_template", YesNoEnum.NO.getCode());
+		}
 		ReportTpl isExist = this.getOne(queryWrapper,false);
 		if(isExist != null)
 		{
@@ -569,6 +575,11 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		}
 		queryWrapper.eq("tpl_code", model.getTplCode());
 		queryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+		if(model.getIsTemplate() != null && model.getIsTemplate().intValue() == YesNoEnum.YES.getCode().intValue()) {
+			queryWrapper.eq("is_template", YesNoEnum.YES.getCode());
+		}else {
+			queryWrapper.eq("is_template", YesNoEnum.NO.getCode());
+		}
 		ReportTpl isExist = this.getOne(queryWrapper,false);
 		if(isExist != null)
 		{
