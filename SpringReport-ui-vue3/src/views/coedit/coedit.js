@@ -500,9 +500,9 @@ export default {
               var gridKey = that.$route.query.gridKey;
               var isLoadALL = that.$route.query.isLoadALL;
               that.options.gridKey = gridKey;
-              that.options.updateUrl = location.protocol === 'https:' ? 'wss'+"://"+ location.host +"/api/coedit/websocket/luckysheet" : 'ws'+"://"+ location.host +"/api/coedit/websocket/luckysheet";
-              that.options.loadUrl = location.origin + "/api/coedit/load";
-              that.options.loadSheetUrl = location.origin + "/api/coedit/loadsheet";
+              that.options.updateUrl = location.protocol === 'https:' ? 'wss'+"://"+ location.host +"/SpringReport/api/coedit/websocket/luckysheet" : 'ws'+"://"+ location.host +"/SpringReport/api/coedit/websocket/luckysheet";
+              that.options.loadUrl = location.origin + "/SpringReport/api/coedit/load";
+              that.options.loadSheetUrl = location.origin + "/SpringReport/api/coedit/loadsheet";
               that.options.uploadImage = that.commonUtil.uploadImage;
               that.options.isLoadALL = isLoadALL;
               if(!that.isCreator)
