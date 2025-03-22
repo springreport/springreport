@@ -35,20 +35,26 @@
         </div>
       </div>
 
-      <div class="right-warp">
-        <el-button
-          v-for="item in rightTableHandles"
-          :key="item.label"
-          v-has="item.auth"
-          :type="item.type"
-          size="mini"
-          @click="item.handle()"
-        >
-          <div class="df-c">
-            <span v-if="item.iconClass" :class="item.iconClass" style="width: 12px;height: 12px;margin-right: 4px;" />
-            <span style="height: 12px">{{ item.label }}</span>
+      <div class="right-warp df-c">
+        <template v-for="item in rightTableHandles">
+          <div v-if="item.iconClass=='action-icon-template'" :key="item.label" class="tem df-c" @click="item.handle()">
+            <img src="@/static/img/template/tem.png" style="width: 24px;height: 24px;display: block;">
+            <div class="tem-name">报表模板</div>
           </div>
-        </el-button>
+          <el-button
+            v-else
+            :key="item.label"
+            v-has="item.auth"
+            :type="item.type"
+            size="mini"
+            @click="item.handle()"
+          >
+            <div class="df-c">
+              <span v-if="item.iconClass" :class="item.iconClass" style="width: 12px;height: 12px;margin-right: 4px;" />
+              <span style="height: 12px">{{ item.label }}</span>
+            </div>
+          </el-button>
+        </template>
       </div>
     </div>
     <el-drawer
@@ -424,5 +430,20 @@ export default {
       color: #FF4D4F;
     }
   }
+  .tem {
+      cursor: pointer;
+      height: 28px;
+      line-height: 28px;
+      margin-right: 16px;
+      .tem-name {
+        margin-left: 6px;
+        color: $--color-primary;
+        font-family: "PingFang SC";
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+      }
+    }
 }
 </style>
