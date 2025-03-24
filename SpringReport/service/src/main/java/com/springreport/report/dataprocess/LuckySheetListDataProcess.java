@@ -45,9 +45,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 */  
 public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess{
 
-	private static Map<String,Aggregate<LuckysheetReportCell,LuckySheetBindData,Map<String, LuckySheetBindData>>> aggregates=new HashMap<String,Aggregate<LuckysheetReportCell,LuckySheetBindData,Map<String, LuckySheetBindData>>>();
+	private static Map<String,Aggregate<LuckysheetReportCell,LuckySheetBindData,Map<String, LuckySheetBindData>,Map<String, String>,Map<String, Integer>>> aggregates=new HashMap<String,Aggregate<LuckysheetReportCell,LuckySheetBindData,Map<String, LuckySheetBindData>,Map<String, String>,Map<String, Integer>>>();
 	
-	private static Map<String,Aggregate<LuckysheetReportFormsCell,LuckySheetFormsBindData,Map<String, LuckySheetFormsBindData>>> formsAggregates=new HashMap<String,Aggregate<LuckysheetReportFormsCell,LuckySheetFormsBindData,Map<String, LuckySheetFormsBindData>>>();
+	private static Map<String,Aggregate<LuckysheetReportFormsCell,LuckySheetFormsBindData,Map<String, LuckySheetFormsBindData>,Map<String, String>,Map<String, Integer>>> formsAggregates=new HashMap<String,Aggregate<LuckysheetReportFormsCell,LuckySheetFormsBindData,Map<String, LuckySheetFormsBindData>,Map<String, String>,Map<String, Integer>>>();
 	
 	static{
 		aggregates.put(AggregateTypeEnum.GROUP.getCode(),new LuckySheetGroupAggregate());
@@ -70,6 +70,8 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 		List<LuckySheetBindData> bindDatas = new ArrayList<LuckySheetBindData>();
 		if(!ListUtil.isEmpty(data))
 		{
+			Map<String, String> reliedGroupMergeCells = new HashMap<>();//被依赖的合一单元格和依赖单元格对应关系
+			Map<String, Integer> indexChains = new HashMap<String, Integer>();//依赖分组index对应的关系链
 			LuckySheetBindData bindData = null;
 			String lastAggregateType = "";//上组数据聚合方式
 //			boolean lastIsGroupMerge = false;//上组数据分组是否合一
@@ -154,6 +156,7 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 				bindData.setSheetIndex(sheetIndex);
 				bindData.setIsChartAttr(variableCells.get(i).getIsChartAttr());
 				bindData.setCellFillType(variableCells.get(i).getCellFillType());
+				bindData.setDataSize(data.size());
 				if(variableCells.get(i).getIsSubtotal()) {
 					if(StringUtil.isNotEmpty(variableCells.get(i).getSubtotalCells())) {
 						JSONArray subtotalCells = JSON.parseArray(variableCells.get(i).getSubtotalCells());
@@ -235,9 +238,9 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 				if(CellExtendEnum.CROSS.getCode().intValue() == variableCells.get(i).getCellExtend().intValue())
 				{
 					bindData.setOriginalData(data);;
-					bindData = aggregates.get(AggregateTypeEnum.CROSS.getCode()).aggregate(variableCells.get(i),bindData,cellBindData);
+					bindData = aggregates.get(AggregateTypeEnum.CROSS.getCode()).aggregate(variableCells.get(i),bindData,cellBindData,reliedGroupMergeCells,indexChains);
 				}else {
-					bindData = aggregates.get(variableCells.get(i).getAggregateType()).aggregate(variableCells.get(i),bindData,cellBindData);
+					bindData = aggregates.get(variableCells.get(i).getAggregateType()).aggregate(variableCells.get(i),bindData,cellBindData,reliedGroupMergeCells,indexChains);
 				}
 				cellBindData.put(sheetIndex+"-"+bindData.getCoordsx() + "-" + bindData.getCoordsy(), bindData);
 				if(variableCells.get(i).getCellValueType().intValue() == 3)
@@ -359,6 +362,23 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 					map.put(datasetName, bindData.getDatas());
 					processedCells.put(variableCells.get(i).getSheetId() + "-" + bindData.getCoordsx() +"-" + bindData.getCoordsy(), map);
 					bindData.setMultiDatas(map);
+				}
+				if(bindData.getIsGroupMerge()) {
+					if(ListUtil.isNotEmpty(bindData.getDatas())) {
+						Map<Integer, Integer> groupMergeSize = new HashMap<Integer, Integer>();
+						for (int j = 0; j < bindData.getDatas().size(); j++) {
+							groupMergeSize.put(j, 1);
+						}
+						bindData.setGroupMergeSize(groupMergeSize);;
+					}
+					if(bindData.getIsRelied().intValue() == 1) {
+						String relyCells = bindData.getRelyCells();
+						String[] relyCellsArray = relyCells.split(",");
+						String cellKey = sheetIndex+"-"+ bindData.getCoordsx() + "-" + bindData.getCoordsy();
+						for (int j = 0; j < relyCellsArray.length; j++) {
+							reliedGroupMergeCells.put(relyCellsArray[j], cellKey);
+						}
+					}
 				}
 			}
 		}
@@ -508,7 +528,7 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 					//TODO 待确认交叉扩展是否可以做
 //					bindData = formsAggregates.get(AggregateTypeEnum.CROSS.getCode()).aggregate(variableCells.get(i),bindData);
 				}else {
-					bindData = formsAggregates.get(bindData.getAggregateType()).aggregate(variableCells.get(i),bindData,null);
+					bindData = formsAggregates.get(bindData.getAggregateType()).aggregate(variableCells.get(i),bindData,null,null,null);
 				}
 				cellBindData.put(bindData.getCoordsx() + LuckySheetPropsEnum.COORDINATECONNECTOR.getCode() + bindData.getCoordsy(), bindData);
 				bindDatas.add(bindData);

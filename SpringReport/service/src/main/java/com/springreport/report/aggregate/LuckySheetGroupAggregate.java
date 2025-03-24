@@ -3,6 +3,7 @@ package com.springreport.report.aggregate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -11,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.springreport.dto.reporttpl.LuckySheetBindData;
 import com.springreport.entity.luckysheetreportcell.LuckysheetReportCell;
@@ -28,10 +30,10 @@ import com.springreport.util.StringUtil;
  * @author caiyang
  * @date 2021-05-27 04:55:07 
 */  
-public class LuckySheetGroupAggregate extends Aggregate<LuckysheetReportCell,LuckySheetBindData,Map<String, LuckySheetBindData>>{
+public class LuckySheetGroupAggregate extends Aggregate<LuckysheetReportCell,LuckySheetBindData,Map<String, LuckySheetBindData>,Map<String, String>,Map<String, Integer>>{
 
 	@Override
-	public LuckySheetBindData aggregate(LuckysheetReportCell reportCell,LuckySheetBindData bindData,Map<String, LuckySheetBindData> cellBinddata) {
+	public LuckySheetBindData aggregate(LuckysheetReportCell reportCell,LuckySheetBindData bindData,Map<String, LuckySheetBindData> cellBinddata,Map<String, String> reliedGroupMergeCells,Map<String, Integer> indexChains) {
 		String property = reportCell.getCellValue();
 		String[] datasetNames = LuckysheetUtil.getDatasetNames(reportCell.getDatasetName());
 		if(StringUtil.isNotEmpty(property))
@@ -67,8 +69,12 @@ public class LuckySheetGroupAggregate extends Aggregate<LuckysheetReportCell,Luc
 			{//上次数据处理是分组聚合
 				//本次数据处理是分组聚合，则数据进行分组处理
 				String[] properties = groupProperty.split(",");
+				Map<Integer, Integer> firstIndexaChain = new HashMap<>();
 				for (int t = 0; t < properties.length; t++) {
 					datas = new ArrayList<List<Map<String,Object>>>();
+					Map<Integer, Integer> tempFirstIndexaChain = JSON.parseObject(JSON.toJSONString(firstIndexaChain),Map.class);
+					Map<String, Integer> valueIndex = new HashMap<String, Integer>();
+					firstIndexaChain = new HashMap<Integer, Integer>();
 					for (int i = 0; i < bindDatas.size(); i++) {
 						Map<String, List<Map<String, Object>>> dataMap = new LinkedHashMap<String, List<Map<String, Object>>>();
 						Map<String, List<Map<String, Object>>> filterDataMap = new LinkedHashMap<String, List<Map<String, Object>>>();
@@ -81,6 +87,7 @@ public class LuckySheetGroupAggregate extends Aggregate<LuckysheetReportCell,Luc
 							}else {
 								rowList = new ArrayList<Map<String,Object>>();
 								dataMap.put(value, rowList);
+								valueIndex.put(value, i);
 							}
 							rowList.add(map);
 							if(t == properties.length - 1)
@@ -124,10 +131,32 @@ public class LuckySheetGroupAggregate extends Aggregate<LuckysheetReportCell,Luc
 									datas.add(entries.next().getValue());
 								}
 							}
+							
 						}else {
-							Iterator<Entry<String, List<Map<String, Object>>>> entries = dataMap.entrySet().iterator();
-							while(entries.hasNext()){
-								datas.add(entries.next().getValue());
+//							Iterator<Entry<String, List<Map<String, Object>>>> entries = dataMap.entrySet().iterator();
+//							while(entries.hasNext()){
+//								datas.add(entries.next().getValue());
+//								if(valueIndex.containsKey(entries.next().getKey())) {
+//									if(t == 0) {
+//										firstIndexaChain.put(datas.size()-1, valueIndex.get(entries.next().getKey()));
+//									}else {
+//										if(tempFirstIndexaChain.containsKey(valueIndex.get(entries.next().getKey()))) {
+//											firstIndexaChain.put(datas.size()-1, tempFirstIndexaChain.get(i));
+//										}
+//									}
+//								}
+//							}
+							for (String key : dataMap.keySet()) {
+								datas.add(dataMap.get(key));
+								if(valueIndex.containsKey(key)) {
+									if(t == 0) {
+										firstIndexaChain.put(datas.size()-1, valueIndex.get(key));
+									}else {
+										if(tempFirstIndexaChain.containsKey(valueIndex.get(key))) {
+											firstIndexaChain.put(datas.size()-1, tempFirstIndexaChain.get(i));
+										}
+									}
+								}
 							}
 						}
 						if(t == properties.length - 1)
@@ -176,6 +205,46 @@ public class LuckySheetGroupAggregate extends Aggregate<LuckysheetReportCell,Luc
 						{
 							bindData.setFilterDatas(filterDatas);
 						}
+						
+						for (Integer key : firstIndexaChain.keySet()) {
+							String chainKey = bindData.getCoordsx()+"_"+bindData.getCoordsy()+"_"+key;
+							indexChains.put(chainKey, firstIndexaChain.get(key));
+						}
+						if(bindData.getIsGroupMerge()) {
+							if(ListUtil.isNotEmpty(bindData.getDatas())) {
+								Map<Integer, Integer> groupMergeSize = new HashMap<Integer, Integer>();
+								for (int j = 0; j < bindData.getDatas().size(); j++) {
+									groupMergeSize.put(j, 1);
+								}
+								bindData.setGroupMergeSize(groupMergeSize);;
+							}
+						}
+						String relyKey = bindData.getCoordsx()+"_"+bindData.getCoordsy();
+						processRelyGroupMerge(relyKey, reliedGroupMergeCells, cellBinddata, datas, indexChains, bindData);
+//						if(!StringUtil.isEmptyMap(reliedGroupMergeCells) && reliedGroupMergeCells.containsKey(relyKey)) {
+//							String relied = reliedGroupMergeCells.get(relyKey);//被依赖的单元格
+//							LuckySheetBindData reliedBindData = cellBinddata.get(relied);
+//							if(reliedBindData != null) {
+//								List<Integer> indexArray = new ArrayList<>();
+//								for (int j = 0; j < datas.size(); j++) {
+//									String indexKey = relyKey + "_" + j;
+//									if(indexChains.containsKey(indexKey)) {
+//										int indexSize = 0;
+//										if(!indexArray.contains(indexChains.get(indexKey))) {
+//											reliedBindData.getGroupMergeSize().put(indexChains.get(indexKey), indexSize);
+//											indexArray.add(indexChains.get(indexKey));
+//										}else {
+//											indexSize = reliedBindData.getGroupMergeSize().get(indexChains.get(indexKey));
+//										}
+//										if(bindData.getIsGroupMerge()) {
+//											reliedBindData.getGroupMergeSize().put(indexChains.get(indexKey), bindData.getGroupMergeSize().containsKey(j)?indexSize+bindData.getGroupMergeSize().get(j):indexSize+1);
+//										}else {
+//											reliedBindData.getGroupMergeSize().put(indexChains.get(indexKey), bindData.getGroupMergeSize().containsKey(j)?indexSize+bindData.getGroupMergeSize().get(j):indexSize+datas.get(j).size());
+//										}
+//									}
+//								}
+//							}
+//						}
 					}
 				}
 				bindData.setLastAggregateType(AggregateTypeEnum.GROUP.getCode());
@@ -215,4 +284,33 @@ public class LuckySheetGroupAggregate extends Aggregate<LuckysheetReportCell,Luc
 		return bindData;
 	}
 
+	private void processRelyGroupMerge(String relyKey,Map<String, String> reliedGroupMergeCells,Map<String, LuckySheetBindData> cellBinddata,
+			List<List<Map<String, Object>>> datas,Map<String, Integer> indexChains,LuckySheetBindData bindData) {
+		if(!StringUtil.isEmptyMap(reliedGroupMergeCells) && reliedGroupMergeCells.containsKey(relyKey)) {
+			String relied = reliedGroupMergeCells.get(relyKey);//被依赖的单元格
+			LuckySheetBindData reliedBindData = cellBinddata.get(relied);
+			if(reliedBindData != null) {
+				List<Integer> indexArray = new ArrayList<>();
+				for (int j = 0; j < datas.size(); j++) {
+					String indexKey = relyKey + "_" + j;
+					if(indexChains.containsKey(indexKey)) {
+						int indexSize = 0;
+						if(!indexArray.contains(indexChains.get(indexKey))) {
+							reliedBindData.getGroupMergeSize().put(indexChains.get(indexKey), indexSize);
+							indexArray.add(indexChains.get(indexKey));
+						}else {
+							indexSize = reliedBindData.getGroupMergeSize().get(indexChains.get(indexKey));
+						}
+						if(bindData.getIsGroupMerge()) {
+							reliedBindData.getGroupMergeSize().put(indexChains.get(indexKey), bindData.getGroupMergeSize().containsKey(j)?indexSize+bindData.getGroupMergeSize().get(j):indexSize+1);
+						}else {
+							reliedBindData.getGroupMergeSize().put(indexChains.get(indexKey), bindData.getGroupMergeSize()!=null&&bindData.getGroupMergeSize().containsKey(j)?indexSize+bindData.getGroupMergeSize().get(j):indexSize+datas.get(j).size());
+						}
+					}
+				}
+			}
+			relyKey = reliedBindData.getCoordsx()+"_"+reliedBindData.getCoordsy();
+			this.processRelyGroupMerge(relyKey, reliedGroupMergeCells, cellBinddata, reliedBindData.getDatas(), indexChains, reliedBindData);
+		}
+	}
 }

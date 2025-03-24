@@ -29,10 +29,10 @@ import com.springreport.util.StringUtil;
  * @author caiyang
  * @date 2021-05-27 04:55:07 
 */  
-public class LuckySheetGroupSummaryAggregate extends Aggregate<LuckysheetReportCell,LuckySheetBindData,Map<String, LuckySheetBindData>>{
+public class LuckySheetGroupSummaryAggregate extends Aggregate<LuckysheetReportCell,LuckySheetBindData,Map<String, LuckySheetBindData>,Map<String, String>,Map<String, Integer>>{
 
 	@Override
-	public LuckySheetBindData aggregate(LuckysheetReportCell reportCell,LuckySheetBindData bindData,Map<String, LuckySheetBindData> cellBinddata) {
+	public LuckySheetBindData aggregate(LuckysheetReportCell reportCell,LuckySheetBindData bindData,Map<String, LuckySheetBindData> cellBinddata,Map<String, String> reliedGroupMergeCells,Map<String, Integer> indexChains) {
 		String property = reportCell.getCellValue();
 		String[] datasetNames = LuckysheetUtil.getDatasetNames(reportCell.getDatasetName());
 		if(datasetNames.length > 1)

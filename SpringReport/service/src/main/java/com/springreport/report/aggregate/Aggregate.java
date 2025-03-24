@@ -7,7 +7,7 @@ package com.springreport.report.aggregate;
  * @author caiyang
  * @date 2021-05-27 04:53:27 
 */  
-public abstract class Aggregate<T,S,M> {
+public abstract class Aggregate<T,S,M,N,K> {
 
 	/**
 	*<p>Title: aggregate</p>
@@ -17,5 +17,5 @@ public abstract class Aggregate<T,S,M> {
 	* @param bindData 前一个单元格关联的数据
 	* @return
 	*/
-	public abstract S aggregate(T t,S s,M m);
+	public abstract S aggregate(T t,S s,M m,N n,K k);
 }
