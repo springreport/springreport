@@ -476,8 +476,22 @@ public class DocumentToLuckysheetUtil {
 								 if("greaterThan".equals(operator) || "lessThan".equals(operator) || "equal".equals(operator) 
 								 || "between".equals(operator) || "containsText".equals(operator) || "duplicateValues".equals(operator)
 								 || "top10".equals(operator) || "aboveAverage".equals(operator)) {
-									 String cellColor = "#" + rule.getPatternFormatting().getFillBackgroundColorColor().getARGBHex().substring(2);
-									 String textColor = "#" + rule.getFontFormatting().getFontColor().getARGBHex().substring(2);
+									 String cellColor = "#ffffff";
+									 if(rule.getPatternFormatting() != null) {
+										 try {
+											 cellColor = "#" + rule.getPatternFormatting().getFillBackgroundColorColor().getARGBHex().substring(2);
+										} catch (Exception e) {
+											// TODO: handle exception
+										}
+									 }
+									 String textColor = "#000000";
+									 if(rule.getFontFormatting() != null) {
+										 try {
+											 textColor = "#" + rule.getFontFormatting().getFontColor().getARGBHex().substring(2);
+										} catch (Exception e) {
+											// TODO: handle exception
+										}
+									 }
 									 if("greaterThan".equals(operator)) {
 										 String conditionValue = rule.getFormula1();
 										 cellConditionFormat.put("conditionName", "greaterThan");

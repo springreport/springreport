@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.googlecode.aviator.AviatorEvaluator;
+import com.googlecode.aviator.Options;
 import com.springreport.dto.reporttpl.GroupSummaryData;
 import com.springreport.util.CheckUtil;
 import com.springreport.util.ListUtil;
@@ -36,6 +37,8 @@ public class GroupMinCalculate extends Calculate<GroupSummaryData>{
 					property = property.replace(o, datas.get(o)==null?"0":StringUtil.isNullOrEmpty(String.valueOf(datas.get(o)))?"0":String.valueOf(datas.get(o)));
 		        }
 				try {
+					AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
+        			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
 					object = AviatorEvaluator.execute(property);
 				} catch (Exception e) {
 					object = null;
