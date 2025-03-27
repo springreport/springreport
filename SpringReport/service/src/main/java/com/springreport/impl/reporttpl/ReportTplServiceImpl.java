@@ -112,7 +112,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.PageHelper;
 import com.googlecode.aviator.AviatorEvaluator;
 import com.googlecode.aviator.Options;
-import com.googlecode.aviator.runtime.type.AviatorDecimal;
 
 import net.sf.jsqlparser.JSQLParserException;
 
@@ -7894,9 +7893,6 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		{
 			value  = this.processUnitTransfer(value, luckySheetBindData);
 		}
-        if(luckySheetBindData.getCoordsy() == 5 && luckySheetBindData.getCoordsx() == 2) {
-			System.err.println();
-		}
         String format = LuckysheetUtil.getCellFormat(luckySheetBindData.getCellData());
     	Object v = LuckysheetUtil.formatValue(format, value);
     	if(YesNoEnum.YES.getCode().intValue() == luckySheetBindData.getIsFunction().intValue() && "list".equals(luckySheetBindData.getAggregateType())) {
@@ -13325,6 +13321,16 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				case 2://除法
 					data = data.divide(new BigDecimal(bindData.getMultiple()));
 					result = data.setScale(bindData.getDigit(), RoundingMode.HALF_UP);
+					break;
+				case 3://乘法并转换成中文大写
+					data = data.divide(new BigDecimal(bindData.getMultiple()));
+//					result = data.setScale(bindData.getDigit(), RoundingMode.HALF_UP);
+					result = Convert.digitToChinese(data.setScale(bindData.getDigit(), RoundingMode.HALF_UP));
+					break;
+				case 4://除法并转换成中文大写
+					data = data.divide(new BigDecimal(bindData.getMultiple()));
+//					result = data.setScale(bindData.getDigit(), RoundingMode.HALF_UP);
+					result = Convert.digitToChinese(data.setScale(bindData.getDigit(), RoundingMode.HALF_UP));
 					break;
 				default:
 					break;
