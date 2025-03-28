@@ -2,56 +2,35 @@
   <div>
     <el-header class="_header df-c-b">
       <div class="left df-c">
-        <img
-          v-show="!navShow"
-          src="@/static/img/logoWithName.png"
-          height="30px"
-          style="margin-left: 28px"
-        >
-        <img
-          v-show="navShow"
-          src="@/static/img/logo.png"
-          height="24px"
-          style="margin-left: 20px"
-        >
+        <img v-show="!navShow" src="@/static/img/logoWithName.png" height="30px" style="margin-left: 28px">
+        <img v-show="navShow" src="@/static/img/logo.png" height="24px" style="margin-left: 20px">
       </div>
       <div class="right df-c">
+        <!-- <div class="tem df-c" @click="goTemStore">
+            <img src="@/static/img/template/tem.png" style="width: 24px;height: 24px;display: block;">
+            <div class="tem-name">报表模板</div>
+          </div> -->
+
+          <div class="line" />
         <div v-if="isSystemMerchant == 1" class="df-c">
-          <el-dropdown
-            class="white font"
-            trigger="click"
-            placement="bottom"
-            @command="changeMerchant"
-          >
+          <el-dropdown class="white font" trigger="click" placement="bottom" @command="changeMerchant">
             <div class="system-merchant df-c">
               <span style="margin-right: 8px">{{ merchantName }}</span>
               <i class="el-icon-sort" style="transform: rotate(90deg);font-size: 12px;" />
             </div>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item v-for="item in merchants" :key="item.merchantNo" :command="item.merchantNo">{{ item.merchantName }}</el-dropdown-item>
+              <el-dropdown-item v-for="item in merchants" :key="item.merchantNo" :command="item.merchantNo">{{
+                item.merchantName }}</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
 
-          <div class="line" />
         </div>
 
-        <el-dropdown
-          class="white font"
-          trigger="click"
-          placement="bottom"
-          @command="handleCommand"
-        >
+        <el-dropdown class="white font" trigger="click" placement="bottom" @command="handleCommand">
           <div class="el-dropdown-link df-c">
-            <img
-              src="@/static/img/user-circle.png"
-              height="36"
-              style="margin-right: 8px"
-            >
+            <img src="@/static/img/user-circle.png" height="36" style="margin-right: 8px">
             <span style="margin-right: 8px">{{ username }}</span>
-            <div
-              class="role-name"
-              :class="{ 'role-name-apply': roleName == '试用' }"
-            >
+            <div class="role-name" :class="{ 'role-name-apply': roleName == '试用' }">
               {{ roleName }}
             </div>
             <i class="el-icon-caret-bottom" style="color: #959ea6" />
@@ -141,6 +120,9 @@ export default {
     })
   },
   methods: {
+    goTemStore() {
+      window.open(this.$router.resolve({ name: 'templateStore' }).href, '_blank')
+    },
     getMerchants() {
       var object = {
         url: this.apis.login.getMerchantListApi,
@@ -274,23 +256,41 @@ export default {
   box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.05);
   position: relative;
   z-index: 100;
+
   .left {
     img {
       cursor: pointer;
       transition: all 0.3s;
     }
   }
+
   .right {
     padding-right: 24px;
     font-size: 14px;
     color: rgba(0, 0, 0, 0.9);
+
+    .tem {
+      cursor: pointer;
+      .tem-name {
+        margin-left: 6px;
+        color: $--color-primary;
+        font-family: "PingFang SC";
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+      }
+    }
+
     .line {
       width: 1px;
       height: 24px;
       background: rgba(0, 0, 0, 0.1);
       margin: 0 24px;
     }
+
     .system-merchant {
+      margin-right: 24px;
       cursor: pointer;
       color: $--color-primary;
       font-family: "PingFang SC";
@@ -303,11 +303,13 @@ export default {
       border-radius: 6px;
     }
   }
+
   .el-dropdown-link {
     cursor: pointer;
     color: #000;
     font-size: 15px;
     font-weight: bold;
+
     .role-name {
       margin-right: 8px;
 
@@ -317,12 +319,14 @@ export default {
       font-size: 10px;
       font-style: normal;
       font-weight: 400;
-      line-height: 10px; /* 91.667% */
+      line-height: 10px;
+      /* 91.667% */
       border-radius: 3px;
       border: 1px solid #035dff;
       background: #e1ecff;
       padding: 4px;
     }
+
     .role-name-apply {
       border: 1px solid #ff9f9f;
       background: #ffeded;
@@ -330,6 +334,7 @@ export default {
     }
   }
 }
+
 // .collapse-btn {
 //   position: fixed;
 //   bottom: 0;
@@ -340,5 +345,4 @@ export default {
 //   height: 56px;
 //   z-index: 100;
 //   transition: all 0.3s;
-// }
-</style>
+// }</style>

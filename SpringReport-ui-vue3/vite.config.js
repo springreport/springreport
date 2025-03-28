@@ -15,7 +15,7 @@ import Components from 'unplugin-vue-components/vite';
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers';
 import Icons from 'unplugin-icons/vite';
 import IconsResolver from 'unplugin-icons/resolver';
-import compressPlugin from "vite-plugin-compression";
+import compressPlugin from 'vite-plugin-compression';
 
 const {
   base,
@@ -43,7 +43,7 @@ const loadI18n = isDev ? vueI18n({ include: path.resolve(__dirname, './src/local
 // https://vitejs.dev/config/
 export default defineConfig({
   root: process.cwd(),
-  base:"/SpringReport-vue3",
+  base: '/SpringReport-vue3',
   publicDir,
   logLevel,
   clearScreen,
@@ -94,8 +94,8 @@ export default defineConfig({
       //   `,
     }),
     compressPlugin({
-      ext: ".gz",
-      deleteOriginFile: false // 是否删除原始文件
+      ext: '.gz',
+      deleteOriginFile: false, // 是否删除原始文件
     }),
     svgBuilder('./src/icons/svg/'),
   ],
@@ -114,16 +114,16 @@ export default defineConfig({
         target: 'http://localhost:9099/springReport',
         changeOrigin: true,
         ws: true,
-        rewrite: (path) => path.replace(/^\/SpringReport/, "")
+        rewrite: (path) => path.replace(/^\/SpringReport/, ''),
       },
       '/geoJson': {
         target: 'https://www.springreport.vip/',
         changeOrigin: true,
         pathRewrite: {
-          '^/geoJson': '/geoJson'
-        }
+          '^/geoJson': '/geoJson',
+        },
       },
-    }
+    },
   },
 
   resolve: {

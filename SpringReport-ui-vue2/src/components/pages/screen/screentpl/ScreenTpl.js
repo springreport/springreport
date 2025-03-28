@@ -27,6 +27,7 @@ export default {
         // 表格数据end
         // 表格工具栏按钮 start
         tableHandles: [
+          // { label: '报表模板', type: 'primary', position: 'right', iconClass: 'action-icon-template', handle: () => this.goTemStore(), auth: 'screenTpl_search' },
           { label: '新建目录', type: 'primary', position: 'right', iconClass: 'action-icon-add', handle: () => this.showModal(this.commonConstants.modalType.insert, null, '1'), auth: 'screenTpl_folder' },
           { label: '新建文档', type: 'info', position: 'right', iconClass: 'action-icon-add', handle: () => this.showModal(this.commonConstants.modalType.insert, null, '2'), auth: 'screenTpl_insert' },
           { label: '刷新', type: 'danger', position: 'left', iconClass: 'action-icon-refresh', handle: () => this.searchtablelist(), auth: 'screenTpl_search' }
@@ -53,7 +54,7 @@ export default {
           { label: '模板标识', prop: 'tplCode', align: 'left', overflow: true, icon: true },
           { label: '模板名称', prop: 'tplName', align: 'center', overflow: true },
           { label: '大屏宽度', prop: 'width', align: 'center', overflow: true },
-          { label: '大屏高度', prop: 'height', align: 'center', overflow: true },
+          { label: '大屏高度', prop: 'height', align: 'center', overflow: true }
           // { label: '背景图', prop: 'imgUrl', align: 'center', type: 'image', popover: true},
         ],
         // 表格列表头end
@@ -153,8 +154,8 @@ export default {
     }
   },
   activated() {
-    let thirdPartyType = localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)
-    if(!thirdPartyType){
+    const thirdPartyType = localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)
+    if (!thirdPartyType) {
       this.pageData.tableData = []
       this.searchtablelist()
       this.getReportDatasource()
@@ -162,8 +163,8 @@ export default {
     }
   },
   mounted() {
-    let thirdPartyType = localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)
-    if(thirdPartyType){
+    const thirdPartyType = localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)
+    if (thirdPartyType) {
       this.pageData.tableData = []
       this.searchtablelist()
       this.getReportDatasource()
@@ -171,6 +172,16 @@ export default {
     }
   },
   methods: {
+    goTemStore() {
+      window.open(this.$router.resolve(
+        {
+          name: 'templateStore',
+          query: {
+            temType: 'screen'
+          }
+        }
+      ).href, '_blank')
+    },
     /**
      * @description: 获取表格数据
      * @param {type}
@@ -367,7 +378,7 @@ export default {
       this.pageData.selectList = rows
     },
     screenDesign(row) {
-      const viewReport = this.$router.resolve({ name: 'screenDesign', query: { tplId: row.id,thirdPartyType:localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType) }})
+      const viewReport = this.$router.resolve({ name: 'screenDesign', query: { tplId: row.id, thirdPartyType: localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType) }})
       window.open(viewReport.href, '_blank')
     },
     // 获取数据源

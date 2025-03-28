@@ -34,6 +34,7 @@ export default {
         tableHandles: [
           // {label:'新增',type:'primary',handle:()=>this.showModal(this.commonConstants.modalType.insert),auth:'docTpl_insert'},
           // {label:'批量删除',type:'danger',handle:()=>this.deleteBatch(),auth:'docTpl_delete'}
+          // { label: '报表模板', type: 'primary', position: 'right', iconClass: 'action-icon-template', handle: () => this.goTemStore(), auth: 'docTpl_search' },
           { label: '新建目录', type: 'primary', position: 'right', iconClass: 'action-icon-add', handle: () => this.showModal(this.commonConstants.modalType.insert, null, '1'), auth: 'docTpl_folder' },
           { label: '新建文档', type: 'info', position: 'right', iconClass: 'action-icon-add', handle: () => this.showModal(this.commonConstants.modalType.insert, null, '2'), auth: 'docTpl_insert' },
           { label: '刷新', type: 'danger', position: 'left', iconClass: 'action-icon-refresh', handle: () => this.searchtablelist(), auth: 'docTpl_search' }
@@ -60,7 +61,7 @@ export default {
           { label: '模板标识', prop: 'tplCode', align: 'left', icon: true },
           { label: '模板名称', prop: 'tplName', align: 'center' },
           { label: '数据源代码', prop: 'dataSourceCode', align: 'center', overflow: true },
-          { label: '数据源名称', prop: 'dataSourceName', align: 'center', overflow: true },
+          { label: '数据源名称', prop: 'dataSourceName', align: 'center', overflow: true }
         ],
         // 表格列表头end
         // modal配置 start
@@ -90,7 +91,7 @@ export default {
           dataSource: [], // 报表数据源
           paramMerge: 1,
           reportType: '',
-          firstpageHeaderFooterShow:1,
+          firstpageHeaderFooterShow: 1
         },
         // modal 数据 end
         // modal 按钮 start
@@ -127,17 +128,17 @@ export default {
     }
   },
   activated() {
-    let thirdPartyType = localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)
-    if(!thirdPartyType){
+    const thirdPartyType = localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)
+    if (!thirdPartyType) {
       this.searchtablelist()
       this.getReportDatasource()
-      this.getReportType();
+      this.getReportType()
       this.getReportTypeTree()
     }
   },
   mounted() {
-    let thirdPartyType = localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)
-    if(thirdPartyType){
+    const thirdPartyType = localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)
+    if (thirdPartyType) {
       this.searchtablelist()
       this.getReportDatasource()
       this.getReportType()
@@ -145,6 +146,16 @@ export default {
     }
   },
   methods: {
+    goTemStore() {
+      window.open(this.$router.resolve(
+        {
+          name: 'templateStore',
+          query: {
+            temType: 'word'
+          }
+        }
+      ).href, '_blank')
+    },
     /**
      * @description: 获取表格数据
      * @param {type}
@@ -159,7 +170,7 @@ export default {
       var that = this
       that.pageData.tableData = []
       this.commonUtil.getTableList(obj).then(response => {
-        this.commonUtil.tableAssignment(response,this.pageData.tablePage,this.pageData.tableData);
+        this.commonUtil.tableAssignment(response, this.pageData.tablePage, this.pageData.tableData)
       })
     },
     resetSearch() {
@@ -265,7 +276,7 @@ export default {
               this.closeFolderModal()
               this.searchtablelist()
               this.getReportType()
-              this.getReportTypeTree();
+              this.getReportTypeTree()
             }
           })
         } else {
@@ -351,7 +362,7 @@ export default {
     },
     // 页面跳转
     routerTo(name, row) {
-      const viewReport = this.$router.resolve({ name: name, query: { tplId: row.id,thirdPartyType:localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType) }})
+      const viewReport = this.$router.resolve({ name: name, query: { tplId: row.id, thirdPartyType: localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType) }})
       window.open(viewReport.href, '_blank')
     },
     loadData(tree, treeNode, resolve) {
@@ -386,7 +397,7 @@ export default {
     },
     getReportTypeTree() {
       var obj = {
-        params: {"type":"2"},
+        params: { 'type': '2' },
         removeEmpty: false,
         url: this.apis.reportType.getReportTypeTreeApi
       }
@@ -404,7 +415,7 @@ export default {
       }
       this.searchtablelist()
     },
-    removeNode(node, data){
+    removeNode(node, data) {
       const obj = {
         url: this.apis.reportType.deleteOneApi,
         messageContent: this.commonUtil.getMessageFromList('confirm.delete', null),
@@ -427,10 +438,10 @@ export default {
         }
       })
     },
-    removeNodeCallBack(){
+    removeNodeCallBack() {
       this.searchtablelist()
       this.getReportType()
-      this.getReportTypeTree();
+      this.getReportTypeTree()
     }
   }
 }

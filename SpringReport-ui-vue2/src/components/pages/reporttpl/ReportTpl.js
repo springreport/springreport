@@ -34,6 +34,7 @@ export default {
         // 表格数据end
         // 表格工具栏按钮 start
         tableHandles: [
+          // { label: '报表模板', type: 'primary', position: 'right', iconClass: 'action-icon-template', handle: () => this.goTemStore(), auth: 'reportTpl_search' },
           { label: '新建目录', type: 'primary', position: 'right', iconClass: 'action-icon-add', handle: () => this.showModal(this.commonConstants.modalType.insert, null, '1'), auth: 'reportTpl_folder' },
           { label: '新建文档', type: 'info', position: 'right', iconClass: 'action-icon-add', handle: () => this.showModal(this.commonConstants.modalType.insert, null, '2'), auth: 'reportTpl_insert' },
           { label: '刷新', type: 'danger', position: 'left', iconClass: 'action-icon-refresh', handle: () => this.searchtablelist(), auth: 'reportTpl_search' }
@@ -249,29 +250,39 @@ export default {
     }
   },
   activated() {
-    let thirdPartyType = localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)
-    if(!thirdPartyType){
+    const thirdPartyType = localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)
+    if (!thirdPartyType) {
       this.pageData.tableData = []
       this.searchtablelist()
       this.getReportType()
       this.getReportDatasource()
     }
-    this.getReportTypeTree();
+    this.getReportTypeTree()
     // this.getRoles();
   },
   mounted() {
-    let thirdPartyType = localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)
-    if(thirdPartyType){
+    const thirdPartyType = localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)
+    if (thirdPartyType) {
       this.pageData.tableData = []
       this.searchtablelist()
       this.getReportType()
       this.getReportDatasource()
-      this.getReportTypeTree();
+      this.getReportTypeTree()
     }
     // this.getReportTypeTree();
     // this.getRoles();
   },
   methods: {
+    goTemStore() {
+      window.open(this.$router.resolve(
+        {
+          name: 'templateStore',
+          query: {
+            temType: 'excel'
+          }
+        }
+      ).href, '_blank')
+    },
     /**
      * @description: 获取表格数据
      * @param {type}
@@ -286,7 +297,7 @@ export default {
       var that = this
       that.pageData.tableData = []
       this.commonUtil.getTableList(obj).then(response => {
-        this.commonUtil.tableAssignment(response,this.pageData.tablePage,this.pageData.tableData);
+        this.commonUtil.tableAssignment(response, this.pageData.tablePage, this.pageData.tableData)
         that.getReportType()
       })
     },
@@ -411,7 +422,7 @@ export default {
               this.closeFolderModal()
               this.searchtablelist()
               this.getReportType()
-              this.getReportTypeTree();
+              this.getReportTypeTree()
             }
           })
         } else {
@@ -513,7 +524,7 @@ export default {
     },
     // 页面跳转
     routerTo(name, row) {
-      const viewReport = this.$router.resolve({ name: name, query: { tplId: row.id,thirdPartyType:localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType) }})
+      const viewReport = this.$router.resolve({ name: name, query: { tplId: row.id, thirdPartyType: localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType) }})
       window.open(viewReport.href, '_blank')
     },
     // 是否显示修改密码按钮
@@ -612,7 +623,7 @@ export default {
     },
     getReportTypeTree() {
       var obj = {
-        params: {"type":"1"},
+        params: { 'type': '1' },
         removeEmpty: false,
         url: this.apis.reportType.getReportTypeTreeApi
       }
@@ -672,11 +683,11 @@ export default {
             return
           }
           var extraParam = {}
-          if(localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)){
-            extraParam.thirdPartyType = localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType);
+          if (localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)) {
+            extraParam.thirdPartyType = localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)
           }
           var obj = {
-            params:  Object.assign({}, this.pageData.shareReportModalData, extraParam),
+            params: Object.assign({}, this.pageData.shareReportModalData, extraParam),
             removeEmpty: false
           }
           obj.url = this.apis.reportTpl.getShareUrlApi
@@ -704,7 +715,7 @@ export default {
     },
     routerToTask(row) {
       this.$store.commit('setParameters', { key: 'taskTplId', value: row.id })
-      this.$router.push({ name: 'reportTask',query:{thirdPartyType:localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)}  })
+      this.$router.push({ name: 'reportTask', query: { thirdPartyType: localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType) }})
     },
     loadData(tree, treeNode, resolve) {
       var obj = {
@@ -724,7 +735,7 @@ export default {
         return true
       }
     },
-    removeNode(node, data){
+    removeNode(node, data) {
       const obj = {
         url: this.apis.reportType.deleteOneApi,
         messageContent: this.commonUtil.getMessageFromList('confirm.delete', null),
@@ -747,10 +758,10 @@ export default {
         }
       })
     },
-    removeNodeCallBack(){
+    removeNodeCallBack() {
       this.searchtablelist()
       this.getReportType()
-      this.getReportTypeTree();
+      this.getReportTypeTree()
     }
   }
 }

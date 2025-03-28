@@ -97,6 +97,8 @@
                   placeholder="请选择"
                   style="width: 100%"
                   multiple
+                  allow-create
+                  filterable
                 >
                   <el-option
                     v-for="item in datasetColumns"

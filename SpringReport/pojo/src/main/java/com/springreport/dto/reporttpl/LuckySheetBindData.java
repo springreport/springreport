@@ -526,4 +526,18 @@ public class LuckySheetBindData {
 
     /** vloop_empty_count - 纵向循环间隔空行数 */
     private Integer vloopEmptyCount;
+    
+    /**  
+     * @Fields dataSize : 数据条数
+     * @author caiyang
+     * @date 2025-03-20 12:58:29 
+     */  
+    private int dataSize = 0;
+    
+    /**  
+     * @Fields groupMergeSize : 分组合一单元格每一组对应的数据条数
+     * @author caiyang
+     * @date 2025-03-22 08:18:14 
+     */  
+    private Map<Integer, Integer> groupMergeSize;
 }

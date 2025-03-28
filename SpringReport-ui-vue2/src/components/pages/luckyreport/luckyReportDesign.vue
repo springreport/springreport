@@ -486,6 +486,8 @@
                   >
                     <el-option label="乘法" :value="1" />
                     <el-option label="除法" :value="2" />
+                    <el-option label="乘法并转成中文大写" :value="3" />
+                    <el-option label="除法并转成中文大写" :value="4" />
                   </el-select>
                 </el-form-item>
                 <el-form-item

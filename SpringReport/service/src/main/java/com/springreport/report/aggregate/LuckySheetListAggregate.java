@@ -2,11 +2,13 @@ package com.springreport.report.aggregate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.springreport.dto.reporttpl.LuckySheetBindData;
 import com.springreport.entity.luckysheetreportcell.LuckysheetReportCell;
@@ -23,10 +25,10 @@ import com.springreport.util.StringUtil;
  * @author caiyang
  * @date 2021-05-27 04:55:07 
 */  
-public class LuckySheetListAggregate extends Aggregate<LuckysheetReportCell,LuckySheetBindData,Map<String, LuckySheetBindData>>{
+public class LuckySheetListAggregate extends Aggregate<LuckysheetReportCell,LuckySheetBindData,Map<String, LuckySheetBindData>,Map<String, String>,Map<String, Integer>>{
 
 	@Override
-	public LuckySheetBindData aggregate(LuckysheetReportCell reportCell,LuckySheetBindData bindData,Map<String, LuckySheetBindData> cellBinddata) {
+	public LuckySheetBindData aggregate(LuckysheetReportCell reportCell,LuckySheetBindData bindData,Map<String, LuckySheetBindData> cellBinddata,Map<String, String> reliedGroupMergeCells,Map<String, Integer> indexChains) {
 		String property = reportCell.getCellValue();
 		if(StringUtil.isNotEmpty(property))
 		{
@@ -55,12 +57,18 @@ public class LuckySheetListAggregate extends Aggregate<LuckysheetReportCell,Luck
 			bindDatas = bindData.getDatas();
 		}
 		if(!ListUtil.isEmpty(bindDatas)) {
+			Map<Integer, Integer> firstIndexaChain = new HashMap<>();
+			firstIndexaChain = new HashMap<Integer, Integer>();
 			for (int i = 0; i < bindDatas.size(); i++) {
 				for (int j = 0; j < bindDatas.get(i).size(); j++) {
 					cellData = new ArrayList<Map<String,Object>>();
 					filterCellData =  new ArrayList<Map<String,Object>>();
 					cellData.add(bindDatas.get(i).get(j));
 					datas.add(cellData);
+					if(AggregateTypeEnum.GROUP.getCode().equals(bindData.getLastAggregateType()) || AggregateTypeEnum.GROUPSUMMARY.getCode().equals(bindData.getLastAggregateType()))
+					{
+						firstIndexaChain.put(datas.size()-1, i);
+					}
 					if(bindData.getIsConditions().intValue() == YesNoEnum.YES.getCode().intValue())
 					{
 						boolean filterResult = ListUtil.filterDatas(filters, bindDatas.get(i).get(j),bindData.getCellConditionType());
@@ -83,6 +91,12 @@ public class LuckySheetListAggregate extends Aggregate<LuckysheetReportCell,Luck
 			{
 				bindData.setFilterDatas(filterDatas);
 			}
+			for (Integer key : firstIndexaChain.keySet()) {
+				String chainKey = bindData.getCoordsx()+"_"+bindData.getCoordsy()+"_"+key;
+				indexChains.put(chainKey, firstIndexaChain.get(key));
+			}
+			String relyKey = bindData.getCoordsx()+"_"+bindData.getCoordsy();
+			processRelyGroupMerge(relyKey, reliedGroupMergeCells, cellBinddata, datas, indexChains, bindData);
 			bindData.setLastAggregateType(AggregateTypeEnum.LIST.getCode());
 		}else {
 			bindData.setDatas(datas);
@@ -92,4 +106,32 @@ public class LuckySheetListAggregate extends Aggregate<LuckysheetReportCell,Luck
 		return bindData;
 	}
 
+	private void processRelyGroupMerge(String relyKey,Map<String, String> reliedGroupMergeCells,Map<String, LuckySheetBindData> cellBinddata,
+			List<List<Map<String, Object>>> datas,Map<String, Integer> indexChains,LuckySheetBindData bindData) {
+		if(!StringUtil.isEmptyMap(reliedGroupMergeCells) && reliedGroupMergeCells.containsKey(relyKey)) {
+			String relied = reliedGroupMergeCells.get(relyKey);//被依赖的单元格
+			LuckySheetBindData reliedBindData = cellBinddata.get(relied);
+			if(reliedBindData != null) {
+				List<Integer> indexArray = new ArrayList<>();
+				for (int j = 0; j < datas.size(); j++) {
+					String indexKey = relyKey + "_" + j;
+					if(indexChains.containsKey(indexKey)) {
+						int indexSize = 0;
+						if(!indexArray.contains(indexChains.get(indexKey))) {
+							reliedBindData.getGroupMergeSize().put(indexChains.get(indexKey), indexSize);
+							indexArray.add(indexChains.get(indexKey));
+						}else {
+							indexSize = reliedBindData.getGroupMergeSize().get(indexChains.get(indexKey));
+						}
+						reliedBindData.getGroupMergeSize().put(indexChains.get(indexKey), bindData.getGroupMergeSize()!=null&&bindData.getGroupMergeSize().containsKey(j)?indexSize+bindData.getGroupMergeSize().get(j):indexSize+datas.get(j).size());
+					}
+				}
+			}
+			if(AggregateTypeEnum.GROUP.getCode().equals(bindData.getLastAggregateType()) || AggregateTypeEnum.GROUPSUMMARY.getCode().equals(bindData.getLastAggregateType()))
+			{
+				relyKey = reliedBindData.getCoordsx()+"_"+reliedBindData.getCoordsy();
+				this.processRelyGroupMerge(relyKey, reliedGroupMergeCells, cellBinddata, reliedBindData.getDatas(), indexChains, reliedBindData);
+			}
+		}
+	}
 }
