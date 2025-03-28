@@ -1318,7 +1318,7 @@ export default {
     // 选中单元格清除事件
     rangeClear() {
       var sheetIndex = luckysheet.getSheet().index
-      if (this.cellAllowEditConfigs[sheetIndex]) {
+      if (this.cellAllowEditConfigs[sheetIndex] && this.tplType == 2) {
         var denyEditCells = []// 不允许编辑的单元格
         var cells = this.getSelectRangeCells(null)
         if (cells && cells.length > 0) {

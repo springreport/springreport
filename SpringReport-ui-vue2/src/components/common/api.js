@@ -377,4 +377,12 @@ api.onlyoffice = {
   previewDocApi: '/api/docOnlyOffice/previewDoc', // 预览word文档api
   callbackApi:'/SpringReport/api/onlyoffice/callback'
 }
+
+api.springreportField = {
+  getTemplateFieldTreeApi:"/api/springreportField/getTemplateFieldTree",
+  insertApi:"/api/springreportField/insert",
+  updateApi:"/api/springreportField/update",
+  getTemplateFieldsApi:"/api/springreportField/getTemplateFields",
+  deleteOneApi:"/api/springreportField/delete",
+}
 export default api

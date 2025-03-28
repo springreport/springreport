@@ -592,7 +592,15 @@ commonConstants.routers = [
         meta: {
           title: '大屏模板管理'
         }
-      }
+      },
+      // {
+      //   path: "/excelTemplate",
+      //   name: "excelTemplate",
+      //   component: () => import("@/components/pages/exceltemplate/excelTemplate.vue"),
+      //   meta: {
+      //     title: "Excel模板",
+      //   },
+      // },
       // {
       //   path: "/doconlyoffice",
       //   name: "doconlyoffice",
