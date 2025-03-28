@@ -6,14 +6,13 @@
         <img v-show="navShow" src="@/static/img/logo.png" height="24px" style="margin-left: 20px">
       </div>
       <div class="right df-c">
-        <div v-if="isSystemMerchant == 1" class="df-c">
-          <div class="tem df-c" @click="goTemStore">
+        <!-- <div class="tem df-c" @click="goTemStore">
             <img src="@/static/img/template/tem.png" style="width: 24px;height: 24px;display: block;">
             <div class="tem-name">报表模板</div>
-          </div>
+          </div> -->
 
           <div class="line" />
-
+        <div v-if="isSystemMerchant == 1" class="df-c">
           <el-dropdown class="white font" trigger="click" placement="bottom" @command="changeMerchant">
             <div class="system-merchant df-c">
               <span style="margin-right: 8px">{{ merchantName }}</span>
