@@ -187,6 +187,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.springreport.enums.AggregateTypeEnum;
 import com.springreport.enums.BorderTypeEnum;
 import com.springreport.enums.CellExtendEnum;
+import com.springreport.enums.CellFormatEnum;
 import com.springreport.enums.CellValueTypeEnum;
 import com.springreport.enums.DataFromEnum;
 import com.springreport.enums.DatasetTypeEnum;
@@ -5039,6 +5040,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		boolean isImg = false;
 		Map<String, Object> cellConfig = (Map<String, Object>) luckySheetBindData.getCellData().get(LuckySheetPropsEnum.CELLCONFIG.getCode());
 		Object originalValue = cellConfig.get(LuckySheetPropsEnum.CELLVALUE.getCode());
+		String format = LuckysheetUtil.getCellFormat(luckySheetBindData.getCellData());
 		if(StringUtil.isNotEmpty(luckySheetBindData.getCellValue()) && FunctionExpressEnum.NOW.getCode().toLowerCase().equals(luckySheetBindData.getCellValue().toLowerCase()))
 		{
 			Map<String, Object> ct = (Map<String, Object>) cellConfig.get("ct");
@@ -5056,7 +5058,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 					isImg = true;
 				}else {
 					try {
-						if(CheckUtil.validate(String.valueOf(originalValue))&&CheckUtil.containsOperator(String.valueOf(originalValue))) {
+						if(CheckUtil.validate(String.valueOf(originalValue))&&CheckUtil.containsOperator(String.valueOf(originalValue))&&!format.equals(CellFormatEnum.TEXT.getCode())) {
 							AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
 							AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
 							value = AviatorEvaluator.execute(String.valueOf(originalValue));
@@ -5094,7 +5096,6 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 						value = this.processUnitTransfer(value, luckySheetBindData);
 					}
 				}
-				String format = LuckysheetUtil.getCellFormat(luckySheetBindData.getCellData());
 				value = LuckysheetUtil.formatValue(format, value);
 				cellConfig.put(LuckySheetPropsEnum.CELLVALUE.getCode(), value);
 			}
@@ -12147,6 +12148,8 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		String newName = reportTpl.getTplName()+"_copy_"+end;
 		reportTpl.setTplCode(newCode);
 		reportTpl.setTplName(newName);
+		reportTpl.setIsTemplate(YesNoEnum.NO.getCode());
+		reportTpl.setTemplateField(null);
 		reportTpl.setId(null);
 		//保存报表
 		this.save(reportTpl);

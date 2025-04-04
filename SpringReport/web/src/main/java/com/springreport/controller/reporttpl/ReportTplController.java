@@ -101,7 +101,7 @@ public class ReportTplController extends BaseController {
 	*/ 
 	@RequestMapping(value = "/getTableList",method = RequestMethod.POST)
 	@MethodLog(module="ReportTpl",remark="获取页面表格数据",operateType=Constants.OPERATE_TYPE_SEARCH)
-	@RequiresPermissions(value = {"reportTpl_search","viewReport_Search"})
+	@RequiresPermissions(value = {"reportTpl_search","viewReport_Search","excelTemplate_search"},logical = Logical.OR)
 	public Response getTableList(@RequestBody ReportTpl model)
 	{
 		PageEntity result = iReportTplService.tablePagingQuery(model);
@@ -110,7 +110,7 @@ public class ReportTplController extends BaseController {
 	
 	@RequestMapping(value = "/getChildren",method = RequestMethod.POST)
 	@MethodLog(module="ReportTpl",remark="获取页面表格数据",operateType=Constants.OPERATE_TYPE_SEARCH)
-	@RequiresPermissions(value = {"reportTpl_search"})
+	@RequiresPermissions(value = {"reportTpl_search","excelTemplate_search"},logical = Logical.OR)
 	public Response getChildren(@RequestBody ReportTpl model)
 	{
 		List<ReportTplTreeDto> result = iReportTplService.getChildren(model);
@@ -127,7 +127,7 @@ public class ReportTplController extends BaseController {
 	@RequestMapping(value = "/getDetail",method = RequestMethod.GET)
 	@MethodLog(module="ReportTpl",remark="获取详细信息",operateType=Constants.OPERATE_TYPE_SEARCH)
 	@Check({"id:required#主键ID"})
-	@RequiresPermissions(value = {"reportTpl_getDetail","reportTpl_update","reportTpl_reportDesign","reportDesign_previewReport","reportTpl_reportView","reportTpl_copy","viewReport_view"},logical = Logical.OR)
+	@RequiresPermissions(value = {"reportTpl_getDetail","reportTpl_update","reportTpl_reportDesign","reportDesign_previewReport","reportTpl_reportView","reportTpl_copy","viewReport_view","template_market","excelTemplate_getDetail","excelTemplate_update","excelTemplate_design"},logical = Logical.OR)
 	public Response getDetail(@RequestParam Long id) throws Exception
 	{
 		BaseEntity result = iReportTplService.getDetail(id);
@@ -173,7 +173,7 @@ public class ReportTplController extends BaseController {
 	@RequestMapping(value = "/insert",method = RequestMethod.POST)
 	@MethodLog(module="ReportTpl",remark="新增",operateType=Constants.OPERATE_TYPE_ADD)
 	@Check({"tplCode:required#报表标识;length#报表标识#40","tplName:required#报表名称;length#报表名称#40"})
-	@RequiresPermissions(value = {"reportTpl_insert"})
+	@RequiresPermissions(value = {"reportTpl_insert","excelTemplate_insert"},logical = Logical.OR)
 	public Response insert(@RequestBody ReportTplDto model) throws Exception
 	{
 		BaseEntity result = iReportTplService.insert(model);
@@ -190,7 +190,7 @@ public class ReportTplController extends BaseController {
 	@RequestMapping(value = "/update",method = RequestMethod.POST)
 	@MethodLog(module="ReportTpl",remark="更新",operateType=Constants.OPERATE_TYPE_UPDATE)
 	@Check({"id:required#主键ID","tplCode:required#报表标识;length#报表标识#40","tplName:required#报表名称;length#报表名称#40"})
-	@RequiresPermissions(value = {"reportTpl_update"})
+	@RequiresPermissions(value = {"reportTpl_update","excelTemplate_update"},logical = Logical.OR)
 	public Response update(@RequestBody ReportTplDto model) throws Exception
 	{
 		BaseEntity result = iReportTplService.update(model);
@@ -206,7 +206,7 @@ public class ReportTplController extends BaseController {
 	@RequestMapping(value = "/delete",method = RequestMethod.GET)
 	@MethodLog(module="ReportTpl",remark="单条删除",operateType=Constants.OPERATE_TYPE_DELETE)
 	@Check({"id:required#主键ID"})
-	@RequiresPermissions(value = {"reportTpl_delete"})
+	@RequiresPermissions(value = {"reportTpl_delete","excelTemplate_deleteOne"},logical = Logical.OR)
 	public Response delete(@RequestParam Long id)
 	{
 		BaseEntity result = iReportTplService.delete(id);
@@ -255,7 +255,7 @@ public class ReportTplController extends BaseController {
 	@RequestMapping(value = "/saveLuckySheetTpl",method = RequestMethod.POST)
 	@MethodLog(module="ReportTpl",remark="保存模板",operateType=Constants.OPERATE_TYPE_UPDATE)
 	@Check({"tplId:required#主键ID"})
-	@RequiresPermissions(value = {"reportDesign_saveLuckyTpl"})
+	@RequiresPermissions(value = {"reportDesign_saveLuckyTpl","excelTemplate_design"},logical = Logical.OR)
 	public Response saveLuckySheetTpl(@RequestBody MesLuckysheetsTplDto mesLuckysheetsTplDto,@LoginUser UserInfoDto userInfoDto) throws Exception
 	{
 		BaseEntity result = this.iReportTplService.saveLuckySheetTpl(mesLuckysheetsTplDto,userInfoDto);
@@ -274,7 +274,7 @@ public class ReportTplController extends BaseController {
 	@RequestMapping(value = "/getLuckySheetTplSettings",method = RequestMethod.POST)
 	@MethodLog(module="ReportTpl",remark="获取模板设置",operateType=Constants.OPERATE_TYPE_SEARCH)
 	@Check({"id:required#主键ID"})
-	@RequiresPermissions(value = {"reportTpl_reportDesign"})
+	@RequiresPermissions(value = {"reportTpl_reportDesign","excelTemplate_design","template_market"},logical = Logical.OR)
 	public Response getLuckySheetTplSettings(@RequestBody ReportTpl reportTpl,@LoginUser UserInfoDto userInfoDto) throws Exception {
 		ResSheetsSettingsDto result = this.iReportTplService.getLuckySheetTplSettings(reportTpl,userInfoDto);
 		return Response.success(result);
@@ -292,7 +292,7 @@ public class ReportTplController extends BaseController {
 	@RequestMapping(value = "/previewLuckysheetReportData",method = RequestMethod.POST)
 //	@MethodLog(module="ReportTpl",remark="预览luckysheet报表",operateType=Constants.OPERATE_TYPE_SEARCH)
 	@Check({"tplId:required#模板"})
-	@RequiresPermissions(value = {"reportDesign_previewReport","reportTpl_reportView","viewReport_view"},logical = Logical.OR)
+	@RequiresPermissions(value = {"reportDesign_previewReport","reportTpl_reportView","viewReport_view","template_market","excelTemplate_viewReport"},logical = Logical.OR)
 	public String previewLuckysheetReportData(@RequestBody MesGenerateReportDto mesGenerateReportDto,@LoginUser UserInfoDto userInfoDto) throws Exception
 	{
 		ResPreviewData result = this.iReportTplService.previewLuckysheetReportData(mesGenerateReportDto,userInfoDto);
@@ -397,7 +397,7 @@ public class ReportTplController extends BaseController {
 	 * @date 2021-06-10 02:34:54 
 	 */ 
 	@RequestMapping(value = "/luckySheetExportExcel",method = RequestMethod.POST)
-	@RequiresPermissions(value = {"reportDesign_previewReport","reportTpl_reportView","viewReport_view"},logical = Logical.OR)
+	@RequiresPermissions(value = {"reportDesign_previewReport","reportTpl_reportView","viewReport_view","template_market"},logical = Logical.OR)
 	public void luckySheetExportExcel(@RequestBody MesGenerateReportDto mesGenerateReportDto,@LoginUser UserInfoDto userInfoDto) throws Exception {
 		this.iReportTplService.luckySheetExportExcel(mesGenerateReportDto,userInfoDto, httpServletResponse);
 	}
@@ -689,7 +689,7 @@ public class ReportTplController extends BaseController {
 	 */  
 	@RequestMapping(value = "/copyReport",method = RequestMethod.POST)
 	@MethodLog(module="ReportTpl",remark="复制报表",operateType=Constants.OPERATE_TYPE_ADD)
-	@RequiresPermissions(value = {"reportTpl_copy"},logical = Logical.OR)
+	@RequiresPermissions(value = {"reportTpl_copy","template_market"},logical = Logical.OR)
 	public Response copyReport(@RequestBody ReportTplDto model) {
 		BaseEntity result = this.iReportTplService.copyReport(model);
 		return Response.success(result.getStatusMsg());
@@ -728,7 +728,7 @@ public class ReportTplController extends BaseController {
 	@RequestMapping(value = "/getSheetPdf",method = RequestMethod.POST)
 	@MethodLog(module="ReportTpl",remark="生成sheet页的pdf并返回访问路径",operateType=Constants.OPERATE_TYPE_SEARCH)
 	@Check({"tplId:required#模板"})
-	@RequiresPermissions(value = {"reportDesign_previewReport","reportTpl_reportView","viewReport_view"},logical = Logical.OR)
+	@RequiresPermissions(value = {"reportDesign_previewReport","reportTpl_reportView","viewReport_view","template_market"},logical = Logical.OR)
 	public Response getSheetPdf(@RequestBody MesGenerateReportDto mesGenerateReportDto,@LoginUser UserInfoDto userInfoDto) throws Exception {
 		Map<String, Object> result = this.iReportTplService.getSheetPdf(mesGenerateReportDto, userInfoDto, httpServletResponse);
 		return Response.success(result);
@@ -818,7 +818,7 @@ public class ReportTplController extends BaseController {
 	@RequestMapping(value = "/getMobileReport",method = RequestMethod.POST)
 	@MethodLog(module="ReportTpl",remark="获取手机报表信息",operateType=Constants.OPERATE_TYPE_SEARCH)
 	@Check({"tplId:required#模板"})
-	@RequiresPermissions(value = {"reportDesign_previewReport","reportTpl_reportView","viewReport_view"},logical = Logical.OR)
+	@RequiresPermissions(value = {"reportDesign_previewReport","reportTpl_reportView","viewReport_view","excelTemplate_viewReport"},logical = Logical.OR)
 	public Response getMobileReport(@RequestBody MesGenerateReportDto mesGenerateReportDto,@LoginUser UserInfoDto userInfoDto) throws Exception {
 		MobilePreviewDto result = this.iReportTplService.getMobileInfo(mesGenerateReportDto, userInfoDto);
 		return Response.success(result);
@@ -879,7 +879,7 @@ public class ReportTplController extends BaseController {
 	 * @date 2021-06-10 02:34:54 
 	 */ 
 	@RequestMapping(value = "/getSheetPdfStream",method = RequestMethod.POST)
-	@RequiresPermissions(value = {"reportDesign_previewReport","reportTpl_reportView","viewReport_view"},logical = Logical.OR)
+	@RequiresPermissions(value = {"reportDesign_previewReport","reportTpl_reportView","viewReport_view","template_market"},logical = Logical.OR)
 	public void getSheetPdfStream(@RequestBody MesGenerateReportDto mesGenerateReportDto,@LoginUser UserInfoDto userInfoDto) throws Exception {
 		this.iReportTplService.getSheetPdfStream(mesGenerateReportDto,userInfoDto, httpServletResponse);
 	}

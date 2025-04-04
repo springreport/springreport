@@ -92,7 +92,7 @@ public class ReportTplDatasetController extends BaseController {
 	@RequestMapping(value = "/getTplDatasets",method = RequestMethod.POST)
 	@MethodLog(module="ReportTplDataset",remark="获取模板关联的数据集",operateType=Constants.OPERATE_TYPE_SEARCH)
 	@Check({"tplId:required#模板ID"})
-	@RequiresPermissions(value = {"reportTpl_reportDesign","screenTpl_screenDesign","slidTpl_design","docTpl_design"},logical = Logical.OR)
+	@RequiresPermissions(value = {"reportTpl_reportDesign","screenTpl_screenDesign","slidTpl_design","docTpl_design","excelTemplate_design","template_market","wordTemplate_design","screenTemplate_design"},logical = Logical.OR)
 	public Response getTplDatasets(@RequestBody ReportTplDataset dataset,@LoginUser UserInfoDto userInfoDto) throws Exception {
 		List<ReportDatasetDto> result = this.iReportTplDatasetService.getTplDatasets(dataset,userInfoDto);
 		return Response.success(result);
@@ -111,7 +111,7 @@ public class ReportTplDatasetController extends BaseController {
 	@RequestMapping(value = "/getDatasetColumns",method = RequestMethod.POST)
 	@MethodLog(module="ReportTplDataset",remark="获取数据集字段",operateType=Constants.OPERATE_TYPE_SEARCH)
 	@Check({"id:required#主键"})
-	@RequiresPermissions(value = {"reportTpl_reportDesign","screenTpl_screenDesign"},logical = Logical.OR)
+	@RequiresPermissions(value = {"reportTpl_reportDesign","screenTpl_screenDesign","screenTemplate_design"},logical = Logical.OR)
 	public Response getDatasetColumns(@RequestBody ReportTplDataset dataset,@LoginUser UserInfoDto userInfoDto) throws Exception
 	{
 		List<Map<String, Object>> result = this.iReportTplDatasetService.getDatasetColumns(dataset,userInfoDto);
@@ -165,7 +165,7 @@ public class ReportTplDatasetController extends BaseController {
 	@RequestMapping(value = "/getReportDatasetsParam",method = RequestMethod.POST)
 	@MethodLog(module="ReportTplDataset",remark="预览获取报表数据集参数",operateType=Constants.OPERATE_TYPE_SEARCH)
 	@Check({"tplId:required#模板id"})
-	@RequiresPermissions(value = {"reportDesign_previewReport","reportTpl_reportView","viewReport_view","docTpl_view","slide_view"},logical = Logical.OR)
+	@RequiresPermissions(value = {"reportDesign_previewReport","reportTpl_reportView","viewReport_view","docTpl_view","slide_view","template_market","excelTemplate_viewReport","wordTemplate_view"},logical = Logical.OR)
 	public Response getReportDatasetsParam(@RequestBody ReportTplDatasetDto reportTplDataset) throws ParseException
 	{
 		Map<String, Object> result = this.iReportTplDatasetService.getReportDatasetsParam(reportTplDataset);
@@ -289,7 +289,7 @@ public class ReportTplDatasetController extends BaseController {
 	@RequestMapping(value = "/getTplGroupDatasets",method = RequestMethod.POST)
 	@MethodLog(module="ReportTplDataset",remark="获取模板关联的数据集(分组)",operateType=Constants.OPERATE_TYPE_SEARCH)
 	@Check({"tplId:required#模板ID"})
-	@RequiresPermissions(value = {"reportTpl_reportDesign","screenTpl_screenDesign","slidTpl_design","docTpl_design"},logical = Logical.OR)
+	@RequiresPermissions(value = {"reportTpl_reportDesign","screenTpl_screenDesign","slidTpl_design","docTpl_design","excelTemplate_design","template_market","wordTemplate_design"},logical = Logical.OR)
 	public Response getTplGroupDatasets(@RequestBody ReportTplDataset dataset,@LoginUser UserInfoDto userInfoDto) throws Exception {
 		List<ReportTplDatasetGroup> result = this.iReportTplDatasetService.getTplGroupDatasets(dataset,userInfoDto);
 		return Response.success(result);

@@ -1,8 +1,8 @@
  /** 
- * 模块：报表系统-ScreenTpl
+ * 模块：报表系统-SpringreportField
  * 本文件由代码生成器自动完成,不允许进行修改
  */
-package com.springreport.entity.screentpl;
+package com.springreport.entity.springreportfield;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
@@ -18,54 +18,33 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
  /**  
-* @Description: screen_tpl - 
+* @Description: springreport_field - 
 * @author 
-* @date 2023-01-03 09:13:21
+* @date 2025-03-18 10:36:28
 * @version V1.0  
  */
 @Data
-@TableName("screen_tpl")
+@TableName("springreport_field")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ScreenTpl extends PageEntity {
+public class SpringreportField extends PageEntity {
 
-    /** id - 主键 */
-    
+    /** id - 主键id */
     @TableId(value = "id",type = IdType.ASSIGN_ID)
     private Long id;
-
+    
     /** merchant_no - 商户号 */
     @TableField("merchant_no")
     private String merchantNo;
-
-    /** tpl_code - 模板标识 */
-    @TableField("tpl_code")
-    private String tplCode;
-
-    /** tpl_name - 模板名称 */
-    @TableField("tpl_name")
-    private String tplName;
-
-    /** screen_type - 大屏类型 */
-    @TableField("screen_type")
-    private Long screenType;
-
-    /** width - 大屏宽度 */
-    @TableField("width")
-    private Integer width;
-
-    /** height - 大屏高度 */
-    @TableField("height")
-    private Integer height;
-
-    /** img_url - 背景图 */
-    @TableField("img_url")
-    private String imgUrl;
     
-    /** background - 背景色 */
-    @TableField("background")
-    private String background;
+    /** field_name - 行业名称 */
+    @TableField("field_name")
+    private String fieldName;
+
+    /** type - 分类 1excel报表 2word报表 3大屏 */
+    @TableField("type")
+    private Integer type;
 
     /** creator - 创建人 */
     @TableField(value = "creator",fill = FieldFill.INSERT)
@@ -76,7 +55,7 @@ public class ScreenTpl extends PageEntity {
     private Date createTime;
 
     /** updater - 更新人 */
-   @TableField(value = "updater",fill = FieldFill.INSERT_UPDATE)
+    @TableField(value = "updater",fill = FieldFill.INSERT_UPDATE)
     private Long updater;
 
     /** update_time - 更新时间 */
@@ -86,16 +65,4 @@ public class ScreenTpl extends PageEntity {
     /** del_flag - 删除标记 1未删除 2已删除 */
     @TableField("del_flag")
     private Integer delFlag;
-    
-    /** report_type - 报表类型 */
-    @TableField("report_type")
-    private Long reportType;
-    
-    /** is_template - 是否是模板 1是 2否 */
-    @TableField("is_template")
-    private Integer isTemplate;
-
-    /** template_field - 模板所属行业 */
-    @TableField("template_field")
-    private Long templateField;
 }

@@ -168,7 +168,7 @@ public class ReportDatasourceController extends BaseController {
 	@RequestMapping(value = "/execSql",method = RequestMethod.POST)
 	@MethodLog(module="ReportDatasource",remark="执行解析sql语句",operateType=Constants.OPERATE_TYPE_SEARCH)
 	@Check({"tplSql:required#sql语句","datasourceId:required#数据库id"})
-	@RequiresPermissions(value = {"reportDesign_addDataSet","reportDesign_editDataSet","screenTpl_screenDesign","reportForms_addDataSet","reportForms_editDataSet"},logical = Logical.OR)
+	@RequiresPermissions(value = {"reportDesign_addDataSet","reportDesign_editDataSet","screenTpl_screenDesign","reportForms_addDataSet","reportForms_editDataSet","screenTemplate_design","wordTemplate_design","excelTemplate_design","template_market","slidTpl_design","docTpl_design"},logical = Logical.OR)
 	public Response execSql(@RequestBody MesExecSqlDto mesExecSqlDto,@LoginUser UserInfoDto userInfoDto) throws Exception {
 		List<Map<String, Object>> result = this.iReportDatasourceService.execSql(mesExecSqlDto,userInfoDto);
 		return Response.success(result);
