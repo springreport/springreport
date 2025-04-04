@@ -34,7 +34,7 @@ export default {
         // 表格数据end
         // 表格工具栏按钮 start
         tableHandles: [
-          // { label: '报表模板', type: 'primary', position: 'right', iconClass: 'action-icon-template', handle: () => this.goTemStore(), auth: 'reportTpl_search' },
+          { label: '模板市场', type: 'primary', position: 'right', iconClass: 'action-icon-template', handle: () => this.goTemStore(), auth: 'template_market' },
           { label: '新建目录', type: 'primary', position: 'right', iconClass: 'action-icon-add', handle: () => this.showModal(this.commonConstants.modalType.insert, null, '1'), auth: 'reportTpl_folder' },
           { label: '新建文档', type: 'info', position: 'right', iconClass: 'action-icon-add', handle: () => this.showModal(this.commonConstants.modalType.insert, null, '2'), auth: 'reportTpl_insert' },
           { label: '刷新', type: 'danger', position: 'left', iconClass: 'action-icon-refresh', handle: () => this.searchtablelist(), auth: 'reportTpl_search' }
@@ -90,7 +90,7 @@ export default {
           { type: 'Input', label: '报表标识', prop: 'tplCode', rules: { required: true, maxLength: 40 }},
           { type: 'Input', label: '报表名称', prop: 'tplName', rules: { required: true, maxLength: 40 }},
           { type: 'Select', label: '所属目录', prop: 'reportType', rules: { required: true }, props: { label: 'reportTypeName', value: 'id' }},
-          { type: 'Select', label: '报表数据源', prop: 'dataSource', rules: { required: true }, multiple: true, props: { label: 'code', value: 'id' }},
+          { type: 'Select', label: '报表数据源', prop: 'dataSource', rules: { required: true }, multiple: true, props: { label: 'name', value: 'id' }},
           { type: 'Select', label: '查看权限', prop: 'viewAuth', rules: { required: true }, options: this.selectUtil.viewAuth, change: this.changeViewAuth },
           // {type:'Select',label:'角色配置',prop:'roles',rules:{required:false},multiple:true,width:'520px',props:{label:"roleName",value:"id"}},
           { type: 'Password', label: '设计密码', prop: 'designPwd', rules: { required: false, maxLength: 32 }},

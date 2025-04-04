@@ -2,6 +2,11 @@ export default {
   name: 'screenTpl',
   data() {
     return {
+      defaultProps: {
+        children: 'children',
+        label: 'label'
+      },
+      treeData: [],
       pageData: {
         // 查询表单内容 start
         searchForm: [
@@ -18,7 +23,7 @@ export default {
         // 查询表单按钮start
         searchHandle: [
           { label: '查询', type: 'primary', handle: () => this.searchtablelist(), auth: 'screenTpl_search' },
-          { label: '重置', type: 'warning', handle: () => this.resetSearch(), auth: 'screenTpl_search' }
+          { label: '重置', type: '', handle: () => this.resetSearch(), auth: 'screenTpl_search' }
         ],
         // 查询表单按钮end
         // 表格数据start
@@ -27,7 +32,7 @@ export default {
         // 表格数据end
         // 表格工具栏按钮 start
         tableHandles: [
-          // { label: '报表模板', type: 'primary', position: 'right', iconClass: 'action-icon-template', handle: () => this.goTemStore(), auth: 'screenTpl_search' },
+          { label: '报表模板', type: 'primary', position: 'right', iconClass: 'action-icon-template', handle: () => this.goTemStore(), auth: 'template_market' },
           { label: '新建目录', type: 'primary', position: 'right', iconClass: 'action-icon-add', handle: () => this.showModal(this.commonConstants.modalType.insert, null, '1'), auth: 'screenTpl_folder' },
           { label: '新建文档', type: 'info', position: 'right', iconClass: 'action-icon-add', handle: () => this.showModal(this.commonConstants.modalType.insert, null, '2'), auth: 'screenTpl_insert' },
           { label: '刷新', type: 'danger', position: 'left', iconClass: 'action-icon-refresh', handle: () => this.searchtablelist(), auth: 'screenTpl_search' }
@@ -74,7 +79,7 @@ export default {
           { type: 'Input', label: '模板名称', prop: 'tplName', rules: { required: true, maxLength: 40 }},
           { type: 'Input', label: '大屏宽度', prop: 'width', rules: { required: true, type: 'number' }},
           { type: 'Input', label: '大屏高度', prop: 'height', rules: { required: true, type: 'number' }},
-          { type: 'Select', label: '大屏数据源', prop: 'dataSource', rules: { required: false }, multiple: true, props: { label: 'code', value: 'id' }},
+          { type: 'Select', label: '大屏数据源', prop: 'dataSource', rules: { required: false }, multiple: true, props: { label: 'name', value: 'id' }},
           { type: 'Select', label: '所属目录', prop: 'reportType', rules: { required: true }, props: { label: 'reportTypeName', value: 'id' }}
         ],
         // modal表单 end
@@ -160,6 +165,7 @@ export default {
       this.searchtablelist()
       this.getReportDatasource()
       this.getReportType()
+      this.getReportTypeTree()
     }
   },
   mounted() {
@@ -169,6 +175,7 @@ export default {
       this.searchtablelist()
       this.getReportDatasource()
       this.getReportType()
+      this.getReportTypeTree()
     }
   },
   methods: {
@@ -196,11 +203,7 @@ export default {
       var that = this
       that.pageData.tableData = []
       this.commonUtil.getTableList(obj).then(response => {
-        that.pageData.tableData = response.responseData
-        that.$nextTick(() => {
-          that.$refs.custable.$refs.cesTable.doLayout()
-        })
-        that.getReportType()
+        this.commonUtil.tableAssignment(response, this.pageData.tablePage, this.pageData.tableData)
       })
     },
     resetSearch() {
@@ -240,7 +243,9 @@ export default {
         if (response.responseData.reportType == 0) {
           response.responseData.reportType = null
         }
-        this.commonUtil.coperyProperties(docType == '1' ? this.pageData.folderModalData : this.pageData.modalData, response.responseData)// 数据赋值
+        response.responseData.width = response.responseData.width + '';
+        response.responseData.height = response.responseData.height + '';
+        this.commonUtil.coperyProperties(this.pageData.modalData, response.responseData)// 数据赋值
       })
     },
     /**
@@ -306,6 +311,7 @@ export default {
               this.closeFolderModal()
               this.searchtablelist()
               this.getReportType()
+              this.getReportTypeTree()
             }
           })
         } else {
@@ -475,6 +481,55 @@ export default {
           this.pageData.modalForm[5].options = response.responseData
         }
       })
+    },
+    getReportTypeTree() {
+      var obj = {
+        params: { 'type': '4' },
+        removeEmpty: false,
+        url: this.apis.reportType.getReportTypeTreeApi
+      }
+      this.commonUtil.doPost(obj).then(response => {
+        if (response.code == '200') {
+          this.pageData.treeData = response.responseData
+          this.$forceUpdate()
+        }
+      })
+    },
+    handleNodeClick(data) {
+      if (data.id == '1') {
+        this.pageData.queryData.reportType = ''
+      } else {
+        this.pageData.queryData.reportType = data.id
+      }
+      this.searchtablelist()
+    },
+    removeNode(node, data) {
+      const obj = {
+        url: this.apis.reportType.deleteOneApi,
+        messageContent: this.commonUtil.getMessageFromList('confirm.delete', null),
+        callback: this.removeNodeCallBack,
+        params: { id: data.id },
+        type: 'get'
+      }
+      var checkObj = {
+        params: { reportType: data.id },
+        url: this.apis.screenTpl.getChildrenApi
+      }
+      this.commonUtil.doPost(checkObj).then(response => {
+        if (response.code == '200') {
+          if (response.responseData && response.responseData.length > 0) {
+            this.commonUtil.showMessage({ message: '该目录下有文档，不允许删除！', type: this.commonConstants.messageType.error })
+          } else {
+            // 弹出删除确认框
+            this.commonUtil.showConfirm(obj)
+          }
+        }
+      })
+    },
+    removeNodeCallBack() {
+      this.searchtablelist()
+      this.getReportType()
+      this.getReportTypeTree()
     }
   }
 }

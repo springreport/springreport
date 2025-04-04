@@ -34,7 +34,7 @@ export default {
         tableHandles: [
           // {label:'新增',type:'primary',handle:()=>this.showModal(this.commonConstants.modalType.insert),auth:'docTpl_insert'},
           // {label:'批量删除',type:'danger',handle:()=>this.deleteBatch(),auth:'docTpl_delete'}
-          // { label: '报表模板', type: 'primary', position: 'right', iconClass: 'action-icon-template', handle: () => this.goTemStore(), auth: 'docTpl_search' },
+          { label: '报表模板', type: 'primary', position: 'right', iconClass: 'action-icon-template', handle: () => this.goTemStore(), auth: 'docTpl_search' },
           { label: '新建目录', type: 'primary', position: 'right', iconClass: 'action-icon-add', handle: () => this.showModal(this.commonConstants.modalType.insert, null, '1'), auth: 'docTpl_folder' },
           { label: '新建文档', type: 'info', position: 'right', iconClass: 'action-icon-add', handle: () => this.showModal(this.commonConstants.modalType.insert, null, '2'), auth: 'docTpl_insert' },
           { label: '刷新', type: 'danger', position: 'left', iconClass: 'action-icon-refresh', handle: () => this.searchtablelist(), auth: 'docTpl_search' }
@@ -78,7 +78,7 @@ export default {
         modalForm: [
           { type: 'Input', label: '模板标识', prop: 'tplCode', rules: { required: true, maxLength: 40 }},
           { type: 'Input', label: '模板名称', prop: 'tplName', rules: { required: true, maxLength: 40 }},
-          { type: 'Select', label: '数据源', prop: 'dataSource', rules: { required: true }, multiple: true, props: { label: 'code', value: 'id' }},
+          { type: 'Select', label: '数据源', prop: 'dataSource', rules: { required: true }, multiple: true, props: { label: 'name', value: 'id' }},
           { type: 'Select', label: '参数是否合并', prop: 'paramMerge', rules: { required: true }, options: this.selectUtil.yesNo },
           { type: 'Select', label: '首页页眉页脚是否显示', prop: 'firstpageHeaderFooterShow', rules: { required: true }, options: this.selectUtil.yesNo },
           { type: 'Select', label: '所属目录', prop: 'reportType', rules: { required: true }, props: { label: 'reportTypeName', value: 'id' }}

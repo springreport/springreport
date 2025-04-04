@@ -208,6 +208,7 @@ export default {
             this.getChangeHistory();
         },
         cellMousedown(cell,postion,sheetFile,ctx){
+          console.log(cell)
           this.chartSettingShow = false;
             var r = postion.r;
             var c = postion.c;

@@ -39,7 +39,7 @@
         <template v-for="item in rightTableHandles">
           <div v-if="item.iconClass=='action-icon-template'" :key="item.label" class="tem df-c" @click="item.handle()">
             <img src="@/static/img/template/tem.png" style="width: 24px;height: 24px;display: block;">
-            <div class="tem-name">报表模板</div>
+            <div class="tem-name">模板市场</div>
           </div>
           <el-button
             v-else
