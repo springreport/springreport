@@ -99,6 +99,12 @@ public class ScreenTplServiceImpl extends ServiceImpl<ScreenTplMapper, ScreenTpl
 		if(model.getTemplateField() != null && model.getTemplateField() != 0) {
 			screenTplWrapper.eq("template_field", model.getTemplateField());
 		}
+		if(StringUtil.isNotEmpty(model.getTplCode())) {
+			screenTplWrapper.like("tpl_code", model.getTplCode());
+		}
+		if(StringUtil.isNotEmpty(model.getTplName())) {
+			screenTplWrapper.like("tpl_name", model.getTplName());
+		}
 		screenTplWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
 		List<ScreenTpl> list = this.list(screenTplWrapper);
 		result.setData(list);
