@@ -241,16 +241,17 @@
       title="填写内容"
       v-model="editDialog"
       :close-on-click-modal="false"
+      width="30%"
       @close="closeEditDialog"
     >
-      <el-form :inline="true" :model="editForm" class="demo-form-inline" ref="editFormRef">
+      <el-form :inline="true" :model="editForm" class="demo-form-inline" ref="editFormRef" label-position="top">
         <el-form-item
           label="单元格内容"
           prop="cellContent"
           v-if="cellConfig.valueType == '1' || cellConfig.valueType == '2'"
           :rules="filter_rules('单元格内容', rules)"
         >
-          <el-input v-model="editForm.cellContent" placeholder="请填写单元格内容"></el-input>
+          <el-input v-model="editForm.cellContent" placeholder="请填写单元格内容" style="width: 400px"></el-input>
         </el-form-item>
         <el-form-item
           label="单元格内容"
@@ -264,6 +265,7 @@
             type="year"
             placeholder="选择日期"
             value-format="YYYY"
+            style="width: 400px"
           >
           </el-date-picker>
           <el-date-picker
@@ -272,6 +274,7 @@
             type="month"
             placeholder="选择日期"
             value-format="YYYY-MM"
+            style="width: 400px"
           >
           </el-date-picker>
           <el-date-picker
@@ -281,6 +284,7 @@
             format="YYYY-MM-DD"
             value-format="YYYY-MM-DD"
             placeholder="选择日期"
+            style="width: 400px"
           >
           </el-date-picker>
           <el-time-picker
@@ -289,6 +293,7 @@
             format="HH:mm:ss"
             value-format="HH:mm:ss"
             placeholder="选择时间"
+            style="width: 400px"
           >
           </el-time-picker>
           <el-time-picker
@@ -297,6 +302,7 @@
             format="HH:mm"
             value-format="HH:mm"
             placeholder="选择时间"
+            style="width: 400px"
           >
           </el-time-picker>
           <el-date-picker
@@ -306,6 +312,7 @@
             format="YYYY-MM-DD HH:mm:ss"
             value-format="YYYY-MM-DD HH:mm:ss"
             placeholder="选择日期"
+            style="width: 400px"
           >
           </el-date-picker>
           <el-date-picker
@@ -315,6 +322,7 @@
             format="YYYY-MM-DD HH:mm"
             value-format="YYYY-MM-DD HH:mm"
             placeholder="选择日期"
+            style="width: 400px"
           >
           </el-date-picker>
         </el-form-item>
@@ -324,7 +332,7 @@
           v-if="cellConfig.valueType == '4'"
           :rules="filter_rules('选择项', rules)"
         >
-          <el-select placeholder="请选择" size="small" v-model="editForm.cellContent">
+          <el-select placeholder="请选择" size="default" v-model="editForm.cellContent" style="width: 400px">
             <el-option
               v-for="op in dictTypeDatas"
               :label="op.dictLabel"

@@ -64,6 +64,7 @@ MSG_LIST["confirm.operate"] = "是否确定执行此操作？";
 MSG_LIST["confirm.enter.sharemode"] = "是否确定进入分享模式？";
 MSG_LIST["confirm.exit.sharemode"] = "是否确定退出分享模式？";
 MSG_LIST["confirm.copy"] = "此操作将会复制该报表，是否继续？";
+MSG_LIST["confirm.usetemplate"] = "此操作将会使用该报表模板，是否继续？";
 //确认消息end
 
 //通知成功消息start

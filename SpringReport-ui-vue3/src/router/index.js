@@ -348,6 +348,30 @@ export const constantRoutes = [
           icon: 'icon-word',
         },
       },
+      {
+        path: "/excelTemplate",
+        name: "excelTemplate",
+        component: () => import("@/views/exceltemplate/excelTemplate.vue"),
+        meta: {
+          title: "Excel模板市场",
+        },
+      },
+      {
+        path: "/wordTemplate",
+        name: "wordTemplate",
+        component: () => import("@/views/wordtemplate/wordTemplate.vue"),
+        meta: {
+          title: "Word模板市场",
+        },
+      },
+      {
+        path: "/screenTemplate",
+        name: "screenTemplate",
+        component: () => import("@/views/screentemplate/screenTemplate.vue"),
+        meta: {
+          title: "大屏模板市场",
+        },
+      },
       // {
       //   path: '/slideTpl',
       //   name: 'slideTpl',

@@ -159,7 +159,7 @@ export default {
             prop: 'dataSource',
             rules: { required: true },
             multiple: true,
-            props: { label: 'code', value: 'id' },
+            props: { label: 'name', value: 'id' },
           },
           {
             type: 'Select',
