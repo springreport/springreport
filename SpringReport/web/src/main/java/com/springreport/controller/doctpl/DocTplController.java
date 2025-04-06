@@ -59,7 +59,7 @@ public class DocTplController extends BaseController {
 	*/ 
 	@RequestMapping(value = "/getTableList",method = RequestMethod.POST)
 	@MethodLog(module="DocTpl",remark="获取页面表格数据",operateType=Constants.OPERATE_TYPE_SEARCH)
-	@RequiresPermissions(value = {"docTpl_search"})
+	@RequiresPermissions(value = {"docTpl_search","wordTemplate_search"},logical = Logical.OR)
 	public Response getTableList(@RequestBody DocTpl model)
 	{
 		PageEntity result = iDocTplService.tablePagingQuery(model);
@@ -68,7 +68,7 @@ public class DocTplController extends BaseController {
 	
 	@RequestMapping(value = "/getChildren",method = RequestMethod.POST)
 	@MethodLog(module="DocTpl",remark="获取页面表格数据",operateType=Constants.OPERATE_TYPE_SEARCH)
-	@RequiresPermissions(value = {"docTpl_search"})
+	@RequiresPermissions(value = {"docTpl_search","wordTemplate_search"},logical = Logical.OR)
 	public Response getChildren(@RequestBody DocTpl model)
 	{
 		List<DocTplTreeDto> result = iDocTplService.getChildren(model);
@@ -85,7 +85,7 @@ public class DocTplController extends BaseController {
 	@RequestMapping(value = "/getDetail",method = RequestMethod.GET)
 	@MethodLog(module="DocTpl",remark="获取详细信息",operateType=Constants.OPERATE_TYPE_SEARCH)
 	@Check({"id:required#主键ID"})
-	@RequiresPermissions(value = {"docTpl_getDetail","docTpl_edit"},logical = Logical.OR)
+	@RequiresPermissions(value = {"docTpl_getDetail","docTpl_edit","wordTemplate_getDetail","wordTemplate_update"},logical = Logical.OR)
 	public Response getDetail(@RequestParam Long id) throws Exception
 	{
 		BaseEntity result = iDocTplService.getDetail(id);
@@ -102,7 +102,7 @@ public class DocTplController extends BaseController {
 	@RequestMapping(value = "/insert",method = RequestMethod.POST)
 	@MethodLog(module="DocTpl",remark="新增",operateType=Constants.OPERATE_TYPE_ADD)
 	@Check({"tplCode:required#模板标识;length#模板标识#40","tplName:required#模板名称;length#模板名称#40",})
-	@RequiresPermissions(value = {"docTpl_insert"})
+	@RequiresPermissions(value = {"docTpl_insert","wordTemplate_insert"},logical = Logical.OR)
 	public Response insert(@RequestBody DocTplDto model) throws Exception
 	{
 		BaseEntity result = iDocTplService.insert(model);
@@ -119,7 +119,7 @@ public class DocTplController extends BaseController {
 	@RequestMapping(value = "/update",method = RequestMethod.POST)
 	@MethodLog(module="DocTpl",remark="更新",operateType=Constants.OPERATE_TYPE_UPDATE)
 	@Check({"id:required#主键ID","tplCode:required#模板标识;length#模板标识#40","tplName:required#模板名称;length#模板名称#40",})
-	@RequiresPermissions(value = {"docTpl_edit"})
+	@RequiresPermissions(value = {"docTpl_edit","wordTemplate_update"},logical = Logical.OR)
 	public Response update(@RequestBody DocTplDto model) throws Exception
 	{
 		BaseEntity result = iDocTplService.update(model);
@@ -135,7 +135,7 @@ public class DocTplController extends BaseController {
 	@RequestMapping(value = "/delete",method = RequestMethod.GET)
 	@MethodLog(module="DocTpl",remark="单条删除",operateType=Constants.OPERATE_TYPE_DELETE)
 	@Check({"id:required#主键ID"})
-	@RequiresPermissions(value = {"docTpl_delete"})
+	@RequiresPermissions(value = {"docTpl_delete","wordTemplate_delete"},logical = Logical.OR)
 	public Response delete(@RequestParam Long id)
 	{
 		BaseEntity result = iDocTplService.delete(id);
@@ -166,7 +166,7 @@ public class DocTplController extends BaseController {
 	 * @date 2024-05-03 09:52:39 
 	 */ 
 	@RequestMapping(value = "/getDocTplSettings",method = RequestMethod.POST)
-	@RequiresPermissions(value = {"docTpl_design"})
+	@RequiresPermissions(value = {"docTpl_design","template_market","wordTemplate_design"},logical = Logical.OR)
 	@Check({"tplId:required#模板ID"})
 	public Response getDocTplSettings(@RequestBody DocTplSettings model) {
 		BaseEntity result = this.iDocTplService.getDocTplSettings(model);
@@ -216,7 +216,7 @@ public class DocTplController extends BaseController {
 	 */ 
 	@RequestMapping(value = "/previewDoc",method = RequestMethod.POST)
 	@Check({"tplId:required#模板ID"})
-	@RequiresPermissions(value = {"docTpl_preview","docTpl_view"},logical = Logical.OR)
+	@RequiresPermissions(value = {"docTpl_preview","docTpl_view","template_market","wordTemplate_view"},logical = Logical.OR)
 	public Response previewDoc(@RequestBody MesGenerateReportDto model,@LoginUser UserInfoDto userInfoDto) throws Exception{
 		Map<String, Object> result = this.iDocTplService.previewDoc(model,userInfoDto);
 		return Response.success(result);
@@ -234,5 +234,20 @@ public class DocTplController extends BaseController {
 	public Response uploadDocx(@RequestParam("file") MultipartFile file) throws Exception{
 		DocDto result = this.iDocTplService.uploadDocx(file);
 		return Response.success(result);
+	}
+	
+	/**  
+	 * @MethodName: copyReport
+	 * @Description: 复制模板
+	 * @author caiyang
+	 * @param file
+	 * @return
+	 * @throws Exception Response
+	 * @date 2025-04-01 04:31:05 
+	 */ 
+	@RequestMapping("/copyReport")
+	public Response copyReport(@RequestBody DocTpl docTpl) throws Exception{
+		BaseEntity result = this.iDocTplService.copyReport(docTpl);
+		return Response.success(result.getStatusMsg());
 	}
 }

@@ -358,6 +358,7 @@ api.docTpl = {
   previewDocApi: '/api/docTpl/previewDoc', //保存文档模板api
   uploadDocxApi: '/api/docTpl/uploadDocx', //上传docx文件
   getChildrenApi: '/api/docTpl/getChildren',
+  doCopyReportApi:'/api/docTpl/copyReport',
 };
 
 api.common = {
@@ -385,5 +386,6 @@ api.springreportField = {
   updateApi:"/api/springreportField/update",
   getTemplateFieldsApi:"/api/springreportField/getTemplateFields",
   deleteOneApi:"/api/springreportField/delete",
+  getTemplatesApi:"/api/springreportField/getTemplates",
 }
 export default api;

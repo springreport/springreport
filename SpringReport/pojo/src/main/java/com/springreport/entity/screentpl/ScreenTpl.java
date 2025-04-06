@@ -90,4 +90,12 @@ public class ScreenTpl extends PageEntity {
     /** report_type - 报表类型 */
     @TableField("report_type")
     private Long reportType;
+    
+    /** is_template - 是否是模板 1是 2否 */
+    @TableField("is_template")
+    private Integer isTemplate;
+
+    /** template_field - 模板所属行业 */
+    @TableField("template_field")
+    private Long templateField;
 }

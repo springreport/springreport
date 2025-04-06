@@ -15,6 +15,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.springreport.base.BaseController;
 import com.springreport.base.BaseEntity;
+import com.springreport.base.PageEntity;
 import com.springreport.base.Response;
 import com.springreport.base.UserInfoDto;
 import com.springreport.constants.Constants;
@@ -55,16 +56,16 @@ public class ScreenTplController extends BaseController {
 	*/ 
 	@RequestMapping(value = "/getTableList",method = RequestMethod.POST)
 	@MethodLog(module="ScreenTpl",remark="获取页面表格数据",operateType=Constants.OPERATE_TYPE_SEARCH)
-	@RequiresPermissions(value = {"screenTpl_search"})
-	public Response getTableList(@RequestBody ReportType model)
+	@RequiresPermissions(value = {"screenTpl_search","screenTemplate_search"},logical = Logical.OR)
+	public Response getTableList(@RequestBody ScreenTpl model)
 	{
-		List<ScreenTplTreeDto> result = iScreenTplService.tablePagingQuery(model);
+		PageEntity result = iScreenTplService.tablePagingQuery(model);
 		return Response.success(result);
 	}
 	
 	@RequestMapping(value = "/getChildren",method = RequestMethod.POST)
 	@MethodLog(module="ScreenTpl",remark="获取页面表格数据",operateType=Constants.OPERATE_TYPE_SEARCH)
-	@RequiresPermissions(value = {"screenTpl_search"})
+	@RequiresPermissions(value = {"screenTpl_search","screenTemplate_search"},logical = Logical.OR)
 	public Response getChildren(@RequestBody ScreenTpl model)
 	{
 		List<ScreenTplTreeDto> result = iScreenTplService.getChildren(model);
@@ -81,7 +82,7 @@ public class ScreenTplController extends BaseController {
 	@RequestMapping(value = "/getDetail",method = RequestMethod.GET)
 	@MethodLog(module="ScreenTpl",remark="获取详细信息",operateType=Constants.OPERATE_TYPE_SEARCH)
 	@Check({"id:required#主键ID"})
-	@RequiresPermissions(value = {"screenTpl_getDetail","screenTpl_update","screenTpl_copy"},logical = Logical.OR)
+	@RequiresPermissions(value = {"screenTpl_getDetail","screenTpl_update","screenTpl_copy","screenTemplate_getDetail","screenTemplate_edit"},logical = Logical.OR)
 	public Response getDetail(@RequestParam Long id) throws Exception
 	{
 		BaseEntity result = iScreenTplService.getDetail(id);
@@ -98,7 +99,7 @@ public class ScreenTplController extends BaseController {
 	@RequestMapping(value = "/insert",method = RequestMethod.POST)
 	@MethodLog(module="ScreenTpl",remark="新增",operateType=Constants.OPERATE_TYPE_ADD)
 	@Check({"tplCode:required#模板标识;length#模板标识#40","tplName:required#模板名称;length#模板名称#40"})
-	@RequiresPermissions(value = {"screenTpl_insert"})
+	@RequiresPermissions(value = {"screenTpl_insert","screenTemplate_insert"},logical = Logical.OR)
 	public Response insert(@RequestBody MesScreenTplDto mesScreenTplDto) throws Exception
 	{
 		BaseEntity result = iScreenTplService.insert(mesScreenTplDto);
@@ -115,7 +116,7 @@ public class ScreenTplController extends BaseController {
 	@RequestMapping(value = "/update",method = RequestMethod.POST)
 	@MethodLog(module="ScreenTpl",remark="更新",operateType=Constants.OPERATE_TYPE_UPDATE)
 	@Check({"id:required#主键ID","tplCode:required#模板标识;length#模板标识#40","tplName:required#模板名称;length#模板名称#40"})
-	@RequiresPermissions(value = {"screenTpl_update"})
+	@RequiresPermissions(value = {"screenTpl_update","screenTemplate_edit"},logical = Logical.OR)
 	public Response update(@RequestBody MesScreenTplDto mesScreenTplDto) throws Exception
 	{
 		BaseEntity result = iScreenTplService.update(mesScreenTplDto);
@@ -131,7 +132,7 @@ public class ScreenTplController extends BaseController {
 	@RequestMapping(value = "/delete",method = RequestMethod.GET)
 	@MethodLog(module="ScreenTpl",remark="单条删除",operateType=Constants.OPERATE_TYPE_DELETE)
 	@Check({"id:required#主键ID"})
-	@RequiresPermissions(value = {"screenTpl_delete"})
+	@RequiresPermissions(value = {"screenTpl_delete","screenTemplate_delete"},logical = Logical.OR)
 	public Response delete(@RequestParam Long id)
 	{
 		BaseEntity result = iScreenTplService.delete(id);
@@ -164,7 +165,7 @@ public class ScreenTplController extends BaseController {
 	@RequestMapping(value = "/getScreenDesign",method = RequestMethod.POST)
 	@MethodLog(module="ScreenTpl",remark="获取大屏设计详情",operateType=Constants.OPERATE_TYPE_SEARCH)
 	@Check({"id:required#主键ID"})
-	@RequiresPermissions(value = {"screenTpl_screenDesign","screenTpl_previewDesign","screenTpl_viewScreen","multiScreen_preview","multiScreen_view"},logical = Logical.OR)
+	@RequiresPermissions(value = {"screenTpl_screenDesign","screenTpl_previewDesign","screenTpl_viewScreen","multiScreen_preview","multiScreen_view","screenTemplate_design"},logical = Logical.OR)
 	public Response getScreenDesign(@RequestBody ScreenTpl screenTpl,@LoginUser UserInfoDto userInfoDto)
 	{
 		ScreenTplDto result = this.iScreenTplService.getScreenDesign(screenTpl);
@@ -183,7 +184,7 @@ public class ScreenTplController extends BaseController {
 	@RequestMapping(value = "/saveScreenDesign",method = RequestMethod.POST)
 	@MethodLog(module="ScreenTpl",remark="保存大屏设计",operateType=Constants.OPERATE_TYPE_ADD)
 	@Check({"id:required#主键ID","width:required#大屏宽度","height:required#大屏高度"})
-	@RequiresPermissions(value = {"screenTpl_saveDesign"})
+	@RequiresPermissions(value = {"screenTpl_saveDesign","screenTemplate_design"},logical = Logical.OR)
 	public Response saveScreenDesign(@RequestBody SaveScreenTplDto saveScreenTplDto) throws JsonProcessingException
 	{
 		BaseEntity result = this.iScreenTplService.saveScreenDesign(saveScreenTplDto);
@@ -205,4 +206,11 @@ public class ScreenTplController extends BaseController {
 		return Response.success(result);
 	}
 	
+	@RequestMapping(value = "/copyScreen",method = RequestMethod.POST)
+	@MethodLog(module="ScreenTpl",remark="复制大屏",operateType=Constants.OPERATE_TYPE_SEARCH)
+	public Response copyScreen(@RequestBody ScreenTpl screenTpl)
+	{
+		BaseEntity result = iScreenTplService.copyScreen(screenTpl);
+		return Response.success(result.getStatusMsg());
+	}
 }

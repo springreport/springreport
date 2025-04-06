@@ -143,7 +143,7 @@ public class ReportTplDatasourceController extends BaseController {
 	@RequestMapping(value = "/getReportTplDatasoure",method = RequestMethod.POST)
 	@MethodLog(module="ReportTplDatasource",remark="获取报表模板数据源",operateType=Constants.OPERATE_TYPE_SEARCH)
 	@Check({"tplId:required#模板ID"})
-	@RequiresPermissions(value = {"reportTpl_reportDesign","screenTpl_screenDesign","slidTpl_design","docTpl_design"},logical = Logical.OR)
+	@RequiresPermissions(value = {"reportTpl_reportDesign","screenTpl_screenDesign","slidTpl_design","docTpl_design","excelTemplate_design","template_market","wordTemplate_design","screenTemplate_design"},logical = Logical.OR)
 	public Response getReportTplDatasoure(@RequestBody ReportTplDatasource reportTplDatasource) {
 		List<ReportTplDatasourceDto> result = this.iReportTplDatasourceService.getReportTplDatasoure(reportTplDatasource);
 		return Response.success(result);

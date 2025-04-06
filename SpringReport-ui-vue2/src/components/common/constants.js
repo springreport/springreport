@@ -593,14 +593,30 @@ commonConstants.routers = [
           title: '大屏模板管理'
         }
       },
-      // {
-      //   path: "/excelTemplate",
-      //   name: "excelTemplate",
-      //   component: () => import("@/components/pages/exceltemplate/excelTemplate.vue"),
-      //   meta: {
-      //     title: "Excel模板",
-      //   },
-      // },
+      {
+        path: "/excelTemplate",
+        name: "excelTemplate",
+        component: () => import("@/components/pages/exceltemplate/excelTemplate.vue"),
+        meta: {
+          title: "Excel模板市场",
+        },
+      },
+      {
+        path: "/wordTemplate",
+        name: "wordTemplate",
+        component: () => import("@/components/pages/wordtemplate/wordTemplate.vue"),
+        meta: {
+          title: "Word模板市场",
+        },
+      },
+      {
+        path: "/screenTemplate",
+        name: "screenTemplate",
+        component: () => import("@/components/pages/screentemplate/screenTemplate.vue"),
+        meta: {
+          title: "大屏模板市场",
+        },
+      },
       // {
       //   path: "/doconlyoffice",
       //   name: "doconlyoffice",

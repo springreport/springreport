@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
  /**  
 * @Description: doc_tpl - 
 * @author 
-* @date 2025-01-04 07:25:47
+* @date 2025-04-01 10:15:19
 * @version V1.0  
  */
 @Data
@@ -78,4 +78,12 @@ public class DocTpl extends PageEntity {
     /** firstpage_header_footer_show - 首页页眉页脚是否显示 1是 2否 */
     @TableField("firstpage_header_footer_show")
     private Integer firstpageHeaderFooterShow;
+
+    /** is_template - 是否是模板 1是 2否 */
+    @TableField("is_template")
+    private Integer isTemplate;
+
+    /** template_field - 模板所属行业 */
+    @TableField("template_field")
+    private Long templateField;
 }

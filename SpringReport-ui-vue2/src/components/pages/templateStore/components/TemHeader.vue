@@ -2,7 +2,7 @@
 <template>
   <div class="template-header df-c-b">
     <div class="template-header-title">
-      报表模板
+      模板市场
     </div>
     <div class="template-header-search">
       <el-input v-model="searchValue" placeholder="输入关键字搜索模板" clearable prefix-icon="el-icon-search" />

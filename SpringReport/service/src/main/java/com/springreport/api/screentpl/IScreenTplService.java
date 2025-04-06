@@ -26,7 +26,7 @@ public interface IScreenTplService extends IService<ScreenTpl> {
 	* @return BaseEntity 
 	* @throws 
 	*/ 
-	List<ScreenTplTreeDto> tablePagingQuery(ReportType model);
+	PageEntity tablePagingQuery(ScreenTpl model);
 	
 	List<ScreenTplTreeDto> getChildren(ScreenTpl model);
 
@@ -102,5 +102,15 @@ public interface IScreenTplService extends IService<ScreenTpl> {
 	 * @date 2021-08-30 07:35:50 
 	 */ 
 	List<ScreenTpl> getScreens(ScreenTpl screenTpl);
+	
+	/**  
+	 * @MethodName: copyScreen
+	 * @Description: 复制大屏
+	 * @author caiyang
+	 * @param screenTpl
+	 * @return BaseEntity
+	 * @date 2025-04-04 12:51:12 
+	 */ 
+	BaseEntity copyScreen(ScreenTpl screenTpl);
 	
 }

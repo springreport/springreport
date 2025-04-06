@@ -1436,9 +1436,12 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 			}else {
 				String listStyle = "decimal";
 				String listType = "ol";
-				if("bullet".equals(paragraph.getNumFmt())) {
-					listStyle = "disc";
-					listType = "ul";
+				try {
+					if("bullet".equals(paragraph.getNumFmt())) {
+						listStyle = "disc";
+						listType = "ul";
+					}
+				} catch (Exception e) {
 				}
 				listObj = new JSONObject();
 				listObj.put("value", "");
@@ -1939,7 +1942,7 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 			List<XWPFTableCell> cells = rows.get(i).getTableCells();
 			if(c <= (cells.size()-1)) {
 				XWPFTableCell cell = cells.get(c);
-				if(cell.getCTTc().getTcPr().getVMerge() != null && cell.getCTTc().getTcPr().getVMerge().getVal() == null) {
+				if(cell!=null && cell.getCTTc().getTcPr().getVMerge() != null && cell.getCTTc().getTcPr().getVMerge().getVal() == null) {
 					docTableCellDto.setRowspan(docTableCellDto.getRowspan() +1);
 					mergeCells.put(i+"_"+c, "1");
 				}else {
@@ -2159,6 +2162,93 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 			docImageDto.setRowFlex("center");
 		}
 	    documentElements.add(docImageDto);
+	}
+
+	/**  
+	 * @MethodName: copyReport
+	 * @Description: 复制报表
+	 * @author caiyang
+	 * @param model
+	 * @see com.springreport.api.doctpl.IDocTplService#copyReport(com.springreport.entity.doctpl.DocTpl)
+	 * @date 2025-04-01 05:01:51 
+	 */
+	@Override
+	public BaseEntity copyReport(DocTpl model) {
+		BaseEntity result = new BaseEntity();
+		Long tplId = model.getId();
+		DocTpl docTpl = this.getById(model.getId());
+		String end = DateUtil.getLastSixDigits();
+		String newCode = docTpl.getTplCode()+"_copy_"+end;
+		String newName = docTpl.getTplName()+"_copy_"+end;
+		docTpl.setTplCode(newCode);
+		docTpl.setTplName(newName);
+		docTpl.setIsTemplate(YesNoEnum.NO.getCode());
+		docTpl.setTemplateField(null);
+		docTpl.setId(null);
+		this.save(docTpl);
+		//获取word配置信息
+		QueryWrapper<DocTplSettings> docTplSettingsQueryWrapper = new QueryWrapper<>();
+		docTplSettingsQueryWrapper.eq("tpl_id", tplId);
+		docTplSettingsQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+		List<DocTplSettings> docTplSettings = this.iDocTplSettingsService.list(docTplSettingsQueryWrapper);
+		if(ListUtil.isNotEmpty(docTplSettings)) {
+			for (int i = 0; i < docTplSettings.size(); i++) {
+				docTplSettings.get(i).setId(null);
+				docTplSettings.get(i).setTplId(docTpl.getId());
+			}
+			this.iDocTplSettingsService.saveBatch(docTplSettings);
+		}
+		//获取图表配置信息
+		QueryWrapper<DocTplCharts> docTplChartsQueryWrapper = new QueryWrapper<>();
+		docTplChartsQueryWrapper.eq("tpl_id", tplId);
+		docTplChartsQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+		List<DocTplCharts> docTplCharts = this.iDocTplChartsService.list(docTplChartsQueryWrapper);
+		if(ListUtil.isNotEmpty(docTplCharts)) {
+			for (int i = 0; i < docTplCharts.size(); i++) {
+				docTplCharts.get(i).setId(null);
+				docTplCharts.get(i).setTplId(docTpl.getId());
+			}
+			this.iDocTplChartsService.saveBatch(docTplCharts);
+		}
+		//获取barcode和qrcode配置信息
+		QueryWrapper<DocTplCodes> docTplCodesQueryWrapper = new QueryWrapper<>();
+		docTplCodesQueryWrapper.eq("tpl_id", tplId);
+		docTplCodesQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+		List<DocTplCodes> docTplCodes = this.iDocTplCodesService.list(docTplCodesQueryWrapper);
+		if(ListUtil.isNotEmpty(docTplCodes)) {
+			for (int i = 0; i < docTplCodes.size(); i++) {
+				docTplCodes.get(i).setId(null);
+				docTplCodes.get(i).setTplId(docTpl.getId());
+			}
+			this.iDocTplCodesService.saveBatch(docTplCodes);
+		}
+		//保存报表关联的数据源
+		QueryWrapper<ReportTplDatasource> tplDatasourceQueryWrapper = new QueryWrapper<>();
+		tplDatasourceQueryWrapper.eq("tpl_id", tplId);
+		tplDatasourceQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+		List<ReportTplDatasource> datasources = this.iReportTplDatasourceService.list(tplDatasourceQueryWrapper);
+		if(ListUtil.isNotEmpty(datasources)) {
+			for (int i = 0; i < datasources.size(); i++) {
+				datasources.get(i).setId(null);
+				datasources.get(i).setTplId(docTpl.getId());
+			}
+			this.iReportTplDatasourceService.saveBatch(datasources);
+		}
+		//报表数据集查询和保存
+		QueryWrapper<ReportTplDataset> tplDatasetQueryWrapper = new QueryWrapper<>();
+		tplDatasetQueryWrapper.eq("tpl_id", tplId);
+		tplDatasetQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+		List<ReportTplDataset> datasets = this.iReportTplDatasetService.list(tplDatasetQueryWrapper);
+		if(!ListUtil.isEmpty(datasets))
+		{
+			for (int i = 0; i < datasets.size(); i++) {
+				datasets.get(i).setId(null);
+				datasets.get(i).setTplId(docTpl.getId());
+			}
+			this.iReportTplDatasetService.saveBatch(datasets);
+		}
+		result.setStatusMsg(MessageUtil.getValue("info.copy",new String[] {newName}));
+		return result;
 	}
 	
 }

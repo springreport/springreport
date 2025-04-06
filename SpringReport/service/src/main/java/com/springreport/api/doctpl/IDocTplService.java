@@ -154,4 +154,13 @@ public interface IDocTplService extends IService<DocTpl> {
 	 */ 
 	Object getDatasetDatas(MesGenerateReportDto mesGenerateReportDto,ReportDatasetDto reportTplDataset,List<Map<String, String>> reportSqls,
 			Map<String, List<String>> paramsType,UserInfoDto userInfoDto,Map<String, String> apiCache,Map<String, Object> subParams) throws Exception;
+	
+	/**  
+	 * @MethodName: copyReport
+	 * @Description: 复制报表
+	 * @author caiyang
+	 * @param docTpl void
+	 * @date 2025-04-01 04:47:49 
+	 */ 
+	BaseEntity copyReport(DocTpl docTpl);
 }

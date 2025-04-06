@@ -18,12 +18,12 @@
       <div class="sub-type-list df">
         <div
           v-for="item in subTypeList"
-          :key="item.value"
+          :key="item.id"
           class="sub-item"
-          :class="{ 'sub-item-active': item.value == searchForm.subType }"
-          @click="changeSubType(item.value)"
+          :class="{ 'sub-item-active': item.id == searchForm.templateField }"
+          @click="changeSubType(item.id)"
         >
-          {{ item.label }}
+          {{ item.fieldName }}
         </div>
       </div>
 
@@ -41,13 +41,14 @@
                   </div>
                 </div>
                 <div class="tem-item-content">
-                  <div class="title overflow-text">{{ item.name }}</div>
+                  <div class="title overflow-text">{{ item.tplName }}</div>
                   <div class="df-c-b">
-                    <div class="df">
+                    <!-- <div class="df">
                       <div class="tag">SaaS软件</div>
                       <div class="tag">PPT模板</div>
-                    </div>
-                    <div class="use-btn">立即使用</div>
+                    </div> -->
+                    <div class="use-btn" @click="preview(item.id)">预览</div>
+                    <div class="use-btn" @click="useTemplate(item.id)">立即使用</div>
                   </div>
                 </div>
               </div>
@@ -66,7 +67,7 @@
           :page-size="tablePage.pageSize"
           :page-sizes="tablePage.pageSizeRange"
           :current-page.sync="tablePage.currentPage"
-          :total.sync="tablePage.total"
+          :total.sync="tablePage.pageTotal"
           @current-change="handleCurrentChange"
           @size-change="handleSizeChange"
         />
@@ -86,17 +87,12 @@ export default {
   data() {
     return {
       searchForm: {
-        keyword: '',
-        temType: 'ppt',
-        subType: 1
+        tplName: '',
+        temType: 'excel',
+        templateField: null
       },
       // 模板类型
       temTypeList: [
-        {
-          label: 'PPT模板',
-          value: 'ppt',
-          img: 'ppt.png'
-        },
         {
           label: 'Excel模板 ',
           value: 'excel',
@@ -111,67 +107,23 @@ export default {
           label: '大屏模板',
           value: 'screen',
           img: 'screen.png'
-        }
+        },
+        // {
+        //   label: 'PPT模板',
+        //   value: 'ppt',
+        //   img: 'ppt.png'
+        // }
       ],
       // 小类
       subTypeList: [
-        {
-          label: '销售管理',
-          value: 1
-        },
-        {
-          label: '市场营销',
-          value: 2
-        }
       ],
       // 模板列表
       temList: [
-        {
-          id: 1,
-          name: 'Unity机房数字孪生项Unity机房数战目实战课战目实战课战目实战课',
-          img: require('@/static/img/template/screen1.png')
-        },
-        {
-          id: 2,
-          name: '机器人可视化大屏'
-        },
-        {
-          id: 3,
-          name: 'Unity机房数字孪生项Unity机房数战目实战课战目实战课战目实战课'
-        },
-        {
-          id: 4,
-          name: '机器人可视化大屏'
-        },
-        {
-          id: 5,
-          name: 'Unity机房数字孪生项Unity机房数战目实战课战目实战课战目实战课'
-        },
-        {
-          id: 6,
-          name: '机器人可视化大屏'
-        },
-        {
-          id: 7,
-          name: 'Unity机房数字孪生项Unity机房数战目实战课战目实战课战目实战课'
-        },
-        {
-          id: 8,
-          name: '机器人可视化大屏'
-        },
-        {
-          id: 9,
-          name: 'Unity机房数字孪生项Unity机房数战目实战课战目实战课战目实战课'
-        },
-        {
-          id: 10,
-          name: '机器人可视化大屏'
-        }
       ],
       tablePage: {
         pageSize: 10,
         currentPage: 1,
-        total: 0,
+        pageTotal: 0,
         pageSizeRange: [5, 10, 20, 50, 100]
       }
     }
@@ -180,44 +132,115 @@ export default {
   watch: {},
   created() {
     const temType = this.$route.query.temType
-    this.searchForm.temType = temType || 'ppt'
+    this.searchForm.temType = temType || 'excel'
   },
-
+  mounted() {
+    this.getReportType();
+    this.searchtablelist();
+  },
   methods: {
     searchTem(val) {
       this.tablePage.currentPage = 1
-      this.searchForm.keyword = val
-      this.getData()
+      this.searchForm.tplName = val
+      this.searchtablelist();
     },
     // 模板类型
     changeTemType(val) {
       this.tablePage.currentPage = 1
       this.searchForm.temType = val
-      this.getData()
+      this.getReportType();
+      this.searchtablelist();
     },
     // 小类
     changeSubType(val) {
       this.tablePage.currentPage = 1
-      this.searchForm.subType = val
-      this.getData()
+      this.searchForm.templateField = val
+      this.searchtablelist();
     },
     // 更改页码
     handleCurrentChange(val) {
       this.tablePage.currentPage = val
-      this.getData()
+      this.searchtablelist();
     },
     // 更改每页条数
     handleSizeChange(val) {
       this.tablePage.currentPage = 1
       this.tablePage.pageSize = val
-      this.getData()
+      this.searchtablelist();
     },
-    // 获取数据
-    getData() {
-      const loadingInstance = Loading.service({ fullscreen: true })
-      setTimeout(() => {
-        loadingInstance.close()
-      }, 500)
+    getReportType() {
+      var type = 1;
+      this.subTypeList = [];
+      if(this.searchForm.temType == "excel"){
+        type = 1;
+      }else if(this.searchForm.temType == "word"){
+        type = 2;
+      }else if(this.searchForm.temType == "screen"){
+        type = 3;
+      }else if(this.searchForm.temType == "ppt"){
+        type = 4;
+      }
+      var obj = {
+        params: { type: type },
+        url: this.apis.springreportField.getTemplateFieldsApi
+      }
+      this.commonUtil.doPost(obj).then(response => {
+        if (response.code == '200') {
+          if(response.responseData == null){
+            response.responseData = [];
+          }
+          let obj = {
+            id:"",
+            fieldName:"全部",
+          }
+          this.subTypeList = response.responseData
+          this.subTypeList.unshift(obj)
+        }
+      })
+    },
+    searchtablelist() {
+      var obj = {
+        url: this.apis.springreportField.getTemplatesApi,
+        params: Object.assign({isTemplate:1}, this.searchForm, this.tablePage)
+      }
+      var that = this
+      that.temList = []
+      this.commonUtil.getTableList(obj).then(response => {
+        this.commonUtil.tableAssignment(response,this.tablePage,this.temList);
+      })
+    },
+    // 页面跳转
+    preview(id) {
+      let routerName = "";
+      if(this.searchForm.temType == "excel"){
+          routerName = "luckyReportDesign";
+      }else if(this.searchForm.temType == "word"){
+          routerName = "docDesign";
+      }else if(this.searchForm.temType == "screen"){
+          routerName = "screenDesign";
+      }
+      const viewReport = this.$router.resolve({ name: routerName, query: { tplId: id, thirdPartyType: localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType) }})
+      window.open(viewReport.href, '_blank')
+    },
+    useTemplate(id){
+      const obj = {
+        url: this.apis.reportTpl.doCopyReportApi,
+        messageContent: this.commonUtil.getMessageFromList('confirm.usetemplate', null),
+        callback: this.useTemplateCallBack,
+        params: { id: id },
+        type: 'post'
+      }
+      if(this.searchForm.temType == "excel"){
+        obj.url = this.apis.reportTpl.doCopyReportApi
+      }else if(this.searchForm.temType == "word"){
+        obj.url = this.apis.docTpl.doCopyReportApi
+      }else if(this.searchForm.temType == "screen"){
+        obj.url = this.apis.screenTpl.doCopyScreenApi
+      }
+      this.commonUtil.showConfirm(obj)
+    },
+    useTemplateCallBack(){
+      // this.$router.push({ name: 'reportTpl' })
     }
   }
 }

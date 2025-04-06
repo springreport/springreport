@@ -1,5 +1,6 @@
 package com.springreport.impl.screentpl;
 
+import com.springreport.entity.doctpl.DocTpl;
 import com.springreport.entity.onlinetpl.OnlineTpl;
 import com.springreport.entity.reporttpldatasource.ReportTplDatasource;
 import com.springreport.entity.reporttype.ReportType;
@@ -22,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.springreport.util.DateUtil;
 import com.springreport.util.ListUtil;
 import com.springreport.util.MessageUtil;
 import com.springreport.util.StringUtil;
@@ -79,46 +81,36 @@ public class ScreenTplServiceImpl extends ServiceImpl<ScreenTplMapper, ScreenTpl
 	* @throws 
 	*/ 
 	@Override
-	public List<ScreenTplTreeDto> tablePagingQuery(ReportType model) {
-		List<ScreenTplTreeDto> result = new ArrayList<>();
-		model.setDelFlag(DelFlagEnum.UNDEL.getCode());
-		QueryWrapper<ReportType> queryWrapper = new QueryWrapper<>();
-		if(this.merchantmode == YesNoEnum.YES.getCode()) {
-			queryWrapper.eq("merchant_no", model.getMerchantNo());
-		}
-		queryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
-		queryWrapper.eq("type", 4);
-		List<ReportType> list = this.iReportTypeService.list(queryWrapper);
-		if(ListUtil.isNotEmpty(list)) {
-			ScreenTplTreeDto screenTplTreeDto = null;
-			for (int i = 0; i < list.size(); i++) {
-				screenTplTreeDto = new ScreenTplTreeDto();
-				screenTplTreeDto.setId(list.get(i).getId());
-				screenTplTreeDto.setTplCode(list.get(i).getReportTypeName());
-				screenTplTreeDto.setTplName(list.get(i).getReportTypeName());
-				screenTplTreeDto.setIcon("iconfont icon-wenjianjiakai");
-				screenTplTreeDto.setType("1");
-				result.add(screenTplTreeDto);
-			}
-		}
+	public PageEntity tablePagingQuery(ScreenTpl model) {
+		PageEntity result = new PageEntity();
+		com.github.pagehelper.Page<?> page = PageHelper.startPage(model.getCurrentPage(), model.getPageSize()); //分页条件
 		QueryWrapper<ScreenTpl> screenTplWrapper = new QueryWrapper<>();
-		if(this.merchantmode == YesNoEnum.YES.getCode()) {
+		if(this.merchantmode == YesNoEnum.YES.getCode() && model.getMerchantNo() != null) {
 			screenTplWrapper.eq("merchant_no", model.getMerchantNo());
 		}
-		screenTplWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
-		screenTplWrapper.isNull("report_type");
-		List<ScreenTpl> tpls = this.list(screenTplWrapper);
-		if(ListUtil.isNotEmpty(tpls)) {
-			ScreenTplTreeDto screenTplTreeDto = null;
-			for (int i = 0; i < tpls.size(); i++) {
-				screenTplTreeDto = new ScreenTplTreeDto();
-				BeanUtils.copyProperties(tpls.get(i), screenTplTreeDto);
-				screenTplTreeDto.setIcon("iconfont icon-xingzhuang");
-				screenTplTreeDto.setType("2");
-				screenTplTreeDto.setHasChildren(false);
-				result.add(screenTplTreeDto);
-			}
+		if(model.getReportType() != null && model.getReportType() != 0) {
+			screenTplWrapper.eq("report_type", model.getReportType());
 		}
+		if(model.getIsTemplate() != null && model.getIsTemplate().intValue() == YesNoEnum.YES.getCode().intValue()) {
+			screenTplWrapper.eq("is_template", model.getIsTemplate());
+		}else {
+			screenTplWrapper.eq("is_template", YesNoEnum.NO.getCode());
+		}
+		if(model.getTemplateField() != null && model.getTemplateField() != 0) {
+			screenTplWrapper.eq("template_field", model.getTemplateField());
+		}
+		if(StringUtil.isNotEmpty(model.getTplCode())) {
+			screenTplWrapper.like("tpl_code", model.getTplCode());
+		}
+		if(StringUtil.isNotEmpty(model.getTplName())) {
+			screenTplWrapper.like("tpl_name", model.getTplName());
+		}
+		screenTplWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+		List<ScreenTpl> list = this.list(screenTplWrapper);
+		result.setData(list);
+		result.setTotal(page.getTotal());
+		result.setCurrentPage(model.getCurrentPage());
+		result.setPageSize(model.getPageSize());
 		return result;
 	}
 
@@ -456,6 +448,48 @@ public class ScreenTplServiceImpl extends ServiceImpl<ScreenTplMapper, ScreenTpl
 		queryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
 		queryWrapper.orderByAsc("id");
 		List<ScreenTpl> result = this.list(queryWrapper);
+		return result;
+	}
+
+	@Override
+	public BaseEntity copyScreen(ScreenTpl model) {
+		BaseEntity result = new BaseEntity();
+		Long tplId = model.getId();
+		ScreenTpl screenTpl = this.getById(model.getId());
+		String end = DateUtil.getLastSixDigits();
+		String newCode = screenTpl.getTplCode()+"_copy_"+end;
+		String newName = screenTpl.getTplName()+"_copy_"+end;
+		screenTpl.setTplCode(newCode);
+		screenTpl.setTplName(newName);
+		screenTpl.setIsTemplate(YesNoEnum.NO.getCode());
+		screenTpl.setTemplateField(null);
+		screenTpl.setId(null);
+		this.save(screenTpl);
+		//获取所有的组件
+		QueryWrapper<ScreenContent> screenContentQueryWrapper = new QueryWrapper<>();
+		screenContentQueryWrapper.eq("tpl_id", tplId);
+		screenContentQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+		List<ScreenContent> screenContents = this.iScreenContentService.list(screenContentQueryWrapper);
+		if(ListUtil.isNotEmpty(screenContents)) {
+			for (int i = 0; i < screenContents.size(); i++) {
+				screenContents.get(i).setId(null);
+				screenContents.get(i).setTplId(screenTpl.getId());
+			}
+			this.iScreenContentService.saveBatch(screenContents);
+		}
+		//保存报表关联的数据源
+		QueryWrapper<ReportTplDatasource> tplDatasourceQueryWrapper = new QueryWrapper<>();
+		tplDatasourceQueryWrapper.eq("tpl_id", tplId);
+		tplDatasourceQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+		List<ReportTplDatasource> datasources = this.iReportTplDatasourceService.list(tplDatasourceQueryWrapper);
+		if(ListUtil.isNotEmpty(datasources)) {
+			for (int i = 0; i < datasources.size(); i++) {
+				datasources.get(i).setId(null);
+				datasources.get(i).setTplId(screenTpl.getId());
+			}
+			this.iReportTplDatasourceService.saveBatch(datasources);
+		}
+		result.setStatusMsg(MessageUtil.getValue("info.copy",new String[] {newName}));
 		return result;
 	}
 }
