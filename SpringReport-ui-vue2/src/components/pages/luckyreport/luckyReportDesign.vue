@@ -649,6 +649,61 @@
                   />
                 </el-form-item>
                 <el-form-item
+                  label="是否复杂数据"
+                  size="small"
+                  class="df-form-item"
+                >
+                  <el-switch
+                    v-model="cellForm.isObject"
+                    active-text="是"
+                    inactive-text="否"
+                    :disabled="attrDisabled"
+                    @change="changeCellAttr('isObject')"
+                  />
+                </el-form-item>
+                <el-form-item label="数据类型"  v-show="cellForm.isObject">
+                  <el-select
+                    v-model="cellForm.dataType"
+                    style="width: 100%"
+                    placeholder="复杂数据类型"
+                    size="small"
+                    :disabled="attrDisabled"
+                    @change="changeCellAttr('dataType')"
+                  >
+                    <el-option label="数组" :value="1" />
+                    <el-option label="对象数组" :value="2" />
+                    <el-option label="对象" :value="3" />
+                  </el-select>
+                </el-form-item>
+                <el-form-item
+                  v-show="cellForm.isObject"
+                  label="数据属性"
+                  size="small"
+                >
+                  <el-input
+                    v-model="cellForm.dataAttr"
+                    style="width: 100%"
+                    placeholder="数据属性"
+                    :disabled="attrDisabled"
+                    @input="changeCellAttr('dataAttr')"
+                  />
+                </el-form-item>
+                <el-form-item label="扩展方向"
+                 v-show="cellForm.isObject">
+                  <el-select
+                    v-model="cellForm.subExtend"
+                    style="width: 100%"
+                    placeholder="扩展方向"
+                    size="small"
+                    :disabled="attrDisabled"
+                    @change="changeCellAttr('subExtend')"
+                  >
+                    <el-option label="不扩展" :value="1" />
+                    <el-option label="向右扩展" :value="2" />
+                    <el-option label="向下扩展" :value="3" />
+                  </el-select>
+                </el-form-item>
+                <el-form-item
                   label="追加小计"
                   size="small"
                   class="df-form-item"
@@ -1022,6 +1077,7 @@
                       size="small"
                       :disabled="attrDisabled"
                       @change="changeCellAttr('datasourceId','formsAttrs')"
+                      clearable
                     >
                       <el-option
                         v-for="op in dataSource"
@@ -1590,9 +1646,28 @@
             </el-select>
           </el-form-item>
           <el-form-item
+            label="是否公共数据集"
+            prop="isCommon"
+            :rules="filter_rules('是否公共数据集', { required: true })"
+          >
+            <el-select
+              v-model="sqlForm.isCommon"
+              placeholder="是否公共数据集"
+              size="small"
+            >
+              <el-option
+                v-for="item in selectUtil.yesNo"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item
             label="分组"
             prop="groupId"
             :rules="filter_rules('选择分组', { required: true })"
+            v-if="sqlForm.isCommon == 2"
           >
             <el-select
               v-model="sqlForm.groupId"
@@ -1604,10 +1679,87 @@
                 :key="item.id"
                 :label="item.groupName"
                 :value="item.id"
+                :disabled="item.id == 0"
               />
             </el-select>
           </el-form-item>
-
+          <el-form-item
+            label="行列转置"
+            prop="isConvert"
+            :rules="filter_rules('行列转置', { required: true })"
+          >
+            <el-select
+              v-model="sqlForm.isConvert"
+              placeholder="行列转置"
+              size="small"
+            >
+              <el-option
+                v-for="item in selectUtil.yesNo"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            label="固定列"
+            prop="fixedColumn"
+            :rules="filter_rules('固定列', { required: false })"
+            v-if="sqlForm.isConvert == 1"
+          >
+            <el-select
+              v-model="sqlForm.fixedColumn"
+              placeholder="固定列"
+              size="small"
+              multiple
+              collapse-tags
+            >
+            <el-option
+                v-for="item in sqlColumnTableData.tableData"
+                :key="item.name"
+                :label="item.name"
+                :value="item.name"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            label="行转列(表头)"
+            prop="headerName"
+            :rules="filter_rules('行转列(表头)', { required: false })"
+            v-if="sqlForm.isConvert == 1"
+          >
+            <el-select
+              v-model="sqlForm.headerName"
+              placeholder="行转列(表头)"
+              size="small"
+            >
+            <el-option
+                v-for="item in sqlColumnTableData.tableData"
+                :key="item.name"
+                :label="item.name"
+                :value="item.name"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            label="行转列(数值)"
+            prop="valueField"
+            :rules="filter_rules('行转列(数值)', { required: false })"
+            v-if="sqlForm.isConvert == 1"
+          >
+            <el-select
+              v-model="sqlForm.valueField"
+              placeholder="行转列(表头)"
+              size="small"
+            >
+            <el-option
+                v-for="item in sqlColumnTableData.tableData"
+                :key="item.name"
+                :label="item.name"
+                :value="item.name"
+              />
+            </el-select>
+          </el-form-item>
         </el-form>
 
         <div class="df" style="width: 100%;border: 1px solid #e8e8e8;">
@@ -3541,10 +3693,12 @@
                 type="info"
                 style="margin-right: 12px"
                 @click="openGroupHandleDialog(scope.row)"
+                v-show="scope.row.id != 0"
               >编辑</el-link>
               <el-link
                 type="info"
                 @click="deleteGroup(scope.row)"
+                v-show="scope.row.id != 0"
               >删除</el-link>
             </template>
           </el-table-column>
@@ -3910,6 +4064,7 @@
                       <span v-else-if="scope.row.fillType == '2'">用户id</span>
                       <span v-else-if="scope.row.fillType == '3'">用户名</span>
                       <span v-else-if="scope.row.fillType == '4'">商户号</span>
+                      <span v-else-if="scope.row.fillType == '5'">单元格</span>
                       <span v-else>自定义</span>
                     </span>
                   </template>
@@ -4183,10 +4338,11 @@
             <el-option label="用户id" value="2" />
             <el-option label="用户名" value="3" />
             <el-option label="商户号" value="4" />
+            <el-option label="单元格" value="5" />
             <el-option label="自定义值" value="99" />
           </el-select>
         </el-form-item>
-        <el-form-item v-if="autoFillForm.fillType == '99'"
+        <el-form-item v-if="autoFillForm.fillType == '99' || autoFillForm.fillType == '5'"
           label="填充值"
           prop="fillValue"
           :rules="filter_rules('填充值', { required: true })"

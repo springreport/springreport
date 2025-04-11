@@ -136,7 +136,12 @@ export default {
         datasourceId: '',
         id: '',
         sqlType: 1,
-        groupId: ''
+        groupId: '',
+        isCommon:2,
+        isConvert:2,
+        headerName:"",
+        valueField:"",
+        fixedColumn:[],
       },
       dataSource: [], // 模板数据源
       isParamMerge: true,
@@ -317,6 +322,10 @@ export default {
         subTotalCalc: [], // 小计分组链
         subTotalAttrs: [],// 小计属性
         cellFillType:1,//数据填充方式 1插入 2覆盖
+        isObject:false,//是否复杂对象
+        dataType:null,//数据类型
+        dataAttr:'',//属性
+        subExtend:null,//子数据扩展方向
         formsAttrs:{
           valueType: '1', // 值类型 1文本 2数值 3日期 4下拉单选
           require: false, // 必填项
@@ -705,7 +714,7 @@ export default {
       const reportTplId = this.$route.query.tplId// reportTplId
       const obj = {
         url: this.apis.reportDesign.getTplGroupDatasetsApi,
-        params: { tplId: reportTplId },
+        params: { tplId: reportTplId,commonType:1},
         removeEmpty: false
       }
       this.commonUtil.doPost(obj).then(response => {
@@ -901,6 +910,10 @@ export default {
         this.cellForm.subTotalCalc = cellFormData.subTotalCalc
         this.cellForm.subTotalAttrs = cellFormData.subTotalAttrs
         this.cellForm.cellFillType = cellFormData.cellFillType
+        this.cellForm.isObject = cellFormData.isObject
+        this.cellForm.dataType = cellFormData.dataType
+        this.cellForm.dataAttr = cellFormData.dataAttr
+        this.cellForm.subExtend = cellFormData.subExtend
         if(cellFormData.cellFillType){
           this.cellForm.cellFillType = cellFormData.cellFillType
         }else{
@@ -957,6 +970,10 @@ export default {
         this.cellForm.subTotalAttrs = []
         this.cellForm.cellFillType = 1
         this.cellForm.formsAttrs = {};
+        this.cellForm.isObject = false
+        this.cellForm.dataType = 1
+        this.cellForm.dataAttr = ''
+        this.cellForm.subExtend = 1
         // this.getDrillReport();
       }
       if (this.cellForm.datasourceId) {
@@ -1514,7 +1531,7 @@ export default {
       const reportTplId = this.$route.query.tplId// reportTplId
       const obj = {
         url: this.apis.reportDesign.getDataSetsApi,
-        params: { tplId: reportTplId },
+        params: { tplId: reportTplId,commonType:1},
         removeEmpty: false
       }
       this.commonUtil.doPost(obj).then(response => {
@@ -1856,6 +1873,16 @@ export default {
       this.sqlForm.id = dataSet.id
       this.sqlForm.sqlType = dataSet.sqlType
       this.sqlForm.groupId = dataSet.groupId
+      this.sqlForm.isCommon = dataSet.isCommon
+      this.sqlForm.isConvert = dataSet.isConvert
+      this.sqlForm.valueField = dataSet.valueField
+      this.sqlForm.headerName = dataSet.headerName
+      if(typeof dataSet.fixedColumn === 'string'){
+        this.sqlForm.fixedColumn = JSON.parse(dataSet.fixedColumn);
+      }else{
+        this.sqlForm.fixedColumn = dataSet.fixedColumn;
+      }
+      
       if(dataSet.subParamAttrs){
         this.subParamAttrs = JSON.parse(dataSet.subParamAttrs);
       }else{
@@ -1923,7 +1950,7 @@ export default {
         if (valid) {
           const obj = {
             url: this.apis.reportDesign.addDataSetApi,
-            params: { tplId: reportTplId, groupId: this.sqlForm.groupId, datasetType: this.datasourceType, sqlType: this.sqlForm.sqlType, tplSql: tplSql, tplParam: this.paramTableData.tableData ? JSON.stringify(this.paramTableData.tableData) : '', datasourceId: this.sqlForm.datasourceId, datasetName: this.sqlForm.datasetName, id: this.sqlForm.id,
+            params: { tplId: reportTplId, groupId: this.sqlForm.groupId, datasetType: this.datasourceType, sqlType: this.sqlForm.sqlType,isCommon:this.sqlForm.isCommon,commonType:1,isConvert:this.sqlForm.isConvert,valueField:this.sqlForm.valueField,headerName:this.sqlForm.headerName,fixedColumn:JSON.stringify(this.sqlForm.fixedColumn), tplSql: tplSql, tplParam: this.paramTableData.tableData ? JSON.stringify(this.paramTableData.tableData) : '', datasourceId: this.sqlForm.datasourceId, datasetName: this.sqlForm.datasetName, id: this.sqlForm.id,
               inParam: this.procedureInParamTableData.tableData ? JSON.stringify(this.procedureInParamTableData.tableData) : '', outParam: this.procedureOutParamTableData.tableData ? JSON.stringify(this.procedureOutParamTableData.tableData) : '',
               isPagination: this.paginationForm.isPagination, pageCount: this.paginationForm.pageCount, currentPageAttr: this.paginationForm.currentPageAttr, pageCountAttr: this.paginationForm.pageCountAttr, totalAttr: this.paginationForm.totalAttr,subParamAttrs: JSON.stringify(this.subParamAttrs)},
             removeEmpty: false
