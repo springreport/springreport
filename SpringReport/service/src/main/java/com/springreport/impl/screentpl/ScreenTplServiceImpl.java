@@ -1,14 +1,10 @@
 package com.springreport.impl.screentpl;
 
-import com.springreport.entity.doctpl.DocTpl;
-import com.springreport.entity.onlinetpl.OnlineTpl;
 import com.springreport.entity.reporttpldatasource.ReportTplDatasource;
-import com.springreport.entity.reporttype.ReportType;
 import com.springreport.entity.screencontent.ScreenContent;
 import com.springreport.entity.screentpl.ScreenTpl;
 import com.springreport.mapper.screencontent.ScreenContentMapper;
 import com.springreport.mapper.screentpl.ScreenTplMapper;
-import com.springreport.api.reporttpldataset.IReportTplDatasetService;
 import com.springreport.api.reporttpldatasource.IReportTplDatasourceService;
 import com.springreport.api.reporttype.IReportTypeService;
 import com.springreport.api.screencontent.IScreenContentService;
@@ -35,7 +31,6 @@ import com.github.pagehelper.PageHelper;
 import com.springreport.base.BaseEntity;
 import com.springreport.base.PageEntity;
 import com.springreport.constants.StatusCode;
-import com.springreport.dto.onlinetpl.OnlineTplTreeDto;
 import com.springreport.dto.screentpl.MesScreenTplDto;
 import com.springreport.dto.screentpl.SaveScreenTplDto;
 import com.springreport.dto.screentpl.ScreenTplDto;
@@ -45,7 +40,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.springreport.enums.ComponentTypeEnum;
 import com.springreport.enums.DelFlagEnum;
 import com.springreport.enums.YesNoEnum;
 import com.springreport.exception.BizException;
