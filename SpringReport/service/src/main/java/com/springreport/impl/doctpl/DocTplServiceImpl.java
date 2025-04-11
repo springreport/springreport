@@ -97,6 +97,7 @@ import com.springreport.util.Md5Util;
 import com.springreport.util.MessageUtil;
 import com.springreport.util.ParamUtil;
 import com.springreport.util.ReportDataUtil;
+import com.springreport.util.RowConvertColUtil;
 import com.springreport.util.StringUtil;
 import com.springreport.util.WordUtil;
 
@@ -132,6 +133,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -1243,6 +1245,27 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 			}
 			Map<String, Object> apiResult = ReportDataUtil.getApiResult(result, reportDatasource.getApiResultType(), reportDatasource.getApiColumnsPrefix(),null);
 			datas = (List<Map<String, Object>>) apiResult.get("datas");
+		}
+		if(ListUtil.isNotEmpty(datas) && reportTplDataset.getIsConvert() != null && YesNoEnum.YES.getCode().intValue() == reportTplDataset.getIsConvert().intValue()) {
+			if(StringUtil.isNotEmpty(reportTplDataset.getHeaderName()) && StringUtil.isNotEmpty(reportTplDataset.getFixedColumn())
+					&& StringUtil.isNotEmpty(reportTplDataset.getFixedColumn())) {
+				List<Map<String, Object>> convertDatas = new ArrayList<>();
+				List<String> strs1=JSONObject.parseObject(reportTplDataset.getFixedColumn(),ArrayList.class);
+				String[] stringArray = strs1.toArray(new String[0]);
+				List<List<Object>> lists = RowConvertColUtil.doConvert(datas, reportTplDataset.getHeaderName(), stringArray, reportTplDataset.getValueField(), true, stringArray, "");
+				if(ListUtil.isNotEmpty(lists) && lists.size() > 1) {
+					List<Object> attrs = lists.get(0);
+					Map<String, Object> convertData = null;
+					for (int i = 1; i < lists.size(); i++) {
+						convertData = new LinkedHashMap<String, Object>();
+						for (int j = 0; j < lists.get(i).size(); j++) {
+							convertData.put(String.valueOf(attrs.get(j)), lists.get(i).get(j));
+						}
+						convertDatas.add(convertData);
+					}
+				}
+				datas = convertDatas;
+			}
 		}
 		String datasetName = reportTplDataset.getDatasetName();
 		//处理数据

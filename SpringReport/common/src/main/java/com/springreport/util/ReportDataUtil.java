@@ -824,7 +824,7 @@ public class ReportDataUtil {
 		    		  params.add(userInfoDto.getUserName());  
 		    	  }else if(fillType == 4) {//商户号
 		    		  params.add(userInfoDto.getMerchantNo());  
-		    	  }else if(fillType == 99) {//自定义数据
+		    	  }else if(fillType == 99 || fillType == 5) {//自定义数据 || 单元格数据
 		    		  params.add(attr.get("fillValue"));  
 		    	  }
 		    	  columnSql = columnSql + "," + columnName;
@@ -891,7 +891,7 @@ public class ReportDataUtil {
 		    		  params.add(userInfoDto.getUserName());  
 		    	  }else if(fillType == 4) {//商户号
 		    		  params.add(userInfoDto.getMerchantNo());  
-		    	  }else if(fillType == 99) {//自定义数据
+		    	  }else if(fillType == 99 || fillType == 5) {//自定义数据
 		    		  params.add(attr.get("fillValue"));  
 		    	  }
 		    	  columnSql = columnSql + "," + columnName + " = ?";
@@ -936,7 +936,7 @@ public class ReportDataUtil {
 	 */ 
 	public static void deleteData(DataSource dataSource,JSONObject params,UserInfoDto userInfoDto) {
 		String column = params.getString("column");
-		Object value = params.get("value");
+		Object value = "1";
 		String table = params.getString("table");
 		String deleteType = params.getString("deleteType");
 		String deleteColumn = params.getString("deleteColumn");

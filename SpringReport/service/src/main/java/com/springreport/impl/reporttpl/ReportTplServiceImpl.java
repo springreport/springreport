@@ -97,6 +97,7 @@ import com.springreport.util.ParamUtil;
 import com.springreport.util.RedisUtil;
 import com.springreport.util.ReportDataUtil;
 import com.springreport.util.ReportExcelUtil;
+import com.springreport.util.RowConvertColUtil;
 import com.springreport.util.SendEmailUtil;
 import com.springreport.util.SheetUtil;
 import com.springreport.util.StringUtil;
@@ -704,12 +705,26 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 	public List<List<String>> getTplDatasetsColumnNames(Long tplId,Map<String, String> datasetNameIdMap,UserInfoDto userInfoDto) throws SQLException{
 		if(datasetNameIdMap == null) {
 			datasetNameIdMap = new HashMap<>();
-		}
+		} 
 		List<List<String>> result = new ArrayList<List<String>>();
 		QueryWrapper<ReportTplDataset> queryWrapper = new QueryWrapper<ReportTplDataset>();
 		queryWrapper.eq("tpl_id", tplId);
 		queryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+		queryWrapper.eq("is_common", YesNoEnum.NO.getCode());
 		List<ReportTplDataset> datasets = this.iReportTplDatasetService.list(queryWrapper);
+		if(ListUtil.isEmpty(datasets)) {
+			datasets = new ArrayList<ReportTplDataset>();
+		}
+		queryWrapper = new QueryWrapper<ReportTplDataset>();
+		if(this.merchantmode == YesNoEnum.YES.getCode()) {
+			queryWrapper.eq("merchant_no", userInfoDto.getMerchantNo());
+		}
+		queryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+		queryWrapper.eq("is_common", YesNoEnum.YES.getCode());
+		List<ReportTplDataset> commonDatasets = this.iReportTplDatasetService.list(queryWrapper);
+		if(ListUtil.isNotEmpty(commonDatasets)) {
+			datasets.addAll(commonDatasets);
+		}
 		if(datasets != null && datasets.size() > 0)
 		{
 			for (int i = 0; i < datasets.size(); i++) {
@@ -1884,6 +1899,22 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			}else {
 				luckysheetReportCell.setFormsAttrs("{}");
 			}
+			boolean isObject = extraCustomCellConfig.getBooleanValue("isObject");
+			luckysheetReportCell.setIsObject(isObject);
+			Integer dataType = extraCustomCellConfig.getInteger("dataType");
+			if(dataType != null) {
+				luckysheetReportCell.setDataType(dataType);
+			}else {
+				luckysheetReportCell.setDataType(1);
+			}
+			String dataAttr = extraCustomCellConfig.getString("dataAttr");
+			luckysheetReportCell.setDataAttr(dataAttr);
+			Integer subExtend = extraCustomCellConfig.getInteger("subExtend");
+			if(subExtend != null) {
+				luckysheetReportCell.setSubExtend(subExtend);
+			}else {
+				luckysheetReportCell.setSubExtend(1);
+			}
 		}
 		JSONObject hyperlink = hyperlinks.get(mapKey);
 		if(hyperlink != null)
@@ -2382,6 +2413,10 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 							extraCustomCellConfig.put(LuckySheetPropsEnum.FILTERTYPE.getCode(), luckysheetReportCell.getFilterType());
 							extraCustomCellConfig.put(LuckySheetPropsEnum.CELLFILLTYPE.getCode(), luckysheetReportCell.getCellFillType());
 							extraCustomCellConfig.put("formsAttrs", objectMapper.readValue(StringUtil.isNullOrEmpty(luckysheetReportCell.getFormsAttrs())?"{}":luckysheetReportCell.getFormsAttrs(), JSONObject.class));
+							extraCustomCellConfig.put("isObject", luckysheetReportCell.getIsObject());
+							extraCustomCellConfig.put("dataType", luckysheetReportCell.getDataType());
+							extraCustomCellConfig.put("dataAttr", luckysheetReportCell.getDataAttr());
+							extraCustomCellConfig.put("subExtend", luckysheetReportCell.getSubExtend());
 							if(luckysheetReportCell.getIsDrill())
 							{
 								extraCustomCellConfig.put(LuckySheetPropsEnum.DRILLID.getCode(), luckysheetReportCell.getDrillId());
@@ -3521,7 +3556,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			searchInfo = this.getDatasetParamInfo(datasetName, mesGenerateReportDto);
 		}
 		//获取数据源
-		Map<String, Object> dataSetAndDatasource = this.iReportTplDatasetService.getTplDatasetAndDatasource(reportTpl.getId(), datasetName);
+		Map<String, Object> dataSetAndDatasource = this.iReportTplDatasetService.getTplDatasetAndDatasource(reportTpl.getId(), datasetName,userInfoDto.getMerchantNo());
 		int type = (int) dataSetAndDatasource.get("type");
 		DataSource dataSource = null;
 		InfluxDBConnection dbConnection = null;
@@ -3788,6 +3823,27 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		}
 		resultMap.put("datas", datas);
 		resultMap.put("params", params);
+		if(ListUtil.isNotEmpty(datas) && reportTplDataset.getIsConvert() != null && YesNoEnum.YES.getCode().intValue() == reportTplDataset.getIsConvert().intValue()) {
+			if(StringUtil.isNotEmpty(reportTplDataset.getHeaderName()) && StringUtil.isNotEmpty(reportTplDataset.getFixedColumn())
+					&& StringUtil.isNotEmpty(reportTplDataset.getFixedColumn())) {
+				List<Map<String, Object>> convertDatas = new ArrayList<>();
+				List<String> strs1=JSONObject.parseObject(reportTplDataset.getFixedColumn(),ArrayList.class);
+				String[] stringArray = strs1.toArray(new String[0]);
+				List<List<Object>> lists = RowConvertColUtil.doConvert(datas, reportTplDataset.getHeaderName(), stringArray, reportTplDataset.getValueField(), true, stringArray, "");
+				if(ListUtil.isNotEmpty(lists) && lists.size() > 1) {
+					List<Object> attrs = lists.get(0);
+					Map<String, Object> convertData = null;
+					for (int i = 1; i < lists.size(); i++) {
+						convertData = new LinkedHashMap<String, Object>();
+						for (int j = 0; j < lists.get(i).size(); j++) {
+							convertData.put(String.valueOf(attrs.get(j)), lists.get(i).get(j));
+						}
+						convertDatas.add(convertData);
+					}
+				}
+				resultMap.put("datas", convertDatas);
+			}
+		}
 		return resultMap;
 	}
 	
@@ -4241,7 +4297,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		result.setImageDatas(images);
 		result.setChartCells(chartCells);
 		result.setDrillCells(drillCells);
-		result.setCellBindData(cellBindData);
+//		result.setCellBindData(cellBindData);
 		JSONArray wrapDatas = new JSONArray();
 		if(!StringUtil.isEmptyMap(dynamicRange)) {
 			for(String key : dynamicRange.keySet()){
@@ -4926,6 +4982,9 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		if(!borderInfo.containsKey(luckySheetBindData.getCoordsx()+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+luckySheetBindData.getCoordsy()))
 		{
 			border = this.getBorderType(borderConfig, luckySheetBindData.getCoordsx(), luckySheetBindData.getCoordsy());//获取该单元格的边框信息
+		}
+		if(luckySheetBindData.getIsRelyCell().intValue() != 1 && "删除".equals(luckySheetBindData.getCellValue())) {
+			return;
 		}
 		Map<String, Integer> rowAndCol = null;
 		Integer maxX = maxXAndY.get("maxX");
@@ -7069,7 +7128,136 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
             		subtotalRows,cellConditionFormat,dynamicRange,subTotalDigits,subTotalCellCoords);
             }
         }
-    
+	}
+	
+	private void processSubDatas(int j,Map<String, Integer> maxCoordinate,LuckySheetBindData luckySheetBindData,
+			List<Map<String, Object>> cellDatas,Map<String, Map<String, Object>> hyperlinks,Object dataRowLen,Object dataColLen
+			,Map<String, Object> rowlen,Map<String, Object> columnlen,Map<String, Map<String, Object>> mergeMap,
+			ObjectMapper objectMapper,Map<String, Integer> maxXAndY,Map<String, Object> borderInfo,List<Map<String, Object>> borderConfig,List<Object> borderInfos
+			,List<JSONObject> calcChain,Map<String, Object> configRowLen,Map<String, Object> configColumnLen, List<JSONObject> images,Map<String, LuckySheetBindData> cellBindData
+			,Map<String, Map<String, Object>> usedCells,Map<String, Map<String, String>> dicts,Map<String, Object> nowFunction,Map<String, Object> functionCellFormat
+			,JSONObject dataVerification,JSONObject drillCells,Object rowhidden,Object colhidden,Map<String, Object> subtotalCellDatas,Map<String, JSONObject> subtotalRows,Map<String, Object> subtotalCellMap
+			,Map<String, JSONArray> cellConditionFormat,JSONObject dynamicRange,Map<String, Integer> subTotalDigits,Map<String, LuckySheetBindData> coverCells
+			,Map<String, JSONObject> columnStartCoords,Map<String, JSONObject> extendCellOrigin,List<String> subTotalCellCoords) throws JsonMappingException, JsonProcessingException {
+		LuckySheetBindData bindData = new LuckySheetBindData();
+		BeanUtils.copyProperties(luckySheetBindData, bindData);
+		bindData.setCellExtend(luckySheetBindData.getSubExtend());
+		bindData.setIsObject(false);
+		int dataType = bindData.getDataType();
+		List<List<Map<String, Object>>> datas = new ArrayList<>();
+		bindData.setProperty("cellValue");
+		bindData.setCellText("${cellValue}");
+		if(dataType == 1) {//数组
+			if(ListUtil.isNotEmpty(luckySheetBindData.getDatas()) && ListUtil.isNotEmpty(luckySheetBindData.getDatas().get(0))) {
+				for (int i = 0; i < luckySheetBindData.getDatas().get(0).size(); i++) {
+					Object data = luckySheetBindData.getDatas().get(0).get(i).get(luckySheetBindData.getProperty());
+					if(data != null) {
+						JSONArray jsonArray = JSON.parseArray(JSON.toJSONString(data));
+						for (int t = 0; t < jsonArray.size(); t++) {
+							List<Map<String, Object>> list = new ArrayList<>();
+							Map<String, Object> map = new HashMap<String, Object>();
+							map.put("cellValue", jsonArray.get(t));
+							list.add(map);
+							datas.add(list);
+						}
+					}
+				}
+			}
+		}else if(dataType == 2) {//对象数组
+			String[] attrs = luckySheetBindData.getDataAttr().split("\\.");
+			Object data = luckySheetBindData.getDatas().get(j).get(0).get(luckySheetBindData.getProperty());
+			if(data != null) {
+				JSONArray subDatas = JSON.parseArray(JSON.toJSONString(luckySheetBindData.getDatas().get(j).get(0).get(luckySheetBindData.getProperty())));
+				for (int i = 0; i < attrs.length; i++) {
+					subDatas = this.analysisJson(attrs[i], subDatas);
+				}
+				if(ListUtil.isNotEmpty(subDatas)) {
+					for (int i = 0; i < subDatas.size(); i++) {
+						List<Map<String, Object>> list = new ArrayList<>();
+						Map<String, Object> map = new HashMap<String, Object>();
+						map.put("cellValue", subDatas.get(i));
+						list.add(map);
+						datas.add(list);
+					}
+				}
+			}
+		}else if(dataType == 3) {//对象
+			String[] attrs = luckySheetBindData.getDataAttr().split("\\.");
+			Object data = luckySheetBindData.getDatas().get(j).get(0).get(luckySheetBindData.getProperty());
+			if(data != null) {
+				JSONObject jsonObject = JSON.parseObject(JSON.toJSONString(luckySheetBindData.getDatas().get(j).get(0).get(luckySheetBindData.getProperty())));
+				JSONArray subDatas = new JSONArray();
+				subDatas.add(jsonObject);
+				for (int i = 0; i < attrs.length-1; i++) {
+					subDatas = this.analysisJson(attrs[i], subDatas);
+				}
+				if(ListUtil.isNotEmpty(subDatas)) {
+					for (int i = 0; i < subDatas.size(); i++) {
+						List<Map<String, Object>> list = new ArrayList<>();
+						Map<String, Object> map = new HashMap<String, Object>();
+						map.put("cellValue", subDatas.get(i));
+						list.add(map);
+						datas.add(list);
+					}
+				}
+			}
+		}
+		bindData.setDatas(datas);
+		this.processListGroupValue(maxCoordinate, bindData, cellDatas, hyperlinks, dataRowLen, 
+				dataColLen, rowlen, columnlen, mergeMap, objectMapper, maxXAndY, borderInfo, borderConfig, borderInfos, 
+				calcChain, configRowLen, configColumnLen, images, cellBindData, usedCells, dicts, nowFunction, 
+				functionCellFormat, dataVerification, drillCells, rowhidden, colhidden, subtotalCellDatas, subtotalRows, 
+				subtotalCellMap, cellConditionFormat, dynamicRange, subTotalDigits, coverCells, columnStartCoords, 
+				extendCellOrigin, subTotalCellCoords);
+	}
+	
+	private JSONArray analysisJson(String key,Object objJson) {
+		JSONArray result = new JSONArray();
+		Object data = null;
+		if(objJson instanceof JSONArray){
+    		JSONArray objArray = (JSONArray)objJson;
+			for (int i = 0; i < objArray.size(); i++) {
+				data = objArray.get(i);
+				if(data instanceof JSONObject) {
+					JSONObject jsonObject = (JSONObject) data;
+					data = jsonObject.get(key); 
+					if(data instanceof JSONObject) {
+						result.add(data);
+					}else if(data instanceof JSONArray) {
+						result.addAll((JSONArray) data);
+					}else {
+						result.add(data);
+					}
+				}else if(data instanceof JSONArray) {
+					JSONArray objArray2 = (JSONArray) data;
+					for (int j = 0; j < objArray2.size(); j++) {
+						data = objArray2.get(j);
+						if(data instanceof JSONObject) {
+							JSONObject jsonObject = (JSONObject) data;
+							data = jsonObject.get(key); 
+							if(data instanceof JSONObject) {
+								result.add(data);
+							}else if(data instanceof JSONArray) {
+								result.addAll((JSONArray) data);
+							}else {
+								result.add(data);
+							}
+						}
+					}
+				}
+			}
+    	}else if(objJson instanceof JSONObject) {
+    		JSONObject jsonObject = (JSONObject) objJson;
+			data = jsonObject.get(key); 
+			if(data instanceof JSONObject) {
+				result.add(data);
+			}else if(data instanceof JSONArray) {
+				result.addAll((JSONArray) data);
+			}else {
+				result.add(data);
+			}
+    	}
+		return result;
 	}
 	
 	/**  
@@ -7194,6 +7382,10 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			bindDatas = luckySheetBindData.getFilterDatas();
 		}else {
 			bindDatas = luckySheetBindData.getDatas();
+		}
+		if(luckySheetBindData.getIsObject()) {
+			this.processSubDatas(j,maxCoordinate, luckySheetBindData, cellDatas, hyperlinks, dataRowLen, dataColLen, rowlen, columnlen, mergeMap, objectMapper, maxXAndY, borderInfo, borderConfig, borderInfos, calcChain, configRowLen, configColumnLen, images, cellBindData, usedCells, dictsMap, nowFunction, functionCellFormat, dataVerification, drillCells, rowhidden, colhidden, dataVerification, extendCellOrigin, drillCells, cellConditionFormat, dynamicRange, maxXAndY, coverCells, columnStartCoords, extendCellOrigin, null);
+			return;
 		}
 //		List<Map<String, Object>> border = this.getBorderType(borderConfig, luckySheetBindData.getCoordsx(), luckySheetBindData.getCoordsy());//获取该单元格的边框信息
 		List<Map<String, Object>> border = null;
@@ -7675,6 +7867,10 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		}else {
 			bindDatas = luckySheetBindData.getDatas();
 		}
+		if(luckySheetBindData.getIsObject()) {
+			this.processSubDatas(j,maxCoordinate, luckySheetBindData, cellDatas, hyperlinks, dataRowLen, dataColLen, rowlen, columnlen, mergeMap, objectMapper, maxXAndY, borderInfo, borderConfig, borderInfos, calcChain, configRowLen, configColumnLen, images, cellBindData, usedCells, dictsMap, nowFunction, functionCellFormat, dataVerification, drillCells, rowhidden, colhidden, dataVerification, extendCellOrigin, drillCells, cellConditionFormat, dynamicRange, maxXAndY, coverCells, columnStartCoords, extendCellOrigin, null);
+			return result;
+		}
 		String initCalculateSubtotalKey = luckySheetBindData.getSheetId()+"-"+j+"-"+luckySheetBindData.getCoordsx()+"-"+luckySheetBindData.getCoordsy();
 		List<Map<String, Object>> border = null;
 		if(!borderInfo.containsKey(luckySheetBindData.getCoordsx()+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+luckySheetBindData.getCoordsy()))
@@ -7725,8 +7921,8 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 					}else {
 						rowAndCol = new HashMap<String, Integer>();
 						rowAndCol.put("maxX", x);
-						int y = this.getMaxCol(maxCoordinate, luckySheetBindData.getCoordsx(), luckySheetBindData.getCoordsy(), 1);
-						rowAndCol.put("maxY", y);
+//						int y = this.getMaxCol(maxCoordinate, luckySheetBindData.getCoordsx(), luckySheetBindData.getCoordsy(), 1);
+						rowAndCol.put("maxY", luckySheetBindData.getCoordsy());
 					}
 				}
 			}else {
@@ -8777,6 +8973,10 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		}else {
 			bindDatas = luckySheetBindData.getDatas();
 		}
+		if(luckySheetBindData.getIsObject()) {
+			this.processSubDatas(j,maxCoordinate, luckySheetBindData, cellDatas, hyperlinks, dataRowLen, dataColLen, rowlen, columnlen, mergeMap, objectMapper, maxXAndY, borderInfo, borderConfig, borderInfos, calcChain, configRowLen, configColumnLen, images, cellBindData, usedCells, dictsMap, nowFunction, functionCellFormat, dataVerification, drillCells, rowhidden, colhidden, dataVerification, extendCellOrigin, drillCells, cellConditionFormat, dynamicRange, maxXAndY, coverCells, columnStartCoords, extendCellOrigin, null);
+			return result;
+		}
 //		List<Map<String, Object>> border = this.getBorderType(borderConfig, luckySheetBindData.getCoordsx(), luckySheetBindData.getCoordsy());//获取该单元格的边框信息
 		List<Map<String, Object>> border = null;
 		if(!borderInfo.containsKey(luckySheetBindData.getCoordsx()+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+luckySheetBindData.getCoordsy()))
@@ -8814,7 +9014,17 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 					rowAndCol.put("maxX", luckySheetBindData.getCoordsx());
 					rowAndCol.put("maxY", y);
 				}else {
-					rowAndCol = this.getMaxRowAndCol(maxCoordinate, luckySheetBindData.getCoordsx(),luckySheetBindData.getCoordsy(),1,1);
+//					rowAndCol = this.getMaxRowAndCol(maxCoordinate, luckySheetBindData.getCoordsx(),luckySheetBindData.getCoordsy(),1,1);
+					int x = this.getMaxRow(maxCoordinate, luckySheetBindData.getCoordsx(), luckySheetBindData.getCoordsy(), 1);
+					if(usedCells.containsKey(x+"_"+luckySheetBindData.getCoordsy()))
+					{
+						rowAndCol = this.getMaxRowAndCol(maxCoordinate, luckySheetBindData.getCoordsx(),luckySheetBindData.getCoordsy(),1,1);
+					}else {
+						rowAndCol = new HashMap<String, Integer>();
+						rowAndCol.put("maxX", x);
+//						int y = this.getMaxCol(maxCoordinate, luckySheetBindData.getCoordsx(), luckySheetBindData.getCoordsy(), 1);
+						rowAndCol.put("maxY", luckySheetBindData.getCoordsy());
+					}
 				}
 			}else {
 				rowAndCol = new HashMap<String, Integer>();
@@ -14279,16 +14489,19 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			sheetIds.add(sheets.get(i).getId());
 			sheetIndexMap.put(sheets.get(i).getId(), sheets.get(i).getSheetIndex());
 		}
-		QueryWrapper<LuckysheetReportFormsCell> queryWrapper = new QueryWrapper<>();
+		QueryWrapper<LuckysheetReportCell> queryWrapper = new QueryWrapper<>();
 		queryWrapper.in("sheet_id", sheetIds);
 		queryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
-		List<LuckysheetReportFormsCell> list = this.iLuckysheetReportFormsCellService.list(queryWrapper);
+		List<LuckysheetReportCell> list = this.iLuckysheetReportCellService.list(queryWrapper);
 		if(!ListUtil.isEmpty(list))
 		{
 			Map<String, Map<String, String>> cellDictsValueLabel = new HashMap<String, Map<String,String>>();
 			Map<String, Map<String, String>> cellDictsLabelValue = new HashMap<String, Map<String,String>>();
 			for (int i = 0; i < list.size(); i++) {
-				JSONObject cellAttrs = JSONObject.parseObject(list.get(i).getCellAttrs());
+				JSONObject cellAttrs = JSONObject.parseObject(list.get(i).getFormsAttrs());
+				if(cellAttrs == null) {
+					continue;
+				}
 				int valueType = cellAttrs.getIntValue("valueType");
 				if(valueType == 4)
 				{

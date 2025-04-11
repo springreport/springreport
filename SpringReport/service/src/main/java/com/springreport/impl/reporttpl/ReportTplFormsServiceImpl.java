@@ -4213,7 +4213,7 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 			searchInfo = this.getDatasetParamInfo(datasetName, mesGenerateReportDto);
 		}
 		//获取数据源
-		Map<String, Object> dataSetAndDatasource = this.iReportTplDatasetService.getTplDatasetAndDatasource(reportTpl.getId(), datasetName);
+		Map<String, Object> dataSetAndDatasource = this.iReportTplDatasetService.getTplDatasetAndDatasource(reportTpl.getId(), datasetName,userInfoDto.getMerchantNo());
 		int type = (int) dataSetAndDatasource.get("type");
 		DataSource dataSource = null;
 		InfluxDBConnection dbConnection = null;
