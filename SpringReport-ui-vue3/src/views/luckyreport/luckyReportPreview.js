@@ -1912,6 +1912,25 @@ export default {
             }
           }
         }
+        if(this.sheetAutoFillAttrs){
+          for(var i in this.sheetAutoFillAttrs) {
+            let luckysheetfile = luckysheet.getSheet({"index":i})
+            let autoFillAttrs = this.sheetAutoFillAttrs[i];
+            if(autoFillAttrs){
+              for(var key in autoFillAttrs) {
+                let obj = autoFillAttrs[key];
+                if(obj && obj.fillType == 5){
+                  let fillValue = obj.fillValue;
+                  let range = luckysheet.getRangeByTxt(fillValue);
+                  let r = range.row[0];
+                  let c = range.column[0];
+                  let v = luckysheet.getCellValue(r,c,{order:luckysheetfile.order,type:"m"})
+                  obj.fillValue = v;
+                }
+              }
+            }
+          }
+        }
         this.loadingText = '数据上传中...'
         this.loading = true
         const obj = {

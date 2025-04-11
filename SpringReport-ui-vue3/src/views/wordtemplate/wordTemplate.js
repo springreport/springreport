@@ -406,14 +406,14 @@ export default {
     },
     removeNode(node, data) {
       const obj = {
-        url: this.apis.reportType.deleteOneApi,
+        url: this.apis.springreportField.deleteOneApi,
         messageContent: this.commonUtil.getMessageFromList('confirm.delete', null),
         callback: this.removeNodeCallBack,
         params: { id: data.id },
         type: 'get'
       }
       var checkObj = {
-        params: { reportType: data.id },
+        params: { templateField: data.id,isTemplate:1 },
         url: this.apis.docTpl.getChildrenApi
       }
       this.commonUtil.doPost(checkObj).then(response => {
