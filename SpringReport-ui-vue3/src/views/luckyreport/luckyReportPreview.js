@@ -1919,13 +1919,14 @@ export default {
             if(autoFillAttrs){
               for(var key in autoFillAttrs) {
                 let obj = autoFillAttrs[key];
-                if(obj && obj.fillType == 5){
+                if(obj && obj.fillType == 5 && !obj.isFillValue){
                   let fillValue = obj.fillValue;
                   let range = luckysheet.getRangeByTxt(fillValue);
                   let r = range.row[0];
                   let c = range.column[0];
                   let v = luckysheet.getCellValue(r,c,{order:luckysheetfile.order,type:"m"})
                   obj.fillValue = v;
+                  obj.isFillValue = true;
                 }
               }
             }
