@@ -5,6 +5,7 @@ ALTER TABLE luckysheet_report_cell ADD COLUMN sub_extend tinyint(4) DEFAULT 1 CO
 
 
 ALTER TABLE report_tpl_dataset ADD COLUMN is_common tinyint(4) DEFAULT 2 COMMENT '是否公共数据集 1是 2否'; 
+ALTER TABLE report_tpl_dataset ADD COLUMN common_type tinyint(4) DEFAULT 1 COMMENT '类型 1excel报表 2word报表 3ppt报表'; 
 ALTER TABLE report_tpl_dataset ADD COLUMN is_convert tinyint(4) DEFAULT 2 COMMENT '是否行列转置 1是 2否'; 
 ALTER TABLE report_tpl_dataset ADD COLUMN header_name varchar(100) DEFAULT NULL COMMENT '行转列字段'; 
 ALTER TABLE report_tpl_dataset ADD COLUMN value_field varchar(100) DEFAULT NULL COMMENT '行转列值'; 
