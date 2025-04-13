@@ -204,4 +204,11 @@ public class MesGenerateReportDto {
 	 * @date 2025-03-15 08:54:20 
 	 */  
 	private boolean isLarge = false;
+	
+	/**  
+	 * @Fields isTask : 是否定时任务
+	 * @author caiyang
+	 * @date 2025年4月11日17:38:48
+	 */  
+	private Integer isTask = YesNoEnum.NO.getCode();
 }

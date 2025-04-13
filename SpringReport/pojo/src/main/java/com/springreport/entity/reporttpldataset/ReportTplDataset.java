@@ -130,4 +130,28 @@ public class ReportTplDataset extends PageEntity {
     /** sub_param_attrs - 主表传递给子表的参数属性 */
     @TableField("sub_param_attrs")
     private String subParamAttrs;
+    
+    /** is_common - 是否公共数据集 1是 2否 */
+    @TableField("is_common")
+    private Integer isCommon;
+    
+    /** common_type - 类型 1excel报表 2word报表 3ppt报表 */
+    @TableField("common_type")
+    private Integer commonType;
+    
+    /** is_convert - 是否行列转置 1是 2否 */
+    @TableField("is_convert")
+    private Integer isConvert;
+    
+    /** header_name - 行转列字段 */
+    @TableField("header_name")
+    private String headerName;
+    
+    /** value_field - 行转列值 */
+    @TableField("value_field")
+    private String valueField;
+    
+    /** fixed_column - 固定列 */
+    @TableField("fixed_column")
+    private String fixedColumn;
 }

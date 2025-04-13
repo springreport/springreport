@@ -45,6 +45,7 @@ import com.springreport.enums.DelFlagEnum;
 import com.springreport.enums.RedisPrefixEnum;
 import com.springreport.enums.YesNoEnum;
 import com.springreport.exception.BizException;
+import com.springreport.util.ListUtil;
 import com.springreport.util.MessageUtil;
 import com.springreport.util.Pako_GzipUtils;
 import com.springreport.util.RedisUtil;
@@ -296,6 +297,11 @@ public class ReportTplController extends BaseController {
 	public String previewLuckysheetReportData(@RequestBody MesGenerateReportDto mesGenerateReportDto,@LoginUser UserInfoDto userInfoDto) throws Exception
 	{
 		ResPreviewData result = this.iReportTplService.previewLuckysheetReportData(mesGenerateReportDto,userInfoDto);
+		if(ListUtil.isNotEmpty(result.getSheetDatas())) {
+			for (int i = 0; i < result.getSheetDatas().size(); i++) {
+				result.getSheetDatas().get(i).setCellBindData(null);
+			}
+		}
 		httpServletResponse.setHeader("Content-Encoding", "gzip");
 		httpServletResponse.setContentType("text/html");
 		String resultStr="";

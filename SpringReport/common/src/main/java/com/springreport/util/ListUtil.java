@@ -131,6 +131,9 @@ public class ListUtil {
 					}
 				}
 			}
+			if(StringUtil.isNullOrEmpty(result)) {
+				result = str.split("\\.")[0].replaceAll("\\$", "").replaceAll("\\{", "").replaceAll("}", "");
+			}
 		}
 		return result;
 	}
@@ -164,6 +167,9 @@ public class ListUtil {
 			}
 		}
  		result.put("cellValue", cellValue);
+ 		if(StringUtil.isNullOrEmpty(datasetNames)) {
+ 			datasetNames = cellValue.split("\\.")[0].replaceAll("\\$", "").replaceAll("\\{", "").replaceAll("}", "");
+ 		}
  		result.put("datasetNames", datasetNames);
 		return result;
 	}

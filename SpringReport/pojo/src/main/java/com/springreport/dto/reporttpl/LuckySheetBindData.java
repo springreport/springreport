@@ -51,7 +51,7 @@ public class LuckySheetBindData {
 	*/  
 	private String aggregateType;
 	
-	/** cell_extend - 单元格扩展方向 1不扩展 2纵向扩展 2横向扩展 */
+	/** cell_extend - 单元格扩展方向 1不扩展 3纵向扩展 2横向扩展 */
     private Integer cellExtend;
     
     /**  
@@ -540,4 +540,16 @@ public class LuckySheetBindData {
      * @date 2025-03-22 08:18:14 
      */  
     private Map<Integer, Integer> groupMergeSize;
+    
+    /** is_object - 是否是复杂对象 */
+    private Boolean isObject;
+    
+    /** data_type - 数据类型 1数组 2对象数组 3对象 */
+    private Integer dataType;
+    
+    /** data_attr - 属性 */
+    private String dataAttr;
+    
+    /** sub_extend - 子数据扩展方向 1不扩展 2纵向扩展 3横向扩展 */
+    private Integer subExtend;
 }

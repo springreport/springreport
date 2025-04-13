@@ -10,6 +10,11 @@
     />
   </span>
   <div class="line" />
+  <div class="tem df-c" @click="goTemStore" v-has="'template_market'">
+    <img src="@/assets/img/template/tem.png" style="width: 24px; height: 24px; display: block" />
+    <div class="tem-name">模板市场</div>
+  </div>
+  <div class="line" />
   <div v-if="state.isSystemMerchant == 1" class="df-c">
     <el-dropdown class="white font" trigger="click" placement="bottom" @command="changeMerchant">
       <div class="system-merchant df-c">
@@ -62,6 +67,10 @@
       getMerchants();
     }
   });
+
+  const goTemStore = () => {
+    window.open(router.resolve({ name: 'templateStore' }).href, '_blank');
+  };
   const changeMerchant = async (key) => {
     state.merchantNo = key;
     localStorage.setItem(commonConstants.sessionItem.merchantNo, state.merchantNo);
@@ -108,6 +117,18 @@
     height: 24px;
     background: rgba(0, 0, 0, 0.1);
     margin: 0 24px;
+  }
+  .tem {
+    cursor: pointer;
+    .tem-name {
+      margin-left: 6px;
+      color: $base-color-primary;
+      font-family: 'PingFang SC';
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal;
+    }
   }
   .system-merchant {
     cursor: pointer;

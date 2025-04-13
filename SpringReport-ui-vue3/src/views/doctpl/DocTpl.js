@@ -6,7 +6,7 @@ export default {
       pageData: {
         defaultProps: {
           children: 'children',
-          label: 'label'
+          label: 'label',
         },
         treeData: [],
         //查询表单内容 start
@@ -43,6 +43,15 @@ export default {
         //表格数据end
         //表格工具栏按钮 start
         tableHandles: [
+          {
+            label: '报表模板',
+            type: 'primary',
+            position: 'right',
+            iconClass: 'action-icon-template',
+            handle: () => this.goTemStore(),
+            auth: 'docTpl_search',
+          },
+
           {
             label: '新建目录',
             type: 'primary',
@@ -238,9 +247,20 @@ export default {
     this.searchtablelist();
     this.getReportDatasource();
     this.getReportType();
-    this.getReportTypeTree()
+    this.getReportTypeTree();
   },
   methods: {
+    goTemStore() {
+      window.open(
+        this.$router.resolve({
+          name: 'templateStore',
+          query: {
+            temType: 'word',
+          },
+        }).href,
+        '_blank'
+      );
+    },
     /**
      * @description: 获取表格数据
      * @param {type}
@@ -256,7 +276,7 @@ export default {
       var that = this;
       that.pageData.tableData = [];
       this.commonUtil.getTableList(obj).then((response) => {
-        this.commonUtil.tableAssignment(response,this.pageData.tablePage,this.pageData.tableData);
+        this.commonUtil.tableAssignment(response, this.pageData.tablePage, this.pageData.tableData);
         this.tableLoading = false;
       });
     },
@@ -465,7 +485,13 @@ export default {
     },
     //页面跳转
     routerTo(name, row) {
-      let viewReport = this.$router.resolve({ name: name, query: { tplId: row.id ,thirdPartyType:localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)} });
+      let viewReport = this.$router.resolve({
+        name: name,
+        query: {
+          tplId: row.id,
+          thirdPartyType: localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType),
+        },
+      });
       window.open(viewReport.href, '_blank');
     },
     loadData(tree, treeNode, resolve) {
@@ -500,51 +526,54 @@ export default {
     },
     getReportTypeTree() {
       var obj = {
-        params: {"type":"2"},
+        params: { type: '2' },
         removeEmpty: false,
-        url: this.apis.reportType.getReportTypeTreeApi
-      }
-      this.commonUtil.doPost(obj).then(response => {
+        url: this.apis.reportType.getReportTypeTreeApi,
+      };
+      this.commonUtil.doPost(obj).then((response) => {
         if (response.code == '200') {
-          this.pageData.treeData = response.responseData
+          this.pageData.treeData = response.responseData;
         }
-      })
+      });
     },
     handleNodeClick(data) {
       if (data.id == '1') {
-        this.pageData.queryData.reportType = ''
+        this.pageData.queryData.reportType = '';
       } else {
-        this.pageData.queryData.reportType = data.id
+        this.pageData.queryData.reportType = data.id;
       }
-      this.searchtablelist()
+      this.searchtablelist();
     },
-    removeNode(node, data){
+    removeNode(node, data) {
       const obj = {
         url: this.apis.reportType.deleteOneApi,
         messageContent: this.commonUtil.getMessageFromList('confirm.delete', null),
         callback: this.removeNodeCallBack,
         params: { id: data.id },
-        type: 'get'
-      }
+        type: 'get',
+      };
       var checkObj = {
         params: { reportType: data.id },
-        url: this.apis.docTpl.getChildrenApi
-      }
-      this.commonUtil.doPost(checkObj).then(response => {
+        url: this.apis.docTpl.getChildrenApi,
+      };
+      this.commonUtil.doPost(checkObj).then((response) => {
         if (response.code == '200') {
           if (response.responseData && response.responseData.length > 0) {
-            this.commonUtil.showMessage({ message: '该目录下有文档，不允许删除！', type: this.commonConstants.messageType.error })
+            this.commonUtil.showMessage({
+              message: '该目录下有文档，不允许删除！',
+              type: this.commonConstants.messageType.error,
+            });
           } else {
             // 弹出删除确认框
-            this.commonUtil.showConfirm(obj)
+            this.commonUtil.showConfirm(obj);
           }
         }
-      })
+      });
     },
-    removeNodeCallBack(){
-      this.searchtablelist()
-      this.getReportType()
+    removeNodeCallBack() {
+      this.searchtablelist();
+      this.getReportType();
       this.getReportTypeTree();
-    }
+    },
   },
 };

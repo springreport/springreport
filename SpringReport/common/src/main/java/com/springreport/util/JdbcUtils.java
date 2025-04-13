@@ -245,7 +245,7 @@ public class JdbcUtils {
 		{
 			sqlText = Constants.ORACLE_START + sqlText + Constants.ORACLE_END;
 		}
-        
+		System.err.println("解析后的sql:"+sqlText);
         return sqlText;
     }
 	
@@ -336,6 +336,7 @@ public class JdbcUtils {
             	column.put("name", rsMataData.getColumnLabel(i));
             	column.put("dataType", rsMataData.getColumnTypeName(i));
             	column.put("width", rsMataData.getColumnDisplaySize(i));
+            	column.put("className", rsMataData.getColumnClassName(i));
             	result.add(column);
             }
         } catch (final SQLException ex) {
@@ -408,6 +409,7 @@ public class JdbcUtils {
             	column.put("name", rsMataData.getColumnLabel(i));
             	column.put("dataType", rsMataData.getColumnTypeName(i));
             	column.put("width", rsMataData.getColumnDisplaySize(i));
+            	column.put("className", rsMataData.getColumnClassName(i));
             	result.add(column);
             }
         } catch (final SQLException ex) {
@@ -474,6 +476,7 @@ public class JdbcUtils {
             	column.put("name", rsMataData.getColumnLabel(i));
             	column.put("dataType", rsMataData.getColumnTypeName(i));
             	column.put("width", rsMataData.getColumnDisplaySize(i));
+            	column.put("className", rsMataData.getColumnClassName(i));
             	result.add(column);
             }
         } catch (final SQLException ex) {
@@ -495,11 +498,23 @@ public class JdbcUtils {
 			{
 				sqlText = JdbcUtils.processSqlDynamicParam(sqlText);
 				for (int i = 0; i < jsonArray.size(); i++) {
+					String paramType = jsonArray.getJSONObject(i).getString("paramType");
 					String paramDefault = jsonArray.getJSONObject(i).getString("paramDefault");
 					String paramCode = jsonArray.getJSONObject(i).getString("paramCode");
+					String dateFormat = jsonArray.getJSONObject(i).getString("dateFormat");
 					if(StringUtil.isNullOrEmpty(paramDefault))
 					{
 						throw new BizException(StatusCode.FAILURE, "当数据库为influxdb时，参数中的默认值必须填写。");
+					}
+					if("date".equals(paramType.toLowerCase()))
+					{
+						params.put(paramCode, StringUtil.isNotEmpty(dateFormat)?DateUtil.getNow(dateFormat):DateUtil.getNow(DateUtil.FORMAT_LONOGRAM));
+					}else if("mutiselect".equals(paramType.toLowerCase()))
+					{
+						params.put(paramCode, new JSONArray());
+					}
+					else {
+						params.put(paramCode, paramDefault);
 					}
 					params.put(paramCode, paramDefault);
 				}
@@ -660,6 +675,7 @@ public class JdbcUtils {
                 	column.put("name", rsMataData.getColumnLabel(i));
                 	column.put("dataType", rsMataData.getColumnTypeName(i));
                 	column.put("width", rsMataData.getColumnDisplaySize(i));
+                	column.put("className", rsMataData.getColumnClassName(i));
                 	result.add(column);
                 }                   
 	    	}else {
@@ -1017,6 +1033,34 @@ public class JdbcUtils {
 	public static TDengineConnection getTDengineConnection(final TDengineConfig  config) throws Exception{
 		TDengineConnection tDengineConnection = new TDengineConnection(config.getJdbcUrl(), config.getUsername(), config.getPassword());
 		return tDengineConnection;
+	}
+	
+	public static Map<String, String> parseMetaDataColumnsJavaType(DataSource dataSource,String sqlText,int dataSourceType) {
+		Map<String, String> result = new HashMap<>();
+		Connection conn = null;
+	    Statement stmt = null;
+	    ResultSet rs = null;
+	    try {
+	    	conn = dataSource.getConnection();
+	        stmt = conn.createStatement();
+			sqlText = VelocityUtil.parseInfluxdb(sqlText, null,"influxdb");
+	        rs = stmt.executeQuery(JdbcUtils.preprocessSqlText(sqlText,dataSourceType,null));
+            final ResultSetMetaData rsMataData = rs.getMetaData();
+            final int count = rsMataData.getColumnCount();
+            for (int i = 1; i <= count; i++) {
+            	result.put(rsMataData.getColumnName(i), rsMataData.getColumnClassName(i));
+            }
+        } catch (final SQLException ex) {
+        	Collection<DataSource> datasources = dataSourceMap.values();
+        	while(datasources.contains(dataSource))
+        	{
+        		datasources.remove(dataSource);
+        	}
+            throw new BizException(StatusCode.FAILURE,MessageUtil.getValue("error.sql", new String[] {ex.getMessage()}));
+        } finally {
+            JdbcUtils.releaseJdbcResource(conn, stmt, rs);
+        }
+	    return result;
 	}
 	
 	public static void main(String[] args) {

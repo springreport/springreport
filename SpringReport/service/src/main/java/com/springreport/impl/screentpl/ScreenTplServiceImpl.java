@@ -1,18 +1,16 @@
 package com.springreport.impl.screentpl;
 
-import com.springreport.entity.doctpl.DocTpl;
-import com.springreport.entity.onlinetpl.OnlineTpl;
 import com.springreport.entity.reporttpldatasource.ReportTplDatasource;
-import com.springreport.entity.reporttype.ReportType;
 import com.springreport.entity.screencontent.ScreenContent;
 import com.springreport.entity.screentpl.ScreenTpl;
 import com.springreport.mapper.screencontent.ScreenContentMapper;
 import com.springreport.mapper.screentpl.ScreenTplMapper;
-import com.springreport.api.reporttpldataset.IReportTplDatasetService;
 import com.springreport.api.reporttpldatasource.IReportTplDatasourceService;
 import com.springreport.api.reporttype.IReportTypeService;
 import com.springreport.api.screencontent.IScreenContentService;
 import com.springreport.api.screentpl.IScreenTplService;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
@@ -33,7 +31,6 @@ import com.github.pagehelper.PageHelper;
 import com.springreport.base.BaseEntity;
 import com.springreport.base.PageEntity;
 import com.springreport.constants.StatusCode;
-import com.springreport.dto.onlinetpl.OnlineTplTreeDto;
 import com.springreport.dto.screentpl.MesScreenTplDto;
 import com.springreport.dto.screentpl.SaveScreenTplDto;
 import com.springreport.dto.screentpl.ScreenTplDto;
@@ -43,7 +40,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.springreport.enums.ComponentTypeEnum;
 import com.springreport.enums.DelFlagEnum;
 import com.springreport.enums.YesNoEnum;
 import com.springreport.exception.BizException;
@@ -121,7 +117,26 @@ public class ScreenTplServiceImpl extends ServiceImpl<ScreenTplMapper, ScreenTpl
 		if(this.merchantmode == YesNoEnum.YES.getCode()) {
 			screenTplWrapper.eq("merchant_no", model.getMerchantNo());
 		}
-		screenTplWrapper.eq("report_type", model.getReportType());
+		if(this.merchantmode == YesNoEnum.YES.getCode() && model.getMerchantNo() != null) {
+			screenTplWrapper.eq("merchant_no", model.getMerchantNo());
+		}
+		if(model.getReportType() != null && model.getReportType() != 0) {
+			screenTplWrapper.eq("report_type", model.getReportType());
+		}
+		if(model.getIsTemplate() != null && model.getIsTemplate().intValue() == YesNoEnum.YES.getCode().intValue()) {
+			screenTplWrapper.eq("is_template", model.getIsTemplate());
+		}else {
+			screenTplWrapper.eq("is_template", YesNoEnum.NO.getCode());
+		}
+		if(model.getTemplateField() != null && model.getTemplateField() != 0) {
+			screenTplWrapper.eq("template_field", model.getTemplateField());
+		}
+		if(StringUtil.isNotEmpty(model.getTplCode())) {
+			screenTplWrapper.like("tpl_code", model.getTplCode());
+		}
+		if(StringUtil.isNotEmpty(model.getTplName())) {
+			screenTplWrapper.like("tpl_name", model.getTplName());
+		}
 		screenTplWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
 		List<ScreenTpl> tpls = this.list(screenTplWrapper);
 		if(ListUtil.isNotEmpty(tpls)) {
@@ -472,7 +487,11 @@ public class ScreenTplServiceImpl extends ServiceImpl<ScreenTplMapper, ScreenTpl
 		List<ScreenContent> screenContents = this.iScreenContentService.list(screenContentQueryWrapper);
 		if(ListUtil.isNotEmpty(screenContents)) {
 			for (int i = 0; i < screenContents.size(); i++) {
-				screenContents.get(i).setId(null);
+				Long id = IdWorker.getId();
+				screenContents.get(i).setId(id);
+				JSONObject content = JSONObject.parseObject(screenContents.get(i).getContent());
+				content.put("primaryKey", id);
+				screenContents.get(i).setContent(JSON.toJSONString(content));
 				screenContents.get(i).setTplId(screenTpl.getId());
 			}
 			this.iScreenContentService.saveBatch(screenContents);

@@ -318,4 +318,20 @@ public class LuckysheetReportCell extends PageEntity {
     /** vloop_empty_count - 纵向循环间隔空行数 */
     @TableField("vloop_empty_count")
     private Integer vloopEmptyCount;
+    
+    /** is_object - 是否是复杂对象 */
+    @TableField("is_object")
+    private Boolean isObject;
+    
+    /** data_type - 数据类型 1数组 2对象数组 3对象 */
+    @TableField("data_type")
+    private Integer dataType;
+    
+    /** data_attr - 属性 */
+    @TableField("data_attr")
+    private String dataAttr;
+    
+    /** sub_extend - 子数据扩展方向 1不扩展 2纵向扩展 3横向扩展 */
+    @TableField("sub_extend")
+    private Integer subExtend;
 }

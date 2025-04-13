@@ -111,6 +111,7 @@ import com.springreport.util.ReportDataUtil;
 import com.springreport.util.StringUtil;
 
 
+
 @Service
 public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 	
@@ -3745,21 +3746,12 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 	 * @see com.springreport.api.reporttpl.IReportTplFormsService#reportData(com.springreport.dto.reporttpl.ReportDataDto)
 	 * @date 2022-11-23 07:23:23 
 	 */  
-	/**  
-	 * @MethodName: reportData
-	 * @Description: TODO
-	 * @author caiyang
-	 * @param model
-	 * @param userInfoDto
-	 * @return
-	 * @see com.springreport.api.reporttpl.IReportTplFormsService#reportData(com.springreport.dto.reporttpl.ReportDataDto, com.springreport.base.UserInfoDto)
-	 * @date 2025-02-28 01:55:22 
-	 */
 	@Override
 	@Transactional
 	public BaseEntity reportData(ReportDataDto model,UserInfoDto userInfoDto) {
 		ResReportDataDto result = new ResReportDataDto();
 		Map<String, Map<String, List<ReportDataDetailDto>>> reportDataDetails = new HashMap<>();
+		Map<String, List<String>> datasourceTalbes = new HashMap<>();
 		ReportTpl reportTpl = this.iReportTplService.getById(model.getTplId());
 		if (reportTpl == null) {
 			throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.check.notexist", new String[] {"报表模板"}));
@@ -3788,6 +3780,14 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 				String sheetIndex = o.split("\\|")[0];
 				String datasourceId = o.split("\\|")[1];
 				String table = o.split("\\|")[2];
+				List<String> tables =  datasourceTalbes.get(datasourceId);
+				if(tables == null) {
+					tables = new ArrayList<>();
+					datasourceTalbes.put(datasourceId, tables);
+				}
+				if(!tables.contains(table)) {
+					tables.add(table);
+				}
 				String name = o.split("\\|")[3];
 				if(model.getMainDatasources().containsKey(sheetIndex)) {
 					String key = datasourceId + "|" + name + "|" + table;
@@ -3992,10 +3992,21 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 			Set<String> datasourceIds = reportDataDetails.keySet();
 			for(String datasourceId:datasourceIds)
 			{
+				Map<String, Map<String, String>> tableColumnJavaType = new HashMap<String, Map<String,String>>();
 				ReportDatasource reportDatasource = this.iReportDatasourceService.getById(Long.valueOf(datasourceId));
 				DataSourceConfig dataSourceConfig = new DataSourceConfig(Long.valueOf(datasourceId), reportDatasource.getDriverClass(), reportDatasource.getJdbcUrl(), reportDatasource.getUserName(), reportDatasource.getPassword(), null);
 				DataSource dataSource = JdbcUtils.getDataSource(dataSourceConfig);
-				ReportDataUtil.reportData(dataSource,reportDataDetails.get(datasourceId),reportDatasource.getType(),userInfoDto);
+				if(reportDatasource.getType().intValue() == 5 || reportDatasource.getType().intValue() == 11 || reportDatasource.getType().intValue() == 12) {
+					List<String> tables = datasourceTalbes.get(datasourceId);
+					if(ListUtil.isNotEmpty(tables)) {
+						for (int i = 0; i < tables.size(); i++) {
+							String sqlText = "select *" + " from " + tables.get(i);
+							Map<String, String> columnJavaType = JdbcUtils.parseMetaDataColumnsJavaType(dataSource, sqlText, reportDatasource.getType());
+							tableColumnJavaType.put(tables.get(i), columnJavaType);
+						}
+					}
+				}
+				ReportDataUtil.reportData(dataSource,reportDataDetails.get(datasourceId),reportDatasource.getType(),userInfoDto,tableColumnJavaType);
 			}
 		}
 		result.setStatusMsg(MessageUtil.getValue("info.reportdata"));
@@ -4213,7 +4224,7 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 			searchInfo = this.getDatasetParamInfo(datasetName, mesGenerateReportDto);
 		}
 		//获取数据源
-		Map<String, Object> dataSetAndDatasource = this.iReportTplDatasetService.getTplDatasetAndDatasource(reportTpl.getId(), datasetName);
+		Map<String, Object> dataSetAndDatasource = this.iReportTplDatasetService.getTplDatasetAndDatasource(reportTpl.getId(), datasetName,userInfoDto.getMerchantNo());
 		int type = (int) dataSetAndDatasource.get("type");
 		DataSource dataSource = null;
 		InfluxDBConnection dbConnection = null;
@@ -4467,9 +4478,24 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 		ReportDatasource reportDatasource = this.iReportDatasourceService.getById(Long.valueOf(datasourceId));
 		DataSourceConfig dataSourceConfig = new DataSourceConfig(Long.valueOf(datasourceId), reportDatasource.getDriverClass(), reportDatasource.getJdbcUrl(), reportDatasource.getUserName(), reportDatasource.getPassword(), null);
 		DataSource dataSource = JdbcUtils.getDataSource(dataSourceConfig);
-		ReportDataUtil.deleteData(dataSource, model, userInfoDto);
+		Map<String, String> columnJavaType = new HashMap<>();
+		if(reportDatasource.getType().intValue() == 5 || reportDatasource.getType().intValue() == 11 || reportDatasource.getType().intValue() == 12) {
+			String table = model.getString("table");
+			String column = model.getString("column");
+			String deleteType = model.getString("deleteType");
+			String deleteColumn = model.getString("deleteColumn");
+			String sqlText = "";
+			if("1".equals(deleteType)) {//物理删除
+				sqlText = "select " + column + " from " + table;
+			}else {
+				sqlText = "select " + column + " , " + deleteColumn + " from " + table;
+			}
+			columnJavaType = JdbcUtils.parseMetaDataColumnsJavaType(dataSource, sqlText, reportDatasource.getType());
+		}
+		ReportDataUtil.deleteData(dataSource, model, userInfoDto,columnJavaType);
 		String ip = CusAccessObjectUtil.getIpAddress(httpServletRequest);
 		this.iLuckysheetReportFormsHisService.saveDeleteHis(model,ip,userInfoDto);
 		return result;
 	}
+	
 }

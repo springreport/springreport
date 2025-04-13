@@ -12,6 +12,15 @@ export const constantRoutes = [
     hidden: true,
   },
   {
+    path: '/templateStore',
+    name: 'templateStore',
+    component: () => import('@/views/templateStore/index.vue'),
+    meta: {
+      title: '模板商店',
+    },
+    hidden: true,
+  },
+  {
     path: '/401',
     name: '401',
     component: () => import('@/views/errorPage/401.vue'),
@@ -77,7 +86,7 @@ export const constantRoutes = [
     component: () => import('@/views/coedit/coedit.vue'),
     meta: {
       title: '协同编辑',
-    }
+    },
   },
   {
     path: '/docDesign',
@@ -112,11 +121,11 @@ export const constantRoutes = [
     },
   },
   {
-    path: "/attachment",
-    name: "attachment",
-    component: () => import("@/views/attachment/attachment.vue"),
+    path: '/attachment',
+    name: 'attachment',
+    component: () => import('@/views/attachment/attachment.vue'),
     meta: {
-      title: "附件查看",
+      title: '附件查看',
     },
   },
   // {
@@ -349,27 +358,27 @@ export const constantRoutes = [
         },
       },
       {
-        path: "/excelTemplate",
-        name: "excelTemplate",
-        component: () => import("@/views/exceltemplate/excelTemplate.vue"),
+        path: '/excelTemplate',
+        name: 'excelTemplate',
+        component: () => import('@/views/exceltemplate/excelTemplate.vue'),
         meta: {
-          title: "Excel模板市场",
+          title: 'Excel模板市场',
         },
       },
       {
-        path: "/wordTemplate",
-        name: "wordTemplate",
-        component: () => import("@/views/wordtemplate/wordTemplate.vue"),
+        path: '/wordTemplate',
+        name: 'wordTemplate',
+        component: () => import('@/views/wordtemplate/wordTemplate.vue'),
         meta: {
-          title: "Word模板市场",
+          title: 'Word模板市场',
         },
       },
       {
-        path: "/screenTemplate",
-        name: "screenTemplate",
-        component: () => import("@/views/screentemplate/screenTemplate.vue"),
+        path: '/screenTemplate',
+        name: 'screenTemplate',
+        component: () => import('@/views/screentemplate/screenTemplate.vue'),
         meta: {
-          title: "大屏模板市场",
+          title: '大屏模板市场',
         },
       },
       // {
@@ -498,7 +507,7 @@ export const constantThirdPartyRoutes = [
     component: () => import('@/views/coedit/coedit.vue'),
     meta: {
       title: '协同编辑',
-    }
+    },
   },
   {
     path: '/docDesign',
@@ -533,11 +542,11 @@ export const constantThirdPartyRoutes = [
     },
   },
   {
-    path: "/attachment",
-    name: "attachment",
-    component: () => import("@/views/attachment/attachment.vue"),
+    path: '/attachment',
+    name: 'attachment',
+    component: () => import('@/views/attachment/attachment.vue'),
     meta: {
-      title: "附件查看",
+      title: '附件查看',
     },
   },
   // {
@@ -564,7 +573,7 @@ export const constantThirdPartyRoutes = [
   //   children: [
   //   ],
   // },
-  
+
   {
     path: '/index',
     name: 'Index',
@@ -796,12 +805,10 @@ export const constantThirdPartyRoutes = [
   },
 ];
 
-export const asyncRoutes = [
-
-];
+export const asyncRoutes = [];
 
 const router = createRouter({
-  history: createWebHistory("/SpringReport-vue3"),
+  history: createWebHistory('/SpringReport-vue3'),
   routes: constantRoutes,
   // routes:constantThirdPartyRoutes,
 });
@@ -817,5 +824,5 @@ export function resetRouter() {
 }
 axios.defaults.timeout = 300000; // 毫秒
 
-axios.defaults.baseURL = "/SpringReport";
+axios.defaults.baseURL = '/SpringReport';
 export default router;

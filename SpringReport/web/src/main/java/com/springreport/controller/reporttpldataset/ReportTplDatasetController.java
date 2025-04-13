@@ -3,7 +3,6 @@
  */
 package com.springreport.controller.reporttpldataset;
 
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +24,6 @@ import com.springreport.constants.Constants;
 import com.springreport.constants.StatusCode;
 import com.springreport.dto.reportdatasource.ApiTestResultDto;
 import com.springreport.dto.reporttpldataset.MesGetRelyOnSelectData;
-import com.springreport.dto.reporttpldataset.MesScreenGetSqlDataDto;
 import com.springreport.dto.reporttpldataset.ReportDatasetDto;
 import com.springreport.dto.reporttpldataset.ReportTplDatasetDto;
 import com.springreport.entity.reporttpldataset.ReportTplDataset;

@@ -563,14 +563,14 @@ public class ReportDataUtil {
 	 * @return void
 	 * @date 2022-11-23 11:13:44 
 	 */  
-	public static void reportData(DataSource dataSource,Map<String, List<ReportDataDetailDto>> mapDetails,int type,UserInfoDto userInfoDto) {
+	public static void reportData(DataSource dataSource,Map<String, List<ReportDataDetailDto>> mapDetails,int type,UserInfoDto userInfoDto,Map<String, Map<String, String>> tableColumnJavaType) {
 //		if(type == 1)
 //		{//mysql类型处理
 //			processMysqlReportData(dataSource,mapDetails);
 //		}else {
 //			procesOtherDatabase(dataSource,mapDetails,type);
 //		}
-		procesOtherDatabase(dataSource,mapDetails,type,userInfoDto);
+		procesOtherDatabase(dataSource,mapDetails,type,userInfoDto,tableColumnJavaType);
 	}
 	
 	/**  
@@ -663,7 +663,7 @@ public class ReportDataUtil {
 	 * @return void
 	 * @date 2022-11-24 09:23:17 
 	 */  
-	private static void procesOtherDatabase(DataSource dataSource,Map<String, List<ReportDataDetailDto>> mapDetails,int type,UserInfoDto userInfoDto) {
+	private static void procesOtherDatabase(DataSource dataSource,Map<String, List<ReportDataDetailDto>> mapDetails,int type,UserInfoDto userInfoDto,Map<String, Map<String, String>> tableColumnJavaType) {
 		Connection conn = null;
 	    PreparedStatement ps = null;
 	    ResultSet rs = null;
@@ -674,6 +674,7 @@ public class ReportDataUtil {
 	    	for(String tableName : tableNames)
 	    	{
 	    		List<ReportDataDetailDto> details = mapDetails.get(tableName);
+	    		Map<String, String> columnJavaType = tableColumnJavaType.get(tableName);
 	    		if(!ListUtil.isEmpty(details))
 	    		{
 	    			for (int i = 0; i < details.size(); i++) {
@@ -682,7 +683,7 @@ public class ReportDataUtil {
 	    				 JSONObject autoFillAttrs = details.get(i).getAutoFillAttrs();
 	    				 if(details.get(i).isInsert())
 	    				 {//新增数据
-	    					 processInsertSql(columns,sqlParamsMap,tableName,autoFillAttrs,userInfoDto,details.get(i).getDatasoaurceId(),details.get(i).getFormsName());
+	    					 processInsertSql(columns,sqlParamsMap,tableName,autoFillAttrs,userInfoDto,details.get(i).getDatasoaurceId(),details.get(i).getFormsName(),columnJavaType);
 	    				 }else {
 	    					 //主键有数据，则是更新数据，没有数据则是新增数据
 	    					 boolean isInsert = false;//是否是插入数据，如果有主键为空，则就认为是插入数据
@@ -693,7 +694,7 @@ public class ReportDataUtil {
 	    						 }
 	    					 }
 	    					 if(isInsert || ListUtil.isEmpty(keys)) {
-	    						 processInsertSql(columns,sqlParamsMap,tableName,autoFillAttrs,userInfoDto,details.get(i).getDatasoaurceId(),details.get(i).getFormsName());
+	    						 processInsertSql(columns,sqlParamsMap,tableName,autoFillAttrs,userInfoDto,details.get(i).getDatasoaurceId(),details.get(i).getFormsName(),columnJavaType);
 	    					 }else {
 	    						 //keys如果是多个，需要先查询看一下是否有数据，有则更新，没有则新增
 	    						 if(ListUtil.isNotEmpty(keys) && keys.size() >1) {
@@ -728,17 +729,17 @@ public class ReportDataUtil {
 	 		    						rs = ps.executeQuery();
 	 		    						if(!rs.next())
 	 		    						{//没有数据，新增
-	 		    							processInsertSql(columns,sqlParamsMap,tableName,autoFillAttrs,userInfoDto,details.get(i).getDatasoaurceId(),details.get(i).getFormsName());
+	 		    							processInsertSql(columns,sqlParamsMap,tableName,autoFillAttrs,userInfoDto,details.get(i).getDatasoaurceId(),details.get(i).getFormsName(),columnJavaType);
 	 		    						}else {
 	 		    							//有数据，更新
-	 		    							processUpdateSql(columns,keys,sqlParamsMap,tableName,autoFillAttrs,userInfoDto,details.get(i).getDatasoaurceId(),details.get(i).getFormsName());
+	 		    							processUpdateSql(columns,keys,sqlParamsMap,tableName,autoFillAttrs,userInfoDto,details.get(i).getDatasoaurceId(),details.get(i).getFormsName(),columnJavaType);
 	 		    						}
 	 		    						ps.close();	
 	 	    						}else {
-	 	    							processInsertSql(columns,sqlParamsMap,tableName,autoFillAttrs,userInfoDto,details.get(i).getDatasoaurceId(),details.get(i).getFormsName());
+	 	    							processInsertSql(columns,sqlParamsMap,tableName,autoFillAttrs,userInfoDto,details.get(i).getDatasoaurceId(),details.get(i).getFormsName(),columnJavaType);
 	 	    						}
 	    						 }else {
-	    							 processUpdateSql(columns,keys,sqlParamsMap,tableName,autoFillAttrs,userInfoDto,details.get(i).getDatasoaurceId(),details.get(i).getFormsName()); 
+	    							 processUpdateSql(columns,keys,sqlParamsMap,tableName,autoFillAttrs,userInfoDto,details.get(i).getDatasoaurceId(),details.get(i).getFormsName(),columnJavaType); 
 	    						 }
 	    					 }
 	    						
@@ -790,21 +791,26 @@ public class ReportDataUtil {
 	 * @return void
 	 * @date 2022-11-24 10:33:19 
 	 */  
-	private static void processInsertSql(List<ReportDataColumnDto> columns,Map<String, List<List<Object>>> sqlParamsMap,String tableName,JSONObject autoFillAttrs,UserInfoDto userInfoDto,String datasourceId,String formsName)
+	private static void processInsertSql(List<ReportDataColumnDto> columns,Map<String, List<List<Object>>> sqlParamsMap,String tableName,JSONObject autoFillAttrs,UserInfoDto userInfoDto,String datasourceId,String formsName,Map<String, String> columnJavaType)
 	{
 		List<Object> params = new ArrayList<>();
 		String columnSql = "";
 		String paramSql = "";
 		for (int j = 0; j < columns.size(); j++) {
-			 params.add(columns.get(j).getData());
-			 if(j == 0)
-			 {
-				 columnSql = columnSql + columns.get(j).getColumnName();
-				 paramSql = paramSql + "?";
-			 }else {
-				 columnSql = columnSql + "," + columns.get(j).getColumnName();
-				 paramSql = paramSql + "," + "?"; 
-			 }
+			String column = columns.get(j).getColumnName();
+			Object data = columns.get(j).getData();
+			if(!StringUtil.isEmptyMap(columnJavaType) && columnJavaType.containsKey(column)) {
+				data = convertValue(columnJavaType.get(column), data);
+			}
+			params.add(data);
+			if(j == 0)
+			{
+				columnSql = columnSql + column;
+				paramSql = paramSql + "?";
+			}else {
+				columnSql = columnSql + "," + column;
+				paramSql = paramSql + "," + "?"; 
+			}
 		 }
 		String attrKey = datasourceId + "|" + tableName + "|" + formsName;
 		for (String key : autoFillAttrs.keySet()) {
@@ -819,13 +825,21 @@ public class ReportDataUtil {
 		    	  if(fillType == 1) {//系统时间
 		    		  params.add(DateUtil.string2SqlTimestamp(DateUtil.getNow(),DateUtil.FORMAT_FULL) );  
 		    	  }else if(fillType == 2) {//用户id
-		    		  params.add(userInfoDto.getUserId());  
+		    		  Object data = userInfoDto.getUserId();
+			  		  if(!StringUtil.isEmptyMap(columnJavaType) && columnJavaType.containsKey(columnName)) {
+			  			data = convertValue(columnJavaType.get(columnName), data);
+			  		  }
+		    		  params.add(data);  
 		    	  }else if(fillType == 3) {//用户名
 		    		  params.add(userInfoDto.getUserName());  
 		    	  }else if(fillType == 4) {//商户号
 		    		  params.add(userInfoDto.getMerchantNo());  
-		    	  }else if(fillType == 99) {//自定义数据
-		    		  params.add(attr.get("fillValue"));  
+		    	  }else if(fillType == 99 || fillType == 5) {//自定义数据 || 单元格数据
+		    		  Object data = attr.get("fillValue");
+		    		  if(!StringUtil.isEmptyMap(columnJavaType) && columnJavaType.containsKey(columnName)) {
+		  				data = convertValue(columnJavaType.get(columnName), data);
+		  			  }
+		    		  params.add(data);  
 		    	  }
 		    	  columnSql = columnSql + "," + columnName;
 		    	  paramSql = paramSql + "," + "?"; 
@@ -852,7 +866,7 @@ public class ReportDataUtil {
 	 * @return void
 	 * @date 2022-11-24 10:55:16 
 	 */  
-	private static void processUpdateSql(List<ReportDataColumnDto> columns,List<ReportDataColumnDto> keys,Map<String, List<List<Object>>> sqlParamsMap,String tableName,JSONObject autoFillAttrs,UserInfoDto userInfoDto,String datasourceId,String formsName)
+	private static void processUpdateSql(List<ReportDataColumnDto> columns,List<ReportDataColumnDto> keys,Map<String, List<List<Object>>> sqlParamsMap,String tableName,JSONObject autoFillAttrs,UserInfoDto userInfoDto,String datasourceId,String formsName,Map<String, String> columnJavaType)
 	{
 		List<Object> params = new ArrayList<>();
 		String columnSql = "";
@@ -865,12 +879,17 @@ public class ReportDataUtil {
 			if(keysMap.containsKey(columns.get(j).getColumnName())) {
 				continue;
 			}
-			params.add(columns.get(j).getData());
+			String column = columns.get(j).getColumnName();
+			Object data = columns.get(j).getData();
+			if(!StringUtil.isEmptyMap(columnJavaType) && columnJavaType.containsKey(column)) {
+				data = convertValue(columnJavaType.get(column), data);
+			}
+			params.add(data);
 			if(StringUtil.isNullOrEmpty(columnSql))
 			{
-				columnSql = columnSql + columns.get(j).getColumnName() + " = ?";
+				columnSql = columnSql + column + " = ?";
 			}else {
-				columnSql = columnSql + "," + columns.get(j).getColumnName() + " = ?";
+				columnSql = columnSql + "," + column + " = ?";
 			}
 		}
 		String attrKey = datasourceId + "|" + tableName + "|" + formsName;
@@ -886,13 +905,21 @@ public class ReportDataUtil {
 		    	  if(fillType == 1) {//系统时间
 		    		  params.add(DateUtil.string2SqlTimestamp(DateUtil.getNow(),DateUtil.FORMAT_FULL) );
 		    	  }else if(fillType == 2) {//用户id
-		    		  params.add(userInfoDto.getUserId());  
+		    		  Object data = userInfoDto.getUserId();
+			  		  if(!StringUtil.isEmptyMap(columnJavaType) && columnJavaType.containsKey(columnName)) {
+			  			data = convertValue(columnJavaType.get(columnName), data);
+			  		  }
+		    		  params.add(data);
 		    	  }else if(fillType == 3) {//用户名
 		    		  params.add(userInfoDto.getUserName());  
 		    	  }else if(fillType == 4) {//商户号
 		    		  params.add(userInfoDto.getMerchantNo());  
-		    	  }else if(fillType == 99) {//自定义数据
-		    		  params.add(attr.get("fillValue"));  
+		    	  }else if(fillType == 99 || fillType == 5) {//自定义数据
+		    		  Object data = attr.get("fillValue");
+		    		  if(!StringUtil.isEmptyMap(columnJavaType) && columnJavaType.containsKey(columnName)) {
+		  				data = convertValue(columnJavaType.get(columnName), data);
+		  			  }
+		    		  params.add(data);  
 		    	  }
 		    	  columnSql = columnSql + "," + columnName + " = ?";
 		      }
@@ -901,11 +928,19 @@ public class ReportDataUtil {
 			if(keys.get(j).getData() == null) {
 				continue;
 			}
-			if(keys.get(j).getIdType().intValue() == 3) {
-				params.add(Long.parseLong(String.valueOf(keys.get(j).getData())));
-			}else {
-				params.add(keys.get(j).getData());
+			String column = keys.get(j).getColumnName();
+			Object data = null;
+			data = keys.get(j).getData();
+//			if(keys.get(j).getIdType().intValue() == 3) {
+//				data = keys.get(j).getData()
+//				params.add(Long.parseLong(String.valueOf(keys.get(j).getData())));
+//			}else {
+//				params.add(keys.get(j).getData());
+//			}
+			if(!StringUtil.isEmptyMap(columnJavaType) && columnJavaType.containsKey(column)) {
+				data = convertValue(columnJavaType.get(column), data);
 			}
+			params.add(data);
 			if(StringUtil.isNullOrEmpty(whereSql.trim()))
 			{
 				whereSql = whereSql + keys.get(j).getColumnName() + " = ?";
@@ -934,14 +969,24 @@ public class ReportDataUtil {
 	 * @param userInfoDto void
 	 * @date 2025-02-17 12:41:01 
 	 */ 
-	public static void deleteData(DataSource dataSource,JSONObject params,UserInfoDto userInfoDto) {
+	public static void deleteData(DataSource dataSource,JSONObject params,UserInfoDto userInfoDto,Map<String, String> columnJavaType) {
 		String column = params.getString("column");
-		Object value = params.get("value");
+		String deleteColumn = params.getString("deleteColumn");
+		Object value =params.getString("value");
 		String table = params.getString("table");
 		String deleteType = params.getString("deleteType");
-		String deleteColumn = params.getString("deleteColumn");
 		Object deleteValue = params.get("deleteValue");
 		String sql = "";
+		if(!StringUtil.isEmptyMap(columnJavaType)) {
+			if(columnJavaType.containsKey(column)) {
+				String javaType = columnJavaType.get(column);
+				value = convertValue(javaType, value);
+			}
+			if(columnJavaType.containsKey(deleteColumn)) {
+				String javaType = columnJavaType.get(deleteColumn);
+				deleteValue = convertValue(javaType, deleteValue);
+			}
+		}
 		if("1".equals(deleteType)) {//物理删除
 			sql = "delete from " + table + " where " + column +" = ?";
 		}else {//逻辑删除
@@ -966,5 +1011,30 @@ public class ReportDataUtil {
 		}finally {
             JdbcUtils.releaseJdbcResource(conn,stmt, null);
         }
+	}
+	
+	private static Object convertValue(String type,Object value) {
+		if(value != null) {
+			if("java.lang.Long".equals(type)) {
+				value = Long.parseLong(String.valueOf(value));
+			}else if("java.lang.Integer".equals(type)) {
+				value = Integer.parseInt(String.valueOf(value));
+			}else if("java.lang.Double".equals(type)) {
+				value = Double.parseDouble(String.valueOf(value));
+			}else if("java.lang.Float".equals(type)) {
+				value = Float.parseFloat(String.valueOf(value));
+			}else if("java.math.BigDecimal".equals(type)) {
+				value = new BigDecimal(String.valueOf(value));
+			}else if("java.sql.Timestamp".equals(type)) {
+				value = DateUtil.string2SqlTimestamp(String.valueOf(value),DateUtil.FORMAT_FULL);
+			}else if("java.sql.Date".equals(type)) {
+				value = DateUtil.string2SqlDate(String.valueOf(value),DateUtil.FORMAT_LONOGRAM);
+			}else if("java.lang.Boolean".equals(type)) {
+				value = Boolean.parseBoolean(String.valueOf(value));
+			}else if("java.lang.String".equals(type)) {
+				value = String.valueOf(value);
+			}
+		}
+		return value;
 	}
 }

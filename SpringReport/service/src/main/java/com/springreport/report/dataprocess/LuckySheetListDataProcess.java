@@ -116,6 +116,10 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 				bindData.setHloopCount(variableCells.get(i).getHloopCount()==null?0:variableCells.get(i).getHloopCount());
 				bindData.setHloopEmptyCount(variableCells.get(i).getHloopEmptyCount()==null?0:variableCells.get(i).getHloopEmptyCount());
 				bindData.setVloopEmptyCount(variableCells.get(i).getVloopEmptyCount()==null?0:variableCells.get(i).getVloopEmptyCount());
+				bindData.setIsObject(variableCells.get(i).getIsObject());
+				bindData.setDataType(variableCells.get(i).getDataType());
+				bindData.setDataAttr(variableCells.get(i).getDataAttr());
+				bindData.setSubExtend(variableCells.get(i).getSubExtend());
 				if(StringUtil.isNotEmpty(variableCells.get(i).getFormsAttrs())) {
 					//填报设置如果设置了下拉单选数据字典，则以填报设置为准
 					JSONObject formsAttrs = JSON.parseObject(variableCells.get(i).getFormsAttrs());

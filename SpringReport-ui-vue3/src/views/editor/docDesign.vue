@@ -846,10 +846,29 @@
             </el-select>
           </el-form-item>
           <el-form-item
+            label="是否公共数据集"
+            prop="isCommon"
+            :rules="filter_rules('是否公共数据集', { required: true })"
+            style="width: 270px"
+          >
+            <el-select
+              v-model="sqlForm.isCommon"
+              placeholder="是否公共数据集"
+            >
+              <el-option
+                v-for="item in selectUtil.yesNo"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item
             label="分组"
             prop="groupId"
             :rules="filter_rules('选择分组', { required: true })"
             style="width: 270px"
+            v-if="sqlForm.isCommon == 2"
           >
             <el-select v-model="sqlForm.groupId" placeholder="选择分组">
               <el-option
@@ -857,6 +876,84 @@
                 :key="item.id"
                 :label="item.groupName"
                 :value="item.id"
+                :disabled="item.id == 0"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            label="行列转置"
+            prop="isConvert"
+            :rules="filter_rules('行列转置', { required: true })"
+            style="width: 270px"
+          >
+            <el-select
+              v-model="sqlForm.isConvert"
+              placeholder="行列转置"
+            >
+              <el-option
+                v-for="item in selectUtil.yesNo"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            label="固定列"
+            prop="fixedColumn"
+            :rules="filter_rules('固定列', { required: false })"
+            v-if="sqlForm.isConvert == 1"
+            style="width: 270px"
+          >
+            <el-select
+              v-model="sqlForm.fixedColumn"
+              placeholder="固定列"
+              multiple
+              collapse-tags
+            >
+            <el-option
+                v-for="item in sqlColumnTableData.tableData"
+                :key="item.name"
+                :label="item.name"
+                :value="item.name"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            label="行转列(表头)"
+            prop="headerName"
+            :rules="filter_rules('行转列(表头)', { required: false })"
+            v-if="sqlForm.isConvert == 1"
+            style="width: 270px"
+          >
+            <el-select
+              v-model="sqlForm.headerName"
+              placeholder="行转列(表头)"
+            >
+            <el-option
+                v-for="item in sqlColumnTableData.tableData"
+                :key="item.name"
+                :label="item.name"
+                :value="item.name"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            label="行转列(数值)"
+            prop="valueField"
+            :rules="filter_rules('行转列(数值)', { required: false })"
+            v-if="sqlForm.isConvert == 1"
+            style="width: 270px"
+          >
+            <el-select
+              v-model="sqlForm.valueField"
+              placeholder="行转列(表头)"
+            >
+            <el-option
+                v-for="item in sqlColumnTableData.tableData"
+                :key="item.name"
+                :label="item.name"
+                :value="item.name"
               />
             </el-select>
           </el-form-item>

@@ -45,6 +45,15 @@ export default {
         //表格工具栏按钮 start
         tableHandles: [
           {
+            label: '模板市场',
+            type: 'primary',
+            position: 'right',
+            iconClass: 'action-icon-template',
+            handle: () => this.goTemStore(),
+            auth: 'template_market',
+          },
+
+          {
             label: '新建目录',
             type: 'primary',
             position: 'right',
@@ -119,8 +128,7 @@ export default {
                 label: '报表设计',
                 type: 'primary',
                 auth: 'reportTpl_reportDesign',
-                handle: (row) =>
-                  this.routerTo('luckyReportDesign', row),
+                handle: (row) => this.routerTo('luckyReportDesign', row),
                 show: (row) => this.isShowBtn(row),
               },
               {
@@ -552,6 +560,17 @@ export default {
     // this.getRoles();
   },
   methods: {
+    goTemStore() {
+      window.open(
+        this.$router.resolve({
+          name: 'templateStore',
+          query: {
+            temType: 'excel',
+          },
+        }).href,
+        '_blank'
+      );
+    },
     /**
      * @description: 获取表格数据
      * @param {type}
@@ -566,7 +585,7 @@ export default {
       var that = this;
       that.pageData.tableData = [];
       this.commonUtil.getTableList(obj).then((response) => {
-        this.commonUtil.tableAssignment(response,this.pageData.tablePage,this.pageData.tableData);
+        this.commonUtil.tableAssignment(response, this.pageData.tablePage, this.pageData.tableData);
       });
     },
     resetSearch() {
@@ -803,7 +822,13 @@ export default {
     },
     //页面跳转
     routerTo(name, row) {
-      let viewReport = this.$router.resolve({ name: name, query: { tplId: row.id ,thirdPartyType:localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)} });
+      let viewReport = this.$router.resolve({
+        name: name,
+        query: {
+          tplId: row.id,
+          thirdPartyType: localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType),
+        },
+      });
       window.open(viewReport.href, '_blank');
     },
     //是否显示修改密码按钮
@@ -902,7 +927,7 @@ export default {
     },
     getReportTypeTree() {
       var obj = {
-        params: {"type":"1"},
+        params: { type: '1' },
         removeEmpty: false,
         url: this.apis.reportType.getReportTypeTreeApi,
       };
@@ -967,9 +992,11 @@ export default {
             });
             return;
           }
-          var extraParam = {}
-          if(localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)){
-            extraParam.thirdPartyType = localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType);
+          var extraParam = {};
+          if (localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)) {
+            extraParam.thirdPartyType = localStorage.getItem(
+              this.commonConstants.sessionItem.thirdPartyType
+            );
           }
           var obj = {
             params: Object.assign({}, this.pageData.shareReportModalData, extraParam),
@@ -1002,7 +1029,13 @@ export default {
       }
     },
     routerToTask(row) {
-      this.$router.push({ name: 'reportTask', query: { taskTplId: row.id ,thirdPartyType:localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)} });
+      this.$router.push({
+        name: 'reportTask',
+        query: {
+          taskTplId: row.id,
+          thirdPartyType: localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType),
+        },
+      });
     },
     loadData(tree, treeNode, resolve) {
       var obj = {
@@ -1022,33 +1055,36 @@ export default {
         return true;
       }
     },
-    removeNode(node, data){
+    removeNode(node, data) {
       const obj = {
         url: this.apis.reportType.deleteOneApi,
         messageContent: this.commonUtil.getMessageFromList('confirm.delete', null),
         callback: this.removeNodeCallBack,
         params: { id: data.id },
-        type: 'get'
-      }
+        type: 'get',
+      };
       var checkObj = {
         params: { reportType: data.id },
-        url: this.apis.reportTpl.getChildrenApi
-      }
-      this.commonUtil.doPost(checkObj).then(response => {
+        url: this.apis.reportTpl.getChildrenApi,
+      };
+      this.commonUtil.doPost(checkObj).then((response) => {
         if (response.code == '200') {
           if (response.responseData && response.responseData.length > 0) {
-            this.commonUtil.showMessage({ message: '该目录下有文档，不允许删除！', type: this.commonConstants.messageType.error })
+            this.commonUtil.showMessage({
+              message: '该目录下有文档，不允许删除！',
+              type: this.commonConstants.messageType.error,
+            });
           } else {
             // 弹出删除确认框
-            this.commonUtil.showConfirm(obj)
+            this.commonUtil.showConfirm(obj);
           }
         }
-      })
+      });
     },
-    removeNodeCallBack(){
-      this.searchtablelist()
-      this.getReportType()
+    removeNodeCallBack() {
+      this.searchtablelist();
+      this.getReportType();
       this.getReportTypeTree();
-    }
+    },
   },
 };
