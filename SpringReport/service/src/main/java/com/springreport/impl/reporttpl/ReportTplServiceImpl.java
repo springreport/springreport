@@ -2976,7 +2976,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 					fixed.eq("tpl_id", reportTpl.getId());
 					fixed.eq("sheet_id", sheets.get(t).getId());
 					fixed.eq("cell_value_type", CellValueTypeEnum.FIXED.getCode());
-					if(mesGenerateReportDto.getIsMobile().intValue() == YesNoEnum.YES.getCode().intValue())
+					if(mesGenerateReportDto.getIsMobile().intValue() == YesNoEnum.YES.getCode().intValue() && mesGenerateReportDto.getIsTask().intValue() != YesNoEnum.YES.getCode().intValue())
 					{
 						fixed.eq("is_chart_cell", YesNoEnum.NO.getCode());
 					}
@@ -4297,7 +4297,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		result.setImageDatas(images);
 		result.setChartCells(chartCells);
 		result.setDrillCells(drillCells);
-//		result.setCellBindData(cellBindData);
+		result.setCellBindData(cellBindData);
 		JSONArray wrapDatas = new JSONArray();
 		if(!StringUtil.isEmptyMap(dynamicRange)) {
 			for(String key : dynamicRange.keySet()){
@@ -12843,7 +12843,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			mesExportExcel.setChartsBase64(mesGenerateReportDto.getChartsBase64());
 			mesExportExcel.setImageInfos(new HashMap<>());
 			mesExportExcel.setBackImages(new HashMap<>());
-			ByteArrayInputStream is =ReportExcelUtil.getExcelStream(mesExportExcel,reportTpl.getTplName(),"");
+			ByteArrayInputStream is =ReportExcelUtil.getExcelStream(mesExportExcel,reportTpl.getTplName(),"",1);
 			String filename = IdWorker.getIdStr()+".pdf";
 			String date = DateUtil.getNow(DateUtil.FORMAT_LONOGRAM);
 			File dest = new File(dirPath + date + "/" + filename);
@@ -13293,7 +13293,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				mesExportExcel.setSheetConfigs(sheetConfigs);
 				mesExportExcel.setImageInfos(new HashMap<>());
 				mesExportExcel.setBackImages(new HashMap<>());
-				ByteArrayInputStream is =ReportExcelUtil.getExcelStream(mesExportExcel,resPreviewData.getTplName(),"");
+				ByteArrayInputStream is =ReportExcelUtil.getExcelStream(mesExportExcel,resPreviewData.getTplName(),"",1);
 				List<ExcelObject> objects = new ArrayList<ExcelObject>();
 				int x = resPreviewData.getSheetDatas().get(i).getStartXAndY().get("x")==null?0:resPreviewData.getSheetDatas().get(i).getStartXAndY().get("x");
 				int y = resPreviewData.getSheetDatas().get(i).getStartXAndY().get("y")==null?0:resPreviewData.getSheetDatas().get(i).getStartXAndY().get("y");
@@ -13578,6 +13578,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.check.notexist", new String[] {"报表模板"}));
 		}
 		mesGenerateReportDto.setIsMobile(YesNoEnum.YES.getCode());
+		mesGenerateReportDto.setIsTask(YesNoEnum.YES.getCode());
 		ResPreviewData resPreviewData = this.generateLuckySheetReportData(mesGenerateReportDto,false,userInfoDto,reportTpl);
 		MesExportExcel mesExportExcel = new MesExportExcel();
 		List<MesSheetConfig> sheetConfigs = new ArrayList<MesSheetConfig>();
@@ -13628,13 +13629,15 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			mesExportExcel.setChartsBase64(mesGenerateReportDto.getChartsBase64());
 			mesExportExcel.setImageInfos(new HashMap<>());
 			mesExportExcel.setBackImages(new HashMap<>());
-			ByteArrayInputStream is =ReportExcelUtil.getExcelStream(mesExportExcel,reportTpl.getTplName(),"");
+			ByteArrayInputStream is =ReportExcelUtil.getExcelStream(mesExportExcel,reportTpl.getTplName(),"",1);
 			ByteArrayOutputStream baos = FileUtil.cloneInputStream(is);
+			ByteArrayInputStream is2 =ReportExcelUtil.getExcelStream(mesExportExcel,reportTpl.getTplName(),"",2);
+			ByteArrayOutputStream baos2 = FileUtil.cloneInputStream(is2);
 			if(mesGenerateReportDto.getExportType() == 1 || mesGenerateReportDto.getExportType() == 3)
 			{
 				EmailAttachementDto excel = new EmailAttachementDto();
 				excel.setFileName(resPreviewData.getTplName()+".xlsx");
-				excel.setIs(new ByteArrayInputStream(baos.toByteArray()));
+				excel.setIs(new ByteArrayInputStream(baos2.toByteArray()));
 				attachments.add(excel);
 			}
 			if(mesGenerateReportDto.getExportType() == 2 || mesGenerateReportDto.getExportType() == 3)
@@ -13772,7 +13775,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			mesExportExcel.setChartsBase64(mesGenerateReportDto.getChartsBase64());
 			mesExportExcel.setImageInfos(new HashMap<>());
 			mesExportExcel.setBackImages(new HashMap<>());
-			ByteArrayInputStream is =ReportExcelUtil.getExcelStream(mesExportExcel,reportTpl.getTplName(),"");
+			ByteArrayInputStream is =ReportExcelUtil.getExcelStream(mesExportExcel,reportTpl.getTplName(),"",1);
 			List<ExcelObject> objects = new ArrayList<ExcelObject>();
 			int x = resPreviewData.getSheetDatas().get(0).getStartXAndY().get("x")==null?0:resPreviewData.getSheetDatas().get(0).getStartXAndY().get("x");
 			int y = resPreviewData.getSheetDatas().get(0).getStartXAndY().get("y")==null?0:resPreviewData.getSheetDatas().get(0).getStartXAndY().get("y");

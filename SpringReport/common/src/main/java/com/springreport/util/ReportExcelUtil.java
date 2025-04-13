@@ -1283,7 +1283,7 @@ public class ReportExcelUtil {
 	 * @return void
 	 * @date 2022-10-21 05:23:20 
 	 */  
-	public static ByteArrayInputStream getExcelStream(MesExportExcel mesExportExcel,String filename,String password) throws Exception
+	public static ByteArrayInputStream getExcelStream(MesExportExcel mesExportExcel,String filename,String password,int type) throws Exception
 	{
         XSSFWorkbook wb = new XSSFWorkbook();
         if(!ListUtil.isEmpty(mesExportExcel.getSheetConfigs()))
@@ -1373,8 +1373,13 @@ public class ReportExcelUtil {
                 JSONObject columnlenObj = JSONObject.parseObject(JSONObject.toJSONString(columnlen));
                 setImages(wb,sheet,images,columnlenObj,rowlenObj,rowhidden,colhidden,mesExportExcel.getImageInfos(),mesExportExcel.getBackImages());
                 insertUrlImg(wb,sheet,imageDatas);
+                if(type == 1) {
+                	insertChart(wb, sheet, mesExportExcel.getSheetConfigs().get(i).getChart(),mesExportExcel.getSheetConfigs().get(i).getChartCells(),cellUtil);
+                }else {
+                	insertChart(wb, sheet, mesExportExcel.getSheetConfigs().get(i).getChart(),mesExportExcel.getSheetConfigs().get(i).getChartCells(),mesExportExcel.getSheetConfigs().get(i).getIsCoedit(),rowlenObj,rowhidden,columnlenObj,colhidden);
+                }
 //                insertChart(wb, sheet, mesExportExcel.getSheetConfigs().get(i).getChart(),mesExportExcel.getSheetConfigs().get(i).getChartCells());
-                insertChart(wb, sheet, mesExportExcel.getSheetConfigs().get(i).getChart(),mesExportExcel.getSheetConfigs().get(i).getChartCells(),cellUtil);
+//                insertChart(wb, sheet, mesExportExcel.getSheetConfigs().get(i).getChart(),mesExportExcel.getSheetConfigs().get(i).getChartCells(),cellUtil);
 //                insertBase64Chart(wb, sheet, mesExportExcel.getSheetConfigs().get(i).getChart(),mesExportExcel.getSheetConfigs().get(i).getChartCells(),cellUtil,mesExportExcel.getChartsBase64());
                 if(ListUtil.isNotEmpty(barCodeCells)) {
                 	for (int j = 0; j < barCodeCells.size(); j++) {
