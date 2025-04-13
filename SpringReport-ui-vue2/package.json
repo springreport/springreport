@@ -1,8 +1,8 @@
 {
   "name": "SpringReport",
-  "version": "2.3.3",
+  "version": "2.3.4",
   "description": "SpringReport",
-  "author": "caiyang <caiyang90@163.com>",
+  "author": "caiyang <springreport@163.com>",
   "scripts": {
     "dev": "SET NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service serve",
     "lint": "eslint --ext .js,.vue src",
