@@ -7149,8 +7149,8 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		bindData.setCellText("${cellValue}");
 		if(dataType == 1) {//数组
 			if(ListUtil.isNotEmpty(luckySheetBindData.getDatas()) && ListUtil.isNotEmpty(luckySheetBindData.getDatas().get(0))) {
-				for (int i = 0; i < luckySheetBindData.getDatas().get(0).size(); i++) {
-					Object data = luckySheetBindData.getDatas().get(0).get(i).get(luckySheetBindData.getProperty());
+				for (int i = 0; i < luckySheetBindData.getDatas().get(j).size(); i++) {
+					Object data = luckySheetBindData.getDatas().get(j).get(i).get(luckySheetBindData.getProperty());
 					if(data != null) {
 						JSONArray jsonArray = JSON.parseArray(JSON.toJSONString(data));
 						for (int t = 0; t < jsonArray.size(); t++) {
@@ -7188,7 +7188,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				JSONObject jsonObject = JSON.parseObject(JSON.toJSONString(luckySheetBindData.getDatas().get(j).get(0).get(luckySheetBindData.getProperty())));
 				JSONArray subDatas = new JSONArray();
 				subDatas.add(jsonObject);
-				for (int i = 0; i < attrs.length-1; i++) {
+				for (int i = 0; i < attrs.length; i++) {
 					subDatas = this.analysisJson(attrs[i], subDatas);
 				}
 				if(ListUtil.isNotEmpty(subDatas)) {

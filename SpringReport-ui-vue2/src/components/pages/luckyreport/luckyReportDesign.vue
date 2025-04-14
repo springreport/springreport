@@ -1723,14 +1723,14 @@
             </el-select>
           </el-form-item>
           <el-form-item
-            label="行转列(表头)"
+            label="列转行(表头)"
             prop="headerName"
-            :rules="filter_rules('行转列(表头)', { required: false })"
+            :rules="filter_rules('列转行(表头)', { required: false })"
             v-if="sqlForm.isConvert == 1"
           >
             <el-select
               v-model="sqlForm.headerName"
-              placeholder="行转列(表头)"
+              placeholder="列转行(表头)"
               size="small"
             >
             <el-option
@@ -1742,14 +1742,14 @@
             </el-select>
           </el-form-item>
           <el-form-item
-            label="行转列(数值)"
+            label="列转行(数值)"
             prop="valueField"
-            :rules="filter_rules('行转列(数值)', { required: false })"
+            :rules="filter_rules('列转行(数值)', { required: false })"
             v-if="sqlForm.isConvert == 1"
           >
             <el-select
               v-model="sqlForm.valueField"
-              placeholder="行转列(表头)"
+              placeholder="列转行(数值)"
               size="small"
             >
             <el-option
