@@ -679,10 +679,11 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 	 * @see com.caiyang.api.reporttpldataset.IReportTplDatasetService#getReportDatasetsParam(com.caiyang.entity.reporttpldataset.ReportTplDataset) 
 	 * @author caiyang
 	 * @throws ParseException 
+	 * @throws JSQLParserException 
 	 * @date 2021-06-03 02:25:17 
 	 */
 	@Override
-	public Map<String, Object> getReportDatasetsParam(ReportTplDatasetDto reportTplDataset) throws ParseException {
+	public Map<String, Object> getReportDatasetsParam(ReportTplDatasetDto reportTplDataset) throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		Map<String, Object> paginationMap = new HashMap<>();//分页参数
 		List<String> apiHeaders = new ArrayList<>();//api请求的headers
@@ -885,7 +886,11 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 								DataSourceConfig dataSourceConfig = new DataSourceConfig(reportDatasource.getId(), reportDatasource.getDriverClass(), reportDatasource.getJdbcUrl(), reportDatasource.getUserName(), reportDatasource.getPassword(), null);
 								//获取数据源
 								DataSource dataSource = JdbcUtils.getDataSource(dataSourceConfig);
-								List<Map<String, Object>> list = ReportDataUtil.getSelectData(dataSource, params.get(j).getSelectContent());
+								String sql = params.get(j).getSelectContent();
+								if(params.get(j).getIsRelyOnParams().intValue() == 1) {
+									sql = JdbcUtils.processSqlParams(sql, new HashMap<>());
+								}
+								List<Map<String, Object>> list = ReportDataUtil.getSelectData(dataSource, sql);
 								List<Map<String, Object>> resultList = new ArrayList<>();
 								if(!ListUtil.isEmpty(list)) {
 									Map<String, Map<String, Object>> entityMap = new HashMap<>();

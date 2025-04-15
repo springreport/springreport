@@ -751,6 +751,7 @@ public class JdbcUtils {
 				e.printStackTrace();
 			}
 		}
+		System.err.println("解析后的sql："+sql);
 	    return sql;
 	} 
 	

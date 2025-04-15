@@ -68,6 +68,11 @@ public class LuckySheetGroupAggregate extends Aggregate<LuckysheetReportCell,Luc
 			if(AggregateTypeEnum.GROUP.getCode().equals(bindData.getLastAggregateType()) || AggregateTypeEnum.GROUPSUMMARY.getCode().equals(bindData.getLastAggregateType()))
 			{//上次数据处理是分组聚合
 				//本次数据处理是分组聚合，则数据进行分组处理
+//				if(bindData.getLastIsGroupMerge()) {
+//					bindData.setContinueGroupMergeCount(bindData.getContinueGroupMergeCount() + 1);
+//				}else {
+//					bindData.setContinueGroupMergeCount(0);
+//				}
 				String[] properties = groupProperty.split(",");
 				Map<Integer, Integer> firstIndexaChain = new HashMap<>();
 				for (int t = 0; t < properties.length; t++) {

@@ -161,7 +161,7 @@ public interface IReportTplDatasetService extends IService<ReportTplDataset> {
 	 * @throws ParseException 
 	 * @date 2021-06-03 02:24:46 
 	 */ 
-	Map<String, Object> getReportDatasetsParam(ReportTplDatasetDto reportTplDataset) throws ParseException;
+	Map<String, Object> getReportDatasetsParam(ReportTplDatasetDto reportTplDataset) throws Exception;
 	
 	/**  
 	 * @Title: getTplDatasetColumns

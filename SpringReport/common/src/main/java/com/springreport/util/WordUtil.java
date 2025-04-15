@@ -632,7 +632,23 @@ public class WordUtil {
     	}
     	String backgroundColor = cellInfo.getString("backgroundColor");
     	if(StringUtil.isNotEmpty(backgroundColor)) {
-    		cell.setColor(backgroundColor.replaceFirst("#", ""));
+    		if(backgroundColor.startsWith("rgb")) {
+    			try {
+					int[] rgbs = StringUtil.rgbStringToRgb(backgroundColor);
+					backgroundColor = StringUtil.rgb2Hex(rgbs[0], rgbs[1], rgbs[2]);
+					cell.setColor(backgroundColor);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+    		}else {
+    			try {
+    				cell.setColor(backgroundColor.replaceFirst("#", ""));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+    			
+    		}
+    		
     	}
     	JSONArray values = cellInfo.getJSONArray("value");
     	String verticalAlign = cellInfo.getString("verticalAlign");
@@ -1078,7 +1094,7 @@ public class WordUtil {
 		return numID;
 	}
 	
-	public static void addWatermark(XWPFDocument doc, String markStr,String fontColor,int fontSize) {
+	public static void addWatermark(XWPFDocument doc, String markStr,String fontColor,int fontSize,int firstpageHeaderFooterShow) {
 		XWPFHeaderFooterPolicy headerFooterPolicy = doc.getHeaderFooterPolicy();
 		if (headerFooterPolicy == null) {
 			headerFooterPolicy = doc.createHeaderFooterPolicy();
@@ -1092,6 +1108,17 @@ public class WordUtil {
             com.microsoft.schemas.vml.CTShape ctshape = (com.microsoft.schemas.vml.CTShape)xmlobjects[0];
             ctshape.setFillcolor(fontColor);//设置水印的颜色
             ctshape.setStyle(getWaterMarkStyle(ctshape.getStyle(), fontSize) + ";rotation:315");
+        }
+        if(firstpageHeaderFooterShow == YesNoEnum.NO.getCode().intValue()) {
+        	XWPFHeader headerFirst = headerFooterPolicy.getHeader(XWPFHeaderFooterPolicy.FIRST);
+            XWPFParagraph  paragraphFirst = headerFirst.getParagraphArray(0);
+            org.apache.xmlbeans.XmlObject[] xmlobjectsFirst = paragraphFirst.getCTP().getRArray(0).getPictArray(0).selectChildren(
+                    new javax.xml.namespace.QName("urn:schemas-microsoft-com:vml", "shape"));
+            if (xmlobjectsFirst.length > 0) {
+                com.microsoft.schemas.vml.CTShape ctshape = (com.microsoft.schemas.vml.CTShape)xmlobjectsFirst[0];
+                ctshape.setFillcolor(fontColor);//设置水印的颜色
+                ctshape.setStyle(getWaterMarkStyle(ctshape.getStyle(), fontSize) + ";rotation:315");
+            }
         }
 	}
 	

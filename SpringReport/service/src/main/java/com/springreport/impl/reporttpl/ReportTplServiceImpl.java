@@ -12379,6 +12379,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		//报表数据集查询和保存
 		QueryWrapper<ReportTplDataset> tplDatasetQueryWrapper = new QueryWrapper<>();
 		tplDatasetQueryWrapper.eq("tpl_id", tplId);
+		tplDatasetQueryWrapper.eq("is_common", YesNoEnum.NO.getCode());
 		tplDatasetQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
 		List<ReportTplDataset> datasets = this.iReportTplDatasetService.list(tplDatasetQueryWrapper);
 		if(!ListUtil.isEmpty(datasets))
