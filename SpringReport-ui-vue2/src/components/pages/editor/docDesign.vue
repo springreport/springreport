@@ -1378,7 +1378,7 @@
             >
               <el-input
                 v-model="paramForm.relyOnParams"
-                placeholder="依赖参数代码"
+                placeholder="依赖参数代码,分隔"
                 size="small"
               />
             </el-form-item>

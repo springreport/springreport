@@ -1598,18 +1598,24 @@ export default {
       if (type == '1') {
         // 输入参数
         this.commonUtil.moveUp(this.procedureInParamTableData.tableData, index)
-      } else {
+      } else if (type == '2'){
         // 输出参数
         this.commonUtil.moveUp(this.procedureOutParamTableData.tableData, index)
+      } else if (type == '3') {
+        // sql参数
+        this.commonUtil.moveUp(this.paramTableData.tableData, index)
       }
     },
     moveDown(index, type) {
       if (type == '1') {
         // 输入参数
         this.commonUtil.moveDown(this.procedureInParamTableData.tableData, index)
-      } else {
+      } else if (type == '2') {
         // 输出参数
         this.commonUtil.moveDown(this.procedureOutParamTableData.tableData, index)
+      }else if (type == '3') {
+        // sql参数
+        this.commonUtil.moveDown(this.paramTableData.tableData, index)
       }
     },
     // 添加输入参数

@@ -2249,7 +2249,7 @@
               >
                 <el-input
                   v-model="paramForm.relyOnParams"
-                  placeholder="依赖参数代码"
+                  placeholder="依赖参数代码，多个用,分隔"
                   size="small"
                 />
               </el-form-item>
