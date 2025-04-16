@@ -182,7 +182,8 @@
                       style="flex: 1"
                       :title="fieldItem.name"
                     >
-                      {{ fieldItem.name }}
+                      {{ fieldItem.name }}<span v-if="datasetItem.datasetType == '2'">({{fieldItem.columnName}})</span>
+                      <span v-else>({{fieldItem.remark}})</span>
                     </div>
                     <div class="action-box df-c">
                       <div
@@ -1956,6 +1957,7 @@
                 <el-table-column prop="name" label="别名" align="center" />
                 <el-table-column prop="dataType" label="数据类型" align="center" />
                 <el-table-column prop="width" label="宽度" align="center" />
+                <el-table-column prop="remark" label="注释" align="center" />
               </el-table>
               <!--表格 end-->
               <!--分页 start-->

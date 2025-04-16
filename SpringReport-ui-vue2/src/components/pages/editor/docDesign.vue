@@ -171,9 +171,10 @@
                   <div
                     class="set-name overflow-text"
                     style="flex: 1"
-                    :title="fieldItem.columnName"
+                    :title="fieldItem.name"
                   >
-                    {{ fieldItem.columnName }}
+                    {{ fieldItem.name }}<span v-if="datasetItem.datasetType == '2'">({{fieldItem.columnName}})</span>
+                      <span v-else>({{fieldItem.remark}})</span>
                   </div>
                   <div class="action-box df-c">
                     <el-dropdown>
@@ -1170,6 +1171,7 @@
                   align="center"
                 />
                 <el-table-column prop="width" label="宽度" align="center" />
+                <el-table-column prop="remark" label="注释" align="center" />
               </el-table>
               <!--表格 end-->
               <!--分页 start-->
