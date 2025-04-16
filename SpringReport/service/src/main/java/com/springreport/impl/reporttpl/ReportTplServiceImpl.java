@@ -4979,6 +4979,9 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			,Map<String, JSONObject> columnStartCoords,Map<String, JSONObject> extendCellOrigin,JSONObject dynamicRange,List<String> subTotalCellCoords) throws JsonMappingException, JsonProcessingException {
 //		List<Map<String, Object>> border = this.getBorderType(borderConfig, luckySheetBindData.getCoordsx(), luckySheetBindData.getCoordsy());//获取该单元格的边框信息
 		List<Map<String, Object>> border = null;
+		if(luckySheetBindData.getCoordsx() == 5 && luckySheetBindData.getCoordsy() == 5) {
+			System.err.println();
+		}
 		if(!borderInfo.containsKey(luckySheetBindData.getCoordsx()+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+luckySheetBindData.getCoordsy()))
 		{
 			border = this.getBorderType(borderConfig, luckySheetBindData.getCoordsx(), luckySheetBindData.getCoordsy());//获取该单元格的边框信息
@@ -10021,6 +10024,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
                 {
                 	for (int i = 0; i < luckySheetBindData.getColSpan(); i++) {
                 		maxCoordinate.put("y-" + (luckySheetBindData.getCoordsy()+i), x+dataSize*luckySheetBindData.getRowSpan());
+                		maxCoordinate.put("y-" + (y), x+dataSize*luckySheetBindData.getRowSpan());
                 	}
                 	for (int i = 0; i < luckySheetBindData.getRowSpan(); i++) {
                 		maxCoordinate.put("x-" + (luckySheetBindData.getCoordsx()+i), y+luckySheetBindData.getColSpan());
@@ -10048,6 +10052,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
                 }else {
                 	for (int i = 0; i < luckySheetBindData.getColSpan(); i++) {
                 		maxCoordinate.put("y-" + (luckySheetBindData.getCoordsy()+i), x+luckySheetBindData.getRowSpan());
+                		maxCoordinate.put("y-" + (y), x+luckySheetBindData.getRowSpan());
                 	}
                 	for (int i = 0; i < luckySheetBindData.getRowSpan(); i++) {
                 		maxCoordinate.put("x-" + (luckySheetBindData.getCoordsx()+i), y+luckySheetBindData.getColSpan());	
