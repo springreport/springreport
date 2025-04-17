@@ -2300,10 +2300,7 @@
                 >添加</el-button>
               </el-form-item><br>
               <div style="width:100%">
-              <el-tag
-                v-if="paramForm.paramType == 'date'"
-                type="warning"
-              >注：当参数类型选择日期时，如果想让默认日期是当前日期，则默认值填写current或者CURRENT，如果想让默认日期是当前日期的天几天或者后几天，则填天数，例如前七天则填写-7，后七天则填写7。</el-tag>
+              <el-link :underline="false" v-if="paramForm.paramType == 'date'" type="warning" href="https://gitee.com/springreport/springreport/wikis/pages?sort_id=13973093&doc_id=5747656" target="_blank">点击查看日期默认值设置规则</el-link>
               <el-tag
                 v-if="
                   paramForm.paramType == 'select' ||

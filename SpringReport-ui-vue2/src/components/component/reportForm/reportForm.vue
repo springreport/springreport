@@ -694,7 +694,6 @@ export default {
       }
     },
     getRelyOnParamys(item, data, modelData) {
-      console.log(1)
       var relyOnValue = null;
       for (let index = 0; index < data.params.length; index++) {
         const element = data.params[index]

@@ -162,8 +162,8 @@ export default {
       this.$refs["ruleForm"].validate((valid) => {
         if (valid) {
           this.drawer = false;
-          // this.$emit("search", this.searchData);
-          this.$parent.search()
+          this.$emit("search", this.searchData);
+          //this.$parent.search()
         }
       });
     },
