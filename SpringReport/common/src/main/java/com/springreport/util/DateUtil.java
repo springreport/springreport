@@ -580,10 +580,109 @@ public class DateUtil {
     	String lastSixDigits = timeStampStr.substring(timeStampStr.length() - 6);
     	return lastSixDigits;
 	}
+	
+	/**
+     * 获取本周的第一天
+     * @return String
+     * **/
+    public static String getWeekStart(){
+        Calendar cal=Calendar.getInstance();
+        cal.add(Calendar.WEEK_OF_MONTH, 0);
+        cal.set(Calendar.DAY_OF_WEEK, 2);
+        Date time=cal.getTime();
+        return new SimpleDateFormat("yyyy-MM-dd").format(time)+" 00:00:00";
+    }
+
+    /**
+     * 获取本周的最后一天
+     * @return String
+     * **/
+    public static String getWeekEnd(){
+        Calendar cal=Calendar.getInstance();
+        cal.set(Calendar.DAY_OF_WEEK, cal.getActualMaximum(Calendar.DAY_OF_WEEK));
+        cal.add(Calendar.DAY_OF_WEEK, 1);
+        Date time=cal.getTime();
+        return new SimpleDateFormat("yyyy-MM-dd").format(time)+" 23:59:59";
+    }
+    
+    /**
+     * 获取本月开始日期
+     * @return String
+     * **/
+    public static String getMonthStart(){
+        Calendar cal=Calendar.getInstance();
+        cal.add(Calendar.MONTH, 0);
+        cal.set(Calendar.DAY_OF_MONTH, 1);
+        Date time=cal.getTime();
+        return new SimpleDateFormat("yyyy-MM-dd").format(time)+" 00:00:00";
+    }
+
+    /**
+     * 获取本月最后一天
+     * @return String
+     * **/
+    public static String getMonthEnd(){
+        Calendar cal=Calendar.getInstance();
+        cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+        Date time=cal.getTime();
+        return new SimpleDateFormat("yyyy-MM-dd").format(time)+" 23:59:59";
+    }
+
+    /**
+     * @Description: 获取季度第一天
+     * 1.根据给定日期计算当前季度的第一个月份
+     * 2.设置日历的月份为当前季度的第一个月份
+     * 3.最后设置日历月份天数为第一天即可
+     * @Author: wsp
+     **/
+    public static String getQuarterStart(Date date) {
+        Calendar startCalendar = Calendar.getInstance();
+        startCalendar.setTime(date);
+        //get方法：获取给定日历属性的值，如 endCalendar.get(Calendar.MONTH) 获取日历的月份
+        //计算季度数：由于月份从0开始，即1月份的Calendar.MONTH值为0,所以计算季度的第一个月份只需 月份 / 3 * 3
+        startCalendar.set(Calendar.MONTH, (((int) startCalendar.get(Calendar.MONTH)) / 3) * 3);
+        startCalendar.set(Calendar.DAY_OF_MONTH, 1);
+        Date time = startCalendar.getTime();
+        return new SimpleDateFormat("yyyy-MM-dd").format(time)+" 00:00:00";
+    }
+
+    /**
+     * @Description: 获取季度最后一天
+     * @Author: wsp
+     **/
+    public static String getQuarterEnd(Date date) { // 季度结束
+        Calendar endCalendar = Calendar.getInstance();
+        endCalendar.setTime(date);
+        //计算季度数：由于月份从0开始，即1月份的Calendar.MONTH值为0,所以计算季度的第三个月份只需 月份 / 3 * 3 + 2
+        endCalendar.set(Calendar.MONTH, (((int) endCalendar.get(Calendar.MONTH)) / 3) * 3 + 2);
+        endCalendar.set(Calendar.DAY_OF_MONTH, endCalendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+        Date time = endCalendar.getTime();
+        return new SimpleDateFormat("yyyy-MM-dd").format(time)+" 23:59:59";
+    }
+    
+    /**
+     * 获取本年的第一天
+     * @return String
+     * **/
+    public static String getYearStart(){
+        return new SimpleDateFormat("yyyy").format(new Date())+"-01-01"+" 00:00:00";
+    }
+  
+    /**
+     * 获取本年的最后一天
+     * @return String
+     * **/
+    public static String getYearEnd(){
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.MONTH,calendar.getActualMaximum(Calendar.MONTH));
+        calendar.set(Calendar.DAY_OF_MONTH,calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+        Date currYearLast = calendar.getTime();
+        return new SimpleDateFormat("yyyy-MM-dd").format(currYearLast)+" 23:59:59";
+    }
 	    
     public static void main(String[] args) throws ParseException {
     	String timeStampStr = DateUtil.getTimeStamp();
     	String lastSixDigits = timeStampStr.substring(timeStampStr.length() - 6);
-    	System.out.println(lastSixDigits);
+    	System.out.println(getYearEnd());
     }
 }
