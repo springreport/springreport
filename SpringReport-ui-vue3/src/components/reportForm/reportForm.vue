@@ -680,10 +680,17 @@
       getRelyOnParamys(item, data, modelData) {
         var relyOnValue = null;
         for (let index = 0; index < data.params.length; index++) {
-          const element = data.params[index];
-          if (element.hasOwnProperty(item.relyOnParams)) {
-            relyOnValue = element[item.relyOnParams];
+          const element = data.params[index]
+          let relyOnParams = item.relyOnParams.split(",");
+          for (let t = 0; t < relyOnParams.length; t++) {
+            if (relyOnParams[t] && element.hasOwnProperty(relyOnParams[t])) {
+              if(relyOnValue == null){
+                relyOnValue = {};
+              }
+              relyOnValue[relyOnParams[t]] = element[relyOnParams[t]]
+            }
           }
+          
         }
         if (relyOnValue) {
           var params = {
@@ -691,7 +698,9 @@
             datasourceId: item.datasourceId,
             params: {},
           };
-          params.params[item.relyOnParams] = relyOnValue;
+          for(var key in relyOnValue) {
+            params.params[key] = relyOnValue[key]
+          }
           var obj = {
             url: '/api/reportTplDataset/getRelyOnData',
             params: params,
@@ -742,7 +751,6 @@
         }
       },
       getTreeData(item,data) {
-        console.log(1)
         if (!item.init || item.isRelyOnParams == 1) {
           var params = {
             selectContent: item.selectContent,
@@ -753,11 +761,19 @@
             var relyOnValue = null;
             for (let index = 0; index < data.params.length; index++) {
               const element = data.params[index]
-              if (element.hasOwnProperty(item.relyOnParams)) {
-                relyOnValue = element[item.relyOnParams]
+              let relyOnParams = item.relyOnParams.split(",");
+              for (let t = 0; t < relyOnParams.length; t++) {
+                if (relyOnParams[t] && element.hasOwnProperty(relyOnParams[t])) {
+                  if(relyOnValue == null){
+                    relyOnValue = {};
+                  }
+                  relyOnValue[relyOnParams[t]] = element[relyOnParams[t]]
+                }
               }
             }
-            params.params[item.relyOnParams] = relyOnValue
+            for(var key in relyOnValue) {
+              params.params[key] = relyOnValue[key]
+            }
           }
           var obj = {
             url: '/api/reportTplDataset/getTreeSelectData',
