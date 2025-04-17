@@ -88,6 +88,8 @@ github地址：https://github.com/springreport/excel2pdf
 
 gitee地址：https://gitee.com/springreport/excel2pdf
 
+gitcode地址：https://gitcode.com/caiyangyang007/excel2pdf
+
 SpringReport还有部分依赖的jar包无法直接通过pom.xml下载，需要单独引入放到自己本地的maven库，这些jar在git中都有，从【sql脚本和其他】文件夹中获取
 
 ## 数据库支持
