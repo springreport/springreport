@@ -5470,7 +5470,6 @@ export default {
           if(!that.datasourceAttr.mainAttrs){
             that.datasourceAttr.mainAttrs = [];
           }
-          console.log(obj)
           that.datasourceAttr.mainAttrs.push(obj)
           that.closeMainForm()
         } else {

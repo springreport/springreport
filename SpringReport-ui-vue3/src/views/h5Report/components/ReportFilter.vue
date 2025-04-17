@@ -111,7 +111,7 @@
                     check-on-click-node
                     :check-strictly="item.checkStrictly==1?false:true"
                     clearable
-                    @focus="getTreeData(item)"
+                    @focus="getTreeData(item,searchData)"
                 />
                 <el-tree-select
                     v-if="item.paramType==='treeSelect' || item.componentType==='treeSelect'"
@@ -121,7 +121,7 @@
                     :props="{ parent: 'pid', label: 'name',children: 'children'}"
                     clearable
                     :check-strictly="true"
-                    @focus="getTreeData(item)"
+                    @focus="getTreeData(item,searchData)"
                 />
           </el-form-item>
         </el-form>
@@ -206,11 +206,17 @@ export default {
       }
     },
     getRelyOnParamys(item, data, modelData) {
-      var relyOnValue = "";
+      var relyOnValue = null;
       for (let index = 0; index < data.params.length; index++) {
         const element = data.params[index];
-        if (element.hasOwnProperty(item.relyOnParams)) {
-          relyOnValue = element[item.relyOnParams];
+        let relyOnParams = item.relyOnParams.split(",");
+        for (let t = 0; t < relyOnParams.length; t++) {
+          if (relyOnParams[t] && element.hasOwnProperty(relyOnParams[t])) {
+            if(relyOnValue == null){
+              relyOnValue = {};
+            }
+            relyOnValue[relyOnParams[t]] = element[relyOnParams[t]]
+          }
         }
       }
       if (relyOnValue) {
@@ -219,7 +225,9 @@ export default {
           datasourceId: item.datasourceId,
           params: {},
         };
-        params.params[item.relyOnParams] = relyOnValue;
+        for(var key in relyOnValue) {
+          params.params[key] = relyOnValue[key]
+        }
         var obj = {
           url: "/api/reportTplDataset/getRelyOnData",
           params: params,
@@ -234,15 +242,33 @@ export default {
         modelData[item.paramCode] = null;
       }
     },
-     getTreeData(item)
+    getTreeData(item,data)
     {
-      if(!item.init)
+      if(!item.init || item.isRelyOnParams == 1)
       {
         var params = {
           selectContent: item.selectContent,
           datasourceId: item.datasourceId,
           params: {},
         };
+        if(item.isRelyOnParams == 1){
+          var relyOnValue = null;
+          for (let index = 0; index < data.params.length; index++) {
+            const element = data.params[index]
+            let relyOnParams = item.relyOnParams.split(",");
+            for (let t = 0; t < relyOnParams.length; t++) {
+              if (relyOnParams[t] && element.hasOwnProperty(relyOnParams[t])) {
+                if(relyOnValue == null){
+                  relyOnValue = {};
+                }
+                relyOnValue[relyOnParams[t]] = element[relyOnParams[t]]
+              }
+            }
+          }
+          for(var key in relyOnValue) {
+            params.params[key] = relyOnValue[key]
+          }
+        }
         var obj = {
           url: "/api/reportTplDataset/getTreeSelectData",
           params: params,

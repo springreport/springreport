@@ -10021,6 +10021,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
                 {
                 	for (int i = 0; i < luckySheetBindData.getColSpan(); i++) {
                 		maxCoordinate.put("y-" + (luckySheetBindData.getCoordsy()+i), x+dataSize*luckySheetBindData.getRowSpan());
+                		maxCoordinate.put("y-" + (y), x+dataSize*luckySheetBindData.getRowSpan());
                 	}
                 	for (int i = 0; i < luckySheetBindData.getRowSpan(); i++) {
                 		maxCoordinate.put("x-" + (luckySheetBindData.getCoordsx()+i), y+luckySheetBindData.getColSpan());
@@ -10048,6 +10049,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
                 }else {
                 	for (int i = 0; i < luckySheetBindData.getColSpan(); i++) {
                 		maxCoordinate.put("y-" + (luckySheetBindData.getCoordsy()+i), x+luckySheetBindData.getRowSpan());
+                		maxCoordinate.put("y-" + (y), x+luckySheetBindData.getRowSpan());
                 	}
                 	for (int i = 0; i < luckySheetBindData.getRowSpan(); i++) {
                 		maxCoordinate.put("x-" + (luckySheetBindData.getCoordsx()+i), y+luckySheetBindData.getColSpan());	
@@ -12379,6 +12381,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		//报表数据集查询和保存
 		QueryWrapper<ReportTplDataset> tplDatasetQueryWrapper = new QueryWrapper<>();
 		tplDatasetQueryWrapper.eq("tpl_id", tplId);
+		tplDatasetQueryWrapper.eq("is_common", YesNoEnum.NO.getCode());
 		tplDatasetQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
 		List<ReportTplDataset> datasets = this.iReportTplDatasetService.list(tplDatasetQueryWrapper);
 		if(!ListUtil.isEmpty(datasets))

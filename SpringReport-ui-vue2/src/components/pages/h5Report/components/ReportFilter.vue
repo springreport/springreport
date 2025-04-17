@@ -105,12 +105,14 @@
                 :props="{ parent: 'pid', value: 'id',label: 'name',children: 'children'}" 
                 :options="item.selectData" :lazy="false" 
                 :item="item"
+                :data="searchData"
                 :focusMethod="getTreeData" :checkStrictly="item.checkStrictly==1?false:true">
                   </multiselectNode>
                 <selectNode v-if="item.paramType==='treeSelect' || item.componentType==='treeSelect'"  :ref="searchData.params[index][item.paramCode]" 
                 v-model="searchData.params[index][item.paramCode]" 
                 :props="{ parent: 'pid', value: 'id',label: 'name',children: 'children'}" 
                 :options="item.selectData" :lazy="false"  :clearable="true" size="mini"
+                :data="searchData"
                 :item="item"
                 :focusMethod="getTreeData">
               </selectNode>
@@ -160,8 +162,8 @@ export default {
       this.$refs["ruleForm"].validate((valid) => {
         if (valid) {
           this.drawer = false;
-          // this.$emit("search", this.searchData);
-          this.$parent.search()
+          this.$emit("search", this.searchData);
+          //this.$parent.search()
         }
       });
     },
@@ -195,11 +197,17 @@ export default {
       }
     },
     getRelyOnParamys(item, data, modelData) {
-      var relyOnValue = "";
+      var relyOnValue = null;
       for (let index = 0; index < data.params.length; index++) {
         const element = data.params[index];
-        if (element.hasOwnProperty(item.relyOnParams)) {
-          relyOnValue = element[item.relyOnParams];
+        let relyOnParams = item.relyOnParams.split(",");
+        for (let t = 0; t < relyOnParams.length; t++) {
+          if (relyOnParams[t] && element.hasOwnProperty(relyOnParams[t])) {
+            if(relyOnValue == null){
+              relyOnValue = {};
+            }
+            relyOnValue[relyOnParams[t]] = element[relyOnParams[t]]
+          }
         }
       }
       if (relyOnValue) {
@@ -208,7 +216,9 @@ export default {
           datasourceId: item.datasourceId,
           params: {},
         };
-        params.params[item.relyOnParams] = relyOnValue;
+        for(var key in relyOnValue) {
+          params.params[key] = relyOnValue[key]
+        }
         var obj = {
           url: "/api/reportTplDataset/getRelyOnData",
           params: params,
@@ -223,28 +233,43 @@ export default {
         modelData[item.paramCode] = null;
       }
     },
-    getTreeData(item)
-    {
-      if(!item.init)
-      {
+    getTreeData(item,data) {
+      if (!item.init || item.isRelyOnParams == 1) {
         var params = {
           selectContent: item.selectContent,
           datasourceId: item.datasourceId,
-          params: {},
-        };
-        var obj = {
-          url: "/api/reportTplDataset/getTreeSelectData",
-          params: params,
-        };
-        this.commonUtil.doPost(obj).then((response) => {
-          if (response.code == "200") {
-            item.selectData = response.responseData;
-            if(response.responseData && response.responseData.length > 0)
-            {
-              item.init = true;
+          params: {}
+        }
+        if(item.isRelyOnParams == 1){
+          var relyOnValue = null;
+          for (let index = 0; index < data.params.length; index++) {
+            const element = data.params[index]
+            let relyOnParams = item.relyOnParams.split(",");
+            for (let t = 0; t < relyOnParams.length; t++) {
+              if (relyOnParams[t] && element.hasOwnProperty(relyOnParams[t])) {
+                if(relyOnValue == null){
+                  relyOnValue = {};
+                }
+                relyOnValue[relyOnParams[t]] = element[relyOnParams[t]]
+              }
             }
           }
-        });
+          for(var key in relyOnValue) {
+            params.params[key] = relyOnValue[key]
+          }
+        }
+        var obj = {
+          url: '/api/reportTplDataset/getTreeSelectData',
+          params: params
+        }
+        this.commonUtil.doPost(obj).then((response) => {
+          if (response.code == '200') {
+            item.selectData = response.responseData
+            if (response.responseData && response.responseData.length > 0) {
+              item.init = true
+            }
+          }
+        })
       }
     }
   },

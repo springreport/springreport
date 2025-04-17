@@ -171,9 +171,10 @@
                   <div
                     class="set-name overflow-text"
                     style="flex: 1"
-                    :title="fieldItem.columnName"
+                    :title="fieldItem.name"
                   >
-                    {{ fieldItem.columnName }}
+                    {{ fieldItem.name }}<span v-if="datasetItem.datasetType == '2'">({{fieldItem.columnName}})</span>
+                      <span v-else>({{fieldItem.remark}})</span>
                   </div>
                   <div class="action-box df-c">
                     <el-dropdown>
@@ -1170,6 +1171,7 @@
                   align="center"
                 />
                 <el-table-column prop="width" label="宽度" align="center" />
+                <el-table-column prop="remark" label="注释" align="center" />
               </el-table>
               <!--表格 end-->
               <!--分页 start-->
@@ -1378,7 +1380,7 @@
             >
               <el-input
                 v-model="paramForm.relyOnParams"
-                placeholder="依赖参数代码"
+                placeholder="依赖参数代码,多个用,分隔"
                 size="small"
               />
             </el-form-item>
@@ -1427,10 +1429,8 @@
                 @click="addParam"
               >添加</el-button>
             </el-form-item>
-            <el-tag
-              v-if="paramForm.paramType == 'date'"
-              type="warning"
-            >注：当参数类型选择日期时，如果想让默认日期是当前日期，则默认值填写current或者CURRENT，如果想让默认日期是当前日期的天几天或者后几天，则填天数，例如前七天则填写-7，后七天则填写7。</el-tag>
+             <div style="width:100%">
+            <el-link :underline="false" v-if="paramForm.paramType == 'date'" type="warning" href="https://gitee.com/springreport/springreport/wikis/pages?sort_id=13973093&doc_id=5747656" target="_blank">点击查看日期默认值设置规则</el-link>
             <el-tag
               v-if="
                 paramForm.paramType == 'select' ||
@@ -1460,6 +1460,7 @@
               type="warning"
             >sql语句格式：select deptId as id, deptName as name,parentId as
               pid from table 注意：返回的属性中必须有 id,name和pid</el-tag>
+             </div>
           </el-form>
           <div style="height: 2px" />
           <div style="height: 50%">

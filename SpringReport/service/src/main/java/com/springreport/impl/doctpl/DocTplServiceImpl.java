@@ -843,18 +843,18 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 			WordUtil.setPaperMargins(doc, margins);
 			//设置纸张大小
 			WordUtil.setPaperSize(doc, model.getHeight(), model.getWidth(),model.getPaperDirection());
+			//首页页眉不显示
+			if(YesNoEnum.NO.getCode().intValue() == model.getFirstpageHeaderFooterShow().intValue()) {
+				CTSectPr sect = doc.getDocument().getBody().getSectPr();
+				sect.addNewTitlePg();
+			}
 			if(StringUtil.isNotEmpty(model.getWatermark())){
 				JSONObject watermark = JSON.parseObject(model.getWatermark());
 				String data = watermark.getString("data");
 				if(StringUtil.isNotEmpty(data)) {
 					int size = watermark.getIntValue("size");
-					WordUtil.addWatermark(doc, data, "#aeb5c0", size);
+					WordUtil.addWatermark(doc, data, "#aeb5c0", size,model.getFirstpageHeaderFooterShow());
 				}
-			}
-			//首页页眉不显示
-			if(YesNoEnum.NO.getCode().intValue() == model.getFirstpageHeaderFooterShow().intValue()) {
-				CTSectPr sect = doc.getDocument().getBody().getSectPr();
-				sect.addNewTitlePg();
 			}
 			//页眉
 			JSONArray header = JSON.parseArray(model.getHeader());
@@ -1880,7 +1880,8 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 		int height = 0;
 		List<XWPFTableRow> rows = table.getRows();
 		Map<String, Object> mergeCells = new HashMap<>();
-		List<DocTableRowDto> docTableRowDtos = new ArrayList<>();
+		List<DocTableRowDto>  docTableRowDtos = new ArrayList<>();
+//		int maxCols = 0;
 		for (int i = 0; i < rows.size(); i++) {
 			List<XWPFTableCell> cells = rows.get(i).getTableCells();
 			for (int j = 0; j < cells.size(); j++) {
@@ -1895,7 +1896,18 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 					}
 				}
 			}
+//			if(rows.get(i).getTableCells().size() > maxCols) {
+//				maxCols = rows.get(i).getTableCells().size();
+//			}
 		}
+//		for (int i = 0; i < rows.size(); i++) {
+//			int size = rows.get(i).getTableCells().size();
+//			if(maxCols > size) {
+//				for (int j = size; j < maxCols; j++) {
+//					rows.get(i).addNewTableCell().setWidth("1024");
+//				}
+//			}
+//		}
 		for (int i = 0; i < rows.size(); i++) {
 			DocTableRowDto docTableRowDto = new DocTableRowDto();
 			height =  height + rows.get(i).getHeight();
@@ -1915,7 +1927,7 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 				if(StringUtil.isNotEmpty(cell.getColor())) {
 					docTableCellDto.setBackgroundColor("#"+cell.getColor());
 				}
-				if(cell.getCTTc().getTcPr().getGridSpan() != null) {
+				if(cell.getCTTc().getTcPr() != null && cell.getCTTc().getTcPr().getGridSpan() != null) {
 					docTableCellDto.setColspan(cell.getCTTc().getTcPr().getGridSpan().getVal().intValue());
 				}
 				if(i == 0) {

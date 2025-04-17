@@ -184,26 +184,26 @@ public class LuckySheetCellUtil2 {
 					if(noViewAuthCells!=null && noViewAuthCells.contains(key)) {
 						continue;
 					}
-					if(cellStyleMap.size()<64000)
-					{//单元格格式如果创建超过64000个会报异常
-						boolean isLock = true;
-						if(unProtectCells != null && unProtectCells.containsKey(key))
-						{
-							isLock = false;
-						}
-//						String borderType = "border-none";
-//						if(!StringUtil.isEmptyMap(cellBorders))
+//					if(cellStyleMap.size()<64000)
+//					{//单元格格式如果创建超过64000个会报异常
+//						boolean isLock = true;
+//						if(unProtectCells != null && unProtectCells.containsKey(key))
 //						{
-//							cellBorder = cellBorders.getJSONObject(key);
-//							if(cellBorder != null)
-//							{
-//								borderType = cellBorder.getString("borderType");
-//								cellBorders.remove(key);
-//							}
+//							isLock = false;
 //						}
-						CellStyle cellStyle = this.getCellStyle(cellData,cellStyleMap,isLock,"",wrapText);
-						cell.setCellStyle(cellStyle);
-					}
+////						String borderType = "border-none";
+////						if(!StringUtil.isEmptyMap(cellBorders))
+////						{
+////							cellBorder = cellBorders.getJSONObject(key);
+////							if(cellBorder != null)
+////							{
+////								borderType = cellBorder.getString("borderType");
+////								cellBorders.remove(key);
+////							}
+////						}
+//						CellStyle cellStyle = this.getCellStyle(cellData,cellStyleMap,isLock,"",wrapText);
+//						cell.setCellStyle(cellStyle);
+//					}
 					Map<String, Object> cellType = (Map<String, Object>) cellValue.get(LuckySheetPropsEnum.CELLTYPE.getCode());
 					String t = "s";
 					if(cellType != null) {

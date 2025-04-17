@@ -58,6 +58,7 @@ import com.springreport.dto.reporttpldataset.ReportTplDatasetDto;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -69,6 +70,7 @@ import javax.sql.DataSource;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.springreport.enums.DatasetTypeEnum;
+import com.springreport.enums.DefaultDateTypeEnum;
 import com.springreport.enums.DelFlagEnum;
 import com.springreport.enums.ParamTypeEnum;
 import com.springreport.enums.ProcedureParamTypeEnum;
@@ -679,10 +681,11 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 	 * @see com.caiyang.api.reporttpldataset.IReportTplDatasetService#getReportDatasetsParam(com.caiyang.entity.reporttpldataset.ReportTplDataset) 
 	 * @author caiyang
 	 * @throws ParseException 
+	 * @throws JSQLParserException 
 	 * @date 2021-06-03 02:25:17 
 	 */
 	@Override
-	public Map<String, Object> getReportDatasetsParam(ReportTplDatasetDto reportTplDataset) throws ParseException {
+	public Map<String, Object> getReportDatasetsParam(ReportTplDatasetDto reportTplDataset) throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		Map<String, Object> paginationMap = new HashMap<>();//分页参数
 		List<String> apiHeaders = new ArrayList<>();//api请求的headers
@@ -841,6 +844,54 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 									String currentDate = DateUtil.getNow(StringUtil.isNotEmpty(params.get(j).getDateFormat())?params.get(j).getDateFormat():DateUtil.FORMAT_LONOGRAM);
 									params.get(j).setParamDefault(currentDate);
 									params.get(j).setDateFormat(StringUtil.isNotEmpty(params.get(j).getDateFormat())?params.get(j).getDateFormat():DateUtil.FORMAT_LONOGRAM);
+								}else if(DefaultDateTypeEnum.WF.getCode().equals(StringUtil.trim(params.get(j).getParamDefault()).toLowerCase()))
+								{//本周第一天
+									String currentDate = DateUtil.getWeekStart();
+									currentDate = DateUtil.date2String(DateUtil.string2Date(currentDate), StringUtil.isNotEmpty(params.get(j).getDateFormat())?params.get(j).getDateFormat():DateUtil.FORMAT_LONOGRAM);
+									params.get(j).setParamDefault(currentDate);
+									params.get(j).setDateFormat(StringUtil.isNotEmpty(params.get(j).getDateFormat())?params.get(j).getDateFormat():DateUtil.FORMAT_LONOGRAM);
+								}else if(DefaultDateTypeEnum.WL.getCode().equals(StringUtil.trim(params.get(j).getParamDefault()).toLowerCase()))
+								{//本周最后一天
+									String currentDate = DateUtil.getWeekEnd();
+									currentDate = DateUtil.date2String(DateUtil.string2Date(currentDate), StringUtil.isNotEmpty(params.get(j).getDateFormat())?params.get(j).getDateFormat():DateUtil.FORMAT_LONOGRAM);
+									params.get(j).setParamDefault(currentDate);
+									params.get(j).setDateFormat(StringUtil.isNotEmpty(params.get(j).getDateFormat())?params.get(j).getDateFormat():DateUtil.FORMAT_LONOGRAM);
+								}else if(DefaultDateTypeEnum.MF.getCode().equals(StringUtil.trim(params.get(j).getParamDefault()).toLowerCase()))
+								{//本月第一天
+									String currentDate = DateUtil.getMonthStart();
+									currentDate = DateUtil.date2String(DateUtil.string2Date(currentDate), StringUtil.isNotEmpty(params.get(j).getDateFormat())?params.get(j).getDateFormat():DateUtil.FORMAT_LONOGRAM);
+									params.get(j).setParamDefault(currentDate);
+									params.get(j).setDateFormat(StringUtil.isNotEmpty(params.get(j).getDateFormat())?params.get(j).getDateFormat():DateUtil.FORMAT_LONOGRAM);
+								}else if(DefaultDateTypeEnum.ML.getCode().equals(StringUtil.trim(params.get(j).getParamDefault()).toLowerCase()))
+								{//本月最后一天
+									String currentDate = DateUtil.getMonthEnd();
+									currentDate = DateUtil.date2String(DateUtil.string2Date(currentDate), StringUtil.isNotEmpty(params.get(j).getDateFormat())?params.get(j).getDateFormat():DateUtil.FORMAT_LONOGRAM);
+									params.get(j).setParamDefault(currentDate);
+									params.get(j).setDateFormat(StringUtil.isNotEmpty(params.get(j).getDateFormat())?params.get(j).getDateFormat():DateUtil.FORMAT_LONOGRAM);
+								}else if(DefaultDateTypeEnum.SF.getCode().equals(StringUtil.trim(params.get(j).getParamDefault()).toLowerCase()))
+								{//本季度第一天
+									String currentDate = DateUtil.getQuarterStart(new Date());
+									currentDate = DateUtil.date2String(DateUtil.string2Date(currentDate), StringUtil.isNotEmpty(params.get(j).getDateFormat())?params.get(j).getDateFormat():DateUtil.FORMAT_LONOGRAM);
+									params.get(j).setParamDefault(currentDate);
+									params.get(j).setDateFormat(StringUtil.isNotEmpty(params.get(j).getDateFormat())?params.get(j).getDateFormat():DateUtil.FORMAT_LONOGRAM);
+								}else if(DefaultDateTypeEnum.SL.getCode().equals(StringUtil.trim(params.get(j).getParamDefault()).toLowerCase()))
+								{//本季度最后一天
+									String currentDate = DateUtil.getQuarterEnd(new Date());
+									currentDate = DateUtil.date2String(DateUtil.string2Date(currentDate), StringUtil.isNotEmpty(params.get(j).getDateFormat())?params.get(j).getDateFormat():DateUtil.FORMAT_LONOGRAM);
+									params.get(j).setParamDefault(currentDate);
+									params.get(j).setDateFormat(StringUtil.isNotEmpty(params.get(j).getDateFormat())?params.get(j).getDateFormat():DateUtil.FORMAT_LONOGRAM);
+								}else if(DefaultDateTypeEnum.YF.getCode().equals(StringUtil.trim(params.get(j).getParamDefault()).toLowerCase()))
+								{//本年度第一天
+									String currentDate = DateUtil.getYearStart();
+									currentDate = DateUtil.date2String(DateUtil.string2Date(currentDate), StringUtil.isNotEmpty(params.get(j).getDateFormat())?params.get(j).getDateFormat():DateUtil.FORMAT_LONOGRAM);
+									params.get(j).setParamDefault(currentDate);
+									params.get(j).setDateFormat(StringUtil.isNotEmpty(params.get(j).getDateFormat())?params.get(j).getDateFormat():DateUtil.FORMAT_LONOGRAM);
+								}else if(DefaultDateTypeEnum.YL.getCode().equals(StringUtil.trim(params.get(j).getParamDefault()).toLowerCase()))
+								{//本年度最后一天
+									String currentDate = DateUtil.getYearEnd();
+									currentDate = DateUtil.date2String(DateUtil.string2Date(currentDate), StringUtil.isNotEmpty(params.get(j).getDateFormat())?params.get(j).getDateFormat():DateUtil.FORMAT_LONOGRAM);
+									params.get(j).setParamDefault(currentDate);
+									params.get(j).setDateFormat(StringUtil.isNotEmpty(params.get(j).getDateFormat())?params.get(j).getDateFormat():DateUtil.FORMAT_LONOGRAM);
 								}else {
 									if(CheckUtil.isNumber(params.get(j).getParamDefault()))
 									{
@@ -885,7 +936,11 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 								DataSourceConfig dataSourceConfig = new DataSourceConfig(reportDatasource.getId(), reportDatasource.getDriverClass(), reportDatasource.getJdbcUrl(), reportDatasource.getUserName(), reportDatasource.getPassword(), null);
 								//获取数据源
 								DataSource dataSource = JdbcUtils.getDataSource(dataSourceConfig);
-								List<Map<String, Object>> list = ReportDataUtil.getSelectData(dataSource, params.get(j).getSelectContent());
+								String sql = params.get(j).getSelectContent();
+								if(params.get(j).getIsRelyOnParams().intValue() == 1) {
+									sql = JdbcUtils.processSqlParams(sql, new HashMap<>());
+								}
+								List<Map<String, Object>> list = ReportDataUtil.getSelectData(dataSource, sql);
 								List<Map<String, Object>> resultList = new ArrayList<>();
 								if(!ListUtil.isEmpty(list)) {
 									Map<String, Map<String, Object>> entityMap = new HashMap<>();
