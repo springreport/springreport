@@ -242,6 +242,7 @@ export default {
         ],
         propsTableHandles: [
           { label: '新增', type: 'primary', handle: () => this.showAddProps(), auth: 'ignore' },
+          { label: '解析属性', type: 'warning', handle: () => this.parseAttr(), auth: 'ignore' }
         ],
         propsTableData: [],
         apiHeaderProps: [
@@ -698,5 +699,31 @@ export default {
         this.pageData.modalData.apiResult = response.responseData.apiResult;
       });
     },
+    parseAttr() {
+      var params = {
+        jdbcUrl: this.pageData.modalData.jdbcUrl,
+        apiResultType: this.pageData.modalData.apiResultType,
+        apiRequestType: this.pageData.modalData.apiRequestType,
+        apiColumnsPrefix: this.pageData.modalData.apiColumnsPrefix,
+        apiRequestHeader: JSON.stringify(this.pageData.headersTableData)
+      }
+      var obj = {
+        params: params,
+        removeEmpty: false,
+        url: this.apis.reportDatasource.parseApiResultAttrApi
+      }
+      var that = this
+      this.commonUtil.doPost(obj).then(response => {
+        that.pageData.propsTableData.splice(0, that.pageData.propsTableData.length)
+        if (response.code == '200') {
+          if (response.responseData && response.responseData.length > 0) {
+            for (let index = 0; index < response.responseData.length; index++) {
+              const element = response.responseData[index]
+              that.pageData.propsTableData.push(element)
+            }
+          }
+        }
+      })
+    }
   },
 };
