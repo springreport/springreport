@@ -400,6 +400,9 @@ screenConstants.textInit = {
   active: false,
   zindex: '99',
   locked:false,
+  isborder:false,//是否添加边框
+  borderType:"",//边框类型
+  borderColor:[],//边框颜色
   refresh: false, // 是否定时刷新
   refreshTime: 30000, // 定时刷新时间，单位(ms)
   dataSource:'1',//数据来源 1静态数据 2动态数据
@@ -433,6 +436,9 @@ screenConstants.dateInit = {
   active: false,
   zindex: '99',
   locked:false,
+  isborder:false,//是否添加边框
+  borderType:"",//边框类型
+  borderColor:[],//边框颜色
   style: {
     display: 'table-cell', textAlign: 'center', verticalAlign: 'middle', fontSize: '14', color: '#ffffff',colorEnd:"#ffffff", letterSpacing: '1', background: '',backgroundEnd:'',backgroundDirection:'bottom', fontWeight: false,direction:'bottom'
   },
@@ -514,6 +520,9 @@ screenConstants.histogramInit = {
     hiddenParamSize:0,//隐藏参数个数
     theme:"",//主题
     amination:"",//动画效果
+    isborder:false,//是否添加边框
+    borderType:"",//边框类型
+    borderColor:[],//边框颜色
     spec:{
         'type':'bar',
         color: [],
@@ -536,7 +545,7 @@ screenConstants.histogramInit = {
         seriesField: ['country'],
         xField: ['type', 'country'],
         yField: ['value'],
-        background: '',//背景颜色
+        background: 'rgba(128, 128, 128, 0.0)',//背景颜色
         barWidth:'100%',//柱体宽度
         title:screenConstants.chartTitleSettings,
         bar:{
@@ -597,6 +606,9 @@ screenConstants.rangeHistogramInit = {
   hiddenParamSize:0,//隐藏参数个数
   theme:"",//主题
   amination:"",//动画效果
+  isborder:false,//是否添加边框
+  borderType:"",//边框类型
+  borderColor:[],//边框颜色
   spec:{
       'type':'rangeColumn',
       color: [],
@@ -615,7 +627,7 @@ screenConstants.rangeHistogramInit = {
       seriesField: [],
       xField: ['type'],
       yField: ['min','max'],
-      background: '',//背景颜色
+      background: 'rgba(128, 128, 128, 0.0)',//背景颜色
       barWidth:'100%',//柱体宽度
       title:screenConstants.chartTitleSettings,
       bar:{
@@ -675,6 +687,9 @@ screenConstants.stackHistogramInit = {
     hiddenParamSize:0,//隐藏参数个数
     theme:"",//主题
     amination:"",//动画效果
+    isborder:false,//是否添加边框
+    borderType:"",//边框类型
+    borderColor:[],//边框颜色
     spec:{
         'type':'bar',
         color: [],
@@ -698,7 +713,7 @@ screenConstants.stackHistogramInit = {
         xField: ['country'],
         yField: ['value'],
         stack: true,
-        background: '',//背景颜色
+        background: 'rgba(128, 128, 128, 0.0)',//背景颜色
         barWidth:'100%',//柱体宽度
         title:screenConstants.chartTitleSettings,
         bar:{
@@ -758,6 +773,9 @@ screenConstants.horizontalHistogramInit = {
     hiddenParamSize:0,//隐藏参数个数
     theme:"",//主题
     amination:"",//动画效果
+    isborder:false,//是否添加边框
+    borderType:"",//边框类型
+    borderColor:[],//边框颜色
     spec:{
         'type':'bar',
         color: [],
@@ -800,7 +818,7 @@ screenConstants.horizontalHistogramInit = {
         xField: ['value'],
         yField: ['province'],
         stack: true,
-        background: '',//背景颜色
+        background: 'rgba(128, 128, 128, 0.0)',//背景颜色
         barWidth:'100%',//柱体宽度
         title:screenConstants.chartTitleSettings,
         bar:{
@@ -860,6 +878,9 @@ screenConstants.rangeHorizontalHistogramInit = {
   hiddenParamSize:0,//隐藏参数个数
   theme:"",//主题
   amination:"",//动画效果
+  isborder:false,//是否添加边框
+  borderType:"",//边框类型
+  borderColor:[],//边框颜色
   spec:{
       'type':'rangeColumn',
       color: [],
@@ -879,7 +900,7 @@ screenConstants.rangeHorizontalHistogramInit = {
       seriesField: [],
       xField: ['min', 'max'],
       yField: ['type'],
-      background: '',//背景颜色
+      background: 'rgba(128, 128, 128, 0.0)',//背景颜色
       barWidth:'100%',//柱体宽度
       title:screenConstants.chartTitleSettings,
       bar:{
@@ -939,6 +960,9 @@ screenConstants.stackHorizontalHistogramInit = {
     hiddenParamSize:0,//隐藏参数个数
     theme:"",//主题
     amination:"",//动画效果
+    isborder:false,//是否添加边框
+    borderType:"",//边框类型
+    borderColor:[],//边框颜色
     spec:{
         'type':'bar',
         color: [],
@@ -962,7 +986,7 @@ screenConstants.stackHorizontalHistogramInit = {
         xField: ['value'],
         yField: ['country'],
         stack: true,
-        background: '',//背景颜色
+        background: 'rgba(128, 128, 128, 0.0)',//背景颜色
         barWidth:'100%',//柱体宽度
         direction: 'horizontal',
         title:screenConstants.chartTitleSettings,
@@ -1024,6 +1048,9 @@ screenConstants.lineInit = {
     hiddenParamSize:0,//隐藏参数个数
     theme:"",//主题
     amination:"",//动画效果
+    isborder:false,//是否添加边框
+    borderType:"",//边框类型
+    borderColor:[],//边框颜色
     spec:{
         'type':'line',
         color: [],
@@ -1070,7 +1097,7 @@ screenConstants.lineInit = {
         seriesField: [],
         xField: ['time'],
         yField: ['value'],
-        background: '',//背景颜色
+        background: 'rgba(128, 128, 128, 0.0)',//背景颜色
         lineLabel: { visible: false,style:{} },
         line:{
             style:{
@@ -1132,6 +1159,9 @@ screenConstants.horizontalLineInit = {
     hiddenParamSize:0,//隐藏参数个数
     theme:"",//主题
     amination:"",//动画效果
+    isborder:false,//是否添加边框
+    borderType:"",//边框类型
+    borderColor:[],//边框颜色
     spec:{
         'type':'line',
         color: [],
@@ -1178,7 +1208,7 @@ screenConstants.horizontalLineInit = {
         seriesField: [],
         xField: ['value'],
         yField: ['time'],
-        background: '',//背景颜色
+        background: 'rgba(128, 128, 128, 0.0)',//背景颜色
         direction: 'horizontal',
         lineLabel: { visible: false ,style:{}},
         line:{
@@ -1241,6 +1271,9 @@ screenConstants.smoothLineInit = {
     hiddenParamSize:0,//隐藏参数个数
     theme:"",//主题
     amination:"",//动画效果
+    isborder:false,//是否添加边框
+    borderType:"",//边框类型
+    borderColor:[],//边框颜色
     spec:{
         'type':'line',
         color: [],
@@ -1287,7 +1320,7 @@ screenConstants.smoothLineInit = {
         seriesField: [],
         xField: ['time'],
         yField: ['value'],
-        background: '',//背景颜色
+        background: 'rgba(128, 128, 128, 0.0)',//背景颜色
         lineLabel: { visible: false ,style:{}},
         line:{
             style:{
@@ -1349,6 +1382,9 @@ screenConstants.stepLineInit = {
     hiddenParamSize:0,//隐藏参数个数
     theme:"",//主题
     amination:"",//动画效果
+    isborder:false,//是否添加边框
+    borderType:"",//边框类型
+    borderColor:[],//边框颜色
     spec:{
         'type':'line',
         color: [],
@@ -1395,7 +1431,7 @@ screenConstants.stepLineInit = {
         seriesField: [],
         xField: ['time'],
         yField: ['value'],
-        background: '',//背景颜色
+        background: 'rgba(128, 128, 128, 0.0)',//背景颜色
         lineLabel: { visible: false ,style:{}},
         line:{
             style:{
@@ -1456,6 +1492,9 @@ screenConstants.stackLineInit = {
     hiddenParamSize:0,//隐藏参数个数
     theme:"",//主题
     amination:"",//动画效果
+    isborder:false,//是否添加边框
+    borderType:"",//边框类型
+    borderColor:[],//边框颜色
     spec:{
         'type':'line',
         color: [],
@@ -1503,7 +1542,7 @@ screenConstants.stackLineInit = {
         seriesField: ['country'],
         xField: ['type'],
         yField: ['value'],
-        background: '',//背景颜色
+        background: 'rgba(128, 128, 128, 0.0)',//背景颜色
         lineLabel: { visible: false ,style:{}},
         line:{
             style:{
@@ -1564,6 +1603,9 @@ screenConstants.areaInit = {
     hiddenParamSize:0,//隐藏参数个数
     theme:"",//主题
     amination:"",//动画效果
+    isborder:false,//是否添加边框
+    borderType:"",//边框类型
+    borderColor:[],//边框颜色
     spec:{
         'type':'area',
         color: [],
@@ -1610,7 +1652,7 @@ screenConstants.areaInit = {
         seriesField: [],
         xField: ['time'],
         yField: ['value'],
-        background: '',//背景颜色
+        background: 'rgba(128, 128, 128, 0.0)',//背景颜色
         lineLabel: { visible: false,style:{} },
         line:{
             style:{
@@ -1671,6 +1713,9 @@ screenConstants.horizontalAreaInit = {
     hiddenParamSize:0,//隐藏参数个数
     theme:"",//主题
     amination:"",//动画效果
+    isborder:false,//是否添加边框
+    borderType:"",//边框类型
+    borderColor:[],//边框颜色
     spec:{
         'type':'area',
         color: [],
@@ -1718,7 +1763,7 @@ screenConstants.horizontalAreaInit = {
         xField: ['value'],
         yField: ['time'],
         direction: 'horizontal',
-        background: '',//背景颜色
+        background: 'rgba(128, 128, 128, 0.0)',//背景颜色
         lineLabel: { visible: false,style:{} },
         line:{
             style:{
@@ -1779,6 +1824,9 @@ screenConstants.smoothAreaInit = {
     hiddenParamSize:0,//隐藏参数个数
     theme:"",//主题
     amination:"",//动画效果
+    isborder:false,//是否添加边框
+    borderType:"",//边框类型
+    borderColor:[],//边框颜色
     spec:{
         'type':'area',
         color: [],
@@ -1825,7 +1873,7 @@ screenConstants.smoothAreaInit = {
         seriesField: [],
         xField: ['time'],
         yField: ['value'],
-        background: '',//背景颜色
+        background: 'rgba(128, 128, 128, 0.0)',//背景颜色
         lineLabel: { visible: false ,style:{}},
         line:{
             style:{
@@ -1887,6 +1935,9 @@ screenConstants.stepAreaInit = {
     hiddenParamSize:0,//隐藏参数个数
     theme:"",//主题
     amination:"",//动画效果
+    isborder:false,//是否添加边框
+    borderType:"",//边框类型
+    borderColor:[],//边框颜色
     spec:{
         'type':'area',
         color: [],
@@ -1933,7 +1984,7 @@ screenConstants.stepAreaInit = {
         seriesField: [],
         xField: ['time'],
         yField: ['value'],
-        background: '',//背景颜色
+        background: 'rgba(128, 128, 128, 0.0)',//背景颜色
         lineLabel: { visible: false ,style:{}},
         line:{
             style:{
@@ -1994,6 +2045,9 @@ screenConstants.stackAreaInit = {
     hiddenParamSize:0,//隐藏参数个数
     theme:"",//主题
     amination:"",//动画效果
+    isborder:false,//是否添加边框
+    borderType:"",//边框类型
+    borderColor:[],//边框颜色
     spec:{
         'type':'area',
         color: [],
@@ -2040,7 +2094,7 @@ screenConstants.stackAreaInit = {
         seriesField: ['country'],
         xField: ['type'],
         yField: ['value'],
-        background: '',//背景颜色
+        background: 'rgba(128, 128, 128, 0.0)',//背景颜色
         lineLabel: { visible: false ,style:{}},
         line:{
             style:{
@@ -2101,6 +2155,9 @@ screenConstants.pieInit = {
     hiddenParamSize:0,//隐藏参数个数
     theme:"",//主题
     amination:"",//动画效果
+    isborder:false,//是否添加边框
+    borderType:"",//边框类型
+    borderColor:[],//边框颜色
     spec:{
         'type':'pie',
         color: [],
@@ -2122,7 +2179,7 @@ screenConstants.pieInit = {
         categoryField: 'type',
         valueField: 'value',
         // seriesField: 'type',
-        background: '',//背景颜色
+        background: 'rgba(128, 128, 128, 0.0)',//背景颜色
         title:screenConstants.chartTitleSettings,
         pie: {
             style: {
@@ -2186,6 +2243,9 @@ screenConstants.pieRoseInit = {
     hiddenParamSize:0,//隐藏参数个数
     theme:"",//主题
     amination:"",//动画效果
+    isborder:false,//是否添加边框
+    borderType:"",//边框类型
+    borderColor:[],//边框颜色
     spec:{
         'type':'rose',
         color: [],
@@ -2206,7 +2266,7 @@ screenConstants.pieRoseInit = {
         categoryField: 'category',
         valueField: 'value',
         seriesField: 'category',
-        background: '',//背景颜色
+        background: 'rgba(128, 128, 128, 0.0)',//背景颜色
         title:screenConstants.chartTitleSettings,
         pie: {
             style: {
@@ -2271,6 +2331,9 @@ screenConstants.scatterInit = {
     hiddenParamSize:0,//隐藏参数个数
     theme:"",//主题
     amination:"",//动画效果
+    isborder:false,//是否添加边框
+    borderType:"",//边框类型
+    borderColor:[],//边框颜色
     spec:{
         'type':'scatter',
         color: [],
@@ -2297,7 +2360,7 @@ screenConstants.scatterInit = {
         yField: 'y',
         sizeField: '',
         size: 20,
-        background: '',//背景颜色
+        background: 'rgba(128, 128, 128, 0.0)',//背景颜色
         title:screenConstants.chartTitleSettings,
         label:{
             visible:true,
@@ -2352,6 +2415,9 @@ screenConstants.radarInit = {
     hiddenParamSize:0,//隐藏参数个数
     theme:"",//主题
     amination:"",//动画效果
+    isborder:false,//是否添加边框
+    borderType:"",//边框类型
+    borderColor:[],//边框颜色
     spec:{
         'type':'radar',
         color: [],
@@ -2389,7 +2455,7 @@ screenConstants.radarInit = {
             }
           },
         radius:0.8,
-        background: '',//背景颜色
+        background: 'rgba(128, 128, 128, 0.0)',//背景颜色
         title:screenConstants.chartTitleSettings,
         label:{
             visible:true,
@@ -2487,6 +2553,9 @@ screenConstants.stackRadarInit = {
     hiddenParamSize:0,//隐藏参数个数
     theme:"",//主题
     amination:"",//动画效果
+    isborder:false,//是否添加边框
+    borderType:"",//边框类型
+    borderColor:[],//边框颜色
     spec:{
         'type':'radar',
         color: [],
@@ -2519,7 +2588,7 @@ screenConstants.stackRadarInit = {
             }
           },
         radius:0.8,
-        background: '',//背景颜色
+        background: 'rgba(128, 128, 128, 0.0)',//背景颜色
         title:screenConstants.chartTitleSettings,
         label:{
             visible:true,
@@ -2617,6 +2686,9 @@ screenConstants.wordCloudInit = {
     bindComponent: null, // 绑定组件
     hiddenParamSize:0,//隐藏参数个数
     theme:"",//主题
+    isborder:false,//是否添加边框
+    borderType:"",//边框类型
+    borderColor:[],//边框颜色
     spec:{
         'type':'wordCloud',
         color: [],
@@ -2644,7 +2716,7 @@ screenConstants.wordCloudInit = {
         nameField: 'challenge_name',
         valueField: 'sum_count',
         seriesField: 'challenge_name',
-        background: '',//背景颜色
+        background: 'rgba(128, 128, 128, 0.0)',//背景颜色
     }
 }
 
@@ -2674,6 +2746,9 @@ screenConstants.gaugeInit = {
     hiddenParamSize:0,//隐藏参数个数
     theme:"",//主题
     amination:"",//动画效果
+    isborder:false,//是否添加边框
+    borderType:"",//边框类型
+    borderColor:[],//边框颜色
     spec:{
       type: 'gauge',
       data: 
@@ -2756,7 +2831,7 @@ screenConstants.gaugeInit = {
         }
       }
     },
-    background: '',//背景颜色
+    background: 'rgba(128, 128, 128, 0.0)',//背景颜色
       title:screenConstants.chartTitleSettings,
       label:{
           visible:true,
@@ -2807,6 +2882,9 @@ screenConstants.tickGaugeInit = {
   hiddenParamSize:0,//隐藏参数个数
   theme:"",//主题
   amination:"",//动画效果
+  isborder:false,//是否添加边框
+  borderType:"",//边框类型
+  borderColor:[],//边框颜色
   spec:{
     type: 'gauge',
     data: 
@@ -2906,7 +2984,7 @@ screenConstants.tickGaugeInit = {
       }
     }
   },
-  background: '',//背景颜色
+  background: 'rgba(128, 128, 128, 0.0)',//背景颜色
     title:screenConstants.chartTitleSettings,
     label:{
         visible:true,
@@ -2957,6 +3035,9 @@ screenConstants.seriesGaugeInit = {
   hiddenParamSize:0,//隐藏参数个数
   theme:"",//主题
   amination:"",//动画效果
+  isborder:false,//是否添加边框
+  borderType:"",//边框类型
+  borderColor:[],//边框颜色
   spec:{
     type: 'gauge',
     data: 
@@ -3063,7 +3144,7 @@ screenConstants.seriesGaugeInit = {
       }
     }
   },
-  background: '',//背景颜色
+  background: 'rgba(128, 128, 128, 0.0)',//背景颜色
     title:screenConstants.chartTitleSettings,
     label:{
         visible:true,
@@ -3114,6 +3195,9 @@ screenConstants.tickSeriesGaugeInit = {
   hiddenParamSize:0,//隐藏参数个数
   theme:"",//主题
   amination:"",//动画效果
+  isborder:false,//是否添加边框
+  borderType:"",//边框类型
+  borderColor:[],//边框颜色
   spec:{
     type: 'gauge',
     data: 
@@ -3220,7 +3304,7 @@ screenConstants.tickSeriesGaugeInit = {
       }
     }
   },
-  background: '',//背景颜色
+  background: 'rgba(128, 128, 128, 0.0)',//背景颜色
     title:screenConstants.chartTitleSettings,
     label:{
         visible:true,
@@ -3270,6 +3354,9 @@ screenConstants.funnelInit = {
   hiddenParamSize:0,//隐藏参数个数
   theme:"",//主题
   amination:"",//动画效果
+  isborder:false,//是否添加边框
+  borderType:"",//边框类型
+  borderColor:[],//边框颜色
   spec:{
     'type':'funnel',
     color: [],
@@ -3301,7 +3388,7 @@ screenConstants.funnelInit = {
         ]
       }
     ,
-    background: '',//背景颜色
+    background: 'rgba(128, 128, 128, 0.0)',//背景颜色
     title:screenConstants.chartTitleSettings,
     label:{
       visible:true,
@@ -3352,6 +3439,9 @@ screenConstants.circularProgressInit = {
   hiddenParamSize:0,//隐藏参数个数
   theme:"",//主题
   amination:"",//动画效果
+  isborder:false,//是否添加边框
+  borderType:"",//边框类型
+  borderColor:[],//边框颜色
   spec:{
     type: 'circularProgress',
     data: 
@@ -3371,7 +3461,7 @@ screenConstants.circularProgressInit = {
     innerRadius: 0.9,
     roundCap: false,
     cornerRadius: 20,
-    background: '',//背景颜色
+    background: 'rgba(128, 128, 128, 0.0)',//背景颜色
     title:screenConstants.chartTitleSettings,
     progress:{
       style:{
@@ -3479,6 +3569,9 @@ screenConstants.barProgressInit = {
   hiddenParamSize:0,//隐藏参数个数
   theme:"",//主题
   amination:"",//动画效果
+  isborder:false,//是否添加边框
+  borderType:"",//边框类型
+  borderColor:[],//边框颜色
   spec:{
     type: 'linearProgress',
     data: 
@@ -3505,7 +3598,7 @@ screenConstants.barProgressInit = {
     seriesField: 'type',
     cornerRadius: 20,
     bandWidth: 30,
-    background: '',//背景颜色
+    background: 'rgba(128, 128, 128, 0.0)',//背景颜色
     title:screenConstants.chartTitleSettings,
     axes: [
       {
@@ -3564,6 +3657,9 @@ screenConstants.liquidInit = {
   hiddenParamSize:0,//隐藏参数个数
   theme:"",//主题
   amination:"",//动画效果
+  isborder:false,//是否添加边框
+  borderType:"",//边框类型
+  borderColor:[],//边框颜色
   spec:{
     type: 'liquid',
     title:screenConstants.chartTitleSettings,
@@ -3626,6 +3722,9 @@ screenConstants.mapInit = {
   theme:"",//主题
   amination:"",//动画效果
   isDrill: false, // 是否支持下钻
+  isborder:false,//是否添加边框
+  borderType:"",//边框类型
+  borderColor:[],//边框颜色
   spec:{
     type: 'map',
     title:screenConstants.chartTitleSettings,
@@ -3762,6 +3861,9 @@ screenConstants.scrollTableInit = {
   active: false,
   zindex: 99,
   locked:false,
+  isborder:false,//是否添加边框
+  borderType:"",//边框类型
+  borderColor:[],//边框颜色
   refresh: false, // 是否定时刷新
   refreshTime: 30000, // 定时刷新时间，单位(ms)
   dataSource:'1',//数据来源 1静态数据 2动态数据
@@ -3849,6 +3951,9 @@ screenConstants.pageTableInit = {
   active: false,
   zindex: 99,
   locked:false,
+  isborder:false,//是否添加边框
+  borderType:"",//边框类型
+  borderColor:[],//边框颜色
   refresh: false, // 是否定时刷新
   refreshTime: 30000, // 定时刷新时间，单位(ms)
   dataSource:'1',//数据来源 1静态数据 2动态数据

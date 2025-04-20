@@ -951,23 +951,25 @@ commonUtil.reInitChart=function(chartsComponents,component){
 
 commonUtil.reLoadChart = function(chartsComponents,component)
 {
-    if(component.category == "vchart"){
-        chartsComponents[component.id].release();
-        chartsComponents[component.id] = null;
-        var obj = { dom: component.id}
-        if(component.theme){
-            obj.theme = component.theme
+    Vue.nextTick(function () {
+        if(component.category == "vchart"){
+            chartsComponents[component.id].release();
+            chartsComponents[component.id] = null;
+            var obj = { dom: component.id}
+            if(component.theme){
+                obj.theme = component.theme
+            }
         }
-    }
-   
-    commonUtil.chartProcess(component);
-    if(component.category == "vchart"){
-        const vchart = new VChart(component.spec, obj);
-        chartsComponents[component.id] = vchart;
-        // 绘制
-        vchart.renderSync();
-    }
-    
+       
+        commonUtil.chartProcess(component);
+        if(component.category == "vchart"){
+            const vchart = new VChart(component.spec, obj);
+            chartsComponents[component.id] = vchart;
+            var element = document.getElementById(component.id);
+            // 绘制
+            vchart.renderSync();
+        }
+    })
 }
 
 //图表中需要特殊处理的部分
