@@ -1096,7 +1096,14 @@ commonUtil.isNumber = function(num){
 
 commonUtil.calculateDate = function(days,format)
 {
-    return moment().add(days, 'days').format(format) 
+    let type = "days";
+    format = format.replace("yyyy-MM-dd","YYYY-MM-DD").replace("yyyy-MM","YYYY-MM").replace("yyyy","YYYY");
+    if(format == "YYYY"){
+        type = "years";
+    }else if(format == "YYYY-MM"){
+        type = "months";
+    }
+    return moment().add(days, type).format(format) 
 }
 
 commonUtil.getDefaultValue = function(paramForm)
@@ -1104,7 +1111,7 @@ commonUtil.getDefaultValue = function(paramForm)
     var value = "";
     if (paramForm.paramType == "date") {
         if (paramForm.paramDefault != "" && paramForm.paramDefault != null) {
-            if (paramForm.paramDefault.toLowerCase == "current") {
+            if (paramForm.paramDefault.toLowerCase() == "current") {
                 var now = new Date();
                 value = commonUtil.formatDate(now, "YYYY-MM-DD")
             } else {
@@ -1120,6 +1127,47 @@ commonUtil.getDefaultValue = function(paramForm)
     }
     else {
         value = paramForm.paramDefault;
+    }
+    return value;
+}
+
+commonUtil.getDefaultDateValue = function(paramForm)
+{
+    var value = "";
+    if (paramForm.paramType == "date") {
+        let dateFormat = paramForm.dateFormat;
+        dateFormat = dateFormat.replace("yyyy-MM-dd","YYYY-MM-DD").replace("yyyy-MM","YYYY-MM").replace("yyyy","YYYY");
+        console.log(dateFormat)
+        if (paramForm.paramDefault != "" && paramForm.paramDefault != null) {
+            if (paramForm.paramDefault.toLowerCase() == "current") {
+                var now = new Date();
+                value = commonUtil.formatDate(now, paramForm.dateFormat)
+            }else if(paramForm.paramDefault.toLowerCase() == "wf"){//本周第一天
+                value = moment().startOf('isoWeek').format(dateFormat);
+            }else if(paramForm.paramDefault.toLowerCase() == "wl"){//本周最后一天
+                value = moment().endOf('isoWeek').format(dateFormat);
+            }else if(paramForm.paramDefault.toLowerCase() == "mf"){//本月第一天
+                value = moment().startOf('month').format(dateFormat);
+            }else if(paramForm.paramDefault.toLowerCase() == "ml"){//本月最后一天
+                value = moment().endOf('month').format(dateFormat);
+            }else if(paramForm.paramDefault.toLowerCase() == "sf"){//本季度第一天
+                value = moment().startOf('quarter').format(dateFormat);
+            }else if(paramForm.paramDefault.toLowerCase() == "sl"){//本季度最后一天
+                value = moment().endOf('quarter').format(dateFormat);
+            }else if(paramForm.paramDefault.toLowerCase() == "yf"){//本年第一天
+                value = moment().startOf('year').format(dateFormat);
+            }else if(paramForm.paramDefault.toLowerCase() == "yl"){//本年最后一天
+                value = moment().endOf('year').format(dateFormat);
+            }else {
+                if (commonUtil.isNumber(paramForm.paramDefault)) {
+                    var days = parseInt(paramForm.paramDefault);
+                    value = commonUtil.calculateDate(days, paramForm.dateFormat);
+                } else {
+                    var now = new Date();
+                    value = commonUtil.formatDate(now, paramForm.dateFormat)
+                }
+            }
+        }
     }
     return value;
 }

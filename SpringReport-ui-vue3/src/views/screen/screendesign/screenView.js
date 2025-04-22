@@ -38,6 +38,14 @@ export default {
       chartsComponents: {}, //图表 key id，value：charts
       sendRequest: false,
       scaleTimer: null,
+      searchData: {
+        params: []
+      }, 
+      searchHandle: [
+        { label: '查询', drawerBtn: true, icon: 'el-icon-search', type: 'primary', handle: () => this.refreshComponentData(), size: 'mini' },
+        { label: '重置', drawerBtn: true, icon: 'el-icon-refresh-left', type: '', handle: () => this.refreshPage(), size: 'mini' },
+      ],
+      drawer:false,
     };
   },
   mounted() {
@@ -96,6 +104,8 @@ export default {
           that.screenProperties.imgName = response.responseData.imgName;
           that.activated = that.screenProperties;
           that.setScale();
+          let params = [];
+          let paramsCode = {};
           if (
             response.responseData.components != null &&
             response.responseData.components.length > 0
@@ -105,8 +115,65 @@ export default {
               const component = JSON.parse(element.content);
               component.locked = true;
               that.components.push(component);
+              if(component.params && component.params.length > 0){
+                for (let index = 0; index < component.params.length; index++) {
+                  const paramElement = component.params[index];
+                  let paramCode = paramElement.paramCode;
+                  if(!paramsCode[paramCode]){
+                    let paramDefault = paramElement.paramDefault;
+                    if (this.$route.query[paramCode]) {
+                      paramElement[paramCode] = this.$route.query[paramCode]
+                    }else if(paramDefault){
+                      paramElement[paramCode] = paramDefault
+                    }
+                    params.push(paramElement);
+                    paramsCode[paramCode] = '1';
+                    let paramType = paramElement.paramType;
+                    if (paramType == 'mutiselect' || paramType == 'multiTreeSelect') {
+                      var data = new Array()
+                      if(paramElement[paramCode]){
+                        data = paramElement[paramCode].split(',')
+                      }
+                      if(paramType == 'mutiselect'){
+                        if(data && data.length > 0){
+                          that.getSelectData(paramElement);
+                        }
+                      }else{
+                        if(data && data.length > 0){
+                          that.getTreeData(paramElement,{"params":params});
+                        }
+                      }
+                      paramElement[paramCode] = data
+                    }else if(paramType == 'select'){
+                      if(paramElement[paramCode]){
+                        if(paramElement.isRelyOnParams == 1){
+                          that.getRelyOnParamys(paramElement,{"params":params},paramElement);
+                        }else{
+                          that.getSelectData(paramElement);
+                        }
+                      }
+                    }else if(paramType == 'treeSelect'){
+                      if(paramElement[paramCode]){
+                        that.getTreeData(paramElement,{"params":params});
+                      }
+                    }else if(paramType == 'date'){
+                      // paramDefault
+                      if(paramDefault != null && paramDefault != ''){
+                        let value = that.commonUtil.getDefaultDateValue(paramElement);
+                        paramElement[paramCode] = value;
+                      }
+                    }
+                  }
+                }
+              }
             }
             that.$nextTick(() => {
+              var dataSet = {}
+              dataSet.datasetId = 0
+              dataSet.datasetName = '组件参数'
+              dataSet.datasourceId = 0
+              dataSet.params = params
+              that.searchData.params.push(dataSet)
               that.initComponent();
             });
           }
@@ -124,7 +191,6 @@ export default {
              const scaleX = window.innerWidth / designWidth
              const scaleY = window.innerHeight / designHeight
              const scale = Math.min(scaleX, scaleY)
-             console.log(window.innerHeight, designHeight * scale)
              const offsetX = (window.innerWidth - designWidth * scale) / 2
              const offsetY = (window.innerHeight - designHeight * scale) / 2
              this.screenProperties.scale = scale
@@ -165,6 +231,141 @@ export default {
     },
     refreshTime(component) {
       component.content = this.commonUtil.getCurrentDate(component);
+    },
+    showSearch(){
+      this.drawer = true;
+    },
+    closeSearch(){
+      this.drawer = false;
+    },
+    refreshComponentData(){
+      let pageParams = {};
+      if(this.searchData.params && this.searchData.params.length > 0 && this.searchData.params[0] && this.searchData.params[0].params.length > 0){
+        for (let index = 0; index < this.searchData.params[0].params.length; index++) {
+          const element = this.searchData.params[0].params[index];
+          let paramCode = element.paramCode;
+          pageParams[paramCode] = element[element.paramCode];
+        }
+      }
+      for (let index = 0; index < this.components.length; index++) {
+        const element = this.components[index];
+        if(element && element.params && element.params.length > 0){
+          for (let index = 0; index < element.params.length; index++) {
+            const elementParam = element.params[index];
+            let paramCode = elementParam.paramCode;
+            if(pageParams[paramCode]){
+              elementParam[paramCode] = pageParams[paramCode]
+            }
+          }
+        }
+        this.$refs['draggable'].$refs[element.id][0].initData();
+      }
+      this.closeSearch();
+    },
+    refreshPage(){
+      location.reload();
+    },
+    getSelectData(item) {
+      if (!item.init) {
+        if (item.selectType == '1') {
+          item.selectData = JSON.parse(item.selectContent)
+        } else {
+          var params = {
+            selectContent: item.selectContent,
+            datasourceId: item.datasourceId,
+            params: {}
+          }
+          var obj = {
+            url: '/api/reportTplDataset/getSelectData',
+            params: params
+          }
+          this.commonUtil.doPost(obj).then((response) => {
+            if (response.code == '200') {
+              item.selectData = response.responseData
+              if (response.responseData && response.responseData.length > 0) {
+                item.init = true
+              }
+            }
+          })
+        }
+      }
+    },
+    getTreeData(item,data) {
+      if (!item.init || item.isRelyOnParams == 1) {
+        var params = {
+          selectContent: item.selectContent,
+          datasourceId: item.datasourceId,
+          params: {}
+        }
+        if(item.isRelyOnParams == 1){
+          var relyOnValue = null;
+          for (let index = 0; index < data.params.length; index++) {
+            const element = data.params[index]
+            let relyOnParams = item.relyOnParams.split(",");
+            for (let t = 0; t < relyOnParams.length; t++) {
+              if (relyOnParams[t] && element.hasOwnProperty(relyOnParams[t])) {
+                if(relyOnValue == null){
+                  relyOnValue = {};
+                }
+                relyOnValue[relyOnParams[t]] = element[relyOnParams[t]]
+              }
+            }
+          }
+          for(var key in relyOnValue) {
+            params.params[key] = relyOnValue[key]
+          }
+        }
+        var obj = {
+          url: '/api/reportTplDataset/getTreeSelectData',
+          params: params
+        }
+        this.commonUtil.doPost(obj).then((response) => {
+          if (response.code == '200') {
+            item.selectData = response.responseData
+            if (response.responseData && response.responseData.length > 0) {
+              item.init = true
+            }
+          }
+        })
+      }
+    },
+    getRelyOnParamys(item, data, modelData) {
+      var relyOnValue = null;
+      for (let index = 0; index < data.params.length; index++) {
+        const element = data.params[index]
+        let relyOnParams = item.relyOnParams.split(",");
+        for (let t = 0; t < relyOnParams.length; t++) {
+          if (relyOnParams[t] && element.hasOwnProperty(relyOnParams[t])) {
+            if(relyOnValue == null){
+              relyOnValue = {};
+            }
+            relyOnValue[relyOnParams[t]] = element[relyOnParams[t]]
+          }
+        }
+        
+      }
+      if (relyOnValue) {
+        var params = {
+          selectContent: item.selectContent,
+          datasourceId: item.datasourceId,
+          params: {}
+        }
+        for(var key in relyOnValue) {
+          params.params[key] = relyOnValue[key]
+        }
+        var obj = {
+          url: '/api/reportTplDataset/getRelyOnData',
+          params: params
+        }
+        this.commonUtil.doPost(obj).then((response) => {
+          if (response.code == '200') {
+            item.selectData = response.responseData
+          }
+        })
+      } else {
+        item.selectData = []
+        modelData[item.paramCode] = null
+      }
     },
   },
 };

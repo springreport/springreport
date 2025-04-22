@@ -34,8 +34,8 @@
                 </div>
         </div>
         <div  v-if="component.type == screenConstants.type.pageTable" :style="{height:(component.h-24)+'px',width:'92%'}">
-            <div :style="{height:(component.h-25-24)+'px',width:'100%'}">
-            <el-table size="small" :style="{background:component.rowStyle.backgroundColor}" :height="(component.h-25) + 'px'" :highlight-current-row="component.highlight" :border="component.border" :stripe="component.stripe" 
+            <div :style="{height:(component.h-25)+'px',width:'100%'}">
+            <el-table size="small" :style="{background:component.rowStyle.backgroundColor}" :height="(component.h-24-25) + 'px'" :highlight-current-row="component.highlight" :border="component.border" :stripe="component.stripe" 
             :data="component.spec.data.values.slice((component.pagination.currentPage-1)*component.pagination.pageSize,component.pagination.currentPage*component.pagination.pageSize)"
             :header-cell-style="{fontSize: component.headStyle.fontSize+'px', backgroundColor: component.headStyle.backgroundColor,color:component.headStyle.color,fontWeight:component.headStyle.fontWeight}"
             :row-style="{fontSize: component.rowStyle.fontSize+'px', backgroundColor: component.rowStyle.backgroundColor,color:component.rowStyle.color,fontWeight:component.rowStyle.fontWeight}">
@@ -52,7 +52,6 @@
                 >
                 </el-table-column>
             </el-table>
-            </div>
             <div :style="{height:'25px',textAlign:'right',background:component.pagination.backgroundColor}">
             <el-pagination
               small
@@ -65,6 +64,8 @@
               >
             </el-pagination>
             </div>
+            </div>
+            
         </div>
         </div>
     </div>
@@ -173,7 +174,7 @@ export default {
         var componentParams = this.commonUtil.getComponentParams(
           component.params
         );
-        params.params = Object.assign({}, componentParams, this.$route.query);
+        params.params = Object.assign({}, componentParams, {});
         let obj = {
           url: this.apis.screenDesign.getDynamicDatasApi,
           params: params,

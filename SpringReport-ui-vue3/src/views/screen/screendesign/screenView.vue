@@ -24,6 +24,38 @@
         :myclass="'myclass'"
       />
     </div>
+    <div style="width: 100%; flex: none">
+      <reportForm
+        ref="reportRef"
+        :report-name="''"
+        :report-form="searchData.params"
+        :search-data="searchData"
+        :search-handle="searchHandle"
+        :activiti-name="''"
+        :is-param-merge="'1'"
+        :show-search='true'
+        :is-drill="1"
+        v-model:drawer="drawer"
+        @closeSearch="closeSearch"
+      />
+    </div>
+    <div
+      ref="dragArea"
+      class="drag-area"
+    >
+      <el-tooltip effect="dark" content="查询" placement="top">
+        <el-button
+          type="primary"
+          size="default"
+          circle
+          @click="showSearch"
+        ><icon-search
+              theme="outline"
+              size="16"
+              class="el-icon--left"
+            /></el-button>
+      </el-tooltip>
+    </div>
   </div>
 </template>
 
@@ -45,5 +77,21 @@
 
   .mainbox::-webkit-scrollbar {
     display: none;
+  }
+
+  .drag-area {
+    position: fixed;
+    right: 5px;
+    bottom: 100px;
+    z-index: 99999;
+    // padding: 5px;
+    width: fit-content;
+    opacity: 1;
+    // background-color: #17b794;
+    border-radius: 8px;
+    box-shadow: 0px 2px 15px 0px rgba(9, 41, 77, 0.15);
+    // cursor: move;
+    user-select: none;
+    text-align: center;
   }
 </style>
