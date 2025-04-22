@@ -485,6 +485,7 @@ export default {
               }
               dataSet.params.push(param)
             }
+            console.log(dataSet)
             this.searchData.params.push(dataSet)
           }
           if (this.isDrillBack == 1 && this.isDrill == 2) {

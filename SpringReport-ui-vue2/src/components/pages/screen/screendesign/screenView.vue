@@ -24,6 +24,34 @@
         :myclass="'myclass'"
       />
     </div>
+     <div style="width: 100%; flex: none">
+      <reportForm
+        ref="reportRef"
+        :report-name="'测试'"
+        :report-form="searchData.params"
+        :search-data="searchData"
+        :search-handle="searchHandle"
+        :activiti-name="''"
+        :is-param-merge="'1'"
+        :show-search="true"
+        :is-drill="1"
+        :drawer="drawer"
+      />
+    </div>
+    <div
+      ref="dragArea"
+      class="drag-area"
+    >
+      <el-tooltip effect="dark" content="查询" placement="top">
+        <el-button
+          type="primary"
+          size="mini"
+          circle
+          @click="showSearch"
+           icon="el-icon-search"
+        ></el-button>
+      </el-tooltip>
+    </div>
   </div>
 </template>
 
@@ -31,7 +59,7 @@
 </script>
 
 <style scoped lang="scss">
- @import './index.scss';
+//  @import './index.scss';
  .mainbox {
     height: 100vh;
     width: 100%;
@@ -46,4 +74,18 @@
   .mainbox::-webkit-scrollbar {
     display: none;
   }
+  .drag-area {
+  position: fixed;
+  right: 5px;
+  bottom: 100px;
+  z-index: 2000;
+  padding: 5px;
+  width: fit-content;
+  opacity: 1;
+  border-radius: 8px;
+  box-shadow: 0px 2px 15px 0px rgba(9, 41, 77, 0.15);
+  // cursor: move;
+  user-select: none;
+  text-align: center;
+}
 </style>
