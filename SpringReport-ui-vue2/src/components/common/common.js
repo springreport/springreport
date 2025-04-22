@@ -1068,9 +1068,10 @@ commonUtil.isNumber = function(num){
 commonUtil.calculateDate = function(days,format)
 {
     let type = "days";
-    if(format == "yyyy"){
+    format = format.replace("yyyy-MM-dd","YYYY-MM-DD").replace("yyyy-MM","YYYY-MM").replace("yyyy","YYYY");
+    if(format == "YYYY"){
         type = "years";
-    }else if(format == "yyyy-MM"){
+    }else if(format == "YYYY-MM"){
         type = "months";
     }
     return moment().add(days, type).format(format) 

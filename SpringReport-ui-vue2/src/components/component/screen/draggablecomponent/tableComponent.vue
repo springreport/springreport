@@ -273,11 +273,11 @@ img {
 }
 
 ::v-deep .el-pagination.is-background .btn-prev, ::v-deep .el-pagination.is-background .btn-next, ::v-deep .el-pagination.is-background .el-pager li{
-  color:#ffffff !important
+  // color:#ffffff !important
 }
 
 ::v-deep .el-pagination.is-background .el-pager .active{
-  color:$--color-primary !important
+  // color:$--color-primary !important
 }
 
 ::v-deep .el-table__body-wrapper::-webkit-scrollbar {
