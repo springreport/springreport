@@ -7,6 +7,7 @@
  * @LastEditTime: 2022-08-25 14:53:21
  */
 // import Vue from 'vue'
+import { nextTick } from 'vue'
 import { ElMessage ,ElMessageBox  } from 'element-plus'
 import MSG_LIST from './message'
 import Axios from 'axios'
@@ -947,23 +948,24 @@ commonUtil.reInitChart=function(chartsComponents,component){
 
 commonUtil.reLoadChart = function(chartsComponents,component)
 {
-    if(component.category == "vchart"){
-        chartsComponents[component.id].release();
-        chartsComponents[component.id] = null;
-        var obj = { dom: component.id}
-        if(component.theme){
-            obj.theme = component.theme
+    nextTick(()=>{
+        if(component.category == "vchart"){
+            chartsComponents[component.id].release();
+            chartsComponents[component.id] = null;
+            var obj = { dom: component.id}
+            if(component.theme){
+                obj.theme = component.theme
+            }
         }
-    }
-   
-    commonUtil.chartProcess(component);
-    if(component.category == "vchart"){
-        const vchart = new VChart(component.spec, obj);
-        chartsComponents[component.id] = vchart;
-        // 绘制
-        vchart.renderSync();
-    }
-    
+       
+        commonUtil.chartProcess(component);
+        if(component.category == "vchart"){
+            const vchart = new VChart(component.spec, obj);
+            chartsComponents[component.id] = vchart;
+            // 绘制
+            vchart.renderSync();
+        }
+    })
 }
 
 //图表中需要特殊处理的部分

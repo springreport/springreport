@@ -400,6 +400,9 @@ screenConstants.textInit = {
   active: false,
   zindex: '99',
   locked:false,
+  isborder:false,//是否添加边框
+  borderType:"",//边框类型
+  borderColor:[],//边框颜色
   refresh: false, // 是否定时刷新
   refreshTime: 30000, // 定时刷新时间，单位(ms)
   dataSource:'1',//数据来源 1静态数据 2动态数据
@@ -433,6 +436,9 @@ screenConstants.dateInit = {
   active: false,
   zindex: '99',
   locked:false,
+  isborder:false,//是否添加边框
+  borderType:"",//边框类型
+  borderColor:[],//边框颜色
   style: {
     display: 'table-cell', textAlign: 'center', verticalAlign: 'middle', fontSize: '14', color: '#ffffff',colorEnd:"#ffffff", letterSpacing: '1', background: '',backgroundEnd:'',backgroundDirection:'bottom', fontWeight: false,direction:'bottom'
   },
@@ -514,6 +520,9 @@ screenConstants.histogramInit = {
     hiddenParamSize:0,//隐藏参数个数
     theme:"",//主题
     amination:"",//动画效果
+    isborder:false,//是否添加边框
+    borderType:"",//边框类型
+    borderColor:[],//边框颜色
     spec:{
         'type':'bar',
         color: [],
@@ -597,6 +606,9 @@ screenConstants.rangeHistogramInit = {
   hiddenParamSize:0,//隐藏参数个数
   theme:"",//主题
   amination:"",//动画效果
+  isborder:false,//是否添加边框
+  borderType:"",//边框类型
+  borderColor:[],//边框颜色
   spec:{
       'type':'rangeColumn',
       color: [],
@@ -675,6 +687,9 @@ screenConstants.stackHistogramInit = {
     hiddenParamSize:0,//隐藏参数个数
     theme:"",//主题
     amination:"",//动画效果
+    isborder:false,//是否添加边框
+    borderType:"",//边框类型
+    borderColor:[],//边框颜色
     spec:{
         'type':'bar',
         color: [],
@@ -758,6 +773,9 @@ screenConstants.horizontalHistogramInit = {
     hiddenParamSize:0,//隐藏参数个数
     theme:"",//主题
     amination:"",//动画效果
+    isborder:false,//是否添加边框
+    borderType:"",//边框类型
+    borderColor:[],//边框颜色
     spec:{
         'type':'bar',
         color: [],
@@ -860,6 +878,9 @@ screenConstants.rangeHorizontalHistogramInit = {
   hiddenParamSize:0,//隐藏参数个数
   theme:"",//主题
   amination:"",//动画效果
+  isborder:false,//是否添加边框
+  borderType:"",//边框类型
+  borderColor:[],//边框颜色
   spec:{
       'type':'rangeColumn',
       color: [],
@@ -939,6 +960,9 @@ screenConstants.stackHorizontalHistogramInit = {
     hiddenParamSize:0,//隐藏参数个数
     theme:"",//主题
     amination:"",//动画效果
+    isborder:false,//是否添加边框
+    borderType:"",//边框类型
+    borderColor:[],//边框颜色
     spec:{
         'type':'bar',
         color: [],
@@ -1024,6 +1048,9 @@ screenConstants.lineInit = {
     hiddenParamSize:0,//隐藏参数个数
     theme:"",//主题
     amination:"",//动画效果
+    isborder:false,//是否添加边框
+    borderType:"",//边框类型
+    borderColor:[],//边框颜色
     spec:{
         'type':'line',
         color: [],
@@ -1132,6 +1159,9 @@ screenConstants.horizontalLineInit = {
     hiddenParamSize:0,//隐藏参数个数
     theme:"",//主题
     amination:"",//动画效果
+    isborder:false,//是否添加边框
+    borderType:"",//边框类型
+    borderColor:[],//边框颜色
     spec:{
         'type':'line',
         color: [],
@@ -1241,6 +1271,9 @@ screenConstants.smoothLineInit = {
     hiddenParamSize:0,//隐藏参数个数
     theme:"",//主题
     amination:"",//动画效果
+    isborder:false,//是否添加边框
+    borderType:"",//边框类型
+    borderColor:[],//边框颜色
     spec:{
         'type':'line',
         color: [],
@@ -1349,6 +1382,9 @@ screenConstants.stepLineInit = {
     hiddenParamSize:0,//隐藏参数个数
     theme:"",//主题
     amination:"",//动画效果
+    isborder:false,//是否添加边框
+    borderType:"",//边框类型
+    borderColor:[],//边框颜色
     spec:{
         'type':'line',
         color: [],
@@ -1456,6 +1492,9 @@ screenConstants.stackLineInit = {
     hiddenParamSize:0,//隐藏参数个数
     theme:"",//主题
     amination:"",//动画效果
+    isborder:false,//是否添加边框
+    borderType:"",//边框类型
+    borderColor:[],//边框颜色
     spec:{
         'type':'line',
         color: [],
@@ -1564,6 +1603,9 @@ screenConstants.areaInit = {
     hiddenParamSize:0,//隐藏参数个数
     theme:"",//主题
     amination:"",//动画效果
+    isborder:false,//是否添加边框
+    borderType:"",//边框类型
+    borderColor:[],//边框颜色
     spec:{
         'type':'area',
         color: [],
@@ -1671,6 +1713,9 @@ screenConstants.horizontalAreaInit = {
     hiddenParamSize:0,//隐藏参数个数
     theme:"",//主题
     amination:"",//动画效果
+    isborder:false,//是否添加边框
+    borderType:"",//边框类型
+    borderColor:[],//边框颜色
     spec:{
         'type':'area',
         color: [],
@@ -1779,6 +1824,9 @@ screenConstants.smoothAreaInit = {
     hiddenParamSize:0,//隐藏参数个数
     theme:"",//主题
     amination:"",//动画效果
+    isborder:false,//是否添加边框
+    borderType:"",//边框类型
+    borderColor:[],//边框颜色
     spec:{
         'type':'area',
         color: [],
@@ -1887,6 +1935,9 @@ screenConstants.stepAreaInit = {
     hiddenParamSize:0,//隐藏参数个数
     theme:"",//主题
     amination:"",//动画效果
+    isborder:false,//是否添加边框
+    borderType:"",//边框类型
+    borderColor:[],//边框颜色
     spec:{
         'type':'area',
         color: [],
@@ -1994,6 +2045,9 @@ screenConstants.stackAreaInit = {
     hiddenParamSize:0,//隐藏参数个数
     theme:"",//主题
     amination:"",//动画效果
+    isborder:false,//是否添加边框
+    borderType:"",//边框类型
+    borderColor:[],//边框颜色
     spec:{
         'type':'area',
         color: [],
@@ -2101,6 +2155,9 @@ screenConstants.pieInit = {
     hiddenParamSize:0,//隐藏参数个数
     theme:"",//主题
     amination:"",//动画效果
+    isborder:false,//是否添加边框
+    borderType:"",//边框类型
+    borderColor:[],//边框颜色
     spec:{
         'type':'pie',
         color: [],
@@ -2186,6 +2243,9 @@ screenConstants.pieRoseInit = {
     hiddenParamSize:0,//隐藏参数个数
     theme:"",//主题
     amination:"",//动画效果
+    isborder:false,//是否添加边框
+    borderType:"",//边框类型
+    borderColor:[],//边框颜色
     spec:{
         'type':'rose',
         color: [],
@@ -2271,6 +2331,9 @@ screenConstants.scatterInit = {
     hiddenParamSize:0,//隐藏参数个数
     theme:"",//主题
     amination:"",//动画效果
+    isborder:false,//是否添加边框
+    borderType:"",//边框类型
+    borderColor:[],//边框颜色
     spec:{
         'type':'scatter',
         color: [],
@@ -2352,6 +2415,9 @@ screenConstants.radarInit = {
     hiddenParamSize:0,//隐藏参数个数
     theme:"",//主题
     amination:"",//动画效果
+    isborder:false,//是否添加边框
+    borderType:"",//边框类型
+    borderColor:[],//边框颜色
     spec:{
         'type':'radar',
         color: [],
@@ -2487,6 +2553,9 @@ screenConstants.stackRadarInit = {
     hiddenParamSize:0,//隐藏参数个数
     theme:"",//主题
     amination:"",//动画效果
+    isborder:false,//是否添加边框
+    borderType:"",//边框类型
+    borderColor:[],//边框颜色
     spec:{
         'type':'radar',
         color: [],
@@ -2617,6 +2686,9 @@ screenConstants.wordCloudInit = {
     bindComponent: null, // 绑定组件
     hiddenParamSize:0,//隐藏参数个数
     theme:"",//主题
+    isborder:false,//是否添加边框
+    borderType:"",//边框类型
+    borderColor:[],//边框颜色
     spec:{
         'type':'wordCloud',
         color: [],
@@ -2674,6 +2746,9 @@ screenConstants.gaugeInit = {
     hiddenParamSize:0,//隐藏参数个数
     theme:"",//主题
     amination:"",//动画效果
+    isborder:false,//是否添加边框
+    borderType:"",//边框类型
+    borderColor:[],//边框颜色
     spec:{
       type: 'gauge',
       data: 
@@ -2807,6 +2882,9 @@ screenConstants.tickGaugeInit = {
   hiddenParamSize:0,//隐藏参数个数
   theme:"",//主题
   amination:"",//动画效果
+  isborder:false,//是否添加边框
+  borderType:"",//边框类型
+  borderColor:[],//边框颜色
   spec:{
     type: 'gauge',
     data: 
@@ -2957,6 +3035,9 @@ screenConstants.seriesGaugeInit = {
   hiddenParamSize:0,//隐藏参数个数
   theme:"",//主题
   amination:"",//动画效果
+  isborder:false,//是否添加边框
+  borderType:"",//边框类型
+  borderColor:[],//边框颜色
   spec:{
     type: 'gauge',
     data: 
@@ -3114,6 +3195,9 @@ screenConstants.tickSeriesGaugeInit = {
   hiddenParamSize:0,//隐藏参数个数
   theme:"",//主题
   amination:"",//动画效果
+  isborder:false,//是否添加边框
+  borderType:"",//边框类型
+  borderColor:[],//边框颜色
   spec:{
     type: 'gauge',
     data: 
@@ -3352,6 +3436,9 @@ screenConstants.circularProgressInit = {
   hiddenParamSize:0,//隐藏参数个数
   theme:"",//主题
   amination:"",//动画效果
+  isborder:false,//是否添加边框
+  borderType:"",//边框类型
+  borderColor:[],//边框颜色
   spec:{
     type: 'circularProgress',
     data: 
@@ -3479,6 +3566,9 @@ screenConstants.barProgressInit = {
   hiddenParamSize:0,//隐藏参数个数
   theme:"",//主题
   amination:"",//动画效果
+  isborder:false,//是否添加边框
+  borderType:"",//边框类型
+  borderColor:[],//边框颜色
   spec:{
     type: 'linearProgress',
     data: 
@@ -3564,6 +3654,9 @@ screenConstants.liquidInit = {
   hiddenParamSize:0,//隐藏参数个数
   theme:"",//主题
   amination:"",//动画效果
+  isborder:false,//是否添加边框
+  borderType:"",//边框类型
+  borderColor:[],//边框颜色
   spec:{
     type: 'liquid',
     title:screenConstants.chartTitleSettings,
@@ -3625,6 +3718,9 @@ screenConstants.mapInit = {
   hiddenParamSize:0,//隐藏参数个数
   theme:"",//主题
   amination:"",//动画效果
+  isborder:false,//是否添加边框
+  borderType:"",//边框类型
+  borderColor:[],//边框颜色
   isDrill: false, // 是否支持下钻
   spec:{
     type: 'map',
@@ -3762,6 +3858,9 @@ screenConstants.scrollTableInit = {
   active: false,
   zindex: 99,
   locked:false,
+  isborder:false,//是否添加边框
+  borderType:"",//边框类型
+  borderColor:[],//边框颜色
   refresh: false, // 是否定时刷新
   refreshTime: 30000, // 定时刷新时间，单位(ms)
   dataSource:'1',//数据来源 1静态数据 2动态数据
@@ -3849,6 +3948,9 @@ screenConstants.pageTableInit = {
   active: false,
   zindex: 99,
   locked:false,
+  isborder:false,//是否添加边框
+  borderType:"",//边框类型
+  borderColor:[],//边框颜色
   refresh: false, // 是否定时刷新
   refreshTime: 30000, // 定时刷新时间，单位(ms)
   dataSource:'1',//数据来源 1静态数据 2动态数据

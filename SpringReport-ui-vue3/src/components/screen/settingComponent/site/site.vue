@@ -37,7 +37,27 @@
                 <el-form-item label="锁定组件">
                     <el-switch v-model="component.locked">
                     </el-switch>
+                </el-form-item><br>
+                <el-form-item label="显示边框">
+                    <el-switch v-model="component.isborder" @change="commonUtil.reLoadChart(chartsComponents,component)">
+                    </el-switch>
                 </el-form-item>
+                <el-form-item label="边框类型" v-show="component.isborder">
+                    <el-select v-model="component.borderType" placeholder="请选择" @change="commonUtil.reLoadChart(chartsComponents,component)" style="width:180px">
+                        <el-option
+                            v-for="item in selectUtil.borderType"
+                            :key="item.name"
+                            :label="item.text"
+                            :value="item.name">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="边框颜色1" v-show="component.isborder">
+                        <input-color-picker :inputWidth=152 :value="component.borderColor[0]" @change="(val)=>{changeColor(0,val)}" />
+                    </el-form-item>
+                    <el-form-item label="边框颜色2" v-show="component.isborder">
+                        <input-color-picker :inputWidth=152 :value="component.borderColor[1]" @change="(val)=>{changeColor(1,val)}" />
+                    </el-form-item>
                 </el-form>
             </el-collapse-item>
         </el-collapse>
@@ -45,7 +65,11 @@
 </template>
 
 <script>
+import InputColorPicker from '../../colorpicker/inputColorPicker.vue'
 export default {
+    components:{
+        InputColorPicker,
+    },
     props:{
         component:{
             type:Object,
@@ -99,6 +123,9 @@ export default {
                 this.component.h = this.component.h - 1;
             }
         }
+      },
+      changeColor(index,val){
+        this.component.borderColor[index] = val;
       }
     }
 }

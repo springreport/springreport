@@ -1,9 +1,9 @@
 <template>
-    <div
+      <div
         :style="{ height: '100%', width: '100%' }"
       >
-        <div
-          :style="{ height: '25px', width: '100%' }"
+        <!-- <div
+          :style="{ height: '28px', width: '100%' }"
           v-if="component.params && component.params.length > 0 && component.params.length>component.hiddenParamSize"
         >
         <componentForm :params="component.params"></componentForm>
@@ -13,12 +13,32 @@
           :style="{
             height:
               component.params && component.params.length > 0 && component.params.length>component.hiddenParamSize
-                ? component.h - 25 + 'px'
+                ? component.h - 30 + 'px'
                 : '100%',
             width: '100%',
           }"
+        ></div> -->
+        <component :is="component.borderType.replace('-reverse','')" v-if="component.isborder && component.borderType" :color="component.borderColor" :reverse="component.borderType.indexOf('-reverse')>-1">
+          <div
+            style="height:100%;width:100%;display: flex;justify-content: center;align-items: center;"
+          >
+          <div
+            :id="component.id"
+            :style="{
+              height:'92%',
+              width: '92%',
+            }"
+          ></div>
+          </div>
+        </component>
+        <div v-else
+          :id="component.id"
+          :style="{
+            height:'100%',
+            width: '100%',
+          }"
         ></div>
-      </div>
+    </div>
 </template>
 
 <script>
