@@ -41,13 +41,13 @@
       :draggable="!item.locked" 
       :resizable="!item.locked">
       <div @contextmenu.prevent="onContextmenu($event, item)" v-if="item.category == screenConstants.category.text && !item.isDelete" >
-        <text-component :component="item" :chartsComponents="chartsComponents" :sendRequest="sendRequest"></text-component>
+        <text-component :component="item" :chartsComponents="chartsComponents" :sendRequest="sendRequest" :ref="item.id"></text-component>
       </div>
       <div @contextmenu.prevent="onContextmenu($event, item)" v-if="item.category == screenConstants.category.border && !item.isDelete" >
-          <border-component :component="item"></border-component>
+          <border-component :component="item" :ref="item.id"></border-component>
       </div>
       <div @contextmenu.prevent="onContextmenu($event, item)" v-if="item.category == screenConstants.category.decoration && !item.isDelete">
-       <decoration-component :component="item"></decoration-component>
+       <decoration-component :component="item" :ref="item.id"></decoration-component>
       </div>
       <div @contextmenu.prevent="onContextmenu($event, item)" v-if="item.category == screenConstants.category.picture && !item.isDelete" :id="item.id" :style="{height:item.h+'px',width:item.w+'px'}">
         <img v-if="item.imgUrl" :src="item.imgUrl" style="height:100%;width:100%">
@@ -56,7 +56,7 @@
         <table-component :component="item" :sendRequest="sendRequest" :chartsComponents="chartsComponents" :ref="item.id"></table-component>
       </div>
       <div @contextmenu.prevent="onContextmenu($event, item)"  v-if="item.category == screenConstants.category.vchart && !item.isDelete" :style="{height:item.h+'px',width:item.w+'px'}">
-        <vchart-component  :component="item" :sendRequest="sendRequest" :chartsComponents="chartsComponents"></vchart-component>
+        <vchart-component  :component="item" :sendRequest="sendRequest" :chartsComponents="chartsComponents" :ref="item.id"></vchart-component>
       </div>
     </Vue3DraggableResizable>
   </div>

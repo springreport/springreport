@@ -941,4 +941,23 @@ selectUtil.cellFillType = [
   { value: 1, label: '插入' },
   { value: 2, label: '覆盖' }
 ]
+
+selectUtil.borderType = [
+  {"name":"dv-border-box-1","text":"边框1"},
+  {"name":"dv-border-box-2","text":"边框2"},
+  {"name":"dv-border-box-3","text":"边框3"},
+  {"name":"dv-border-box-4","text":"边框4"},
+  {"name":"dv-border-box-4-reverse","text":"边框4(反向)"},
+  {"name":"dv-border-box-5","text":"边框5"},
+  {"name":"dv-border-box-5-reverse","text":"边框5(反向)"},
+  {"name":"dv-border-box-6","text":"边框6"},
+  {"name":"dv-border-box-7","text":"边框7"},
+  {"name":"dv-border-box-8","text":"边框8"},
+  {"name":"dv-border-box-8-reverse","text":"边框8(反向)"},
+  {"name":"dv-border-box-9","text":"边框9"},
+  {"name":"dv-border-box-10","text":"边框10"},
+  {"name":"dv-border-box-11","text":"边框11"},
+  {"name":"dv-border-box-12","text":"边框12"},
+  {"name":"dv-border-box-13","text":"边框13"},
+]
 export default selectUtil

@@ -1,4 +1,8 @@
 <template>
+<div
+  :style="{ height: '100%', width: '100%' }"
+>
+ <component :is="component.borderType.replace('-reverse','')" v-if="component.isborder && component.borderType" :color="component.borderColor" :reverse="component.borderType.indexOf('-reverse')>-1">
   <div
     :id="component.id"
     :style="{
@@ -77,6 +81,87 @@
       ></span
     >
   </div>
+ </component>
+  <div
+    v-else
+    :id="component.id"
+    :style="{
+      height: component.h + 'px',
+      width: component.w + 'px',
+      display: component.style.display,
+      textAlign: component.style.textAlign,
+      color: component.style.color,
+      verticalAlign: component.style.verticalAlign,
+      fontSize: component.style.fontSize + 'pt',
+      letterSpacing: component.style.letterSpacing + 'px',
+      background: `linear-gradient(to ${
+        component.style.backgroundDirection
+          ? component.style.backgroundDirection
+          : 'bottom'
+      },${component.style.background},${
+        component.style.backgroundEnd
+          ? component.style.backgroundEnd
+          : component.style.background
+      })`,
+      fontWeight: component.style.fontWeight ? 'bold' : 'normal',
+    }"
+  >
+    <span
+      v-if="component.textType == 'text' || component.type == 'date'"
+      class="text"
+      :style="{
+        'background-image': `linear-gradient(to ${
+          component.style.direction ? component.style.direction : 'bottom'
+        }, ${component.style.color}, ${
+          component.style.colorEnd
+            ? component.style.colorEnd
+            : component.style.color
+        })`,
+      }"
+      >{{ component.content }}</span
+    >
+    <MarqueeTips
+      v-if="component.textType == 'marquee'"
+      class="text"
+      :content="component.content"
+      :speed="component.speed"
+      :style="{
+        height: component.h + 'px',
+        width: component.w + 'px',
+        lineHeight: component.h + 'px',
+        'background-image': `linear-gradient(to ${
+          component.style.direction ? component.style.direction : 'bottom'
+        }, ${component.style.color}, ${
+          component.style.colorEnd
+            ? component.style.colorEnd
+            : component.style.color
+        })`,
+      }"
+    >
+    </MarqueeTips>
+    <span
+      ><a
+        v-if="component.textType == 'link'"
+        class="text"
+        :style="{
+          fontSize: component.style.fontSize + 'pt',
+          'background-image': `linear-gradient(to ${
+            component.style.direction ? component.style.direction : 'bottom'
+          }, ${component.style.color}, ${
+            component.style.colorEnd
+              ? component.style.colorEnd
+              : component.style.color
+          })`,
+          letterSpacing: component.style.letterSpacing + 'px',
+          fontWeight: component.style.fontWeight ? 'bold' : 'normal',
+        }"
+        :href="component.href"
+        target="_blank"
+        >{{ component.content }}</a
+      ></span
+    >
+  </div>
+ </div>
 </template>
 
 <script>
@@ -128,7 +213,7 @@ export default {
       var componentParams = this.commonUtil.getComponentParams(
         component.params
       );
-      params.params = Object.assign({}, componentParams, this.$route.query);
+      params.params = Object.assign({}, componentParams, {});
       let obj = {
         url: this.apis.screenDesign.getDynamicDatasApi,
         params: params,

@@ -99,11 +99,32 @@
             :rules="filter_rules('参数类型', { required: true })"
           >
             <el-select v-model="paramForm.paramType" placeholder="参数类型">
-              <el-option label="字符串/数值" value="varchar"></el-option>
-              <el-option label="日期" value="date"></el-option>
-              <el-option label="下拉单选" value="select"></el-option>
+              <el-option label="字符串" value="varchar" />
+              <el-option label="数值" value="number" />
+              <el-option label="日期" value="date" />
+              <el-option label="下拉单选" value="select" />
+              <el-option label="下拉多选" value="mutiselect" />
+              <el-option label="下拉树(单选)" value="treeSelect" />
+              <el-option label="下拉树(多选)" value="multiTreeSelect" />
             </el-select>
           </el-form-item>
+          <el-form-item
+                v-if="paramForm.paramType == 'date'"
+                label="日期格式"
+                prop="dateFormat"
+                :rules="filter_rules('日期格式', { required: false })"
+              >
+                <el-select
+                  v-model="paramForm.dateFormat"
+                  placeholder="日期格式"
+                  size="small"
+                >
+                  <el-option label="年" value="yyyy" />
+                  <el-option label="年-月" value="yyyy-MM" />
+                  <el-option label="年-月-日" value="yyyy-MM-dd" />
+                  <el-option label="年-月-日 时:分" value="yyyy-MM-dd HH:mm" />
+                </el-select>
+              </el-form-item>
           <el-form-item label="默认值">
             <el-input
               v-model="paramForm.paramDefault"
@@ -126,7 +147,7 @@
               <el-option label="否" value="2"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item
+          <!-- <el-form-item
             label="参数组件宽度"
             prop="width"
             :rules="
@@ -136,7 +157,7 @@
             <el-input v-model="paramForm.width" placeholder="参数组件宽度">
               <template slot="append">px</template>
             </el-input>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item
             v-if="
               paramForm.paramType == 'select' ||
@@ -155,9 +176,14 @@
             </el-select>
           </el-form-item>
           <el-form-item
-            v-if="paramForm.selectType == '2'"
+            v-if="(paramForm.paramType == 'select' &&
+                    paramForm.selectType == '2') ||
+                    (paramForm.paramType == 'mutiselect' &&
+                      paramForm.selectType == '2') ||
+                    paramForm.paramType == 'treeSelect' ||
+                    paramForm.paramType == 'multiTreeSelect'"
             label="选择数据源"
-            prop="selectType"
+            prop="dataSourceId"
             :rules="filter_rules('选择内容来源', { required: true })"
           >
             <el-select
@@ -174,9 +200,62 @@
             </el-select>
           </el-form-item>
           <el-form-item
+                v-if="
+                  (paramForm.paramType == 'select' || paramForm.paramType == 'mutiselect' || paramForm.paramType == 'treeSelect' || paramForm.paramType == 'multiTreeSelect') && (paramForm.selectType == '2' || paramForm.paramType == 'treeSelect' || paramForm.paramType == 'multiTreeSelect')
+                "
+                key="isRelyOnParams"
+                label="是否依赖其他参数"
+                prop="isRelyOnParams"
+                :rules="filter_rules('是否依赖其他参数', { required: true })"
+              >
+                <el-select
+                  v-model="paramForm.isRelyOnParams"
+                  placeholder="是否依赖其他参数"
+                  size="small"
+                >
+                  <el-option label="是" :value=1 />
+                  <el-option label="否" :value=2 />
+                </el-select>
+              </el-form-item>
+              <el-form-item
+                v-if="
+                  (paramForm.paramType == 'select' || paramForm.paramType == 'mutiselect' || paramForm.paramType == 'treeSelect' || paramForm.paramType == 'multiTreeSelect') &&
+                    (paramForm.selectType == '2' || paramForm.paramType == 'treeSelect' || paramForm.paramType == 'multiTreeSelect') &&
+                    paramForm.isRelyOnParams == '1'
+                "
+                key="relyOnParams"
+                label="依赖参数代码"
+                prop="relyOnParams"
+                :rules="filter_rules('依赖参数代码', { required: true })"
+              >
+                <el-input
+                  v-model="paramForm.relyOnParams"
+                  placeholder="依赖参数代码，多个用,分隔"
+                  size="small"
+                />
+              </el-form-item>
+              <el-form-item
+                v-if="paramForm.paramType == 'multiTreeSelect'"
+                key="checkStrictly"
+                label="父子联动"
+                prop="checkStrictly"
+                :rules="filter_rules('父子联动', { required: true })"
+              >
+                <el-select
+                  v-model="paramForm.checkStrictly"
+                  placeholder="选择父子联动"
+                  size="small"
+                >
+                  <el-option label="是" value="1" />
+                  <el-option label="否" value="2" />
+                </el-select>
+              </el-form-item>
+          <el-form-item
             v-if="
               paramForm.paramType == 'select' ||
-              paramForm.paramType == 'mutiselect'
+              paramForm.paramType == 'mutiselect' ||
+              paramForm.paramType == 'treeSelect' ||
+              paramForm.paramType == 'multiTreeSelect'
             "
             label="下拉选择内容"
             prop="selectContent"
@@ -190,12 +269,13 @@
             ></el-input>
           </el-form-item>
           <el-form-item>
-            <el-tag v-show="paramForm.paramType == 'date'" type="primary"
+            <!-- <el-tag v-show="paramForm.paramType == 'date'" type="primary"
               >注：当参数类型选择日期时，如果想让默认日期是当前日期，则默认值填写current或者CURRENT</el-tag
             >
             <el-tag v-show="paramForm.paramType == 'date'" type="primary"
               >如果想让默认日期是当前日期的天几天或者后几天，则填天数，例如前七天则填写-7，后七天则填写7。</el-tag
-            >
+            > -->
+            <el-link :underline="false" v-if="paramForm.paramType == 'date'" type="warning" href="https://gitee.com/springreport/springreport/wikis/pages?sort_id=13973093&doc_id=5747656" target="_blank">点击查看日期默认值设置规则</el-link>
             <el-tag v-show="paramForm.paramType == 'select'" type="primary"
               >自定义数据格式：[{"value":"value1","name":"name1"},{"value":"value2","name":"name2"}]
               注意：两个key必须是value 和 name</el-tag
@@ -246,6 +326,10 @@ export default {
         width: "110", //参数组件宽度
         dataSourceId: "", //数据源
         selectData: null,
+        dateFormat:"",//日期格式
+        isRelyOnParams: '', // 是否依赖其他参数
+        relyOnParams: '', // 依赖参数代码
+        checkStrictly: '', // 父子联动 1是 2否
       },
       isEdit: false,
       editIndex: 0,
@@ -269,10 +353,14 @@ export default {
             paramRequired: this.paramForm.paramRequired, //是否必选
             selectContent: this.paramForm.selectContent, //下拉选择内容
             selectType: this.paramForm.selectType, //内容来源
-            dataSourceId: this.paramForm.dataSourceId, //数据源
+            datasourceId: this.paramForm.dataSourceId, //数据源
             width: this.paramForm.width, //参数组件宽度
             selectData: null, //下拉选择内容
             paramPrefix:this.paramForm.paramPrefix,//参数前缀  api请求复杂参数用到
+            dateFormat:this.paramForm.dateFormat,
+            isRelyOnParams:this.paramForm.isRelyOnParams,
+            relyOnParams:this.paramForm.relyOnParams,
+            checkStrictly:this.paramForm.checkStrictly,
           };
           var value = this.commonUtil.getDefaultValue(obj);
           obj[key] = value;
@@ -297,18 +385,22 @@ export default {
                 this.paramForm.selectType;
               this.component.params[this.editIndex].width =
                 this.paramForm.width;
-              this.component.params[this.editIndex].dataSourceId =
+              this.component.params[this.editIndex].datasourceId =
                 this.paramForm.dataSourceId;
               this.component.params[this.editIndex].selectData = null;
               this.component.params[this.editIndex].paramPrefix = this.paramForm.paramPrefix;
+              this.component.params[this.editIndex].dateFormat = this.paramForm.dateFormat;
+              this.component.params[this.editIndex].isRelyOnParams = this.paramForm.isRelyOnParams;
+              this.component.params[this.editIndex].relyOnParams = this.paramForm.relyOnParams;
+              this.component.params[this.editIndex].checkStrictly = this.paramForm.checkStrictly;
               this.component.params[this.editIndex][key] = value;
-              if (this.component.params[this.editIndex].paramType == "select") {
-                this.getSelectData(this.component.params[this.editIndex]);
-              }
+              // if (this.component.params[this.editIndex].paramType == "select") {
+              //   this.getSelectData(this.component.params[this.editIndex]);
+              // }
             } else {
-              if (obj.paramType == "select") {
-                this.getSelectData(obj);
-              }
+              // if (obj.paramType == "select") {
+              //   this.getSelectData(obj);
+              // }
               this.component.params.push(obj);
             }
           } else {
@@ -342,8 +434,12 @@ export default {
       this.paramForm.selectContent = item.selectContent;
       this.paramForm.selectType = item.selectType;
       this.paramForm.width = item.width;
-      this.paramForm.dataSourceId = item.dataSourceId;
+      this.paramForm.dataSourceId = item.datasourceId;
       this.paramForm.paramPrefix = item.paramPrefix;
+      this.paramForm.dateFormat = item.dateFormat;
+      this.paramForm.isRelyOnParams = item.isRelyOnParams;
+      this.paramForm.relyOnParams = item.relyOnParams;
+      this.paramForm.checkStrictly = item.checkStrictly;
       this.getHiddenParamSize();
       this.showAddParamDailog();
     },

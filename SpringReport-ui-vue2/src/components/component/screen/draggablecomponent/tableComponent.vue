@@ -1,12 +1,19 @@
 <template>
+  <div
+        :style="{ height: '100%', width: '100%' }"
+  >
+  <component :is="component.borderType.replace('-reverse','')" v-if="component.isborder && component.borderType" :color="component.borderColor" :reverse="component.borderType.indexOf('-reverse')>-1">
     <div :id="component.id" :style="{height:component.h+'px',width:component.w+'px'}">
-        <div
+        <!-- <div
           :style="{ height: '28px', width: '100%' }"
           v-if="component.params && component.params.length > 0 && component.params.length>component.hiddenParamSize"
         >
         <componentForm :params="component.params"></componentForm>
-        </div>
-        <div :style="{height:(component.params && component.params.length>0 && component.params.length>component.hiddenParamSize)?(component.h-30)+'px':component.h+'px',width:'100%'}" v-if="component.type == screenConstants.type.scrollTable">
+        </div> -->
+        <div
+            style="height:100%;width:100%;display: flex;justify-content: center;align-items: center;"
+          >
+        <div :style="{height:(component.h-24)+'px',width:'92%'}" v-if="component.type == screenConstants.type.scrollTable">
                 <!-- 表头 -->
                 <div class="warp-title" :style="{height:component.headStyle.height + 'px',backgroundColor:component.headStyle.backgroundColor,color:component.headStyle.color,fontSize:component.headStyle.fontSize+'pt',fontWeight:component.headStyle.fontWeight,borderWidth:component.style.isBorder?component.style.borderWidth+'px':'',borderStyle:component.style.isBorder?component.style.borderStyle:'',borderColor:component.style.isBorder?component.style.borderColor:''}">
                 <ul class="item">
@@ -18,7 +25,70 @@
                 </div>
                 <!-- 表格滚动区 -->
                 <div>
-                    <vue-seamless-scroll :style="{height: (component.params && component.params.length>0)?(component.h-component.headStyle.height-5-30) + 'px':(component.h-component.headStyle.height-5) + 'px',borderWidth:component.style.isBorder?component.style.borderWidth+'px':'',borderStyle:component.style.isBorder?component.style.borderStyle:'',borderColor:component.style.isBorder?component.style.borderColor:''}" :data="component.spec.data.values" :class-option="component.options" class="warp-content" :ref="component.id">
+                    <vue-seamless-scroll :style="{height: (component.h-component.headStyle.height-5-24) + 'px',borderWidth:component.style.isBorder?component.style.borderWidth+'px':'',borderStyle:component.style.isBorder?component.style.borderStyle:'',borderColor:component.style.isBorder?component.style.borderColor:''}" :data="component.spec.data.values" :class-option="component.options" class="warp-content" :ref="component.id">
+                        <li v-for="(d, t) in component.spec.data.values" :key="t" :style="{backgroundColor:((t+1)%2 == 0) ? component.bodyStyle.evenRowColor : component.bodyStyle.oddRowColor,height:component.bodyStyle.height + 'px', lineHeight:component.bodyStyle.height + 'px',color:component.bodyStyle.color,fontSize:component.bodyStyle.fontSize+'pt',fontWeight:component.bodyStyle.fontWeight,}">
+                            <span v-if="component.style.showIndex" class="title" :style="{width: component.style.indexWidth+'%',borderWidth:component.style.isBorder?component.style.borderWidth+'px':'',borderStyle:component.style.isBorder?component.style.borderStyle:'',borderColor:component.style.isBorder?component.style.borderColor:''}">{{t+1}}</span> 
+                            <span v-for="(column,i) in component.tableColumn" :key="i" class="title" :style="{width:column.style.width+'%',borderWidth:component.style.isBorder?component.style.borderWidth+'px':'',borderStyle:component.style.isBorder?component.style.borderStyle:'',borderColor:component.style.isBorder?component.style.borderColor:''}">{{d[column.key]}}</span>
+                        </li>
+                    </vue-seamless-scroll>
+                </div>
+        </div>
+        <div  v-if="component.type == screenConstants.type.pageTable" :style="{height:(component.h-24)+'px',width:'92%'}">
+            <div :style="{height:(component.h-30-24)+'px',width:'100%'}">
+            <el-table size="mini" :style="{background:component.rowStyle.backgroundColor}" :height="(component.h-30-24) + 'px'" :highlight-current-row="component.highlight" :border="component.border" :stripe="component.stripe" 
+            :data="component.spec.data.values.slice((component.pagination.currentPage-1)*component.pagination.pageSize,component.pagination.currentPage*component.pagination.pageSize)"
+            :header-cell-style="{fontSize: component.headStyle.fontSize+'px', backgroundColor: component.headStyle.backgroundColor,color:component.headStyle.color,fontWeight:component.headStyle.fontWeight}"
+            :row-style="{fontSize: component.rowStyle.fontSize+'px', backgroundColor: component.rowStyle.backgroundColor,color:component.rowStyle.color,fontWeight:component.rowStyle.fontWeight}">
+                <el-table-column v-if="component.isIndex" type="index" label="序号" align="center" :width="component.indexWidth"></el-table-column>
+                <el-table-column
+                  v-for="(rowHeader,index) in component.tableColumn"
+                  :key="index"
+                  :prop="rowHeader.key"
+                  :label="rowHeader.name"
+                  :align="component.align"
+                  :show-overflow-tooltip="component.overflow"
+                  :highlight-current-row="component.highlight" 
+                  :highlight-selection-row="component.highlight"
+                >
+                </el-table-column>
+            </el-table>
+            </div>
+            <div :style="{height:'30px',width:'100%',textAlign:'right',background:component.pagination.backgroundColor}">
+            <el-pagination
+              small
+              :page-size="component.pagination.pageSize"
+              layout="prev, pager, next"
+              :total="component.spec.data.total"
+              style="color: white;"
+              background
+              :current-page.sync="component.pagination.currentPage"
+              >
+            </el-pagination>
+            </div>
+        </div>
+        </div>
+    </div>
+  </component>
+    <div  v-else :id="component.id" :style="{height:component.h+'px',width:component.w+'px'}">
+        <!-- <div
+          :style="{ height: '28px', width: '100%' }"
+          v-if="component.params && component.params.length > 0 && component.params.length>component.hiddenParamSize"
+        >
+        <componentForm :params="component.params"></componentForm>
+        </div> -->
+        <div :style="{height:(component.h)+'px',width:'100%'}" v-if="component.type == screenConstants.type.scrollTable">
+                <!-- 表头 -->
+                <div class="warp-title" :style="{height:component.headStyle.height + 'px',backgroundColor:component.headStyle.backgroundColor,color:component.headStyle.color,fontSize:component.headStyle.fontSize+'pt',fontWeight:component.headStyle.fontWeight,borderWidth:component.style.isBorder?component.style.borderWidth+'px':'',borderStyle:component.style.isBorder?component.style.borderStyle:'',borderColor:component.style.isBorder?component.style.borderColor:''}">
+                <ul class="item">
+                    <li :style="{height:component.headStyle.height + 'px', lineHeight:component.headStyle.height + 'px'}">
+                        <span v-if="component.style.showIndex" class="title" :style="{width: component.style.indexWidth+'%',borderWidth:component.style.isBorder?component.style.borderWidth+'px':'',borderStyle:component.style.isBorder?component.style.borderStyle:'',borderColor:component.style.isBorder?component.style.borderColor:''}">序号</span> 
+                        <span v-for="(column,i) in component.tableColumn" :key="i" class="title" :style="{width:column.style.width+'%',borderWidth:component.style.isBorder?component.style.borderWidth+'px':'',borderStyle:component.style.isBorder?component.style.borderStyle:'',borderColor:component.style.isBorder?component.style.borderColor:''}">{{column.name}}</span>
+                    </li>
+                </ul>
+                </div>
+                <!-- 表格滚动区 -->
+                <div>
+                    <vue-seamless-scroll :style="{height: (component.h-component.headStyle.height-5) + 'px',borderWidth:component.style.isBorder?component.style.borderWidth+'px':'',borderStyle:component.style.isBorder?component.style.borderStyle:'',borderColor:component.style.isBorder?component.style.borderColor:''}" :data="component.spec.data.values" :class-option="component.options" class="warp-content" :ref="component.id">
                         <li v-for="(d, t) in component.spec.data.values" :key="t" :style="{backgroundColor:((t+1)%2 == 0) ? component.bodyStyle.evenRowColor : component.bodyStyle.oddRowColor,height:component.bodyStyle.height + 'px', lineHeight:component.bodyStyle.height + 'px',color:component.bodyStyle.color,fontSize:component.bodyStyle.fontSize+'pt',fontWeight:component.bodyStyle.fontWeight,}">
                             <span v-if="component.style.showIndex" class="title" :style="{width: component.style.indexWidth+'%',borderWidth:component.style.isBorder?component.style.borderWidth+'px':'',borderStyle:component.style.isBorder?component.style.borderStyle:'',borderColor:component.style.isBorder?component.style.borderColor:''}">{{t+1}}</span> 
                             <span v-for="(column,i) in component.tableColumn" :key="i" class="title" :style="{width:column.style.width+'%',borderWidth:component.style.isBorder?component.style.borderWidth+'px':'',borderStyle:component.style.isBorder?component.style.borderStyle:'',borderColor:component.style.isBorder?component.style.borderColor:''}">{{d[column.key]}}</span>
@@ -27,8 +97,8 @@
                 </div>
         </div>
         <div  v-if="component.type == screenConstants.type.pageTable">
-            <div :style="{height:(component.params && component.params.length>0 && component.params.length>component.hiddenParamSize)?(component.h-60)+'px':(component.h-30)+'px',width:'100%'}">
-            <el-table size="mini" :style="{background:component.rowStyle.backgroundColor}" :height="(component.params && component.params.length>0 && component.params.length>component.hiddenParamSize)?(component.h-60):(component.h-30) + 'px'" :highlight-current-row="component.highlight" :border="component.border" :stripe="component.stripe" 
+            <div :style="{height:(component.h-30)+'px',width:'100%'}">
+            <el-table size="mini" :style="{background:component.rowStyle.backgroundColor}" :height="(component.h-30) + 'px'" :highlight-current-row="component.highlight" :border="component.border" :stripe="component.stripe" 
             :data="component.spec.data.values.slice((component.pagination.currentPage-1)*component.pagination.pageSize,component.pagination.currentPage*component.pagination.pageSize)"
             :header-cell-style="{fontSize: component.headStyle.fontSize+'px', backgroundColor: component.headStyle.backgroundColor,color:component.headStyle.color,fontWeight:component.headStyle.fontWeight}"
             :row-style="{fontSize: component.rowStyle.fontSize+'px', backgroundColor: component.rowStyle.backgroundColor,color:component.rowStyle.color,fontWeight:component.rowStyle.fontWeight}">
@@ -60,6 +130,7 @@
             </div>
         </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -108,7 +179,7 @@ export default {
         var componentParams = this.commonUtil.getComponentParams(
           component.params
         );
-        params.params = Object.assign({}, componentParams, this.$route.query);
+        params.params = Object.assign({}, componentParams, {});
         let obj = {
           url: this.apis.screenDesign.getDynamicDatasApi,
           params: params,
@@ -202,11 +273,11 @@ img {
 }
 
 ::v-deep .el-pagination.is-background .btn-prev, ::v-deep .el-pagination.is-background .btn-next, ::v-deep .el-pagination.is-background .el-pager li{
-  color:#ffffff !important
+  // color:#ffffff !important
 }
 
 ::v-deep .el-pagination.is-background .el-pager .active{
-  color:$--color-primary !important
+  // color:$--color-primary !important
 }
 
 ::v-deep .el-table__body-wrapper::-webkit-scrollbar {
