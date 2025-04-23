@@ -68,6 +68,14 @@
               </div>
             </el-header>
           </div> -->
+          <div style="display: none">
+          <input
+            id="uploadAttachmentBtn"
+            type="file"
+            accept="*"
+            @change="changeAttachment"
+          >
+        </div>
           <div style="width: 100%; flex: none; overflow: auto">
             <reportForm
               v-if="showReportForm && showSearch"

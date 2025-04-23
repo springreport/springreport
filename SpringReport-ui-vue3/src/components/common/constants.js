@@ -6379,7 +6379,7 @@ commonConstants.luckysheetFormsPreviewToolBarConfig = {
     upload:true,
     xxbt:false,
     editAuth:false,
-    attachment:false,
+    attachment:true,
     shareMode:false,
     datasource:false,
     download:false,
