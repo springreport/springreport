@@ -1035,6 +1035,8 @@ commonUtil.chartProcess = function(component){
     }else if(component.type.toLowerCase().indexOf("pie")>=0){
         if(component.spec.isLoop){
             component.spec.animationNormal = screenConstants.pieLoopanimation
+        }else{
+            component.spec.animationNormal = null
         }
     }
 }
