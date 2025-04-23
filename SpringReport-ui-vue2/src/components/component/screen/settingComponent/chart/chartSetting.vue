@@ -90,6 +90,10 @@
                         <el-form-item label="圆角" >
                             <el-input  @change="commonUtil.reLoadChart(chartsComponents,component)" v-model="component.spec.pie.style.cornerRadius"></el-input>
                         </el-form-item>
+                        <el-form-item label="轮播动画">
+                            <el-switch v-model="component.spec.isLoop" @change="commonUtil.reLoadChart(chartsComponents,component)">
+                            </el-switch>
+                        </el-form-item><br>
                     </div>
                     <div v-if="component.type.toLowerCase().indexOf('radar')>=0">
                         <el-form-item label="雷达图设置" class="customLabel">

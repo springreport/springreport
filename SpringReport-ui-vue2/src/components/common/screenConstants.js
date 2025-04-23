@@ -2181,6 +2181,7 @@ screenConstants.pieInit = {
         // seriesField: 'type',
         background: 'rgba(128, 128, 128, 0.0)',//背景颜色
         title:screenConstants.chartTitleSettings,
+        isLoop:false,//轮播展示
         pie: {
             style: {
               cornerRadius: 0
@@ -2191,9 +2192,17 @@ screenConstants.pieInit = {
               },
               selected: {
                 centerOffset: 10
+              },
+              active: {
+                centerOffset: 10
               }
             }
         },
+        interactions: [
+          {
+            type: 'element-active-by-legend'
+          }
+        ],
         label:{
             visible:true,
             position:'outside',
@@ -8429,7 +8438,58 @@ screenConstants.systemChartColors = {
   wonderland:["#4ea397","#22c3aa","#7bd9a5","#d0648a","#f58db2","#f2b3c9"]
 }
 
-
+screenConstants.pieLoopanimation = {
+  pie: [
+    {
+      loop: true,
+      startTime: 800,
+      oneByOne: true,
+      timeSlices: [
+        {
+          effects: {
+            channel: {
+              fillOpacity: { to: 1 },
+              outerRadius: {
+                from: (...p) => {
+                  return p[1].graphicItem.attribute.outerRadius;
+                },
+                to: (...p) => {
+                  return p[1].graphicItem.attribute.outerRadius + 10;
+                }
+              }
+            }
+          },
+          duration: 500
+        },
+        {
+          effects: {
+            channel: {
+              fillOpacity: { to: 1 },
+              outerRadius: {
+                from: (...p) => {
+                  return p[1].graphicItem.attribute.outerRadius;
+                },
+                to: (...p) => {
+                  return p[1].graphicItem.attribute.outerRadius;
+                }
+              }
+            },
+            easing: 'linear'
+          },
+          duration: 500
+        },
+        {
+          effects: {
+            channel: {
+              fillOpacity: { to: 1 },
+            }
+          },
+          duration: 500
+        }
+      ]
+    }
+  ]
+}
 
 
 
