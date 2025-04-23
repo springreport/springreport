@@ -278,7 +278,7 @@ commonConstants.luckysheetFormsPreviewToolBarConfig = {
   upload: true,
   xxbt: false,
   editAuth: false,
-  attachment: false,
+  attachment: true,
   shareMode: false,
   download: false,
   downloadpdf: false,
