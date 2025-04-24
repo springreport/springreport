@@ -200,7 +200,7 @@
                             <el-input  @change="commonUtil.reLoadChart(chartsComponents,component)" v-model.number="component.spec.gauge.label.style.fontSize"></el-input>
                         </el-form-item>
                         <el-form-item label="标签格式" v-if="component.spec.gauge.label.visible">
-                            <el-input  @change="commonUtil.reLoadChart(chartsComponents,component)" v-model.number="component.spec.gauge.label.formatter" style="width:120px"></el-input>
+                            <el-input  @change="commonUtil.reLoadChart(chartsComponents,component)" v-model="component.spec.gauge.label.formatter" style="width:120px"></el-input>
                             &nbsp;<el-button type="text" @click="formatterRule()">设置规则</el-button>
                         </el-form-item>
                         </div>
@@ -382,7 +382,7 @@
                             <el-input  @change="commonUtil.reLoadChart(chartsComponents,component)" v-model.number="component.spec.label.style.fontSize"></el-input>
                         </el-form-item>
                         <el-form-item label="标签格式" v-if="component.spec.label.visible">
-                            <el-input  @change="commonUtil.reLoadChart(chartsComponents,component)" v-model.number="component.spec.label.formatter" style="width:120px"></el-input>
+                            <el-input  @change="commonUtil.reLoadChart(chartsComponents,component)" v-model="component.spec.label.formatter" style="width:120px"></el-input>
                             &nbsp;<el-button type="text" @click="formatterRule()">设置规则</el-button>
                         </el-form-item>
                          <el-form-item label="地区名称映射" class="customLabel">
@@ -444,7 +444,7 @@
                         </el-switch>
                     </el-form-item><br>
                     </div>
-                    <div v-if="component.type.toLowerCase().indexOf('wordcloud')<0 && component.type.toLowerCase().indexOf('gauge')<0 && component.type.toLowerCase().indexOf('circularprogress')<0 && component.type.toLowerCase().indexOf('barprogress')<0 && component.type.toLowerCase().indexOf('liquid')<0 && component.type.toLowerCase().indexOf('map')<0">
+                    <div v-if="component.type.toLowerCase().indexOf('wordcloud')<0 && component.type.toLowerCase().indexOf('gauge')<0 && component.type.toLowerCase().indexOf('circularprogress')<0 && component.type.toLowerCase().indexOf('barprogress')<0 && component.type.toLowerCase().indexOf('liquid')<0 && component.type.toLowerCase().indexOf('map')<0 && component.type.toLowerCase().indexOf('boxplot')<0">
                     <el-form-item label="标签设置" class="customLabel">
                     </el-form-item><br>
                     <el-form-item label="标签是否显示">
@@ -492,7 +492,7 @@
                         <el-input  @change="commonUtil.reLoadChart(chartsComponents,component)" v-model.number="component.spec.label.style.fontSize"></el-input>
                     </el-form-item>
                     <el-form-item label="标签格式" v-if="component.spec.label.visible">
-                        <el-input  @change="commonUtil.reLoadChart(chartsComponents,component)" v-model.number="component.spec.label.formatter" style="width:120px"></el-input>
+                        <el-input  @change="commonUtil.reLoadChart(chartsComponents,component)" v-model="component.spec.label.formatter" style="width:120px"></el-input>
                         &nbsp;<el-button type="text" @click="formatterRule()">设置规则</el-button>
                     </el-form-item>
                     <el-form-item label="图例设置" class="customLabel">

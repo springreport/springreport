@@ -96,6 +96,7 @@ export default {
         this.commonUtil.doPost(obj).then((response) => {
           if (response.code == "200") {
             component.spec.data.values = response.responseData;
+            console.log(component.spec.data.values)
             this.commonUtil.reLoadChart(this.chartsComponents, component);
           }
         });
