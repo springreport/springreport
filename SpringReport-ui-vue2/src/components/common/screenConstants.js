@@ -4235,7 +4235,9 @@ screenConstants.circlePackingInit = {
       layoutPadding: 5,
       label: {
         style: {
+          visible:true,
           fontSize: 10,
+          text: datum => [`${datum.name}`, `${datum.value}`]
         }
       },
       legends:{

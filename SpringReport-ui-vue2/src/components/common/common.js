@@ -1038,6 +1038,10 @@ commonUtil.chartProcess = function(component){
         }else{
             component.spec.animationNormal = null
         }
+    }else if(component.type.toLowerCase().indexOf("circlepacking")>=0){
+        let categoryField = component.spec.categoryField;
+        let valueField = component.spec.valueField;
+        component.spec.label.style.text = datum => [`${datum[categoryField]}`, `${datum[valueField]}`];
     }
 }
 
