@@ -523,7 +523,43 @@
                     </el-form-item>
                     <el-form-item  label="字体颜色" v-if="component.spec.legends.visible">
                         <input-color-picker :value="component.spec.legends.item.label.style.fill" @change="(val)=>{component.spec.legends.item.label.style.fill=val;commonUtil.reLoadChart(chartsComponents,component)}" />
-                      </el-form-item><br>
+                    </el-form-item><br>
+                    <div v-if="component.type.toLowerCase().indexOf('funnel')>=0">
+                        <el-form-item label="漏斗图形状" class="customLabel">
+                        </el-form-item><br>
+                        <el-form-item label="漏斗图形状" >
+                        <el-select v-model="component.spec.shape" placeholder="请选择" @change="commonUtil.reLoadChart(chartsComponents,component)" style="width:180px">
+                          <el-option
+                            v-for="item in screenConstants.legendOrient"
+                            :key="item.value"
+                            :label="item.name"
+                            :value="item.value">
+                          </el-option>
+                        </el-select>
+                    </el-form-item>
+                        <el-form-item label="外部标签配置" class="customLabel">
+                        </el-form-item><br>
+                        <el-form-item label="是否显示">
+                        <el-switch v-model="component.spec.outerLabel.visible" @change="commonUtil.reLoadChart(chartsComponents,component)">
+                        </el-switch>
+                    </el-form-item>
+                    <el-form-item label="标签位置" v-if="component.spec.outerLabel.visible">
+                        <el-select v-model="component.spec.outerLabel.position" placeholder="请选择" @change="commonUtil.reLoadChart(chartsComponents,component)" style="width:180px">
+                          <el-option
+                            v-for="item in screenConstants.legendOrient"
+                            :key="item.value"
+                            :label="item.name"
+                            :value="item.value">
+                          </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="字体大小" v-if="component.spec.outerLabel.visible">
+                        <el-input  @change="commonUtil.reLoadChart(chartsComponents,component)" v-model.number="component.spec.outerLabel.style.fontSize"></el-input>
+                    </el-form-item>
+                    <el-form-item  label="字体颜色" v-if="component.spec.outerLabel.visible">
+                        <input-color-picker :value="component.spec.outerLabel.style.fill" @change="(val)=>{component.spec.outerLabel.style.fill=val;commonUtil.reLoadChart(chartsComponents,component)}" />
+                    </el-form-item>
+                    </div>
                     <el-form-item label="动画设置" class="customLabel">
                     </el-form-item><br>
                     <el-form-item label="动画效果">

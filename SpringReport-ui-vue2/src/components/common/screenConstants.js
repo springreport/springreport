@@ -190,6 +190,8 @@ screenConstants.type = {
     pageTable:"pageTable",//分页表格
     boxPlot:"boxPlot",//基础箱型图
     circlePacking:"circlePacking",//基础气泡图
+    transformFunnel:"transformFunnel",//转化漏斗图
+    rectTransformFunnel:"rectTransformFunnel",//矩形转化漏斗图
 }
 
 screenConstants.category = {
@@ -270,6 +272,7 @@ screenConstants.compType = {
     pageTable: { text: '分页表格', icon: 'table'},
     boxPlot: { text: '箱型图', icon: 'boxPlot'},
     circlePacking: { text: '气泡图', icon: 'circlePacking'},
+    transformFunnel: { text: '转化漏斗图', icon: 'transformFunnel'},
 }
 
 screenConstants.textType = [
@@ -359,6 +362,7 @@ screenConstants.wordCloudType = [
 
 screenConstants.funnelType = [
     {"name":"funnel","text":"漏斗图","src":"https://www.springreport.vip/images/chart/funnel.png",category:screenConstants.category.vchart},
+    {"name":"transformFunnel","text":"转化漏斗图","src":"https://www.springreport.vip/images/chart/funnel.png",category:screenConstants.category.vchart},
 ]
 
 screenConstants.gaugeType = [
@@ -3381,7 +3385,8 @@ screenConstants.funnelInit = {
   borderType:"",//边框类型
   borderColor:[],//边框颜色
   spec:{
-    'type':'funnel',
+    type:'funnel',
+    maxSize: '75%',
     color: [],
     categoryField: 'name',
     valueField: 'value',
@@ -3409,10 +3414,10 @@ screenConstants.funnelInit = {
             name: 'Step5'
           }
         ]
-      }
-    ,
+      },
     background: 'rgba(128, 128, 128, 0.0)',//背景颜色
     title:screenConstants.chartTitleSettings,
+    shape: 'rect',//梯形 trapezoid 矩形rect
     label:{
       visible:true,
       position:'outside',
@@ -3433,6 +3438,14 @@ screenConstants.funnelInit = {
               }
             }
         },
+    },
+    outerLabel: {
+      visible:false,
+      position: 'left',
+      style:{
+        fill:null,
+        fontSize:null
+      }
     },
   }
 }
@@ -4251,6 +4264,106 @@ screenConstants.circlePackingInit = {
               }
             }
         },
+    },
+  }
+}
+
+//转化漏斗图初始化数据
+screenConstants.transformFunnelInit = {
+  type: screenConstants.type.transformFunnel,
+  category:screenConstants.category.vchart,
+  isDelete:false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 500, // 组件初始化宽度
+  h: 300, // 组件初始化高度
+  active: false,
+  zindex: 99,
+  locked:false,
+  refresh: false, // 是否定时刷新
+  refreshTime: 30000, // 定时刷新时间，单位(ms)
+  dataSource:'1',//数据来源 1静态数据 2动态数据
+  dynamicDataSettings:{
+      datasetId:"",//数据集
+      dataColumns:[],//数据列
+  },//动态数据配置
+  params: [], // 图表参数
+  clickType: '1', // 点击类型
+  thirdUrl: '', // 第三方跳转链接
+  bindComponent: null, // 绑定组件
+  hiddenParamSize:0,//隐藏参数个数
+  theme:"",//主题
+  amination:"",//动画效果
+  isborder:false,//是否添加边框
+  borderType:"",//边框类型
+  borderColor:[],//边框颜色
+  spec:{
+    'type':'funnel',
+    color: [],
+    categoryField: 'name',
+    valueField: 'value',
+    isTransform: true,
+    isCone: false,
+    data: 
+      {
+        values: [
+          {
+            value: 5676,
+            name: 'Sent'
+          },
+          {
+            value: 3872,
+            name: 'Viewed'
+          },
+          {
+            value: 1668,
+            name: 'Clicked'
+          },
+          {
+            value: 610,
+            name: 'Add to Cart'
+          },
+          {
+            value: 565,
+            name: 'Purchased'
+          }
+        ]
+      }
+    ,
+    background: 'rgba(128, 128, 128, 0.0)',//背景颜色
+    title:screenConstants.chartTitleSettings,
+    shape: 'rect',//梯形 trapezoid 矩形rect
+    label:{
+      visible:true,
+      position:'outside',
+      formatter: '',//标签格式
+      style:{
+          fontSize:14,
+          fill:null,
+      }
+    },
+    legends:{
+        visible:false,
+        orient: 'top',//图例位置
+        position:'middle',//对齐方式
+        item: {
+            label:{
+              style:{
+                // fill:'#0BF1DA',//图例字体颜色
+              }
+            }
+        },
+    },
+    transformLabel: {
+      visible: true
+    },
+    outerLabel: {
+      position: 'right',
+      visible: true,
+      style:{
+        fill:"#00CCFF",
+        fontSize:null
+      }
     },
   }
 }
