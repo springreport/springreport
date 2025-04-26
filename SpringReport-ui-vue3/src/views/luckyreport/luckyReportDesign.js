@@ -482,7 +482,7 @@ export default {
           cellFormat: false, // 设置单元格格式
         },
         hook: {
-          rangeSelect: this.rangeSelect,
+          rangeSelected: this.rangeSelected,
           cellDragStop: this.cellDragStop,
           rowInsertAfter: this.rowInsertAfter,
           rowDeleteAfter: this.rowDeleteAfter,
@@ -492,7 +492,7 @@ export default {
           sheetCopyBefore: this.sheetCopyBefore,
           updateCellFormat: this.updateCellFormat,
           cellMousedown: this.cellMousedown,
-          luckysheetDeleteCell: this.luckysheetDeleteCell,
+          luckysheetDeleteCellAfter: this.luckysheetDeleteCellAfter,
           chartMoveOrResize: this.chartMoveOrResize,
           userChanged: this.userChanged,
           cellUpdated: this.saveTplCache,
@@ -986,7 +986,7 @@ export default {
       });
     },
     //范围选中事件
-    rangeSelect(sheet, range) {
+    rangeSelected(sheet, range) {
       this.attrDisabled = !this.checkRangeAuth(range);
       var cellFormData = this.getExtraCustomCellConfigs(range[0].row[0], range[0].column[0]);
       if (cellFormData) {
@@ -1256,7 +1256,7 @@ export default {
           value: this.cellForm.cellExtend,
         };
         const sheetIndex = luckysheet.getSheet().index;
-        luckysheet.sendServerMsg('reportDesign', sheetIndex, obj, { k: 'cellExtend' });
+        luckysheet.sendServerSocketMsg('reportDesign', sheetIndex, obj, { k: 'cellExtend' });
         this.saveTplCache();
       }
     },
@@ -1280,7 +1280,7 @@ export default {
           value: this.cellForm.aggregateType,
         };
         const sheetIndex = luckysheet.getSheet().index;
-        luckysheet.sendServerMsg('reportDesign', sheetIndex, obj, { k: 'aggregateType' });
+        luckysheet.sendServerSocketMsg('reportDesign', sheetIndex, obj, { k: 'aggregateType' });
         this.saveTplCache();
       }
     },
@@ -1304,7 +1304,7 @@ export default {
           value: type == 'r' ? obj.groupSummaryDependencyr : obj.groupSummaryDependencyc,
         };
         const sheetIndex = luckysheet.getSheet().index;
-        luckysheet.sendServerMsg('reportDesign', sheetIndex, obj, {
+        luckysheet.sendServerSocketMsg('reportDesign', sheetIndex, obj, {
           k: type == 'r' ? 'groupSummaryDependencyr' : 'groupSummaryDependencyc',
         });
         this.saveTplCache();
@@ -1326,7 +1326,7 @@ export default {
           value: this.cellForm['cellFunction'],
         };
         const sheetIndex = luckysheet.getSheet().index;
-        luckysheet.sendServerMsg('reportDesign', sheetIndex, obj, { k: 'cellFunction' });
+        luckysheet.sendServerSocketMsg('reportDesign', sheetIndex, obj, { k: 'cellFunction' });
         this.saveTplCache();
       }
     },
@@ -1351,7 +1351,7 @@ export default {
           value: this.cellForm['digit'],
         };
         const sheetIndex = luckysheet.getSheet().index;
-        luckysheet.sendServerMsg('reportDesign', sheetIndex, obj, { k: 'digit' });
+        luckysheet.sendServerSocketMsg('reportDesign', sheetIndex, obj, { k: 'digit' });
         this.saveTplCache();
       }
     },
@@ -1371,7 +1371,7 @@ export default {
           value: this.cellForm['isGroupMerge'],
         };
         const sheetIndex = luckysheet.getSheet().index;
-        luckysheet.sendServerMsg('reportDesign', sheetIndex, obj, { k: 'isGroupMerge' });
+        luckysheet.sendServerSocketMsg('reportDesign', sheetIndex, obj, { k: 'isGroupMerge' });
         this.saveTplCache();
       }
     },
@@ -1395,7 +1395,7 @@ export default {
           value: this.cellForm['dataFrom'],
         };
         const sheetIndex = luckysheet.getSheet().index;
-        luckysheet.sendServerMsg('reportDesign', sheetIndex, obj, { k: 'dataFrom' });
+        luckysheet.sendServerSocketMsg('reportDesign', sheetIndex, obj, { k: 'dataFrom' });
         this.saveTplCache();
       }
     },
@@ -2225,7 +2225,7 @@ export default {
               // }
               this.closeAddDataSet();
               var sheetIndex = luckysheet.getSheet().index;
-              luckysheet.sendServerMsg(
+              luckysheet.sendServerSocketMsg(
                 'reportDesign',
                 sheetIndex,
                 { datasetName: obj.params.datasetName },
@@ -2375,7 +2375,7 @@ export default {
             // this.refreshTpl();
             // _this.getTplSettings();
             if (_this.isCreator) {
-              luckysheet.sendServerMsg('reportDesign', null, {}, { k: 'refreshAuth' });
+              luckysheet.sendServerSocketMsg('reportDesign', null, {}, { k: 'refreshAuth' });
             }
           }
         });
@@ -2904,7 +2904,7 @@ export default {
           var obj = {
             value: this.blockForm,
           };
-          luckysheet.sendServerMsg('reportDesign', sheetIndex, obj, { k: k });
+          luckysheet.sendServerSocketMsg('reportDesign', sheetIndex, obj, { k: k });
           this.saveTplCache();
           this.closeBlockDialog();
         } else {
@@ -2932,7 +2932,7 @@ export default {
       var obj = {
         value: index,
       };
-      luckysheet.sendServerMsg('reportDesign', sheetIndex, obj, { k: 'deleteBlock' });
+      luckysheet.sendServerSocketMsg('reportDesign', sheetIndex, obj, { k: 'deleteBlock' });
       this.saveTplCache();
       this.closeBlockDialog();
     },
@@ -3161,7 +3161,7 @@ export default {
                 if (!flag) {
                   var data = luckysheet.buildGridData(element);
                   element.data = data;
-                  luckysheet.appendImportSheet(element, false);
+                  luckysheet.appendSheets(element, false);
                 }
               }
             }
@@ -3266,7 +3266,7 @@ export default {
           value: this.cellForm['warning'],
         };
         const sheetIndex = luckysheet.getSheet().index;
-        luckysheet.sendServerMsg('reportDesign', sheetIndex, obj, { k: 'warning' });
+        luckysheet.sendServerSocketMsg('reportDesign', sheetIndex, obj, { k: 'warning' });
         this.saveTplCache();
       }
     },
@@ -3290,7 +3290,7 @@ export default {
           value: this.cellForm['threshold'],
         };
         const sheetIndex = luckysheet.getSheet().index;
-        luckysheet.sendServerMsg('reportDesign', sheetIndex, obj, { k: 'threshold' });
+        luckysheet.sendServerSocketMsg('reportDesign', sheetIndex, obj, { k: 'threshold' });
         this.saveTplCache();
       }
     },
@@ -3314,7 +3314,7 @@ export default {
           value: this.cellForm['warningColor'],
         };
         const sheetIndex = luckysheet.getSheet().index;
-        luckysheet.sendServerMsg('reportDesign', sheetIndex, obj, { k: 'warningColor' });
+        luckysheet.sendServerSocketMsg('reportDesign', sheetIndex, obj, { k: 'warningColor' });
         this.saveTplCache();
       }
     },
@@ -3337,7 +3337,7 @@ export default {
           value: this.cellForm['warningContent'],
         };
         const sheetIndex = luckysheet.getSheet().index;
-        luckysheet.sendServerMsg('reportDesign', sheetIndex, obj, { k: 'warningContent' });
+        luckysheet.sendServerSocketMsg('reportDesign', sheetIndex, obj, { k: 'warningContent' });
         this.saveTplCache();
       }
     },
@@ -3413,7 +3413,7 @@ export default {
           value: attr2?this.cellForm[attr2][attr]:this.cellForm[attr]
         }
         const sheetIndex = luckysheet.getSheet().index
-        luckysheet.sendServerMsg('reportDesign', sheetIndex, obj, { 'k': attr2?(attr2+"_"+attr):attr })
+        luckysheet.sendServerSocketMsg('reportDesign', sheetIndex, obj, { 'k': attr2?(attr2+"_"+attr):attr })
         this.saveTplCache()
       }
       if (attr == 'datasourceId') {
@@ -3632,7 +3632,7 @@ export default {
           var obj = {
             value: that.xAxisForm,
           };
-          luckysheet.sendServerMsg('reportDesign', sheetIndex, obj, { k: k });
+          luckysheet.sendServerSocketMsg('reportDesign', sheetIndex, obj, { k: k });
           this.saveTplCache();
           that.closexAxisData();
         }
@@ -3657,7 +3657,7 @@ export default {
       var obj = {
         value: index,
       };
-      luckysheet.sendServerMsg('reportDesign', sheetIndex, obj, { k: 'deletexAxis' });
+      luckysheet.sendServerSocketMsg('reportDesign', sheetIndex, obj, { k: 'deletexAxis' });
       this.saveTplCache();
       this.closeBlockDialog();
     },
@@ -3691,7 +3691,7 @@ export default {
         that.reportTpls = response.responseData;
       });
     },
-    luckysheetDeleteCell(type, str, edr, stc, edc, sheetIndex, isWebsocket) {
+    luckysheetDeleteCellAfter(type, str, edr, stc, edc, sheetIndex, isWebsocket) {
       this.cellDelete(type, str, edr, stc, edc, sheetIndex, isWebsocket);
     },
     cellDelete(type, str, edr, stc, edc, sheetIndex, isWebsocket) {
@@ -4024,7 +4024,7 @@ export default {
           var obj = {
             value: printSettings,
           };
-          luckysheet.sendServerMsg('reportDesign', sheetIndex, obj, { k: 'printSettings' });
+          luckysheet.sendServerSocketMsg('reportDesign', sheetIndex, obj, { k: 'printSettings' });
           this.saveTplCache();
         } else {
           return false;
@@ -4059,7 +4059,7 @@ export default {
         const reportTplId = this.$route.query.tplId;
         var gridKey = 'designMode-' + reportTplId;
         const sheetIndex = luckysheet.getSheet().index;
-        luckysheet.sendServerMsg('reportTplTempCache', gridKey + '-' + sheetIndex, configs, {
+        luckysheet.sendServerSocketMsg('reportTplTempCache', gridKey + '-' + sheetIndex, configs, {
           k: 'viewReportCache',
         });
       }
@@ -4070,7 +4070,7 @@ export default {
         const reportTplId = this.$route.query.tplId;
         var gridKey = 'designMode-' + reportTplId;
         const sheetIndex = sheet.sheet.index;
-        luckysheet.sendServerMsg('reportTplNewTempCache', gridKey + '-' + sheetIndex, configs, {
+        luckysheet.sendServerSocketMsg('reportTplNewTempCache', gridKey + '-' + sheetIndex, configs, {
           k: 'viewReportCache',
         });
       }
@@ -4078,7 +4078,7 @@ export default {
     saveTplAttrCache() {
       const reportTplId = this.$route.query.tplId;
       var gridKey = 'designMode-' + reportTplId;
-      luckysheet.sendServerMsg('reportTplAttrTempCache', gridKey, this.isParamMerge, {
+      luckysheet.sendServerSocketMsg('reportTplAttrTempCache', gridKey, this.isParamMerge, {
         k: 'isParamMerge',
       });
     },
@@ -4377,13 +4377,13 @@ export default {
         value: this.isParamMerge,
       };
       const sheetIndex = luckysheet.getSheet().index;
-      luckysheet.sendServerMsg('reportDesign', sheetIndex, obj, { k: 'isParamMerge' });
+      luckysheet.sendServerSocketMsg('reportDesign', sheetIndex, obj, { k: 'isParamMerge' });
       this.saveTplAttrCache();
     },
     deleteSheet(index) {
       const reportTplId = this.$route.query.tplId;
       var gridKey = 'designMode-' + reportTplId + '-' + index;
-      luckysheet.sendServerMsg('deleteSheet', gridKey, null, { k: 'deleteSheet' });
+      luckysheet.sendServerSocketMsg('deleteSheet', gridKey, null, { k: 'deleteSheet' });
     },
     frozenCancelAfter() {
       let configs = this.getSheetDatas();
@@ -4391,7 +4391,7 @@ export default {
         const reportTplId = this.$route.query.tplId;
         var gridKey = 'designMode-' + reportTplId;
         const sheetIndex = luckysheet.getSheet().index;
-        luckysheet.sendServerMsg('frozenCancleTempCache', gridKey + '-' + sheetIndex, configs, {
+        luckysheet.sendServerSocketMsg('frozenCancleTempCache', gridKey + '-' + sheetIndex, configs, {
           k: 'viewReportCache',
         });
       }
@@ -4404,7 +4404,7 @@ export default {
         value: result.responseData,
       };
       const sheetIndex = luckysheet.getSheet().index;
-      luckysheet.sendServerMsg('reportDesign', sheetIndex, obj, { k: 'deleteDataSet' });
+      luckysheet.sendServerSocketMsg('reportDesign', sheetIndex, obj, { k: 'deleteDataSet' });
     },
     addSubTotalCells() {
       this.cellSubTotalVisiable = true;
@@ -5449,7 +5449,7 @@ export default {
           value: this.cellForm.formsAttrs['compareCells']
         }
         const sheetIndex = luckysheet.getSheet().index
-        luckysheet.sendServerMsg('reportDesign', sheetIndex, obj, { 'k': 'formsAttrs_compareCells' })
+        luckysheet.sendServerSocketMsg('reportDesign', sheetIndex, obj, { 'k': 'formsAttrs_compareCells' })
         this.saveTplCache()
       }
     },
@@ -5507,7 +5507,7 @@ export default {
         sheetName: luckysheet.getSheet().name,
         value: this.sheetDatasource[sheetIndex]
       }
-      luckysheet.sendServerMsg('reportDesign', sheetIndex, obj, { 'k': 'datasourceChanged' })
+      luckysheet.sendServerSocketMsg('reportDesign', sheetIndex, obj, { 'k': 'datasourceChanged' })
       this.saveTplCache()
     },
     // 添加绑定属性
