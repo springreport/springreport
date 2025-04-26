@@ -132,7 +132,7 @@ export default {
           cellUpdated: this.cellUpdated,
           // cellRenderAfter: this.cellRenderAfter,
           rangeClear: this.rangeClear,
-          rangeSelect: this.rangeSelect,
+          rangeSelected: this.rangeSelect,
           userChanged: this.userChanged,
           loadDataAfter: this.loadDataAfter,
           uploadAttachment: this.uploadAttachment,
@@ -1310,7 +1310,7 @@ export default {
               value: { r: r, c: c, v: cellData }
             }
             const tplId = this.$route.query.tplId
-            luckysheet.sendServerMsg('reportCellChanged', tplId + '-' + sheetIndex, obj, { 'k': 'cellChanged' })
+            luckysheet.sendServerSocketMsg('reportCellChanged', tplId + '-' + sheetIndex, obj, { 'k': 'cellChanged' })
           }
         }
       }
@@ -2453,7 +2453,7 @@ export default {
           }
           luckysheetfile.hyperlink[r + '_' + c] = item
           const sheetIndex = luckysheet.getSheet().index
-          luckysheet.sendServerMsg('all', sheetIndex, luckysheetfile.hyperlink, { 'k': 'hyperlink' }, '上传附件：' + response.responseData.fileName + '，附件地址：' + response.responseData.fileUri)
+          luckysheet.sendServerSocketMsg('all', sheetIndex, luckysheetfile.hyperlink, { 'k': 'hyperlink' }, '上传附件：' + response.responseData.fileName + '，附件地址：' + response.responseData.fileUri)
           luckysheetfile.data[r][c] = cell
           luckysheet.refresh({}, '上传附件：' + response.responseData.fileName + '，附件地址：' + response.responseData.fileUri)
         }
@@ -2547,7 +2547,7 @@ export default {
                   if (!isExist) {
                     var data = luckysheet.buildGridData(element)
                     element.data = data
-                    luckysheet.appendImportSheet(element, false)
+                    luckysheet.appendSheets(element, false)
                   }
                 }
                 if (options.data && options.data.length > 0) {

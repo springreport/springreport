@@ -191,7 +191,7 @@ screenConstants.type = {
     boxPlot:"boxPlot",//基础箱型图
     circlePacking:"circlePacking",//基础气泡图
     transformFunnel:"transformFunnel",//转化漏斗图
-    rectTransformFunnel:"rectTransformFunnel",//矩形转化漏斗图
+    zhifangtu:"zhifangtu",//直方图
 }
 
 screenConstants.category = {
@@ -216,6 +216,7 @@ screenConstants.componentsType1 = [
     {"type":"area","text":"面积图",icon:"area"},
     {"type":"pie","text":"饼图",icon:"pie"},
     {"type":"boxPlot","text":"箱型图",icon:"boxPlot"},
+    {"type":"zhifangtu","text":"直方图",icon:"histogram"},
 ]
 screenConstants.componentsType2 = [
   {"type":"circlePacking","text":"气泡图",icon:"circlePacking"},
@@ -272,7 +273,8 @@ screenConstants.compType = {
     pageTable: { text: '分页表格', icon: 'table'},
     boxPlot: { text: '箱型图', icon: 'boxPlot'},
     circlePacking: { text: '气泡图', icon: 'circlePacking'},
-    transformFunnel: { text: '转化漏斗图', icon: 'transformFunnel'},
+    transformFunnel: { text: '转化漏斗图', icon: 'funnel'},
+    zhifangtu: { text: '直方图', icon: 'histogram' },
 }
 
 screenConstants.textType = [
@@ -395,6 +397,10 @@ screenConstants.circlePackingType = [
   {"name":"circlePacking","text":"气泡图","src":"https://www.springreport.vip/images/chart/circlePacking.png",category:screenConstants.category.vchart},
 ]
 
+screenConstants.zhifangtuType = [
+  {"name":"zhifangtu","text":"直方图","src":"https://www.springreport.vip/images/chart/zhifangtu.png",category:screenConstants.category.vchart},
+]
+
 
 screenConstants.chartTitleSettings={
     visible:false,
@@ -404,6 +410,15 @@ screenConstants.chartTitleSettings={
         // fill:'',//颜色
         // fontSize:'',
     }
+}
+
+screenConstants.tooltipSettings={
+    visible: true,
+    mark: {
+      title: {
+        value: ''
+      }
+  }
 }
 
 screenConstants.textInit = {
@@ -563,7 +578,7 @@ screenConstants.histogramInit = {
         seriesField: ['country'],
         xField: ['type', 'country'],
         yField: ['value'],
-        background: 'rgba(128, 128, 128, 0.0)',//背景颜色
+        background: '',//背景颜色
         barWidth:'100%',//柱体宽度
         title:screenConstants.chartTitleSettings,
         bar:{
@@ -645,7 +660,7 @@ screenConstants.rangeHistogramInit = {
       seriesField: [],
       xField: ['type'],
       yField: ['min','max'],
-      background: 'rgba(128, 128, 128, 0.0)',//背景颜色
+      background: '',//背景颜色
       barWidth:'100%',//柱体宽度
       title:screenConstants.chartTitleSettings,
       bar:{
@@ -731,7 +746,7 @@ screenConstants.stackHistogramInit = {
         xField: ['country'],
         yField: ['value'],
         stack: true,
-        background: 'rgba(128, 128, 128, 0.0)',//背景颜色
+        background: '',//背景颜色
         barWidth:'100%',//柱体宽度
         title:screenConstants.chartTitleSettings,
         bar:{
@@ -836,7 +851,7 @@ screenConstants.horizontalHistogramInit = {
         xField: ['value'],
         yField: ['province'],
         stack: true,
-        background: 'rgba(128, 128, 128, 0.0)',//背景颜色
+        background: '',//背景颜色
         barWidth:'100%',//柱体宽度
         title:screenConstants.chartTitleSettings,
         bar:{
@@ -918,7 +933,7 @@ screenConstants.rangeHorizontalHistogramInit = {
       seriesField: [],
       xField: ['min', 'max'],
       yField: ['type'],
-      background: 'rgba(128, 128, 128, 0.0)',//背景颜色
+      background: '',//背景颜色
       barWidth:'100%',//柱体宽度
       title:screenConstants.chartTitleSettings,
       bar:{
@@ -1004,7 +1019,7 @@ screenConstants.stackHorizontalHistogramInit = {
         xField: ['value'],
         yField: ['country'],
         stack: true,
-        background: 'rgba(128, 128, 128, 0.0)',//背景颜色
+        background: '',//背景颜色
         barWidth:'100%',//柱体宽度
         direction: 'horizontal',
         title:screenConstants.chartTitleSettings,
@@ -1115,7 +1130,7 @@ screenConstants.lineInit = {
         seriesField: [],
         xField: ['time'],
         yField: ['value'],
-        background: 'rgba(128, 128, 128, 0.0)',//背景颜色
+        background: '',//背景颜色
         lineLabel: { visible: false,style:{} },
         line:{
             style:{
@@ -1226,7 +1241,7 @@ screenConstants.horizontalLineInit = {
         seriesField: [],
         xField: ['value'],
         yField: ['time'],
-        background: 'rgba(128, 128, 128, 0.0)',//背景颜色
+        background: '',//背景颜色
         direction: 'horizontal',
         lineLabel: { visible: false ,style:{}},
         line:{
@@ -1338,7 +1353,7 @@ screenConstants.smoothLineInit = {
         seriesField: [],
         xField: ['time'],
         yField: ['value'],
-        background: 'rgba(128, 128, 128, 0.0)',//背景颜色
+        background: '',//背景颜色
         lineLabel: { visible: false ,style:{}},
         line:{
             style:{
@@ -1449,7 +1464,7 @@ screenConstants.stepLineInit = {
         seriesField: [],
         xField: ['time'],
         yField: ['value'],
-        background: 'rgba(128, 128, 128, 0.0)',//背景颜色
+        background: '',//背景颜色
         lineLabel: { visible: false ,style:{}},
         line:{
             style:{
@@ -1560,7 +1575,7 @@ screenConstants.stackLineInit = {
         seriesField: ['country'],
         xField: ['type'],
         yField: ['value'],
-        background: 'rgba(128, 128, 128, 0.0)',//背景颜色
+        background: '',//背景颜色
         lineLabel: { visible: false ,style:{}},
         line:{
             style:{
@@ -1670,7 +1685,7 @@ screenConstants.areaInit = {
         seriesField: [],
         xField: ['time'],
         yField: ['value'],
-        background: 'rgba(128, 128, 128, 0.0)',//背景颜色
+        background: '',//背景颜色
         lineLabel: { visible: false,style:{} },
         line:{
             style:{
@@ -1781,7 +1796,7 @@ screenConstants.horizontalAreaInit = {
         xField: ['value'],
         yField: ['time'],
         direction: 'horizontal',
-        background: 'rgba(128, 128, 128, 0.0)',//背景颜色
+        background: '',//背景颜色
         lineLabel: { visible: false,style:{} },
         line:{
             style:{
@@ -1891,7 +1906,7 @@ screenConstants.smoothAreaInit = {
         seriesField: [],
         xField: ['time'],
         yField: ['value'],
-        background: 'rgba(128, 128, 128, 0.0)',//背景颜色
+        background: '',//背景颜色
         lineLabel: { visible: false ,style:{}},
         line:{
             style:{
@@ -2002,7 +2017,7 @@ screenConstants.stepAreaInit = {
         seriesField: [],
         xField: ['time'],
         yField: ['value'],
-        background: 'rgba(128, 128, 128, 0.0)',//背景颜色
+        background: '',//背景颜色
         lineLabel: { visible: false ,style:{}},
         line:{
             style:{
@@ -2112,7 +2127,7 @@ screenConstants.stackAreaInit = {
         seriesField: ['country'],
         xField: ['type'],
         yField: ['value'],
-        background: 'rgba(128, 128, 128, 0.0)',//背景颜色
+        background: '',//背景颜色
         lineLabel: { visible: false ,style:{}},
         line:{
             style:{
@@ -2197,7 +2212,7 @@ screenConstants.pieInit = {
         categoryField: 'type',
         valueField: 'value',
         // seriesField: 'type',
-        background: 'rgba(128, 128, 128, 0.0)',//背景颜色
+        background: '',//背景颜色
         title:screenConstants.chartTitleSettings,
         isLoop:false,//轮播展示
         pie: {
@@ -2293,7 +2308,7 @@ screenConstants.pieRoseInit = {
         categoryField: 'category',
         valueField: 'value',
         seriesField: 'category',
-        background: 'rgba(128, 128, 128, 0.0)',//背景颜色
+        background: '',//背景颜色
         title:screenConstants.chartTitleSettings,
         pie: {
             style: {
@@ -2387,7 +2402,7 @@ screenConstants.scatterInit = {
         yField: 'y',
         sizeField: '',
         size: 20,
-        background: 'rgba(128, 128, 128, 0.0)',//背景颜色
+        background: '',//背景颜色
         title:screenConstants.chartTitleSettings,
         label:{
             visible:true,
@@ -2482,7 +2497,7 @@ screenConstants.radarInit = {
             }
           },
         radius:0.8,
-        background: 'rgba(128, 128, 128, 0.0)',//背景颜色
+        background: '',//背景颜色
         title:screenConstants.chartTitleSettings,
         label:{
             visible:true,
@@ -2615,7 +2630,7 @@ screenConstants.stackRadarInit = {
             }
           },
         radius:0.8,
-        background: 'rgba(128, 128, 128, 0.0)',//背景颜色
+        background: '',//背景颜色
         title:screenConstants.chartTitleSettings,
         label:{
             visible:true,
@@ -2743,7 +2758,7 @@ screenConstants.wordCloudInit = {
         nameField: 'challenge_name',
         valueField: 'sum_count',
         seriesField: 'challenge_name',
-        background: 'rgba(128, 128, 128, 0.0)',//背景颜色
+        background: '',//背景颜色
     }
 }
 
@@ -2858,7 +2873,7 @@ screenConstants.gaugeInit = {
         }
       }
     },
-    background: 'rgba(128, 128, 128, 0.0)',//背景颜色
+    background: '',//背景颜色
       title:screenConstants.chartTitleSettings,
       label:{
           visible:true,
@@ -3011,7 +3026,7 @@ screenConstants.tickGaugeInit = {
       }
     }
   },
-  background: 'rgba(128, 128, 128, 0.0)',//背景颜色
+  background: '',//背景颜色
     title:screenConstants.chartTitleSettings,
     label:{
         visible:true,
@@ -3171,7 +3186,7 @@ screenConstants.seriesGaugeInit = {
       }
     }
   },
-  background: 'rgba(128, 128, 128, 0.0)',//背景颜色
+  background: '',//背景颜色
     title:screenConstants.chartTitleSettings,
     label:{
         visible:true,
@@ -3331,7 +3346,7 @@ screenConstants.tickSeriesGaugeInit = {
       }
     }
   },
-  background: 'rgba(128, 128, 128, 0.0)',//背景颜色
+  background: '',//背景颜色
     title:screenConstants.chartTitleSettings,
     label:{
         visible:true,
@@ -3415,7 +3430,7 @@ screenConstants.funnelInit = {
           }
         ]
       },
-    background: 'rgba(128, 128, 128, 0.0)',//背景颜色
+    background: '',//背景颜色
     title:screenConstants.chartTitleSettings,
     shape: 'rect',//梯形 trapezoid 矩形rect
     label:{
@@ -3497,7 +3512,7 @@ screenConstants.circularProgressInit = {
     innerRadius: 0.9,
     roundCap: false,
     cornerRadius: 20,
-    background: 'rgba(128, 128, 128, 0.0)',//背景颜色
+    background: '',//背景颜色
     title:screenConstants.chartTitleSettings,
     progress:{
       style:{
@@ -3634,7 +3649,7 @@ screenConstants.barProgressInit = {
     seriesField: 'type',
     cornerRadius: 20,
     bandWidth: 30,
-    background: 'rgba(128, 128, 128, 0.0)',//背景颜色
+    background: '',//背景颜色
     title:screenConstants.chartTitleSettings,
     axes: [
       {
@@ -4150,7 +4165,7 @@ screenConstants.boxPlotInit = {
       q3Field: 'y4',//箱型图 Q3
       maxField: 'y5',//箱型图最大值字段
       seriesField: null,
-      background: 'rgba(128, 128, 128, 0.0)',//背景颜色
+      background: '',//背景颜色
       title:screenConstants.chartTitleSettings,
       direction: 'vertical',
       boxPlot: {
@@ -4242,7 +4257,7 @@ screenConstants.circlePackingInit = {
       },
       categoryField: 'name',
       valueField: 'value',
-      background: 'rgba(128, 128, 128, 0.0)',//背景颜色
+      background: '',//背景颜色
       title:screenConstants.chartTitleSettings,
       drill: true,
       layoutPadding: 5,
@@ -4330,7 +4345,7 @@ screenConstants.transformFunnelInit = {
         ]
       }
     ,
-    background: 'rgba(128, 128, 128, 0.0)',//背景颜色
+    background: '',//背景颜色
     title:screenConstants.chartTitleSettings,
     shape: 'rect',//梯形 trapezoid 矩形rect
     label:{
@@ -4365,6 +4380,124 @@ screenConstants.transformFunnelInit = {
         fontSize:null
       }
     },
+  }
+}
+
+//大屏直方图初始化数据
+screenConstants.zhifangtuInit = {
+  type: screenConstants.type.zhifangtu,
+  category:screenConstants.category.vchart,
+  isDelete:false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 500, // 组件初始化宽度
+  h: 300, // 组件初始化高度
+  active: false,
+  zindex: 99,
+  locked:false,
+  refresh: false, // 是否定时刷新
+  refreshTime: 30000, // 定时刷新时间，单位(ms)
+  dataSource:'1',//数据来源 1静态数据 2动态数据
+  dynamicDataSettings:{
+      datasetId:"",//数据集
+      dataColumns:[],//数据列
+  },//动态数据配置
+  params: [], // 图表参数
+  clickType: '1', // 点击类型
+  thirdUrl: '', // 第三方跳转链接
+  bindComponent: null, // 绑定组件
+  hiddenParamSize:0,//隐藏参数个数
+  theme:"",//主题
+  amination:"",//动画效果
+  isborder:false,//是否添加边框
+  borderType:"",//边框类型
+  borderColor:[],//边框颜色
+  spec:{
+      type:'histogram',
+      color: [],
+      data: {
+          values: [
+            {
+              from: 0,
+              to: 10,
+              profit: 2,
+              type: 'A'
+            },
+            {
+              from: 10,
+              to: 16,
+              profit: 3,
+              type: 'B'
+            },
+            {
+              from: 16,
+              to: 18,
+              profit: 15,
+              type: 'C'
+            },
+            {
+              from: 18,
+              to: 26,
+              profit: 12,
+              type: 'D'
+            },
+            {
+              from: 26,
+              to: 32,
+              profit: 22,
+              type: 'E'
+            },
+            {
+              from: 32,
+              to: 56,
+              profit: 7,
+              type: 'F'
+            },
+            {
+              from: 56,
+              to: 62,
+              profit: 17,
+              type: 'G'
+            }
+          ]
+      },
+      seriesField: 'type',
+      xField: "from",
+      x2Field:"to",
+      yField: 'profit',
+      background: '',//背景颜色
+      barWidth:'100%',//柱体宽度
+      title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
+      bar:{
+          style:{
+              cornerRadius:0,//圆角
+          }
+      },
+      label:{
+          visible:true,
+          position:'outside',
+          style:{
+              fontSize:14,
+              fill:null,
+          }
+      },
+      axes:[
+          {orient:'bottom',sampling: true,label:{visible:true,style:{fill:'#6E6F73'},autoRotate:false,autoRotateAngle: [0, 90],autoLimit:false},unit:{visible:false,style:{}}},
+          {orient:'left',label:{visible:true,style:{fill:'#6E6F73'},autoLimit:false},unit:{visible:false,style:{}}}
+      ],
+      legends:{
+          visible:false,
+          orient: 'top',//图例位置
+          position:'middle',//对齐方式
+          item: {
+              label:{
+                style:{
+                  // fill:'#0BF1DA',//图例字体颜色
+                }
+              }
+          },
+      },
   }
 }
 
