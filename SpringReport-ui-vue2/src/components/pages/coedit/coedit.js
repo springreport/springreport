@@ -198,7 +198,7 @@ export default {
                         currentPage:this.currentPage,
                         type:this.type
                     }
-                    luckysheet.sendServerMsg("shareModeOperation", sheetIndex,obj,{ "k": "showSheetHis"});
+                    luckysheet.sendServerSocketMsg("shareModeOperation", sheetIndex,obj,{ "k": "showSheetHis"});
                   }
                 }
               });
@@ -255,7 +255,7 @@ export default {
                     hisDialogTitle:this.hisDialogTitle,
                     type:this.type
                 }
-                luckysheet.sendServerMsg("shareModeOperation", sheetIndex,null,{ "k": "closeSheetHis"});
+                luckysheet.sendServerSocketMsg("shareModeOperation", sheetIndex,null,{ "k": "closeSheetHis"});
             }
         },
         // 引入Excel
@@ -304,7 +304,7 @@ export default {
                 {
                     for (let index = 0; index < sheetDatas.length; index++) {
                         const element = sheetDatas[index];
-                        luckysheet.appendImportSheet(element,true);
+                        luckysheet.appendSheets(element,true);
                     }
                 }
             }else{
@@ -383,7 +383,7 @@ export default {
         const sheetIndex = luckysheet.getSheet().index;
         luckysheet.setServerAttr("shareMode",false);
         luckysheet.setServerAttr("shareUser",false);
-        luckysheet.sendServerMsg("shareModeOperation", sheetIndex,null,{ "k": "exitShareMode"});
+        luckysheet.sendServerSocketMsg("shareModeOperation", sheetIndex,null,{ "k": "exitShareMode"});
         this.commonUtil.showMessage({message:this.commonUtil.getMessageFromList("info.exit.sharemode",null),type: this.commonConstants.messageType.success})
       },
       beforeEnterShareMode(response){
@@ -393,7 +393,7 @@ export default {
             luckysheet.setServerAttr("shareMode",true);
             luckysheet.setServerAttr("shareUser",true);
             const sheetIndex = luckysheet.getSheet().index;
-            luckysheet.sendServerMsg("shareModeOperation", sheetIndex,null,{ "k": "enterShareMode"});
+            luckysheet.sendServerSocketMsg("shareModeOperation", sheetIndex,null,{ "k": "enterShareMode"});
         }
       },
       shareModeEditForbidden(){
@@ -628,7 +628,7 @@ export default {
           this.authRangeToArray();
           this.closeAddAuth();
           if(this.isCreator){
-            luckysheet.sendServerMsg("reportDesign", sheetIndex,{"rangeAxis":rangeAxis,"type":"add"},{ "k": 'refreshAuth'});
+            luckysheet.sendServerSocketMsg("reportDesign", sheetIndex,{"rangeAxis":rangeAxis,"type":"add"},{ "k": 'refreshAuth'});
           }
         }else{
           this.commonUtil.showMessage({ message: '请添加授权用户。', type: this.commonConstants.messageType.error })
@@ -722,7 +722,7 @@ export default {
         this.commonUtil.doPost(obj) .then(response=>{
           if (response.code == "200")
           {
-            luckysheet.sendServerMsg("reportDesign", sheetIndex,{"rangeAxis":rangeAxis,"type":"del","range":range.range},{ "k": 'refreshAuth'});
+            luckysheet.sendServerSocketMsg("reportDesign", sheetIndex,{"rangeAxis":rangeAxis,"type":"del","range":range.range},{ "k": 'refreshAuth'});
           }
         });
       },

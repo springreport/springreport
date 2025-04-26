@@ -293,6 +293,7 @@ export default {
     },
     processDynamicData(response) {
       this.component.spec.data.values = response.responseData;
+      console.log(this.component.spec)
       this.component.dynamicDataSettings.datasetId = this.dataSetForm.dataSetId;
       this.component.dynamicDataSettings.dataColumns = this.dataSetForm.column;
       this.commonUtil.reLoadChart(this.chartsComponents, this.component);

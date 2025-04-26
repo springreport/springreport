@@ -202,6 +202,14 @@ export default {
               const geojson = await this.commonUtil.getMapData(mapCode)
               VChart.registerMap(mapCode, geojson)
             }
+          }else if(element.type.toLowerCase().indexOf("pie")>=0){
+            if(element.spec.isLoop){
+                element.spec.animationNormal = this.screenConstants.pieLoopanimation
+            }
+          }else if(element.type.toLowerCase().indexOf("circlepacking")>=0){
+            let categoryField = element.spec.categoryField;
+            let valueField = element.spec.valueField;
+            element.spec.label.style.text = datum => [`${datum[categoryField]}`, `${datum[valueField]}`];
           }
           var obj = { dom: element.id }
           if (element.theme) {
