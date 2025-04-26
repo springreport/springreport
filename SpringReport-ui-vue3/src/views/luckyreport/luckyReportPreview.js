@@ -128,7 +128,7 @@ export default {
           cellUpdated: this.cellUpdated,
           // cellRenderAfter: this.cellRenderAfter,
           rangeClear: this.rangeClear,
-          rangeSelect: this.rangeSelect,
+          rangeSelected: this.rangeSelect,
           userChanged: this.userChanged,
           loadDataAfter: this.loadDataAfter,
           uploadAttachment: this.uploadAttachment,
@@ -1613,7 +1613,7 @@ export default {
               value: { r: r, c: c, v: cellData },
             };
             let tplId = this.$route.query.tplId;
-            luckysheet.sendServerMsg('reportCellChanged', tplId + '-' + sheetIndex, obj, {
+            luckysheet.sendServerSocketMsg('reportCellChanged', tplId + '-' + sheetIndex, obj, {
               k: 'cellChanged',
             });
           }
@@ -2889,7 +2889,7 @@ export default {
           }
           luckysheetfile.hyperlink[r + '_' + c] = item;
           const sheetIndex = luckysheet.getSheet().index;
-          luckysheet.sendServerMsg(
+          luckysheet.sendServerSocketMsg(
             'all',
             sheetIndex,
             luckysheetfile.hyperlink,
@@ -2977,6 +2977,7 @@ export default {
               options.data = [];
               for (let index = 0; index < sheetDatas.length; index++) {
                 const element = sheetDatas[index];
+                var isExist = false
                 for (let index = 0; index < luckysheetfiles.length; index++) {
                   const luckysheetfile = luckysheetfiles[index];
                   if (luckysheetfile.name == element.name) {
@@ -3001,7 +3002,14 @@ export default {
                     luckysheetfile.wrapDatas = element.wrapDatas;
                     luckysheetfile.data = [];
                     options.data.push(luckysheetfile);
+                    isExist = true
+                    break
                   }
+                }
+                if (!isExist) {
+                  var data = luckysheet.buildGridData(element)
+                  element.data = data
+                  luckysheet.appendSheets(element, false)
                 }
               }
               if (options.data && options.data.length > 0) {
