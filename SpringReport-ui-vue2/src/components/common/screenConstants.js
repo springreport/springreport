@@ -581,6 +581,7 @@ screenConstants.histogramInit = {
         background: '',//背景颜色
         barWidth:'100%',//柱体宽度
         title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
         bar:{
             style:{
                 cornerRadius:0,//圆角
@@ -663,6 +664,7 @@ screenConstants.rangeHistogramInit = {
       background: '',//背景颜色
       barWidth:'100%',//柱体宽度
       title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
       bar:{
           style:{
               cornerRadius:0,//圆角
@@ -749,6 +751,7 @@ screenConstants.stackHistogramInit = {
         background: '',//背景颜色
         barWidth:'100%',//柱体宽度
         title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
         bar:{
             style:{
                 cornerRadius:0,//圆角
@@ -854,6 +857,7 @@ screenConstants.horizontalHistogramInit = {
         background: '',//背景颜色
         barWidth:'100%',//柱体宽度
         title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
         bar:{
             style:{
                 cornerRadius:0,//圆角
@@ -936,6 +940,7 @@ screenConstants.rangeHorizontalHistogramInit = {
       background: '',//背景颜色
       barWidth:'100%',//柱体宽度
       title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
       bar:{
           style:{
               cornerRadius:0,//圆角
@@ -1023,6 +1028,7 @@ screenConstants.stackHorizontalHistogramInit = {
         barWidth:'100%',//柱体宽度
         direction: 'horizontal',
         title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
         bar:{
             style:{
                 cornerRadius:0,//圆角
@@ -1139,6 +1145,7 @@ screenConstants.lineInit = {
             }
         },
         title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
         label:{
             visible:true,
             position:'outside',
@@ -1251,6 +1258,7 @@ screenConstants.horizontalLineInit = {
             }
         },
         title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
         label:{
             visible:true,
             position:'outside',
@@ -1362,6 +1370,7 @@ screenConstants.smoothLineInit = {
             }
         },
         title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
         label:{
             visible:true,
             position:'outside',
@@ -1473,6 +1482,7 @@ screenConstants.stepLineInit = {
             }
         },
         title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
         label:{
             visible:true,
             position:'outside',
@@ -1583,6 +1593,7 @@ screenConstants.stackLineInit = {
             }
         },
         title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
         label:{
             visible:true,
             position:'outside',
@@ -1694,6 +1705,7 @@ screenConstants.areaInit = {
             }
         },
         title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
         label:{
             visible:true,
             position:'outside',
@@ -1805,6 +1817,7 @@ screenConstants.horizontalAreaInit = {
             }
         },
         title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
         label:{
             visible:true,
             position:'outside',
@@ -1915,6 +1928,7 @@ screenConstants.smoothAreaInit = {
             }
         },
         title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
         label:{
             visible:true,
             position:'outside',
@@ -2026,6 +2040,7 @@ screenConstants.stepAreaInit = {
             }
         },
         title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
         label:{
             visible:true,
             position:'outside',
@@ -2136,6 +2151,7 @@ screenConstants.stackAreaInit = {
         },
         stack: true,
         title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
         label:{
             visible:true,
             position:'outside',
@@ -2214,6 +2230,7 @@ screenConstants.pieInit = {
         // seriesField: 'type',
         background: '',//背景颜色
         title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
         isLoop:false,//轮播展示
         pie: {
             style: {
@@ -2310,6 +2327,7 @@ screenConstants.pieRoseInit = {
         seriesField: 'category',
         background: '',//背景颜色
         title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
         pie: {
             style: {
               cornerRadius: 0
@@ -2404,6 +2422,7 @@ screenConstants.scatterInit = {
         size: 20,
         background: '',//背景颜色
         title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
         label:{
             visible:true,
             position:'top',
@@ -2499,6 +2518,7 @@ screenConstants.radarInit = {
         radius:0.8,
         background: '',//背景颜色
         title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
         label:{
             visible:true,
             position:'right',
@@ -2632,6 +2652,7 @@ screenConstants.stackRadarInit = {
         radius:0.8,
         background: '',//背景颜色
         title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
         label:{
             visible:true,
             position:'right',
@@ -2875,6 +2896,7 @@ screenConstants.gaugeInit = {
     },
     background: '',//背景颜色
       title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
       label:{
           visible:true,
           position:'right',
@@ -3028,6 +3050,7 @@ screenConstants.tickGaugeInit = {
   },
   background: '',//背景颜色
     title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
     label:{
         visible:true,
         position:'right',
@@ -3188,6 +3211,7 @@ screenConstants.seriesGaugeInit = {
   },
   background: '',//背景颜色
     title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
     label:{
         visible:true,
         position:'right',
@@ -3348,6 +3372,7 @@ screenConstants.tickSeriesGaugeInit = {
   },
   background: '',//背景颜色
     title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
     label:{
         visible:true,
         position:'right',
@@ -3432,6 +3457,7 @@ screenConstants.funnelInit = {
       },
     background: '',//背景颜色
     title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
     shape: 'rect',//梯形 trapezoid 矩形rect
     label:{
       visible:true,
@@ -3514,6 +3540,7 @@ screenConstants.circularProgressInit = {
     cornerRadius: 20,
     background: '',//背景颜色
     title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
     progress:{
       style:{
 
@@ -3651,6 +3678,7 @@ screenConstants.barProgressInit = {
     bandWidth: 30,
     background: '',//背景颜色
     title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
     axes: [
       {
         orient: 'right',
@@ -3714,6 +3742,7 @@ screenConstants.liquidInit = {
   spec:{
     type: 'liquid',
     title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
     color:[],
     categoryField:"name",
     valueField: 'value',
@@ -3779,6 +3808,7 @@ screenConstants.mapInit = {
   spec:{
     type: 'map',
     title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
     nameField: 'name',
     valueField: 'value',
     // nameProperty: 'name',
@@ -4167,6 +4197,7 @@ screenConstants.boxPlotInit = {
       seriesField: null,
       background: '',//背景颜色
       title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
       direction: 'vertical',
       boxPlot: {
         style: {
@@ -4259,6 +4290,7 @@ screenConstants.circlePackingInit = {
       valueField: 'value',
       background: '',//背景颜色
       title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
       drill: true,
       layoutPadding: 5,
       label: {
@@ -4347,6 +4379,7 @@ screenConstants.transformFunnelInit = {
     ,
     background: '',//背景颜色
     title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
     shape: 'rect',//梯形 trapezoid 矩形rect
     label:{
       visible:true,
