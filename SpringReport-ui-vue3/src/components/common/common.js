@@ -16,6 +16,7 @@ import commonConstants from './constants'
 // import router from '../../router'
 import * as echarts from 'echarts';
 import VChart from '@visactor/vchart';
+import screenConstants from './screenConstants'
 
 const commonUtil = {
 
@@ -1026,7 +1027,12 @@ commonUtil.chartProcess = function(component){
         if(component.spec.valueField && component.spec.data.values && component.spec.data.values.length > 0){
             component.content = component.spec.data.values[0][component.spec.valueField];
         }
-       
+    }else if(component.type.toLowerCase().indexOf("pie")>=0){
+        if(component.spec.isLoop){
+            component.spec.animationNormal = screenConstants.pieLoopanimation
+        }else{
+            component.spec.animationNormal = null
+        }
     }
 }
 commonUtil.dataSourceChange = function(component){
@@ -1137,7 +1143,6 @@ commonUtil.getDefaultDateValue = function(paramForm)
     if (paramForm.paramType == "date") {
         let dateFormat = paramForm.dateFormat;
         dateFormat = dateFormat.replace("yyyy-MM-dd","YYYY-MM-DD").replace("yyyy-MM","YYYY-MM").replace("yyyy","YYYY");
-        console.log(dateFormat)
         if (paramForm.paramDefault != "" && paramForm.paramDefault != null) {
             if (paramForm.paramDefault.toLowerCase() == "current") {
                 var now = new Date();
