@@ -191,6 +191,7 @@ screenConstants.type = {
     boxPlot:"boxPlot",//基础箱型图
     circlePacking:"circlePacking",//基础气泡图
     transformFunnel:"transformFunnel",//转化漏斗图
+    zhifangtu:"zhifangtu",//直方图
 }
 
 screenConstants.category = {
@@ -215,6 +216,7 @@ screenConstants.componentsType1 = [
     {"type":"area","text":"面积图",icon:"area"},
     {"type":"pie","text":"饼图",icon:"pie"},
     {"type":"boxPlot","text":"箱型图",icon:"boxPlot"},
+    {"type":"zhifangtu","text":"直方图",icon:"histogram"},
 ]
 screenConstants.componentsType2 = [
   {"type":"circlePacking","text":"气泡图",icon:"circlePacking"},
@@ -271,7 +273,8 @@ screenConstants.compType = {
     pageTable: { text: '分页表格', icon: 'table'},
     boxPlot: { text: '箱型图', icon: 'boxPlot'},
     circlePacking: { text: '气泡图', icon: 'circlePacking'},
-    transformFunnel: { text: '转化漏斗图', icon: 'transformFunnel'},
+    transformFunnel: { text: '转化漏斗图', icon: 'funnel'},
+    zhifangtu: { text: '直方图', icon: 'histogram' },
 }
 
 screenConstants.textType = [
@@ -394,6 +397,10 @@ screenConstants.circlePackingType = [
   {"name":"circlePacking","text":"气泡图","src":"https://www.springreport.vip/images/chart/circlePacking.png",category:screenConstants.category.vchart},
 ]
 
+screenConstants.zhifangtuType = [
+  {"name":"zhifangtu","text":"直方图","src":"https://www.springreport.vip/images/chart/zhifangtu.png",category:screenConstants.category.vchart},
+]
+
 screenConstants.chartTitleSettings={
     visible:false,
     text:"",
@@ -402,6 +409,15 @@ screenConstants.chartTitleSettings={
         // fill:'',//颜色
         // fontSize:'',
     }
+}
+
+screenConstants.tooltipSettings={
+  visible: true,
+  mark: {
+      title: {
+        value: ''
+      }
+  }
 }
 
 screenConstants.textInit = {
@@ -563,7 +579,8 @@ screenConstants.histogramInit = {
         yField: ['value'],
         background: '',//背景颜色
         barWidth:'100%',//柱体宽度
-        title:screenConstants.chartTitleSettings,
+         title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
         bar:{
             style:{
                 cornerRadius:0,//圆角
@@ -645,7 +662,8 @@ screenConstants.rangeHistogramInit = {
       yField: ['min','max'],
       background: '',//背景颜色
       barWidth:'100%',//柱体宽度
-      title:screenConstants.chartTitleSettings,
+       title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
       bar:{
           style:{
               cornerRadius:0,//圆角
@@ -731,7 +749,8 @@ screenConstants.stackHistogramInit = {
         stack: true,
         background: '',//背景颜色
         barWidth:'100%',//柱体宽度
-        title:screenConstants.chartTitleSettings,
+         title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
         bar:{
             style:{
                 cornerRadius:0,//圆角
@@ -836,7 +855,8 @@ screenConstants.horizontalHistogramInit = {
         stack: true,
         background: '',//背景颜色
         barWidth:'100%',//柱体宽度
-        title:screenConstants.chartTitleSettings,
+         title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
         bar:{
             style:{
                 cornerRadius:0,//圆角
@@ -918,7 +938,8 @@ screenConstants.rangeHorizontalHistogramInit = {
       yField: ['type'],
       background: '',//背景颜色
       barWidth:'100%',//柱体宽度
-      title:screenConstants.chartTitleSettings,
+       title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
       bar:{
           style:{
               cornerRadius:0,//圆角
@@ -1005,7 +1026,8 @@ screenConstants.stackHorizontalHistogramInit = {
         background: '',//背景颜色
         barWidth:'100%',//柱体宽度
         direction: 'horizontal',
-        title:screenConstants.chartTitleSettings,
+         title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
         bar:{
             style:{
                 cornerRadius:0,//圆角
@@ -1121,7 +1143,8 @@ screenConstants.lineInit = {
                 curveType:"linear"
             }
         },
-        title:screenConstants.chartTitleSettings,
+         title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
         label:{
             visible:true,
             position:'outside',
@@ -1233,7 +1256,8 @@ screenConstants.horizontalLineInit = {
                 curveType:"linear"
             }
         },
-        title:screenConstants.chartTitleSettings,
+         title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
         label:{
             visible:true,
             position:'outside',
@@ -1344,7 +1368,8 @@ screenConstants.smoothLineInit = {
                 curveType:"monotone"
             }
         },
-        title:screenConstants.chartTitleSettings,
+         title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
         label:{
             visible:true,
             position:'outside',
@@ -1455,7 +1480,8 @@ screenConstants.stepLineInit = {
                 curveType:"stepAfter"
             }
         },
-        title:screenConstants.chartTitleSettings,
+         title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
         label:{
             visible:true,
             position:'outside',
@@ -1565,7 +1591,8 @@ screenConstants.stackLineInit = {
                 lineWidth:2,
             }
         },
-        title:screenConstants.chartTitleSettings,
+         title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
         label:{
             visible:true,
             position:'outside',
@@ -1676,7 +1703,8 @@ screenConstants.areaInit = {
                 curveType:"linear"
             }
         },
-        title:screenConstants.chartTitleSettings,
+         title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
         label:{
             visible:true,
             position:'outside',
@@ -1787,7 +1815,8 @@ screenConstants.horizontalAreaInit = {
                 curveType:"linear"
             }
         },
-        title:screenConstants.chartTitleSettings,
+         title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
         label:{
             visible:true,
             position:'outside',
@@ -1897,7 +1926,8 @@ screenConstants.smoothAreaInit = {
                 curveType:"monotone"
             }
         },
-        title:screenConstants.chartTitleSettings,
+         title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
         label:{
             visible:true,
             position:'outside',
@@ -2008,7 +2038,8 @@ screenConstants.stepAreaInit = {
                 curveType:"stepAfter"
             }
         },
-        title:screenConstants.chartTitleSettings,
+         title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
         label:{
             visible:true,
             position:'outside',
@@ -2118,7 +2149,8 @@ screenConstants.stackAreaInit = {
             }
         },
         stack: true,
-        title:screenConstants.chartTitleSettings,
+         title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
         label:{
             visible:true,
             position:'outside',
@@ -2196,7 +2228,8 @@ screenConstants.pieInit = {
         valueField: 'value',
         // seriesField: 'type',
         background: '',//背景颜色
-        title:screenConstants.chartTitleSettings,
+         title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
         isLoop:false,//轮播展示
         pie: {
             style: {
@@ -2292,7 +2325,8 @@ screenConstants.pieRoseInit = {
         valueField: 'value',
         seriesField: 'category',
         background: '',//背景颜色
-        title:screenConstants.chartTitleSettings,
+         title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
         pie: {
             style: {
               cornerRadius: 0
@@ -2386,7 +2420,8 @@ screenConstants.scatterInit = {
         sizeField: '',
         size: 20,
         background: '',//背景颜色
-        title:screenConstants.chartTitleSettings,
+         title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
         label:{
             visible:true,
             position:'top',
@@ -2481,7 +2516,8 @@ screenConstants.radarInit = {
           },
         radius:0.8,
         background: '',//背景颜色
-        title:screenConstants.chartTitleSettings,
+         title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
         label:{
             visible:true,
             position:'right',
@@ -2614,7 +2650,8 @@ screenConstants.stackRadarInit = {
           },
         radius:0.8,
         background: '',//背景颜色
-        title:screenConstants.chartTitleSettings,
+         title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
         label:{
             visible:true,
             position:'right',
@@ -2857,7 +2894,8 @@ screenConstants.gaugeInit = {
       }
     },
     background: '',//背景颜色
-      title:screenConstants.chartTitleSettings,
+       title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
       label:{
           visible:true,
           position:'right',
@@ -3010,7 +3048,8 @@ screenConstants.tickGaugeInit = {
     }
   },
   background: '',//背景颜色
-    title:screenConstants.chartTitleSettings,
+     title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
     label:{
         visible:true,
         position:'right',
@@ -3170,7 +3209,8 @@ screenConstants.seriesGaugeInit = {
     }
   },
   background: '',//背景颜色
-    title:screenConstants.chartTitleSettings,
+     title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
     label:{
         visible:true,
         position:'right',
@@ -3330,7 +3370,8 @@ screenConstants.tickSeriesGaugeInit = {
     }
   },
   background: '',//背景颜色
-    title:screenConstants.chartTitleSettings,
+     title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
     label:{
         visible:true,
         position:'right',
@@ -3412,7 +3453,8 @@ screenConstants.funnelInit = {
       }
     ,
     background: '',//背景颜色
-    title:screenConstants.chartTitleSettings,
+     title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
     shape: 'rect',//梯形 trapezoid 矩形rect
     label:{
       visible:true,
@@ -3494,7 +3536,8 @@ screenConstants.circularProgressInit = {
     roundCap: false,
     cornerRadius: 20,
     background: '',//背景颜色
-    title:screenConstants.chartTitleSettings,
+     title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
     progress:{
       style:{
 
@@ -3631,7 +3674,8 @@ screenConstants.barProgressInit = {
     cornerRadius: 20,
     bandWidth: 30,
     background: '',//背景颜色
-    title:screenConstants.chartTitleSettings,
+     title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
     axes: [
       {
         orient: 'right',
@@ -3694,7 +3738,8 @@ screenConstants.liquidInit = {
   borderColor:[],//边框颜色
   spec:{
     type: 'liquid',
-    title:screenConstants.chartTitleSettings,
+     title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
     color:[],
     categoryField:"name",
     valueField: 'value',
@@ -3759,7 +3804,8 @@ screenConstants.mapInit = {
   isDrill: false, // 是否支持下钻
   spec:{
     type: 'map',
-    title:screenConstants.chartTitleSettings,
+     title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
     nameField: 'name',
     valueField: 'value',
     // nameProperty: 'name',
@@ -4147,7 +4193,8 @@ screenConstants.boxPlotInit = {
       maxField: 'y5',//箱型图最大值字段
       seriesField: null,
       background: '',//背景颜色
-      title:screenConstants.chartTitleSettings,
+       title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
       direction: 'vertical',
       boxPlot: {
         style: {
@@ -4239,7 +4286,8 @@ screenConstants.circlePackingInit = {
       categoryField: 'name',
       valueField: 'value',
       background: '',//背景颜色
-      title:screenConstants.chartTitleSettings,
+       title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
       drill: true,
       layoutPadding: 5,
       label: {
@@ -4327,8 +4375,9 @@ screenConstants.transformFunnelInit = {
         ]
       }
     ,
-    background: 'rgba(128, 128, 128, 0.0)',//背景颜色
-    title:screenConstants.chartTitleSettings,
+    background: '',//背景颜色
+     title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
     shape: 'rect',//梯形 trapezoid 矩形rect
     label:{
       visible:true,
@@ -4362,6 +4411,124 @@ screenConstants.transformFunnelInit = {
         fontSize:null
       }
     },
+  }
+}
+
+//大屏直方图初始化数据
+screenConstants.zhifangtuInit = {
+  type: screenConstants.type.zhifangtu,
+  category:screenConstants.category.vchart,
+  isDelete:false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 500, // 组件初始化宽度
+  h: 300, // 组件初始化高度
+  active: false,
+  zindex: 99,
+  locked:false,
+  refresh: false, // 是否定时刷新
+  refreshTime: 30000, // 定时刷新时间，单位(ms)
+  dataSource:'1',//数据来源 1静态数据 2动态数据
+  dynamicDataSettings:{
+      datasetId:"",//数据集
+      dataColumns:[],//数据列
+  },//动态数据配置
+  params: [], // 图表参数
+  clickType: '1', // 点击类型
+  thirdUrl: '', // 第三方跳转链接
+  bindComponent: null, // 绑定组件
+  hiddenParamSize:0,//隐藏参数个数
+  theme:"",//主题
+  amination:"",//动画效果
+  isborder:false,//是否添加边框
+  borderType:"",//边框类型
+  borderColor:[],//边框颜色
+  spec:{
+      type:'histogram',
+      color: [],
+      data: {
+          values: [
+            {
+              from: 0,
+              to: 10,
+              profit: 2,
+              type: 'A'
+            },
+            {
+              from: 10,
+              to: 16,
+              profit: 3,
+              type: 'B'
+            },
+            {
+              from: 16,
+              to: 18,
+              profit: 15,
+              type: 'C'
+            },
+            {
+              from: 18,
+              to: 26,
+              profit: 12,
+              type: 'D'
+            },
+            {
+              from: 26,
+              to: 32,
+              profit: 22,
+              type: 'E'
+            },
+            {
+              from: 32,
+              to: 56,
+              profit: 7,
+              type: 'F'
+            },
+            {
+              from: 56,
+              to: 62,
+              profit: 17,
+              type: 'G'
+            }
+          ]
+      },
+      seriesField: 'type',
+      xField: "from",
+      x2Field:"to",
+      yField: 'profit',
+      background: '',//背景颜色
+      barWidth:'100%',//柱体宽度
+       title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
+      bar:{
+          style:{
+              cornerRadius:0,//圆角
+          }
+      },
+      label:{
+          visible:true,
+          position:'outside',
+          style:{
+              fontSize:14,
+              fill:null,
+          }
+      },
+      axes:[
+          {orient:'bottom',sampling: true,label:{visible:true,style:{fill:'#6E6F73'},autoRotate:false,autoRotateAngle: [0, 90],autoLimit:false},unit:{visible:false,style:{}}},
+          {orient:'left',label:{visible:true,style:{fill:'#6E6F73'},autoLimit:false},unit:{visible:false,style:{}}}
+      ],
+      legends:{
+          visible:false,
+          orient: 'top',//图例位置
+          position:'middle',//对齐方式
+          item: {
+              label:{
+                style:{
+                  // fill:'#0BF1DA',//图例字体颜色
+                }
+              }
+          },
+      },
   }
 }
 
