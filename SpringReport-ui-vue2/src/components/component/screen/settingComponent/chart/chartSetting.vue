@@ -560,6 +560,7 @@
                         <input-color-picker :value="component.spec.outerLabel.style.fill" @change="(val)=>{component.spec.outerLabel.style.fill=val;commonUtil.reLoadChart(chartsComponents,component)}" />
                     </el-form-item>
                     </div>
+                    </div>
                     <el-form-item label="提示框配置" class="customLabel">
                     </el-form-item><br>
                     <el-form-item label="提示框标题">
@@ -577,7 +578,6 @@
                           </el-option>
                         </el-select>
                     </el-form-item>
-                    </div>
                 </el-form>
             </el-collapse-item>
         </el-collapse>

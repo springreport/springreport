@@ -209,6 +209,10 @@ export default {
               const geojson = await this.commonUtil.getMapData(mapCode);
               VChart.registerMap(mapCode, geojson);
             }
+          }else if(element.type.toLowerCase().indexOf("pie")>=0){
+            if(element.spec.isLoop){
+                element.spec.animationNormal = this.screenConstants.pieLoopanimation
+            }
           }
           var obj = { dom: element.id };
           if (element.theme) {
