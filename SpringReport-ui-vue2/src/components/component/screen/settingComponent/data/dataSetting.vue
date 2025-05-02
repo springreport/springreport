@@ -45,7 +45,7 @@
                     </div>
                     <div v-if="component.type.toLowerCase().indexOf('zhifangtu')>=0">
                     <el-form-item label="x轴起始数据">
-                        <el-select v-model="component.spec.xField" placeholder="请选择" @change="commonUtil.reLoadChart(chartsComponents,component)" style="width:180px"  filterable clearable=""> 
+                        <el-select v-model="component.spec.xField" placeholder="请选择" @change="commonUtil.reLoadChart(chartsComponents,component)" style="width:180px"  filterable clearable> 
                           <el-option
                             v-for="item in component.dynamicDataSettings.dataColumns"
                             :key="item"
@@ -354,6 +354,38 @@
                     </el-form-item>
                     <el-form-item label="系列分组">
                         <el-select v-model="component.spec.seriesField" placeholder="请选择" @change="changeBoxSeriesField(chartsComponents,component)" style="width:180px" filterable clearable>
+                          <el-option
+                            v-for="item in component.dynamicDataSettings.dataColumns"
+                            :key="item"
+                            :label="item"
+                            :value="item">
+                          </el-option>
+                        </el-select>
+                    </el-form-item>
+                    </div>
+                    <div v-if="component.type.toLowerCase().indexOf('sankey')>=0">
+                    <el-form-item label="起始节点">
+                        <el-select v-model="component.spec.sourceField" placeholder="请选择" @change="commonUtil.reLoadChart(chartsComponents,component)" style="width:180px"  filterable clearable> 
+                          <el-option
+                            v-for="item in component.dynamicDataSettings.dataColumns"
+                            :key="item"
+                            :label="item"
+                            :value="item">
+                          </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="目标节点">
+                        <el-select v-model="component.spec.targetField" placeholder="请选择" @change="commonUtil.reLoadChart(chartsComponents,component)" style="width:180px"  filterable clearable> 
+                          <el-option
+                            v-for="item in component.dynamicDataSettings.dataColumns"
+                            :key="item"
+                            :label="item"
+                            :value="item">
+                          </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="数值字段">
+                        <el-select v-model="component.spec.valueField" placeholder="请选择" @change="commonUtil.reLoadChart(chartsComponents,component)" style="width:180px"  filterable clearable>
                           <el-option
                             v-for="item in component.dynamicDataSettings.dataColumns"
                             :key="item"

@@ -63,8 +63,13 @@ export default {
                                     return;
                                 }
                              }
+                            if(this.component.type == "sankey"){
+                                this.component.spec.data.values = [{nodes:[],links:[]}];
+                                this.commonUtil.processSankeyData(this.component,values);
+                            }else{
+                                this.component.spec.data.values = values;
+                            }
                             
-                            this.component.spec.data.values = values;
                             if(this.component.category == this. screenConstants.category.vchart){
                                 this.commonUtil.reLoadChart(this.chartsComponents,this.component);
                             }
@@ -94,7 +99,12 @@ export default {
         },
         init(){
             let dataContent = "";
-            dataContent = JSON.stringify(this.component.spec.data.values)
+            if(this.component.type.toLowerCase().indexOf("sankey") >= 0){
+                dataContent = JSON.stringify(this.component.spec.data.values[0].links)
+            }else{
+                dataContent = JSON.stringify(this.component.spec.data.values)
+            }
+            
             this.$nextTick(() => {
                 this.$refs.dataCodeMirror.codemirror.setValue(dataContent);
             });

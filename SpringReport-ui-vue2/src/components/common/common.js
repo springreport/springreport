@@ -2310,4 +2310,24 @@ commonUtil.downloadFileByUrl = async function(url,fileName){
         console.error('文件下载失败', error)
     }
 }
+
+commonUtil.processSankeyData = function(component,datas){
+    let nodes = [];
+    let nodeNames = []
+    for (let index = 0; index < datas.length; index++) {
+        const element = datas[index];
+        let sourceName = element[component.spec.sourceField];
+        let targetName = element[component.spec.targetField];
+        if(nodeNames.indexOf(sourceName)<0){
+          nodeNames.push(sourceName)
+          nodes.push({name:sourceName});
+        }
+        if(nodeNames.indexOf(targetName)<0){
+          nodeNames.push(targetName)
+          nodes.push({name:targetName});
+        }
+      }
+      component.spec.data.values[0].nodes = nodes;
+      component.spec.data.values[0].links = datas;
+}
 export default commonUtil;

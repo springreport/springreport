@@ -171,6 +171,8 @@ export default {
                             let categoryField = obj.spec.categoryField;
                             let valueField = obj.spec.valueField;
                             obj.spec.label.style.text = datum => [`${datum[categoryField]}`, `${datum[valueField]}`];
+                        }else if(obj.type.toLowerCase().indexOf("sankey") >= 0){
+                            obj.spec.nodeKey = datum => datum.name;
                         }
                         this.$nextTick(() => {
                             const vchart = new VChart(obj.spec, { dom: obj.id});
@@ -243,6 +245,8 @@ export default {
                         let categoryField = element.spec.categoryField;
                         let valueField = element.spec.valueField;
                         element.spec.label.style.text = datum => [`${datum[categoryField]}`, `${datum[valueField]}`];
+                    }else if(element.type.toLowerCase().indexOf("sankey") >= 0){
+                        element.spec.nodeKey = datum => datum.name;
                     }
                     var obj = { dom: element.id};
                     if(element.theme){
