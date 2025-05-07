@@ -2860,13 +2860,25 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			queryWrapper.orderByAsc("coordsx","coordsy");
 			List<LuckysheetReportCell> list = this.iLuckysheetReportCellService.list(queryWrapper);
 			List<String> usedDataSet = new ArrayList<String>();//存放所有数据集
+			Map<String, List<Long>> datasetSheets = new HashMap<String, List<Long>>();//数据集所属于的sheet页
   			Set<String> hs = new LinkedHashSet<>();
 			//将变量单元格的数据集放到数据集数组中
+  			List<Long> datasetSheetIds = null;
  			if (!ListUtil.isEmpty(list)) {
 				for (int i = 0; i < list.size(); i++) {
 					String[] datesetNames = list.get(i).getDatasetName().split(",");
 					for (String datasetName : datesetNames) {
 						hs.add(datasetName);
+						Long sheetId = list.get(i).getSheetId();
+						if(datasetSheets.containsKey(datasetName)) {
+							datasetSheetIds = datasetSheets.get(datasetName);
+						}else {
+							datasetSheetIds = new ArrayList<>();
+						}
+						if(!datasetSheetIds.contains(sheetId)) {
+							datasetSheetIds.add(sheetId);
+							datasetSheets.put(datasetName, datasetSheetIds);
+						}
 					}
 				}
 				usedDataSet = new ArrayList<>(hs);
@@ -2885,11 +2897,13 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			Map<String, Map<String, List<List<Map<String, Object>>>>> processedCells = new HashMap<>();
 			Map<String, List<Map<String, Object>>> datasetDatas = new HashMap<String, List<Map<String,Object>>>();//数据集对应的原始数据
 			Map<String, Map<String, Object>> datasetParamsCache = new HashMap<>();//数据集对应的参数
+			Map<String, Map<String, Object>> datasetPaginationCache = new HashMap<>();//数据集对应的分页信息
 			List<ReportTplDataset> reportTplDatasets = null;
 			//获取数据字典
 			ReportCellDictsDto cellDictsDto = this.getReportDict(sheets);
 			for (int t = 0; t < sheets.size(); t++) {
 				ResLuckySheetDataDto resLuckySheetDataDto = new ResLuckySheetDataDto();
+				resLuckySheetDataDto.setSheetId(sheets.get(t).getId());
 				//获取打印设置
 				QueryWrapper<ReportSheetPdfPrintSetting> pdfPrintQueryWrapper = new QueryWrapper<ReportSheetPdfPrintSetting>();
 				pdfPrintQueryWrapper.eq("tpl_id", reportTpl.getId());
@@ -2955,6 +2969,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				ObjectMapper objectMapper = new ObjectMapper();
 				Map<String, Object> config = new HashMap<String, Object>();
 				Map<String, Object> configColhidden = new HashMap<String, Object>();
+				Map<String, Map<String, Object>> paginationMap = new HashMap<>();//sheet页中的分页信息
 				if(StringUtil.isNotEmpty(sheets.get(t).getConfig()))
 				{
 					config = objectMapper.readValue(sheets.get(t).getConfig(), Map.class);
@@ -3056,8 +3071,15 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
  							datas = (List<Map<String, Object>>) result.get("datas");
 							datasetDatas.put(usedDataSet.get(i), datas);
 							datasetParamsCache.put(usedDataSet.get(i), (Map<String, Object>) result.get("params"));
+							datasetPaginationCache.put(usedDataSet.get(i), result.get("pagination")==null?null:(Map<String, Object>) result.get("pagination"));
+							if(datasetSheets.containsKey(usedDataSet.get(i)) && datasetSheets.get(usedDataSet.get(i)).contains(sheets.get(t).getId())) {
+								paginationMap.put(usedDataSet.get(i), result.get("pagination")==null?null:(Map<String, Object>) result.get("pagination"));
+							}
 						}else {
 							datas = datasetDatas.get(usedDataSet.get(i));
+							if(datasetSheets.containsKey(usedDataSet.get(i)) && datasetSheets.get(usedDataSet.get(i)).contains(sheets.get(t).getId())) {
+								paginationMap.put(usedDataSet.get(i), datasetPaginationCache.get(usedDataSet.get(i)));
+							}
 						}
 						//获取数据集对应的变量
 						LuckysheetReportCell params = new LuckysheetReportCell();
@@ -3246,7 +3268,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 //				resLuckySheetDataDto.setPagination(paginationMap);
 //				resLuckySheetDataDto.setIsParamMerge(reportTpl.getIsParamMerge());
 				mergePagination.put("currentPage", mesGenerateReportDto.getPagination().get("currentPage"));
-				resLuckySheetDataDto.setMergePagination(mergePagination);
+//				resLuckySheetDataDto.setMergePagination(mergePagination);
 				if(StringUtil.isNotEmpty(sheets.get(t).getFrozen()))
 				{
 					resLuckySheetDataDto.setFrozen(objectMapper.readValue(sheets.get(t).getFrozen(), Map.class));
@@ -3527,6 +3549,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 					resLuckySheetDataDto.setLuckysheetConditionformatSave(luckysheetConditionformatSave);
 				}
 				sheetDatas.add(resLuckySheetDataDto);
+				this.processSheetPagination(paginationMap, resLuckySheetDataDto, mesGenerateReportDto.getPagination().get("currentPage"));
 				resPreviewData.setCellDictsLabelValue(cellDictsDto.getCellDictsLabelValue());
 			}
 		}
@@ -3541,6 +3564,41 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		resPreviewData.setShowGridlines(reportTpl.getShowGridlines());
 		resPreviewData.setReportSqls(reportSqls);
 		return resPreviewData;
+	}
+	
+	/**  
+	 * @MethodName: processSheetPagination
+	 * @Description: 处理sheet页的分页信息
+	 * @author caiyang
+	 * @param paginationMap
+	 * @param resLuckySheetDataDto void
+	 * @date 2025-05-06 09:37:58 
+	 */ 
+	private void processSheetPagination(Map<String, Map<String, Object>> paginationMap,ResLuckySheetDataDto resLuckySheetDataDto,Integer currentPage) {
+		if(!StringUtil.isEmptyMap(paginationMap)) {
+			 Long totalCount = null;
+			 Long pageCount = null;
+			 for (String key : paginationMap.keySet()) {
+				 Map<String, Object> pagination = paginationMap.get(key);
+				 if(pagination != null) {
+					 Long datasetTotalCount = Long.parseLong(String.valueOf(pagination.get("totalCount")));
+					 if(totalCount == null || datasetTotalCount.longValue() > totalCount.longValue()) {
+						 totalCount = datasetTotalCount;
+					 }
+					 Long datasetPageCount = Long.parseLong(String.valueOf(pagination.get("pageCount")));
+					 if(pageCount == null || datasetPageCount.longValue() < pageCount.longValue()) {
+						 pageCount = datasetPageCount;
+					 }
+				 }
+			 }
+			 if(totalCount != null && pageCount != null) {
+				 Map<String, Object> mergePagination = new HashMap();
+				 mergePagination.put("totalCount", totalCount);
+				 mergePagination.put("pageCount", pageCount);
+				 mergePagination.put("currentPage", currentPage);
+				 resLuckySheetDataDto.setMergePagination(mergePagination);
+			 }
+		}
 	}
 	
 	private Map<String, Object> getDatasetDatas(ReportTpl reportTpl,MesGenerateReportDto mesGenerateReportDto,String datasetName,
@@ -3576,6 +3634,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		}
 		ReportTplDataset reportTplDataset = (ReportTplDataset) dataSetAndDatasource.get("tplDataSet");
 		Map<String, Object> params = null;
+		Map<String, Object> pagination = null;
 		if(searchInfo != null)
 		{
 			params = ParamUtil.getViewParams((JSONArray) searchInfo.get("params"),userInfoDto);
@@ -3631,6 +3690,9 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 								mergePagination.put("pageCount", paramsPageCount);
 							}
 						}
+						pagination = new HashMap<String, Object>();
+						pagination.put("totalCount", count);
+						pagination.put("pageCount", paramsPageCount);
 					}
 				}else if(type == 10)
 				{//tdengine
@@ -3672,6 +3734,9 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 								mergePagination.put("pageCount", paramsPageCount);
 							}
 						}
+						pagination = new HashMap<String, Object>();
+						pagination.put("totalCount", count);
+						pagination.put("pageCount", paramsPageCount);
 					}
 				}else {
 					sql = JdbcUtils.processSqlParams(sql,params);
@@ -3721,6 +3786,9 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 								mergePagination.put("pageCount", paramsPageCount);
 							}
 						}
+						pagination = new HashMap<String, Object>();
+						pagination.put("totalCount", count);
+						pagination.put("pageCount", paramsPageCount);
 					}
 				}
 			}else {
@@ -3797,6 +3865,9 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 						mergePagination.put("pageCount", paramsPageCount);
 					}
 				}
+				pagination = new HashMap<String, Object>();
+				pagination.put("totalCount", count);
+				pagination.put("pageCount", paramsPageCount);
 			}
 		}
 		String subParamAttrs = reportTplDataset.getSubParamAttrs();
@@ -3823,6 +3894,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		}
 		resultMap.put("datas", datas);
 		resultMap.put("params", params);
+		resultMap.put("pagination", pagination);
 		if(ListUtil.isNotEmpty(datas) && reportTplDataset.getIsConvert() != null && YesNoEnum.YES.getCode().intValue() == reportTplDataset.getIsConvert().intValue()) {
 			if(StringUtil.isNotEmpty(reportTplDataset.getHeaderName()) && StringUtil.isNotEmpty(reportTplDataset.getFixedColumn())
 					&& StringUtil.isNotEmpty(reportTplDataset.getFixedColumn())) {
@@ -13321,6 +13393,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				ResMobileReport resMobileReport = new ResMobileReport();
 				resMobileReport.setSheetIndex(resPreviewData.getSheetDatas().get(i).getSheetIndex());
 				resMobileReport.setSheetName(resPreviewData.getSheetDatas().get(i).getSheetName());
+				resMobileReport.setMergePagination(resPreviewData.getSheetDatas().get(i).getMergePagination());
 //				List<ImageInfo> imageInfos =  JFreeChartUtil.getChartInfos(resPreviewData.getSheetDatas().get(i).getChart());
 //				resMobileReport.setImageInfos(imageInfos);
 				List<JSONObject> chartsOptions = null;
@@ -14373,9 +14446,13 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		jsonObject.put("r", luckysheetReportCell.getCoordsx());
 		jsonObject.put("c", luckysheetReportCell.getCoordsy());
 		Map<String, Object> cellData = JSON.parseObject(luckysheetReportCell.getCellData(), Map.class);
+		String m = "";
 		if(cellData != null && cellData.get("v") != null)
 		{
 			Map<String, Object> v = (Map<String, Object>) cellData.get("v");
+			if(v.get("m") != null) {
+				m = String.valueOf(v.get("m"));	
+			}
 			Object bg = v.get("bg");
 			if(bg != null)
 			{
@@ -14387,8 +14464,14 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				jsonObject.put("ps", ps);
 			}
 		}
-		
-		extendCellOrigin.put(cellFlag, jsonObject);
+		if(StringUtil.isNotEmpty(m)) {
+			extendCellOrigin.put(cellFlag, jsonObject);
+		}else {
+			if(luckysheetReportCell.getCellFillType().intValue() == 1) {
+				extendCellOrigin.put(cellFlag, jsonObject);
+			}
+		}
+//		extendCellOrigin.put(cellFlag, jsonObject);
 	}
 	
 	/**  
@@ -14433,7 +14516,9 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		String m = "";
 		if(luckySheetBindData.getCellData() != null && luckySheetBindData.getCellData().get("v") != null) {
 			Map<String, Object> vObj = (Map<String, Object>) luckySheetBindData.getCellData().get("v");
-			m = String.valueOf(vObj.get("m"));
+			if(vObj.get("m") != null) {
+				m = String.valueOf(vObj.get("m"));	
+			}
 		}
 		if(isRely.intValue() == 1 && "删除".equals(m)) {
 			jsonObject.put("r", luckySheetBindData.getRelyCoordsx());
@@ -14457,8 +14542,14 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				jsonObject.put("ps", ps);
 			}
 		}
+		if(StringUtil.isNotEmpty(m)) {
+			extendCellOrigin.put(cellFlag, jsonObject);
+		}else {
+			if(luckySheetBindData.getCellFillType().intValue() == 1) {
+				extendCellOrigin.put(cellFlag, jsonObject);
+			}
+		}
 		
-		extendCellOrigin.put(cellFlag, jsonObject);
 	}
 	
 	/**  

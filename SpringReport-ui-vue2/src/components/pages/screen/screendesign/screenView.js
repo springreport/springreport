@@ -210,7 +210,9 @@ export default {
             let categoryField = element.spec.categoryField;
             let valueField = element.spec.valueField;
             element.spec.label.style.text = datum => [`${datum[categoryField]}`, `${datum[valueField]}`];
-          }
+          }else if(element.type.toLowerCase().indexOf("sankey") >= 0){
+            element.spec.nodeKey = datum => datum.name;
+        }
           var obj = { dom: element.id }
           if (element.theme) {
             obj.theme = element.theme

@@ -992,7 +992,7 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 					{
 						paginationMap.put("pageCount",String.valueOf(datasets.get(i).getPageCount()));
 					}else {
-						if(datasets.get(i).getPageCount() < Integer.parseInt(String.valueOf(pageCount)))
+						if(datasets.get(i).getPageCount() > Integer.parseInt(String.valueOf(pageCount)))
 						{
 							paginationMap.put("pageCount",String.valueOf(datasets.get(i).getPageCount()));
 						}

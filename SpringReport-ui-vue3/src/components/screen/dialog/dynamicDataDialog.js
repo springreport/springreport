@@ -325,6 +325,9 @@ export default {
       this.commonUtil.reLoadChart(this.chartsComponents, this.component);
       if(this.component.type == "pageTable" && Array.isArray(this.component.spec.data.values)){
         this.component.spec.data.total = this.component.spec.data.values.length;
+      }else if(this.component.type == "sankey"){
+        this.component.spec.data.values = [{nodes:[],links:[]}];
+        this.commonUtil.processSankeyData(this.component,response.responseData);
       }
       this.closeDynamicDataDialog();
     },

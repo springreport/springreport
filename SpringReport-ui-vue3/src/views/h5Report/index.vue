@@ -40,7 +40,7 @@
         <ReportChart :info="currentSheetInfo.chartsOptions" />
       </template>
     </div>
-    <div style=" margin-top: 14px" v-if="activeBottom == 1 && isPagination">
+    <div style=" margin-top: 14px" v-if="activeBottom == 1 && sheetPagination[activeSheet]">
       <div class="pagination df-c-b">
       <el-pagination size="small" background layout="prev, pager, next,total" :total="pagination.total*1"  
       @current-change="changeCurrentPage" :page-size="pagination.pageSize" 
@@ -87,6 +87,7 @@ export default {
   name: "index",
   data() {
     return {
+      sheetPagination:{},
       activeSheet: "",
       sheetList: [],
       activeBottom: 1,
@@ -176,6 +177,12 @@ export default {
       // // this.searchData = {};
       // this.pagination.currentPage = 1;
       this.activeSheet = item.sheetIndex;
+      if(this.sheetPagination[this.activeSheet])
+      {
+        this.pagination.currentPage = this.sheetPagination[this.activeSheet].currentPage*1;
+        this.pagination.pageSize = this.sheetPagination[this.activeSheet].pageCount*1;
+        this.pagination.total = this.sheetPagination[this.activeSheet].totalCount*1;
+     }
     },
     // 底部表格或者图表显示切换
     changBottomActive(val) {
@@ -346,7 +353,7 @@ export default {
             that.loading = true;
             var obj = {
               url: that.apis.previewReport.getMobileReportApi,
-              params: {tplId:that.currentTplId,searchData:that.searchData.params,pagination:that.pageParam},
+              params: {tplId:that.currentTplId,searchData:that.searchData.params,pagination:that.pageParam,activeSheet:that.activeSheet},
             };
             let headers = {};
             if(that.isShare == 1)
@@ -361,12 +368,22 @@ export default {
                 try {
                   that.reportName = response.responseData.reportName;
                   that.sheetList = response.responseData.reports;
-                  that.activeSheet = that.sheetList[0].sheetIndex;
-                  if(response.responseData.pagination && Object.keys(response.responseData.pagination).length>0)
+                  if(response.responseData.activeSheet){
+                      that.activeSheet = response.responseData.activeSheet;
+                  }else{
+                      that.activeSheet = that.sheetList[0].sheetIndex;
+                  }
+                  for (let index = 0; index < that.sheetList.length; index++) {
+                    const element = that.sheetList[index];
+                    if(element.mergePagination){
+                      that.sheetPagination[element.sheetIndex] = element.mergePagination
+                    }
+                  }
+                  if(response.responseData.pagination && that.sheetPagination[that.activeSheet])
                   {
-                      that.pagination.currentPage = response.responseData.pagination.currentPage;
-                      that.pagination.pageSize = response.responseData.pagination.pageCount;
-                      that.pagination.total = response.responseData.pagination.totalCount;
+                      that.pagination.currentPage = this.sheetPagination[that.activeSheet].currentPage*1;
+                      that.pagination.pageSize = this.sheetPagination[that.activeSheet].pageCount*1;
+                      that.pagination.total = this.sheetPagination[that.activeSheet].totalCount*1;
                   }
                   that.loading = false;
                 } catch (error) {

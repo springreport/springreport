@@ -211,4 +211,11 @@ public class MesGenerateReportDto {
 	 * @date 2025年4月11日17:38:48
 	 */  
 	private Integer isTask = YesNoEnum.NO.getCode();
+	
+	/**  
+	 * @Fields activeSheet : 当前选中的sheet
+	 * @author caiyang
+	 * @date 2025-05-07 01:48:03 
+	 */  
+	private String activeSheet;
 }

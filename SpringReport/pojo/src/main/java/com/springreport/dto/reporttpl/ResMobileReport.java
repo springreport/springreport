@@ -61,4 +61,11 @@ public class ResMobileReport {
 	 */  
 	private JSONObject drillCells;
 	
+	/**  
+	 * @Fields mergePagination : 合并参数分页内容
+	 * @author caiyang
+	 * @date 2022-03-31 10:44:16 
+	 */ 
+	private Map<String, Object> mergePagination;
+	
 }

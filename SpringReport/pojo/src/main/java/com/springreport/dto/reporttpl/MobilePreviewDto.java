@@ -28,4 +28,11 @@ public class MobilePreviewDto {
 	 * @date 2023-01-16 09:59:01 
 	 */  
 	private Map<String, Object> pagination;
+	
+	/**  
+	 * @Fields activeSheet : 当前选中的sheet
+	 * @author caiyang
+	 * @date 2025-05-07 01:48:03 
+	 */  
+	private String activeSheet;
 }

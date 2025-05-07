@@ -16,6 +16,7 @@ export default {
   },
   data() {
     return {
+      sheetPagination:{},
       drawer: false,
       chartOptions: {},
       chartSettingShow: false,
@@ -324,12 +325,25 @@ export default {
       luckysheet.setServerAttr('version', 'vue3');
       luckysheet.create(options);
     },
-    sheetActivate() {
+    sheetActivate(index, isPivotInitial, isNewSheet) {
       var that = this;
       setTimeout(function () {
         that.updateNowFunction();
         that.updateCellFormat();
       }, 100);
+      if (this.sheetPagination[index]) {
+        var pager = {
+          pageIndex: this.sheetPagination[index].currentPage, // 当前的页码
+          pageSize: this.sheetPagination[index].pageCount, // 每页显示多少行数据
+          total: this.sheetPagination[index].totalCount, // 数据总行数
+          showTotal: true,
+          showSkip: true,
+          selectOption: this.commonConstants.pageCount // 允许设置每页行数的选项
+        }
+        luckysheet.pagerRefresh(pager);
+      }else{
+        luckysheet.destroyPager();
+      }
     },
     updateNowFunction() {
       var sheet = luckysheet.getSheet();
@@ -724,6 +738,7 @@ export default {
           this.reportVersion = response.responseData.version;
           this.sheetOptions.data = [];
           this.sheetDrillCells = {};
+          let firstSheetIndex = "";
           if (
             response.responseData &&
             response.responseData.sheetDatas &&
@@ -739,6 +754,9 @@ export default {
                 element.maxXAndY = {};
                 element.maxXAndY.maxX = 84;
                 element.maxXAndY.maxY = 60;
+              }
+              if(index == 0){
+                firstSheetIndex = element.sheetIndex;
               }
               var obj = {
                 name: element.sheetName,
@@ -770,6 +788,9 @@ export default {
                 luckysheet_conditionformat_save: element.luckysheetConditionformatSave,
                 wrapDatas: element.wrapDatas,
               };
+              if(element.mergePagination){
+                this.sheetPagination[element.sheetIndex] = element.mergePagination
+              }
               var arr = Object.keys(element.nowFunction);
               if (arr.length > 0) {
                 this.sheetNowFunction[element.sheetOrder] = element.nowFunction;
@@ -809,20 +830,6 @@ export default {
             this.dictDatas = response.responseData.cellDictsLabelValue;
           }
           this.imgMap = response.responseData.imgCells;
-          if (
-            response.responseData.pagination &&
-            Object.keys(response.responseData.pagination).length > 0
-          ) {
-            var pager = {
-              pageIndex: response.responseData.pagination.currentPage, //当前的页码
-              pageSize: response.responseData.pagination.pageCount, //每页显示多少行数据
-              total: response.responseData.pagination.totalCount, //数据总行数
-              showTotal: true,
-              showSkip: true,
-              selectOption: this.commonConstants.pageCount, //允许设置每页行数的选项
-            };
-            this.sheetOptions.pager = pager;
-          }
           if (response.responseData.showToolbar == 1) {
             //显示工具栏
             this.sheetOptions.showtoolbar = true;
@@ -891,6 +898,17 @@ export default {
           }
           this.refreshPage = response.responseData.refreshPage;
           if (!isCurrent) {
+            if (response.responseData.pagination && this.sheetPagination[firstSheetIndex]) {
+              var pager = {
+                pageIndex: this.sheetPagination[firstSheetIndex].currentPage, // 当前的页码
+                pageSize: this.sheetPagination[firstSheetIndex].pageCount, // 每页显示多少行数据
+                total: this.sheetPagination[firstSheetIndex].totalCount, // 数据总行数
+                showTotal: true,
+                showSkip: true,
+                selectOption: this.commonConstants.pageCount // 允许设置每页行数的选项
+              }
+              this.sheetOptions.pager = pager
+            }
             this.initLuckySheet();
           } else {
             let luckysheetfile = luckysheet.getSheet();
@@ -915,7 +933,20 @@ export default {
             let options = {};
             luckysheetfile.data = [];
             options.data = [luckysheetfile];
-            luckysheet.updataSheet(options, this.sheetOptions.pager);
+            luckysheet.updataSheet(options);
+            if (response.responseData.pagination && this.sheetPagination[firstSheetIndex]) {
+              var pager = {
+                pageIndex: this.sheetPagination[firstSheetIndex].currentPage, // 当前的页码
+                pageSize: this.sheetPagination[firstSheetIndex].pageCount, // 每页显示多少行数据
+                total: this.sheetPagination[firstSheetIndex].totalCount, // 数据总行数
+                showTotal: true,
+                showSkip: true,
+                selectOption: this.commonConstants.pageCount // 允许设置每页行数的选项
+              }
+              luckysheet.pagerRefresh(pager);
+            }else{
+              luckysheet.destroyPager();
+            }
           }
           this.loading = false;
         } else {
@@ -1070,7 +1101,7 @@ export default {
     onTogglePager(page) {
       this.pageParam.currentPage = page.pageIndex;
       this.pageParam.pageCount = page.pageSize;
-      this.getReportData();
+      this.getReportData(2,true);
     },
     transOnline() {
       let tplId = this.currentTplId;

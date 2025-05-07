@@ -96,6 +96,10 @@ export default {
         this.commonUtil.doPost(obj).then((response) => {
           if (response.code == "200") {
             component.spec.data.values = response.responseData;
+            if(component.type == "sankey"){
+              component.spec.data.values = [{nodes:[],links:[]}];
+              this.commonUtil.processSankeyData(component,response.responseData);
+            }
             this.commonUtil.reLoadChart(this.chartsComponents, component);
           }
         });
