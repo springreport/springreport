@@ -14,6 +14,13 @@ import lombok.Data;
 public class ResLuckySheetDataDto {
 	
 	/**  
+	 * @Fields sheetId : 当前sheet页id
+	 * @author caiyang
+	 * @date 2025-05-06 11:47:50 
+	 */  
+	private Long sheetId;
+	
+	/**  
 	 * @Fields hyperlinks : 超链接
 	 * @author caiyang
 	 * @date 2022-02-01 10:48:03 
@@ -39,7 +46,7 @@ public class ResLuckySheetDataDto {
 	 * @author caiyang
 	 * @date 2022-02-10 07:23:50 
 	 */ 
-	private Map<String, Map<String, Integer>> pagination;
+	private Map<String, Map<String, Long>> pagination;
 	
 	/**  
 	 * @Fields maxXAndY : 最大横坐标和纵坐标
@@ -312,7 +319,14 @@ public class ResLuckySheetDataDto {
      * @author caiyang
      * @date 2025-02-27 05:37:23 
      */  
-    Map<String, JSONArray> mainAttrs;
+    private Map<String, JSONArray> mainAttrs;
+    
+    /**  
+     * @Fields paginationMap : sheet页分页信息
+     * @author caiyang
+     * @date 2025-05-06 08:54:14 
+     */  
+    private Map<String, Map<String, Object>> paginationMap;
 
 	public Map<String, Integer> getMaxXAndY() {
 		if(maxXAndY == null)
