@@ -4532,6 +4532,163 @@ screenConstants.zhifangtuInit = {
   }
 }
 
+//大屏桑葚图初始化数据
+screenConstants.sankeyInit = {
+  type: screenConstants.type.sankey,
+  category:screenConstants.category.vchart,
+  isDelete:false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 500, // 组件初始化宽度
+  h: 300, // 组件初始化高度
+  active: false,
+  zindex: 99,
+  locked:false,
+  refresh: false, // 是否定时刷新
+  refreshTime: 30000, // 定时刷新时间，单位(ms)
+  dataSource:'1',//数据来源 1静态数据 2动态数据
+  dynamicDataSettings:{
+      datasetId:"",//数据集
+      dataColumns:[],//数据列
+  },//动态数据配置
+  params: [], // 图表参数
+  clickType: '1', // 点击类型
+  thirdUrl: '', // 第三方跳转链接
+  bindComponent: null, // 绑定组件
+  hiddenParamSize:0,//隐藏参数个数
+  theme:"",//主题
+  amination:"",//动画效果
+  isborder:false,//是否添加边框
+  borderType:"",//边框类型
+  borderColor:[],//边框颜色
+  spec:{
+      type:'sankey',
+      color: [],
+      data: {
+        values:[{
+          nodes: [
+            { name: 'Bight of Benin'},
+            { name: 'Brazil'},
+            { name: 'Bight of Biafra and Gulf of Guinea islands'},
+            { name: 'Gold Coast'},
+            { name: 'Others Dep.'},
+            { name: 'Senegambia and offshore Atlantic'},
+            { name: 'Sierra Leone e Windward Coast'},
+            { name: 'Southeast Africa and Indian Ocean islands'},
+            { name: 'West Central Africa and St. Helena'},
+            { name: 'Caribbean'},
+            { name: 'Mainland North America'},
+            { name: 'Others Arr'},
+            { name: 'Spanish American Mainland'}
+          ],
+          links: [
+            { target: 'Brazil', source: 'Bight of Benin', value: 733769 },
+            { target: 'Brazil', source: 'Bight of Biafra and Gulf of Guinea islands', value: 98256 },
+            { target: 'Brazil', source: 'Gold Coast', value: 40507 },
+            { target: 'Brazil', source: 'Others Dep.', value: 18627 },
+            { target: 'Brazil', source: 'Senegambia and offshore Atlantic', value: 86001 },
+            { target: 'Brazil', source: 'Sierra Leone e Windward Coast', value: 5409 },
+            { target: 'Brazil', source: 'Southeast Africa and Indian Ocean islands', value: 232940 },
+            { target: 'Brazil', source: 'West Central Africa and St. Helena', value: 1818611 },
+            { target: 'Caribbean', source: 'Bight of Benin', value: 494753 },
+            { target: 'Caribbean', source: 'Bight of Biafra and Gulf of Guinea islands', value: 678927 },
+            { target: 'Caribbean', source: 'Gold Coast', value: 517280 },
+            { target: 'Caribbean', source: 'Others Dep.', value: 192389 },
+            { target: 'Caribbean', source: 'Senegambia and offshore Atlantic', value: 144125 },
+            { target: 'Caribbean', source: 'Sierra Leone e Windward Coast', value: 284412 },
+            { target: 'Caribbean', source: 'Southeast Africa and Indian Ocean islands', value: 57138 },
+            { target: 'Caribbean', source: 'West Central Africa and St. Helena', value: 793963 },
+            { target: 'Mainland North America', source: 'Bight of Benin', value: 7153 },
+            { target: 'Mainland North America', source: 'Bight of Biafra and Gulf of Guinea islands', value: 39389 },
+            { target: 'Mainland North America', source: 'Gold Coast', value: 26918 },
+            { target: 'Mainland North America', source: 'Others Dep.', value: 12532 },
+            { target: 'Mainland North America', source: 'Senegambia and offshore Atlantic', value: 49118 },
+            { target: 'Mainland North America', source: 'Sierra Leone e Windward Coast', value: 40366 },
+            { target: 'Mainland North America', source: 'Southeast Africa and Indian Ocean islands', value: 3958 },
+            { target: 'Mainland North America', source: 'West Central Africa and St. Helena', value: 62966 },
+            { target: 'Others Arr', source: 'Bight of Benin', value: 40607 },
+            { target: 'Others Arr', source: 'Bight of Biafra and Gulf of Guinea islands', value: 34687 },
+            { target: 'Others Arr', source: 'Gold Coast', value: 2108 },
+            { target: 'Others Arr', source: 'Others Dep.', value: 1499 },
+            { target: 'Others Arr', source: 'Senegambia and offshore Atlantic', value: 8435 },
+            { target: 'Others Arr', source: 'Sierra Leone e Windward Coast', value: 12793 },
+            { target: 'Others Arr', source: 'Southeast Africa and Indian Ocean islands', value: 9924 },
+            { target: 'Others Arr', source: 'West Central Africa and St. Helena', value: 50046 },
+            { target: 'Spanish American Mainland', source: 'Bight of Benin', value: 15822 },
+            { target: 'Spanish American Mainland', source: 'Bight of Biafra and Gulf of Guinea islands', value: 13700 },
+            { target: 'Spanish American Mainland', source: 'Gold Coast', value: 5030 },
+            { target: 'Spanish American Mainland', source: 'Others Dep.', value: 5155 },
+            { target: 'Spanish American Mainland', source: 'Senegambia and offshore Atlantic', value: 44889 },
+            { target: 'Spanish American Mainland', source: 'Sierra Leone e Windward Coast', value: 326 },
+            { target: 'Spanish American Mainland', source: 'Southeast Africa and Indian Ocean islands', value: 14327 },
+            { target: 'Spanish American Mainland', source: 'West Central Africa and St. Helena', value: 131837 }
+          ],
+        }]
+      },
+      categoryField: 'name',
+      valueField: 'value',
+      sourceField: 'source',
+      targetField: 'target',
+      nodeKey: datum => datum.name,
+      background: '',//背景颜色
+      title:screenConstants.chartTitleSettings,
+      tooltip:screenConstants.tooltipSettings,
+      label:{
+          visible:true,
+          position:'outside',
+          style:{
+              fontSize:14,
+              fill:null,
+          }
+      },
+      node: {
+        state: {
+          hover: {
+            stroke: '#333333'
+          },
+          selected: {
+            fill: '#dddddd',
+            stroke: '#333333',
+            lineWidth: 1,
+            brighter: 1,
+            fillOpacity: 1
+          }
+        }
+      },
+    
+      link: {
+        style: {
+          fillOpacity: 0.1
+        },
+        state: {
+          hover: {
+            fillOpacity: 0.4
+          },
+          blur: {
+            fill: '#e8e8e8'
+          }
+        }
+      },
+      emphasis: {
+        enable: true,
+        trigger: 'selected',
+        effect: 'adjacency'
+      },
+      legends:{
+          visible:false,
+          orient: 'top',//图例位置
+          position:'middle',//对齐方式
+          item: {
+              label:{
+                style:{
+                  // fill:'#0BF1DA',//图例字体颜色
+                }
+              }
+          },
+      },
+  }
+}
+
 screenConstants.map=[
   {value:'100000',label:'中华人民共和国'},
   {value:'110000',label:'北京市'},
