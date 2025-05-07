@@ -13393,6 +13393,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				ResMobileReport resMobileReport = new ResMobileReport();
 				resMobileReport.setSheetIndex(resPreviewData.getSheetDatas().get(i).getSheetIndex());
 				resMobileReport.setSheetName(resPreviewData.getSheetDatas().get(i).getSheetName());
+				resMobileReport.setMergePagination(resPreviewData.getSheetDatas().get(i).getMergePagination());
 //				List<ImageInfo> imageInfos =  JFreeChartUtil.getChartInfos(resPreviewData.getSheetDatas().get(i).getChart());
 //				resMobileReport.setImageInfos(imageInfos);
 				List<JSONObject> chartsOptions = null;

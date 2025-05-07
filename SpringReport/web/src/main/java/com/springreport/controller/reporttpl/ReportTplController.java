@@ -827,6 +827,7 @@ public class ReportTplController extends BaseController {
 	@RequiresPermissions(value = {"reportDesign_previewReport","reportTpl_reportView","viewReport_view","excelTemplate_viewReport"},logical = Logical.OR)
 	public Response getMobileReport(@RequestBody MesGenerateReportDto mesGenerateReportDto,@LoginUser UserInfoDto userInfoDto) throws Exception {
 		MobilePreviewDto result = this.iReportTplService.getMobileInfo(mesGenerateReportDto, userInfoDto);
+		result.setActiveSheet(mesGenerateReportDto.getActiveSheet());
 		return Response.success(result);
 	}
 	
