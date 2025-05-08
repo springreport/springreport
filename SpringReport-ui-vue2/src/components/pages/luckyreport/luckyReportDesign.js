@@ -38,6 +38,7 @@ export default {
   },
   data() {
     return {
+      isInit:true,
       deleteTypeDialog:false,//数据删除方式dialog
       deleteTypeForm: {
         deleteType: '', // 删除方式 1物理删除 2逻辑删除
@@ -4119,6 +4120,10 @@ export default {
       luckysheet.sendServerSocketMsg('deleteSheet', gridKey, null, { 'k': 'deleteSheet' })
     },
     frozenCancelAfter() {
+      if(this.isInit){
+        this.isInit = false;
+        return false;
+      }
       const configs = this.getSheetDatas()
       if (configs) {
         const reportTplId = this.$route.query.tplId
