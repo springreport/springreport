@@ -113,9 +113,10 @@ public interface IReportTplDatasetService extends IService<ReportTplDataset> {
 	 * @author caiyang
 	 * @param dataset 
 	 * @return void
+	 * @throws ParseException 
 	 * @date 2023-01-11 10:41:37 
 	 */  
-	ApiTestResultDto getApiDefaultRequestResult(ReportTplDataset dataset);
+	ApiTestResultDto getApiDefaultRequestResult(ReportTplDataset dataset) throws ParseException;
 	
 	/**
 	*<p>Title: addTplDataSets</p>

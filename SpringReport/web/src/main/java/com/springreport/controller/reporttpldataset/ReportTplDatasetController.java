@@ -123,13 +123,14 @@ public class ReportTplDatasetController extends BaseController {
 	 * @param dataset
 	 * @return 
 	 * @return Response
+	 * @throws ParseException 
 	 * @date 2023-01-11 10:38:55 
 	 */  
 	@RequestMapping(value = "/getApiDefaultRequestResult",method = RequestMethod.POST)
 	@MethodLog(module="ReportTplDataset",remark="获取api数据集默认参数请求结果",operateType=Constants.OPERATE_TYPE_SEARCH)
 	@Check({"id:required#主键"})
 	@RequiresPermissions(value = {"reportTpl_reportDesign","screenTpl_screenDesign"},logical = Logical.OR)
-	public Response getApiDefaultRequestResult(@RequestBody ReportTplDataset dataset) {
+	public Response getApiDefaultRequestResult(@RequestBody ReportTplDataset dataset) throws ParseException {
 		ApiTestResultDto result = this.iReportTplDatasetService.getApiDefaultRequestResult(dataset);
 		return Response.success(result);
 	}
