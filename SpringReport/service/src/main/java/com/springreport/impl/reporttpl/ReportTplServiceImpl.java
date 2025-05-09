@@ -8633,7 +8633,14 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 	private void addSubtotalCell(int j,LuckySheetBindData bindData,List<Map<String, Object>> cellDatas,Map<String, Integer> maxCoordinate,Map<String, Integer> maxXAndY
 			,List<Map<String, Object>> border,Map<String, Integer> rowAndCol,ObjectMapper objectMapper,List<Object> borderInfos,Map<String, Object> borderInfo,
 			Map<String, JSONObject> subtotalRows, Map<String, Map<String, Object>> mergeMap,Map<String, Map<String, Object>> usedCells) {
- 		if(bindData.getDatas().get(j).size() <= 1)
+		List<List<Map<String, Object>>> bindDatas = null;
+		if(bindData.getIsConditions().intValue() == YesNoEnum.YES.getCode())
+		{
+			bindDatas = bindData.getFilterDatas();
+		}else {
+			bindDatas = bindData.getDatas();
+		}
+		if(bindDatas.get(j).size() <= 1)
 		{
 			return;
 		}
@@ -8658,7 +8665,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         cellData.put(LuckySheetPropsEnum.C.getCode(), rowAndCol.get("maxY"));
         if(bindData.getSubtotalAttrs() != null)
         {
-        	cellData.getJSONObject("v").put("v", VelocityUtil.simpleParse(bindData.getSubtotalAttrs().getString("name"), bindData.getDatas().get(j).get(0)));
+        	cellData.getJSONObject("v").put("v", VelocityUtil.simpleParse(bindData.getSubtotalAttrs().getString("name"), bindDatas.get(j).get(0)));
             cellData.getJSONObject("v").put("m", bindData.getSubtotalAttrs().getString("name"));
             cellData.getJSONObject("v").put("bg", bindData.getSubtotalAttrs().getString("bgColor"));
             cellData.getJSONObject("v").put("fc", bindData.getSubtotalAttrs().getString("fontColor"));
