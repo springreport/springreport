@@ -560,4 +560,11 @@ public class LuckySheetBindData {
      */  
 //    private Integer continueGroupMergeCount = 0;
     
+    /**  
+     * @Fields isOperationCol : 是否是操作列
+     * @author caiyang
+     * @date 2025-05-12 04:34:32 
+     */  
+    private boolean isOperationCol = false;
+    
 }

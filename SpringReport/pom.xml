@@ -47,7 +47,7 @@
 		<hutool.version>5.8.28</hutool.version>
 		<clickhouse-jdbc.version>0.3.2</clickhouse-jdbc.version>
 		<jfreechart.version>1.5.4</jfreechart.version>
-		<excel2pdf.version>2.3.2</excel2pdf.version>
+		<excel2pdf.version>2.3.3</excel2pdf.version>
 		<x-pack-sql-jdbc.version>8.14.0</x-pack-sql-jdbc.version>
 		<taos-jdbcdriver.version>3.2.11</taos-jdbcdriver.version>
 		<kingbase8.version>8.6.0</kingbase8.version>

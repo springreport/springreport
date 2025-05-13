@@ -135,6 +135,8 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 								bindData.setDictType(dictType);
 							}
 						}
+						boolean isOperationCol =  formsAttrs.getBooleanValue("isOperationCol");
+						bindData.setOperationCol(isOperationCol);
 					}
 				}
 				bindData.setAlternateFormat(variableCells.get(i).getAlternateFormat());
