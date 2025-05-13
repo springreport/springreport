@@ -961,7 +961,7 @@ export default {
         this.cellForm.drillId = ''
         this.cellForm.drillAttrs = ''
         this.cellForm.unitTransfer = false
-        this.cellForm.transferType = '1'
+        this.cellForm.transferType = 1
         this.cellForm.multiple = '100'
         this.cellForm.cellHiddenConditions = []
         this.cellForm.hiddenType = 'and'
@@ -1596,9 +1596,7 @@ export default {
       for (let index = 0; index < this.dataSource.length; index++) {
         const element = this.dataSource[index]
         if (this.sqlForm.datasourceId == element.datasourceId) {
-          if(!isEdit){
-            this.sqlColumnTableData.tableData = []
-          }
+          this.sqlColumnTableData.tableData = []
           if (element.type == '4') {
             this.datasourceType = '2'
             if (element.apiColumns) {
