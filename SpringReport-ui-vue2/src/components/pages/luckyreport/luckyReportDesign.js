@@ -328,6 +328,7 @@ export default {
         dataAttr:'',//属性
         subExtend:null,//子数据扩展方向
         formsAttrs:{
+          isOperationCol:false,//是否操作列
           valueType: '1', // 值类型 1文本 2数值 3日期 4下拉单选
           require: false, // 必填项
           lengthValid: false, // 长度校验
