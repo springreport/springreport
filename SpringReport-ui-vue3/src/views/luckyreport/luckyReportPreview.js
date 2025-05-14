@@ -2612,6 +2612,7 @@ export default {
     },
     //文本类型数据校验
     textValid(cellConfig, v, wrongMsg, key) {
+      const length = v ? v.length : 0;
       if (cellConfig.lengthValid) {
         const length = v ? v.length : 0;
         if (cellConfig.minLength && this.commonUtil.isNaN(cellConfig.minLength)) {
@@ -2626,50 +2627,50 @@ export default {
             wrongMsg.push('内容输入长度不能大于' + maxLength + '。');
           }
         }
-        if (cellConfig.textValidRule) {
-          switch (cellConfig.textValidRule) {
-            case '1':
-              var regex = eval('/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/');
+      }
+      if (cellConfig.textValidRule && length > 0) {
+        switch (cellConfig.textValidRule) {
+          case '1':
+            var regex = eval('/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/');
+            var flag = this.commonUtil.regexValid(v, regex);
+            if (!flag) {
+              wrongMsg.push('请输入正确的邮箱格式数据。');
+            }
+            break;
+          case '2':
+            var regex = eval('/^(1[0-9])d{9}$/');
+            var flag = this.commonUtil.regexValid(v, regex);
+            wrongMsg.push('请输入正确的手机号码。');
+            break;
+          case '3':
+            var regex = eval('/^(0[0-9]{2,3}-)?([2-9][0-9]{6,7})$/');
+            var flag = this.commonUtil.regexValid(v, regex);
+            if (!flag) {
+              wrongMsg.push('请输入正确的座机号码。');
+            }
+            break;
+          case '4':
+            var regex = eval(
+              '/^[1-9]d{7}((0d)|(1[0-2]))(([0|1|2]d)|3[0-1])d{3}$|^[1-9]d{5}[1-9]d{3}((0d)|(1[0-2]))(([0|1|2]d)|3[0-1])d{3}([0-9]|X)$/'
+            );
+            var flag = this.commonUtil.regexValid(v, regex);
+            if (!flag) {
+              wrongMsg.push('请输入正确的身份证号码。');
+            }
+            break;
+          case '99':
+            if (cellConfig.regex) {
+              let regex = eval(cellConfig.regex);
               var flag = this.commonUtil.regexValid(v, regex);
               if (!flag) {
-                wrongMsg.push('请输入正确的邮箱格式数据。');
+                wrongMsg.push('请输入正确的数据格式。');
               }
               break;
-            case '2':
-              var regex = eval('/^(1[0-9])d{9}$/');
-              var flag = this.commonUtil.regexValid(v, regex);
-              wrongMsg.push('请输入正确的手机号码。');
+            } else {
               break;
-            case '3':
-              var regex = eval('/^(0[0-9]{2,3}-)?([2-9][0-9]{6,7})$/');
-              var flag = this.commonUtil.regexValid(v, regex);
-              if (!flag) {
-                wrongMsg.push('请输入正确的座机号码。');
-              }
-              break;
-            case '4':
-              var regex = eval(
-                '/^[1-9]d{7}((0d)|(1[0-2]))(([0|1|2]d)|3[0-1])d{3}$|^[1-9]d{5}[1-9]d{3}((0d)|(1[0-2]))(([0|1|2]d)|3[0-1])d{3}([0-9]|X)$/'
-              );
-              var flag = this.commonUtil.regexValid(v, regex);
-              if (!flag) {
-                wrongMsg.push('请输入正确的身份证号码。');
-              }
-              break;
-            case '99':
-              if (cellConfig.regex) {
-                let regex = eval(cellConfig.regex);
-                var flag = this.commonUtil.regexValid(v, regex);
-                if (!flag) {
-                  wrongMsg.push('请输入正确的数据格式。');
-                }
-                break;
-              } else {
-                break;
-              }
-            default:
-              break;
-          }
+            }
+          default:
+            break;
         }
       }
     },

@@ -135,6 +135,8 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 								bindData.setDictType(dictType);
 							}
 						}
+						boolean isOperationCol =  formsAttrs.getBooleanValue("isOperationCol");
+						bindData.setOperationCol(isOperationCol);
 					}
 				}
 				bindData.setAlternateFormat(variableCells.get(i).getAlternateFormat());
@@ -278,11 +280,18 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 						JSONArray subtotalCalc = JSON.parseArray(bindData.getSubtotalCalc());
 						if(ListUtil.isNotEmpty(subtotalCalc))
 						{
+							List<List<Map<String, Object>>> bindDatas2 = null;
+							if(bindData.getIsConditions().intValue() == YesNoEnum.YES.getCode())
+							{
+								bindDatas2 = bindData.getFilterDatas();
+							}else {
+								bindDatas2 = bindData.getDatas();
+							}
 							Map<Integer, Integer> groupSubtotalCount = new HashMap<Integer, Integer>();
 							List<List<Map<String, Object>>> datas = null;
-							for (int t = 0; t < bindData.getDatas().size(); t++) {
+							for (int t = 0; t < bindDatas2.size(); t++) {
 								int subtotalCount = 0;
-								List<Map<String, Object>> groupDatas = bindData.getDatas().get(t);
+								List<Map<String, Object>> groupDatas = bindDatas2.get(t);
 								for (int j = 0; j < subtotalCalc.size(); j++) {
 									datas = new ArrayList<List<Map<String,Object>>>();
 									datas.add(groupDatas);
@@ -308,6 +317,13 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 				}
 				if(bindData.getIsSubtotal())
 				{
+					List<List<Map<String, Object>>> bindDatas2 = null;
+					if(bindData.getIsConditions().intValue() == YesNoEnum.YES.getCode())
+					{
+						bindDatas2 = bindData.getFilterDatas();
+					}else {
+						bindDatas2 = bindData.getDatas();
+					}
 					subTotalCellCoords.add(0,bindData.getCoordsx()+"-"+bindData.getCoordsy());
 					if(StringUtil.isNotEmpty(bindData.getSubtotalCells()))
 					{
@@ -318,9 +334,9 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 						if(ListUtil.isNotEmpty(subtotalCells) && ListUtil.isNotEmpty(bindData.getDatas()))
 						{
 							int index = 0;
-							for (int t = 0; t < bindData.getDatas().size(); t++) {
-								index = index + bindData.getDatas().get(t).size();
-								if(bindData.getDatas().get(t).size() <= 1)
+							for (int t = 0; t < bindDatas2.size(); t++) {
+								index = index + bindDatas2.get(t).size();
+								if(bindDatas2.get(t).size() <= 1)
 								{
 									continue;
 								}
@@ -339,11 +355,11 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 									}
 									if(subtotalCellDatas.containsKey(dataKey))
 									{
-										subtotalCellDatas.put("next-"+dataKey, bindData.getDatas().get(t));
+										subtotalCellDatas.put("next-"+dataKey, bindDatas2.get(t));
 										cellType.put("type", type);
 										subtotalCellDatas.put("next-"+cellTypeKey, cellType);
 									}else {
-										subtotalCellDatas.put(dataKey, bindData.getDatas().get(t));
+										subtotalCellDatas.put(dataKey, bindDatas2.get(t));
 										cellType.put("type", type);
 										subtotalCellDatas.put(cellTypeKey, cellType);
 									}

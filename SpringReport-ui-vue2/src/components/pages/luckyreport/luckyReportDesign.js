@@ -38,6 +38,7 @@ export default {
   },
   data() {
     return {
+      isInit:true,
       deleteTypeDialog:false,//数据删除方式dialog
       deleteTypeForm: {
         deleteType: '', // 删除方式 1物理删除 2逻辑删除
@@ -327,6 +328,7 @@ export default {
         dataAttr:'',//属性
         subExtend:null,//子数据扩展方向
         formsAttrs:{
+          isOperationCol:false,//是否操作列
           valueType: '1', // 值类型 1文本 2数值 3日期 4下拉单选
           require: false, // 必填项
           lengthValid: false, // 长度校验
@@ -4117,6 +4119,10 @@ export default {
       luckysheet.sendServerSocketMsg('deleteSheet', gridKey, null, { 'k': 'deleteSheet' })
     },
     frozenCancelAfter() {
+      if(this.isInit){
+        this.isInit = false;
+        return false;
+      }
       const configs = this.getSheetDatas()
       if (configs) {
         const reportTplId = this.$route.query.tplId

@@ -733,6 +733,19 @@
               
               <el-collapse-item title="填报配置" name="fillSettings" v-if="tplType != 1">
                 <el-form-item
+                  label="是否操作列"
+                  size="small"
+                  class="df-form-item"
+                >
+                  <el-switch
+                    v-model="cellForm.formsAttrs.isOperationCol"
+                    active-text="是"
+                    inactive-text="否"
+                    :disabled="attrDisabled"
+                    @change="changeCellAttr('isOperationCol','formsAttrs')"
+                  />
+                </el-form-item>
+                <el-form-item
                   label="允许修改"
                   class="df-form-item"
                 >

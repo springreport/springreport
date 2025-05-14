@@ -408,8 +408,8 @@ public class ListUtil {
 			if (!ListUtil.isEmpty(filters)) {
 				for (int i = 0; i < filters.size(); i++) {
 					Object value = data.get(filters.getJSONObject(i).getString("property"));
-					if(value != null)
-					{
+//					if(value != null)
+//					{
 						String operator = filters.getJSONObject(i).getString("operator");
 						String condition = filters.getJSONObject(i).getString("value");
 						String type = filters.getJSONObject(i).getString("type");
@@ -450,6 +450,9 @@ public class ListUtil {
 								}
 							}else {
 								//数字类型
+								if(value == null) {
+									value = 0;
+								}
 								if(CheckUtil.isNumber(condition) && CheckUtil.isNumber(String.valueOf(value)))
 								{
 									BigDecimal bg1 = new BigDecimal(String.valueOf(value));
@@ -482,6 +485,9 @@ public class ListUtil {
 									result = false;
 								}
 							}else{//数字类型
+								if(value == null) {
+									value = 0;
+								}
 								if(CheckUtil.isNumber(condition) && CheckUtil.isNumber(String.valueOf(value)))
 								{
 									BigDecimal bg1 = new BigDecimal(String.valueOf(value));
@@ -514,6 +520,9 @@ public class ListUtil {
 									result = false;
 								}
 							}else{//数字类型
+								if(value == null) {
+									value = 0;
+								}
 								if(CheckUtil.isNumber(condition) && CheckUtil.isNumber(String.valueOf(value)))
 								{
 									BigDecimal bg1 = new BigDecimal(String.valueOf(value));
@@ -546,6 +555,9 @@ public class ListUtil {
 									result = false;
 								}
 							}else {//数字类型
+								if(value == null) {
+									value = 0;
+								}
 								if(CheckUtil.isNumber(condition) && CheckUtil.isNumber(String.valueOf(value)))
 								{
 									BigDecimal bg1 = new BigDecimal(String.valueOf(value));
@@ -584,7 +596,7 @@ public class ListUtil {
 								}
 							}
 						}
-					}
+//					}
 					if("and".equals(filterType))
 					{
 						if(!result)
