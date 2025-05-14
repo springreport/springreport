@@ -2196,8 +2196,8 @@ export default {
     },
     // 文本类型数据校验
     textValid(cellConfig, v, wrongMsg, key) {
+      const length = v ? v.length : 0
       if (cellConfig.lengthValid) {
-        const length = v ? v.length : 0
         if (cellConfig.minLength && this.commonUtil.isNaN(cellConfig.minLength)) {
           const minLength = parseInt(cellConfig.minLength)
           if (length < minLength) {
@@ -2211,7 +2211,7 @@ export default {
           }
         }
       }
-      if (cellConfig.textValidRule) {
+      if (cellConfig.textValidRule && length > 0) {
         switch (cellConfig.textValidRule) {
           case '1':
             var regex = eval('/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/')
