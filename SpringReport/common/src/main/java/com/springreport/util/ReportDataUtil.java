@@ -23,8 +23,10 @@ import javax.sql.DataSource;
 
 import org.influxdb.dto.QueryResult;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.springreport.base.ReportDataColumnDto;
 import com.springreport.base.ReportDataDetailDto;
 import com.springreport.base.UserInfoDto;
@@ -114,14 +116,14 @@ public class ReportDataUtil {
 		if(resultObj instanceof JSONObject)
 		{
 			list = new ArrayList<Map<String,Object>>();
-			Map<String, Object> map = JSONObject.parseObject(JSONObject.toJSONString(resultObj), LinkedHashMap.class);
+			Map<String, Object> map = JSON.parseObject(JSONObject.toJSONString(resultObj,SerializerFeature.WriteMapNullValue), LinkedHashMap.class);
 			list.add(map);
 		}else if(resultObj instanceof JSONArray){
 			JSONArray jsonArray = (JSONArray) resultObj;
 			Map<String, Object> map = null;
 			list = new ArrayList<Map<String,Object>>();
 			for (int i = 0; i < jsonArray.size(); i++) {
-				map = JSONObject.parseObject(JSONObject.toJSONString(jsonArray.get(i)), LinkedHashMap.class);
+				map = JSONObject.parseObject(JSONObject.toJSONString(jsonArray.get(i),SerializerFeature.WriteMapNullValue), LinkedHashMap.class);
 				list.add(map);
 			}
 		}
