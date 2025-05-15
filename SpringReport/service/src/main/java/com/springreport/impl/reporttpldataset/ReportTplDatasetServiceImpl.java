@@ -3,12 +3,16 @@ package com.springreport.impl.reporttpldataset;
 import com.springreport.dto.reporttpl.ResLuckySheetTplSettingsDto;
 import com.springreport.dto.reporttpl.ResSheetsSettingsDto;
 import com.springreport.entity.doctpl.DocTpl;
+import com.springreport.entity.luckysheetreportblockcell.LuckysheetReportBlockCell;
+import com.springreport.entity.luckysheetreportcell.LuckysheetReportCell;
 import com.springreport.entity.reportdatasource.ReportDatasource;
 import com.springreport.entity.reporttpl.ReportTpl;
 import com.springreport.entity.reporttpldataset.ReportTplDataset;
 import com.springreport.entity.reporttpldatasetgroup.ReportTplDatasetGroup;
 import com.springreport.mapper.reporttpldataset.ReportTplDatasetMapper;
 import com.springreport.api.doctpl.IDocTplService;
+import com.springreport.api.luckysheetreportblockcell.ILuckysheetReportBlockCellService;
+import com.springreport.api.luckysheetreportcell.ILuckysheetReportCellService;
 import com.springreport.api.reportdatasource.IReportDatasourceService;
 import com.springreport.api.reporttpl.IReportTplService;
 import com.springreport.api.reporttpldataset.IReportTplDatasetService;
@@ -71,6 +75,7 @@ import javax.sql.DataSource;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.springreport.enums.CellValueTypeEnum;
 import com.springreport.enums.DatasetTypeEnum;
 import com.springreport.enums.DefaultDateTypeEnum;
 import com.springreport.enums.DelFlagEnum;
@@ -112,6 +117,12 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 	
 	@Value("${merchantmode}")
     private Integer merchantmode;
+	
+	@Autowired
+	private ILuckysheetReportCellService iLuckysheetReportCellService;
+	
+	@Autowired
+	private ILuckysheetReportBlockCellService iLuckysheetReportBlockCellService;
 	
 	/** 
 	* @Title: tablePagingQuery 
@@ -722,16 +733,38 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 			}
 		}
 		//获取报表中引用的数据集
-		ReportTpl reportTpl = this.iReportTplService.getById(reportTplDataset.getTplId());
-		ResSheetsSettingsDto luckySheetTplSettings = iReportTplService.getLuckySheetTplSettings(reportTpl, new UserInfoDto());
-		List<ResLuckySheetTplSettingsDto> settings = luckySheetTplSettings.getSettings();
-		List<Map<String, Object>> cellDatas = new ArrayList<>();
-		for (int i = 0; i < settings.size(); i++) {
-			if (ListUtil.isNotEmpty(settings.get(i).getCellDatas())) {
-				cellDatas.addAll(settings.get(i).getCellDatas());
+		QueryWrapper<LuckysheetReportCell> LuckysheetReportCellQueryWrapper = new QueryWrapper<LuckysheetReportCell>();
+		LuckysheetReportCellQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+		LuckysheetReportCellQueryWrapper.eq("tpl_id", reportTplDataset.getTplId());
+		LuckysheetReportCellQueryWrapper.eq("cell_value_type", CellValueTypeEnum.VARIABLE.getCode());
+		List<LuckysheetReportCell> luckysheetReportCells = this.iLuckysheetReportCellService.list(LuckysheetReportCellQueryWrapper);
+		QueryWrapper<LuckysheetReportBlockCell> LuckysheetReportBlockCellQueryWrapper = new QueryWrapper<LuckysheetReportBlockCell>();
+		LuckysheetReportBlockCellQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+		LuckysheetReportBlockCellQueryWrapper.eq("tpl_id", reportTplDataset.getTplId());
+		LuckysheetReportBlockCellQueryWrapper.eq("cell_value_type", CellValueTypeEnum.VARIABLE.getCode());
+		List<LuckysheetReportBlockCell> luckysheetReportBlockCells = this.iLuckysheetReportBlockCellService.list(LuckysheetReportBlockCellQueryWrapper);
+		List<String> usedDataset = new ArrayList<>();
+		if(ListUtil.isNotEmpty(luckysheetReportCells)) {
+			for (int i = 0; i < luckysheetReportCells.size(); i++) {
+				String[] datesetNames = luckysheetReportCells.get(i).getDatasetName().split(",");
+				for (String datasetName : datesetNames) {
+					if(!usedDataset.contains(datasetName)) {
+						usedDataset.add(datasetName);
+					}
+				}
 			}
 		}
-		String cellDatasStr = JSON.toJSONString(cellDatas);
+		if(ListUtil.isNotEmpty(luckysheetReportBlockCells)) {
+			for (int i = 0; i < luckysheetReportBlockCells.size(); i++) {
+				String[] datesetNames = luckysheetReportBlockCells.get(i).getDatasetName().split(",");
+				for (String datasetName : datesetNames) {
+					if(!usedDataset.contains(datasetName)) {
+						usedDataset.add(datasetName);
+					}
+				}
+			}
+		}
+		
 		//获取所有的数据集
 		QueryWrapper<ReportTplDataset> datasetQueryWrapper = new QueryWrapper<ReportTplDataset>();
 		datasetQueryWrapper.eq("tpl_id", reportTplDataset.getTplId());
@@ -740,7 +773,7 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 		if (!ListUtil.isEmpty(datasets)) {
 			for (int i = 0; i < datasets.size(); i++) {
 				//筛选报表中引用的数据集
-				if (cellDatasStr.contains(datasets.get(i).getDatasetName()+".")) {
+				if (usedDataset.contains(datasets.get(i).getDatasetName())) {
 					DatasetsParamDto datasetsParamDto = new DatasetsParamDto();
 					List<ReportParamDto> params = null;
 					if (DatasetTypeEnum.API.getCode().intValue() == datasets.get(i).getDatasetType().intValue()) {
