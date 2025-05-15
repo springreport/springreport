@@ -1,5 +1,7 @@
 package com.springreport.impl.reporttpldataset;
 
+import com.springreport.dto.reporttpl.ResLuckySheetTplSettingsDto;
+import com.springreport.dto.reporttpl.ResSheetsSettingsDto;
 import com.springreport.entity.doctpl.DocTpl;
 import com.springreport.entity.reportdatasource.ReportDatasource;
 import com.springreport.entity.reporttpl.ReportTpl;
@@ -719,6 +721,17 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 				isParamMerge = YesNoEnum.NO.getCode();
 			}
 		}
+		//获取报表中引用的数据集
+		ReportTpl reportTpl = this.iReportTplService.getById(reportTplDataset.getTplId());
+		ResSheetsSettingsDto luckySheetTplSettings = iReportTplService.getLuckySheetTplSettings(reportTpl, new UserInfoDto());
+		List<ResLuckySheetTplSettingsDto> settings = luckySheetTplSettings.getSettings();
+		List<Map<String, Object>> cellDatas = new ArrayList<>();
+		for (int i = 0; i < settings.size(); i++) {
+			if (ListUtil.isNotEmpty(settings.get(i).getCellDatas())) {
+				cellDatas.addAll(settings.get(i).getCellDatas());
+			}
+		}
+		String cellDatasStr = JSON.toJSONString(cellDatas);
 		//获取所有的数据集
 		QueryWrapper<ReportTplDataset> datasetQueryWrapper = new QueryWrapper<ReportTplDataset>();
 		datasetQueryWrapper.eq("tpl_id", reportTplDataset.getTplId());
@@ -726,192 +739,174 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 		List<ReportTplDataset> datasets = this.list(datasetQueryWrapper);
 		if (!ListUtil.isEmpty(datasets)) {
 			for (int i = 0; i < datasets.size(); i++) {
-				DatasetsParamDto datasetsParamDto = new DatasetsParamDto();
-				List<ReportParamDto> params = null;
-				if(DatasetTypeEnum.API.getCode().intValue() == datasets.get(i).getDatasetType().intValue()) {
-					//api接口请求，获取所有的headers
-					ReportDatasource reportDatasource = this.iReportDatasourceService.getById(datasets.get(i).getDatasourceId());
-					if(StringUtil.isNotEmpty(reportDatasource.getApiRequestHeader())) {
-						JSONArray apiRequestHeader = JSON.parseArray(reportDatasource.getApiRequestHeader());
-						if(ListUtil.isNotEmpty(apiRequestHeader)) {
-							for (int j = 0; j < apiRequestHeader.size(); j++) {
-								String headerName = apiRequestHeader.getJSONObject(j).getString("headerName");
-								if(!apiHeaders.contains(headerName)) {
-									apiHeaders.add(apiRequestHeader.getJSONObject(j).getString("headerName"));
+				//筛选报表中引用的数据集
+				if (cellDatasStr.contains(datasets.get(i).getDatasetName()+".")) {
+					DatasetsParamDto datasetsParamDto = new DatasetsParamDto();
+					List<ReportParamDto> params = null;
+					if (DatasetTypeEnum.API.getCode().intValue() == datasets.get(i).getDatasetType().intValue()) {
+						//api接口请求，获取所有的headers
+						ReportDatasource reportDatasource = this.iReportDatasourceService.getById(datasets.get(i).getDatasourceId());
+						if (StringUtil.isNotEmpty(reportDatasource.getApiRequestHeader())) {
+							JSONArray apiRequestHeader = JSON.parseArray(reportDatasource.getApiRequestHeader());
+							if (ListUtil.isNotEmpty(apiRequestHeader)) {
+								for (int j = 0; j < apiRequestHeader.size(); j++) {
+									String headerName = apiRequestHeader.getJSONObject(j).getString("headerName");
+									if (!apiHeaders.contains(headerName)) {
+										apiHeaders.add(apiRequestHeader.getJSONObject(j).getString("headerName"));
+									}
 								}
 							}
 						}
 					}
-				}
-				if(SqlTypeEnum.SQL.getCode().intValue() == datasets.get(i).getSqlType().intValue())
-				{
-					params = JSONArray.parseArray(datasets.get(i).getTplParam(), ReportParamDto.class);
-				}else if(SqlTypeEnum.FUNCTION.getCode().intValue() == datasets.get(i).getSqlType().intValue()) {
-					params = JSONArray.parseArray(datasets.get(i).getInParam(), ReportParamDto.class);
-					for (int j = 0; j < params.size(); j++) {
+					if (SqlTypeEnum.SQL.getCode().intValue() == datasets.get(i).getSqlType().intValue()) {
+						params = JSONArray.parseArray(datasets.get(i).getTplParam(), ReportParamDto.class);
+					} else if (SqlTypeEnum.FUNCTION.getCode().intValue() == datasets.get(i).getSqlType().intValue()) {
+						params = JSONArray.parseArray(datasets.get(i).getInParam(), ReportParamDto.class);
+						for (int j = 0; j < params.size(); j++) {
 //						params.get(j).setParamRequired(YesNoEnum.YES.getCode());
-						if(ProcedureParamTypeEnum.STRING.getCode().equals(params.get(j).getParamType()))
-						{
-							params.get(j).setParamType(ParamTypeEnum.VARCHAR.getCode());
-						}else if(ProcedureParamTypeEnum.DATE.getCode().equals(params.get(j).getParamType())){
-							params.get(j).setParamType(ParamTypeEnum.DATE.getCode());
-						}else if(ProcedureParamTypeEnum.DATETIME.getCode().equals(params.get(j).getParamType())){
-							params.get(j).setParamType(ParamTypeEnum.DATE.getCode());
-							params.get(j).setDateFormat("yyyy-MM-dd HH:mm:ss");
-						}else {
-							params.get(j).setParamType(ParamTypeEnum.NUMBER.getCode());
-						}
-					}
-				}
-				if(!ListUtil.isEmpty(params))
-				{
-					ReportDatasource reportDatasource = null;
-					for (int j = 0; j < params.size(); j++) {
-						Map<String, Object> map = new HashMap<String, Object>();
-						if(YesNoEnum.YES.getCode().intValue() == params.get(j).getParamRequired())
-						{
-							map.put("required", true);
-						}
-						if (ParamTypeEnum.NUMBER.getCode().equals(params.get(j).getParamType())) {
-							if(!ParamTypeEnum.SELECT.getCode().equals(params.get(j).getComponentType()) 
-								&& !ParamTypeEnum.MUTISELECT.getCode().equals(params.get(j).getComponentType())
-								&& !ParamTypeEnum.TREESELECT.getCode().equals(params.get(j).getComponentType())
-								&& !ParamTypeEnum.MULTITREESELECT.getCode().equals(params.get(j).getComponentType())) {
-								map.put("type", ParamTypeEnum.NUMBER.getCode());
+							if (ProcedureParamTypeEnum.STRING.getCode().equals(params.get(j).getParamType())) {
+								params.get(j).setParamType(ParamTypeEnum.VARCHAR.getCode());
+							} else if (ProcedureParamTypeEnum.DATE.getCode().equals(params.get(j).getParamType())) {
+								params.get(j).setParamType(ParamTypeEnum.DATE.getCode());
+							} else if (ProcedureParamTypeEnum.DATETIME.getCode().equals(params.get(j).getParamType())) {
+								params.get(j).setParamType(ParamTypeEnum.DATE.getCode());
+								params.get(j).setDateFormat("yyyy-MM-dd HH:mm:ss");
+							} else {
+								params.get(j).setParamType(ParamTypeEnum.NUMBER.getCode());
 							}
 						}
-						if (ParamTypeEnum.SELECT.getCode().equals(params.get(j).getParamType()) 
-								|| ParamTypeEnum.MUTISELECT.getCode().equals(params.get(j).getParamType()) || 
-								ParamTypeEnum.SELECT.getCode().equals(params.get(j).getComponentType()) 
-								|| ParamTypeEnum.MUTISELECT.getCode().equals(params.get(j).getComponentType())) {
-							if (SelectTypeEnum.SQL.getCode().equals(params.get(j).getSelectType()))
-							{
-								if(params.get(j).getIsRelyOnParams() == null || params.get(j).getIsRelyOnParams().intValue() == YesNoEnum.NO.getCode().intValue())
-								{
-									if(StringUtil.isNotEmpty(params.get(j).getParamDefault()) || reportTplDataset.isInitSelectData())
-									{
-										if(reportDatasource == null)
-										{
-											reportDatasource = iReportDatasourceService.getById(params.get(j).getDatasourceId()!=null?params.get(j).getDatasourceId():datasets.get(i).getDatasourceId());
+					}
+					if (!ListUtil.isEmpty(params)) {
+						ReportDatasource reportDatasource = null;
+						for (int j = 0; j < params.size(); j++) {
+							Map<String, Object> map = new HashMap<String, Object>();
+							if (YesNoEnum.YES.getCode().intValue() == params.get(j).getParamRequired()) {
+								map.put("required", true);
+							}
+							if (ParamTypeEnum.NUMBER.getCode().equals(params.get(j).getParamType())) {
+								if (!ParamTypeEnum.SELECT.getCode().equals(params.get(j).getComponentType())
+										&& !ParamTypeEnum.MUTISELECT.getCode().equals(params.get(j).getComponentType())
+										&& !ParamTypeEnum.TREESELECT.getCode().equals(params.get(j).getComponentType())
+										&& !ParamTypeEnum.MULTITREESELECT.getCode().equals(params.get(j).getComponentType())) {
+									map.put("type", ParamTypeEnum.NUMBER.getCode());
+								}
+							}
+							if (ParamTypeEnum.SELECT.getCode().equals(params.get(j).getParamType())
+									|| ParamTypeEnum.MUTISELECT.getCode().equals(params.get(j).getParamType()) ||
+									ParamTypeEnum.SELECT.getCode().equals(params.get(j).getComponentType())
+									|| ParamTypeEnum.MUTISELECT.getCode().equals(params.get(j).getComponentType())) {
+								if (SelectTypeEnum.SQL.getCode().equals(params.get(j).getSelectType())) {
+									if (params.get(j).getIsRelyOnParams() == null || params.get(j).getIsRelyOnParams().intValue() == YesNoEnum.NO.getCode().intValue()) {
+										if (StringUtil.isNotEmpty(params.get(j).getParamDefault()) || reportTplDataset.isInitSelectData()) {
+											if (reportDatasource == null) {
+												reportDatasource = iReportDatasourceService.getById(params.get(j).getDatasourceId() != null ? params.get(j).getDatasourceId() : datasets.get(i).getDatasourceId());
+											}
+											//数据源配置
+											DataSourceConfig dataSourceConfig = new DataSourceConfig(reportDatasource.getId(), reportDatasource.getDriverClass(), reportDatasource.getJdbcUrl(), reportDatasource.getUserName(), reportDatasource.getPassword(), null);
+											//获取数据源
+											DataSource dataSource = JdbcUtils.getDataSource(dataSourceConfig);
+											List<Map<String, Object>> selectDatas = ReportDataUtil.getSelectData(dataSource, params.get(j).getSelectContent());
+											if (selectDatas != null) {
+												params.get(j).setSelectData(JSONArray.toJSON(selectDatas));
+											} else {
+												params.get(j).setSelectData(new ArrayList<Map<String, Object>>());
+											}
+											if (!ListUtil.isEmpty(selectDatas)) {
+												params.get(j).setInit(true);
+											}
+										} else {
+											if (params.get(j).getDatasourceId() == null) {
+												params.get(j).setDatasourceId(datasets.get(i).getDatasourceId());
+											}
 										}
-										//数据源配置
-										DataSourceConfig dataSourceConfig = new DataSourceConfig(reportDatasource.getId(), reportDatasource.getDriverClass(), reportDatasource.getJdbcUrl(), reportDatasource.getUserName(), reportDatasource.getPassword(), null);
-										//获取数据源
-										DataSource dataSource = JdbcUtils.getDataSource(dataSourceConfig);
-										List<Map<String, Object>> selectDatas = ReportDataUtil.getSelectData(dataSource, params.get(j).getSelectContent());
-										if (selectDatas != null) {
-											params.get(j).setSelectData(JSONArray.toJSON(selectDatas));
-										}else {
-											params.get(j).setSelectData(new ArrayList<Map<String, Object>>());
-										}
-										if(!ListUtil.isEmpty(selectDatas))
-										{
-											params.get(j).setInit(true);
-										}
-									}else {
-										if(params.get(j).getDatasourceId() == null) {
+									} else {
+										if (params.get(j).getDatasourceId() == null) {
 											params.get(j).setDatasourceId(datasets.get(i).getDatasourceId());
 										}
 									}
-								}else {
-									if(params.get(j).getDatasourceId() == null) {
+								} else {
+									if (StringUtil.isNotEmpty(params.get(j).getParamDefault()) || reportTplDataset.isInitSelectData()) {
+										params.get(j).setSelectData(JSONArray.parseArray(params.get(j).getSelectContent()));
+									}
+								}
+								//TODO 支持接口获取
+							} else if (ParamTypeEnum.DATE.getCode().equals(params.get(j).getParamType())) {
+								this.processDateParam(params.get(j));
+							} else if (ParamTypeEnum.MULTITREESELECT.getCode().equals(params.get(j).getParamType()) || ParamTypeEnum.TREESELECT.getCode().equals(params.get(j).getParamType()) ||
+									ParamTypeEnum.MULTITREESELECT.getCode().equals(params.get(j).getComponentType()) || ParamTypeEnum.TREESELECT.getCode().equals(params.get(j).getComponentType())) {
+								if (StringUtil.isNotEmpty(params.get(j).getParamDefault()) || reportTplDataset.isInitSelectData()) {
+									if (reportDatasource == null) {
+										reportDatasource = iReportDatasourceService.getById(params.get(j).getDatasourceId() != null ? params.get(j).getDatasourceId() : datasets.get(i).getDatasourceId());
+									}
+									//数据源配置
+									DataSourceConfig dataSourceConfig = new DataSourceConfig(reportDatasource.getId(), reportDatasource.getDriverClass(), reportDatasource.getJdbcUrl(), reportDatasource.getUserName(), reportDatasource.getPassword(), null);
+									//获取数据源
+									DataSource dataSource = JdbcUtils.getDataSource(dataSourceConfig);
+									String sql = params.get(j).getSelectContent();
+									if (params.get(j).getIsRelyOnParams().intValue() == 1) {
+										sql = JdbcUtils.processSqlParams(sql, new HashMap<>());
+									}
+									List<Map<String, Object>> list = ReportDataUtil.getSelectData(dataSource, sql);
+									List<Map<String, Object>> resultList = new ArrayList<>();
+									if (!ListUtil.isEmpty(list)) {
+										Map<String, Map<String, Object>> entityMap = new HashMap<>();
+										Map<String, List<Map<String, Object>>> childrenMap = new HashMap<>();
+										for (Map<String, Object> entity : list) {
+											entity.put("value", String.valueOf(entity.get("id")));
+											entity.put("children", new ArrayList<>());
+											entityMap.put(String.valueOf(entity.get("id")), entity);
+											childrenMap.put(String.valueOf(entity.get("id")), (List<Map<String, Object>>) entity.get("children"));
+										}
+										// 组装成数结构列表
+										for (Map<String, Object> entity : list) {
+											Map<String, Object> parentEntity = entityMap.get(String.valueOf(entity.get("pid")));
+											if (parentEntity == null) {
+												// 将顶级节点加入结果集中
+												resultList.add(entity);
+												continue;
+											}
+											// 把自己加到父节点对象里面去
+											childrenMap.get(String.valueOf(parentEntity.get("id"))).add(entity);
+										}
+										params.get(j).setSelectData(resultList);
+										params.get(j).setInit(true);
+									}
+								} else {
+									if (params.get(j).getDatasourceId() == null) {
 										params.get(j).setDatasourceId(datasets.get(i).getDatasourceId());
 									}
 								}
-							}else {
-								if(StringUtil.isNotEmpty(params.get(j).getParamDefault()) || reportTplDataset.isInitSelectData()) {
-									params.get(j).setSelectData(JSONArray.parseArray(params.get(j).getSelectContent()));
-								}
 							}
-							//TODO 支持接口获取
+							params.get(j).setRules(map);
 						}
-						else if(ParamTypeEnum.DATE.getCode().equals(params.get(j).getParamType()))
-						{
-							this.processDateParam(params.get(j));
+
+					}
+					if (YesNoEnum.YES.getCode().intValue() == datasets.get(i).getIsPagination().intValue()) {
+						if (!isPagination) {
+							isPagination = true;
 						}
-						else if(ParamTypeEnum.MULTITREESELECT.getCode().equals(params.get(j).getParamType()) || ParamTypeEnum.TREESELECT.getCode().equals(params.get(j).getParamType()) || 
-								ParamTypeEnum.MULTITREESELECT.getCode().equals(params.get(j).getComponentType()) || ParamTypeEnum.TREESELECT.getCode().equals(params.get(j).getComponentType())) {
-							if(StringUtil.isNotEmpty(params.get(j).getParamDefault()) || reportTplDataset.isInitSelectData())
-							{
-								if(reportDatasource == null)
-								{
-									reportDatasource = iReportDatasourceService.getById(params.get(j).getDatasourceId() != null?params.get(j).getDatasourceId():datasets.get(i).getDatasourceId());
-								}
-								//数据源配置
-								DataSourceConfig dataSourceConfig = new DataSourceConfig(reportDatasource.getId(), reportDatasource.getDriverClass(), reportDatasource.getJdbcUrl(), reportDatasource.getUserName(), reportDatasource.getPassword(), null);
-								//获取数据源
-								DataSource dataSource = JdbcUtils.getDataSource(dataSourceConfig);
-								String sql = params.get(j).getSelectContent();
-								if(params.get(j).getIsRelyOnParams().intValue() == 1) {
-									sql = JdbcUtils.processSqlParams(sql, new HashMap<>());
-								}
-								List<Map<String, Object>> list = ReportDataUtil.getSelectData(dataSource, sql);
-								List<Map<String, Object>> resultList = new ArrayList<>();
-								if(!ListUtil.isEmpty(list)) {
-									Map<String, Map<String, Object>> entityMap = new HashMap<>();
-									Map<String, List<Map<String, Object>>> childrenMap = new HashMap<>();
-									for (Map<String, Object> entity : list){
-										entity.put("value", String.valueOf(entity.get("id")));
-										entity.put("children", new ArrayList<>());
-										entityMap.put(String.valueOf(entity.get("id")),entity);
-										childrenMap.put(String.valueOf(entity.get("id")), (List<Map<String, Object>>) entity.get("children"));
-									}
-									// 组装成数结构列表
-									for (Map<String, Object> entity : list){
-										Map<String, Object> parentEntity = entityMap.get(String.valueOf(entity.get("pid")));
-										if(parentEntity == null)
-										{
-											// 将顶级节点加入结果集中
-									         resultList.add(entity);
-									         continue;
-										}
-										// 把自己加到父节点对象里面去
-										childrenMap.get(String.valueOf(parentEntity.get("id"))).add(entity);
-									}
-									params.get(j).setSelectData(resultList);
-									params.get(j).setInit(true);
-								}
-							}else {
-								if(params.get(j).getDatasourceId() == null) {
-									params.get(j).setDatasourceId(datasets.get(i).getDatasourceId());
-								}
+						Object currentPage = paginationMap.get("paginationMap");
+						if (currentPage == null) {
+							paginationMap.put("currentPage", "1");
+						}
+						Object pageCount = paginationMap.get("pageCount");
+						if (pageCount == null) {
+							paginationMap.put("pageCount", String.valueOf(datasets.get(i).getPageCount()));
+						} else {
+							if (datasets.get(i).getPageCount() > Integer.parseInt(String.valueOf(pageCount))) {
+								paginationMap.put("pageCount", String.valueOf(datasets.get(i).getPageCount()));
 							}
 						}
-						params.get(j).setRules(map);
 					}
-					
-				}
-				if(YesNoEnum.YES.getCode().intValue() == datasets.get(i).getIsPagination().intValue())
-				{
-					if(!isPagination)
-					{
-						isPagination = true;
-					}
-					Object currentPage = paginationMap.get("paginationMap");
-					if(currentPage == null)
-					{
-						paginationMap.put("currentPage", "1");
-					}
-					Object pageCount = paginationMap.get("pageCount");
-					if(pageCount == null)
-					{
-						paginationMap.put("pageCount",String.valueOf(datasets.get(i).getPageCount()));
-					}else {
-						if(datasets.get(i).getPageCount() > Integer.parseInt(String.valueOf(pageCount)))
-						{
-							paginationMap.put("pageCount",String.valueOf(datasets.get(i).getPageCount()));
-						}
-					}
-				}
-				datasetsParamDto.setDatasetId(datasets.get(i).getId());
-				datasetsParamDto.setDatasetName(datasets.get(i).getDatasetName());
-				datasetsParamDto.setDatasourceId(datasets.get(i).getDatasourceId());
-				datasetsParamDto.setParams(params);
-				datasetsParams.add(datasetsParamDto);
+					datasetsParamDto.setDatasetId(datasets.get(i).getId());
+					datasetsParamDto.setDatasetName(datasets.get(i).getDatasetName());
+					datasetsParamDto.setDatasourceId(datasets.get(i).getDatasourceId());
+					datasetsParamDto.setParams(params);
+					datasetsParams.add(datasetsParamDto);
 //				else {
 //					params = new ArrayList<ReportParamDto>();
 //				}
-				
+				}
 			}
 		}
 		if(YesNoEnum.YES.getCode().intValue() == isParamMerge)
