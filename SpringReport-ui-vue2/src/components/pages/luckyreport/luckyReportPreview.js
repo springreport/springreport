@@ -142,6 +142,7 @@ export default {
           editVChart: this.editVChart,
           activeVChart: this.activeVChart,
           afterInitImg:this.afterInitImg,
+          execFAfter:this.execFAfter,
         }
       },
       // modal配置 start
@@ -536,7 +537,6 @@ export default {
           this.isParamMerge = response.responseData.isParamMerge + ''
           this.isPagination = isPagination
           if (response.responseData.isPagination) {
-            console.log(response.responseData.pagination)
             this.pageParam.currentPage = response.responseData.pagination.currentPage
             this.pageParam.pageCount = response.responseData.pagination.pageCount
           }
@@ -1700,30 +1700,30 @@ export default {
           obj.url = this.apis.previewReport.shareReportDataApi
         }
         var that = this;
-        this.commonUtil.doPost(obj, headers).then(response => {
-          if (response.code == '200') {
-            if (that.refreshPage == 1) {
-              // that.$router.go(0)
-              that.getReportData(2, true)
-            } else {
-              that.reportVersion = response.responseData.version
-              var luckysheetfiles = luckysheet.getLuckysheetfile()
-              if (luckysheetfiles) {
-                for (let index = 0; index < luckysheetfiles.length; index++) {
-                  const luckysheetfile = luckysheetfiles[index]
-                  const mergedObj = { ...that.basicData[luckysheetfile.index], ...that.submitBasicData[luckysheetfile.index] }
-                  that.basicData[luckysheetfile.index] = mergedObj
-                }
-              }
-              that.submitBasicData = {}
-              that.addDataCoords = {}
-              that.formsDatasourceAttrs = {}
-              that.rowDatas = {};
-              that.changedRowDatas = {};
-              that.originalDatas = {};
-            }
-          }
-        })
+        // this.commonUtil.doPost(obj, headers).then(response => {
+        //   if (response.code == '200') {
+        //     if (that.refreshPage == 1) {
+        //       // that.$router.go(0)
+        //       that.getReportData(2, true)
+        //     } else {
+        //       that.reportVersion = response.responseData.version
+        //       var luckysheetfiles = luckysheet.getLuckysheetfile()
+        //       if (luckysheetfiles) {
+        //         for (let index = 0; index < luckysheetfiles.length; index++) {
+        //           const luckysheetfile = luckysheetfiles[index]
+        //           const mergedObj = { ...that.basicData[luckysheetfile.index], ...that.submitBasicData[luckysheetfile.index] }
+        //           that.basicData[luckysheetfile.index] = mergedObj
+        //         }
+        //       }
+        //       that.submitBasicData = {}
+        //       that.addDataCoords = {}
+        //       that.formsDatasourceAttrs = {}
+        //       that.rowDatas = {};
+        //       that.changedRowDatas = {};
+        //       that.originalDatas = {};
+        //     }
+        //   }
+        // })
       }
     },
     submitDatasCallback() {
@@ -2736,6 +2736,34 @@ export default {
     },
     deleteReportDataCallback(){
       this.getReportData(2,true)
+    },
+    //处理公式原始数据
+    processCalchainBasicData(){
+      if(this.basicData){
+        for(var key in this.basicData) {
+          let luckysheetFile = luckysheet.getSheet({"index":key});
+          let calcChain = luckysheetFile.calcChain;
+          if(calcChain && calcChain.length > 0){
+            let data = luckysheetFile.data;
+            for (let index = 0; index < calcChain.length; index++) {
+              const element = calcChain[index];
+              let r = element.r;
+              let c = element.c;
+              if(this.basicData[key] && this.basicData[key][r+"_"+c]){
+                if(data[r] && data[r][c]){
+                  let m = data[r][c].m
+                  this.basicData[key][r+"_"+c] = m;
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    execFAfter(){
+      if(this.tplType == 2){
+        this.processCalchainBasicData();
+      }
     }
   }
 }
