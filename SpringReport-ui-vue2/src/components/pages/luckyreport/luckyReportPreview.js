@@ -1417,7 +1417,7 @@ export default {
       }
       return cells
     },
-    errorCellSetting(r, c, wrongMsg, order) {
+    errorCellSetting(r, c, wrongMsg, sheetIndex) {
       var comment = ''
       for (let index = 0; index < wrongMsg.length; index++) {
         const element = wrongMsg[index]
@@ -1433,8 +1433,22 @@ export default {
       }
       // v.ps = ps;
       // v.bg = "#ffd966";
-      luckysheet.setCellFormat(r, c, 'ps', ps, order)
-      luckysheet.setCellFormat(r, c, 'bg', '#ff0000', order)
+      // luckysheet.setCellFormat(r, c, 'ps', ps, order)
+      // luckysheet.setCellFormat(r, c, 'bg', '#ff0000', order)
+      let luckysheetFile = luckysheet.getSheet({"index":sheetIndex});
+      let data = luckysheetFile.data;
+      var ps = {
+        'left': null,
+        'top': null,
+        'width': null,
+        'height': null,
+        'value': comment,
+        'isshow': false
+      }
+      if(data[r] && data[r][c]){
+        data[r][c].ps = ps;
+        data[r][c].bg = '#ff0000';
+      }
     },
     removeErrorSetting(r, c, order) {
       var key = r + '_' + c
@@ -1570,12 +1584,41 @@ export default {
     submitDatas() {
       var msgMap = this.processDatas()
       if (msgMap && Object.keys(msgMap).length > 0) {
+        let sheetDatas = {};
         for (var key in msgMap) {
-          var order = key.split('_')[0]
+          var sheetIndex = key.split('_')[0]
           var r = key.split('_')[1]
           var c = key.split('_')[2]
-          this.errorCellSetting(r, c, msgMap[key], { order: order })
+          var comment = ''
+          var wrongMsg = msgMap[key];
+          let data = null;
+          if(sheetDatas[sheetIndex]){
+            data = sheetDatas[sheetIndex];
+          }else{
+            let luckysheetFile = luckysheet.getSheet({"index":sheetIndex});
+            data = luckysheetFile.data;
+            sheetDatas[sheetIndex] = data;
+          }
+          
+          for (let index = 0; index < wrongMsg.length; index++) {
+            const element = wrongMsg[index]
+            comment = comment + element
+          }
+          var ps = {
+            'left': null,
+            'top': null,
+            'width': null,
+            'height': null,
+            'value': comment,
+            'isshow': false
+          }
+          if(data[r] && data[r][c]){
+            data[r][c].ps = ps;
+            data[r][c].bg = '#ff0000';
+          }
+          // this.errorCellSetting(r, c, msgMap[key], { order: order })
         }
+        luckysheet.refresh();
         this.commonUtil.showMessage({ message: '有未正确填写的数据，请全部填写正确后再提交。', type: 'error' })
         return
       } else {
@@ -1939,7 +1982,7 @@ export default {
       // 校验填入的数据格式
       this.dataVerify(r, c, originCell.r, originCell.c, v, sheetIndex, wrongMsg, rowFlag, extraConfig.cellExtend)
       if (wrongMsg && wrongMsg.length > 0) {
-        msgMap[luckysheetfile.order + '_' + r + '_' + c] = wrongMsg
+        msgMap[luckysheetfile.index + '_' + r + '_' + c] = wrongMsg
       }
     },
     // 获取新增单元格对应的原始数据
