@@ -1159,7 +1159,7 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 		Map<String, String> sqlMap = new HashMap<>();
 		List<Map<String, Object>> datas = null;
 		Map<String, Object> searchInfo = null;
-		if(mesGenerateReportDto.getSearchData() != null) {
+		if(mesGenerateReportDto.getSearchData() != null && mesGenerateReportDto.getSearchData().size() > 1) {
 			searchInfo = mesGenerateReportDto.getSearchData().get(0);
 		}
 		DataSource dataSource = null;

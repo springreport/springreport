@@ -674,7 +674,7 @@ public class ReportDatasourceServiceImpl extends ServiceImpl<ReportDatasourceMap
 							if(data instanceof JSONObject) {
 								resultObject = (JSONObject) data;
 							}else if(data instanceof JSONArray) {
-								break;
+								resultObject = ((JSONArray) data).getJSONObject(0);
 							}
 						}
 						JSONObject dataObj = null;

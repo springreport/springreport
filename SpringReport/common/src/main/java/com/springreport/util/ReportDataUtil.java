@@ -92,7 +92,21 @@ public class ReportDataUtil {
 								total = jsonObject.getLongValue(totalAttr);
 							}
 						}else {
-							throw new BizException(StatusCode.FAILURE, "不支持的返回值格式。");
+							JSONArray datas = (JSONArray) object;
+							if(ListUtil.isNotEmpty(datas)) {
+								JSONArray jsonArray = new JSONArray();
+								for (int i = 0; i < datas.size(); i++) {
+									JSONObject jsonObject2 = datas.getJSONObject(i);
+									Object data = jsonObject2.get(prefixes[j+1]);
+									if(data instanceof JSONObject) {
+										jsonArray.add(data);
+									}else if(data instanceof JSONArray) {
+										jsonArray.addAll((JSONArray)data);
+									}
+								}
+								resultObj = jsonArray;
+							}
+							break;
 						}
 					}else {
 						throw new BizException(StatusCode.FAILURE,"不支持的返回值格式。");
