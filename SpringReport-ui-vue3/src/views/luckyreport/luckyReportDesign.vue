@@ -546,7 +546,6 @@
                 </el-form-item>
                 <el-form-item
                   label="是否复杂数据"
-                  size="small"
                   class="df-form-item"
                 >
                   <el-switch
@@ -733,8 +732,7 @@
               
               <el-collapse-item title="填报配置" name="fillSettings" v-if="tplType != 1">
                 <el-form-item
-                  label="是否操作列"
-                  size="small"
+                  label="打印/导出隐藏列"
                   class="df-form-item"
                 >
                   <el-switch
