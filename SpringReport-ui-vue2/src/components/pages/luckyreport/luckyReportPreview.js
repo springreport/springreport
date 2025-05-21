@@ -143,6 +143,8 @@ export default {
           activeVChart: this.activeVChart,
           afterInitImg:this.afterInitImg,
           execFAfter:this.execFAfter,
+          rowInsertAfter:this.rowInsertAfter,
+          rowDeleteAfter: this.rowDeleteAfter,
         }
       },
       // modal配置 start
@@ -1582,6 +1584,7 @@ export default {
     },
     // 提交数据
     submitDatas() {
+      luckysheet.exitEditMode();
       var msgMap = this.processDatas()
       if (msgMap && Object.keys(msgMap).length > 0) {
         let sheetDatas = {};
@@ -1612,7 +1615,10 @@ export default {
             'value': comment,
             'isshow': false
           }
-          if(data[r] && data[r][c]){
+          if(data[r]){
+            if(data[r][c] == null){
+              data[r][c] = {}
+            }
             data[r][c].ps = ps;
             data[r][c].bg = '#ff0000';
           }
@@ -1620,6 +1626,9 @@ export default {
         }
         luckysheet.refresh();
         this.commonUtil.showMessage({ message: '有未正确填写的数据，请全部填写正确后再提交。', type: 'error' })
+        this.changedRowDatas = {};
+        this.mainRowDatas = {};
+        this.rowDatas = {};
         return
       } else {
         const tplId = this.$route.query.tplId
@@ -1700,30 +1709,30 @@ export default {
           obj.url = this.apis.previewReport.shareReportDataApi
         }
         var that = this;
-        // this.commonUtil.doPost(obj, headers).then(response => {
-        //   if (response.code == '200') {
-        //     if (that.refreshPage == 1) {
-        //       // that.$router.go(0)
-        //       that.getReportData(2, true)
-        //     } else {
-        //       that.reportVersion = response.responseData.version
-        //       var luckysheetfiles = luckysheet.getLuckysheetfile()
-        //       if (luckysheetfiles) {
-        //         for (let index = 0; index < luckysheetfiles.length; index++) {
-        //           const luckysheetfile = luckysheetfiles[index]
-        //           const mergedObj = { ...that.basicData[luckysheetfile.index], ...that.submitBasicData[luckysheetfile.index] }
-        //           that.basicData[luckysheetfile.index] = mergedObj
-        //         }
-        //       }
-        //       that.submitBasicData = {}
-        //       that.addDataCoords = {}
-        //       that.formsDatasourceAttrs = {}
-        //       that.rowDatas = {};
-        //       that.changedRowDatas = {};
-        //       that.originalDatas = {};
-        //     }
-        //   }
-        // })
+        this.commonUtil.doPost(obj, headers).then(response => {
+          if (response.code == '200') {
+            if (that.refreshPage == 1) {
+              // that.$router.go(0)
+              that.getReportData(2, true)
+            } else {
+              that.reportVersion = response.responseData.version
+              var luckysheetfiles = luckysheet.getLuckysheetfile()
+              if (luckysheetfiles) {
+                for (let index = 0; index < luckysheetfiles.length; index++) {
+                  const luckysheetfile = luckysheetfiles[index]
+                  const mergedObj = { ...that.basicData[luckysheetfile.index], ...that.submitBasicData[luckysheetfile.index] }
+                  that.basicData[luckysheetfile.index] = mergedObj
+                }
+              }
+              that.submitBasicData = {}
+              that.addDataCoords = {}
+              that.formsDatasourceAttrs = {}
+              that.rowDatas = {};
+              that.changedRowDatas = {};
+              that.originalDatas = {};
+            }
+          }
+        })
       }
     },
     submitDatasCallback() {
@@ -1758,22 +1767,28 @@ export default {
           const sheetIndex = luckysheetfile.index
           if (!luckysheetfile.isPivotTable && this.extendCellOrigins[sheetIndex]) {
             var cellDatas = this.getCellDatas(luckysheetfile)
+            let dataRange = this.getDataRange(cellDatas);
             this.submitBasicData[sheetIndex] = {}
-            for (let t = 0; t < cellDatas.length; t++) {
-              let isChanged = false;
+            let str = dataRange.row[0];
+            let edr = dataRange.row[1];
+            let stc = dataRange.column[0];
+            let edc = dataRange.column[1];
+            for (let ri = str; ri <= edr; ri++) {
+              for (let ci = stc; ci < edc; ci++) {
+                let isChanged = false;
               var wrongMsg = []
-              const element = cellDatas[t]
-              if(element.v && element.v.mc && !element.v.mc.rs){
+              const element = luckysheetfile.data[ri][ci]
+              if(element!=null &&element.v && element.mc && !element.mc.rs){
                 continue;
               }
-              var r = element.r
-              var c = element.c
-              let v = element.v.m
+              var r = ri;
+              var c = ci;
+              let v = element == null?null:element.m
               var cs = 1;
               var rs = 1;
-              if(element.v && element.v.mc && element.v.mc.rs){
-                cs = element.v.mc.cs;
-                rs = element.v.mc.rs;
+              if(element!=null &&element.v && element.mc && element.mc.rs){
+                cs = element.mc.cs;
+                rs = element.mc.rs;
               }
               // 获取原始单元格的坐标信息
               let originCell = this.extendCellOrigins[sheetIndex][r + '_' + c]
@@ -1782,8 +1797,8 @@ export default {
                 originCell = this.getNewCellExtendOrigins(sheetIndex, r, c)
                 isNew = true
               }
-              if(element.v.v == null && element.v.ct && element.v.ct.t == 'inlineStr'){
-                let s  = element.v.ct.s;
+              if(element!=null && element.v == null && element.ct && element.ct.t == 'inlineStr'){
+                let s  = element.ct.s;
 
                 if(s && s.length > 0){
                   for (let t = 0; t < s.length; t++) {
@@ -1867,17 +1882,17 @@ export default {
                           let flag = rowFlag + m;
                           rowKey = sheetIndex + '|' + datasourceConfig.datasourceId + '|' + datasourceConfig.table + '|' + datasourceConfig.name + '|' + flag
                           r = r + m;
-                          this.getRowDatas(r,c,sheetIndex,rowKey,extraConfig,datasourceConfig,luckysheetfile,originCell,wrongMsg,v,flag,isChanged,isNew,element.r,element.c,dictKey,msgMap);
+                          this.getRowDatas(r,c,sheetIndex,rowKey,extraConfig,datasourceConfig,luckysheetfile,originCell,wrongMsg,v,flag,isChanged,isNew,ri,ci,dictKey,msgMap);
                         }
                       }else if(extraConfig.cellExtend == 2){//向右扩展
                         for (let m = 0; m < cs; m++) {
                           let flag = rowFlag + m;
                           rowKey = sheetIndex + '|' + datasourceConfig.datasourceId + '|' + datasourceConfig.table + '|' + datasourceConfig.name + '|' + flag
                           c = c + m;
-                          this.getRowDatas(r,c,sheetIndex,rowKey,extraConfig,datasourceConfig,luckysheetfile,originCell,wrongMsg,v,flag,isChanged,isNew,element.r,element.c,dictKey,msgMap);
+                          this.getRowDatas(r,c,sheetIndex,rowKey,extraConfig,datasourceConfig,luckysheetfile,originCell,wrongMsg,v,flag,isChanged,isNew,ri,ci,dictKey,msgMap);
                         }
                       }else{
-                        this.getRowDatas(r,c,sheetIndex,rowKey,extraConfig,datasourceConfig,luckysheetfile,originCell,wrongMsg,v,rowFlag,isChanged,isNew,element.r,element.c,dictKey,msgMap);
+                        this.getRowDatas(r,c,sheetIndex,rowKey,extraConfig,datasourceConfig,luckysheetfile,originCell,wrongMsg,v,rowFlag,isChanged,isNew,ri,ci,dictKey,msgMap);
                       }
                       const tableKeys = this.sheetTableKeys[sheetIndex]
                       if (tableKeys) {
@@ -1896,7 +1911,12 @@ export default {
                   }
                 }
               }
+              }
+              
             }
+            // for (let t = 0; t < cellDatas.length; t++) {
+              
+            // }
             const tableKeys = this.sheetTableKeys[sheetIndex]
             if (tableKeys) {
               for (var key in tableKeys) {
@@ -2067,6 +2087,37 @@ export default {
         }
       }
       return result
+    },
+
+    //或有有数据的坐标范围
+    getDataRange(celldatas){
+      let range = {row:[],column:[]};
+      if(celldatas && celldatas.length > 0){
+        for (let index = 0; index < celldatas.length; index++) {
+          const element = celldatas[index];
+          let r = element.r;
+          let c = element.c;
+          if(range.row.length == 0){
+            range.row.push(r);
+            range.row.push(r);
+            range.column.push(c);
+            range.column.push(c);
+          }else{
+            if(range.row[0] > r){
+              range.row[0] = r;
+            }else if(range.row[1] < r){
+              range.row[1] = r;
+            }
+
+            if(range.column[0] > c){
+              range.column[0] = c;
+            }else if(range.column[1] < c){
+              range.column[1] = c;
+            }
+          }
+        }
+      }
+      return range;
     },
     // 填报数据校验
     dataVerify(r, c, originR, originC, v, sheetIndex, wrongMsg, rowFlag, cellExtend) {
@@ -2763,6 +2814,73 @@ export default {
     execFAfter(){
       if(this.tplType == 2){
         this.processCalchainBasicData();
+      }
+    },
+    rowInsertAfter(coordinate, count, direction, type, sheetIndex) {
+      this.insertRowProcessBasicData(coordinate, count, direction, type, sheetIndex);
+    },
+    rowDeleteAfter(deleteRange, type, sheetIndex) {
+      this.deleteRowProcessBasicData(deleteRange, type, sheetIndex);
+    },
+    insertRowProcessBasicData(coordinate,count,direction, type,sheetIndex){
+      if(!sheetIndex){
+        sheetIndex = luckysheet.getSheet().index
+      }
+      this.processOriginalData(this.basicData,coordinate,count,direction, type,sheetIndex);
+      this.processOriginalData(this.extraCustomCellConfigs,coordinate,count,direction, type,sheetIndex);
+      this.processOriginalData(this.extendCellOrigins,coordinate,count,direction, type,sheetIndex);
+    },
+    deleteRowProcessBasicData(deleteRange, type,sheetIndex){
+      if(!sheetIndex){
+        sheetIndex = luckysheet.getSheet().index
+      }
+      this.deleteProcessOriginalData(this.basicData,deleteRange[0][0],deleteRange[0][1], type,sheetIndex);
+      this.deleteProcessOriginalData(this.extraCustomCellConfigs,deleteRange[0][0],deleteRange[0][1], type,sheetIndex);
+      this.deleteProcessOriginalData(this.extendCellOrigins,deleteRange[0][0],deleteRange[0][1], type,sheetIndex);
+    },
+    processOriginalData(originalData,coordinate,count,direction, type,sheetIndex){
+      if(originalData && originalData[sheetIndex]){
+        let newBasicData = {};
+        for(var key in originalData[sheetIndex]) {
+          let r = parseInt(key.split("_")[0])
+          let c = parseInt(key.split("_")[1])
+          if(type == "row"){
+            if(direction == "lefttop"){
+              if(r >= coordinate){
+                let newr = r+count;
+                  newBasicData[newr+"_"+c] = originalData[sheetIndex][key];
+              }else{
+                newBasicData[key] = originalData[sheetIndex][key];
+              }
+            }else if(direction == "rightbottom"){
+              if(r > coordinate){
+                let newr = r+count;
+                newBasicData[newr+"_"+c] = originalData[sheetIndex][key];
+              }else{
+                newBasicData[key] = originalData[sheetIndex][key];
+              }
+            }
+          }
+        }
+        originalData[sheetIndex] = newBasicData;
+      }
+    },
+    deleteProcessOriginalData(originalData,str,edr, type,sheetIndex){
+      if(originalData && originalData[sheetIndex]){
+        let newBasicData = {};
+        for(var key in originalData[sheetIndex]) {
+          let r = parseInt(key.split("_")[0])
+          let c = parseInt(key.split("_")[1])
+          if(type == "row"){
+            if(r < str){
+              newBasicData[key] = originalData[sheetIndex][key];
+            }else if(r > edr){
+              let newr = r-(edr-str+1);
+              newBasicData[newr+"_"+c] = originalData[sheetIndex][key];
+            }
+          }
+        }
+        originalData[sheetIndex] = newBasicData;
       }
     }
   }
