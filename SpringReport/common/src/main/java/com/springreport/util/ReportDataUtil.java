@@ -23,8 +23,10 @@ import javax.sql.DataSource;
 
 import org.influxdb.dto.QueryResult;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.springreport.base.ReportDataColumnDto;
 import com.springreport.base.ReportDataDetailDto;
 import com.springreport.base.UserInfoDto;
@@ -64,37 +66,62 @@ public class ReportDataUtil {
 		if(ResultTypeEnum.OBJECT.getCode().equals(apiResultType))
 		{//返回类型是对象
 			JSONObject jsonObject = JSONObject.parseObject(apiResult);
+			Object apiResultObject = jsonObject;
 			if(StringUtil.isNotEmpty(apiPrefix) && jsonObject != null)
 			{//前缀是否为空
 				String[] prefixes = apiPrefix.split("[.]");
 				for (int j = 0; j < prefixes.length; j++) {
-					Object object = jsonObject.get(prefixes[j]);
-					if(object instanceof JSONObject)
-					{
-						if(j == prefixes.length - 1)
+					if(apiResultObject instanceof JSONObject) {
+						Object object = ((JSONObject)apiResultObject).get(prefixes[j]);
+						if(object instanceof JSONObject)
 						{
-							resultObj = object;
+							if(j == prefixes.length - 1)
+							{
+								resultObj = object;
+							}else {
+								jsonObject = JSONObject.parseObject(JSONObject.toJSONString(object));
+								if(StringUtil.isNotEmpty(totalAttr)) {
+									total = jsonObject.getLongValue(totalAttr);
+								}
+							}
+							
+						}else if(object instanceof JSONArray)
+						{
+							if(j == prefixes.length - 1)
+							{
+								resultObj = object;
+								if(StringUtil.isNotEmpty(totalAttr)) {
+									total = jsonObject.getLongValue(totalAttr);
+								}
+							}else {
+								JSONArray datas = (JSONArray) object;
+								apiResultObject = datas;
+							}
 						}else {
-							jsonObject = JSONObject.parseObject(JSONObject.toJSONString(object));
-							if(StringUtil.isNotEmpty(totalAttr)) {
-								total = jsonObject.getLongValue(totalAttr);
+							throw new BizException(StatusCode.FAILURE,"不支持的返回值格式。");
+						}
+					}else if(apiResultObject instanceof JSONArray) {
+						JSONArray apiResultObjectArray = (JSONArray) apiResultObject;
+						JSONArray datas = new JSONArray();
+						if(ListUtil.isNotEmpty(apiResultObjectArray)) {
+							for (int i = 0; i < apiResultObjectArray.size(); i++) {
+								JSONObject data = apiResultObjectArray.getJSONObject(i);
+								Object subData = data.get(prefixes[j]);
+								if(subData instanceof JSONObject) {
+									datas.add(subData);
+								}else {
+									datas.addAll((JSONArray)subData);
+								}
 							}
 						}
-						
-					}else if(object instanceof JSONArray)
-					{
-						if(j == prefixes.length - 1)
-						{
-							resultObj = object;
-							if(StringUtil.isNotEmpty(totalAttr)) {
-								total = jsonObject.getLongValue(totalAttr);
-							}
-						}else {
-							throw new BizException(StatusCode.FAILURE, "不支持的返回值格式。");
+						apiResultObject = datas;
+						if(j == prefixes.length - 1) {
+							resultObj = apiResultObject;
 						}
 					}else {
 						throw new BizException(StatusCode.FAILURE,"不支持的返回值格式。");
 					}
+					
 				}
 			}else {
 				resultObj = JSONObject.parseObject(apiResult);
@@ -114,14 +141,14 @@ public class ReportDataUtil {
 		if(resultObj instanceof JSONObject)
 		{
 			list = new ArrayList<Map<String,Object>>();
-			Map<String, Object> map = JSONObject.parseObject(JSONObject.toJSONString(resultObj), LinkedHashMap.class);
+			Map<String, Object> map = JSON.parseObject(JSONObject.toJSONString(resultObj,SerializerFeature.WriteMapNullValue), LinkedHashMap.class);
 			list.add(map);
 		}else if(resultObj instanceof JSONArray){
 			JSONArray jsonArray = (JSONArray) resultObj;
 			Map<String, Object> map = null;
 			list = new ArrayList<Map<String,Object>>();
 			for (int i = 0; i < jsonArray.size(); i++) {
-				map = JSONObject.parseObject(JSONObject.toJSONString(jsonArray.get(i)), LinkedHashMap.class);
+				map = JSONObject.parseObject(JSONObject.toJSONString(jsonArray.get(i),SerializerFeature.WriteMapNullValue), LinkedHashMap.class);
 				list.add(map);
 			}
 		}

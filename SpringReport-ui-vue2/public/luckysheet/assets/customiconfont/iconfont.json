@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "37337590",
+      "name": "行列高亮",
+      "font_class": "hangliegaoliang",
+      "unicode": "e624",
+      "unicode_decimal": 58916
+    },
+    {
       "icon_id": "42976984",
       "name": "用户管理",
       "font_class": "yonghuguanli",

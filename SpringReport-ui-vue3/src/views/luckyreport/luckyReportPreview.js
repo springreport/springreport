@@ -138,6 +138,10 @@ export default {
           editVChart: this.editVChart,
           activeVChart: this.activeVChart,
           afterInitImg:this.afterInitImg,
+          execFAfter:this.execFAfter,
+          rowInsertAfter:this.rowInsertAfter,
+          rowDeleteAfter: this.rowDeleteAfter,
+          highlightRowCol:this.highlightRowCol,
         },
       },
       //modal配置 start
@@ -1724,7 +1728,7 @@ export default {
       }
       return cells;
     },
-    errorCellSetting(r, c, wrongMsg, order) {
+    errorCellSetting(r, c, wrongMsg, sheetIndex) {
       var comment = '';
       for (let index = 0; index < wrongMsg.length; index++) {
         const element = wrongMsg[index];
@@ -1740,8 +1744,22 @@ export default {
       };
       // v.ps = ps;
       // v.bg = "#ffd966";
-      luckysheet.setCellFormat(r, c, 'ps', ps, order);
-      luckysheet.setCellFormat(r, c, 'bg', '#ff0000', order);
+      // luckysheet.setCellFormat(r, c, 'ps', ps, order);
+      // luckysheet.setCellFormat(r, c, 'bg', '#ff0000', order);
+      let luckysheetFile = luckysheet.getSheet({"index":sheetIndex});
+      let data = luckysheetFile.data;
+      var ps = {
+        'left': null,
+        'top': null,
+        'width': null,
+        'height': null,
+        'value': comment,
+        'isshow': false
+      }
+      if(data[r] && data[r][c]){
+        data[r][c].ps = ps;
+        data[r][c].bg = '#ff0000';
+      }
     },
     removeErrorSetting(r, c, order) {
       var key = r + '_' + c;
@@ -1890,15 +1908,51 @@ export default {
     },
     //提交数据
     async submitDatas() {
+      luckysheet.exitEditMode();
       var msgMap = this.processDatas()
       if (msgMap && Object.keys(msgMap).length > 0) {
+        let sheetDatas = {};
         for (var key in msgMap) {
-          var order = key.split('_')[0]
+          var sheetIndex = key.split('_')[0]
           var r = key.split('_')[1]
           var c = key.split('_')[2]
-          this.errorCellSetting(r, c, msgMap[key], { order: order })
+          var comment = ''
+          var wrongMsg = msgMap[key];
+          let data = null;
+          if(sheetDatas[sheetIndex]){
+            data = sheetDatas[sheetIndex];
+          }else{
+            let luckysheetFile = luckysheet.getSheet({"index":sheetIndex});
+            data = luckysheetFile.data;
+            sheetDatas[sheetIndex] = data;
+          }
+          
+          for (let index = 0; index < wrongMsg.length; index++) {
+            const element = wrongMsg[index]
+            comment = comment + element
+          }
+          var ps = {
+            'left': null,
+            'top': null,
+            'width': null,
+            'height': null,
+            'value': comment,
+            'isshow': false
+          }
+          if(data[r]){
+            if(data[r][c] == null){
+              data[r][c] = {}
+            }
+            data[r][c].ps = ps;
+            data[r][c].bg = '#ff0000';
+          }
+          // this.errorCellSetting(r, c, msgMap[key], { order: order })
         }
+        luckysheet.refresh();
         this.commonUtil.showMessage({ message: '有未正确填写的数据，请全部填写正确后再提交。', type: 'error' })
+        this.changedRowDatas = {};
+        this.mainRowDatas = {};
+        this.rowDatas = {};
         return
       } else {
         const tplId = this.$route.query.tplId
@@ -2045,22 +2099,28 @@ export default {
           const sheetIndex = luckysheetfile.index
           if (!luckysheetfile.isPivotTable && this.extendCellOrigins[sheetIndex]) {
             var cellDatas = this.getCellDatas(luckysheetfile)
+            let dataRange = this.getDataRange(cellDatas);
             this.submitBasicData[sheetIndex] = {}
-            for (let t = 0; t < cellDatas.length; t++) {
-              let isChanged = false;
+            let str = dataRange.row[0];
+            let edr = dataRange.row[1];
+            let stc = dataRange.column[0];
+            let edc = dataRange.column[1];
+            for (let ri = str; ri <= edr; ri++) {
+              for (let ci = stc; ci < edc; ci++) {
+                let isChanged = false;
               var wrongMsg = []
-              const element = cellDatas[t]
-              if(element.v && element.v.mc && !element.v.mc.rs){
+              const element = luckysheetfile.data[ri][ci]
+              if(element!=null &&element.v && element.mc && !element.mc.rs){
                 continue;
               }
-              var r = element.r
-              var c = element.c
-              let v = element.v.m
+              var r = ri;
+              var c = ci;
+              let v = element == null?null:element.m
               var cs = 1;
               var rs = 1;
-              if(element.v && element.v.mc && element.v.mc.rs){
-                cs = element.v.mc.cs;
-                rs = element.v.mc.rs;
+              if(element!=null &&element.v && element.mc && element.mc.rs){
+                cs = element.mc.cs;
+                rs = element.mc.rs;
               }
               // 获取原始单元格的坐标信息
               let originCell = this.extendCellOrigins[sheetIndex][r + '_' + c]
@@ -2069,8 +2129,8 @@ export default {
                 originCell = this.getNewCellExtendOrigins(sheetIndex, r, c)
                 isNew = true
               }
-              if(element.v.v == null && element.v.ct && element.v.ct.t == 'inlineStr'){
-                let s  = element.v.ct.s;
+              if(element!=null && element.v == null && element.ct && element.ct.t == 'inlineStr'){
+                let s  = element.ct.s;
 
                 if(s && s.length > 0){
                   for (let t = 0; t < s.length; t++) {
@@ -2154,17 +2214,17 @@ export default {
                           let flag = rowFlag + m;
                           rowKey = sheetIndex + '|' + datasourceConfig.datasourceId + '|' + datasourceConfig.table + '|' + datasourceConfig.name + '|' + flag
                           r = r + m;
-                          this.getRowDatas(r,c,sheetIndex,rowKey,extraConfig,datasourceConfig,luckysheetfile,originCell,wrongMsg,v,flag,isChanged,isNew,element.r,element.c,dictKey,msgMap);
+                          this.getRowDatas(r,c,sheetIndex,rowKey,extraConfig,datasourceConfig,luckysheetfile,originCell,wrongMsg,v,flag,isChanged,isNew,ri,ci,dictKey,msgMap);
                         }
                       }else if(extraConfig.cellExtend == 2){//向右扩展
                         for (let m = 0; m < cs; m++) {
                           let flag = rowFlag + m;
                           rowKey = sheetIndex + '|' + datasourceConfig.datasourceId + '|' + datasourceConfig.table + '|' + datasourceConfig.name + '|' + flag
                           c = c + m;
-                          this.getRowDatas(r,c,sheetIndex,rowKey,extraConfig,datasourceConfig,luckysheetfile,originCell,wrongMsg,v,flag,isChanged,isNew,element.r,element.c,dictKey,msgMap);
+                          this.getRowDatas(r,c,sheetIndex,rowKey,extraConfig,datasourceConfig,luckysheetfile,originCell,wrongMsg,v,flag,isChanged,isNew,ri,ci,dictKey,msgMap);
                         }
                       }else{
-                        this.getRowDatas(r,c,sheetIndex,rowKey,extraConfig,datasourceConfig,luckysheetfile,originCell,wrongMsg,v,rowFlag,isChanged,isNew,element.r,element.c,dictKey,msgMap);
+                        this.getRowDatas(r,c,sheetIndex,rowKey,extraConfig,datasourceConfig,luckysheetfile,originCell,wrongMsg,v,rowFlag,isChanged,isNew,ri,ci,dictKey,msgMap);
                       }
                       const tableKeys = this.sheetTableKeys[sheetIndex]
                       if (tableKeys) {
@@ -2183,6 +2243,8 @@ export default {
                   }
                 }
               }
+              }
+              
             }
             const tableKeys = this.sheetTableKeys[sheetIndex]
             if (tableKeys) {
@@ -2269,7 +2331,7 @@ export default {
       // 校验填入的数据格式
       this.dataVerify(r, c, originCell.r, originCell.c, v, sheetIndex, wrongMsg, rowFlag, extraConfig.cellExtend)
       if (wrongMsg && wrongMsg.length > 0) {
-        msgMap[luckysheetfile.order + '_' + r + '_' + c] = wrongMsg
+        msgMap[luckysheetfile.index + '_' + r + '_' + c] = wrongMsg
       }
     },
     //获取新增单元格对应的原始数据
@@ -2368,6 +2430,38 @@ export default {
       }
       return result;
     },
+
+    //或有有数据的坐标范围
+    getDataRange(celldatas){
+      let range = {row:[],column:[]};
+      if(celldatas && celldatas.length > 0){
+        for (let index = 0; index < celldatas.length; index++) {
+          const element = celldatas[index];
+          let r = element.r;
+          let c = element.c;
+          if(range.row.length == 0){
+            range.row.push(r);
+            range.row.push(r);
+            range.column.push(c);
+            range.column.push(c);
+          }else{
+            if(range.row[0] > r){
+              range.row[0] = r;
+            }else if(range.row[1] < r){
+              range.row[1] = r;
+            }
+
+            if(range.column[0] > c){
+              range.column[0] = c;
+            }else if(range.column[1] < c){
+              range.column[1] = c;
+            }
+          }
+        }
+      }
+      return range;
+    },
+
     //填报数据校验
     dataVerify(r, c, originR, originC, v, sheetIndex, wrongMsg, rowFlag, cellExtend) {
       const key = r + '_' + c;
@@ -3152,6 +3246,108 @@ export default {
     },
     deleteReportDataCallback(){
       this.getReportData(2,true)
+    },
+    //处理公式原始数据
+    processCalchainBasicData(){
+      if(this.basicData){
+        for(var key in this.basicData) {
+          let luckysheetFile = luckysheet.getSheet({"index":key});
+          let calcChain = luckysheetFile.calcChain;
+          if(calcChain && calcChain.length > 0){
+            let data = luckysheetFile.data;
+            for (let index = 0; index < calcChain.length; index++) {
+              const element = calcChain[index];
+              let r = element.r;
+              let c = element.c;
+              if(this.basicData[key] && this.basicData[key][r+"_"+c]){
+                if(data[r] && data[r][c]){
+                  let m = data[r][c].m
+                  this.basicData[key][r+"_"+c] = m;
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    execFAfter(){
+      if(this.tplType == 2){
+        this.processCalchainBasicData();
+      }
+    },
+    rowInsertAfter(coordinate, count, direction, type, sheetIndex) {
+      this.insertRowProcessBasicData(coordinate, count, direction, type, sheetIndex);
+    },
+    rowDeleteAfter(deleteRange, type, sheetIndex) {
+      this.deleteRowProcessBasicData(deleteRange, type, sheetIndex);
+    },
+    insertRowProcessBasicData(coordinate,count,direction, type,sheetIndex){
+      if(!sheetIndex){
+        sheetIndex = luckysheet.getSheet().index
+      }
+      this.processOriginalData(this.basicData,coordinate,count,direction, type,sheetIndex);
+      this.processOriginalData(this.extraCustomCellConfigs,coordinate,count,direction, type,sheetIndex);
+      this.processOriginalData(this.extendCellOrigins,coordinate,count,direction, type,sheetIndex);
+    },
+    deleteRowProcessBasicData(deleteRange, type,sheetIndex){
+      if(!sheetIndex){
+        sheetIndex = luckysheet.getSheet().index
+      }
+      this.deleteProcessOriginalData(this.basicData,deleteRange[0][0],deleteRange[0][1], type,sheetIndex);
+      this.deleteProcessOriginalData(this.extraCustomCellConfigs,deleteRange[0][0],deleteRange[0][1], type,sheetIndex);
+      this.deleteProcessOriginalData(this.extendCellOrigins,deleteRange[0][0],deleteRange[0][1], type,sheetIndex);
+    },
+    processOriginalData(originalData,coordinate,count,direction, type,sheetIndex){
+      if(originalData && originalData[sheetIndex]){
+        let newBasicData = {};
+        for(var key in originalData[sheetIndex]) {
+          let r = parseInt(key.split("_")[0])
+          let c = parseInt(key.split("_")[1])
+          if(type == "row"){
+            if(direction == "lefttop"){
+              if(r >= coordinate){
+                let newr = r+count;
+                  newBasicData[newr+"_"+c] = originalData[sheetIndex][key];
+              }else{
+                newBasicData[key] = originalData[sheetIndex][key];
+              }
+            }else if(direction == "rightbottom"){
+              if(r > coordinate){
+                let newr = r+count;
+                newBasicData[newr+"_"+c] = originalData[sheetIndex][key];
+              }else{
+                newBasicData[key] = originalData[sheetIndex][key];
+              }
+            }
+          }
+        }
+        originalData[sheetIndex] = newBasicData;
+      }
+    },
+    deleteProcessOriginalData(originalData,str,edr, type,sheetIndex){
+      if(originalData && originalData[sheetIndex]){
+        let newBasicData = {};
+        for(var key in originalData[sheetIndex]) {
+          let r = parseInt(key.split("_")[0])
+          let c = parseInt(key.split("_")[1])
+          if(type == "row"){
+            if(r < str){
+              newBasicData[key] = originalData[sheetIndex][key];
+            }else if(r > edr){
+              let newr = r-(edr-str+1);
+              newBasicData[newr+"_"+c] = originalData[sheetIndex][key];
+            }
+          }
+        }
+        originalData[sheetIndex] = newBasicData;
+      }
+    },
+    highlightRowCol(flag){
+      if(flag){
+        this.commonUtil.showMessage({ message: '已开启选中单元格行列高亮模式。', type: this.commonConstants.messageType.success })
+      }else{
+        this.commonUtil.showMessage({ message: '已关闭选中单元格行列高亮模式。', type: this.commonConstants.messageType.success })
+      }
     }
   },
 };

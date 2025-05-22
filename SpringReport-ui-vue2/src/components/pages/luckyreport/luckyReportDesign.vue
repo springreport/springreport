@@ -864,7 +864,7 @@
               </el-collapse-item>
               <el-collapse-item title="填报配置" name="fillSettings" v-if="tplType != 1">
                 <el-form-item
-                  label="是否操作列"
+                  label="打印/导出隐藏列"
                   size="small"
                   class="df-form-item"
                 >

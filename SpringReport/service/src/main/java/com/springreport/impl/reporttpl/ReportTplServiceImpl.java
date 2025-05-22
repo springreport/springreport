@@ -2962,6 +2962,16 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 								if (!usedDataSet.contains(blockCells.get(j).getDatasetName())) {
 									usedDataSet.add(blockCells.get(j).getDatasetName());
 								}
+								String datasetName = blockCells.get(j).getDatasetName();
+								if(datasetSheets.containsKey(datasetName)) {
+									datasetSheetIds = datasetSheets.get(datasetName);
+								}else {
+									datasetSheetIds = new ArrayList<>();
+								}
+								if(!datasetSheetIds.contains(sheets.get(t).getId())) {
+									datasetSheetIds.add(sheets.get(t).getId());
+									datasetSheets.put(datasetName, datasetSheetIds);
+								}
 							}
 						}
 					}
