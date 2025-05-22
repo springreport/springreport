@@ -1,0 +1,1 @@
+ALTER TABLE report_datasource ADD COLUMN api_params text DEFAULT NULL COMMENT 'api请求json参数'; 
