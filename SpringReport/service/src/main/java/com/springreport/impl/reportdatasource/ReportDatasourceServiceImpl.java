@@ -398,7 +398,8 @@ public class ReportDatasourceServiceImpl extends ServiceImpl<ReportDatasourceMap
 					}
 				}
 			}
-			String requestResult = HttpClientUtil.connectionTest(reportDatasource.getJdbcUrl(),reportDatasource.getApiRequestType(),null,headers);
+			JSONObject params = JSON.parseObject(reportDatasource.getApiParams());
+			String requestResult = HttpClientUtil.connectionTest(reportDatasource.getJdbcUrl(), reportDatasource.getApiRequestType(), params, headers);
 			if(requestResult.startsWith("{\"errCode\":\"50001\"")) {
 				JSONObject jsonObject = JSON.parseObject(requestResult);
 				result.setStatusCode(StatusCode.FAILURE);
@@ -634,7 +635,8 @@ public class ReportDatasourceServiceImpl extends ServiceImpl<ReportDatasourceMap
 				}
 			}
 		}
-		String requestResult = HttpClientUtil.connectionTest(reportDatasource.getJdbcUrl(),reportDatasource.getApiRequestType(),null,headers);
+		JSONObject params = JSON.parseObject(reportDatasource.getApiParams());
+		String requestResult = HttpClientUtil.connectionTest(reportDatasource.getJdbcUrl(), reportDatasource.getApiRequestType(), params, headers);
 		if(StringUtil.isNotEmpty(requestResult)) {
 			if("ObjectArray".equals(reportDatasource.getApiResultType())) {
 				//对象数组

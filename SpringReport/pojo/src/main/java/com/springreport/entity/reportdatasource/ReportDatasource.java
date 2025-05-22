@@ -106,4 +106,8 @@ public class ReportDatasource extends PageEntity {
     /** del_flag - 删除标记 1未删除 2已删除 */
     @TableField("del_flag")
     private Integer delFlag;
+
+     /** api_params - api请求json */
+     @TableField("api_params")
+     private String apiParams;
 }
