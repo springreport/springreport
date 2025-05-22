@@ -549,6 +549,7 @@ export default {
           activeVChart: this.activeVChart,
           afterInitImg:this.afterInitImg,
           datasourceClick: this.datasourceClick,
+          highlightRowCol:this.highlightRowCol,
         },
       },
       settingModalConfig: {
@@ -5857,5 +5858,12 @@ export default {
     deleteMainAttr(index) {
       this.datasourceAttr.mainAttrs.splice(index, 1)
     },
+    highlightRowCol(flag){
+      if(flag){
+        this.commonUtil.showMessage({ message: '已开启选中单元格行列高亮模式。', type: this.commonConstants.messageType.success })
+      }else{
+        this.commonUtil.showMessage({ message: '已关闭选中单元格行列高亮模式。', type: this.commonConstants.messageType.success })
+      }
+    }
   },
 };

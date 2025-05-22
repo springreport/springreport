@@ -141,6 +141,7 @@ export default {
           execFAfter:this.execFAfter,
           rowInsertAfter:this.rowInsertAfter,
           rowDeleteAfter: this.rowDeleteAfter,
+          highlightRowCol:this.highlightRowCol,
         },
       },
       //modal配置 start
@@ -3339,6 +3340,13 @@ export default {
           }
         }
         originalData[sheetIndex] = newBasicData;
+      }
+    },
+    highlightRowCol(flag){
+      if(flag){
+        this.commonUtil.showMessage({ message: '已开启选中单元格行列高亮模式。', type: this.commonConstants.messageType.success })
+      }else{
+        this.commonUtil.showMessage({ message: '已关闭选中单元格行列高亮模式。', type: this.commonConstants.messageType.success })
       }
     }
   },

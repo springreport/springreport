@@ -206,6 +206,7 @@ export default {
             isPagination: false,
             isIndex: false,
           },
+          { type: 'Textarea', label: 'JSON请求内容', prop: 'apiParams', rules: { required: false }, rows: 6, width: '500px' },
           {
             type: 'Textarea',
             label: '接口返回结果',
@@ -287,6 +288,7 @@ export default {
           apiResultType: '', //返回值类型
           apiResultProps: '', //返回值属性
           apiRequestHeader: '', //请求header
+          apiParams: '', //JSON请求内容
           apiColumnsPrefix: '', //返回值属性
           apiRequestType: '', //请求方式
           apiResult: '', //接口返回结果
@@ -476,6 +478,7 @@ export default {
               }
               params.apiColumns = JSON.stringify(this.pageData.propsTableData);
               params.apiRequestHeader = JSON.stringify(this.pageData.headersTableData);
+              params.apiParams = JSON.parse(this.pageData.modalData.apiParams,null,2)
               params.apiColumnsPrefix = this.pageData.modalData.apiColumnsPrefix;
               params.apiRequestType = this.pageData.modalData.apiRequestType;
             }
@@ -572,6 +575,7 @@ export default {
         this.pageData.modalForm[9].show = true;
         this.pageData.modalForm[10].show = true;
         this.pageData.modalForm[11].show = true;
+        this.pageData.modalForm[12].show = true
       } else {
         if (this.pageData.modalData.type == '9') {
           this.pageData.modalForm[4].rules.required = false;
@@ -590,6 +594,7 @@ export default {
         this.pageData.modalForm[9].show = false;
         this.pageData.modalForm[10].show = false;
         this.pageData.modalForm[11].show = false;
+        this.pageData.modalForm[12].show = false
       }
     },
     //修改返回值类型
@@ -687,6 +692,7 @@ export default {
         jdbcUrl: this.pageData.modalData.jdbcUrl,
         userName: this.pageData.modalData.userName,
         password: this.pageData.modalData.password,
+        apiParams: this.pageData.modalData.apiParams,
         apiRequestType: this.pageData.modalData.apiRequestType,
         apiRequestHeader: JSON.stringify(this.pageData.headersTableData),
       };
@@ -704,6 +710,7 @@ export default {
         jdbcUrl: this.pageData.modalData.jdbcUrl,
         apiResultType: this.pageData.modalData.apiResultType,
         apiRequestType: this.pageData.modalData.apiRequestType,
+        apiParams: this.pageData.modalData.apiParams,
         apiColumnsPrefix: this.pageData.modalData.apiColumnsPrefix,
         apiRequestHeader: JSON.stringify(this.pageData.headersTableData)
       }

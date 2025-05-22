@@ -112,6 +112,7 @@ export default {
                     createVChart:this.createVChart,
                     editVChart:this.editVChart,
                     activeVChart:this.activeVChart,
+                    highlightRowCol:this.highlightRowCol,
                 }
             },
             users:[],//当前查看文档的用户
@@ -1283,6 +1284,13 @@ export default {
        activeVChart(chartOptions){
          if(this.chartSettingShow){
            this.chartOptions = chartOptions;
+         }
+       },
+       highlightRowCol(flag){
+         if(flag){
+           this.commonUtil.showMessage({ message: '已开启选中单元格行列高亮模式。', type: this.commonConstants.messageType.success })
+         }else{
+           this.commonUtil.showMessage({ message: '已关闭选中单元格行列高亮模式。', type: this.commonConstants.messageType.success })
          }
        }
     }
