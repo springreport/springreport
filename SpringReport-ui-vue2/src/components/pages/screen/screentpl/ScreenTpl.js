@@ -42,9 +42,9 @@ export default {
         // 表格分页信息start
         tablePage: {
           currentPage: 1,
-          pageSize: 10,
+          pageSize: 12,
           pageTotal: 0,
-          pageSizeRange: [5, 10, 20, 50]
+          pageSizeRange: [12, 24, 36]
         },
         // 表格分页信息end
         // 表格列表头start
@@ -155,7 +155,8 @@ export default {
           { label: '取消', type: 'default', handle: () => this.closeFolderModal() },
           { label: '提交', type: 'primary', handle: () => this.saveFolder() }
         ]
-      }
+      },
+      requestLoading: false // 请求loading
     }
   },
   activated() {
@@ -179,6 +180,14 @@ export default {
     }
   },
   methods: {
+    handleCurrentChange(val) {
+      this.pageData.tablePage.currentPage = val
+      this.searchtablelist()
+    },
+    handleSizeChange(val) {
+      this.pageData.tablePage.pageSize = val
+      this.searchtablelist()
+    },
     goTemStore() {
       window.open(this.$router.resolve(
         {
@@ -196,6 +205,7 @@ export default {
      * @author: caiyang
      */
     searchtablelist() {
+      this.requestLoading = true
       var obj = {
         url: this.apis.screenTpl.listApi,
         params: Object.assign({}, this.pageData.queryData, this.pageData.tablePage)
@@ -204,6 +214,7 @@ export default {
       that.pageData.tableData = []
       this.commonUtil.getTableList(obj).then(response => {
         this.commonUtil.tableAssignment(response, this.pageData.tablePage, this.pageData.tableData)
+        this.requestLoading = false
       })
     },
     resetSearch() {
@@ -243,8 +254,8 @@ export default {
         if (response.responseData.reportType == 0) {
           response.responseData.reportType = null
         }
-        response.responseData.width = response.responseData.width + '';
-        response.responseData.height = response.responseData.height + '';
+        response.responseData.width = response.responseData.width + ''
+        response.responseData.height = response.responseData.height + ''
         this.commonUtil.coperyProperties(this.pageData.modalData, response.responseData)// 数据赋值
       })
     },
