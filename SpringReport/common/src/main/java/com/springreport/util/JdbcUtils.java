@@ -302,6 +302,7 @@ public class JdbcUtils {
 						String paramDefault = jsonArray.getJSONObject(i).getString("paramDefault");
 						String paramCode = jsonArray.getJSONObject(i).getString("paramCode");
 						String dateFormat = jsonArray.getJSONObject(i).getString("dateFormat");
+						dateFormat = procesDataFormat(dateFormat);
 						if(StringUtil.isNotEmpty(paramType))
 						{
 							if("date".equals(paramType.toLowerCase()))
@@ -400,6 +401,7 @@ public class JdbcUtils {
 						String paramDefault = jsonArray.getJSONObject(i).getString("paramDefault");
 						String paramCode = jsonArray.getJSONObject(i).getString("paramCode");
 						String dateFormat = jsonArray.getJSONObject(i).getString("dateFormat");
+						dateFormat = procesDataFormat(dateFormat);
 						if(StringUtil.isNotEmpty(paramType))
 						{
 							if("date".equals(paramType.toLowerCase()))
@@ -481,6 +483,7 @@ public class JdbcUtils {
 						String paramDefault = jsonArray.getJSONObject(i).getString("paramDefault");
 						String paramCode = jsonArray.getJSONObject(i).getString("paramCode");
 						String dateFormat = jsonArray.getJSONObject(i).getString("dateFormat");
+						dateFormat = procesDataFormat(dateFormat);
 						if("date".equals(paramType.toLowerCase()))
 						{
 							params.put(paramCode, StringUtil.isNotEmpty(dateFormat)?DateUtil.getNow(dateFormat):DateUtil.getNow(DateUtil.FORMAT_LONOGRAM));
@@ -549,6 +552,7 @@ public class JdbcUtils {
 					String paramDefault = jsonArray.getJSONObject(i).getString("paramDefault");
 					String paramCode = jsonArray.getJSONObject(i).getString("paramCode");
 					String dateFormat = jsonArray.getJSONObject(i).getString("dateFormat");
+					dateFormat = procesDataFormat(dateFormat);
 					if(StringUtil.isNullOrEmpty(paramDefault))
 					{
 						throw new BizException(StatusCode.FAILURE, "当数据库为influxdb时，参数中的默认值必须填写。");
@@ -591,6 +595,27 @@ public class JdbcUtils {
 			}
 		}
 		return result;
+	}
+	
+	private static String procesDataFormat(String dateFormat) {
+		if("YYYY-MM-DD".equals(dateFormat))
+		{
+			dateFormat = DateUtil.FORMAT_LONOGRAM;
+		}else if("YYYY-MM".equals(dateFormat))
+		{
+			dateFormat = DateUtil.FORMAT_YEARMONTH;
+		}else if("YYYY-MM-DD HH:mm".equals(dateFormat))
+		{
+			dateFormat = DateUtil.FORMAT_WITHOUTSECONDS;
+		}else if("YYYY".equals(dateFormat))
+		{
+			dateFormat = DateUtil.FORMAT_YEAR;
+		}else {
+			if(StringUtil.isNullOrEmpty(dateFormat)) {
+				dateFormat = DateUtil.FORMAT_LONOGRAM;
+			}
+		}
+		return dateFormat;
 	}
 	
 	public static List<Map<String, Object>> parseProcedureColumns(DataSource dataSource,String sqlText,int dataSourceType,JSONArray inParams,JSONArray outParams,UserInfoDto userInfoDto){
@@ -674,22 +699,7 @@ public class JdbcUtils {
     				}else if(InParamTypeEnum.DATE.getCode().equals(jsonObject.getString("paramType")))
     				{
     					String dateFormat = jsonObject.getString("dateFormat");
-    					if(StringUtil.isNullOrEmpty(dateFormat)) {
-    						dateFormat = DateUtil.FORMAT_LONOGRAM;
-    					}
-    					if("YYYY-MM-DD".equals(dateFormat))
-						{
-							dateFormat = DateUtil.FORMAT_LONOGRAM;
-						}else if("YYYY-MM".equals(dateFormat))
-						{
-							dateFormat = DateUtil.FORMAT_YEARMONTH;
-						}else if("YYYY-MM-DD HH:mm".equals(dateFormat))
-						{
-							dateFormat = DateUtil.FORMAT_WITHOUTSECONDS;
-						}else if("YYYY".equals(dateFormat))
-						{
-							dateFormat = DateUtil.FORMAT_YEAR;
-						}
+    					dateFormat = procesDataFormat(dateFormat);
     					String defaultDate = "";
     					try {
     						defaultDate = DateUtil.getDefaultDate(String.valueOf(jsonObject.get("paramDefault")),dateFormat);

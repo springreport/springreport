@@ -75,6 +75,7 @@ public class ExcelChartUtil {
 		XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0,c,r,c+cs,r+rs);
 		//创建一个chart对象
 		XSSFChart chart = drawing.createChart(anchor);
+		chart.setPlotOnlyVisibleCells(false);
 		//标题
 		String title = getTitle(chartOptions);
 		if(StringUtil.isNotEmpty(title))
@@ -169,6 +170,7 @@ public class ExcelChartUtil {
 		XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0,c,r,c+cs,r+rs);
 		//创建一个chart对象
 		XSSFChart chart = drawing.createChart(anchor);
+		chart.setPlotOnlyVisibleCells(false);
 		//标题
 		String title = getTitle(chartOptions);
 		if(StringUtil.isNotEmpty(title))
@@ -247,6 +249,7 @@ public class ExcelChartUtil {
 		XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0,c,r,c+cs,r+rs);
 		//创建一个chart对象
 		XSSFChart chart = drawing.createChart(anchor);
+		chart.setPlotOnlyVisibleCells(false);
 		//标题
 		String title = getTitle(chartOptions);
 		if(StringUtil.isNotEmpty(title))
@@ -351,6 +354,7 @@ public class ExcelChartUtil {
 		XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0,c,r,c+cs,r+rs);
 		//创建一个chart对象
 		XSSFChart chart = drawing.createChart(anchor);
+		chart.setPlotOnlyVisibleCells(false);
 		//标题
 		String title = getTitle(chartOptions);
 		if(StringUtil.isNotEmpty(title))
@@ -428,6 +432,7 @@ public class ExcelChartUtil {
 		XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0,c,r,c+cs,r+rs);
 		//创建一个chart对象
 		XSSFChart chart = drawing.createChart(anchor);
+		chart.setPlotOnlyVisibleCells(false);
 		//标题
 		String title = getTitle(chartOptions);
 		if(StringUtil.isNotEmpty(title))
@@ -507,6 +512,7 @@ public class ExcelChartUtil {
 		XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0,c,r,c+cs,r+rs);
 		//创建一个chart对象
 		XSSFChart chart = drawing.createChart(anchor);
+		chart.setPlotOnlyVisibleCells(false);
 		//标题
 		String title = getTitle(chartOptions);
 		if(StringUtil.isNotEmpty(title))
