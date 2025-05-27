@@ -732,34 +732,36 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 				isParamMerge = YesNoEnum.NO.getCode();
 			}
 		}
-		//获取报表中引用的数据集
-		QueryWrapper<LuckysheetReportCell> LuckysheetReportCellQueryWrapper = new QueryWrapper<LuckysheetReportCell>();
-		LuckysheetReportCellQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
-		LuckysheetReportCellQueryWrapper.eq("tpl_id", reportTplDataset.getTplId());
-		LuckysheetReportCellQueryWrapper.eq("cell_value_type", CellValueTypeEnum.VARIABLE.getCode());
-		List<LuckysheetReportCell> luckysheetReportCells = this.iLuckysheetReportCellService.list(LuckysheetReportCellQueryWrapper);
-		QueryWrapper<LuckysheetReportBlockCell> LuckysheetReportBlockCellQueryWrapper = new QueryWrapper<LuckysheetReportBlockCell>();
-		LuckysheetReportBlockCellQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
-		LuckysheetReportBlockCellQueryWrapper.eq("tpl_id", reportTplDataset.getTplId());
-		LuckysheetReportBlockCellQueryWrapper.eq("cell_value_type", CellValueTypeEnum.VARIABLE.getCode());
-		List<LuckysheetReportBlockCell> luckysheetReportBlockCells = this.iLuckysheetReportBlockCellService.list(LuckysheetReportBlockCellQueryWrapper);
 		List<String> usedDataset = new ArrayList<>();
-		if(ListUtil.isNotEmpty(luckysheetReportCells)) {
-			for (int i = 0; i < luckysheetReportCells.size(); i++) {
-				String[] datesetNames = luckysheetReportCells.get(i).getDatasetName().split(",");
-				for (String datasetName : datesetNames) {
-					if(!usedDataset.contains(datasetName)) {
-						usedDataset.add(datasetName);
+		if(reportTplDataset.getReportType().intValue() == 1) {
+			//获取报表中引用的数据集
+			QueryWrapper<LuckysheetReportCell> LuckysheetReportCellQueryWrapper = new QueryWrapper<LuckysheetReportCell>();
+			LuckysheetReportCellQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+			LuckysheetReportCellQueryWrapper.eq("tpl_id", reportTplDataset.getTplId());
+			LuckysheetReportCellQueryWrapper.eq("cell_value_type", CellValueTypeEnum.VARIABLE.getCode());
+			List<LuckysheetReportCell> luckysheetReportCells = this.iLuckysheetReportCellService.list(LuckysheetReportCellQueryWrapper);
+			QueryWrapper<LuckysheetReportBlockCell> LuckysheetReportBlockCellQueryWrapper = new QueryWrapper<LuckysheetReportBlockCell>();
+			LuckysheetReportBlockCellQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+			LuckysheetReportBlockCellQueryWrapper.eq("tpl_id", reportTplDataset.getTplId());
+			LuckysheetReportBlockCellQueryWrapper.eq("cell_value_type", CellValueTypeEnum.VARIABLE.getCode());
+			List<LuckysheetReportBlockCell> luckysheetReportBlockCells = this.iLuckysheetReportBlockCellService.list(LuckysheetReportBlockCellQueryWrapper);
+			if(ListUtil.isNotEmpty(luckysheetReportCells)) {
+				for (int i = 0; i < luckysheetReportCells.size(); i++) {
+					String[] datesetNames = luckysheetReportCells.get(i).getDatasetName().split(",");
+					for (String datasetName : datesetNames) {
+						if(!usedDataset.contains(datasetName)) {
+							usedDataset.add(datasetName);
+						}
 					}
 				}
 			}
-		}
-		if(ListUtil.isNotEmpty(luckysheetReportBlockCells)) {
-			for (int i = 0; i < luckysheetReportBlockCells.size(); i++) {
-				String[] datesetNames = luckysheetReportBlockCells.get(i).getDatasetName().split(",");
-				for (String datasetName : datesetNames) {
-					if(!usedDataset.contains(datasetName)) {
-						usedDataset.add(datasetName);
+			if(ListUtil.isNotEmpty(luckysheetReportBlockCells)) {
+				for (int i = 0; i < luckysheetReportBlockCells.size(); i++) {
+					String[] datesetNames = luckysheetReportBlockCells.get(i).getDatasetName().split(",");
+					for (String datasetName : datesetNames) {
+						if(!usedDataset.contains(datasetName)) {
+							usedDataset.add(datasetName);
+						}
 					}
 				}
 			}
@@ -773,7 +775,7 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 		if (!ListUtil.isEmpty(datasets)) {
 			for (int i = 0; i < datasets.size(); i++) {
 				//筛选报表中引用的数据集
-				if (usedDataset.contains(datasets.get(i).getDatasetName())) {
+				if (usedDataset.contains(datasets.get(i).getDatasetName()) || reportTplDataset.getReportType().intValue() != 1) {
 					DatasetsParamDto datasetsParamDto = new DatasetsParamDto();
 					List<ReportParamDto> params = null;
 					if (DatasetTypeEnum.API.getCode().intValue() == datasets.get(i).getDatasetType().intValue()) {
@@ -976,6 +978,9 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 			}else if("YYYY-MM-DD HH:mm".equals(dateFormat))
 			{
 				dateFormat = DateUtil.FORMAT_WITHOUTSECONDS;
+			}else if("YYYY".equals(dateFormat))
+			{
+				dateFormat = DateUtil.FORMAT_YEAR;
 			}else {
 				if(StringUtil.isNullOrEmpty(dateFormat)) {
 					dateFormat = DateUtil.FORMAT_LONOGRAM;
@@ -989,49 +994,49 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 			}else if(DefaultDateTypeEnum.WF.getCode().equals(StringUtil.trim(param.getParamDefault()).toLowerCase()))
 			{//本周第一天
 				String currentDate = DateUtil.getWeekStart();
-				currentDate = DateUtil.date2String(DateUtil.string2Date(currentDate), StringUtil.isNotEmpty(param.getDateFormat())?param.getDateFormat():DateUtil.FORMAT_LONOGRAM);
+				currentDate = DateUtil.date2String(DateUtil.string2Date(currentDate), dateFormat);
 				param.setParamDefault(currentDate);
 				param.setDateFormat(StringUtil.isNotEmpty(param.getDateFormat())?param.getDateFormat():DateUtil.FORMAT_LONOGRAM);
 			}else if(DefaultDateTypeEnum.WL.getCode().equals(StringUtil.trim(param.getParamDefault()).toLowerCase()))
 			{//本周最后一天
 				String currentDate = DateUtil.getWeekEnd();
-				currentDate = DateUtil.date2String(DateUtil.string2Date(currentDate), StringUtil.isNotEmpty(param.getDateFormat())?param.getDateFormat():DateUtil.FORMAT_LONOGRAM);
+				currentDate = DateUtil.date2String(DateUtil.string2Date(currentDate), dateFormat);
 				param.setParamDefault(currentDate);
 				param.setDateFormat(StringUtil.isNotEmpty(param.getDateFormat())?param.getDateFormat():DateUtil.FORMAT_LONOGRAM);
 			}else if(DefaultDateTypeEnum.MF.getCode().equals(StringUtil.trim(param.getParamDefault()).toLowerCase()))
 			{//本月第一天
 				String currentDate = DateUtil.getMonthStart();
-				currentDate = DateUtil.date2String(DateUtil.string2Date(currentDate), StringUtil.isNotEmpty(param.getDateFormat())?param.getDateFormat():DateUtil.FORMAT_LONOGRAM);
+				currentDate = DateUtil.date2String(DateUtil.string2Date(currentDate), dateFormat);
 				param.setParamDefault(currentDate);
 				param.setDateFormat(StringUtil.isNotEmpty(param.getDateFormat())?param.getDateFormat():DateUtil.FORMAT_LONOGRAM);
 			}else if(DefaultDateTypeEnum.ML.getCode().equals(StringUtil.trim(param.getParamDefault()).toLowerCase()))
 			{//本月最后一天
 				String currentDate = DateUtil.getMonthEnd();
-				currentDate = DateUtil.date2String(DateUtil.string2Date(currentDate), StringUtil.isNotEmpty(param.getDateFormat())?param.getDateFormat():DateUtil.FORMAT_LONOGRAM);
+				currentDate = DateUtil.date2String(DateUtil.string2Date(currentDate), dateFormat);
 				param.setParamDefault(currentDate);
 				param.setDateFormat(StringUtil.isNotEmpty(param.getDateFormat())?param.getDateFormat():DateUtil.FORMAT_LONOGRAM);
 			}else if(DefaultDateTypeEnum.SF.getCode().equals(StringUtil.trim(param.getParamDefault()).toLowerCase()))
 			{//本季度第一天
 				String currentDate = DateUtil.getQuarterStart(new Date());
-				currentDate = DateUtil.date2String(DateUtil.string2Date(currentDate), StringUtil.isNotEmpty(param.getDateFormat())?param.getDateFormat():DateUtil.FORMAT_LONOGRAM);
+				currentDate = DateUtil.date2String(DateUtil.string2Date(currentDate), dateFormat);
 				param.setParamDefault(currentDate);
 				param.setDateFormat(StringUtil.isNotEmpty(param.getDateFormat())?param.getDateFormat():DateUtil.FORMAT_LONOGRAM);
 			}else if(DefaultDateTypeEnum.SL.getCode().equals(StringUtil.trim(param.getParamDefault()).toLowerCase()))
 			{//本季度最后一天
 				String currentDate = DateUtil.getQuarterEnd(new Date());
-				currentDate = DateUtil.date2String(DateUtil.string2Date(currentDate), StringUtil.isNotEmpty(param.getDateFormat())?param.getDateFormat():DateUtil.FORMAT_LONOGRAM);
+				currentDate = DateUtil.date2String(DateUtil.string2Date(currentDate), dateFormat);
 				param.setParamDefault(currentDate);
 				param.setDateFormat(StringUtil.isNotEmpty(param.getDateFormat())?param.getDateFormat():DateUtil.FORMAT_LONOGRAM);
 			}else if(DefaultDateTypeEnum.YF.getCode().equals(StringUtil.trim(param.getParamDefault()).toLowerCase()))
 			{//本年度第一天
 				String currentDate = DateUtil.getYearStart();
-				currentDate = DateUtil.date2String(DateUtil.string2Date(currentDate), StringUtil.isNotEmpty(param.getDateFormat())?param.getDateFormat():DateUtil.FORMAT_LONOGRAM);
+				currentDate = DateUtil.date2String(DateUtil.string2Date(currentDate), dateFormat);
 				param.setParamDefault(currentDate);
 				param.setDateFormat(StringUtil.isNotEmpty(param.getDateFormat())?param.getDateFormat():DateUtil.FORMAT_LONOGRAM);
 			}else if(DefaultDateTypeEnum.YL.getCode().equals(StringUtil.trim(param.getParamDefault()).toLowerCase()))
 			{//本年度最后一天
 				String currentDate = DateUtil.getYearEnd();
-				currentDate = DateUtil.date2String(DateUtil.string2Date(currentDate), StringUtil.isNotEmpty(param.getDateFormat())?param.getDateFormat():DateUtil.FORMAT_LONOGRAM);
+				currentDate = DateUtil.date2String(DateUtil.string2Date(currentDate), dateFormat);
 				param.setParamDefault(currentDate);
 				param.setDateFormat(StringUtil.isNotEmpty(param.getDateFormat())?param.getDateFormat():DateUtil.FORMAT_LONOGRAM);
 			}else {

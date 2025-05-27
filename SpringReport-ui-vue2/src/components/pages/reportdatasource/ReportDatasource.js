@@ -401,6 +401,7 @@ export default {
         this.pageData.modalForm[9].show = true
         this.pageData.modalForm[10].show = true
         this.pageData.modalForm[11].show = true
+        this.pageData.modalForm[12].show = true
       } else {
         if (this.pageData.modalData.type == '9') {
           this.pageData.modalForm[4].rules.required = false
@@ -419,6 +420,7 @@ export default {
         this.pageData.modalForm[9].show = false
         this.pageData.modalForm[10].show = false
         this.pageData.modalForm[11].show = false
+        this.pageData.modalForm[12].show = false
       }
     },
     // 修改返回值类型
