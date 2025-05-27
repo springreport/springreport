@@ -732,34 +732,36 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 				isParamMerge = YesNoEnum.NO.getCode();
 			}
 		}
-		//获取报表中引用的数据集
-		QueryWrapper<LuckysheetReportCell> LuckysheetReportCellQueryWrapper = new QueryWrapper<LuckysheetReportCell>();
-		LuckysheetReportCellQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
-		LuckysheetReportCellQueryWrapper.eq("tpl_id", reportTplDataset.getTplId());
-		LuckysheetReportCellQueryWrapper.eq("cell_value_type", CellValueTypeEnum.VARIABLE.getCode());
-		List<LuckysheetReportCell> luckysheetReportCells = this.iLuckysheetReportCellService.list(LuckysheetReportCellQueryWrapper);
-		QueryWrapper<LuckysheetReportBlockCell> LuckysheetReportBlockCellQueryWrapper = new QueryWrapper<LuckysheetReportBlockCell>();
-		LuckysheetReportBlockCellQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
-		LuckysheetReportBlockCellQueryWrapper.eq("tpl_id", reportTplDataset.getTplId());
-		LuckysheetReportBlockCellQueryWrapper.eq("cell_value_type", CellValueTypeEnum.VARIABLE.getCode());
-		List<LuckysheetReportBlockCell> luckysheetReportBlockCells = this.iLuckysheetReportBlockCellService.list(LuckysheetReportBlockCellQueryWrapper);
 		List<String> usedDataset = new ArrayList<>();
-		if(ListUtil.isNotEmpty(luckysheetReportCells)) {
-			for (int i = 0; i < luckysheetReportCells.size(); i++) {
-				String[] datesetNames = luckysheetReportCells.get(i).getDatasetName().split(",");
-				for (String datasetName : datesetNames) {
-					if(!usedDataset.contains(datasetName)) {
-						usedDataset.add(datasetName);
+		if(reportTplDataset.getReportType().intValue() == 1) {
+			//获取报表中引用的数据集
+			QueryWrapper<LuckysheetReportCell> LuckysheetReportCellQueryWrapper = new QueryWrapper<LuckysheetReportCell>();
+			LuckysheetReportCellQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+			LuckysheetReportCellQueryWrapper.eq("tpl_id", reportTplDataset.getTplId());
+			LuckysheetReportCellQueryWrapper.eq("cell_value_type", CellValueTypeEnum.VARIABLE.getCode());
+			List<LuckysheetReportCell> luckysheetReportCells = this.iLuckysheetReportCellService.list(LuckysheetReportCellQueryWrapper);
+			QueryWrapper<LuckysheetReportBlockCell> LuckysheetReportBlockCellQueryWrapper = new QueryWrapper<LuckysheetReportBlockCell>();
+			LuckysheetReportBlockCellQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+			LuckysheetReportBlockCellQueryWrapper.eq("tpl_id", reportTplDataset.getTplId());
+			LuckysheetReportBlockCellQueryWrapper.eq("cell_value_type", CellValueTypeEnum.VARIABLE.getCode());
+			List<LuckysheetReportBlockCell> luckysheetReportBlockCells = this.iLuckysheetReportBlockCellService.list(LuckysheetReportBlockCellQueryWrapper);
+			if(ListUtil.isNotEmpty(luckysheetReportCells)) {
+				for (int i = 0; i < luckysheetReportCells.size(); i++) {
+					String[] datesetNames = luckysheetReportCells.get(i).getDatasetName().split(",");
+					for (String datasetName : datesetNames) {
+						if(!usedDataset.contains(datasetName)) {
+							usedDataset.add(datasetName);
+						}
 					}
 				}
 			}
-		}
-		if(ListUtil.isNotEmpty(luckysheetReportBlockCells)) {
-			for (int i = 0; i < luckysheetReportBlockCells.size(); i++) {
-				String[] datesetNames = luckysheetReportBlockCells.get(i).getDatasetName().split(",");
-				for (String datasetName : datesetNames) {
-					if(!usedDataset.contains(datasetName)) {
-						usedDataset.add(datasetName);
+			if(ListUtil.isNotEmpty(luckysheetReportBlockCells)) {
+				for (int i = 0; i < luckysheetReportBlockCells.size(); i++) {
+					String[] datesetNames = luckysheetReportBlockCells.get(i).getDatasetName().split(",");
+					for (String datasetName : datesetNames) {
+						if(!usedDataset.contains(datasetName)) {
+							usedDataset.add(datasetName);
+						}
 					}
 				}
 			}
@@ -773,7 +775,7 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 		if (!ListUtil.isEmpty(datasets)) {
 			for (int i = 0; i < datasets.size(); i++) {
 				//筛选报表中引用的数据集
-				if (usedDataset.contains(datasets.get(i).getDatasetName())) {
+				if (usedDataset.contains(datasets.get(i).getDatasetName()) || reportTplDataset.getReportType().intValue() != 1) {
 					DatasetsParamDto datasetsParamDto = new DatasetsParamDto();
 					List<ReportParamDto> params = null;
 					if (DatasetTypeEnum.API.getCode().intValue() == datasets.get(i).getDatasetType().intValue()) {
