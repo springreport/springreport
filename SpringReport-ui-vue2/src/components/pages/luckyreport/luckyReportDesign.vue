@@ -321,9 +321,8 @@
                     <el-option label="交叉扩展" :value="4" />
                   </el-select>
                 </el-form-item>
-                <el-form-item label="数据填充方式">
+                <el-form-item label="数据填充方式" v-if="cellForm.cellExtend != 4">
                   <el-select
-                    v-if="cellForm.cellExtend != 4"
                     v-model="cellForm.cellFillType"
                     style="width: 100%"
                     placeholder="数据填充方式"
@@ -333,6 +332,19 @@
                   >
                     <el-option label="插入" :value="1" />
                     <el-option label="覆盖" :value="2" />
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="位置冲突后优先移动方向" v-if="cellForm.cellFillType == 1">
+                  <el-select
+                    v-model="cellForm.priortyMoveDirection"
+                    style="width: 100%"
+                    placeholder="位置冲突后优先移动方向"
+                    size="small"
+                    :disabled="attrDisabled"
+                    @change="changeCellAttr('priortyMoveDirection')"
+                  >
+                    <el-option label="向下" :value="1" />
+                    <el-option label="向右" :value="2" />
                   </el-select>
                 </el-form-item>
                 <el-form-item
