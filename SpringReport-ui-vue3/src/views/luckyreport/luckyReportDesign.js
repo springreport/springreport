@@ -359,6 +359,7 @@ export default {
         dataType:null,//数据类型
         dataAttr:'',//属性
         subExtend:null,//子数据扩展方向
+        priortyMoveDirection:1,//位置冲突后优先移动方向
         formsAttrs:{
           isOperationCol:false,//是否操作列
           valueType: '1', // 值类型 1文本 2数值 3日期 4下拉单选
@@ -1050,6 +1051,7 @@ export default {
         this.cellForm.dataType = cellFormData.dataType
         this.cellForm.dataAttr = cellFormData.dataAttr
         this.cellForm.subExtend = cellFormData.subExtend
+        this.cellForm.priortyMoveDirection = cellFormData.priortyMoveDirection
         if (cellFormData.cellFillType) {
           this.cellForm.cellFillType = cellFormData.cellFillType;
         } else {
@@ -1110,6 +1112,7 @@ export default {
         this.cellForm.dataType = 1
         this.cellForm.dataAttr = ''
         this.cellForm.subExtend = 1
+        this.cellForm.priortyMoveDirection = 1
         // this.getDrillReport();
       }
       if (this.cellForm.datasourceId) {
@@ -5847,7 +5850,6 @@ export default {
           if(!that.datasourceAttr.mainAttrs){
             that.datasourceAttr.mainAttrs = [];
           }
-          console.log(obj)
           that.datasourceAttr.mainAttrs.push(obj)
           that.closeMainForm()
         } else {
