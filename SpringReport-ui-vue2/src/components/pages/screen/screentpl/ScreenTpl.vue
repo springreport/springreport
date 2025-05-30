@@ -85,9 +85,11 @@
                 </el-dropdown>
               </div>
               <div class="img-box">
+                <!-- style="object-fit: contain" 这个根据情况改 -->
                 <img
                   class="img"
-                  src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
+                  style="object-fit: contain"
+                  src="@/static/img/template/screen-tem-default.png"
                 >
               </div>
               <div class="name overflow-text">{{ item.tplName }}</div>
@@ -162,7 +164,7 @@
   padding: 16px;
 
   .screen-list {
-    height: calc(100vh - 286px);
+    height: calc(100vh - 300px);
     overflow-y: auto;
     overflow-x: hidden;
   }
@@ -219,13 +221,21 @@
       line-height: 18px; /* 17.794px */
       margin-bottom: 10px;
     }
-    .img {
+    .img-box {
       border-radius: 8px 8px 0px 0px;
       width: 100%;
       height: 144px;
-      object-fit: cover;
-      display: block;
+      background-color: #F5F6F7;
+      margin-bottom: 10px;
+
+      .img {
+        border-radius: 8px 8px 0px 0px;
+        width: 100%;
+        height: 144px;
+        display: block;
+      }
     }
+
     .name {
       color: rgba(0, 0, 0, 0.8);
       text-align: justify;

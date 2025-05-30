@@ -567,4 +567,8 @@ public class LuckySheetBindData {
      */  
     private boolean isOperationCol = false;
     
+    /** priorty_move_direction - 优先移动方向 1向下 2向右 */
+
+    private Integer priortyMoveDirection = 1;
+    
 }

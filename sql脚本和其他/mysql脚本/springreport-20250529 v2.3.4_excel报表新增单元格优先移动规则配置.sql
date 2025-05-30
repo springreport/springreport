@@ -1,0 +1,1 @@
+ALTER TABLE luckysheet_report_cell ADD COLUMN priorty_move_direction tinyint(4) DEFAULT 1 COMMENT '优先移动方向 1向下 2向右'; 

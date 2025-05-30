@@ -334,4 +334,8 @@ public class LuckysheetReportCell extends PageEntity {
     /** sub_extend - 子数据扩展方向 1不扩展 2纵向扩展 3横向扩展 */
     @TableField("sub_extend")
     private Integer subExtend;
+    
+    /** priorty_move_direction - 优先移动方向 1向下 2向右 */
+    @TableField("priorty_move_direction")
+    private Integer priortyMoveDirection;
 }
