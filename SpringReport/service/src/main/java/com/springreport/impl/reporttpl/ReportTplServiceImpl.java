@@ -4939,10 +4939,10 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 										}else {
 											img.put("width", Constants.DEFAULT_LUCKYSHEET_CELL_WIDTH);
 										}
-										if(YesNoEnum.YES.getCode().intValue() == luckySheetBindData.getIsMerge()) {
+										if(YesNoEnum.YES.getCode().intValue() == luckysheetReportBlockCells.get(t).getIsMerge()) {
 											img.put("isMerge", YesNoEnum.YES.getCode().intValue());
-											img.put("rowSpan", luckySheetBindData.getRowSpan());
-											img.put("colSpan", luckySheetBindData.getColSpan());
+											img.put("rowSpan", luckysheetReportBlockCells.get(t).getRowSpan());
+											img.put("colSpan", luckysheetReportBlockCells.get(t).getColSpan());
 										}else {
 											img.put("isMerge", YesNoEnum.NO.getCode().intValue());
 										}

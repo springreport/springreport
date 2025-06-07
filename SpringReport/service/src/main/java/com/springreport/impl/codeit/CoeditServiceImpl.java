@@ -116,6 +116,7 @@ public class CoeditServiceImpl extends ServiceImpl<LuckysheetMapper, Luckysheet>
 		List<Object> list = redisUtil.multiGet(keys);
 		int sheetOrder = -1;
 		String activeIndex = "";
+		List<Luckysheet> luckysheets = null;
 		if(ListUtil.isEmpty(list))
 		{
 			QueryWrapper<Luckysheet> queryWrapper = new QueryWrapper<>();
@@ -124,7 +125,7 @@ public class CoeditServiceImpl extends ServiceImpl<LuckysheetMapper, Luckysheet>
 			queryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
 			queryWrapper.orderByAsc("sheet_order");
 			queryWrapper.orderByAsc("id");
-			List<Luckysheet> luckysheets = this.list(queryWrapper);
+			luckysheets = this.list(queryWrapper);
 			for (int i = 0; i < luckysheets.size(); i++) {
 				if(luckysheets.get(i).getHide().intValue() == 0) {
 					if(sheetOrder == -1)
@@ -142,10 +143,12 @@ public class CoeditServiceImpl extends ServiceImpl<LuckysheetMapper, Luckysheet>
 				this.mqProcessService.updateRedisConfigCache(MqTypeEnums.INITSHEETCONFIG.getCode(), JSONObject.toJSONString(luckysheets.get(i)), luckysheets.get(i).getSheetIndex(), listId, blockId,null,null);
 			}
 		}else {
+			luckysheets = new ArrayList<>();
 			for (int i = 0; i < list.size(); i++) {
 				Luckysheet redisCache = JSON.parseObject(String.valueOf(list.get(i)),Luckysheet.class);
 				if(redisCache != null)
 				{
+					luckysheets.add(redisCache);
 					if(redisCache.getHide().intValue() == 0)
 					{
 						if(sheetOrder == -1)
@@ -165,7 +168,7 @@ public class CoeditServiceImpl extends ServiceImpl<LuckysheetMapper, Luckysheet>
 			}
 			
 		}
-		List<JSONObject> dbObject = this.getByGridKey_NOCelldata(listId, blockId);
+		List<JSONObject> dbObject = this.getByGridKey_NOCelldata(listId, blockId,luckysheets);
 		if(!ListUtil.isEmpty(dbObject))
 		{
 			for(int x=0;x<dbObject.size();x++){
@@ -242,42 +245,47 @@ public class CoeditServiceImpl extends ServiceImpl<LuckysheetMapper, Luckysheet>
 	 * @return List<JSONObject>
 	 * @date 2023-08-13 10:37:00 
 	 */ 
-	private List<JSONObject> getByGridKey_NOCelldata(String listId,String blockId)
+	private List<JSONObject> getByGridKey_NOCelldata(String listId,String blockId,List<Luckysheet> luckysheets)
 	{
 		List<JSONObject> result=new ArrayList<JSONObject>();
-		QueryWrapper<Luckysheet> queryWrapper = new QueryWrapper<Luckysheet>();
-		queryWrapper.eq("block_id", blockId);
-		queryWrapper.eq("list_id", listId);
-		queryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
-		queryWrapper.orderByAsc("sheet_order");
-		List<String> keys = redisUtil.getKeys(RedisPrefixEnum.DOCOMENTDATA.getCode()+listId);
-		List<Object> objs= redisUtil.multiGet(keys);
-		List<Luckysheet> list = null;
-		if(ListUtil.isEmpty(objs))
-		{
-			list= this.list(queryWrapper);
-			if(!ListUtil.isEmpty(list))
-			{
-				for (int i = 0; i <list.size(); i++) {
-					this.mqProcessService.updateRedisConfigCache(MqTypeEnums.INITSHEETCONFIG.getCode(), JSONObject.toJSONString(list.get(i)), list.get(i).getSheetIndex(), listId, blockId,null,null);
-					JSONObject pgd = this.getSheetJsonData(list.get(i));
-					result.add(pgd);
-				}
-			}
-		}else {
-			List<Luckysheet> luckysheets = new ArrayList<>();
-			for (Object obj : objs) {
-				Luckysheet luckysheet = JSON.parseObject(obj.toString(), Luckysheet.class);
-				if(luckysheet != null)
-				{
-					luckysheets.add(luckysheet);
-				}
-			}
-			luckysheets.sort((o1, o2) -> o1.getSheetOrder().compareTo(o2.getSheetOrder()));
-			for (Luckysheet luckysheet : luckysheets) {
-				JSONObject pgd = this.getSheetJsonData(luckysheet);
-				result.add(pgd);
-			}
+//		QueryWrapper<Luckysheet> queryWrapper = new QueryWrapper<Luckysheet>();
+//		queryWrapper.eq("block_id", blockId);
+//		queryWrapper.eq("list_id", listId);
+//		queryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+//		queryWrapper.orderByAsc("sheet_order");
+//		List<String> keys = redisUtil.getKeys(RedisPrefixEnum.DOCOMENTDATA.getCode()+listId);
+//		List<Object> objs= redisUtil.multiGet(keys);
+//		List<Luckysheet> list = null;
+//		if(ListUtil.isEmpty(objs))
+//		{
+//			list= this.list(queryWrapper);
+//			if(!ListUtil.isEmpty(list))
+//			{
+//				for (int i = 0; i <list.size(); i++) {
+//					this.mqProcessService.updateRedisConfigCache(MqTypeEnums.INITSHEETCONFIG.getCode(), JSONObject.toJSONString(list.get(i)), list.get(i).getSheetIndex(), listId, blockId,null,null);
+//					JSONObject pgd = this.getSheetJsonData(list.get(i));
+//					result.add(pgd);
+//				}
+//			}
+//		}else {
+//			List<Luckysheet> luckysheets = new ArrayList<>();
+//			for (Object obj : objs) {
+//				Luckysheet luckysheet = JSON.parseObject(obj.toString(), Luckysheet.class);
+//				if(luckysheet != null)
+//				{
+//					luckysheets.add(luckysheet);
+//				}
+//			}
+//			luckysheets.sort((o1, o2) -> o1.getSheetOrder().compareTo(o2.getSheetOrder()));
+//			for (Luckysheet luckysheet : luckysheets) {
+//				JSONObject pgd = this.getSheetJsonData(luckysheet);
+//				result.add(pgd);
+//			}
+//		}
+		luckysheets.sort((o1, o2) -> o1.getSheetOrder().compareTo(o2.getSheetOrder()));
+		for (Luckysheet luckysheet : luckysheets) {
+			JSONObject pgd = this.getSheetJsonData(luckysheet);
+			result.add(pgd);
 		}
 		return result;
 	}
