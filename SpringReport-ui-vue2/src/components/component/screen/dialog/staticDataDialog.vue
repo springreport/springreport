@@ -8,110 +8,110 @@
 -->
 <template>
   <div>
-    <el-dialog title="静态数据" :visible="customDataDialogVisiable" width="80%" height="80%" :close-on-click-modal='false' @close='closeCustomDataDialog'>
-        <div style="height:40%">
-            <div style="height:300px;">
-            <codemirror ref="dataCodeMirror" :options="cmOptions"></codemirror>
-            </div>
+    <el-dialog title="静态数据" :visible="customDataDialogVisiable" width="82%" height="80%" :close-on-click-modal="false" @close="closeCustomDataDialog">
+      <div style="height:40%">
+        <div style="height:300px;">
+          <codemirror ref="dataCodeMirror" :options="cmOptions" />
         </div>
-        <span slot="footer" class="dialog-footer">
-            <el-button @click="closeCustomDataDialog()" size="mini">取 消</el-button>
-            <el-button type="primary" @click="confirmCustomData()" size="mini">确 定</el-button>
-        </span>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="mini" @click="closeCustomDataDialog()">取 消</el-button>
+        <el-button type="primary" size="mini" @click="confirmCustomData()">确 定</el-button>
+      </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
 export default {
-    props:{
-        component:{
-            type:Object,
-            default:()=>({})
-        },
-        chartsComponents:{
-            type:Object,
-            default:() => ({}),
-        },
-        customDataDialogVisiable:{
-            type:Boolean,
-            default:false
-        },
+  props: {
+    component: {
+      type: Object,
+      default: () => ({})
     },
-    mounted() {
-        this.cmOptions = this.commonConstants.cmOptions;
-        this.cmOptions.theme="erlang-dark"
-        this.init();
+    chartsComponents: {
+      type: Object,
+      default: () => ({})
     },
-    data(){
-        return{
-            cmOptions: {},
-        }
-    },
-    methods:{
-        confirmCustomData(){
-            let sqlContent=this.$refs.dataCodeMirror.codemirror.getValue();
-            if(sqlContent.trim()){
-                try {
-                        let values = eval('(' + sqlContent + ')');
-                        if(typeof values === 'object' || Array.isArray(values)){
-                             if(this.component.type == "pageTable" ){
-                                if(Array.isArray(values)){
-                                 this.component.spec.data.total = values.length;
-                                }else{
-                                    this.commonUtil.showMessage({ message: '请添加JSON对象数组格式的数据', type: this.commonConstants.messageType.error })
-                                    return;
-                                }
-                             }
-                            if(this.component.type == "sankey"){
-                                this.component.spec.data.values = [{nodes:[],links:[]}];
-                                this.commonUtil.processSankeyData(this.component,values);
-                            }else{
-                                this.component.spec.data.values = values;
-                            }
-                            
-                            if(this.component.category == this. screenConstants.category.vchart){
-                                this.commonUtil.reLoadChart(this.chartsComponents,this.component);
-                            }
-                            this.component.dynamicDataSettings.dataColumns = [];
-                            if(Array.isArray(values)){
-                                for(var key in values[0]){
-                                    this.component.dynamicDataSettings.dataColumns.push(key)
-                                }
-                            }else{
-                                for(var key in values){
-                                    this.component.dynamicDataSettings.dataColumns.push(key)
-                                }
-                            }
-                            this.closeCustomDataDialog();
-                            this.commonUtil.reLoadChart(this.chartsComponents,this.component);
-                        }else{
-                            this.commonUtil.showMessage({ message: '请添加JSON格式的数据', type: this.commonConstants.messageType.error })
-                        }
-                    } catch (error) {
-                        this.commonUtil.showMessage({ message: '请添加JSON格式的数据', type: this.commonConstants.messageType.error })
-                    }
-            }
-        },
-        closeCustomDataDialog(){
-           this.$emit('update:customDataDialogVisiable', false)
-           this.$refs.dataCodeMirror.codemirror.setValue(""); 
-        },
-        init(){
-            let dataContent = "";
-            if(this.component.type.toLowerCase().indexOf("sankey") >= 0){
-                dataContent = JSON.stringify(this.component.spec.data.values[0].links)
-            }else{
-                dataContent = JSON.stringify(this.component.spec.data.values)
-            }
-            
-            this.$nextTick(() => {
-                this.$refs.dataCodeMirror.codemirror.setValue(dataContent);
-            });
-        }
+    customDataDialogVisiable: {
+      type: Boolean,
+      default: false
     }
+  },
+  data() {
+    return {
+      cmOptions: {}
+    }
+  },
+  mounted() {
+    this.cmOptions = this.commonConstants.cmOptions
+    this.cmOptions.theme = 'eclipse'
+    this.init()
+  },
+  methods: {
+    confirmCustomData() {
+      const sqlContent = this.$refs.dataCodeMirror.codemirror.getValue()
+      if (sqlContent.trim()) {
+        try {
+          const values = eval('(' + sqlContent + ')')
+          if (typeof values === 'object' || Array.isArray(values)) {
+            if (this.component.type == 'pageTable') {
+              if (Array.isArray(values)) {
+                this.component.spec.data.total = values.length
+              } else {
+                this.commonUtil.showMessage({ message: '请添加JSON对象数组格式的数据', type: this.commonConstants.messageType.error })
+                return
+              }
+            }
+            if (this.component.type == 'sankey') {
+              this.component.spec.data.values = [{ nodes: [], links: [] }]
+              this.commonUtil.processSankeyData(this.component, values)
+            } else {
+              this.component.spec.data.values = values
+            }
+
+            if (this.component.category == this.screenConstants.category.vchart) {
+              this.commonUtil.reLoadChart(this.chartsComponents, this.component)
+            }
+            this.component.dynamicDataSettings.dataColumns = []
+            if (Array.isArray(values)) {
+              for (var key in values[0]) {
+                this.component.dynamicDataSettings.dataColumns.push(key)
+              }
+            } else {
+              for (var key in values) {
+                this.component.dynamicDataSettings.dataColumns.push(key)
+              }
+            }
+            this.closeCustomDataDialog()
+            this.commonUtil.reLoadChart(this.chartsComponents, this.component)
+          } else {
+            this.commonUtil.showMessage({ message: '请添加JSON格式的数据', type: this.commonConstants.messageType.error })
+          }
+        } catch (error) {
+          this.commonUtil.showMessage({ message: '请添加JSON格式的数据', type: this.commonConstants.messageType.error })
+        }
+      }
+    },
+    closeCustomDataDialog() {
+      this.$emit('update:customDataDialogVisiable', false)
+      this.$refs.dataCodeMirror.codemirror.setValue('')
+    },
+    init() {
+      let dataContent = ''
+      if (this.component.type.toLowerCase().indexOf('sankey') >= 0) {
+        dataContent = JSON.stringify(this.component.spec.data.values[0].links)
+      } else {
+        dataContent = JSON.stringify(this.component.spec.data.values)
+      }
+
+      this.$nextTick(() => {
+        this.$refs.dataCodeMirror.codemirror.setValue(dataContent)
+      })
+    }
+  }
 }
-     
+
 </script>
 
 <style>

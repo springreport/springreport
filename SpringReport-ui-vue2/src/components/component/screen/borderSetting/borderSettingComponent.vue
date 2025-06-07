@@ -1,7 +1,7 @@
 <template>
   <div>
-    <site :component="component" :chartsComponents="chartsComponents"></site>
-    <border-setting :component="component" :chartsComponents="chartsComponents"></border-setting>
+    <site :component="component" :charts-components="chartsComponents" />
+    <border-setting :component="component" :charts-components="chartsComponents" />
   </div>
 </template>
 
@@ -9,21 +9,21 @@
 import site from '../settingComponent/site/site.vue'
 import borderSetting from '../settingComponent/border/borderSetting.vue'
 export default {
-    name:"borderSettingComponent",
-    components:{
-        site,
-        borderSetting
+  name: 'BorderSettingComponent',
+  components: {
+    site,
+    borderSetting
+  },
+  props: {
+    component: {
+      type: Object,
+      default: () => ({})
     },
-    props:{
-         component:{
-            type:Object,
-            default:()=>({})
-        },
-        chartsComponents:{
-            type:Object,
-            default:() => ({}),
-        },
-    },
+    chartsComponents: {
+      type: Object,
+      default: () => ({})
+    }
+  }
 }
 </script>
 

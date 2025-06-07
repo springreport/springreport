@@ -1,9 +1,9 @@
 <template>
   <div>
-    <site :component="component" :chartsComponents="chartsComponents"></site>
-    <param-setting :component="component" :chartsComponents="chartsComponents"></param-setting>
-    <data-setting :component="component" :chartsComponents="chartsComponents"></data-setting>
-    <chart-setting :component="component" :chartsComponents="chartsComponents"></chart-setting>
+    <site :component="component" :charts-components="chartsComponents" />
+    <param-setting :component="component" :charts-components="chartsComponents" />
+    <data-setting :component="component" :charts-components="chartsComponents" />
+    <chart-setting :component="component" :charts-components="chartsComponents" />
   </div>
 </template>
 
@@ -11,42 +11,42 @@
 import 'codemirror/mode/javascript/javascript.js'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/addon/hint/show-hint.css'
-import 'codemirror/theme/eclipse.css';
-import 'codemirror/theme/erlang-dark.css';
+import 'codemirror/theme/eclipse.css'
+import 'codemirror/theme/erlang-dark.css'
 
-import "codemirror/addon/fold/foldgutter.css"
-import 'codemirror/addon/fold/foldcode.js';
-import 'codemirror/addon/fold/foldgutter.js';
-import 'codemirror/addon/fold/xml-fold.js';
-import 'codemirror/addon/fold/indent-fold.js';
-import "codemirror/addon/fold/brace-fold";
-import 'codemirror/addon/fold/markdown-fold.js';
-import 'codemirror/addon/fold/comment-fold.js';
-import 'codemirror/addon/selection/active-line';
+import 'codemirror/addon/fold/foldgutter.css'
+import 'codemirror/addon/fold/foldcode.js'
+import 'codemirror/addon/fold/foldgutter.js'
+import 'codemirror/addon/fold/xml-fold.js'
+import 'codemirror/addon/fold/indent-fold.js'
+import 'codemirror/addon/fold/brace-fold'
+import 'codemirror/addon/fold/markdown-fold.js'
+import 'codemirror/addon/fold/comment-fold.js'
+import 'codemirror/addon/selection/active-line'
 import site from '../settingComponent/site/site.vue'
 import dataSetting from '../settingComponent/data/dataSetting.vue'
 import chartSetting from '../settingComponent/chart/chartSetting.vue'
 import paramSetting from '../settingComponent/param/paramSetting.vue'
 import textSetting from '../settingComponent/text/textSetting.vue'
 export default {
-    name:"chartSettingComponent",
-    components:{
-        site,
-        dataSetting,
-        chartSetting,
-        paramSetting,
-        textSetting
+  name: 'ChartSettingComponent',
+  components: {
+    site,
+    dataSetting,
+    chartSetting,
+    paramSetting,
+    textSetting
+  },
+  props: {
+    component: {
+      type: Object,
+      default: () => ({})
     },
-    props:{
-         component:{
-            type:Object,
-            default:()=>({})
-        },
-        chartsComponents:{
-            type:Object,
-            default:() => ({}),
-        },
-    },
+    chartsComponents: {
+      type: Object,
+      default: () => ({})
+    }
+  }
 }
 </script>
 

@@ -1,7 +1,7 @@
 <template>
   <div>
-    <site :component="component" :chartsComponents="chartsComponents"></site>
-    <picture-setting :component="component" :chartsComponents="chartsComponents"></picture-setting>
+    <site :component="component" :charts-components="chartsComponents" />
+    <picture-setting :component="component" :charts-components="chartsComponents" />
   </div>
 </template>
 
@@ -9,21 +9,21 @@
 import site from '../settingComponent/site/site.vue'
 import pictureSetting from '../settingComponent/picture/pictureSetting.vue'
 export default {
-    name:"pictureSettingComponent",
-    components:{
-        site,
-        pictureSetting
+  name: 'PictureSettingComponent',
+  components: {
+    site,
+    pictureSetting
+  },
+  props: {
+    component: {
+      type: Object,
+      default: () => ({})
     },
-    props:{
-         component:{
-            type:Object,
-            default:()=>({})
-        },
-        chartsComponents:{
-            type:Object,
-            default:() => ({}),
-        },
-    },
+    chartsComponents: {
+      type: Object,
+      default: () => ({})
+    }
+  }
 }
 </script>
 

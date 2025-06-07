@@ -3,12 +3,12 @@
   color: #ffffff !important;
 }
 
-::v-deep .el-input__inner,
-::v-deep .el-textarea__inner {
-  background-color: var(--colorWhite);
-  color: var(--colorTextPrimary);
-  border: 1px solid var(--borderColorBase);
-}
+// ::v-deep .el-input__inner,
+// ::v-deep .el-textarea__inner {
+//   background-color: var(--colorWhite);
+//   color: var(--colorTextPrimary);
+//   border: 1px solid var(--borderColorBase);
+// }
 
 ::v-deep .el-form-item__label {
   color: var(--colorTextPrimary);

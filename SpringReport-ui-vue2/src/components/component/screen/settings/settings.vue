@@ -1,47 +1,47 @@
 <template>
-    <div>
-        <panel-component v-if="component.category == screenConstants.category.panel" :component="component"></panel-component>
-        <chart-setting-component v-if="component.category == screenConstants.category.vchart" :component="component" :charts-components="chartsComponents"></chart-setting-component>
-        <text-setting-component v-if="component.category == screenConstants.category.text" :component="component" :charts-components="chartsComponents"></text-setting-component>
-        <picture-setting-component v-if="component.category == screenConstants.category.picture" :component="component" :charts-components="chartsComponents"></picture-setting-component>
-        <border-setting-component v-if="component.category == screenConstants.category.border" :component="component" :charts-components="chartsComponents"></border-setting-component>
-        <decoration-setting-component v-if="component.category == screenConstants.category.decoration" :component="component" :charts-components="chartsComponents"></decoration-setting-component>
-        <table-setting-component v-if="component.category == screenConstants.category.table" :component="component" :charts-components="chartsComponents"></table-setting-component>
-    </div>
+  <div>
+    <panel-component v-if="component.category == screenConstants.category.panel" :component="component" />
+    <chart-setting-component v-if="component.category == screenConstants.category.vchart" :component="component" :charts-components="chartsComponents" />
+    <text-setting-component v-if="component.category == screenConstants.category.text" :component="component" :charts-components="chartsComponents" />
+    <picture-setting-component v-if="component.category == screenConstants.category.picture" :component="component" :charts-components="chartsComponents" />
+    <border-setting-component v-if="component.category == screenConstants.category.border" :component="component" :charts-components="chartsComponents" />
+    <decoration-setting-component v-if="component.category == screenConstants.category.decoration" :component="component" :charts-components="chartsComponents" />
+    <table-setting-component v-if="component.category == screenConstants.category.table" :component="component" :charts-components="chartsComponents" />
+  </div>
 </template>
 <script>
-import panelComponent from "../panel/panelComponent.vue"
-import chartSettingComponent from "../chartSetting/chartSettingComponent.vue";
-import textSettingComponent from "../textSetting/textSettingComponent.vue";
-import pictureSettingComponent from "../pictureSetting/pictureSettingComponent.vue";
-import borderSettingComponent from '../borderSetting/borderSettingComponent.vue';
-import decorationSettingComponent from '../decorationSetting/decorationSettingComponent.vue';
-import tableSettingComponent from '../tableSetting/tableSettingComponent.vue';
+import panelComponent from '../panel/panelComponent.vue'
+import chartSettingComponent from '../chartSetting/chartSettingComponent.vue'
+import textSettingComponent from '../textSetting/textSettingComponent.vue'
+import pictureSettingComponent from '../pictureSetting/pictureSettingComponent.vue'
+import borderSettingComponent from '../borderSetting/borderSettingComponent.vue'
+import decorationSettingComponent from '../decorationSetting/decorationSettingComponent.vue'
+import tableSettingComponent from '../tableSetting/tableSettingComponent.vue'
 export default {
-    name: 'settings',
-    components: {
-      panelComponent,
-      chartSettingComponent,
-      textSettingComponent,
-      pictureSettingComponent,
-      borderSettingComponent,
-      decorationSettingComponent,
-      tableSettingComponent
+  name: 'Settings',
+  components: {
+    panelComponent,
+    chartSettingComponent,
+    textSettingComponent,
+    pictureSettingComponent,
+    borderSettingComponent,
+    decorationSettingComponent,
+    tableSettingComponent
+  },
+  props: {
+    component: {
+      type: Object,
+      default: () => ({})
     },
-    props: {
-        component: {
-            type: Object,
-            default: () => ({})
-        },
-        chartsComponents: {
-            type: Object,
-            default: () => ({})
-        },
-        timerMap: {
-            type: Object,
-            default: () => ({})
-        }
+    chartsComponents: {
+      type: Object,
+      default: () => ({})
+    },
+    timerMap: {
+      type: Object,
+      default: () => ({})
     }
+  }
 }
 </script>
 

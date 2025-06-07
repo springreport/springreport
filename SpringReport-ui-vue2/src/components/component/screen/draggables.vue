@@ -6,39 +6,39 @@
       :class="myclass"
       :parent="true"
       :z="item.active?1000:item.zindex"
-      :isConflictCheck="false"
+      :is-conflict-check="false"
       :snap="true"
-      :snapTolerance="10"
+      :snap-tolerance="10"
       :x="item.x ? Number(item.x) : 0"
       :y="item.y ? Number(item.y) : 0"
       :w="Number(item.w)"
+      v-show="!item.isDelete&&item.isShow!=false"
       :h="Number(item.h)"
       :active="item.active"
+      :draggable="!item.locked"
+      :resizable="!item.locked"
       @activated="onActivated(index, item)"
       @deactivated="onDeactivated"
       @resizestop="onResizstop"
       @dragstop="onDragstop"
-      :draggable="!item.locked"
-      :resizable="!item.locked"
-      v-show="!item.isDelete"
     >
-      <div @contextmenu.prevent="onContextmenu($event, item)" v-if="item.category == screenConstants.category.text && !item.isDelete" >
-        <text-component :component="item" :chartsComponents="chartsComponents" :sendRequest="sendRequest" :ref="item.id"></text-component>
+      <div v-if="item.category == screenConstants.category.text && !item.isDelete" @contextmenu.prevent="onContextmenu($event, item)">
+        <text-component :ref="item.id" :component="item" :charts-components="chartsComponents" :send-request="sendRequest" />
       </div>
-      <div @contextmenu.prevent="onContextmenu($event, item)" v-if="item.category == screenConstants.category.border && !item.isDelete" >
-          <border-component :component="item" :ref="item.id"></border-component>
+      <div v-if="item.category == screenConstants.category.border && !item.isDelete" @contextmenu.prevent="onContextmenu($event, item)">
+        <border-component :ref="item.id" :component="item" />
       </div>
-      <div @contextmenu.prevent="onContextmenu($event, item)" v-if="item.category == screenConstants.category.decoration && !item.isDelete">
-       <decoration-component :component="item" :ref="item.id"></decoration-component>
+      <div v-if="item.category == screenConstants.category.decoration && !item.isDelete" @contextmenu.prevent="onContextmenu($event, item)">
+        <decoration-component :ref="item.id" :component="item" />
       </div>
-      <div @contextmenu.prevent="onContextmenu($event, item)" v-if="item.category == screenConstants.category.picture && !item.isDelete" :id="item.id" :style="{height:item.h+'px',width:item.w+'px'}">
+      <div v-if="item.category == screenConstants.category.picture && !item.isDelete" :id="item.id" :style="{height:item.h+'px',width:item.w+'px'}" @contextmenu.prevent="onContextmenu($event, item)">
         <img v-if="item.imgUrl" :src="item.imgUrl">
       </div>
-      <div @contextmenu.prevent="onContextmenu($event, item)" v-if="item.category == screenConstants.category.table && !item.isDelete" >
-        <table-component :component="item" :sendRequest="sendRequest" :chartsComponents="chartsComponents" :ref="item.id" ></table-component>
+      <div v-if="item.category == screenConstants.category.table && !item.isDelete" @contextmenu.prevent="onContextmenu($event, item)">
+        <table-component :ref="item.id" :component="item" :send-request="sendRequest" :charts-components="chartsComponents" />
       </div>
-      <div @contextmenu.prevent="onContextmenu($event, item)"  v-if="item.category == screenConstants.category.vchart && !item.isDelete" :style="{height:item.h+'px',width:item.w+'px'}">
-        <vchart-component  :component="item" :sendRequest="sendRequest" :chartsComponents="chartsComponents" :ref="item.id"></vchart-component>
+      <div v-if="item.category == screenConstants.category.vchart && !item.isDelete" :style="{height:item.h+'px',width:item.w+'px'}" @contextmenu.prevent="onContextmenu($event, item)">
+        <vchart-component :ref="item.id" :component="item" :send-request="sendRequest" :charts-components="chartsComponents" />
       </div>
     </vue-draggable-resizable>
   </div>
@@ -62,6 +62,5 @@ img {
 .newclass {
   border: 1px solid #00ced1;
 }
-
 
 </style>
