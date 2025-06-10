@@ -82,9 +82,9 @@ export default {
         // 表格分页信息start
         tablePage: {
           currentPage: 1,
-          pageSize: 10,
+          pageSize: 12,
           pageTotal: 0,
-          pageSizeRange: [5, 10, 20, 50],
+          pageSizeRange: [12, 24, 36],
         },
         // 表格分页信息end
         // 表格列表头start
