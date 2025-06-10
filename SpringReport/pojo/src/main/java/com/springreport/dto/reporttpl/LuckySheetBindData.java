@@ -329,6 +329,13 @@ public class LuckySheetBindData {
     /** dict_type - 数据字典类型 */
     private String dictType;
     
+    /**  
+     * @Fields sourceType : 数据字典来源
+     * @author caiyang
+     * @date 2025-06-09 12:21:51 
+     */  
+    private Integer sourceType;
+    
     /** alternate_format - 是否交替颜色1是 2否 */
     private Integer alternateFormat = YesNoEnum.NO.getCode();
 
