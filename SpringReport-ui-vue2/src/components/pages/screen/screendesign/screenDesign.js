@@ -267,6 +267,10 @@ export default {
     },
     // 往画板中添加组件
     async addComponent(item, isDraggable) {
+      this.components.forEach(com => {
+        com.active = false
+      })
+
       if (item.category == this.screenConstants.category.border) {
         const obj = JSON.parse(
           JSON.stringify(this.screenConstants['dvBorderBoxInit'])
@@ -277,6 +281,7 @@ export default {
         }
         obj.id = this.commonUtil.getUuid()
         obj.name = item.name
+        obj.active = true
         if (item.text.indexOf('反向') >= 0) {
           obj.reverse = true
         }
@@ -291,6 +296,7 @@ export default {
         }
         obj.id = this.commonUtil.getUuid()
         obj.name = item.name
+        obj.active = true
         if (item.text.indexOf('反向') >= 0) {
           obj.reverse = true
         }
@@ -305,6 +311,7 @@ export default {
             obj.y = this.y
           }
           obj.id = this.commonUtil.getUuid()
+          obj.active = true
           this.components.push(obj)
           if (item.category == this.screenConstants.category.vchart) {
             if (obj.type.toLowerCase().indexOf('map') >= 0) {
@@ -340,6 +347,7 @@ export default {
           }
         }
       }
+      console.log(this.components.map(item => item.active), 'active')
     },
     // 获取大屏设计信息
     getScreenDesign() {
