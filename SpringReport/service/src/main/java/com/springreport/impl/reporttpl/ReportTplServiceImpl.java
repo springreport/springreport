@@ -6331,7 +6331,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			if(luckySheetBindData.getRecalculateCoords().intValue() == 1)
 			{
 				JSONArray newCoords = getNewCoords(luckySheetBindData.getPriortyMoveDirection().intValue(), luckySheetBindData.getLastCoordsx()==null?luckySheetBindData.getCoordsx():luckySheetBindData.getLastCoordsx(), luckySheetBindData.getLastCoordsy()==null?luckySheetBindData.getCoordsy():luckySheetBindData.getLastCoordsy(), maxCoordinate, usedCells);
-				if(j == 0) {
+				if(j == 0 && !ListUtil.isEmpty(newCoords)) {
 					luckySheetBindData.setLastCoordsx(newCoords.getIntValue(0));
 					luckySheetBindData.setLastCoordsy(newCoords.getIntValue(1));
 				}
@@ -6805,7 +6805,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			if(luckySheetBindData.getRecalculateCoords().intValue() == 1)
 			{
 				JSONArray newCoords = getNewCoords(luckySheetBindData.getPriortyMoveDirection().intValue(), luckySheetBindData.getLastCoordsx()==null?luckySheetBindData.getCoordsx():luckySheetBindData.getLastCoordsx(), luckySheetBindData.getLastCoordsy()==null?luckySheetBindData.getCoordsy():luckySheetBindData.getLastCoordsy(), maxCoordinate, usedCells);
-				if(j == 0) {
+				if(j == 0 && !ListUtil.isEmpty(newCoords)) {
 					luckySheetBindData.setLastCoordsx(newCoords.getIntValue(0));
 					luckySheetBindData.setLastCoordsy(newCoords.getIntValue(1));
 				}
@@ -8046,7 +8046,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			{
 //				rowAndCol = this.getMaxRowAndCol(maxCoordinate, luckySheetBindData.getCoordsx(),luckySheetBindData.getCoordsy(),1,1);
 				JSONArray newCoords = getNewCoords(luckySheetBindData.getPriortyMoveDirection().intValue(), luckySheetBindData.getLastCoordsx()==null?luckySheetBindData.getCoordsx():luckySheetBindData.getLastCoordsx(), luckySheetBindData.getLastCoordsy()==null?luckySheetBindData.getCoordsy():luckySheetBindData.getLastCoordsy(), maxCoordinate, usedCells);
-				if(j == 0) {
+				if(j == 0 && !ListUtil.isEmpty(newCoords)) {
 					luckySheetBindData.setLastCoordsx(newCoords.getIntValue(0));
 					luckySheetBindData.setLastCoordsy(newCoords.getIntValue(1));
 				}
@@ -8082,7 +8082,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 					rowAndCol.put("maxY", luckySheetBindData.getCoordsy());
 				}else {
 					JSONArray newCoords = getNewCoords(luckySheetBindData.getPriortyMoveDirection().intValue(), luckySheetBindData.getLastCoordsx()==null?luckySheetBindData.getCoordsx():luckySheetBindData.getLastCoordsx(), luckySheetBindData.getLastCoordsy()==null?luckySheetBindData.getCoordsy():luckySheetBindData.getLastCoordsy(), maxCoordinate, usedCells);
-					if(j == 0) {
+					if(j == 0 && !ListUtil.isEmpty(newCoords)) {
 						luckySheetBindData.setLastCoordsx(newCoords.getIntValue(0));
 						luckySheetBindData.setLastCoordsy(newCoords.getIntValue(1));
 					}
@@ -9207,7 +9207,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 					rowAndCol.put("maxY", y);
 				}else {
 					JSONArray newCoords = getNewCoords(luckySheetBindData.getPriortyMoveDirection().intValue(), luckySheetBindData.getLastCoordsx()==null?luckySheetBindData.getCoordsx():luckySheetBindData.getLastCoordsx(), luckySheetBindData.getLastCoordsy()==null?luckySheetBindData.getCoordsy():luckySheetBindData.getLastCoordsy(), maxCoordinate, usedCells);
-					if(j == 0) {
+					if(j == 0 && !ListUtil.isEmpty(newCoords)) {
 						luckySheetBindData.setLastCoordsx(newCoords.getIntValue(0));
 						luckySheetBindData.setLastCoordsy(newCoords.getIntValue(1));
 					}
