@@ -244,7 +244,6 @@
           :data="dataSets"
           border
           style="width: 100%"
-          :cell-style="{ color: '#fff' }"
         >
           <el-table-column
             type="index"
