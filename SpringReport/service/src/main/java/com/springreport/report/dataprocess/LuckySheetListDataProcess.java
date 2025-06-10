@@ -112,6 +112,7 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 				bindData.setRelyCells(variableCells.get(i).getRelyCells());
 				bindData.setDatasetName(variableCells.get(i).getDatasetName());
 				bindData.setIsDict(variableCells.get(i).getIsDict());
+				bindData.setSourceType(variableCells.get(i).getSourceType());
 				bindData.setDatasourceId(variableCells.get(i).getDatasourceId());
 				bindData.setDictType(variableCells.get(i).getDictType());
 				bindData.setHloopCount(variableCells.get(i).getHloopCount()==null?0:variableCells.get(i).getHloopCount());
@@ -129,11 +130,28 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 						String valueType = formsAttrs.getString("valueType");
 						if("4".equals(valueType)) {
 							String datasourceId = formsAttrs.getString("datasourceId");
-							String dictType = formsAttrs.getString("dictType");
-							if(StringUtil.isNotEmpty(datasourceId) && StringUtil.isNotEmpty(dictType)) {
-								bindData.setIsDict(true);
-								bindData.setDatasourceId(Long.parseLong(datasourceId));
-								bindData.setDictType(dictType);
+							int sourceType = formsAttrs.getIntValue("sourceType");
+							String content = formsAttrs.getString("content");
+							bindData.setSourceType(sourceType);
+							if(sourceType == 2) {
+								if(StringUtil.isNotEmpty(datasourceId)) {
+									bindData.setIsDict(true);
+									bindData.setDatasourceId(Long.parseLong(datasourceId));
+									bindData.setDictType(content);
+								}
+							}else if(sourceType == 3) {
+								if(StringUtil.isNotEmpty(content)) {
+									bindData.setIsDict(true);
+									bindData.setDatasourceId(0L);
+									bindData.setDictType(content);
+								}
+							}else {
+								String dictType = formsAttrs.getString("dictType");
+								if(StringUtil.isNotEmpty(datasourceId) && StringUtil.isNotEmpty(dictType)) {
+									bindData.setIsDict(true);
+									bindData.setDatasourceId(Long.parseLong(datasourceId));
+									bindData.setDictType(dictType);
+								}
 							}
 						}
 						boolean isOperationCol =  formsAttrs.getBooleanValue("isOperationCol");

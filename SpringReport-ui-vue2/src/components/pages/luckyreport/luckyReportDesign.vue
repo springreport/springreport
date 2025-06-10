@@ -581,7 +581,24 @@
                     @change="changeCellAttr('isDict')"
                   />
                 </el-form-item>
-                <el-form-item v-show="cellForm.isDict" label="数据源">
+                <el-form-item
+                    v-show="cellForm.isDict"
+                    label="数据来源"
+                  >
+                  <el-select
+                  v-model="cellForm.sourceType"
+                  placeholder="数据来源"
+                  size="small"
+                  :disabled="attrDisabled"
+                  @change="changeCellAttr('sourceType')"
+                  clearable
+                >
+                  <el-option label="数据字典" :value="1" />
+                  <el-option label="sql语句" :value="2" />
+                  <el-option label="自定义" :value="3" />
+                </el-select>
+                  </el-form-item>
+                <el-form-item v-show="cellForm.isDict && (cellForm.sourceType==1 || cellForm.sourceType==2)" label="数据源">
                   <el-select
                     v-model="cellForm.datasourceId"
                     style="width: 100%"
@@ -598,7 +615,7 @@
                     />
                   </el-select>
                 </el-form-item>
-                <el-form-item v-show="cellForm.isDict" label="字典类型">
+                <el-form-item v-show="cellForm.isDict && cellForm.sourceType==1" label="字典类型">
                   <el-select
                     v-model="cellForm.dictType"
                     style="width: 100%"
@@ -616,6 +633,19 @@
                   </el-select>
                 </el-form-item>
                 <el-form-item
+                    v-show="cellForm.isDict && (cellForm.sourceType==2 || cellForm.sourceType==3)"
+                    :label="cellForm.sourceType==2?'sql语句':'自定义数据'"
+                  >
+                    <el-input
+                    v-model="cellForm.dictContent"
+                    type="textarea"
+                    :cols="80"
+                    :placeholder="cellForm.sourceType==2?'sql语句':'自定义数据'"
+                    size="small"
+                    @input="changeCellAttr('dictContent')"
+                  />
+                  </el-form-item>
+                <el-form-item
                   label="是否下钻"
                   size="small"
                   class="df-form-item"
@@ -632,7 +662,7 @@
                   <el-select
                     v-model="cellForm.drillId"
                     style="width: 100%"
-                    placeholder="数据源"
+                    placeholder="下钻报表"
                     size="small"
                     filterable
                     clearable
@@ -1094,6 +1124,23 @@
                   </el-form-item>
                   <el-form-item
                     v-show="cellForm.formsAttrs.valueType == '4'"
+                    label="数据来源"
+                  >
+                  <el-select
+                  v-model="cellForm.formsAttrs.sourceType"
+                  placeholder="数据来源"
+                  size="small"
+                  :disabled="attrDisabled"
+                  @change="changeCellAttr('sourceType','formsAttrs')"
+                  clearable
+                >
+                  <el-option label="数据字典" :value="1" />
+                  <el-option label="sql语句" :value="2" />
+                  <el-option label="自定义" :value="3" />
+                </el-select>
+                  </el-form-item>
+                  <el-form-item
+                    v-show="cellForm.formsAttrs.valueType == '4' && (cellForm.formsAttrs.sourceType==1 || cellForm.formsAttrs.sourceType==2)"
                     label="数据源"
                   >
                     <el-select
@@ -1114,7 +1161,7 @@
                     </el-select>
                   </el-form-item>
                   <el-form-item
-                    v-show="cellForm.formsAttrs.valueType == '4'"
+                    v-show="cellForm.formsAttrs.valueType == '4' && cellForm.formsAttrs.sourceType==1"
                     label="字典类型"
                   >
                     <el-select
@@ -1132,6 +1179,18 @@
                         :value="op.dictType"
                       />
                     </el-select>
+                  </el-form-item>
+                  <el-form-item
+                    v-show="cellForm.formsAttrs.valueType == '4' && (cellForm.formsAttrs.sourceType==2 || cellForm.formsAttrs.sourceType==3)"
+                    :label="cellForm.formsAttrs.sourceType==2?'sql语句':'自定义数据'"
+                  >
+                    <el-input
+                    v-model="cellForm.formsAttrs.content"
+                    type="textarea"
+                    :cols="80"
+                    :placeholder="cellForm.formsAttrs.sourceType==2?'sql语句':'自定义数据'"
+                    size="small"
+                  />
                   </el-form-item>
                 </div>
                 <el-form-item
