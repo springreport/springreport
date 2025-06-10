@@ -41,11 +41,11 @@ module.exports = {
     },
     // before: require('./mock/mock-server.js'),
     proxy: {
-      '/SpringReport/api': {
-        target: 'https://www.springreport.vip/',
-        changeOrigin: true,
-        pathRewrite: {
-          '^/SpringReport/api': '/SpringReport/api'
+      '/SpringReport/api':{
+        target:'http://localhost:9099/springReport',
+        changeOrigin:true,
+        pathRewrite:{
+          '^/SpringReport/api':'/api'
         }
       },
       '/SpringReport/geoJson': {
