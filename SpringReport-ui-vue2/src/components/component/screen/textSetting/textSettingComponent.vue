@@ -1,20 +1,58 @@
 <template>
   <div>
-    <el-tabs value="basic"  type="card">
-      <el-tab-pane label="基础" name="basic">
-        <site :component="component" :charts-components="chartsComponents" />
-      </el-tab-pane>
-      <el-tab-pane label="参数" name="param" v-if="component.type != 'date'">
-        <param-setting  :component="component" :charts-components="chartsComponents" />
-      </el-tab-pane>
-      <el-tab-pane label="数据" name="data" v-if="component.type != 'date'">
-        <data-setting v-if="component.type != 'date'" :component="component" :charts-components="chartsComponents" />
-      </el-tab-pane>
-      <el-tab-pane :label="component.type != 'date'?'文本':'日期'" name="chart">
-         <text-setting :component="component" :charts-components="chartsComponents" />
-      </el-tab-pane>
-    </el-tabs>
-    
+    <div class="btn-group df-c">
+      <div
+        class="btn"
+        :class="{ 'btn-active': currentIndex === 0 }"
+        @click="currentIndex = 0"
+      >
+        基础
+      </div>
+
+      <div
+        class="btn"
+        :class="{ 'btn-active': currentIndex === 1 }"
+        @click="currentIndex = 1"
+      >
+        参数
+      </div>
+
+      <div
+        class="btn"
+        :class="{ 'btn-active': currentIndex === 2 }"
+        @click="currentIndex = 2"
+      >
+        数据
+      </div>
+
+      <div
+        class="btn"
+        :class="{ 'btn-active': currentIndex === 3 }"
+        @click="currentIndex = 3"
+      >
+        {{ component.type != 'date' ? '文本' : '日期' }}
+      </div>
+    </div>
+
+    <site v-if="currentIndex==0" :component="component" :charts-components="chartsComponents" />
+    <param-setting
+      v-if="component.type != 'date'&&currentIndex==1"
+      :component="component"
+      :charts-components="chartsComponents"
+    />
+
+    <data-setting
+      v-if="component.type != 'date'&&currentIndex==2"
+      :component="component"
+      :charts-components="chartsComponents"
+    />
+
+    <text-setting
+      v-if="currentIndex==3"
+      :component="component"
+      :charts-components="chartsComponents"
+    />
+
   </div>
 </template>
 
@@ -57,13 +95,17 @@ export default {
       type: Object,
       default: () => ({})
     }
+  },
+  data() {
+    return {
+      currentIndex: 0
+    }
   }
 }
 </script>
 
 <style scoped>
- ::v-deep .el-collapse-item__header{
-    border-top: 0px !important;
- }
-
+::v-deep .el-collapse-item__header {
+  border-top: 0px !important;
+}
 </style>

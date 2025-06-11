@@ -203,7 +203,7 @@
                 <span
                   :class="item.isShow == false ? 'hide-icon' : 'show-icon'"
                   @click="showComponent(item)"
-                  :title="item.isShow?'隐藏':'显示'"
+                  :title="item.isShow ? '隐藏' : '显示'"
                 />
               </div>
             </div>
@@ -347,6 +347,8 @@
 
 
 <style lang="scss">
+@import "@/element-variables.scss";
+
 .layer-menu {
   padding: 0 !important;
   border-radius: 6px;
@@ -455,49 +457,48 @@
   }
 
   .el-collapse-item {
-    
   }
 
   .el-form-item__label {
-      width: 100%;
-    }
-    .el-icon-arrow-right {
-      position: absolute;
-      right: 10px;
-      top: 10px;
-      cursor: pointer;
-    }
-    .el-collapse-item__header {
-      position: relative;
-      padding: 0 12px;
-      height: 36px;
-      line-height: 36px;
-      background-color: #f9fafa;
-      color: #666;
-      font-size: 14px;
-      font-weight: bold;
-    }
-    .el-collapse-item__wrap {
-      padding: 16px;
-      background-color: #fff;
-    }
-    .el-collapse-item__content {
-      padding-bottom: 0;
-    }
+    width: 100%;
+  }
+  .el-icon-arrow-right {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    cursor: pointer;
+  }
+  .el-collapse-item__header {
+    position: relative;
+    padding: 0 12px;
+    height: 36px;
+    line-height: 36px;
+    background-color: #f9fafa;
+    color: #666;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  .el-collapse-item__wrap {
+    padding: 16px;
+    background-color: #fff;
+  }
+  .el-collapse-item__content {
+    padding-bottom: 0;
+  }
 
-    .config-btn {
-      cursor: pointer;
-      width: 66px;
-      height: 24px;
-      line-height: 24px;
-      font-size: 12px;
-      color: #17b794;
-      font-weight: 400;
-      text-align: center;
-      border-radius: 4px;
-      border: 1px solid #17b794;
-      background: #fff;
-    }
+  .config-btn {
+    cursor: pointer;
+    width: 66px;
+    height: 24px;
+    line-height: 24px;
+    font-size: 12px;
+    color: #17b794;
+    font-weight: 400;
+    text-align: center;
+    border-radius: 4px;
+    border: 1px solid #17b794;
+    background: #fff;
+  }
 
   .sub-collapse {
     margin-top: 6px;
@@ -571,15 +572,15 @@
     font-weight: bold;
   }
 
-  .color-el-form-item{
+  .color-el-form-item {
     position: relative;
     width: 20%;
-    margin-bottom:0 !important;
-    .el-form-item__content{
+    margin-bottom: 0 !important;
+    .el-form-item__content {
       text-align: center;
     }
   }
-  
+
   .addBtn {
     display: flex;
     flex-direction: row;
@@ -632,6 +633,36 @@
     background-image: url("~@/static/img/sheet/del.png");
     background-size: 14px 14px;
     background-repeat: no-repeat;
+  }
+}
+
+.contentbox {
+  .btn-group {
+    padding: 12px 0 10px;
+    .btn {
+      flex: 1;
+      margin-right: 12px;
+      border-radius: 2px;
+      background: #ededed;
+      line-height: 34px;
+      text-align: center;
+      color: #252525;
+      font-family: "PingFang SC";
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal;
+      transform: all 0.3s ease-in-out;
+      cursor: pointer;
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+    .btn:hover,
+    .btn-active {
+      background: $--color-primary;
+      color: #fff;
+    }
   }
 }
 </style>
@@ -744,33 +775,7 @@
       font-size: 14px;
       font-weight: 400;
     }
-    .btn-group {
-      padding: 12px 0 10px;
-      .btn {
-        flex: 1;
-        margin-right: 12px;
-        border-radius: 2px;
-        background: #ededed;
-        line-height: 34px;
-        text-align: center;
-        color: #252525;
-        font-family: "PingFang SC";
-        font-size: 14px;
-        font-style: normal;
-        font-weight: 400;
-        line-height: normal;
-        transform: all 0.3s ease-in-out;
-        cursor: pointer;
-        &:last-child {
-          margin-right: 0;
-        }
-      }
-      .btn:hover,
-      .btn-active {
-        background: $--color-primary;
-        color: #fff;
-      }
-    }
+
     .layer-panel {
       position: relative;
       .layer-main {
@@ -916,6 +921,8 @@
     height: 100%;
     display: flex;
     flex-direction: column;
+    padding: 0 16px;
+    box-sizing: border-box;
     .config-title {
       height: 48px;
       text-align: center;

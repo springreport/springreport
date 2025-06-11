@@ -1,51 +1,50 @@
 <template>
-  <div class="p-16">
-    <el-tabs value="pannel"  type="card">
-      <el-tab-pane label="画板" name="pannel">
-        <el-form
-          ref="settingForm"
-          class="demo-form-inline"
-          label-position="top"
-          :model="component"
-          size="mini"
+  <div>
+    <div class="btn-group df-c">
+      <div class="btn btn-active">画板</div>
+    </div>
+    <el-form
+      ref="settingForm"
+      class="demo-form-inline"
+      label-position="top"
+      :model="component"
+      size="mini"
+    >
+      <el-form-item label="宽度">
+        <el-input v-model.number="component.width" />
+      </el-form-item>
+      <el-form-item label="高度">
+        <el-input v-model.number="component.height" />
+      </el-form-item>
+      <el-form-item label="背景图片">
+        <el-input v-model="component.imgUrl" style="width: 180px">
+          <template
+            slot="append"
+          ><el-button
+            icon="el-icon-upload"
+            @click="uploadTrigger"
+          /></template>
+        </el-input>
+        <input
+          id="uploadFile"
+          ref="fileBtn"
+          type="file"
+          accept="image/*"
+          style="display: none"
+          @change="uploadFile"
         >
-          <el-form-item label="宽度">
-            <el-input v-model.number="component.width" />
-          </el-form-item>
-          <el-form-item label="高度">
-            <el-input v-model.number="component.height" />
-          </el-form-item>
-          <el-form-item label="背景图片">
-            <el-input v-model="component.imgUrl" style="width: 180px">
-              <template
-                slot="append"
-              ><el-button
-                icon="el-icon-upload"
-                @click="uploadTrigger"
-              /></template>
-            </el-input>
-            <input
-              id="uploadFile"
-              ref="fileBtn"
-              type="file"
-              accept="image/*"
-              style="display: none"
-              @change="uploadFile"
-            >
-          </el-form-item>
-          <el-form-item label="背景颜色" prop="background">
-            <input-color-picker
-              :value="component.background"
-              @change="
-                (val) => {
-                  component.background = val;
-                }
-              "
-            />
-          </el-form-item>
-        </el-form>
-      </el-tab-pane>
-    </el-tabs>
+      </el-form-item>
+      <el-form-item label="背景颜色" prop="background">
+        <input-color-picker
+          :value="component.background"
+          @change="
+            (val) => {
+              component.background = val;
+            }
+          "
+        />
+      </el-form-item>
+    </el-form>
   </div>
 </template>
 

@@ -1,20 +1,20 @@
 <template>
   <div>
-    
-    <el-tabs value="basic"  type="card">
-      <el-tab-pane label="基础" name="basic">
-        <site :component="component" :charts-components="chartsComponents" />
-      </el-tab-pane>
-      <el-tab-pane label="参数" name="param">
-        <param-setting :component="component" :charts-components="chartsComponents" />
-      </el-tab-pane>
-      <el-tab-pane label="数据" name="data">
-        <data-setting :component="component" :charts-components="chartsComponents" />
-      </el-tab-pane>
-      <el-tab-pane label="表格" name="table">
-         <table-setting :component="component" :charts-components="chartsComponents" />
-      </el-tab-pane>
-    </el-tabs>
+    <div class="btn-group df-c">
+      <div
+        v-for="(item, index) in ['基础', '参数', '数据', '表格']"
+        :key="index"
+        class="btn"
+        :class="{ 'btn-active': currentIndex === index }"
+        @click="currentIndex = index"
+      >
+        {{ item }}
+      </div>
+    </div>
+    <site v-if="currentIndex==0" :component="component" :charts-components="chartsComponents" />
+    <param-setting v-else-if="currentIndex==1" :component="component" :charts-components="chartsComponents" />
+    <data-setting v-else-if="currentIndex==2" :component="component" :charts-components="chartsComponents" />
+    <table-setting v-else-if="currentIndex==3" :component="component" :charts-components="chartsComponents" />
   </div>
 </template>
 
@@ -54,6 +54,11 @@ export default {
     chartsComponents: {
       type: Object,
       default: () => ({})
+    }
+  },
+  data() {
+    return {
+      currentIndex: 0
     }
   }
 }

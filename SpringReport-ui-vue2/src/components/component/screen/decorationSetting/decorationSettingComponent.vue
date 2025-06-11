@@ -1,14 +1,18 @@
 <template>
   <div>
-    <el-tabs value="basic"  type="card">
-      <el-tab-pane label="基础" name="basic">
-        <site :component="component" :charts-components="chartsComponents" />
-      </el-tab-pane>
-      <el-tab-pane label="边框" name="border">
-        <decoration-setting :component="component" :charts-components="chartsComponents" />
-      </el-tab-pane>
-    </el-tabs>
-    
+    <div class="btn-group df-c">
+      <div
+        v-for="(item, index) in ['基础', '边框']"
+        :key="index"
+        class="btn"
+        :class="{ 'btn-active': currentIndex === index }"
+        @click="currentIndex = index"
+      >
+        {{ item }}
+      </div>
+    </div>
+    <site v-if="currentIndex==0" :component="component" :charts-components="chartsComponents" />
+    <decoration-setting v-else :component="component" :charts-components="chartsComponents" />
   </div>
 </template>
 
@@ -29,6 +33,11 @@ export default {
     chartsComponents: {
       type: Object,
       default: () => ({})
+    }
+  },
+  data() {
+    return {
+      currentIndex: 0
     }
   }
 }

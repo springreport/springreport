@@ -270,9 +270,9 @@ export default {
       this.components.forEach(com => {
         com.active = false
       })
-      let obj = null;
+      let obj = null
       if (item.category == this.screenConstants.category.border) {
-         obj = JSON.parse(
+        obj = JSON.parse(
           JSON.stringify(this.screenConstants['dvBorderBoxInit'])
         )
         if (isDraggable) {
@@ -287,7 +287,7 @@ export default {
         }
         this.components.push(obj)
       } else if (item.category == this.screenConstants.category.decoration) {
-         obj = JSON.parse(
+        obj = JSON.parse(
           JSON.stringify(this.screenConstants['dvDecorationBoxInit'])
         )
         if (isDraggable) {
@@ -302,7 +302,7 @@ export default {
         }
         this.components.push(obj)
       } else {
-         obj = JSON.parse(
+        obj = JSON.parse(
           JSON.stringify(this.screenConstants[item.name + 'Init'])
         )
         if (obj) {
