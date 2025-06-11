@@ -149,6 +149,11 @@ screenConstants.tableAlign = [
   { name: 'right', value: 'right' }
 ]
 
+screenConstants.funnelShape = [
+  { name: '梯形', value: 'trapezoid' },
+  { name: '矩形', value: 'rect' },
+]
+
 screenConstants.type = {
   text: 'text', // 文本
   date: 'date', // 日期时间

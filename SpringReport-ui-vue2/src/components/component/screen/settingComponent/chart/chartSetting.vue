@@ -1,8 +1,8 @@
 <!-- 图表设置组件 -->
 <template>
   <div>
-    <el-collapse>
-      <el-collapse-item title="图表设置">
+    <!-- <el-collapse>
+      <el-collapse-item title="图表设置"> -->
         <el-form ref="settingForm" class="demo-form-inline" :model="component" label-position="top" size="mini">
           <div class="right-dataset-title">
             <span class="attr-dataset-title">主题设置</span>
@@ -566,12 +566,12 @@
                 <input-color-picker :value="component.spec.legends.item.label.style.fill" @change="(val)=>{component.spec.legends.item.label.style.fill=val;commonUtil.reLoadChart(chartsComponents,component)}" />
               </el-form-item>
               <div v-if="component.type.toLowerCase().indexOf('funnel')>=0">
-                <div class="attr-dataset-title-small">漏斗图形状</div>
+                <!-- <div class="attr-dataset-title-small">漏斗图形状</div> -->
 
                 <el-form-item label="漏斗图形状">
                   <el-select v-model="component.spec.shape" placeholder="请选择" style="width:180px" @change="commonUtil.reLoadChart(chartsComponents,component)">
                     <el-option
-                      v-for="item in screenConstants.legendOrient"
+                      v-for="item in screenConstants.funnelShape"
                       :key="item.value"
                       :label="item.name"
                       :value="item.value"
@@ -626,8 +626,8 @@
             </el-form-item>
           </div>
         </el-form>
-      </el-collapse-item>
-    </el-collapse>
+      <!-- </el-collapse-item>
+    </el-collapse> -->
     <el-dialog title="添加" width="32%" :visible.sync="addColorDialogVisiable" :close-on-click-modal="false" @close="closeAddDialog">
       <el-form ref="addColorRef" label-position="top" class="demo-form-inline" size="mini">
         <el-form-item key="color" label="颜色">

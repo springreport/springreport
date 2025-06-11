@@ -1,7 +1,14 @@
 <template>
   <div>
-    <site :component="component" :charts-components="chartsComponents" />
-    <border-setting :component="component" :charts-components="chartsComponents" />
+    <el-tabs value="basic"  type="card">
+      <el-tab-pane label="基础" name="basic">
+        <site :component="component" :charts-components="chartsComponents" />
+      </el-tab-pane>
+      <el-tab-pane label="边框" name="param">
+         <border-setting :component="component" :charts-components="chartsComponents" />
+      </el-tab-pane>
+    </el-tabs>
+   
   </div>
 </template>
 

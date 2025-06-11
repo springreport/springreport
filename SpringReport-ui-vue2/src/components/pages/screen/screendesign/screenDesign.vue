@@ -306,7 +306,7 @@
         </div>
       </div>
       <div v-if="isShowConf" class="config-panel">
-        <div class="config-title">页面配置</div>
+        <div class="config-title">配置信息</div>
         <div class="config-box">
           <settings
             ref="tabForm"
@@ -453,7 +453,10 @@
   }
 
   .el-collapse-item {
-    .el-form-item__label {
+    
+  }
+
+  .el-form-item__label {
       width: 100%;
     }
     .el-icon-arrow-right {
@@ -493,7 +496,6 @@
       border: 1px solid #17b794;
       background: #fff;
     }
-  }
 
   .sub-collapse {
     margin-top: 6px;

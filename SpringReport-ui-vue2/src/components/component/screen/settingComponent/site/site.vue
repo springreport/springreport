@@ -1,11 +1,11 @@
 <!-- 通用设置组件 -->
 <template>
   <div>
-    <el-collapse>
-      <el-collapse-item title="通用设置">
+    <!-- <el-collapse>
+      <el-collapse-item title="通用设置"> -->
         <el-form ref="settingForm" class="demo-form-inline" label-position="top" :model="component" size="mini">
           <div class="right-dataset-title">
-            <span class="attr-dataset-title">表格样式</span>
+            <span class="attr-dataset-title">位置设置</span>
           </div>
           <div class="right-dataset-warp">
             <el-form-item label="左" class="df-form-item">
@@ -16,7 +16,7 @@
             </el-form-item>
           </div>
           <div class="right-dataset-title">
-            <span class="attr-dataset-title">图表尺寸</span>
+            <span class="attr-dataset-title">尺寸设置</span>
           </div>
           <div class="right-dataset-warp">
             <el-form-item label="宽" class="df-form-item">
@@ -30,6 +30,9 @@
             <span class="attr-dataset-title">组件设置</span>
           </div>
           <div class="right-dataset-warp">
+            <el-form-item label="组件名称" class="df-form-item">
+              <el-input v-model="component.text" placeholder="组件名称" />
+            </el-form-item>
             <el-form-item label="组件层级" class="df-form-item">
               <el-input v-model.number="component.zindex" placeholder="组件层级" />
             </el-form-item>
@@ -54,16 +57,16 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item v-show="component.isborder" label="边框颜色1">
+            <el-form-item v-if="component.isborder && component.borderColor" label="边框颜色1">
               <input-color-picker :input-width="152" :value="component.borderColor[0]" @change="(val)=>{changeColor(0,val)}" />
             </el-form-item>
-            <el-form-item v-show="component.isborder" label="边框颜色2">
+            <el-form-item v-if="component.isborder && component.borderColor" label="边框颜色2">
               <input-color-picker :input-width="152" :value="component.borderColor[1]" @change="(val)=>{changeColor(1,val)}" />
             </el-form-item>
           </div>
         </el-form>
-      </el-collapse-item>
-    </el-collapse>
+      <!-- </el-collapse-item>
+    </el-collapse> -->
   </div>
 </template>
 

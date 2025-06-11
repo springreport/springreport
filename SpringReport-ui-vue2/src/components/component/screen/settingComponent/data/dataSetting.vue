@@ -1,8 +1,8 @@
 <!-- 数据设置组件 -->
 <template>
   <div>
-    <el-collapse>
-      <el-collapse-item title="数据设置">
+    <!-- <el-collapse>
+      <el-collapse-item title="数据设置"> -->
         <el-form
           ref="settingForm"
           class="demo-form-inline"
@@ -670,8 +670,8 @@
             </el-input>
           </el-form-item>
         </el-form>
-      </el-collapse-item>
-    </el-collapse>
+      <!-- </el-collapse-item>
+    </el-collapse> -->
     <static-data-dialog
       v-if="customDataDialogVisiable"
       :custom-data-dialog-visiable.sync="customDataDialogVisiable"

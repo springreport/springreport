@@ -1,9 +1,20 @@
 <template>
   <div>
-    <site :component="component" :charts-components="chartsComponents" />
-    <param-setting v-if="component.type != 'date'" :component="component" :charts-components="chartsComponents" />
-    <data-setting v-if="component.type != 'date'" :component="component" :charts-components="chartsComponents" />
-    <text-setting :component="component" :charts-components="chartsComponents" />
+    <el-tabs value="basic"  type="card">
+      <el-tab-pane label="基础" name="basic">
+        <site :component="component" :charts-components="chartsComponents" />
+      </el-tab-pane>
+      <el-tab-pane label="参数" name="param" v-if="component.type != 'date'">
+        <param-setting  :component="component" :charts-components="chartsComponents" />
+      </el-tab-pane>
+      <el-tab-pane label="数据" name="data" v-if="component.type != 'date'">
+        <data-setting v-if="component.type != 'date'" :component="component" :charts-components="chartsComponents" />
+      </el-tab-pane>
+      <el-tab-pane :label="component.type != 'date'?'文本':'日期'" name="chart">
+         <text-setting :component="component" :charts-components="chartsComponents" />
+      </el-tab-pane>
+    </el-tabs>
+    
   </div>
 </template>
 

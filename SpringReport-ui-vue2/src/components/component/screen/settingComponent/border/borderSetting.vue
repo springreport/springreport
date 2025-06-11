@@ -1,8 +1,8 @@
 <!-- 数据设置组件 -->
 <template>
   <div>
-    <el-collapse>
-      <el-collapse-item title="边框设置">
+    <!-- <el-collapse>
+      <el-collapse-item title="边框设置"> -->
         <el-form ref="settingForm" class="demo-form-inline" :inline="true" :model="component" label-position="top" size="mini">
           <el-form-item label="颜色1">
             <input-color-picker :value="component.color[0]" @change="(val)=>{changeColor(0,val)}" />
@@ -20,8 +20,8 @@
             <el-input v-model.number="component.titleWidth" />
           </el-form-item>
         </el-form>
-      </el-collapse-item>
-    </el-collapse>
+      <!-- </el-collapse-item>
+    </el-collapse> -->
   </div>
 </template>
 

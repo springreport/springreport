@@ -1,9 +1,20 @@
 <template>
   <div>
-    <site :component="component" :charts-components="chartsComponents" />
-    <param-setting :component="component" :charts-components="chartsComponents" />
-    <data-setting :component="component" :charts-components="chartsComponents" />
-    <chart-setting :component="component" :charts-components="chartsComponents" />
+    <el-tabs value="basic"  type="card">
+      <el-tab-pane label="基础" name="basic">
+        <site :component="component" :charts-components="chartsComponents" />
+      </el-tab-pane>
+      <el-tab-pane label="参数" name="param">
+        <param-setting :component="component" :charts-components="chartsComponents" />
+      </el-tab-pane>
+      <el-tab-pane label="数据" name="data">
+        <data-setting :component="component" :charts-components="chartsComponents" />
+      </el-tab-pane>
+      <el-tab-pane label="图表" name="chart">
+         <chart-setting :component="component" :charts-components="chartsComponents" />
+      </el-tab-pane>
+    </el-tabs>
+    
   </div>
 </template>
 

@@ -1,7 +1,15 @@
 <template>
   <div>
-    <site :component="component" :charts-components="chartsComponents" />
-    <picture-setting :component="component" :charts-components="chartsComponents" />
+    <el-tabs value="basic"  type="card">
+      <el-tab-pane label="基础" name="basic">
+       <site :component="component" :charts-components="chartsComponents" />
+      </el-tab-pane>
+      <el-tab-pane label="图片" name="picture">
+       <picture-setting :component="component" :charts-components="chartsComponents" />
+      </el-tab-pane>
+    </el-tabs>
+    
+    
   </div>
 </template>
 

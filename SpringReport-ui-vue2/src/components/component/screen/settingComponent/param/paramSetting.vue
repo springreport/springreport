@@ -1,9 +1,9 @@
 <template>
   <div>
-    <el-collapse>
-      <el-collapse-item title="参数设置">
+    <!-- <el-collapse>
+      <el-collapse-item title="参数设置"> -->
         <div class="right-dataset-title df-c-b">
-          <span class="attr-dataset-title">参数记录</span>
+          <span class="attr-dataset-title">组件参数</span>
           <el-button
             class="addBtn"
             @click="showAddParamDailog"
@@ -37,7 +37,7 @@
             </p>
           </el-collapse-item>
         </el-collapse>
-      </el-collapse-item>
+      <!-- </el-collapse-item> -->
       <!-- <div
           v-for="(item, index) in component.params"
           :key="index"
@@ -84,7 +84,7 @@
           </el-descriptions>
           <div style="height: 3px" />
         </div> -->
-    </el-collapse>
+    <!-- </el-collapse> -->
     <el-dialog
       title="组件参数"
       :visible.sync="isShowParamDialog"

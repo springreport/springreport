@@ -1,8 +1,8 @@
 <!-- 数据设置组件 -->
 <template>
   <div>
-    <el-collapse>
-      <el-collapse-item title="装饰设置">
+    <!-- <el-collapse>
+      <el-collapse-item title="装饰设置"> -->
         <el-form ref="settingForm" class="demo-form-inline" label-position="top" :model="component" size="mini">
           <el-form-item label="颜色1">
             <input-color-picker :input-width="152" :value="component.color[0]" @change="(val)=>{changeColor(0,val)}" />
@@ -28,8 +28,8 @@
             </el-form-item>
           </div>
         </el-form>
-      </el-collapse-item>
-    </el-collapse>
+      <!-- </el-collapse-item>
+    </el-collapse> -->
   </div>
 </template>
 

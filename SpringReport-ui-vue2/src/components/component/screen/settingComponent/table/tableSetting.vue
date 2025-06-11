@@ -1,8 +1,8 @@
 <!-- 数据设置组件 -->
 <template>
   <div>
-    <el-collapse>
-      <el-collapse-item title="表格设置">
+    <!-- <el-collapse>
+      <el-collapse-item title="表格设置"> -->
         <el-form
           ref="settingForm"
           class="demo-form-inline"
@@ -423,8 +423,8 @@
             </div>
           </div>
         </el-form>
-      </el-collapse-item>
-    </el-collapse>
+      <!-- </el-collapse-item>
+    </el-collapse> -->
     <el-dialog
       title="表格数据列"
       :visible.sync="tableColumnDialogVisiable"

@@ -1,8 +1,8 @@
 <!-- 数据设置组件 -->
 <template>
   <div>
-    <el-collapse>
-      <el-collapse-item :title="component.type != 'date'?'文本设置':'日期设置'">
+    <!-- <el-collapse>
+      <el-collapse-item :title="component.type != 'date'?'文本设置':'日期设置'"> -->
         <el-form ref="settingForm" class="demo-form-inline" :model="component" label-position="top" size="mini">
           <el-form-item v-if="component.type != 'date'" label="文本类型" prop="textType">
             <el-select v-model="component.textType" placeholder="请选择">
@@ -92,8 +92,8 @@
             <el-input v-model="component.href" type="textarea" />
           </el-form-item>
         </el-form>
-      </el-collapse-item>
-    </el-collapse>
+      <!-- </el-collapse-item>
+    </el-collapse> -->
   </div>
 </template>
 

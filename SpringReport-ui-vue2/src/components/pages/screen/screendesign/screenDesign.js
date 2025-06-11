@@ -270,9 +270,9 @@ export default {
       this.components.forEach(com => {
         com.active = false
       })
-
+      let obj = null;
       if (item.category == this.screenConstants.category.border) {
-        const obj = JSON.parse(
+         obj = JSON.parse(
           JSON.stringify(this.screenConstants['dvBorderBoxInit'])
         )
         if (isDraggable) {
@@ -287,7 +287,7 @@ export default {
         }
         this.components.push(obj)
       } else if (item.category == this.screenConstants.category.decoration) {
-        const obj = JSON.parse(
+         obj = JSON.parse(
           JSON.stringify(this.screenConstants['dvDecorationBoxInit'])
         )
         if (isDraggable) {
@@ -302,7 +302,7 @@ export default {
         }
         this.components.push(obj)
       } else {
-        const obj = JSON.parse(
+         obj = JSON.parse(
           JSON.stringify(this.screenConstants[item.name + 'Init'])
         )
         if (obj) {
@@ -347,7 +347,7 @@ export default {
           }
         }
       }
-      console.log(this.components.map(item => item.active), 'active')
+      this.$refs.draggable.changeCurrent(obj)
     },
     // 获取大屏设计信息
     getScreenDesign() {

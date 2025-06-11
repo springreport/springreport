@@ -1,8 +1,8 @@
 <!-- 数据设置组件 -->
 <template>
   <div>
-    <el-collapse>
-      <el-collapse-item title="图片设置">
+    <!-- <el-collapse>
+      <el-collapse-item title="图片设置"> -->
         <el-form ref="settingForm" class="demo-form-inline" :model="component" label-position="top" size="mini">
           <el-form-item label="图片路径" prop="height">
             <el-input v-model="component.imgUrl">
@@ -11,8 +11,8 @@
             <input id="uploadFile" ref="fileBtn" type="file" accept="image/*" style="display:none" @change="uploadFile">
           </el-form-item>
         </el-form>
-      </el-collapse-item>
-    </el-collapse>
+      <!-- </el-collapse-item>
+    </el-collapse> -->
   </div>
 </template>
 
