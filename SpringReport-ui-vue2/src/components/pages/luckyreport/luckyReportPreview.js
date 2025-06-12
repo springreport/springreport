@@ -670,7 +670,6 @@ export default {
               // }
             }
             this.dictDatas = response.responseData.cellDictsLabelValue
-            console.log(this.dictDatas)
           }
           this.imgMap = response.responseData.imgCells
           if (response.responseData.showToolbar == 1) { // 显示工具栏
