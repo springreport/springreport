@@ -360,6 +360,8 @@ export default {
         dataAttr:'',//属性
         subExtend:null,//子数据扩展方向
         priortyMoveDirection:1,//位置冲突后优先移动方向
+        sourceType:1,
+        dictContent:"",
         formsAttrs:{
           isOperationCol:false,//是否操作列
           valueType: '1', // 值类型 1文本 2数值 3日期 4下拉单选
@@ -380,6 +382,8 @@ export default {
           otherCellCompare: false,
           cellType: '1',
           compareCells: [],
+          sourceType:1,
+          content:"",
         },//填报配置
       },
       delSheetsIndex: [], //删除的sheet index
@@ -1052,6 +1056,8 @@ export default {
         this.cellForm.dataAttr = cellFormData.dataAttr
         this.cellForm.subExtend = cellFormData.subExtend
         this.cellForm.priortyMoveDirection = cellFormData.priortyMoveDirection
+        this.cellForm.sourceType = cellFormData.sourceType
+        this.cellForm.dictContent = cellFormData.dictContent
         if (cellFormData.cellFillType) {
           this.cellForm.cellFillType = cellFormData.cellFillType;
         } else {
@@ -1113,6 +1119,8 @@ export default {
         this.cellForm.dataAttr = ''
         this.cellForm.subExtend = 1
         this.cellForm.priortyMoveDirection = 1
+        this.cellForm.sourceType = 1
+        this.cellForm.dictContent = ""
         // this.getDrillReport();
       }
       if (this.cellForm.datasourceId) {
