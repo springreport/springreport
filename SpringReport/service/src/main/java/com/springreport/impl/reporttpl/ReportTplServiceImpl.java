@@ -7639,7 +7639,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         		}
         	}
         }else {
-        	Map<String, Object> datas = new HashMap<String, Object>();
+        	Map<String, Object> datas = new LinkedHashMap<String, Object>();
             if(datasetNames.length > 1)
             {
             	for (int i = 0; i < datasetNames.length; i++) {
