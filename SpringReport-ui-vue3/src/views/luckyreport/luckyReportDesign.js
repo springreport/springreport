@@ -497,7 +497,7 @@ export default {
           sheetDeleteBefore: this.sheetDeleteBefore,
           sheetCreateAfter: this.sheetCreateAfter,
           sheetCopyBefore: this.sheetCopyBefore,
-          updateCellFormat: this.updateCellFormat,
+          // updateCellFormat: this.updateCellFormat,
           cellMousedown: this.cellMousedown,
           luckysheetDeleteCellAfter: this.luckysheetDeleteCellAfter,
           chartMoveOrResize: this.chartMoveOrResize,
@@ -555,6 +555,7 @@ export default {
           afterInitImg:this.afterInitImg,
           datasourceClick: this.datasourceClick,
           highlightRowCol:this.highlightRowCol,
+          execFAfter:this.execFAfter
         },
       },
       settingModalConfig: {
@@ -2278,18 +2279,18 @@ export default {
             );
             cellDatas = cellDatas.concat(dataVerificationCells);
             var datasourceConfig = this.getDatasourceConfig(luckysheetfile.index)
-            if (cellDatas && cellDatas.length > 0) {
-              var sheetCellFormats = this.cellFormats[luckysheetfile.index];
-              if (sheetCellFormats) {
-                for (let index = 0; index < cellDatas.length; index++) {
-                  const element = cellDatas[index];
-                  var ct = sheetCellFormats[element.r + '_' + element.c];
-                  if (ct) {
-                    element.v.ct = ct;
-                  }
-                }
-              }
-            }
+            // if (cellDatas && cellDatas.length > 0) {
+            //   var sheetCellFormats = this.cellFormats[luckysheetfile.index];
+            //   if (sheetCellFormats) {
+            //     for (let index = 0; index < cellDatas.length; index++) {
+            //       const element = cellDatas[index];
+            //       var ct = sheetCellFormats[element.r + '_' + element.c];
+            //       if (ct) {
+            //         element.v.ct = ct;
+            //       }
+            //     }
+            //   }
+            // }
             if (
               this.blockData[luckysheetfiles[index].index] &&
               this.blockData[luckysheetfiles[index].index].length > 0
@@ -3374,15 +3375,15 @@ export default {
       var sheetIndex = luckysheet.getSheet().index;
       var sheetCellFormats = this.cellFormats[sheetIndex];
       var order = luckysheet.getSheet().order;
-      if (sheetCellFormats) {
-        var ct = sheetCellFormats[r + '_' + c];
-        if (ct && ct.t && ct.t == 'inlineStr') {
-        } else {
-          if (ct) {
-            luckysheet.setCellFormat(r, c, 'ct', ct, { order: order });
-          }
-        }
-      }
+      // if (sheetCellFormats) {
+      //   var ct = sheetCellFormats[r + '_' + c];
+      //   if (ct && ct.t && ct.t == 'inlineStr') {
+      //   } else {
+      //     if (ct) {
+      //       luckysheet.setCellFormat(r, c, 'ct', ct, { order: order });
+      //     }
+      //   }
+      // }
       if(this.datasourceColumnDialog){
         const rangeAxis = luckysheet.getRangeAxis();
         if(rangeAxis && rangeAxis.length > 0){
@@ -4115,21 +4116,21 @@ export default {
           cellDatas
         );
         cellDatas = cellDatas.concat(dataVerificationCells);
-        if (cellDatas && cellDatas.length > 0) {
-          var sheetCellFormats = this.cellFormats[luckysheetfile.index];
-          if (sheetCellFormats) {
-            for (let index = 0; index < cellDatas.length; index++) {
-              const element = cellDatas[index];
-              var ct = sheetCellFormats[element.r + '_' + element.c];
-              if (ct && ct.t && ct.t == 'inlineStr') {
-              } else {
-                if (ct) {
-                  element.v.ct = ct;
-                }
-              }
-            }
-          }
-        }
+        // if (cellDatas && cellDatas.length > 0) {
+        //   var sheetCellFormats = this.cellFormats[luckysheetfile.index];
+        //   if (sheetCellFormats) {
+        //     for (let index = 0; index < cellDatas.length; index++) {
+        //       const element = cellDatas[index];
+        //       var ct = sheetCellFormats[element.r + '_' + element.c];
+        //       if (ct && ct.t && ct.t == 'inlineStr') {
+        //       } else {
+        //         if (ct) {
+        //           element.v.ct = ct;
+        //         }
+        //       }
+        //     }
+        //   }
+        // }
         configs.cellDatas = cellDatas;
         configs.blockData = this.blockData[luckysheetfile.index];
         configs.extraCustomCellConfigs = extraCustomCellConfigs;
@@ -5873,6 +5874,30 @@ export default {
         this.commonUtil.showMessage({ message: '已开启选中单元格行列高亮模式。', type: this.commonConstants.messageType.success })
       }else{
         this.commonUtil.showMessage({ message: '已关闭选中单元格行列高亮模式。', type: this.commonConstants.messageType.success })
+      }
+    },
+    execFAfter(){
+      if(!this.cellFormats){
+        return;
+      }
+      for(var sheetIndex in this.cellFormats) {
+        let sheetCellFormats = this.cellFormats[sheetIndex];
+        if(sheetCellFormats && Object.keys(sheetCellFormats).length > 0){
+          let luckysheetFile = luckysheet.getSheet({"index":sheetIndex});
+          let data = luckysheetFile.data;
+          for(var key in sheetCellFormats) {
+            let r = parseInt(key.split("_")[0]);
+            let c = parseInt(key.split("_")[1]);
+            if(data[r]){
+              if(data[r][c] == null){
+                data[r][c] = {};
+              }
+              data[r][c].ct = sheetCellFormats[key];
+            }
+          }
+          luckysheet.refresh()
+        }
+
       }
     }
   },
