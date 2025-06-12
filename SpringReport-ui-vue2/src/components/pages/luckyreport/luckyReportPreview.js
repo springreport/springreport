@@ -1261,7 +1261,6 @@ export default {
             } else if (this.cellConfig.valueType == '4') {
               // 下拉选择
               this.selectValidRules()
-              console.log(orginCell)
               if (this.cellConfig.datasourceId && this.cellConfig.dictType) {
                 this.getDictTypeDatas(orginCell)
               }
