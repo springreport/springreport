@@ -2343,7 +2343,9 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 									JSONObject cellData = objectMapper.readValue(luckysheetReportBlockCell.getCellData(), JSONObject.class);
 									cellDatas.add(cellData);
 									JSONObject cellFormat = this.getCellFormat(cellData);
-									cellFormats.put(cellData.getInteger("r")+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+cellData.getInteger("c"), cellFormat);
+									if(luckysheetReportBlockCell.getCellValueType().intValue() == 2) {
+										cellFormats.put(cellData.getInteger("r")+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+cellData.getInteger("c"), cellFormat);
+									}
 									JSONObject extraCustomCellConfig = new JSONObject();
 									extraCustomCellConfig.put(LuckySheetPropsEnum.CELLEXTEND.getCode(), CellExtendEnum.NOEXTEND.getCode());
 									extraCustomCellConfig.put(LuckySheetPropsEnum.AGGREGATETYPE.getCode(), AggregateTypeEnum.LIST.getCode());
@@ -2394,7 +2396,9 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		 					JSONObject cellData = objectMapper.readValue(luckysheetReportCell.getCellData(), JSONObject.class);
 							cellDatas.add(cellData);
 							JSONObject cellFormat = this.getCellFormat(cellData);
-							cellFormats.put(cellData.getInteger("r")+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+cellData.getInteger("c"), cellFormat);
+							if(luckysheetReportCell.getCellValueType().intValue() == 2) {
+								cellFormats.put(cellData.getInteger("r")+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+cellData.getInteger("c"), cellFormat);
+							}
 							JSONObject extraCustomCellConfig = new JSONObject();
 							extraCustomCellConfig.put(LuckySheetPropsEnum.CELLEXTEND.getCode(), luckysheetReportCell.getCellExtend().intValue());
 							extraCustomCellConfig.put(LuckySheetPropsEnum.AGGREGATETYPE.getCode(), luckysheetReportCell.getAggregateType());
