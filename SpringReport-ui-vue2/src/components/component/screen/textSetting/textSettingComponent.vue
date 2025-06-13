@@ -10,6 +10,7 @@
       </div>
 
       <div
+        v-if="component.type != 'date'"
         class="btn"
         :class="{ 'btn-active': currentIndex === 1 }"
         @click="currentIndex = 1"
@@ -18,6 +19,7 @@
       </div>
 
       <div
+        v-if="component.type != 'date'"
         class="btn"
         :class="{ 'btn-active': currentIndex === 2 }"
         @click="currentIndex = 2"

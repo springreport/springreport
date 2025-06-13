@@ -158,13 +158,13 @@
             <!-- 这块下方以及组件有直接操作对象的逻辑，所以不使用computed -->
             <div
               v-for="(item, index) in components.filter((item) =>
-                !item.isDelete &&
-                screenConstants.compType[item.type] &&
-                layerKeyword
-                  ? (
-                      item.text || screenConstants.compType[item.type].text
-                    ).includes(layerKeyword)
-                  : true
+                screenConstants.compType[item.type] && layerKeyword
+                  ? (item.text || screenConstants.compType[item.type].text).includes(
+                      layerKeyword
+                    ) &&
+                    !item.isDelete &&
+                    screenConstants.compType[item.type]
+                  : !item.isDelete && screenConstants.compType[item.type]
               )"
               :key="index"
               class="df-c"

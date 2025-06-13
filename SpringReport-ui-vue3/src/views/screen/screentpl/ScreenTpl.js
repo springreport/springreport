@@ -311,6 +311,14 @@ export default {
     this.getReportTypeTree();
   },
   methods: {
+    handleCurrentChange(val) {
+      this.pageData.tablePage.currentPage = val;
+      this.searchtablelist();
+    },
+    handleSizeChange(val) {
+      this.pageData.tablePage.pageSize = val;
+      this.searchtablelist();
+    },
     goTemStore() {
       window.open(
         this.$router.resolve({

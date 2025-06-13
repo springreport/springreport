@@ -43,7 +43,8 @@
                 <div class="tpl-code">
                   {{ item.tplCode }}
                 </div>
-                <el-dropdown size="small" class="table-dropdown" :teleported="false">
+                <!-- :teleported="false" -->
+                <el-dropdown size="small" class="table-dropdown">
                   <div class="more-btn">
                     <img src="@/assets/img/template/more.png" width="18px" height="18px" />
                   </div>

@@ -1,90 +1,42 @@
 <template>
   <div>
-    <!-- <el-collapse>
-      <el-collapse-item title="参数设置"> -->
-        <div class="right-dataset-title df-c-b">
-          <span class="attr-dataset-title">组件参数</span>
-          <el-button
-            class="addBtn"
-            @click="showAddParamDailog"
-          ><i class="el-icon-plus el-icon--left" />添加</el-button>
-        </div>
 
-        <el-collapse
-          v-if="component.params && component.params.length > 0"
-          class="sub-collapse"
-        >
-          <el-collapse-item
-            v-for="(item, index) in component.params"
-            :key="index"
-          >
-            <template slot="title">
-              参数{{ index + 1 }}
-              <div
-                class="right-block-el-icon-edit"
-                @click.stop="editParam(item, index)"
-              />
-              <div
-                class="right-el-icon-delete"
-                @click.stop="deleteParam(index)"
-              />
-            </template>
-            <p class="column-tag" style="min-width: 220px; max-width: 220px">
-              参数编码：{{ item.paramCode }}
-            </p>
-            <p class="column-tag" style="min-width: 220px; max-width: 220px">
-              参数名称：{{ item.paramName }}
-            </p>
-          </el-collapse-item>
-        </el-collapse>
-      <!-- </el-collapse-item> -->
-      <!-- <div
-          v-for="(item, index) in component.params"
-          :key="index"
-          class="demo-form-inline"
-        >
-          <el-descriptions
-            class="margin-top"
-            title=""
-            direction="vertical"
-            :column="3"
-            size="mini"
-            border
-          >
-            <el-descriptions-item>
-              <template slot="label"> 参数编码 </template>
-              {{ item.paramCode }}
-            </el-descriptions-item>
-            <el-descriptions-item>
-              <template slot="label"> 参数名称 </template>
-              {{ item.paramName }}
-            </el-descriptions-item>
-            <el-descriptions-item>
-              <template slot="label"> 操作 </template>
-              <el-button-group>
-                <el-button
-                  type="primary"
-                  icon="el-icon-edit"
-                  circle
-                  size="mini"
-                  title="编辑"
-                  @click="editParam(item, index)"
-                />
-                <el-button
-                  type="danger"
-                  icon="el-icon-delete"
-                  circle
-                  size="mini"
-                  title="删除"
-                  @click="deleteParam(index)"
-                />
-              </el-button-group>
-            </el-descriptions-item>
-            <template slot="extra" />
-          </el-descriptions>
-          <div style="height: 3px" />
-        </div> -->
-    <!-- </el-collapse> -->
+    <div class="right-dataset-title df-c-b">
+      <span class="attr-dataset-title">组件参数</span>
+      <el-button
+        class="addBtn"
+        @click="showAddParamDailog"
+      ><i class="el-icon-plus el-icon--left" />添加</el-button>
+    </div>
+
+    <el-collapse
+      v-if="component.params && component.params.length > 0"
+      class="sub-collapse"
+    >
+      <el-collapse-item
+        v-for="(item, index) in component.params"
+        :key="index"
+      >
+        <template slot="title">
+          参数{{ index + 1 }}
+          <div
+            class="right-block-el-icon-edit"
+            @click.stop="editParam(item, index)"
+          />
+          <div
+            class="right-el-icon-delete"
+            @click.stop="deleteParam(index)"
+          />
+        </template>
+        <p class="column-tag" style="min-width: 220px; max-width: 220px">
+          参数编码：{{ item.paramCode }}
+        </p>
+        <p class="column-tag" style="min-width: 220px; max-width: 220px">
+          参数名称：{{ item.paramName }}
+        </p>
+      </el-collapse-item>
+    </el-collapse>
+
     <el-dialog
       title="组件参数"
       :visible.sync="isShowParamDialog"

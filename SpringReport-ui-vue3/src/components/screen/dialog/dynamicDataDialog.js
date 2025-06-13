@@ -1,41 +1,41 @@
-import { format } from "sql-formatter";
-import codemirror from "codemirror-editor-vue3";
+import { format } from 'sql-formatter';
+import codemirror from 'codemirror-editor-vue3';
 // base style
-import "codemirror/lib/codemirror.css";
+import 'codemirror/lib/codemirror.css';
 // theme css
-import "codemirror/theme/eclipse.css";
-import "codemirror/addon/hint/sql-hint";
+import 'codemirror/theme/eclipse.css';
+import 'codemirror/addon/hint/sql-hint';
 // language
-import "codemirror/mode/sql/sql.js";
+import 'codemirror/mode/sql/sql.js';
 // active-line.js
-import "codemirror/addon/selection/active-line.js";
+import 'codemirror/addon/selection/active-line.js';
 // styleSelectedText
-import "codemirror/addon/selection/mark-selection.js";
-import "codemirror/addon/search/searchcursor.js";
+import 'codemirror/addon/selection/mark-selection.js';
+import 'codemirror/addon/search/searchcursor.js';
 // highlightSelectionMatches
-import "codemirror/addon/scroll/annotatescrollbar.js";
-import "codemirror/addon/search/matchesonscrollbar.js";
-import "codemirror/addon/search/searchcursor.js";
-import "codemirror/addon/search/match-highlighter.js";
+import 'codemirror/addon/scroll/annotatescrollbar.js';
+import 'codemirror/addon/search/matchesonscrollbar.js';
+import 'codemirror/addon/search/searchcursor.js';
+import 'codemirror/addon/search/match-highlighter.js';
 
 // keyMap
-import "codemirror/mode/clike/clike.js";
-import "codemirror/addon/edit/matchbrackets.js";
-import "codemirror/addon/comment/comment.js";
-import "codemirror/addon/dialog/dialog.js";
-import "codemirror/addon/dialog/dialog.css";
-import "codemirror/addon/search/searchcursor.js";
-import "codemirror/addon/search/search.js";
-import "codemirror/keymap/sublime.js";
- 
+import 'codemirror/mode/clike/clike.js';
+import 'codemirror/addon/edit/matchbrackets.js';
+import 'codemirror/addon/comment/comment.js';
+import 'codemirror/addon/dialog/dialog.js';
+import 'codemirror/addon/dialog/dialog.css';
+import 'codemirror/addon/search/searchcursor.js';
+import 'codemirror/addon/search/search.js';
+import 'codemirror/keymap/sublime.js';
+
 // foldGutter
-import "codemirror/addon/fold/foldgutter.css";
-import "codemirror/addon/fold/brace-fold.js";
-import "codemirror/addon/fold/comment-fold.js";
-import "codemirror/addon/fold/foldcode.js";
-import "codemirror/addon/fold/foldgutter.js";
-import "codemirror/addon/fold/indent-fold.js";
-import "codemirror/addon/fold/markdown-fold.js";
+import 'codemirror/addon/fold/foldgutter.css';
+import 'codemirror/addon/fold/brace-fold.js';
+import 'codemirror/addon/fold/comment-fold.js';
+import 'codemirror/addon/fold/foldcode.js';
+import 'codemirror/addon/fold/foldgutter.js';
+import 'codemirror/addon/fold/indent-fold.js';
+import 'codemirror/addon/fold/markdown-fold.js';
 export default {
   components: {
     codemirror,
@@ -59,7 +59,7 @@ export default {
       cmOptions: {},
       dataSetForm: {
         //数据集表单
-        dataSetId: "", //选中的数据集id
+        dataSetId: '', //选中的数据集id
         column: null, //选中的数据列z
         isMulti: false,
       },
@@ -67,9 +67,9 @@ export default {
       dataSets: [], //数据集
       dataColumn: [], //数据列
       sqlForm: {
-        id: "",
-        datasetName: "", //数据集名称
-        datasourceId: "", //数据源id
+        id: '',
+        datasetName: '', //数据集名称
+        datasourceId: '', //数据源id
         sqlType: 1,
       }, //sql表单
       dataSource: [],
@@ -84,13 +84,12 @@ export default {
         },
       },
       showDatasetsDialog: false,
-      datasourceType: "1", //1 sql 2 api
-      sqlText:"",
+      datasourceType: '1', //1 sql 2 api
+      sqlText: '',
     };
   },
   mounted() {
     this.cmOptions = this.commonConstants.cmOptions;
-    this.cmOptions.theme = "erlang-dark";
     this.init();
   },
   methods: {
@@ -107,7 +106,7 @@ export default {
       };
       var that = this;
       this.commonUtil.doPost(obj).then((response) => {
-        if (response.code == "200") {
+        if (response.code == '200') {
           that.dataSets = response.responseData;
           that.dataSetForm.dataSetId = that.component.dynamicDataSettings.datasetId;
           that.dataSetForm.column = that.component.dynamicDataSettings.dataColumns;
@@ -115,13 +114,13 @@ export default {
       });
     },
     closeDynamicDataDialog() {
-      this.$emit("update:dynamicDialogVisiable", false);
+      this.$emit('update:dynamicDialogVisiable', false);
     },
     showAddDatasetDialog() {
       this.addDatasetsDialogVisiable = true;
       this.getScreenTplDateSource();
       this.$nextTick(() => {
-        this.sqlText = " ";
+        this.sqlText = ' ';
       });
     },
     //获取模板关联的数据源
@@ -133,7 +132,7 @@ export default {
         removeEmpty: false,
       };
       this.commonUtil.doPost(obj).then((response) => {
-        if (response.code == "200") {
+        if (response.code == '200') {
           this.dataSource = response.responseData;
           this.changeDatasource();
         }
@@ -145,8 +144,8 @@ export default {
       for (let index = 0; index < this.dataSource.length; index++) {
         const element = this.dataSource[index];
         if (this.sqlForm.datasourceId == element.datasourceId) {
-          if (element.type == "4") {
-            this.datasourceType = "2";
+          if (element.type == '4') {
+            this.datasourceType = '2';
             if (element.apiColumns) {
               const columns = JSON.parse(element.apiColumns);
               if (columns.length > 0) {
@@ -161,7 +160,7 @@ export default {
               }
             }
           } else {
-            this.datasourceType = "1";
+            this.datasourceType = '1';
           }
           break;
         }
@@ -170,11 +169,11 @@ export default {
     addDataSet() {
       let tplId = this.$route.query.tplId; //tplId
       let obj = {};
-      if (this.datasourceType == "1") {
+      if (this.datasourceType == '1') {
         let tplSql = this.sqlText;
         if (!tplSql.trim()) {
           this.commonUtil.showMessage({
-            message: "sql语句不能为空",
+            message: 'sql语句不能为空',
             type: this.commonConstants.messageType.error,
           });
           return;
@@ -205,10 +204,10 @@ export default {
           removeEmpty: false,
         };
       }
-      this.$refs["sqlRef"].validate((valid) => {
+      this.$refs['sqlRef'].validate((valid) => {
         if (valid) {
           this.commonUtil.doPost(obj).then((response) => {
-            if (response.code == "200") {
+            if (response.code == '200') {
               this.addDatasetsDialogVisiable = false;
               this.getDataSets();
             }
@@ -235,13 +234,13 @@ export default {
       this.dataSetForm.column = [];
       var that = this;
       this.commonUtil.doPost(obj).then((response) => {
-        if (response.code == "200") {
+        if (response.code == '200') {
           that.dataColumn = response.responseData;
         }
       });
     },
     execSql() {
-      this.$refs["sqlRef"].validate((valid) => {
+      this.$refs['sqlRef'].validate((valid) => {
         if (valid) {
           let obj = {
             url: this.apis.reportDesign.execSqlApi,
@@ -253,10 +252,9 @@ export default {
             removeEmpty: false,
           };
           this.commonUtil.doPost(obj).then((response) => {
-            if (response.code == "200") {
+            if (response.code == '200') {
               this.sqlColumnTableData.tableData = response.responseData;
-              this.sqlColumnTableData.tablePage.pageTotal =
-                response.responseData.length;
+              this.sqlColumnTableData.tablePage.pageTotal = response.responseData.length;
             }
           });
         }
@@ -266,16 +264,16 @@ export default {
     closeAddDataSet() {
       this.addDatasetsDialogVisiable = false;
       if (this.datasourceType == 1) {
-        this.sqlText = "";
+        this.sqlText = '';
       }
-      this.$refs["sqlRef"].resetFields(); //校验重置
+      this.$refs['sqlRef'].resetFields(); //校验重置
       this.commonUtil.clearObj(this.sqlForm); //清空modalData
     },
     formatSql() {
       //sql格式化
-      let sqlContent = "";
+      let sqlContent = '';
       sqlContent = this.sqlText;
-      this.sqlText = format(sqlContent)
+      this.sqlText = format(sqlContent);
     },
     //sql语句列表修改当前页触发事件
     handleCurrentChange: function (val) {
@@ -291,25 +289,23 @@ export default {
     //确认绑定数据集
     dataSetConfirm() {
       var that = this;
-      this.$refs["dataSetForm"].validate((valid) => {
+      this.$refs['dataSetForm'].validate((valid) => {
         if (valid) {
           var params = {
             dataSetId: that.dataSetForm.dataSetId,
             dataColumns: that.dataSetForm.column,
             requestKey: that.commonUtil.getUuid(),
-            sqlType: "1",
+            sqlType: '1',
           };
-          var componentParams = that.commonUtil.getComponentParams(
-            that.component.params
-          );
-          params.params = Object.assign({}, componentParams,that.$route.query);
+          var componentParams = that.commonUtil.getComponentParams(that.component.params);
+          params.params = Object.assign({}, componentParams, that.$route.query);
           let obj = {
             url: that.apis.screenDesign.getDynamicDatasApi,
             params: params,
             removeEmpty: false,
           };
           that.commonUtil.doPost(obj).then((response) => {
-            if (response.code == "200") {
+            if (response.code == '200') {
               that.processDynamicData(response);
             }
           });
@@ -323,11 +319,11 @@ export default {
       this.component.dynamicDataSettings.datasetId = this.dataSetForm.dataSetId;
       this.component.dynamicDataSettings.dataColumns = this.dataSetForm.column;
       this.commonUtil.reLoadChart(this.chartsComponents, this.component);
-      if(this.component.type == "pageTable" && Array.isArray(this.component.spec.data.values)){
+      if (this.component.type == 'pageTable' && Array.isArray(this.component.spec.data.values)) {
         this.component.spec.data.total = this.component.spec.data.values.length;
-      }else if(this.component.type == "sankey"){
-        this.component.spec.data.values = [{nodes:[],links:[]}];
-        this.commonUtil.processSankeyData(this.component,response.responseData);
+      } else if (this.component.type == 'sankey') {
+        this.component.spec.data.values = [{ nodes: [], links: [] }];
+        this.commonUtil.processSankeyData(this.component, response.responseData);
       }
       this.closeDynamicDataDialog();
     },
@@ -351,31 +347,42 @@ export default {
     deleteDatasets(index, item) {
       let obj = {
         url: this.apis.screenDesign.deleteDatasetApi,
-        messageContent: this.commonUtil.getMessageFromList(
-          "confirm.delete",
-          null
-        ),
+        messageContent: this.commonUtil.getMessageFromList('confirm.delete', null),
         callback: this.getDataSets,
         params: { id: item.id },
-        type: "get",
+        type: 'get',
       };
       //弹出删除确认框
       this.commonUtil.showConfirm(obj);
     },
-    doCopy(item){
+    doCopy(item, isInsert) {
       let text = item.value;
-      if(item.type == "number"){
-        text = '<if test="'+item.value+'!=null' + '"> \n' 
-        text = text + "  and " + item.column + " = #{"+item.value+"} \n" + "</if>"
-      }else{
-        text = '<if test="'+item.value+'!=null and ' + item.value + "!=''" + '">\n' 
-        text = text + "  and " + item.column + " = #{"+item.value+"} \n" + "</if>"
+      if (item.type == 'number') {
+        text = '<if test="' + item.value + '!=null' + '"> \n';
+        text = text + '  and ' + item.column + ' = #{' + item.value + '} \n' + '</if>';
+      } else {
+        text = '<if test="' + item.value + '!=null and ' + item.value + "!=''" + '">\n';
+        text = text + '  and ' + item.column + ' = #{' + item.value + '} \n' + '</if>';
+      }
+      if (isInsert) {
+        this.addComment(text);
+        return;
       }
       const input = document.getElementById('clipboradInput'); // 承载复制内容
       input.value = text; // 修改文本框的内容
       input.select(); // 选中文本
       document.execCommand('copy'); // 执行浏览器复制命令
-      this.commonUtil.showMessage({message:"复制成功",type: this.commonConstants.messageType.success})
-    }
+      this.commonUtil.showMessage({
+        message: '复制成功',
+        type: this.commonConstants.messageType.success,
+      });
+    },
+    addComment(val) {
+      let pos1 = this.$refs.codeMirror.cminstance.getCursor();
+      let pos2 = {};
+      pos2.line = pos1.line;
+      pos2.ch = pos1.ch;
+      this.$refs.codeMirror.cminstance.replaceRange(val, pos2);
+    },
   },
 };

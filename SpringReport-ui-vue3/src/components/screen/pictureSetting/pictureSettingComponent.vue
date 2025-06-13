@@ -1,61 +1,58 @@
 <template>
   <div>
-    <site :component="component" :chartsComponents="chartsComponents"></site>
-    <picture-setting :component="component" :chartsComponents="chartsComponents"></picture-setting>
+    <div class="btn-group df-c">
+      <div
+        v-for="(item, index) in ['基础', '图片']"
+        :key="index"
+        class="btn"
+        :class="{ 'btn-active': currentIndex === index }"
+        @click="currentIndex = index"
+      >
+        {{ item }}
+      </div>
+    </div>
+    <site
+      v-if="currentIndex == 0"
+      :component="component"
+      :chartsComponents="chartsComponents"
+    ></site>
+    <picture-setting
+      v-else
+      :component="component"
+      :chartsComponents="chartsComponents"
+    ></picture-setting>
   </div>
 </template>
 
 <script>
-import site from '../settingComponent/site/site.vue'
-import pictureSetting from '../settingComponent/picture/pictureSetting.vue'
-export default {
-    name:"pictureSettingComponent",
-    components:{
-        site,
-        pictureSetting
+  import site from '../settingComponent/site/site.vue';
+  import pictureSetting from '../settingComponent/picture/pictureSetting.vue';
+  export default {
+    name: 'pictureSettingComponent',
+    components: {
+      site,
+      pictureSetting,
     },
-    props:{
-         component:{
-            type:Object,
-            default:()=>({})
-        },
-        chartsComponents:{
-            type:Object,
-            default:() => ({}),
-        },
+    props: {
+      component: {
+        type: Object,
+        default: () => ({}),
+      },
+      chartsComponents: {
+        type: Object,
+        default: () => ({}),
+      },
     },
-}
+    data() {
+      return {
+        currentIndex: 0,
+      };
+    },
+  };
 </script>
 
-<style  scoped>
- :deep(.el-collapse-item__header){
+<style scoped>
+  ::v-deep .el-collapse-item__header {
     border-top: 0px !important;
- }
-:deep(.el-input__inner),
-:deep(.el-textarea__inner) {
-  background-color: var(--colorWhite);
-  color: var(--colorTextPrimary);
-  border: 1px solid var(--borderColorBase);
-}
-
-:deep(.el-select-dropdown) {
-   border: 1px solid var(--borderColorBase) !important;
-   background-color: var(--colorWhite) !important;
- }
-
- :deep(.el-select__selected-item){
-    color:var(--colorTextPrimary) !important;
-  
-}
-
-:deep(.el-select--small .el-select__wrapper){
-    background-color: var(--colorWhite) !important;
-    box-shadow: 0 0 0 1px black inset;
-}
-
-:deep(.el-input--small .el-input__wrapper){
-    /* padding: 0px 0px; */
-    background-color: var(--colorWhite);
-    box-shadow: 0 0 0 1px black inset;
-}
+  }
 </style>
