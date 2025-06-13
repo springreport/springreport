@@ -14,8 +14,6 @@ export default {
   },
   data() {
     return {
-      isRefresh:2,//是否自动刷新 1是 2否
-      refreshTime:0,//自动刷新间隔时长(秒)
       sheetPagination:{},
       drawer:false,
       chartOptions: {},
