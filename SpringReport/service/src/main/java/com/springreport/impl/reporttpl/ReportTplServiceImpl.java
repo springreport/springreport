@@ -2788,6 +2788,8 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		result.setTplType(reportTpl.getTplType());
 		result.setRefreshPage(reportTpl.getRefreshPage());
 		result.setShowReportSql(showReportSql);
+		result.setIsRefresh(reportTpl.getIsRefresh());
+		result.setRefreshTime(reportTpl.getRefreshTime());
 		return result;
 	}
 	

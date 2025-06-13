@@ -128,4 +128,10 @@ public class ResPreviewData {
      * @date 2024-01-24 11:42:12 
      */  
     private boolean showReportSql = false;
+    
+    /** is_refresh - 是否自动刷新 1是 2否 */
+    private Integer isRefresh;
+
+    /** refresh_time - 自动刷新时长 单位：秒 */
+    private Long refreshTime;
 }
