@@ -170,38 +170,54 @@
 
       <div ref="dragContainer" class="mainbox">
         <div class="mainwrap">
-          <!-- <vue3-ruler-tool ref='rulerTool' :content-layout="{left:0,top:0}" :is-scale-revise="true" :is-hot-key="false" :step-length="50" :style="{ transformOrigin: '0 0',transform: 'scale('+scaleSelected/100+')', height:'100%', overflow:'hidden'}"> -->
-          <!-- <vuedraggable class="wrapper" :sort= "false" :disabled= "true"> -->
-          <div
-            id="draggableDiv"
+          <!--  -->
+          <vue3-ruler-tool
+            ref="rulerTool"
+            :value="[]"
+            :content-layout="{ left: 0, top: 0 }"
+            :is-scale-revise="true"
+            :is-hot-key="false"
+            :step-length="50"
+            :parent="true"
             :style="{
-              transformOrigin: '0% 0%',
+              transformOrigin: '0 0',
               transform: 'scale(' + scaleSelected / 100 + ')',
-              height: screenProperties.height + 'px',
-              width: screenProperties.width + 'px',
-              background: screenProperties.background,
-              backgroundImage: 'url(' + screenProperties.imgUrl + ')',
-              backgroundSize: 'cover',
-              backgroundRepeat: 'no-repeat',
-              backgroundPosition: 'center',
+              height: '100%',
               overflow: 'hidden',
             }"
-            @click="clickPanel"
           >
-            <draggables
-              ref="draggable"
-              :components="components"
-              v-model:activated="activated"
-              v-model:is-bubbling-event="isBubblingEvent"
-              :charts-components="chartsComponents"
-              :isDesign="true"
-              :sendRequest="false"
-              :isCtrl="isCtrl"
-              :myclass="'newclass'"
-            />
-          </div>
-          <!-- </vuedraggable> -->
-          <!-- </vue3-ruler-tool> -->
+            <!-- <vuedraggable class="wrapper" :sort= "false" :disabled= "true"> -->
+            <!-- transform: 'scale(' + scaleSelected / 100 + ')', -->
+            <div
+              id="draggableDiv"
+              :style="{
+                transformOrigin: '0% 0%',
+
+                height: screenProperties.height + 'px',
+                width: screenProperties.width + 'px',
+                background: screenProperties.background,
+                backgroundImage: 'url(' + screenProperties.imgUrl + ')',
+                backgroundSize: 'cover',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center',
+                overflow: 'hidden',
+              }"
+              @click="clickPanel"
+            >
+              <draggables
+                ref="draggable"
+                :components="components"
+                v-model:activated="activated"
+                v-model:is-bubbling-event="isBubblingEvent"
+                :charts-components="chartsComponents"
+                :isDesign="true"
+                :sendRequest="false"
+                :isCtrl="isCtrl"
+                :myclass="'newclass'"
+              />
+            </div>
+            <!-- </vuedraggable> -->
+          </vue3-ruler-tool>
         </div>
         <div class="scaleWrap">
           <el-select
@@ -261,6 +277,11 @@
 
 <style lang="scss">
   @import '@/element-variables.scss';
+
+  .vue-ruler-h,
+  .vue-ruler-v {
+    transform-origin: 0 0;
+  }
 
   .layer-menu {
     padding: 0 !important;

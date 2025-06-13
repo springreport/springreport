@@ -1,4 +1,3 @@
-// import { Vue3RulerTool } from 'vue3-ruler-tool'
 import vuedraggable from 'vuedraggable';
 import { allThemeMap } from '@visactor/vchart-theme';
 import veODesignLight from '@visactor/vchart-theme/public/veODesignLight.json';
@@ -20,6 +19,9 @@ import veODesignDarkNewEnergy from '@visactor/vchart-theme/public/veODesignDarkN
 import VChart from '@visactor/vchart';
 import { registerLiquidChart } from '@visactor/vchart';
 import settings from '../../../components/screen/settings/settings.vue';
+
+import { Vue3RulerTool } from 'vue3-ruler-tool';
+import 'vue3-ruler-tool/dist/style.css';
 export default {
   data() {
     return {
@@ -76,7 +78,7 @@ export default {
     },
   },
   components: {
-    // Vue3RulerTool,
+    Vue3RulerTool,
     vuedraggable,
     settings,
   },
@@ -118,6 +120,10 @@ export default {
     VChart.ThemeManager.registerTheme('veODesignDarkMedical', veODesignDarkMedical);
     VChart.ThemeManager.registerTheme('veODesignDarkNewEnergy', veODesignDarkNewEnergy);
     this.getScreenDesign();
+
+    // vue3-ruler-tool组件有bug x轴 和y轴会有两个0 是个bug
+    this.$refs['rulerTool'].xScale.shift();
+    this.$refs['rulerTool'].yScale.shift();
   },
   methods: {
     // 获取图标
