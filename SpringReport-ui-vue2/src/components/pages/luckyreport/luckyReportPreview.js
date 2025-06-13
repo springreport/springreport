@@ -14,6 +14,8 @@ export default {
   },
   data() {
     return {
+      isRefresh:2,//是否自动刷新 1是 2否
+      refreshTime:0,//自动刷新间隔时长(秒)
       sheetPagination:{},
       drawer:false,
       chartOptions: {},
@@ -718,6 +720,12 @@ export default {
             this.sheetOptions.gridKey = 'reportFormsMode-' + reportTplId
             this.sheetOptions.updateUrl = location.protocol === 'https:' ? 'wss' + '://' + location.host + '/SpringReport/api/coedit/websocket/luckysheet' : 'ws' + '://' + location.host + '/SpringReport/api/coedit/websocket/luckysheet'
             luckysheet.setServerAttr('reportType', this.tplType)
+          }
+          if (response.responseData.isRefresh == 1 && response.responseData.refreshTime >0) {
+            var that = this;
+            setTimeout(function() {
+              that.$router.go(0)
+            }, response.responseData.refreshTime*1000);
           }
           this.refreshPage = response.responseData.refreshPage
           if (!isCurrent) {

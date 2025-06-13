@@ -102,7 +102,9 @@ export default {
           { type: 'Select', label: '行标题预览是否展示', prop: 'showRowHeader', rules: { required: true }, options: this.selectUtil.yesNo },
           { type: 'Select', label: '列标题预览是否展示', prop: 'showColHeader', rules: { required: true }, options: this.selectUtil.yesNo },
           { type: 'Select', label: '网格线预览是否展示', prop: 'showGridlines', rules: { required: true }, options: this.selectUtil.yesNo },
-          { type: 'Select', label: '是否开启协同', prop: 'coeditFlag', rules: { required: true }, options: this.selectUtil.yesNo }
+          { type: 'Select', label: '是否开启协同', prop: 'coeditFlag', rules: { required: true }, options: this.selectUtil.yesNo },
+          { type: 'Select', label: '是否开启定时刷新', prop: 'isRefresh', rules: { required: true }, options: this.selectUtil.yesNo, change: this.changeIsRefresh },
+          { type: 'Input', label: '刷新间隔时长(秒)', prop: 'refreshTime', rules: { required: true,type:"positiveInt"}, }
         ],
         // modal表单 end
         // modal 数据 start
@@ -122,7 +124,9 @@ export default {
           showRowHeader: 1,
           showColHeader: 1,
           showGridlines: 1,
-          coeditFlag: 1
+          coeditFlag: 1,
+          isRefresh:2,
+          refreshTime:0,
         },
         // modal 数据 end
         // modal 按钮 start
@@ -334,6 +338,8 @@ export default {
       } else {
         this.pageData.modalForm[5].disabled = this.commonUtil.undisabled
         // this.showRoleSelect();
+        this.changeTplType();
+        this.changeIsRefresh();
       }
     },
     /**
@@ -355,8 +361,10 @@ export default {
         } else {
           this.pageData.modalForm[5].disabled = this.commonUtil.undisabled
         }
+        this.pageData.modalData.refreshTime = this.pageData.modalData.refreshTime + "";
         // this.showRoleSelect();
-        this.changeTplType()
+        this.changeTplType();
+        this.changeIsRefresh();
       })
     },
     /**
@@ -762,6 +770,19 @@ export default {
       this.searchtablelist()
       this.getReportType()
       this.getReportTypeTree()
+    },
+    changeIsRefresh(){
+      if (this.pageData.modalData.isRefresh != 1) {
+        this.pageData.modalForm[16].show = false
+        this.pageData.modalForm[16].rules.required = false
+        // this.pageData.modalForm[9].show = true;
+        // this.pageData.modalForm[9].rules.required = true;
+      } else {
+        this.pageData.modalForm[16].show = true
+        this.pageData.modalForm[16].rules.required = true
+        // this.pageData.modalForm[9].show = false;
+        // this.pageData.modalForm[9].rules.required = false;
+      }
     }
   }
 }
