@@ -636,6 +636,7 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 		//获取模板关联的所有数据集
 		ReportTplDataset dataset = new ReportTplDataset();
 		dataset.setTplId(model.getTplId());
+		dataset.setCommonType(2);
 		List<ReportDatasetDto> datasets = this.iReportTplDatasetService.getTplDatasets(dataset,userInfoDto);
 		Map<String, Object> data = new HashMap<>();
 		Map<String, List<String>> paramsType = new HashMap<>();//记录参数类型，vertical代表竖向列表参数，horizontal代表横向列表参数
