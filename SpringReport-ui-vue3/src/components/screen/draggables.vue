@@ -114,18 +114,16 @@
 
     /* 激活时显示边框 */
     .vdr-container.active {
-      z-index: 10001;
-
       &::before {
-        box-sizing: border-box;
+        // box-sizing: border-box;
         position: absolute;
         content: '';
         width: 100%;
         height: 100%;
-        z-index: 10001;
         border: 3px dashed $--color-primary !important;
-        left: 0;
-        top: 0;
+        left: -3px;
+        top: -3px;
+        z-index: 0;
       }
     }
     .handle {
@@ -141,28 +139,28 @@
     .handle-tl,
     .handle-ml,
     .handle-bl {
-      left: -4px !important;
+      left: -6px !important;
     }
 
     /* 上边三个句柄 */
     .handle-tl,
     .handle-tm,
     .handle-tr {
-      top: -4px !important;
+      top: -6px !important;
     }
 
     /* 右边三个句柄 */
     .handle-tr,
     .handle-mr,
     .handle-br {
-      right: -4px !important;
+      right: -6px !important;
     }
 
     /* 底部三个句柄 */
     .handle-bl,
     .handle-bm,
     .handle-br {
-      bottom: -4px !important;
+      bottom: -6px !important;
     }
   }
 </style>
