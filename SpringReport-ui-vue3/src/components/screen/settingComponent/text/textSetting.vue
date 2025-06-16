@@ -8,7 +8,7 @@
       class="demo-form-inline"
       :model="component"
       label-position="top"
-      size="mini"
+      size="small"
     >
       <el-form-item v-if="component.type != 'date'" label="文本类型" prop="textType">
         <el-select v-model="component.textType" placeholder="请选择">

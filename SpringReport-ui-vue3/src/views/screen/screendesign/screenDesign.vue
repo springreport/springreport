@@ -152,7 +152,7 @@
               </div>
 
               <div class="action df-c" @click.stop>
-                <div class="view" style="margin-right: 4px" @click="lockComponent(item)">
+                <div class="view" style="margin-right: 4px" @click="lockComponent(item)" :title="!item.locked?'锁定':'解锁'">
                   <component
                     :is="item.locked ? 'icon-lock' : 'icon-unlock'"
                     style="color: rgba(153, 153, 153, 1)"
@@ -161,6 +161,7 @@
                 <span
                   :class="item.isShow == false ? 'hide-icon' : 'show-icon'"
                   @click="showComponent(item)"
+                  :title="(item.isShow==undefined||item.isShow)?'隐藏':'显示'"
                 />
               </div>
             </div>

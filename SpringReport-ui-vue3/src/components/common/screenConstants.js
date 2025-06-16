@@ -149,6 +149,11 @@ screenConstants.tableAlign = [
   {name:"right",value:"right"},
 ]
 
+screenConstants.funnelShape = [
+  { name: '梯形', value: 'trapezoid' },
+  { name: '矩形', value: 'rect' },
+]
+
 screenConstants.type = {
     text:"text",//文本
     date:"date",//日期时间
@@ -278,6 +283,7 @@ screenConstants.compType = {
     circlePacking: { text: '气泡图', icon: 'circlePacking'},
     transformFunnel: { text: '转化漏斗图', icon: 'funnel'},
     zhifangtu: { text: '直方图', icon: 'histogram' },
+    sankey: { text: '桑葚图', icon: 'sankey' }
 }
 
 screenConstants.textType = [

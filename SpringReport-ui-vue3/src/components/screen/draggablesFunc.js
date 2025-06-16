@@ -205,6 +205,9 @@ export default {
       this.components.push(obj);
       if (obj.category == this.screenConstants.category.vchart) {
         this.$nextTick(() => {
+          if (obj.type.toLowerCase().indexOf('sankey') >= 0) {
+            obj.spec.nodeKey = (datum) => datum.name
+          }
           const vchart = new VChart(obj.spec, { dom: obj.id });
           // 绘制
           vchart.renderSync();
@@ -240,5 +243,10 @@ export default {
       }
       this.multiActivated = [];
     },
+    changeCurrent(item){
+      this.current = item;
+      this.activated = item
+      this.$emit('update:activated', item)
+    }
   },
 };
