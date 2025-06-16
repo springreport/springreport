@@ -213,7 +213,6 @@
                 :isDesign="true"
                 :sendRequest="false"
                 :isCtrl="isCtrl"
-                :myclass="'newclass'"
               />
             </div>
             <!-- </vuedraggable> -->

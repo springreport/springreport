@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 100%; height: 100%; position: relative; margin: 0 auto">
+  <div style="width: 100%; height: 100%; position: relative; margin: 0 auto" class="draggable">
     <!-- <Vue3DraggableResizable
       v-for="(item, index) in components"
       :key="index"
@@ -25,7 +25,6 @@
     <Vue3DraggableResizable
       v-for="(item, index) in components"
       :key="index"
-      :class="myclass"
       :parent="true"
       :style="{ 'z-index': item.active ? 1000 : item.zindex }"
       :z="item.active ? 1000 : item.zindex"
@@ -104,19 +103,74 @@
 </template>
 
 <script src="./draggablesFunc.js"></script>
+<style lang="scss">
+  @import '@/element-variables.scss';
 
+  .draggable {
+    /* 隐藏默认边框 */
+    .vdr-container {
+      border: none !important;
+    }
+
+    /* 激活时显示边框 */
+    .vdr-container.active {
+      z-index: 10001;
+
+      &::before {
+        box-sizing: border-box;
+        position: absolute;
+        content: '';
+        width: 100%;
+        height: 100%;
+        z-index: 10001;
+        border: 3px dashed $--color-primary !important;
+        left: 0;
+        top: 0;
+      }
+    }
+    .handle {
+      border-color: $--color-primary;
+      background-color: $--color-primary;
+      box-sizing: border-box;
+      width: 10px !important;
+      height: 10px !important;
+      z-index: 1000;
+    }
+
+    /* 左边三个句柄 */
+    .handle-tl,
+    .handle-ml,
+    .handle-bl {
+      left: -4px !important;
+    }
+
+    /* 上边三个句柄 */
+    .handle-tl,
+    .handle-tm,
+    .handle-tr {
+      top: -4px !important;
+    }
+
+    /* 右边三个句柄 */
+    .handle-tr,
+    .handle-mr,
+    .handle-br {
+      right: -4px !important;
+    }
+
+    /* 底部三个句柄 */
+    .handle-bl,
+    .handle-bm,
+    .handle-br {
+      bottom: -4px !important;
+    }
+  }
+</style>
 <style scoped lang="scss">
   img {
     width: 99.7%;
     height: 99.6%;
     max-width: 99.7%;
     max-height: 99.6%;
-  }
-
-  .myclass {
-    border: none;
-  }
-  .newclass {
-    border: 1px solid #00ced1;
   }
 </style>
