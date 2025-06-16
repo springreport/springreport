@@ -193,7 +193,7 @@
                   class="view"
                   style="margin-right: 4px"
                   @click="lockComponent(item)"
-                  title="锁定"
+                  :title="!item.locked?'锁定':'解锁'"
                 >
                   <i
                     :class="item.locked ? 'el-icon-lock' : 'el-icon-unlock'"
@@ -203,7 +203,7 @@
                 <span
                   :class="item.isShow == false ? 'hide-icon' : 'show-icon'"
                   @click="showComponent(item)"
-                  :title="item.isShow ? '隐藏' : '显示'"
+                  :title="(item.isShow==undefined||item.isShow)?'隐藏':'显示'"
                 />
               </div>
             </div>

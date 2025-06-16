@@ -112,7 +112,6 @@ export default {
       this.current.x = left
       this.current.y = top
       this.$emit('update:isBubblingEvent', true)
-      console.log(this.current)
     },
     keyDown(item) {
       document.onkeydown = (e) => {
