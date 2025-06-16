@@ -5,7 +5,7 @@
       class="demo-form-inline"
       label-position="top"
       :model="component"
-      size="mini"
+      size="small"
     >
       <div class="right-dataset-title">
         <span class="attr-dataset-title">位置设置</span>

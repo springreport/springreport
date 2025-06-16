@@ -6,7 +6,7 @@
       class="demo-form-inline"
       :model="component"
       label-position="top"
-      size="mini"
+      size="small"
     >
       <div class="right-dataset-title df-c-b">
         <span class="attr-dataset-title">数据列设置</span>
@@ -40,7 +40,7 @@
         </el-collapse-item>
       </el-collapse>
 
-      <!-- <el-table :data="component.tableColumn" border style="width: 100%" size="mini" :cell-style="{color:'#fff'}">
+      <!-- <el-table :data="component.tableColumn" border style="width: 100%" size="small" :cell-style="{color:'#fff'}">
             <el-table-column prop="name" label="名称" />
             <el-table-column prop="key" label="属性" />
             <el-table-column label="操作">

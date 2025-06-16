@@ -243,46 +243,47 @@ export default {
     },
     //往画板中添加组件
     async addComponent(item, isDraggable) {
-      // this.components.forEach((com) => {
-      //   com.active = false;
-      // });
+      this.components.forEach(com => {
+        com.active = false
+      })
+      let obj = null;
       if (item.category == this.screenConstants.category.border) {
-        const obj = JSON.parse(JSON.stringify(this.screenConstants['dvBorderBoxInit']));
+        obj = JSON.parse(JSON.stringify(this.screenConstants['dvBorderBoxInit']));
         if (isDraggable) {
           obj.x = this.x;
           obj.y = this.y;
         }
         obj.id = this.commonUtil.getUuid();
         obj.name = item.name;
-        // obj.active = true;
+        obj.active = true;
 
         if (item.text.indexOf('反向') >= 0) {
           obj.reverse = true;
         }
         this.components.push(obj);
       } else if (item.category == this.screenConstants.category.decoration) {
-        const obj = JSON.parse(JSON.stringify(this.screenConstants['dvDecorationBoxInit']));
+        obj = JSON.parse(JSON.stringify(this.screenConstants['dvDecorationBoxInit']));
         if (isDraggable) {
           obj.x = this.x;
           obj.y = this.y;
         }
         obj.id = this.commonUtil.getUuid();
         obj.name = item.name;
-        // obj.active = true;
+        obj.active = true;
 
         if (item.text.indexOf('反向') >= 0) {
           obj.reverse = true;
         }
         this.components.push(obj);
       } else {
-        const obj = JSON.parse(JSON.stringify(this.screenConstants[item.name + 'Init']));
+        obj = JSON.parse(JSON.stringify(this.screenConstants[item.name + 'Init']));
         if (obj) {
           if (isDraggable) {
             obj.x = this.x;
             obj.y = this.y;
           }
           obj.id = this.commonUtil.getUuid();
-          // obj.active = true;
+          obj.active = true;
 
           this.components.push(obj);
           if (item.category == this.screenConstants.category.vchart) {
@@ -308,14 +309,16 @@ export default {
             });
           } else if (obj.type == this.screenConstants.type.date) {
             obj.content = this.commonUtil.getCurrentDate(obj);
-            // const self = this
-            // setTimeout(function() { obj.content = "test";console.log(obj)}, 1000)
             // setInterval(() => {
-            //     setTimeout(function() { self.refreshTime(obj) }, 0)
+            //   const self = this
+            //   setTimeout(function() {
+            //     self.refreshTime(obj)
+            //   }, 0)
             // }, 1000)
           }
         }
       }
+      this.$refs.draggable.changeCurrent(obj)
     },
     //获取大屏设计信息
     getScreenDesign() {

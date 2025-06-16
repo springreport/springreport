@@ -6,7 +6,7 @@
       class="demo-form-inline"
       :model="component"
       label-position="top"
-      size="mini"
+      size="small"
     >
       <div class="right-dataset-title">
         <span class="attr-dataset-title">主题设置</span>
@@ -42,7 +42,7 @@
           <template #label>
             <div class="df-c-b">
               <span>图表色系设置</span>
-              <el-button type="primary" size="mini" class="addBtn" @click="addColor(component)"
+              <el-button type="primary" size="small" class="addBtn" @click="addColor(component)"
                 ><icon-plus
                   theme="outline"
                   size="16"
@@ -80,7 +80,7 @@
           >
             <el-color-picker
               v-model="component.spec.color[index]"
-              size="mini"
+              size="small"
               @change="commonUtil.reLoadChart(chartsComponents, component)"
             />
             <icon-close-one
@@ -104,7 +104,7 @@
           >
             <el-color-picker
               v-model="component.spec.color.range[index]"
-              size="mini"
+              size="small"
               @change="commonUtil.reLoadChart(chartsComponents, component)"
             />
             <icon-close-one
@@ -466,7 +466,9 @@
                 style="width: 120px"
                 @change="commonUtil.reLoadChart(chartsComponents, component)"
               >
-                <el-button slot="suffix" type="text" @click="formatterRule()">设置规则</el-button>
+              <template #suffix>
+                <el-button type="text" @click="formatterRule()">设置规则</el-button>
+              </template>
               </el-input>
             </el-form-item>
           </div>
@@ -811,7 +813,9 @@
               style="width: 120px"
               @change="commonUtil.reLoadChart(chartsComponents, component)"
             >
-              <el-button slot="suffix" type="text" @click="formatterRule()">设置规则</el-button>
+            <template #suffix>
+              <el-button  type="text" @click="formatterRule()">设置规则</el-button>
+            </template>
             </el-input>
           </el-form-item>
           <div class="attr-dataset-title-small">地区名称映射</div>
@@ -1087,7 +1091,9 @@
               style="width: 120px"
               @change="commonUtil.reLoadChart(chartsComponents, component)"
             >
-              <el-button slot="suffix" type="text" @click="formatterRule()">设置规则</el-button>
+            <template #suffix>
+              <el-button type="text" @click="formatterRule()">设置规则</el-button>
+            </template>
             </el-input>
           </el-form-item>
           <div class="attr-dataset-title-small">图例设置</div>
