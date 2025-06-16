@@ -1,18 +1,20 @@
 <template>
-  <div style="width: 100%; height: 100%; position: relative; margin: 0 auto">
+  <div
+    style="width: 100%; height: 100%; position: relative; margin: 0 auto"
+    class="draggable"
+  >
     <vue-draggable-resizable
       v-for="(item, index) in components"
+      v-show="!item.isDelete && item.isShow != false"
       :key="index"
-      :class="myclass"
       :parent="true"
-      :z="item.active?1000:item.zindex"
+      :z="item.active ? 1000 : item.zindex"
       :is-conflict-check="false"
       :snap="true"
       :snap-tolerance="10"
       :x="item.x ? Number(item.x) : 0"
       :y="item.y ? Number(item.y) : 0"
       :w="Number(item.w)"
-      v-show="!item.isDelete&&item.isShow!=false"
       :h="Number(item.h)"
       :active="item.active"
       :draggable="!item.locked"
@@ -22,32 +24,138 @@
       @resizestop="onResizstop"
       @dragstop="onDragstop"
     >
-      <div v-if="item.category == screenConstants.category.text && !item.isDelete" @contextmenu.prevent="onContextmenu($event, item)">
-        <text-component :ref="item.id" :component="item" :charts-components="chartsComponents" :send-request="sendRequest" />
+      <div
+        v-if="item.category == screenConstants.category.text && !item.isDelete"
+        @contextmenu.prevent="onContextmenu($event, item)"
+      >
+        <text-component
+          :ref="item.id"
+          :component="item"
+          :charts-components="chartsComponents"
+          :send-request="sendRequest"
+        />
       </div>
-      <div v-if="item.category == screenConstants.category.border && !item.isDelete" @contextmenu.prevent="onContextmenu($event, item)">
+      <div
+        v-if="
+          item.category == screenConstants.category.border && !item.isDelete
+        "
+        @contextmenu.prevent="onContextmenu($event, item)"
+      >
         <border-component :ref="item.id" :component="item" />
       </div>
-      <div v-if="item.category == screenConstants.category.decoration && !item.isDelete" @contextmenu.prevent="onContextmenu($event, item)">
+      <div
+        v-if="
+          item.category == screenConstants.category.decoration && !item.isDelete
+        "
+        @contextmenu.prevent="onContextmenu($event, item)"
+      >
         <decoration-component :ref="item.id" :component="item" />
       </div>
-      <div v-if="item.category == screenConstants.category.picture && !item.isDelete" :id="item.id" :style="{height:item.h+'px',width:item.w+'px'}" @contextmenu.prevent="onContextmenu($event, item)">
+      <div
+        v-if="
+          item.category == screenConstants.category.picture && !item.isDelete
+        "
+        :id="item.id"
+        :style="{ height: item.h + 'px', width: item.w + 'px' }"
+        @contextmenu.prevent="onContextmenu($event, item)"
+      >
         <img v-if="item.imgUrl" :src="item.imgUrl">
       </div>
-      <div v-if="item.category == screenConstants.category.table && !item.isDelete" @contextmenu.prevent="onContextmenu($event, item)">
-        <table-component :ref="item.id" :component="item" :send-request="sendRequest" :charts-components="chartsComponents" />
+      <div
+        v-if="item.category == screenConstants.category.table && !item.isDelete"
+        @contextmenu.prevent="onContextmenu($event, item)"
+      >
+        <table-component
+          :ref="item.id"
+          :component="item"
+          :send-request="sendRequest"
+          :charts-components="chartsComponents"
+        />
       </div>
-      <div v-if="item.category == screenConstants.category.vchart && !item.isDelete" :style="{height:item.h+'px',width:item.w+'px'}" @contextmenu.prevent="onContextmenu($event, item)">
-        <vchart-component :ref="item.id" :component="item" :send-request="sendRequest" :charts-components="chartsComponents" />
+      <div
+        v-if="
+          item.category == screenConstants.category.vchart && !item.isDelete
+        "
+        :style="{ height: item.h + 'px', width: item.w + 'px' }"
+        @contextmenu.prevent="onContextmenu($event, item)"
+      >
+        <vchart-component
+          :ref="item.id"
+          :component="item"
+          :send-request="sendRequest"
+          :charts-components="chartsComponents"
+        />
       </div>
     </vue-draggable-resizable>
   </div>
 </template>
 
 <script src="./draggablesFunc.js">
-
 </script>
 
+<style lang="scss">
+@import "@/element-variables.scss";
+
+.draggable {
+  /* 隐藏默认边框 */
+  .vdr {
+    border: none !important;
+  }
+
+  /* 激活时显示边框 */
+  .vdr.active {
+    z-index: 10001;
+
+    &::before {
+      box-sizing: border-box;
+      position: absolute;
+      content: "";
+      width: 100%;
+      height: 100%;
+      z-index: 10001;
+      border: 3px dashed $--color-primary !important;
+      left: 0;
+      top: 0;
+    }
+  }
+  .handle {
+    border-color: $--color-primary;
+    background-color: $--color-primary;
+    box-sizing: border-box;
+    width: 10px !important;
+    height: 10px !important;
+    z-index: 1000;
+  }
+
+  /* 左边三个句柄 */
+  .handle-tl,
+  .handle-ml,
+  .handle-bl {
+    left: -4px !important;
+  }
+
+  /* 上边三个句柄 */
+  .handle-tl,
+  .handle-tm,
+  .handle-tr {
+    top: -4px !important;
+  }
+
+  /* 右边三个句柄 */
+  .handle-tr,
+  .handle-mr,
+  .handle-br {
+    right: -4px !important;
+  }
+
+  /* 底部三个句柄 */
+  .handle-bl,
+  .handle-bm,
+  .handle-br {
+    bottom: -4px !important;
+  }
+}
+</style>
 <style scoped lang="scss">
 img {
   width: 99.7%;
@@ -55,12 +163,4 @@ img {
   max-width: 99.7%;
   max-height: 99.6%;
 }
-
-.myclass {
-  border: none;
-}
-.newclass {
-  border: 1px solid #00ced1;
-}
-
 </style>
