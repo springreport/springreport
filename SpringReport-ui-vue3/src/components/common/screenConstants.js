@@ -272,7 +272,7 @@ screenConstants.compType = {
     seriesGauge: { text: '系列仪表盘', icon: 'gauge'},
     tickSeriesGauge: { text: '刻度系列仪表盘', icon: 'gauge'},
     progress: { text: '进度条', icon: 'progress'},
-    circularProgress: { text: '环形进度条', icon: 'progress'},
+    circularProgress: { text: '环形进度条', icon: 'circleProgress'},
     barProgress: { text: '条形进度条', icon: 'progress'},
     wordCloud: { text: '词云图', icon: 'wordCloud'},
     liquid: { text: '水波图', icon: 'liquid'},
