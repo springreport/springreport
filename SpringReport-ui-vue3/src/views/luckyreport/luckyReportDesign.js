@@ -742,6 +742,9 @@ export default {
         coords: '', //坐标
         type: '', //类型 1合计 2平均值 3最大值 4最小值 5计数
         digit: '2', //小数位数
+        unitTransfer: false, // 是否数值单位转换
+        transferType: 1, // 1 乘法 2除法
+        multiple: '', // 倍数
       },
       subTotalCalcVisiable: false,
       subTotalCalcForm: {
@@ -4442,11 +4445,17 @@ export default {
               that.cellSubTotalForm.type;
             that.cellForm.subTotalCells[that.cellSubTotalForm.index].digit =
               that.cellSubTotalForm.digit;
+            that.cellForm.subTotalCells[that.cellSubTotalForm.index].unitTransfer = that.cellSubTotalForm.unitTransfer
+            that.cellForm.subTotalCells[that.cellSubTotalForm.index].transferType = that.cellSubTotalForm.transferType
+            that.cellForm.subTotalCells[that.cellSubTotalForm.index].multiple = that.cellSubTotalForm.multiple
           } else {
             var data = {
               coords: that.cellSubTotalForm.coords,
               type: that.cellSubTotalForm.type,
               digit: that.cellSubTotalForm.digit,
+              unitTransfer: that.cellSubTotalForm.unitTransfer,
+              transferType: that.cellSubTotalForm.transferType,
+              multiple: that.cellSubTotalForm.multiple
             };
             if (!that.cellForm.subTotalCells) {
               that.cellForm.subTotalCells = [];
@@ -4468,6 +4477,9 @@ export default {
       this.cellSubTotalForm.coords = o.coords;
       this.cellSubTotalForm.type = o.type;
       this.cellSubTotalForm.digit = o.digit;
+      this.cellSubTotalForm.unitTransfer = o.unitTransfer
+      this.cellSubTotalForm.transferType = o.transferType
+      this.cellSubTotalForm.multiple = o.multiple
       this.cellSubTotalVisiable = true;
     },
     deleteSubtotalCell(index) {
