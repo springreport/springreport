@@ -3493,6 +3493,57 @@
             placeholder="小数位数"
           />
         </el-form-item>
+        <el-form-item
+          label="数值单位转换"
+          size="small"
+          class="df-form-item"
+          prop="unitTransfer"
+          :rules="filter_rules('数值单位转换', { required: true })"
+        >
+          <el-switch
+            v-model="cellSubTotalForm.unitTransfer"
+            active-text="是"
+            inactive-text="否"
+            />
+          </el-form-item>
+          <el-form-item
+            v-if="cellSubTotalForm.unitTransfer"
+            label="转换方式"
+            size="small"
+            prop="transferType"
+            :rules="filter_rules('转换方式', { required: true })"
+          >
+            <el-select
+            v-model="cellSubTotalForm.transferType"
+            style="width: 100%"
+            placeholder="转换方式"
+            >
+              <el-option label="乘法" :value="1" />
+              <el-option label="除法" :value="2" />
+              <el-option label="乘法并转成中文大写" :value="3" />
+              <el-option label="除法并转成中文大写" :value="4" />
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            v-if="cellSubTotalForm.unitTransfer"
+            label="倍数"
+            size="small"
+            prop="multiple"
+            :rules="filter_rules('倍数', { required: true })"
+          >
+            <el-select
+            v-model="cellSubTotalForm.multiple"
+            style="width: 100%"
+            placeholder="倍数"
+            >
+            <el-option label="1" value="1" />
+            <el-option label="10" value="10" />
+            <el-option label="100" value="100" />
+            <el-option label="1000" value="1000" />
+            <el-option label="10000" value="10000" />
+            <el-option label="100000" value="100000" />
+            </el-select>
+          </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button size="small" @click="closeSubtotalDialog">取 消</el-button>
