@@ -361,6 +361,7 @@ public class ReportTplController extends BaseController {
 			}
 			userInfoDto.setUserId(sysUser.getId());
 			userInfoDto.setIsAdmin(sysUser.getIsAdmin());
+			userInfoDto.setMerchantNo(sysUser.getMerchantNo());
 		}
 		
 		if(YesNoEnum.YES.getCode().intValue() != sysUser.getIsAdmin().intValue())

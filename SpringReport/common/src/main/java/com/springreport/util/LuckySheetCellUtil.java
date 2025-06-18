@@ -79,6 +79,9 @@ public class LuckySheetCellUtil {
     	numberFormat.put("#,##0_);(#,##0)","1");
     	numberFormat.put("#,##0_);[Red](#,##0)","1");
     	numberFormat.put("#,##0.00_);(#,##0.00)","1");
+    	numberFormat.put("#0.00%","1");
+    	numberFormat.put("0%","1");
+    	numberFormat.put("0.00%","1");
 	}
     
     /**  
@@ -605,6 +608,8 @@ public class LuckySheetCellUtil {
 			String fa = String.valueOf(styleMap.get("dataFormat")==null?"":styleMap.get("dataFormat"));
 			if("##0.00".equals(fa)) {
 				fa = "#,##0.00";
+			}else if("#0.00%".equals(fa)) {
+				fa = "0.00%";
 			}
 			DataFormat format = wb.createDataFormat();
 			cellStyle.setDataFormat(StringUtil.isNullOrEmpty(fa)?format.getFormat("General"):format.getFormat(fa));

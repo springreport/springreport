@@ -95,7 +95,8 @@ public class LuckysheetUtil {
 			//整数百分比
 			if(CheckUtil.isNumber(String.valueOf(value)))
 			{
-				return parsePercent(value,fa);
+//				return parsePercent(value,fa);
+				return value;
 			}else {
 				return value;
 			}
@@ -103,7 +104,8 @@ public class LuckysheetUtil {
 			//两位小数百分比
 			if(CheckUtil.isNumber(String.valueOf(value)))
 			{
-				return parsePercent(value,fa.replace("#", ""));
+//				return parsePercent(value,fa.replace("#", ""));
+				return value;
 			}else {
 				return value;
 			}

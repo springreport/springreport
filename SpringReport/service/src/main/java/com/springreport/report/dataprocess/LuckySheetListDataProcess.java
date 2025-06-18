@@ -66,7 +66,7 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 	@Override
 	public List<LuckySheetBindData> process(List<LuckysheetReportCell> variableCells, List<Map<String, Object>> data,String datasetName,
 			Map<String, Map<String, List<List<Map<String, Object>>>>> processedCells,Map<String, LuckySheetBindData> blockBindDatas,
-			Map<String, Object> subtotalCellDatas,Map<String, Object> subtotalCellMap,String sheetIndex,Map<String, LuckySheetBindData> cellBindData,Map<String, Integer> subTotalDigits,int tplType,List<String> subTotalCellCoords) {
+			Map<String, Object> subtotalCellDatas,Map<String, Object> subtotalCellMap,String sheetIndex,Map<String, LuckySheetBindData> cellBindData,Map<String, JSONObject> subTotalDigits,int tplType,List<String> subTotalCellCoords) {
 		List<LuckySheetBindData> bindDatas = new ArrayList<LuckySheetBindData>();
 		if(!ListUtil.isEmpty(data))
 		{
@@ -193,7 +193,15 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 								int r = cellCoor[0] - 1;
 								int c = cellCoor[1] - 1;
 								String subTotalKey = bindData.getSheetId() + "_" + r + "_" + c; 
-								subTotalDigits.put(subTotalKey, subtotalCells.getJSONObject(j).getInteger("digit"));
+								if(!subTotalDigits.containsKey(subTotalKey))
+								{
+									JSONObject subTotalSettings = new JSONObject();
+									subTotalSettings.put("digit", subtotalCells.getJSONObject(j).getInteger("digit"));
+									subTotalSettings.put("unitTransfer", subtotalCells.getJSONObject(j).getBooleanValue("unitTransfer"));
+									subTotalSettings.put("transferType", subtotalCells.getJSONObject(j).getInteger("transferType"));
+									subTotalSettings.put("multiple", subtotalCells.getJSONObject(j).getInteger("multiple"));
+									subTotalDigits.put(subTotalKey, subTotalSettings);
+								}
 							}
 						}
 					}
