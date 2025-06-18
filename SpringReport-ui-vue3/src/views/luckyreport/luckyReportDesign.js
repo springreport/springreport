@@ -360,6 +360,8 @@ export default {
         dataAttr:'',//属性
         subExtend:null,//子数据扩展方向
         priortyMoveDirection:1,//位置冲突后优先移动方向
+        sourceType:1,
+        dictContent:"",
         formsAttrs:{
           isOperationCol:false,//是否操作列
           valueType: '1', // 值类型 1文本 2数值 3日期 4下拉单选
@@ -380,6 +382,8 @@ export default {
           otherCellCompare: false,
           cellType: '1',
           compareCells: [],
+          sourceType:1,
+          content:"",
         },//填报配置
       },
       delSheetsIndex: [], //删除的sheet index
@@ -493,7 +497,7 @@ export default {
           sheetDeleteBefore: this.sheetDeleteBefore,
           sheetCreateAfter: this.sheetCreateAfter,
           sheetCopyBefore: this.sheetCopyBefore,
-          updateCellFormat: this.updateCellFormat,
+          // updateCellFormat: this.updateCellFormat,
           cellMousedown: this.cellMousedown,
           luckysheetDeleteCellAfter: this.luckysheetDeleteCellAfter,
           chartMoveOrResize: this.chartMoveOrResize,
@@ -551,6 +555,7 @@ export default {
           afterInitImg:this.afterInitImg,
           datasourceClick: this.datasourceClick,
           highlightRowCol:this.highlightRowCol,
+          execFAfter:this.execFAfter
         },
       },
       settingModalConfig: {
@@ -737,6 +742,9 @@ export default {
         coords: '', //坐标
         type: '', //类型 1合计 2平均值 3最大值 4最小值 5计数
         digit: '2', //小数位数
+        unitTransfer: false, // 是否数值单位转换
+        transferType: 1, // 1 乘法 2除法
+        multiple: '', // 倍数
       },
       subTotalCalcVisiable: false,
       subTotalCalcForm: {
@@ -1052,6 +1060,8 @@ export default {
         this.cellForm.dataAttr = cellFormData.dataAttr
         this.cellForm.subExtend = cellFormData.subExtend
         this.cellForm.priortyMoveDirection = cellFormData.priortyMoveDirection
+        this.cellForm.sourceType = cellFormData.sourceType
+        this.cellForm.dictContent = cellFormData.dictContent
         if (cellFormData.cellFillType) {
           this.cellForm.cellFillType = cellFormData.cellFillType;
         } else {
@@ -1113,6 +1123,8 @@ export default {
         this.cellForm.dataAttr = ''
         this.cellForm.subExtend = 1
         this.cellForm.priortyMoveDirection = 1
+        this.cellForm.sourceType = 1
+        this.cellForm.dictContent = ""
         // this.getDrillReport();
       }
       if (this.cellForm.datasourceId) {
@@ -2270,18 +2282,18 @@ export default {
             );
             cellDatas = cellDatas.concat(dataVerificationCells);
             var datasourceConfig = this.getDatasourceConfig(luckysheetfile.index)
-            if (cellDatas && cellDatas.length > 0) {
-              var sheetCellFormats = this.cellFormats[luckysheetfile.index];
-              if (sheetCellFormats) {
-                for (let index = 0; index < cellDatas.length; index++) {
-                  const element = cellDatas[index];
-                  var ct = sheetCellFormats[element.r + '_' + element.c];
-                  if (ct) {
-                    element.v.ct = ct;
-                  }
-                }
-              }
-            }
+            // if (cellDatas && cellDatas.length > 0) {
+            //   var sheetCellFormats = this.cellFormats[luckysheetfile.index];
+            //   if (sheetCellFormats) {
+            //     for (let index = 0; index < cellDatas.length; index++) {
+            //       const element = cellDatas[index];
+            //       var ct = sheetCellFormats[element.r + '_' + element.c];
+            //       if (ct) {
+            //         element.v.ct = ct;
+            //       }
+            //     }
+            //   }
+            // }
             if (
               this.blockData[luckysheetfiles[index].index] &&
               this.blockData[luckysheetfiles[index].index].length > 0
@@ -3366,15 +3378,15 @@ export default {
       var sheetIndex = luckysheet.getSheet().index;
       var sheetCellFormats = this.cellFormats[sheetIndex];
       var order = luckysheet.getSheet().order;
-      if (sheetCellFormats) {
-        var ct = sheetCellFormats[r + '_' + c];
-        if (ct && ct.t && ct.t == 'inlineStr') {
-        } else {
-          if (ct) {
-            luckysheet.setCellFormat(r, c, 'ct', ct, { order: order });
-          }
-        }
-      }
+      // if (sheetCellFormats) {
+      //   var ct = sheetCellFormats[r + '_' + c];
+      //   if (ct && ct.t && ct.t == 'inlineStr') {
+      //   } else {
+      //     if (ct) {
+      //       luckysheet.setCellFormat(r, c, 'ct', ct, { order: order });
+      //     }
+      //   }
+      // }
       if(this.datasourceColumnDialog){
         const rangeAxis = luckysheet.getRangeAxis();
         if(rangeAxis && rangeAxis.length > 0){
@@ -4107,21 +4119,21 @@ export default {
           cellDatas
         );
         cellDatas = cellDatas.concat(dataVerificationCells);
-        if (cellDatas && cellDatas.length > 0) {
-          var sheetCellFormats = this.cellFormats[luckysheetfile.index];
-          if (sheetCellFormats) {
-            for (let index = 0; index < cellDatas.length; index++) {
-              const element = cellDatas[index];
-              var ct = sheetCellFormats[element.r + '_' + element.c];
-              if (ct && ct.t && ct.t == 'inlineStr') {
-              } else {
-                if (ct) {
-                  element.v.ct = ct;
-                }
-              }
-            }
-          }
-        }
+        // if (cellDatas && cellDatas.length > 0) {
+        //   var sheetCellFormats = this.cellFormats[luckysheetfile.index];
+        //   if (sheetCellFormats) {
+        //     for (let index = 0; index < cellDatas.length; index++) {
+        //       const element = cellDatas[index];
+        //       var ct = sheetCellFormats[element.r + '_' + element.c];
+        //       if (ct && ct.t && ct.t == 'inlineStr') {
+        //       } else {
+        //         if (ct) {
+        //           element.v.ct = ct;
+        //         }
+        //       }
+        //     }
+        //   }
+        // }
         configs.cellDatas = cellDatas;
         configs.blockData = this.blockData[luckysheetfile.index];
         configs.extraCustomCellConfigs = extraCustomCellConfigs;
@@ -4433,11 +4445,17 @@ export default {
               that.cellSubTotalForm.type;
             that.cellForm.subTotalCells[that.cellSubTotalForm.index].digit =
               that.cellSubTotalForm.digit;
+            that.cellForm.subTotalCells[that.cellSubTotalForm.index].unitTransfer = that.cellSubTotalForm.unitTransfer
+            that.cellForm.subTotalCells[that.cellSubTotalForm.index].transferType = that.cellSubTotalForm.transferType
+            that.cellForm.subTotalCells[that.cellSubTotalForm.index].multiple = that.cellSubTotalForm.multiple
           } else {
             var data = {
               coords: that.cellSubTotalForm.coords,
               type: that.cellSubTotalForm.type,
               digit: that.cellSubTotalForm.digit,
+              unitTransfer: that.cellSubTotalForm.unitTransfer,
+              transferType: that.cellSubTotalForm.transferType,
+              multiple: that.cellSubTotalForm.multiple
             };
             if (!that.cellForm.subTotalCells) {
               that.cellForm.subTotalCells = [];
@@ -4459,6 +4477,9 @@ export default {
       this.cellSubTotalForm.coords = o.coords;
       this.cellSubTotalForm.type = o.type;
       this.cellSubTotalForm.digit = o.digit;
+      this.cellSubTotalForm.unitTransfer = o.unitTransfer
+      this.cellSubTotalForm.transferType = o.transferType
+      this.cellSubTotalForm.multiple = o.multiple
       this.cellSubTotalVisiable = true;
     },
     deleteSubtotalCell(index) {
@@ -5865,6 +5886,30 @@ export default {
         this.commonUtil.showMessage({ message: '已开启选中单元格行列高亮模式。', type: this.commonConstants.messageType.success })
       }else{
         this.commonUtil.showMessage({ message: '已关闭选中单元格行列高亮模式。', type: this.commonConstants.messageType.success })
+      }
+    },
+    execFAfter(){
+      if(!this.cellFormats){
+        return;
+      }
+      for(var sheetIndex in this.cellFormats) {
+        let sheetCellFormats = this.cellFormats[sheetIndex];
+        if(sheetCellFormats && Object.keys(sheetCellFormats).length > 0){
+          let luckysheetFile = luckysheet.getSheet({"index":sheetIndex});
+          let data = luckysheetFile.data;
+          for(var key in sheetCellFormats) {
+            let r = parseInt(key.split("_")[0]);
+            let c = parseInt(key.split("_")[1]);
+            if(data[r]){
+              if(data[r][c] == null){
+                data[r][c] = {};
+              }
+              data[r][c].ct = sheetCellFormats[key];
+            }
+          }
+          luckysheet.refresh()
+        }
+
       }
     }
   },

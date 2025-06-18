@@ -485,7 +485,23 @@
                   >
                   </el-switch>
                 </el-form-item>
-                <el-form-item label="数据源" v-show="cellForm.isDict">
+                <el-form-item
+                    v-show="cellForm.isDict"
+                    label="数据来源"
+                  >
+                  <el-select
+                  v-model="cellForm.sourceType"
+                  placeholder="数据来源"
+                  :disabled="attrDisabled"
+                  @change="changeCellAttr('sourceType')"
+                  clearable
+                >
+                  <el-option label="数据字典" :value="1" />
+                  <el-option label="sql语句" :value="2" />
+                  <el-option label="自定义" :value="3" />
+                </el-select>
+                </el-form-item>
+                <el-form-item label="数据源" v-show="cellForm.isDict && (cellForm.sourceType==1 || cellForm.sourceType==2)">
                   <el-select
                     style="width: 150px"
                     placeholder="数据源"
@@ -501,7 +517,7 @@
                     ></el-option>
                   </el-select>
                 </el-form-item>
-                <el-form-item label="字典类型" v-show="cellForm.isDict">
+                <el-form-item label="字典类型" v-show="cellForm.isDict && cellForm.sourceType==1">
                   <el-select
                     style="width: 150px"
                     placeholder="字典类型"
@@ -517,6 +533,19 @@
                     ></el-option>
                   </el-select>
                 </el-form-item>
+                <el-form-item
+                    v-show="cellForm.isDict && (cellForm.sourceType==2 || cellForm.sourceType==3)"
+                    :label="cellForm.sourceType==2?'sql语句':'自定义数据'"
+                  >
+                    <el-input
+                    v-model="cellForm.dictContent"
+                    type="textarea"
+                    :cols="80"
+                    :placeholder="cellForm.sourceType==2?'sql语句':'自定义数据'"
+                    size="small"
+                    @input="changeCellAttr('dictContent')"
+                  />
+                  </el-form-item>
                 <el-form-item label="是否下钻" class="df-form-item">
                   <el-switch
                     v-model="cellForm.isDrill"
@@ -530,7 +559,7 @@
                 <el-form-item label="下钻报表" v-show="cellForm.isDrill">
                   <el-select
                     style="width: 150px"
-                    placeholder="数据源"
+                    placeholder="下钻报表"
                     filterable
                     remote
                     :remote-method="getDrillReport"
@@ -947,6 +976,22 @@
                   </el-form-item>
                   <el-form-item
                     v-show="cellForm.formsAttrs.valueType == '4'"
+                    label="数据来源"
+                  >
+                  <el-select
+                  v-model="cellForm.formsAttrs.sourceType"
+                  placeholder="数据来源"
+                  :disabled="attrDisabled"
+                  @change="changeCellAttr('sourceType','formsAttrs')"
+                  clearable
+                >
+                  <el-option label="数据字典" :value="1" />
+                  <el-option label="sql语句" :value="2" />
+                  <el-option label="自定义" :value="3" />
+                </el-select>
+                  </el-form-item>
+                  <el-form-item
+                    v-show="cellForm.formsAttrs.valueType == '4' && (cellForm.formsAttrs.sourceType==1 || cellForm.formsAttrs.sourceType==2)"
                     label="数据源"
                   >
                     <el-select
@@ -966,7 +1011,7 @@
                     </el-select>
                   </el-form-item>
                   <el-form-item
-                    v-show="cellForm.formsAttrs.valueType == '4'"
+                    v-show="cellForm.formsAttrs.valueType == '4'  && cellForm.formsAttrs.sourceType==1"
                     label="字典类型"
                   >
                     <el-select
@@ -983,6 +1028,18 @@
                         :value="op.dictType"
                       />
                     </el-select>
+                  </el-form-item>
+                   <el-form-item
+                    v-show="cellForm.formsAttrs.valueType == '4' && (cellForm.formsAttrs.sourceType==2 || cellForm.formsAttrs.sourceType==3)"
+                    :label="cellForm.formsAttrs.sourceType==2?'sql语句':'自定义数据'"
+                  >
+                    <el-input
+                    v-model="cellForm.formsAttrs.content"
+                    type="textarea"
+                    :cols="80"
+                    :placeholder="cellForm.formsAttrs.sourceType==2?'sql语句':'自定义数据'"
+                    size="small"
+                  />
                   </el-form-item>
                 </div>
                 <el-form-item
@@ -1637,7 +1694,6 @@
                 <el-select
                   v-model="datasourceTableName"
                   placeholder="请选择解析表"
-                  size="mini"
                   filterable
                   style="margin-bottom: 10px; width: 254px"
                   @change="getTableColumns"
@@ -2887,6 +2943,55 @@
             placeholder="小数位数"
           ></el-input>
         </el-form-item>
+        <el-form-item
+          label="数值单位转换"
+          size="small"
+          class="df-form-item"
+          prop="unitTransfer"
+          :rules="filter_rules('数值单位转换', { required: true })"
+        >
+          <el-switch
+            v-model="cellSubTotalForm.unitTransfer"
+            active-text="是"
+            inactive-text="否"
+            />
+          </el-form-item>
+          <el-form-item
+            v-if="cellSubTotalForm.unitTransfer"
+            label="转换方式"
+            prop="transferType"
+            :rules="filter_rules('转换方式', { required: true })"
+          >
+            <el-select
+            v-model="cellSubTotalForm.transferType"
+            style="width: 100%"
+            placeholder="转换方式"
+            >
+              <el-option label="乘法" :value="1" />
+              <el-option label="除法" :value="2" />
+              <el-option label="乘法并转成中文大写" :value="3" />
+              <el-option label="除法并转成中文大写" :value="4" />
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            v-if="cellSubTotalForm.unitTransfer"
+            label="倍数"
+            prop="multiple"
+            :rules="filter_rules('倍数', { required: true })"
+          >
+            <el-select
+            v-model="cellSubTotalForm.multiple"
+            style="width: 100%"
+            placeholder="倍数"
+            >
+            <el-option label="1" value="1" />
+            <el-option label="10" value="10" />
+            <el-option label="100" value="100" />
+            <el-option label="1000" value="1000" />
+            <el-option label="10000" value="10000" />
+            <el-option label="100000" value="100000" />
+            </el-select>
+          </el-form-item>
       </el-form>
       <template #footer>
         <span class="dialog-footer">

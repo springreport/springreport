@@ -1,7 +1,18 @@
 <template>
   <div>
-    <site :component="component" :chartsComponents="chartsComponents"></site>
-    <border-setting :component="component" :chartsComponents="chartsComponents"></border-setting>
+    <div class="btn-group df-c">
+      <div
+        v-for="(item, index) in ['基础', '边框']"
+        :key="index"
+        class="btn"
+        :class="{ 'btn-active': currentIndex === index }"
+        @click="currentIndex = index"
+      >
+        {{ item }}
+      </div>
+    </div>
+    <site v-if="currentIndex==0" :component="component" :charts-components="chartsComponents" />
+    <border-setting v-else :component="component" :charts-components="chartsComponents" />
   </div>
 </template>
 
@@ -9,21 +20,26 @@
 import site from '../settingComponent/site/site.vue'
 import borderSetting from '../settingComponent/border/borderSetting.vue'
 export default {
-    name:"borderSettingComponent",
-    components:{
-        site,
-        borderSetting
+  name: 'BorderSettingComponent',
+  components: {
+    site,
+    borderSetting
+  },
+  props: {
+    component: {
+      type: Object,
+      default: () => ({})
     },
-    props:{
-         component:{
-            type:Object,
-            default:()=>({})
-        },
-        chartsComponents:{
-            type:Object,
-            default:() => ({}),
-        },
-    },
+    chartsComponents: {
+      type: Object,
+      default: () => ({})
+    }
+  },
+  data() {
+    return {
+      currentIndex: 0
+    }
+  }
 }
 </script>
 

@@ -66,7 +66,7 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 	@Override
 	public List<LuckySheetBindData> process(List<LuckysheetReportCell> variableCells, List<Map<String, Object>> data,String datasetName,
 			Map<String, Map<String, List<List<Map<String, Object>>>>> processedCells,Map<String, LuckySheetBindData> blockBindDatas,
-			Map<String, Object> subtotalCellDatas,Map<String, Object> subtotalCellMap,String sheetIndex,Map<String, LuckySheetBindData> cellBindData,Map<String, Integer> subTotalDigits,int tplType,List<String> subTotalCellCoords) {
+			Map<String, Object> subtotalCellDatas,Map<String, Object> subtotalCellMap,String sheetIndex,Map<String, LuckySheetBindData> cellBindData,Map<String, JSONObject> subTotalDigits,int tplType,List<String> subTotalCellCoords) {
 		List<LuckySheetBindData> bindDatas = new ArrayList<LuckySheetBindData>();
 		if(!ListUtil.isEmpty(data))
 		{
@@ -112,6 +112,7 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 				bindData.setRelyCells(variableCells.get(i).getRelyCells());
 				bindData.setDatasetName(variableCells.get(i).getDatasetName());
 				bindData.setIsDict(variableCells.get(i).getIsDict());
+				bindData.setSourceType(variableCells.get(i).getSourceType());
 				bindData.setDatasourceId(variableCells.get(i).getDatasourceId());
 				bindData.setDictType(variableCells.get(i).getDictType());
 				bindData.setHloopCount(variableCells.get(i).getHloopCount()==null?0:variableCells.get(i).getHloopCount());
@@ -129,11 +130,28 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 						String valueType = formsAttrs.getString("valueType");
 						if("4".equals(valueType)) {
 							String datasourceId = formsAttrs.getString("datasourceId");
-							String dictType = formsAttrs.getString("dictType");
-							if(StringUtil.isNotEmpty(datasourceId) && StringUtil.isNotEmpty(dictType)) {
-								bindData.setIsDict(true);
-								bindData.setDatasourceId(Long.parseLong(datasourceId));
-								bindData.setDictType(dictType);
+							int sourceType = formsAttrs.getIntValue("sourceType");
+							String content = formsAttrs.getString("content");
+							bindData.setSourceType(sourceType);
+							if(sourceType == 2) {
+								if(StringUtil.isNotEmpty(datasourceId)) {
+									bindData.setIsDict(true);
+									bindData.setDatasourceId(Long.parseLong(datasourceId));
+									bindData.setDictType(content);
+								}
+							}else if(sourceType == 3) {
+								if(StringUtil.isNotEmpty(content)) {
+									bindData.setIsDict(true);
+									bindData.setDatasourceId(0L);
+									bindData.setDictType(content);
+								}
+							}else {
+								String dictType = formsAttrs.getString("dictType");
+								if(StringUtil.isNotEmpty(datasourceId) && StringUtil.isNotEmpty(dictType)) {
+									bindData.setIsDict(true);
+									bindData.setDatasourceId(Long.parseLong(datasourceId));
+									bindData.setDictType(dictType);
+								}
 							}
 						}
 						boolean isOperationCol =  formsAttrs.getBooleanValue("isOperationCol");
@@ -175,7 +193,15 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 								int r = cellCoor[0] - 1;
 								int c = cellCoor[1] - 1;
 								String subTotalKey = bindData.getSheetId() + "_" + r + "_" + c; 
-								subTotalDigits.put(subTotalKey, subtotalCells.getJSONObject(j).getInteger("digit"));
+								if(!subTotalDigits.containsKey(subTotalKey))
+								{
+									JSONObject subTotalSettings = new JSONObject();
+									subTotalSettings.put("digit", subtotalCells.getJSONObject(j).getInteger("digit"));
+									subTotalSettings.put("unitTransfer", subtotalCells.getJSONObject(j).getBooleanValue("unitTransfer"));
+									subTotalSettings.put("transferType", subtotalCells.getJSONObject(j).getInteger("transferType"));
+									subTotalSettings.put("multiple", subtotalCells.getJSONObject(j).getInteger("multiple"));
+									subTotalDigits.put(subTotalKey, subTotalSettings);
+								}
 							}
 						}
 					}

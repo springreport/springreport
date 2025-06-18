@@ -149,6 +149,11 @@ screenConstants.tableAlign = [
   {name:"right",value:"right"},
 ]
 
+screenConstants.funnelShape = [
+  { name: '梯形', value: 'trapezoid' },
+  { name: '矩形', value: 'rect' },
+]
+
 screenConstants.type = {
     text:"text",//文本
     date:"date",//日期时间
@@ -205,30 +210,33 @@ screenConstants.category = {
 }
 
 //大屏组件类型
+// 大屏组件类型
 screenConstants.componentsType1 = [
-    {"type":"panel","text":"画板",icon:"panel"},
-    {"type":"text","text":"文本",icon:"text"},
-    {"type":"picture","text":"图片",icon:"picture"},
-    {"type":"border","text":"边框",icon:"border"},
-    {"type":"decoration","text":"装饰",icon:"decoration"},
-    {"type":"histogram","text":"柱状图",icon:"histogram"},
-    {"type":"line","text":"折线图",icon:"line"},
-    {"type":"area","text":"面积图",icon:"area"},
-    {"type":"pie","text":"饼图",icon:"pie"},
-    {"type":"boxPlot","text":"箱型图",icon:"boxPlot"},
-    {"type":"zhifangtu","text":"直方图",icon:"histogram"},
+  { 'type': 'panel', 'text': '画板', icon: 'panel' },
+  { 'type': 'text', 'text': '文本', icon: 'text' },
+  { 'type': 'picture', 'text': '图片', icon: 'picture' },
+  { 'type': 'border', 'text': '边框', icon: 'border' },
+  { 'type': 'decoration', 'text': '装饰', icon: 'decoration' },
+  { 'type': 'histogram', 'text': '柱状图', icon: 'histogram' },
+  { 'type': 'line', 'text': '折线图', icon: 'line' },
+  { 'type': 'area', 'text': '面积图', icon: 'area' },
+  { 'type': 'pie', 'text': '饼图', icon: 'pie' },
+  { 'type': 'boxPlot', 'text': '箱型图', icon: 'boxPlot' },
+  { 'type': 'zhifangtu', 'text': '直方图', icon: 'histogram' },
+  { 'type': 'sankey', 'text': '桑葚图', icon: 'sankey' },
+  { 'type': 'circlePacking', 'text': '气泡图', icon: 'circlePacking' },
+  { 'type': 'scatter', 'text': '散点图', icon: 'scatter' },
+  { 'type': 'radar', 'text': '雷达图', icon: 'radar' },
+  { 'type': 'funnel', 'text': '漏斗图', icon: 'funnel' },
+  { 'type': 'gauge', 'text': '仪表盘', icon: 'gauge' },
+  { 'type': 'progress', 'text': '进度条', icon: 'progress' },
+  { 'type': 'wordCloud', 'text': '词云图', icon: 'wordCloud' },
+  { 'type': 'map', 'text': '地图', icon: 'map' },
+  { 'type': 'table', 'text': '表格', icon: 'table' }
 ]
 screenConstants.componentsType2 = [
-  {"type":"circlePacking","text":"气泡图",icon:"circlePacking"},
-  {"type":"scatter","text":"散点图",icon:"scatter"},
-  {"type":"radar","text":"雷达图",icon:"radar"},
-  {"type":"funnel","text":"漏斗图",icon:"funnel"},
-  {"type":"gauge","text":"仪表盘",icon:"gauge"},
-  {"type":"progress","text":"进度条",icon:"progress"},
-  {"type":"wordCloud","text":"词云图",icon:"wordCloud"},
-  {"type":"map","text":"地图",icon:"map"},
-  {"type":"table","text":"表格",icon:"table"}
-]  
+
+] 
 
 screenConstants.compType = {
     text: { text: '文本', icon: 'text'},
@@ -264,7 +272,7 @@ screenConstants.compType = {
     seriesGauge: { text: '系列仪表盘', icon: 'gauge'},
     tickSeriesGauge: { text: '刻度系列仪表盘', icon: 'gauge'},
     progress: { text: '进度条', icon: 'progress'},
-    circularProgress: { text: '环形进度条', icon: 'progress'},
+    circularProgress: { text: '环形进度条', icon: 'circleProgress'},
     barProgress: { text: '条形进度条', icon: 'progress'},
     wordCloud: { text: '词云图', icon: 'wordCloud'},
     liquid: { text: '水波图', icon: 'liquid'},
@@ -275,6 +283,7 @@ screenConstants.compType = {
     circlePacking: { text: '气泡图', icon: 'circlePacking'},
     transformFunnel: { text: '转化漏斗图', icon: 'funnel'},
     zhifangtu: { text: '直方图', icon: 'histogram' },
+    sankey: { text: '桑葚图', icon: 'sankey' }
 }
 
 screenConstants.textType = [

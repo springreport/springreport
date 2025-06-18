@@ -1,27 +1,50 @@
 <template>
   <div>
-     <el-form ref="settingForm" class="demo-form-inline" :inline="true" :model="component" label-position="left"  label-width="auto" size="mini">
-        <el-form-item label="大屏配置" class="customLabel">
-        </el-form-item><br>
-        <el-form-item label="宽度">
-            <el-input v-model.number="component.width" style="width:90px"/>
-        </el-form-item>
-        <el-form-item label="高度" >
-            <el-input v-model.number="component.height" style="width:90px"/>
-        </el-form-item>
-        <el-form-item label="背景图片" >
-          <el-input v-model="component.imgUrl" style="width:180px">
-            <template slot="append"><el-button icon="el-icon-upload" @click="uploadTrigger" /></template>
-          </el-input>
-          <input id="uploadFile" ref="fileBtn" type="file" accept="image/*" style="display:none" @change="uploadFile">
-        </el-form-item>
-        <el-form-item label="背景颜色" prop="background">
+    <div class="btn-group df-c">
+      <div class="btn btn-active">画板</div>
+    </div>
+    <el-form
+      ref="settingForm"
+      class="demo-form-inline"
+      label-position="top"
+      :model="component"
+      size="mini"
+    >
+      <el-form-item label="宽度">
+        <el-input v-model.number="component.width" />
+      </el-form-item>
+      <el-form-item label="高度">
+        <el-input v-model.number="component.height" />
+      </el-form-item>
+      <el-form-item label="背景图片">
+        <el-input v-model="component.imgUrl" style="width: 180px">
+          <template
+            slot="append"
+          ><el-button
+            icon="el-icon-upload"
+            @click="uploadTrigger"
+          /></template>
+        </el-input>
+        <input
+          id="uploadFile"
+          ref="fileBtn"
+          type="file"
+          accept="image/*"
+          style="display: none"
+          @change="uploadFile"
+        >
+      </el-form-item>
+      <el-form-item label="背景颜色" prop="background">
         <input-color-picker
           :value="component.background"
-          @change="(val)=>{component.background=val}"
+          @change="
+            (val) => {
+              component.background = val;
+            }
+          "
         />
       </el-form-item>
-     </el-form>
+    </el-form>
   </div>
 </template>
 
@@ -59,30 +82,24 @@ export default {
       const param = new FormData() // 创建form对象
       param.append('file', file) // 通过append向form对象添加数据
       const config = {
-        headers: { 'Content-Type': 'multipart/form-data',
-          'Authorization': localStorage.getItem(this.commonConstants.sessionItem.authorization) }
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: localStorage.getItem(
+            this.commonConstants.sessionItem.authorization
+          )
+        }
       }
-      Axios.post(this.apis.screenDesign.uploadFileApi, param, config)
-        .then(res => {
+      Axios.post(this.apis.screenDesign.uploadFileApi, param, config).then(
+        (res) => {
           this.component.imgUrl = res.data.responseData.fileUri
           event.target.value = ''
-        })
-    },
+        }
+      )
+    }
   }
 }
 </script>
 
 <style scoped>
-.el-form-item{
-  margin-bottom:2px !important
-}
-::v-deep .el-form-item__label-wrap{
-    margin-left:0px !important
-}
-::v-deep .customLabel{
-    font-weight: bold;
-}
-::v-deep .customLabel .el-form-item__label{
-    color:#15a585 !important;
-}
+
 </style>

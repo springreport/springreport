@@ -101,6 +101,9 @@ importers:
       vue3-marquee:
         specifier: ^4.2.1
         version: 4.2.2(vue@3.5.3)
+      vue3-ruler-tool:
+        specifier: ^0.0.1
+        version: 0.0.1
       vue3-seamless-scroll:
         specifier: ^2.0.1
         version: 2.0.1
@@ -3642,6 +3645,9 @@ packages:
     peerDependencies:
       vue: ^3.2
 
+  vue3-ruler-tool@0.0.1:
+    resolution: {integrity: sha512-NXZQO/m/+bPJ7pVklo/d8+27JcJHdWYSu7BEtRgiX6ofB3zhkuNuny8053xiuKCGzVmVoXzL+1ravN6f+crSSw==}
+
   vue3-seamless-scroll@2.0.1:
     resolution: {integrity: sha512-mI3BaDU3pjcPUhVSw3/xNKdfPBDABTi/OdZaZqKysx4cSdNfGRbVvGNDzzptBbJ5S7imv5T55l6x/SqgnxKreg==}
 
@@ -4112,7 +4118,7 @@ snapshots:
     dependencies:
       clipboard: 2.0.11
 
-  '@stylelint/postcss-css-in-js@0.37.3(postcss-syntax@0.36.2(postcss-html@0.36.0)(postcss-less@3.1.4)(postcss-scss@2.1.1)(postcss@7.0.39))(postcss@7.0.39)':
+  '@stylelint/postcss-css-in-js@0.37.3(postcss-syntax@0.36.2)(postcss@7.0.39)':
     dependencies:
       '@babel/core': 7.25.2
       postcss: 7.0.39
@@ -4120,7 +4126,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@stylelint/postcss-markdown@0.36.2(postcss-syntax@0.36.2(postcss-html@0.36.0)(postcss-less@3.1.4)(postcss-scss@2.1.1)(postcss@7.0.39))(postcss@7.0.39)':
+  '@stylelint/postcss-markdown@0.36.2(postcss-syntax@0.36.2)(postcss@7.0.39)':
     dependencies:
       postcss: 7.0.39
       postcss-syntax: 0.36.2(postcss@8.4.45)
@@ -7041,8 +7047,8 @@ snapshots:
 
   stylelint@13.13.1:
     dependencies:
-      '@stylelint/postcss-css-in-js': 0.37.3(postcss-syntax@0.36.2(postcss-html@0.36.0)(postcss-less@3.1.4)(postcss-scss@2.1.1)(postcss@7.0.39))(postcss@7.0.39)
-      '@stylelint/postcss-markdown': 0.36.2(postcss-syntax@0.36.2(postcss-html@0.36.0)(postcss-less@3.1.4)(postcss-scss@2.1.1)(postcss@7.0.39))(postcss@7.0.39)
+      '@stylelint/postcss-css-in-js': 0.37.3(postcss-syntax@0.36.2)(postcss@7.0.39)
+      '@stylelint/postcss-markdown': 0.36.2(postcss-syntax@0.36.2)(postcss@7.0.39)
       autoprefixer: 9.8.8
       balanced-match: 2.0.0
       chalk: 4.1.2
@@ -7620,6 +7626,12 @@ snapshots:
   vue3-marquee@4.2.2(vue@3.5.3):
     dependencies:
       vue: 3.5.3
+
+  vue3-ruler-tool@0.0.1:
+    dependencies:
+      vue: 3.5.3
+    transitivePeerDependencies:
+      - typescript
 
   vue3-seamless-scroll@2.0.1:
     dependencies:

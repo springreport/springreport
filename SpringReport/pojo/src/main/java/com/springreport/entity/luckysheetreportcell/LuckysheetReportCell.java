@@ -338,4 +338,12 @@ public class LuckysheetReportCell extends PageEntity {
     /** priorty_move_direction - 优先移动方向 1向下 2向右 */
     @TableField("priorty_move_direction")
     private Integer priortyMoveDirection;
+    
+    /** source_type - 数据字典数据来源 1数据字典 2sql语句 3自定义 */
+    @TableField("source_type")
+    private Integer sourceType;
+
+    /** dict_content - sql语句或者自定义数据字典内容 */
+    @TableField("dict_content")
+    private String dictContent;
 }

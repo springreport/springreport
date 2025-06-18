@@ -1,437 +1,442 @@
-//大屏相关的模板用到的常量
+// 大屏相关的模板用到的常量
 const screenConstants = {
 }
 
-//主题
+// 主题
 screenConstants.vchartthemes = [
-    {name:"亮色主题",value:"light"},
-    {name:"暗色主题",value:"dark"},
-    {name:"火山蓝",value:"vScreenVolcanoBlue"},
-    {name:"清新蜡笔",value:"vScreenClean"},
-    {name:"郊外",value:"vScreenOutskirts"},
-    {name:"汽车蓝橙",value:"vScreenBlueOrange"},
-    {name:"金融黄",value:"vScreenFinanceYellow"},
-    {name:"文旅青",value:"vScreenWenLvCyan"},
-    {name:"电力绿",value:"vScreenElectricGreen"},
-    {name:"电商紫",value:"vScreenECommercePurple"},
-    {name:"红蓝",value:"vScreenRedBlue"},
-    {name:"党建红",value:"vScreenPartyRed"},
-    {name:"源力亮色",value:"veODesignLight"},
-    {name:"源力亮色-金融",value:"veODesignLightFinance"},
-    {name:"源力亮色-政府",value:"veODesignLightGovernment"},
-    {name:"源力亮色-消费",value:"veODesignLightConsumer"},
-    {name:"源力亮色-汽车",value:"veODesignLightAutomobile"},
-    {name:"源力亮色-文旅",value:"veODesignLightCulturalTourism"},
-    {name:"源力亮色-医疗",value:"veODesignLightMedical"},
-    {name:"源力亮色-新能源",value:"veODesignLightNewEnergy"},
-    {name:"源力暗色",value:"veODesignDark"},
-    {name:"源力暗色-金融",value:"veODesignDarkFinance"},
-    {name:"源力暗色-政府",value:"veODesignDarkGovernment"},
-    {name:"源力暗色-消费",value:"veODesignDarkConsumer"},
-    {name:"源力暗色-汽车",value:"veODesignDarkAutomobile"},
-    {name:"源力暗色-文旅",value:"veODesignDarkCulturalTourism"},
-    {name:"源力暗色-医疗",value:"veODesignDarkMedical"},
-    {name:"源力暗色-新能源",value:"veODesignDarkNewEnergy"},
+  { name: '亮色主题', value: 'light' },
+  { name: '暗色主题', value: 'dark' },
+  { name: '火山蓝', value: 'vScreenVolcanoBlue' },
+  { name: '清新蜡笔', value: 'vScreenClean' },
+  { name: '郊外', value: 'vScreenOutskirts' },
+  { name: '汽车蓝橙', value: 'vScreenBlueOrange' },
+  { name: '金融黄', value: 'vScreenFinanceYellow' },
+  { name: '文旅青', value: 'vScreenWenLvCyan' },
+  { name: '电力绿', value: 'vScreenElectricGreen' },
+  { name: '电商紫', value: 'vScreenECommercePurple' },
+  { name: '红蓝', value: 'vScreenRedBlue' },
+  { name: '党建红', value: 'vScreenPartyRed' },
+  { name: '源力亮色', value: 'veODesignLight' },
+  { name: '源力亮色-金融', value: 'veODesignLightFinance' },
+  { name: '源力亮色-政府', value: 'veODesignLightGovernment' },
+  { name: '源力亮色-消费', value: 'veODesignLightConsumer' },
+  { name: '源力亮色-汽车', value: 'veODesignLightAutomobile' },
+  { name: '源力亮色-文旅', value: 'veODesignLightCulturalTourism' },
+  { name: '源力亮色-医疗', value: 'veODesignLightMedical' },
+  { name: '源力亮色-新能源', value: 'veODesignLightNewEnergy' },
+  { name: '源力暗色', value: 'veODesignDark' },
+  { name: '源力暗色-金融', value: 'veODesignDarkFinance' },
+  { name: '源力暗色-政府', value: 'veODesignDarkGovernment' },
+  { name: '源力暗色-消费', value: 'veODesignDarkConsumer' },
+  { name: '源力暗色-汽车', value: 'veODesignDarkAutomobile' },
+  { name: '源力暗色-文旅', value: 'veODesignDarkCulturalTourism' },
+  { name: '源力暗色-医疗', value: 'veODesignDarkMedical' },
+  { name: '源力暗色-新能源', value: 'veODesignDarkNewEnergy' }
 ]
 
 screenConstants.labelPosition = [
-    {name:"outside",value:"outside"},
-    {name:"top",value:"top"},
-    {name:"bottom",value:"bottom"},
-    {name:"left",value:"left"},
-    {name:"right",value:"right"},
-    {name:"inside",value:"inside"},
-    {name:"inside-top",value:"inside-top"},
-    {name:"inside-bottom",value:"inside-bottom"},
-    {name:"inside-right",value:"inside-right"},
-    {name:"inside-left",value:"inside-left"},
-    {name:"top-right",value:"top-right"},
-    {name:"top-left",value:"top-left"},
-    {name:"bottom-right",value:"bottom-right"},
-    {name:"bottom-left",value:"bottom-left"},
+  { name: 'outside', value: 'outside' },
+  { name: 'top', value: 'top' },
+  { name: 'bottom', value: 'bottom' },
+  { name: 'left', value: 'left' },
+  { name: 'right', value: 'right' },
+  { name: 'inside', value: 'inside' },
+  { name: 'inside-top', value: 'inside-top' },
+  { name: 'inside-bottom', value: 'inside-bottom' },
+  { name: 'inside-right', value: 'inside-right' },
+  { name: 'inside-left', value: 'inside-left' },
+  { name: 'top-right', value: 'top-right' },
+  { name: 'top-left', value: 'top-left' },
+  { name: 'bottom-right', value: 'bottom-right' },
+  { name: 'bottom-left', value: 'bottom-left' }
 ]
 
 screenConstants.lineLabelPosition = [
-    {name:"start",value:"start"},
-    {name:"end",value:"end"},
+  { name: 'start', value: 'start' },
+  { name: 'end', value: 'end' }
 ]
 
 screenConstants.pieLabelPosition = [
-    {name:"outside",value:"outside"},
-    {name:"inside",value:"inside"},
-    {name:"inside-outer",value:"inside-outer"},
-    {name:"inside-inner",value:"inside-inner"}
+  { name: 'outside', value: 'outside' },
+  { name: 'inside', value: 'inside' },
+  { name: 'inside-outer', value: 'inside-outer' },
+  { name: 'inside-inner', value: 'inside-inner' }
 ]
 
 screenConstants.scatterLabelPosition = [
-    {name:"top",value:"top"},
-    {name:"bottom",value:"bottom"},
-    {name:"left",value:"left"},
-    {name:"right",value:"right"},
-    {name:"top-right",value:"top-right"},
-    {name:"top-left",value:"top-left"},
-    {name:"bottom-right",value:"bottom-right"},
-    {name:"bottom-left",value:"bottom-left"},
-    {name:"center",value:"center"}
+  { name: 'top', value: 'top' },
+  { name: 'bottom', value: 'bottom' },
+  { name: 'left', value: 'left' },
+  { name: 'right', value: 'right' },
+  { name: 'top-right', value: 'top-right' },
+  { name: 'top-left', value: 'top-left' },
+  { name: 'bottom-right', value: 'bottom-right' },
+  { name: 'bottom-left', value: 'bottom-left' },
+  { name: 'center', value: 'center' }
 ]
 
 screenConstants.radarLabelPosition = [
-    {name:"top",value:"top"},
-    {name:"bottom",value:"bottom"},
-    {name:"left",value:"left"},
-    {name:"right",value:"right"},
+  { name: 'top', value: 'top' },
+  { name: 'bottom', value: 'bottom' },
+  { name: 'left', value: 'left' },
+  { name: 'right', value: 'right' }
 ]
 
 screenConstants.legendOrient = [
-    {name:"left",value:"left"},
-    {name:"top",value:"top"},
-    {name:"bottom",value:"bottom"},
-    {name:"right",value:"right"},
+  { name: 'left', value: 'left' },
+  { name: 'top', value: 'top' },
+  { name: 'bottom', value: 'bottom' },
+  { name: 'right', value: 'right' }
 ]
 
 screenConstants.legendPosition = [
-    {name:"起始",value:"start"},
-    {name:"居中",value:"middle"},
-    {name:"末尾",value:"end"},
+  { name: '起始', value: 'start' },
+  { name: '居中', value: 'middle' },
+  { name: '末尾', value: 'end' }
 ]
 
 screenConstants.orient = [
-  {name:"left",value:"left"},
-  {name:"right",value:"right"},
+  { name: 'left', value: 'left' },
+  { name: 'right', value: 'right' }
 ]
 
-screenConstants.baranimation=[
-    {name:"无动画",value:""},
-    {name:"渐入动画(依次)",value:"fadeIn"},
-    {name:"渐入动画(整体)",value:"fadeIn2"},
-    {name:"缩放动画(依次)",value:"scaleIn"},
-    {name:"缩放动画(整体)",value:"scaleIn2"},
-    {name:"移入动画(依次)",value:"moveIn"},
-    {name:"移入动画(整体)",value:"moveIn2"},
-    {name:"高度生长动画(依次)",value:"growHeightIn"},
-    {name:"高度生长动画(整体)",value:"growHeightIn2"},
-    {name:"宽度生长动画(依次)",value:"growWidthIn"},
-    {name:"宽度生长动画(整体)",value:"growWidthIn2"},
-    {name:"中心生长动画(依次)",value:"growCenterIn"},
-    {name:"中心生长动画(整体)",value:"growCenterIn2"},
+screenConstants.baranimation = [
+  { name: '无动画', value: '' },
+  { name: '渐入动画(依次)', value: 'fadeIn' },
+  { name: '渐入动画(整体)', value: 'fadeIn2' },
+  { name: '缩放动画(依次)', value: 'scaleIn' },
+  { name: '缩放动画(整体)', value: 'scaleIn2' },
+  { name: '移入动画(依次)', value: 'moveIn' },
+  { name: '移入动画(整体)', value: 'moveIn2' },
+  { name: '高度生长动画(依次)', value: 'growHeightIn' },
+  { name: '高度生长动画(整体)', value: 'growHeightIn2' },
+  { name: '宽度生长动画(依次)', value: 'growWidthIn' },
+  { name: '宽度生长动画(整体)', value: 'growWidthIn2' },
+  { name: '中心生长动画(依次)', value: 'growCenterIn' },
+  { name: '中心生长动画(整体)', value: 'growCenterIn2' }
 ]
 
 screenConstants.triggerType = [
-  {name:"不可更新",value:"none"},
-  {name:"鼠标选中",value:"select"},
-  {name:"鼠标悬停",value:"hover"},
+  { name: '不可更新', value: 'none' },
+  { name: '鼠标选中', value: 'select' },
+  { name: '鼠标悬停', value: 'hover' }
 ]
 
 screenConstants.liquidShape = [
-  {name:"drop",value:"drop"},
-  {name:"circle",value:"circle"},
-  {name:"cross",value:"cross"},
-  {name:"diamond",value:"diamond"},
-  {name:"square",value:"square"},
-  {name:"arrow",value:"arrow"},
-  {name:"arrow2Left",value:"arrow2Left"},
-  {name:"arrow2Right",value:"arrow2Right"},
-  {name:"wedge",value:"wedge"},
-  {name:"thinTriangle",value:"thinTriangle"},
-  {name:"triangle",value:"triangle"},
-  {name:"triangleUp",value:"triangleUp"},
-  {name:"triangleDown",value:"triangleDown"},
-  {name:"triangleRight",value:"triangleRight"},
-  {name:"triangleLeft",value:"triangleLeft"},
-  {name:"star",value:"star"},
-  {name:"wye",value:"wye"},
-  {name:"rect",value:"rect"},
+  { name: 'drop', value: 'drop' },
+  { name: 'circle', value: 'circle' },
+  { name: 'cross', value: 'cross' },
+  { name: 'diamond', value: 'diamond' },
+  { name: 'square', value: 'square' },
+  { name: 'arrow', value: 'arrow' },
+  { name: 'arrow2Left', value: 'arrow2Left' },
+  { name: 'arrow2Right', value: 'arrow2Right' },
+  { name: 'wedge', value: 'wedge' },
+  { name: 'thinTriangle', value: 'thinTriangle' },
+  { name: 'triangle', value: 'triangle' },
+  { name: 'triangleUp', value: 'triangleUp' },
+  { name: 'triangleDown', value: 'triangleDown' },
+  { name: 'triangleRight', value: 'triangleRight' },
+  { name: 'triangleLeft', value: 'triangleLeft' },
+  { name: 'star', value: 'star' },
+  { name: 'wye', value: 'wye' },
+  { name: 'rect', value: 'rect' }
 ]
 
 screenConstants.tableAlign = [
-  {name:"left",value:"left"},
-  {name:"center",value:"center"},
-  {name:"right",value:"right"},
+  { name: 'left', value: 'left' },
+  { name: 'center', value: 'center' },
+  { name: 'right', value: 'right' }
+]
+
+screenConstants.funnelShape = [
+  { name: '梯形', value: 'trapezoid' },
+  { name: '矩形', value: 'rect' },
 ]
 
 screenConstants.type = {
-    text:"text",//文本
-    date:"date",//日期时间
-    picture:"picture",//图片
-    border:"border",//边框
-    decoration:"decoration",//装饰
-    histogram:"histogram",//基础柱状图
-    stackHistogram:"stackHistogram",//堆叠柱状图
-    rangeHistogram:"rangeHistogram",//区间柱状图
-    horizontalHistogram:"horizontalHistogram",//条形图
-    rangeHorizontalHistogram:"rangeHorizontalHistogram",//区间条形图
-    stackHorizontalHistogram:"stackHorizontalHistogram",//堆叠条形图
-    line:"line",//折线图
-    horizontalLine:"horizontalLine",//垂直折线图
-    smoothLine:"smoothLine",//平滑折线图
-    stepLine:"stepLine",//阶梯折线图
-    stackLine:"stackLine",//堆叠折线图
-    area:"area",//面积图
-    horizontalArea:"horizontalArea",//垂直面积图
-    smoothArea:"smoothArea",//平滑面积图
-    stepArea:"stepArea",//阶梯面积图
-    stackArea:"stackArea",//堆叠面积图
-    pie:"pie",//饼图
-    pieRose:"pieRose",//玫瑰图
-    scatter:"scatter",//散点图
-    radar:"radar",//雷达图
-    stackRadar:"stackRadar",//堆叠雷达图
-    funnel:"funnel",//漏斗图
-    gauge:"gauge",//仪表盘
-    tickGauge:"tickGauge",//刻度线模式仪表盘
-    seriesGauge:"seriesGauge",//系列仪表盘
-    tickSeriesGauge:"tickSeriesGauge",//刻度系列仪表盘
-    circularProgress:"circularProgress",//环形进度条
-    barProgress:"barProgress",//条形进度条
-    liquid:"liquid",//水波图
-    wordCloud:"wordCloud",//词云
-    map:"map",//基础地图
-    scrollTable:"scrollTable",//循环表格
-    pageTable:"pageTable",//分页表格
-    boxPlot:"boxPlot",//基础箱型图
-    circlePacking:"circlePacking",//基础气泡图
-    transformFunnel:"transformFunnel",//转化漏斗图
-    zhifangtu:"zhifangtu",//直方图
-    sankey:"sankey",//桑葚图
+  text: 'text', // 文本
+  date: 'date', // 日期时间
+  picture: 'picture', // 图片
+  border: 'border', // 边框
+  decoration: 'decoration', // 装饰
+  histogram: 'histogram', // 基础柱状图
+  stackHistogram: 'stackHistogram', // 堆叠柱状图
+  rangeHistogram: 'rangeHistogram', // 区间柱状图
+  horizontalHistogram: 'horizontalHistogram', // 条形图
+  rangeHorizontalHistogram: 'rangeHorizontalHistogram', // 区间条形图
+  stackHorizontalHistogram: 'stackHorizontalHistogram', // 堆叠条形图
+  line: 'line', // 折线图
+  horizontalLine: 'horizontalLine', // 垂直折线图
+  smoothLine: 'smoothLine', // 平滑折线图
+  stepLine: 'stepLine', // 阶梯折线图
+  stackLine: 'stackLine', // 堆叠折线图
+  area: 'area', // 面积图
+  horizontalArea: 'horizontalArea', // 垂直面积图
+  smoothArea: 'smoothArea', // 平滑面积图
+  stepArea: 'stepArea', // 阶梯面积图
+  stackArea: 'stackArea', // 堆叠面积图
+  pie: 'pie', // 饼图
+  pieRose: 'pieRose', // 玫瑰图
+  scatter: 'scatter', // 散点图
+  radar: 'radar', // 雷达图
+  stackRadar: 'stackRadar', // 堆叠雷达图
+  funnel: 'funnel', // 漏斗图
+  gauge: 'gauge', // 仪表盘
+  tickGauge: 'tickGauge', // 刻度线模式仪表盘
+  seriesGauge: 'seriesGauge', // 系列仪表盘
+  tickSeriesGauge: 'tickSeriesGauge', // 刻度系列仪表盘
+  circularProgress: 'circularProgress', // 环形进度条
+  barProgress: 'barProgress', // 条形进度条
+  liquid: 'liquid', // 水波图
+  wordCloud: 'wordCloud', // 词云
+  map: 'map', // 基础地图
+  scrollTable: 'scrollTable', // 循环表格
+  pageTable: 'pageTable', // 分页表格
+  boxPlot: 'boxPlot', // 基础箱型图
+  circlePacking: 'circlePacking', // 基础气泡图
+  transformFunnel: 'transformFunnel', // 转化漏斗图
+  zhifangtu: 'zhifangtu', // 直方图
+  sankey: 'sankey'// 桑葚图
 }
 
 screenConstants.category = {
-   panel:"panel",//画板
-   vchart:"vchart",//图表类别 
-   text:"text",//文本类别 
-   picture:"picture",//文本类别 
-   border:"border",//边框
-   decoration:"decoration",//装饰
-   table:"table",
+  panel: 'panel', // 画板
+  vchart: 'vchart', // 图表类别
+  text: 'text', // 文本类别
+  picture: 'picture', // 文本类别
+  border: 'border', // 边框
+  decoration: 'decoration', // 装饰
+  table: 'table'
 }
 
-//大屏组件类型
+// 大屏组件类型
 screenConstants.componentsType1 = [
-    {"type":"panel","text":"画板",icon:"panel"},
-    {"type":"text","text":"文本",icon:"text"},
-    {"type":"picture","text":"图片",icon:"picture"},
-    {"type":"border","text":"边框",icon:"border"},
-    {"type":"decoration","text":"装饰",icon:"decoration"},
-    {"type":"histogram","text":"柱状图",icon:"histogram"},
-    {"type":"line","text":"折线图",icon:"line"},
-    {"type":"area","text":"面积图",icon:"area"},
-    {"type":"pie","text":"饼图",icon:"pie"},
-    {"type":"boxPlot","text":"箱型图",icon:"boxPlot"},
-    {"type":"zhifangtu","text":"直方图",icon:"histogram"},
+  { 'type': 'panel', 'text': '画板', icon: 'panel' },
+  { 'type': 'text', 'text': '文本', icon: 'text' },
+  { 'type': 'picture', 'text': '图片', icon: 'picture' },
+  { 'type': 'border', 'text': '边框', icon: 'border' },
+  { 'type': 'decoration', 'text': '装饰', icon: 'decoration' },
+  { 'type': 'histogram', 'text': '柱状图', icon: 'histogram' },
+  { 'type': 'line', 'text': '折线图', icon: 'line' },
+  { 'type': 'area', 'text': '面积图', icon: 'area' },
+  { 'type': 'pie', 'text': '饼图', icon: 'pie' },
+  { 'type': 'boxPlot', 'text': '箱型图', icon: 'boxPlot' },
+  { 'type': 'zhifangtu', 'text': '直方图', icon: 'histogram' },
+  { 'type': 'sankey', 'text': '桑葚图', icon: 'sankey' },
+  { 'type': 'circlePacking', 'text': '气泡图', icon: 'circlePacking' },
+  { 'type': 'scatter', 'text': '散点图', icon: 'scatter' },
+  { 'type': 'radar', 'text': '雷达图', icon: 'radar' },
+  { 'type': 'funnel', 'text': '漏斗图', icon: 'funnel' },
+  { 'type': 'gauge', 'text': '仪表盘', icon: 'gauge' },
+  { 'type': 'progress', 'text': '进度条', icon: 'progress' },
+  { 'type': 'wordCloud', 'text': '词云图', icon: 'wordCloud' },
+  { 'type': 'map', 'text': '地图', icon: 'map' },
+  { 'type': 'table', 'text': '表格', icon: 'table' }
 ]
 screenConstants.componentsType2 = [
-  {"type":"sankey","text":"桑葚图",icon:"sankey"},
-  {"type":"circlePacking","text":"气泡图",icon:"circlePacking"},
-  {"type":"scatter","text":"散点图",icon:"scatter"},
-  {"type":"radar","text":"雷达图",icon:"radar"},
-  {"type":"funnel","text":"漏斗图",icon:"funnel"},
-  {"type":"gauge","text":"仪表盘",icon:"gauge"},
-  {"type":"progress","text":"进度条",icon:"progress"},
-  {"type":"wordCloud","text":"词云图",icon:"wordCloud"},
-  {"type":"map","text":"地图",icon:"map"},
-  {"type":"table","text":"表格",icon:"table"}
-]  
+
+]
 
 screenConstants.compType = {
-    text: { text: '文本', icon: 'text'},
-    date: { text: '日期时间', icon: 'date'},
-    picture: { text: '图片', icon: 'picture'},
-    border: { text: '边框', icon: 'border'},
-    decoration: { text: '装饰', icon: 'decoration'},
-    histogram: { text: '柱状图', icon: 'histogram' },
-    stackHistogram: { text: '堆叠柱状图', icon: 'histogram' },
-    rangeHistogram: { text: '区间柱状图', icon: 'histogram' },
-    horizontalHistogram: { text: '条形图', icon: 'histogram' },
-    stackHorizontalHistogram: { text: '堆叠条形图', icon: 'histogram' },
-    rangeHorizontalHistogram: { text: '区间条形图', icon: 'histogram' },
-    line: { text: '折线图', icon: 'line' },
-    horizontalLine: { text: '垂直折线图', icon: 'line' },
-    smoothLine: { text: '平滑折线图', icon: 'line' },
-    stepLine: { text: '阶梯折线图', icon: 'line' },
-    stackLine: { text: '堆叠折线图', icon: 'line' },
-    area: { text: '面积图', icon: 'area' },
-    horizontalArea: { text: '垂直面积图', icon: 'area' },
-    smoothArea: { text: '平滑面积图', icon: 'area' },
-    stepArea: { text: '阶梯面积图', icon: 'line' },
-    stackArea: { text: '堆叠面积图', icon: 'area' },
-    pie: { text: '饼图', icon: 'pie' },
-    pieRose: { text: '玫瑰图', icon: 'pieRose'},
-    scatter: { text: '散点图', icon: 'scatter'},
-    radar: { text: '雷达图', icon: 'radar'},
-    stackRadar: { text: '堆叠雷达图', icon: 'radar'},
-    wordCloud: { text: '词云图', icon: 'wordCloud'},
-    funnel: { text: '漏斗图', icon: 'funnel'},
-    gauge: { text: '仪表盘', icon: 'gauge'},
-    tickGauge: { text: '刻度仪表盘', icon: 'gauge'},
-    seriesGauge: { text: '系列仪表盘', icon: 'gauge'},
-    tickSeriesGauge: { text: '刻度系列仪表盘', icon: 'gauge'},
-    progress: { text: '进度条', icon: 'progress'},
-    circularProgress: { text: '环形进度条', icon: 'progress'},
-    barProgress: { text: '条形进度条', icon: 'progress'},
-    wordCloud: { text: '词云图', icon: 'wordCloud'},
-    liquid: { text: '水波图', icon: 'liquid'},
-    map: { text: '地图', icon: 'map'},
-    scrollTable: { text: '循环表格', icon: 'table'},
-    pageTable: { text: '分页表格', icon: 'table'},
-    boxPlot: { text: '箱型图', icon: 'boxPlot'},
-    circlePacking: { text: '气泡图', icon: 'circlePacking'},
-    transformFunnel: { text: '转化漏斗图', icon: 'funnel'},
-    zhifangtu: { text: '直方图', icon: 'histogram' },
-    sankey: { text: '桑葚图', icon: 'sankey' },
+  text: { text: '文本', icon: 'text' },
+  date: { text: '日期时间', icon: 'date' },
+  picture: { text: '图片', icon: 'picture' },
+  border: { text: '边框', icon: 'border' },
+  decoration: { text: '装饰', icon: 'decoration' },
+  histogram: { text: '柱状图', icon: 'histogram' },
+  stackHistogram: { text: '堆叠柱状图', icon: 'histogram' },
+  rangeHistogram: { text: '区间柱状图', icon: 'histogram' },
+  horizontalHistogram: { text: '条形图', icon: 'histogram' },
+  stackHorizontalHistogram: { text: '堆叠条形图', icon: 'histogram' },
+  rangeHorizontalHistogram: { text: '区间条形图', icon: 'histogram' },
+  line: { text: '折线图', icon: 'line' },
+  horizontalLine: { text: '垂直折线图', icon: 'line' },
+  smoothLine: { text: '平滑折线图', icon: 'line' },
+  stepLine: { text: '阶梯折线图', icon: 'line' },
+  stackLine: { text: '堆叠折线图', icon: 'line' },
+  area: { text: '面积图', icon: 'area' },
+  horizontalArea: { text: '垂直面积图', icon: 'area' },
+  smoothArea: { text: '平滑面积图', icon: 'area' },
+  stepArea: { text: '阶梯面积图', icon: 'line' },
+  stackArea: { text: '堆叠面积图', icon: 'area' },
+  pie: { text: '饼图', icon: 'pie' },
+  pieRose: { text: '玫瑰图', icon: 'pieRose' },
+  scatter: { text: '散点图', icon: 'scatter' },
+  radar: { text: '雷达图', icon: 'radar' },
+  stackRadar: { text: '堆叠雷达图', icon: 'radar' },
+  wordCloud: { text: '词云图', icon: 'wordCloud' },
+  funnel: { text: '漏斗图', icon: 'funnel' },
+  gauge: { text: '仪表盘', icon: 'gauge' },
+  tickGauge: { text: '刻度仪表盘', icon: 'gauge' },
+  seriesGauge: { text: '系列仪表盘', icon: 'gauge' },
+  tickSeriesGauge: { text: '刻度系列仪表盘', icon: 'gauge' },
+  progress: { text: '进度条', icon: 'progress' },
+  circularProgress: { text: '环形进度条', icon: 'circleProgress' },
+  barProgress: { text: '条形进度条', icon: 'progress' },
+  wordCloud: { text: '词云图', icon: 'wordCloud' },
+  liquid: { text: '水波图', icon: 'liquid' },
+  map: { text: '地图', icon: 'map' },
+  scrollTable: { text: '循环表格', icon: 'table' },
+  pageTable: { text: '分页表格', icon: 'table' },
+  boxPlot: { text: '箱型图', icon: 'boxPlot' },
+  circlePacking: { text: '气泡图', icon: 'circlePacking' },
+  transformFunnel: { text: '转化漏斗图', icon: 'funnel' },
+  zhifangtu: { text: '直方图', icon: 'histogram' },
+  sankey: { text: '桑葚图', icon: 'sankey' }
 }
 
 screenConstants.textType = [
-  {"name":"text","text":"文本","src":"https://www.springreport.vip/images/chart/text.png",category:screenConstants.category.text},
-  {"name":"date","text":"日期时间","src":"https://www.springreport.vip/images/chart/time.png",category:screenConstants.category.text},
+  { 'name': 'text', 'text': '文本', 'src': 'https://www.springreport.vip/images/chart/text.png', category: screenConstants.category.text },
+  { 'name': 'date', 'text': '日期时间', 'src': 'https://www.springreport.vip/images/chart/time.png', category: screenConstants.category.text }
 ]
 screenConstants.pictureType = [
-  {"name":"picture","text":"图片","src":"",category:screenConstants.category.picture},
+  { 'name': 'picture', 'text': '图片', 'src': '', category: screenConstants.category.picture }
 ]
 
 screenConstants.borderType = [
-  {"name":"dv-border-box-1","text":"边框1","src":"https://www.springreport.vip/images/chart/border1.png",category:screenConstants.category.border},
-  {"name":"dv-border-box-2","text":"边框2","src":"https://www.springreport.vip/images/chart/border2.png",category:screenConstants.category.border},
-  {"name":"dv-border-box-3","text":"边框3","src":"https://www.springreport.vip/images/chart/border3.png",category:screenConstants.category.border},
-  {"name":"dv-border-box-4","text":"边框4","src":"https://www.springreport.vip/images/chart/border4.png",category:screenConstants.category.border},
-  {"name":"dv-border-box-4","text":"边框4(反向)","src":"https://www.springreport.vip/images/chart/rborder4.png",category:screenConstants.category.border},
-  {"name":"dv-border-box-5","text":"边框5","src":"https://www.springreport.vip/images/chart/border5.png",category:screenConstants.category.border},
-  {"name":"dv-border-box-5","text":"边框5(反向)","src":"https://www.springreport.vip/images/chart/rborder5.png",category:screenConstants.category.border},
-  {"name":"dv-border-box-6","text":"边框6","src":"https://www.springreport.vip/images/chart/border6.png",category:screenConstants.category.border},
-  {"name":"dv-border-box-7","text":"边框7","src":"https://www.springreport.vip/images/chart/border7.png",category:screenConstants.category.border},
-  {"name":"dv-border-box-8","text":"边框8","src":"https://www.springreport.vip/images/chart/border8.png",category:screenConstants.category.border},
-  {"name":"dv-border-box-8","text":"边框8(反向)","src":"https://www.springreport.vip/images/chart/border8.png",category:screenConstants.category.border},
-  {"name":"dv-border-box-9","text":"边框9","src":"https://www.springreport.vip/images/chart/border9.png",category:screenConstants.category.border},
-  {"name":"dv-border-box-10","text":"边框10","src":"https://www.springreport.vip/images/chart/border10.png",category:screenConstants.category.border},
-  {"name":"dv-border-box-11","text":"边框11","src":"https://www.springreport.vip/images/chart/border11.png",category:screenConstants.category.border},
-  {"name":"dv-border-box-12","text":"边框12","src":"https://www.springreport.vip/images/chart/border12.png",category:screenConstants.category.border},
-  {"name":"dv-border-box-13","text":"边框13","src":"https://www.springreport.vip/images/chart/border13.png",category:screenConstants.category.border},
+  { 'name': 'dv-border-box-1', 'text': '边框1', 'src': 'https://www.springreport.vip/images/chart/border1.png', category: screenConstants.category.border },
+  { 'name': 'dv-border-box-2', 'text': '边框2', 'src': 'https://www.springreport.vip/images/chart/border2.png', category: screenConstants.category.border },
+  { 'name': 'dv-border-box-3', 'text': '边框3', 'src': 'https://www.springreport.vip/images/chart/border3.png', category: screenConstants.category.border },
+  { 'name': 'dv-border-box-4', 'text': '边框4', 'src': 'https://www.springreport.vip/images/chart/border4.png', category: screenConstants.category.border },
+  { 'name': 'dv-border-box-4', 'text': '边框4(反向)', 'src': 'https://www.springreport.vip/images/chart/rborder4.png', category: screenConstants.category.border },
+  { 'name': 'dv-border-box-5', 'text': '边框5', 'src': 'https://www.springreport.vip/images/chart/border5.png', category: screenConstants.category.border },
+  { 'name': 'dv-border-box-5', 'text': '边框5(反向)', 'src': 'https://www.springreport.vip/images/chart/rborder5.png', category: screenConstants.category.border },
+  { 'name': 'dv-border-box-6', 'text': '边框6', 'src': 'https://www.springreport.vip/images/chart/border6.png', category: screenConstants.category.border },
+  { 'name': 'dv-border-box-7', 'text': '边框7', 'src': 'https://www.springreport.vip/images/chart/border7.png', category: screenConstants.category.border },
+  { 'name': 'dv-border-box-8', 'text': '边框8', 'src': 'https://www.springreport.vip/images/chart/border8.png', category: screenConstants.category.border },
+  { 'name': 'dv-border-box-8', 'text': '边框8(反向)', 'src': 'https://www.springreport.vip/images/chart/border8.png', category: screenConstants.category.border },
+  { 'name': 'dv-border-box-9', 'text': '边框9', 'src': 'https://www.springreport.vip/images/chart/border9.png', category: screenConstants.category.border },
+  { 'name': 'dv-border-box-10', 'text': '边框10', 'src': 'https://www.springreport.vip/images/chart/border10.png', category: screenConstants.category.border },
+  { 'name': 'dv-border-box-11', 'text': '边框11', 'src': 'https://www.springreport.vip/images/chart/border11.png', category: screenConstants.category.border },
+  { 'name': 'dv-border-box-12', 'text': '边框12', 'src': 'https://www.springreport.vip/images/chart/border12.png', category: screenConstants.category.border },
+  { 'name': 'dv-border-box-13', 'text': '边框13', 'src': 'https://www.springreport.vip/images/chart/border13.png', category: screenConstants.category.border }
 ]
 screenConstants.decorationType = [
-  {"name":"dv-decoration-1","text":"装饰1","src":"https://www.springreport.vip/images/chart/decoration1.png",category:screenConstants.category.decoration},
-  {"name":"dv-decoration-2","text":"装饰2","src":"https://www.springreport.vip/images/chart/decoration2.png",category:screenConstants.category.decoration},
-  {"name":"dv-decoration-2","text":"装饰2(反向)","src":"https://www.springreport.vip/images/chart/rdecoration2.png",category:screenConstants.category.decoration},
-  {"name":"dv-decoration-3","text":"装饰3","src":"https://www.springreport.vip/images/chart/decoration3.png",category:screenConstants.category.decoration},
-  {"name":"dv-decoration-4","text":"装饰4","src":"https://www.springreport.vip/images/chart/decoration4.png",category:screenConstants.category.decoration},
-  {"name":"dv-decoration-4","text":"装饰4(反向)","src":"https://www.springreport.vip/images/chart/rdecoration4.png",category:screenConstants.category.decoration},
-  {"name":"dv-decoration-5","text":"装饰5","src":"https://www.springreport.vip/images/chart/decoration5.png",category:screenConstants.category.decoration},
-  {"name":"dv-decoration-6","text":"装饰6","src":"https://www.springreport.vip/images/chart/decoration6.png",category:screenConstants.category.decoration},
-  {"name":"dv-decoration-7","text":"装饰7","src":"https://www.springreport.vip/images/chart/decoration7.png",category:screenConstants.category.decoration},
-  {"name":"dv-decoration-8","text":"装饰8","src":"https://www.springreport.vip/images/chart/rdecoration8.png",category:screenConstants.category.decoration},
-  {"name":"dv-decoration-8","text":"装饰8(反向)","src":"https://www.springreport.vip/images/chart/decoration8.png",category:screenConstants.category.decoration},
-  {"name":"dv-decoration-9","text":"装饰9","src":"https://www.springreport.vip/images/chart/decoration9.png",category:screenConstants.category.decoration},
-  {"name":"dv-decoration-10","text":"装饰10","src":"https://www.springreport.vip/images/chart/decoration10.png",category:screenConstants.category.decoration},
-  {"name":"dv-decoration-11","text":"装饰111","src":"https://www.springreport.vip/images/chart/decoration11.png",category:screenConstants.category.decoration},
+  { 'name': 'dv-decoration-1', 'text': '装饰1', 'src': 'https://www.springreport.vip/images/chart/decoration1.png', category: screenConstants.category.decoration },
+  { 'name': 'dv-decoration-2', 'text': '装饰2', 'src': 'https://www.springreport.vip/images/chart/decoration2.png', category: screenConstants.category.decoration },
+  { 'name': 'dv-decoration-2', 'text': '装饰2(反向)', 'src': 'https://www.springreport.vip/images/chart/rdecoration2.png', category: screenConstants.category.decoration },
+  { 'name': 'dv-decoration-3', 'text': '装饰3', 'src': 'https://www.springreport.vip/images/chart/decoration3.png', category: screenConstants.category.decoration },
+  { 'name': 'dv-decoration-4', 'text': '装饰4', 'src': 'https://www.springreport.vip/images/chart/decoration4.png', category: screenConstants.category.decoration },
+  { 'name': 'dv-decoration-4', 'text': '装饰4(反向)', 'src': 'https://www.springreport.vip/images/chart/rdecoration4.png', category: screenConstants.category.decoration },
+  { 'name': 'dv-decoration-5', 'text': '装饰5', 'src': 'https://www.springreport.vip/images/chart/decoration5.png', category: screenConstants.category.decoration },
+  { 'name': 'dv-decoration-6', 'text': '装饰6', 'src': 'https://www.springreport.vip/images/chart/decoration6.png', category: screenConstants.category.decoration },
+  { 'name': 'dv-decoration-7', 'text': '装饰7', 'src': 'https://www.springreport.vip/images/chart/decoration7.png', category: screenConstants.category.decoration },
+  { 'name': 'dv-decoration-8', 'text': '装饰8', 'src': 'https://www.springreport.vip/images/chart/rdecoration8.png', category: screenConstants.category.decoration },
+  { 'name': 'dv-decoration-8', 'text': '装饰8(反向)', 'src': 'https://www.springreport.vip/images/chart/decoration8.png', category: screenConstants.category.decoration },
+  { 'name': 'dv-decoration-9', 'text': '装饰9', 'src': 'https://www.springreport.vip/images/chart/decoration9.png', category: screenConstants.category.decoration },
+  { 'name': 'dv-decoration-10', 'text': '装饰10', 'src': 'https://www.springreport.vip/images/chart/decoration10.png', category: screenConstants.category.decoration },
+  { 'name': 'dv-decoration-11', 'text': '装饰111', 'src': 'https://www.springreport.vip/images/chart/decoration11.png', category: screenConstants.category.decoration }
 ]
-//柱状图类型
+// 柱状图类型
 screenConstants.histogramType = [
-    {"name":"histogram","text":"柱状图","src":"https://www.springreport.vip/images/chart/histogram.png",category:screenConstants.category.vchart},
-    {"name":"stackHistogram","text":"堆叠柱状图","src":"https://www.springreport.vip/images/chart/stackHistogram.png",category:screenConstants.category.vchart},
-    {"name":"rangeHistogram","text":"区间柱状图","src":"https://www.springreport.vip/images/chart/rangeHistogram.png",category:screenConstants.category.vchart},
-    {"name":"horizontalHistogram","text":"条形图","src":"https://www.springreport.vip/images/chart/horizontalHistogram.png",category:screenConstants.category.vchart},
-    {"name":"stackHorizontalHistogram","text":"堆叠条形图","src":"https://www.springreport.vip/images/chart/stackHorizontalHistogram.png",category:screenConstants.category.vchart},
-    {"name":"rangeHorizontalHistogram","text":"区间条形图","src":"https://www.springreport.vip/images/chart/rangeHorizontalHistogram.png",category:screenConstants.category.vchart},
-] 
+  { 'name': 'histogram', 'text': '柱状图', 'src': 'https://www.springreport.vip/images/chart/histogram.png', category: screenConstants.category.vchart },
+  { 'name': 'stackHistogram', 'text': '堆叠柱状图', 'src': 'https://www.springreport.vip/images/chart/stackHistogram.png', category: screenConstants.category.vchart },
+  { 'name': 'rangeHistogram', 'text': '区间柱状图', 'src': 'https://www.springreport.vip/images/chart/rangeHistogram.png', category: screenConstants.category.vchart },
+  { 'name': 'horizontalHistogram', 'text': '条形图', 'src': 'https://www.springreport.vip/images/chart/horizontalHistogram.png', category: screenConstants.category.vchart },
+  { 'name': 'stackHorizontalHistogram', 'text': '堆叠条形图', 'src': 'https://www.springreport.vip/images/chart/stackHorizontalHistogram.png', category: screenConstants.category.vchart },
+  { 'name': 'rangeHorizontalHistogram', 'text': '区间条形图', 'src': 'https://www.springreport.vip/images/chart/rangeHorizontalHistogram.png', category: screenConstants.category.vchart }
+]
 
 screenConstants.lineType = [
-    {"name":"line","text":"折线图","src":"https://www.springreport.vip/images/chart/line.png",category:screenConstants.category.vchart},
-    {"name":"horizontalLine","text":"垂直折线图","src":"https://www.springreport.vip/images/chart/horizontalLine.png",category:screenConstants.category.vchart},
-    {"name":"smoothLine","text":"平滑折线图","src":"https://www.springreport.vip/images/chart/smoothLine.png",category:screenConstants.category.vchart},
-    {"name":"stepLine","text":"阶梯折线图","src":"https://www.springreport.vip/images/chart/stepLine.png",category:screenConstants.category.vchart},
-    {"name":"stackLine","text":"堆叠折线图","src":"https://www.springreport.vip/images/chart/stackLine.png",category:screenConstants.category.vchart},
-] 
+  { 'name': 'line', 'text': '折线图', 'src': 'https://www.springreport.vip/images/chart/line.png', category: screenConstants.category.vchart },
+  { 'name': 'horizontalLine', 'text': '垂直折线图', 'src': 'https://www.springreport.vip/images/chart/horizontalLine.png', category: screenConstants.category.vchart },
+  { 'name': 'smoothLine', 'text': '平滑折线图', 'src': 'https://www.springreport.vip/images/chart/smoothLine.png', category: screenConstants.category.vchart },
+  { 'name': 'stepLine', 'text': '阶梯折线图', 'src': 'https://www.springreport.vip/images/chart/stepLine.png', category: screenConstants.category.vchart },
+  { 'name': 'stackLine', 'text': '堆叠折线图', 'src': 'https://www.springreport.vip/images/chart/stackLine.png', category: screenConstants.category.vchart }
+]
 
 screenConstants.areaType = [
-    {"name":"area","text":"面积图","src":"https://www.springreport.vip/images/chart/area.png",category:screenConstants.category.vchart},
-    {"name":"horizontalArea","text":"垂直面积图","src":"https://www.springreport.vip/images/chart/horizontalArea.png",category:screenConstants.category.vchart},
-    {"name":"smoothArea","text":"平滑面积图","src":"https://www.springreport.vip/images/chart/smoothArea.png",category:screenConstants.category.vchart},
-    {"name":"stepArea","text":"阶梯面积图","src":"https://www.springreport.vip/images/chart/stepArea.png",category:screenConstants.category.vchart},
-    {"name":"stackArea","text":"堆叠面积图","src":"https://www.springreport.vip/images/chart/stackArea.png",category:screenConstants.category.vchart},
-] 
+  { 'name': 'area', 'text': '面积图', 'src': 'https://www.springreport.vip/images/chart/area.png', category: screenConstants.category.vchart },
+  { 'name': 'horizontalArea', 'text': '垂直面积图', 'src': 'https://www.springreport.vip/images/chart/horizontalArea.png', category: screenConstants.category.vchart },
+  { 'name': 'smoothArea', 'text': '平滑面积图', 'src': 'https://www.springreport.vip/images/chart/smoothArea.png', category: screenConstants.category.vchart },
+  { 'name': 'stepArea', 'text': '阶梯面积图', 'src': 'https://www.springreport.vip/images/chart/stepArea.png', category: screenConstants.category.vchart },
+  { 'name': 'stackArea', 'text': '堆叠面积图', 'src': 'https://www.springreport.vip/images/chart/stackArea.png', category: screenConstants.category.vchart }
+]
 screenConstants.pieType = [
-    {"name":"pie","text":"饼图","src":"https://www.springreport.vip/images/chart/pie.png",category:screenConstants.category.vchart},
-    {"name":"pieRose","text":"玫瑰图","src":"https://www.springreport.vip/images/chart/pieRose.png",category:screenConstants.category.vchart},
-] 
+  { 'name': 'pie', 'text': '饼图', 'src': 'https://www.springreport.vip/images/chart/pie.png', category: screenConstants.category.vchart },
+  { 'name': 'pieRose', 'text': '玫瑰图', 'src': 'https://www.springreport.vip/images/chart/pieRose.png', category: screenConstants.category.vchart }
+]
 
 screenConstants.scatterType = [
-    {"name":"scatter","text":"散点图","src":"https://www.springreport.vip/images/chart/scatter.png",category:screenConstants.category.vchart},
+  { 'name': 'scatter', 'text': '散点图', 'src': 'https://www.springreport.vip/images/chart/scatter.png', category: screenConstants.category.vchart }
 ]
 
 screenConstants.radarType = [
-    {"name":"radar","text":"雷达图","src":"https://www.springreport.vip/images/chart/radar.png",category:screenConstants.category.vchart},
-    {"name":"stackRadar","text":"堆叠雷达图","src":"https://www.springreport.vip/images/chart/stackRadar.png",category:screenConstants.category.vchart}
+  { 'name': 'radar', 'text': '雷达图', 'src': 'https://www.springreport.vip/images/chart/radar.png', category: screenConstants.category.vchart },
+  { 'name': 'stackRadar', 'text': '堆叠雷达图', 'src': 'https://www.springreport.vip/images/chart/stackRadar.png', category: screenConstants.category.vchart }
 ]
 
 screenConstants.wordCloudType = [
-    {"name":"wordCloud","text":"词云图","src":"https://www.springreport.vip/images/chart/wordCloud.png",category:screenConstants.category.vchart},
+  { 'name': 'wordCloud', 'text': '词云图', 'src': 'https://www.springreport.vip/images/chart/wordCloud.png', category: screenConstants.category.vchart }
 ]
 
 screenConstants.funnelType = [
-    {"name":"funnel","text":"漏斗图","src":"https://www.springreport.vip/images/chart/funnel.png",category:screenConstants.category.vchart},
-    {"name":"transformFunnel","text":"转化漏斗图","src":"https://www.springreport.vip/images/chart/funnel.png",category:screenConstants.category.vchart},
+  { 'name': 'funnel', 'text': '漏斗图', 'src': 'https://www.springreport.vip/images/chart/funnel.png', category: screenConstants.category.vchart },
+  { 'name': 'transformFunnel', 'text': '转化漏斗图', 'src': 'https://www.springreport.vip/images/chart/funnel.png', category: screenConstants.category.vchart }
 ]
 
 screenConstants.gaugeType = [
-    {"name":"gauge","text":"仪表盘","src":"https://www.springreport.vip/images/chart/gauge.png",category:screenConstants.category.vchart},
-    {"name":"tickGauge","text":"刻度仪表盘","src":"https://www.springreport.vip/images/chart/tickGauge.png",category:screenConstants.category.vchart},
-    {"name":"seriesGauge","text":"系列仪表盘","src":"https://www.springreport.vip/images/chart/seriesGauge.png",category:screenConstants.category.vchart},
-    {"name":"tickSeriesGauge","text":"刻度系列仪表盘","src":"https://www.springreport.vip/images/chart/tickSeriesGauge.png",category:screenConstants.category.vchart},
+  { 'name': 'gauge', 'text': '仪表盘', 'src': 'https://www.springreport.vip/images/chart/gauge.png', category: screenConstants.category.vchart },
+  { 'name': 'tickGauge', 'text': '刻度仪表盘', 'src': 'https://www.springreport.vip/images/chart/tickGauge.png', category: screenConstants.category.vchart },
+  { 'name': 'seriesGauge', 'text': '系列仪表盘', 'src': 'https://www.springreport.vip/images/chart/seriesGauge.png', category: screenConstants.category.vchart },
+  { 'name': 'tickSeriesGauge', 'text': '刻度系列仪表盘', 'src': 'https://www.springreport.vip/images/chart/tickSeriesGauge.png', category: screenConstants.category.vchart }
 ]
 
 screenConstants.progressType = [
-  {"name":"circularProgress","text":"环形进度条","src":"https://www.springreport.vip/images/chart/circularProgress.png",category:screenConstants.category.vchart},
-  {"name":"barProgress","text":"条形进度条","src":"https://www.springreport.vip/images/chart/linearProgress.png",category:screenConstants.category.vchart},
-  {"name":"liquid","text":"水波图","src":"https://www.springreport.vip/images/chart/liquid.png",category:screenConstants.category.vchart},
+  { 'name': 'circularProgress', 'text': '环形进度条', 'src': 'https://www.springreport.vip/images/chart/circularProgress.png', category: screenConstants.category.vchart },
+  { 'name': 'barProgress', 'text': '条形进度条', 'src': 'https://www.springreport.vip/images/chart/linearProgress.png', category: screenConstants.category.vchart },
+  { 'name': 'liquid', 'text': '水波图', 'src': 'https://www.springreport.vip/images/chart/liquid.png', category: screenConstants.category.vchart }
 ]
 
 screenConstants.mapType = [
-  {"name":"map","text":"地图","src":"https://www.springreport.vip/images/chart/map.png",category:screenConstants.category.vchart},
+  { 'name': 'map', 'text': '地图', 'src': 'https://www.springreport.vip/images/chart/map.png', category: screenConstants.category.vchart }
 ]
 
 screenConstants.tableType = [
-  {"name":"scrollTable","text":"轮播列表","src":"https://www.springreport.vip/images/chart/scrollTable.png",category:screenConstants.category.table},
-  {"name":"pageTable","text":"分页列表","src":"https://www.springreport.vip/images/chart/pageTable.png",category:screenConstants.category.table},
+  { 'name': 'scrollTable', 'text': '轮播列表', 'src': 'https://www.springreport.vip/images/chart/scrollTable.png', category: screenConstants.category.table },
+  { 'name': 'pageTable', 'text': '分页列表', 'src': 'https://www.springreport.vip/images/chart/pageTable.png', category: screenConstants.category.table }
 ]
 
 screenConstants.boxPlotType = [
-  {"name":"boxPlot","text":"箱型图","src":"https://www.springreport.vip/images/chart/boxPlot.png",category:screenConstants.category.vchart},
+  { 'name': 'boxPlot', 'text': '箱型图', 'src': 'https://www.springreport.vip/images/chart/boxPlot.png', category: screenConstants.category.vchart }
 ]
 
 screenConstants.circlePackingType = [
-  {"name":"circlePacking","text":"气泡图","src":"https://www.springreport.vip/images/chart/circlePacking.png",category:screenConstants.category.vchart},
+  { 'name': 'circlePacking', 'text': '气泡图', 'src': 'https://www.springreport.vip/images/chart/circlePacking.png', category: screenConstants.category.vchart }
 ]
 
 screenConstants.zhifangtuType = [
-  {"name":"zhifangtu","text":"直方图","src":"https://www.springreport.vip/images/chart/zhifangtu.png",category:screenConstants.category.vchart},
+  { 'name': 'zhifangtu', 'text': '直方图', 'src': 'https://www.springreport.vip/images/chart/zhifangtu.png', category: screenConstants.category.vchart }
 ]
 
 screenConstants.sankeyType = [
-  {"name":"sankey","text":"桑葚图","src":"https://www.springreport.vip/images/chart/sankey.png",category:screenConstants.category.vchart},
+  { 'name': 'sankey', 'text': '桑葚图', 'src': 'https://www.springreport.vip/images/chart/sankey.png', category: screenConstants.category.vchart }
 ]
 
-
-screenConstants.chartTitleSettings={
-    visible:false,
-    text:"",
-    align:"center",//水平对齐方式，left right center
-    textStyle:{
-        // fill:'',//颜色
-        // fontSize:'',
-    }
+screenConstants.chartTitleSettings = {
+  visible: false,
+  text: '',
+  align: 'center', // 水平对齐方式，left right center
+  textStyle: {
+    // fill:'',//颜色
+    // fontSize:'',
+  }
 }
 
-screenConstants.tooltipSettings={
-    visible: true,
-    mark: {
-      title: {
-        value: ''
-      }
+screenConstants.tooltipSettings = {
+  visible: true,
+  mark: {
+    title: {
+      value: ''
+    }
   }
 }
 
 screenConstants.textInit = {
   type: screenConstants.type.text,
-  category:screenConstants.category.text,
-  isDelete:false,
+  category: screenConstants.category.text,
+  isDelete: false,
   x: 0, // 初始化横坐标
   y: 0, // 初始化纵坐标
   w: 300, // 组件初始化宽度
@@ -439,48 +444,48 @@ screenConstants.textInit = {
   speed: 10, // 滚动速度
   active: false,
   zindex: '99',
-  locked:false,
-  isborder:false,//是否添加边框
-  borderType:"",//边框类型
-  borderColor:[],//边框颜色
+  locked: false,
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
   refresh: false, // 是否定时刷新
   refreshTime: 30000, // 定时刷新时间，单位(ms)
-  dataSource:'1',//数据来源 1静态数据 2动态数据
-  dynamicDataSettings:{
-      datasetId:"",//数据集
-      dataColumns:[],//数据列
-  },//动态数据配置
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
   params: [], // 图表参数
-  hiddenParamSize:0,//隐藏参数个数
+  hiddenParamSize: 0, // 隐藏参数个数
   textType: 'text', // 文本类型
   style: {
-    display: 'table-cell', textAlign: 'center', verticalAlign: 'middle', fontSize: '14', color: '#ffffff',colorEnd:"#ffffff", letterSpacing: '1', background: '',backgroundEnd:'',backgroundDirection:'bottom', fontWeight: false,direction:'bottom'
+    display: 'table-cell', textAlign: 'center', verticalAlign: 'middle', fontSize: '14', color: '#ffffff', colorEnd: '#ffffff', letterSpacing: '1', background: '', backgroundEnd: '', backgroundDirection: 'bottom', fontWeight: false, direction: 'bottom'
   },
   content: '文本',
-  spec:{
+  spec: {
     data: {
-      values:[ { value: '文本'}]
+      values: [{ value: '文本' }]
     },
-    valueField:'value',
+    valueField: 'value'
   }
 }
 
 screenConstants.dateInit = {
   type: screenConstants.type.date,
-  category:screenConstants.category.text,
-  isDelete:false,
+  category: screenConstants.category.text,
+  isDelete: false,
   x: 0, // 初始化横坐标
   y: 0, // 初始化纵坐标
   w: 300, // 组件初始化宽度
   h: 100, // 组件初始化高度
   active: false,
   zindex: '99',
-  locked:false,
-  isborder:false,//是否添加边框
-  borderType:"",//边框类型
-  borderColor:[],//边框颜色
+  locked: false,
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
   style: {
-    display: 'table-cell', textAlign: 'center', verticalAlign: 'middle', fontSize: '14', color: '#ffffff',colorEnd:"#ffffff", letterSpacing: '1', background: '',backgroundEnd:'',backgroundDirection:'bottom', fontWeight: false,direction:'bottom'
+    display: 'table-cell', textAlign: 'center', verticalAlign: 'middle', fontSize: '14', color: '#ffffff', colorEnd: '#ffffff', letterSpacing: '1', background: '', backgroundEnd: '', backgroundDirection: 'bottom', fontWeight: false, direction: 'bottom'
   },
   content: '',
   format: '1'
@@ -488,8 +493,8 @@ screenConstants.dateInit = {
 
 screenConstants.pictureInit = {
   type: screenConstants.type.picture,
-  category:screenConstants.category.picture,
-  isDelete:false,
+  category: screenConstants.category.picture,
+  isDelete: false,
   x: 0, // 初始化横坐标
   y: 0, // 初始化纵坐标
   w: 300, // 组件初始化宽度
@@ -500,2328 +505,2328 @@ screenConstants.pictureInit = {
 
 screenConstants.dvBorderBoxInit = {
   type: screenConstants.type.border,
-  category:screenConstants.category.border,
-  isDelete:false,
+  category: screenConstants.category.border,
+  isDelete: false,
   x: 0, // 初始化横坐标
   y: 0, // 初始化纵坐标
   w: 500, // 组件初始化宽度
   h: 300, // 组件初始化高度
-  name:"dv-border-box-1",
+  name: 'dv-border-box-1',
   zindex: 98,
-  color:['#0AEEDF', '#0B90EF'],
-  backgroundColor:"",
-  content:"",
-  titleWidth:250,
-  reverse:false,
-  content:"ceshi",
+  color: ['#0AEEDF', '#0B90EF'],
+  backgroundColor: '',
+  content: '',
+  titleWidth: 250,
+  reverse: false,
+  content: 'ceshi'
 }
 
 screenConstants.dvDecorationBoxInit = {
-    type: screenConstants.type.decoration,
-    category:screenConstants.category.decoration,
-    isDelete:false,
-    x: 0, // 初始化横坐标
-    y: 0, // 初始化纵坐标
-    w: 300, // 组件初始化宽度
-    h: 200, // 组件初始化高度
-    name:"dv-border-box-1",
-    zindex: 98,
-    color:['#0AEEDF', '#0B90EF'],
-    style: {
-     fontSize: '14', color: '#ffffff',letterSpacing: '1',  fontWeight: false
-    },
-    content:"",
-    reverse:false
+  type: screenConstants.type.decoration,
+  category: screenConstants.category.decoration,
+  isDelete: false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 300, // 组件初始化宽度
+  h: 200, // 组件初始化高度
+  name: 'dv-border-box-1',
+  zindex: 98,
+  color: ['#0AEEDF', '#0B90EF'],
+  style: {
+    fontSize: '14', color: '#ffffff', letterSpacing: '1', fontWeight: false
+  },
+  content: '',
+  reverse: false
 }
 
-//大屏柱状图初始化数据
+// 大屏柱状图初始化数据
 screenConstants.histogramInit = {
-    type: screenConstants.type.histogram,
-    category:screenConstants.category.vchart,
-    isDelete:false,
-    x: 0, // 初始化横坐标
-    y: 0, // 初始化纵坐标
-    w: 500, // 组件初始化宽度
-    h: 300, // 组件初始化高度
-    active: false,
-    zindex: 99,
-    locked:false,
-    refresh: false, // 是否定时刷新
-    refreshTime: 30000, // 定时刷新时间，单位(ms)
-    dataSource:'1',//数据来源 1静态数据 2动态数据
-    dynamicDataSettings:{
-        datasetId:"",//数据集
-        dataColumns:[],//数据列
-    },//动态数据配置
-    params: [], // 图表参数
-    clickType: '1', // 点击类型
-    thirdUrl: '', // 第三方跳转链接
-    bindComponent: null, // 绑定组件
-    hiddenParamSize:0,//隐藏参数个数
-    theme:"",//主题
-    amination:"",//动画效果
-    isborder:false,//是否添加边框
-    borderType:"",//边框类型
-    borderColor:[],//边框颜色
-    spec:{
-        'type':'bar',
-        color: [],
-        data: {
-            values: [
-                { type: 'Nail polish', country: 'Africa', value: 4229 },
-                { type: 'Nail polish', country: 'EU', value: 4376 },
-                { type: 'Nail polish', country: 'China', value: 3054 },
-                { type: 'Nail polish', country: 'USA', value: 12814 },
-                { type: 'Eyebrow pencil', country: 'Africa', value: 3932 },
-                { type: 'Eyebrow pencil', country: 'EU', value: 3987 },
-                { type: 'Eyebrow pencil', country: 'China', value: 5067 },
-                { type: 'Eyebrow pencil', country: 'USA', value: 13012 },
-                { type: 'Rouge', country: 'Africa', value: 5221 },
-                { type: 'Rouge', country: 'EU', value: 3574 },
-                { type: 'Rouge', country: 'China', value: 7004 },
-                { type: 'Rouge', country: 'USA', value: 11624 },
-            ]
-        },
-        seriesField: ['country'],
-        xField: ['type', 'country'],
-        yField: ['value'],
-        background: '',//背景颜色
-        barWidth:'100%',//柱体宽度
-        title:screenConstants.chartTitleSettings,
-      tooltip:screenConstants.tooltipSettings,
-        bar:{
-            style:{
-                cornerRadius:0,//圆角
-            }
-        },
-        label:{
-            visible:true,
-            position:'outside',
-            style:{
-                fontSize:14,
-                fill:null,
-            }
-        },
-        axes:[
-            {orient:'bottom',sampling: true,label:{visible:true,style:{fill:'#6E6F73'},autoRotate:false,autoRotateAngle: [0, 90],autoLimit:false},unit:{visible:false,style:{}}},
-            {orient:'left',label:{visible:true,style:{fill:'#6E6F73'},autoLimit:false},unit:{visible:false,style:{}}}
-        ],
-        legends:{
-            visible:false,
-            orient: 'top',//图例位置
-            position:'middle',//对齐方式
-            item: {
-                label:{
-                  style:{
-                    // fill:'#0BF1DA',//图例字体颜色
-                  }
-                }
-            },
-        },
-    }
-}
-
-//大屏区间柱状图初始化数据
-screenConstants.rangeHistogramInit = {
-  type: screenConstants.type.rangeHistogram,
-  category:screenConstants.category.vchart,
-  isDelete:false,
+  type: screenConstants.type.histogram,
+  category: screenConstants.category.vchart,
+  isDelete: false,
   x: 0, // 初始化横坐标
   y: 0, // 初始化纵坐标
   w: 500, // 组件初始化宽度
   h: 300, // 组件初始化高度
   active: false,
   zindex: 99,
-  locked:false,
+  locked: false,
   refresh: false, // 是否定时刷新
   refreshTime: 30000, // 定时刷新时间，单位(ms)
-  dataSource:'1',//数据来源 1静态数据 2动态数据
-  dynamicDataSettings:{
-      datasetId:"",//数据集
-      dataColumns:[],//数据列
-  },//动态数据配置
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
   params: [], // 图表参数
   clickType: '1', // 点击类型
   thirdUrl: '', // 第三方跳转链接
   bindComponent: null, // 绑定组件
-  hiddenParamSize:0,//隐藏参数个数
-  theme:"",//主题
-  amination:"",//动画效果
-  isborder:false,//是否添加边框
-  borderType:"",//边框类型
-  borderColor:[],//边框颜色
-  spec:{
-      'type':'rangeColumn',
-      color: [],
-      data: {
-          values: [
-            { type: 'Category One', min: 76, max: 100 },
-            { type: 'Category Two', min: 56, max: 108 },
-            { type: 'Category Three', min: 38, max: 129 },
-            { type: 'Category Four', min: 58, max: 155 },
-            { type: 'Category Five', min: 45, max: 120 },
-            { type: 'Category Six', min: 23, max: 99 },
-            { type: 'Category Seven', min: 18, max: 56 },
-            { type: 'Category Eight', min: 18, max: 34 }
-          ]
-      },
-      seriesField: [],
-      xField: ['type'],
-      yField: ['min','max'],
-      background: '',//背景颜色
-      barWidth:'100%',//柱体宽度
-      title:screenConstants.chartTitleSettings,
-      tooltip:screenConstants.tooltipSettings,
-      bar:{
-          style:{
-              cornerRadius:0,//圆角
+  hiddenParamSize: 0, // 隐藏参数个数
+  theme: '', // 主题
+  amination: '', // 动画效果
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  spec: {
+    'type': 'bar',
+    color: [],
+    data: {
+      values: [
+        { type: 'Nail polish', country: 'Africa', value: 4229 },
+        { type: 'Nail polish', country: 'EU', value: 4376 },
+        { type: 'Nail polish', country: 'China', value: 3054 },
+        { type: 'Nail polish', country: 'USA', value: 12814 },
+        { type: 'Eyebrow pencil', country: 'Africa', value: 3932 },
+        { type: 'Eyebrow pencil', country: 'EU', value: 3987 },
+        { type: 'Eyebrow pencil', country: 'China', value: 5067 },
+        { type: 'Eyebrow pencil', country: 'USA', value: 13012 },
+        { type: 'Rouge', country: 'Africa', value: 5221 },
+        { type: 'Rouge', country: 'EU', value: 3574 },
+        { type: 'Rouge', country: 'China', value: 7004 },
+        { type: 'Rouge', country: 'USA', value: 11624 }
+      ]
+    },
+    seriesField: ['country'],
+    xField: ['type', 'country'],
+    yField: ['value'],
+    background: '', // 背景颜色
+    barWidth: '100%', // 柱体宽度
+    title: screenConstants.chartTitleSettings,
+    tooltip: screenConstants.tooltipSettings,
+    bar: {
+      style: {
+        cornerRadius: 0// 圆角
+      }
+    },
+    label: {
+      visible: true,
+      position: 'outside',
+      style: {
+        fontSize: 14,
+        fill: null
+      }
+    },
+    axes: [
+      { orient: 'bottom', sampling: true, label: { visible: true, style: { fill: '#6E6F73' }, autoRotate: false, autoRotateAngle: [0, 90], autoLimit: false }, unit: { visible: false, style: {}}},
+      { orient: 'left', label: { visible: true, style: { fill: '#6E6F73' }, autoLimit: false }, unit: { visible: false, style: {}}}
+    ],
+    legends: {
+      visible: false,
+      orient: 'top', // 图例位置
+      position: 'middle', // 对齐方式
+      item: {
+        label: {
+          style: {
+            // fill:'#0BF1DA',//图例字体颜色
           }
-      },
-      label:{
-          visible:true,
-          position:'outside',
-          style:{
-              fontSize:14,
-              fill:null,
-          }
-      },
-      axes:[
-          {orient:'bottom',sampling: true,label:{visible:true,style:{fill:'#6E6F73'},autoRotate:false,autoRotateAngle: [0, 90],autoLimit:false},unit:{visible:false,style:{}}},
-          {orient:'left',label:{visible:true,style:{fill:'#6E6F73'},autoLimit:false},unit:{visible:false,style:{}}}
-      ],
-      legends:{
-          visible:false,
-          orient: 'top',//图例位置
-          position:'middle',//对齐方式
-          item: {
-              label:{
-                style:{
-                  // fill:'#0BF1DA',//图例字体颜色
-                }
-              }
-          },
-      },
+        }
+      }
+    }
   }
 }
-//大屏堆叠柱状图初始化数据
-screenConstants.stackHistogramInit = {
-    type: screenConstants.type.histogram,
-    category:screenConstants.category.vchart,
-    isDelete:false,
-    x: 0, // 初始化横坐标
-    y: 0, // 初始化纵坐标
-    w: 500, // 组件初始化宽度
-    h: 300, // 组件初始化高度
-    active: false,
-    zindex: 99,
-    locked:false,
-    refresh: false, // 是否定时刷新
-    refreshTime: 30000, // 定时刷新时间，单位(ms)
-    dataSource:'1',//数据来源 1静态数据 2动态数据
-    dynamicDataSettings:{
-        datasetId:"",//数据集
-        dataColumns:[],//数据列
-    },//动态数据配置
-    params: [], // 图表参数
-    clickType: '1', // 点击类型
-    thirdUrl: '', // 第三方跳转链接
-    bindComponent: null, // 绑定组件
-    hiddenParamSize:0,//隐藏参数个数
-    theme:"",//主题
-    amination:"",//动画效果
-    isborder:false,//是否添加边框
-    borderType:"",//边框类型
-    borderColor:[],//边框颜色
-    spec:{
-        'type':'bar',
-        color: [],
-        data: {
-            values: [
-                { type: 'Nail polish', country: 'Africa', value: 4229 },
-                { type: 'Nail polish', country: 'EU', value: 4376 },
-                { type: 'Nail polish', country: 'China', value: 3054 },
-                { type: 'Nail polish', country: 'USA', value: 12814 },
-                { type: 'Eyebrow pencil', country: 'Africa', value: 3932 },
-                { type: 'Eyebrow pencil', country: 'EU', value: 3987 },
-                { type: 'Eyebrow pencil', country: 'China', value: 5067 },
-                { type: 'Eyebrow pencil', country: 'USA', value: 13012 },
-                { type: 'Rouge', country: 'Africa', value: 5221 },
-                { type: 'Rouge', country: 'EU', value: 3574 },
-                { type: 'Rouge', country: 'China', value: 7004 },
-                { type: 'Rouge', country: 'USA', value: 11624 },
-            ]
-        },
-        seriesField: ['type'],
-        xField: ['country'],
-        yField: ['value'],
-        stack: true,
-        background: '',//背景颜色
-        barWidth:'100%',//柱体宽度
-        title:screenConstants.chartTitleSettings,
-      tooltip:screenConstants.tooltipSettings,
-        bar:{
-            style:{
-                cornerRadius:0,//圆角
-            }
-        },
-        label:{
-            visible:true,
-            position:'outside',
-            style:{
-                fontSize:14,
-                fill:null,
-            }
-        },
-        axes:[
-            {orient:'bottom',label:{visible:true,style:{fill:'#6E6F73'}},unit:{visible:false,style:{}}},
-            {orient:'left',label:{visible:true,style:{fill:'#6E6F73'}},unit:{visible:false,style:{}}}
-        ],
-        legends:{
-            visible:false,
-            orient: 'top',//图例位置
-            position:'middle',//对齐方式
-            item: {
-                label:{
-                  style:{
-                    // fill:'#0BF1DA',//图例字体颜色
-                  }
-                }
-            },
-        },
+
+// 大屏区间柱状图初始化数据
+screenConstants.rangeHistogramInit = {
+  type: screenConstants.type.rangeHistogram,
+  category: screenConstants.category.vchart,
+  isDelete: false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 500, // 组件初始化宽度
+  h: 300, // 组件初始化高度
+  active: false,
+  zindex: 99,
+  locked: false,
+  refresh: false, // 是否定时刷新
+  refreshTime: 30000, // 定时刷新时间，单位(ms)
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
+  params: [], // 图表参数
+  clickType: '1', // 点击类型
+  thirdUrl: '', // 第三方跳转链接
+  bindComponent: null, // 绑定组件
+  hiddenParamSize: 0, // 隐藏参数个数
+  theme: '', // 主题
+  amination: '', // 动画效果
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  spec: {
+    'type': 'rangeColumn',
+    color: [],
+    data: {
+      values: [
+        { type: 'Category One', min: 76, max: 100 },
+        { type: 'Category Two', min: 56, max: 108 },
+        { type: 'Category Three', min: 38, max: 129 },
+        { type: 'Category Four', min: 58, max: 155 },
+        { type: 'Category Five', min: 45, max: 120 },
+        { type: 'Category Six', min: 23, max: 99 },
+        { type: 'Category Seven', min: 18, max: 56 },
+        { type: 'Category Eight', min: 18, max: 34 }
+      ]
+    },
+    seriesField: [],
+    xField: ['type'],
+    yField: ['min', 'max'],
+    background: '', // 背景颜色
+    barWidth: '100%', // 柱体宽度
+    title: screenConstants.chartTitleSettings,
+    tooltip: screenConstants.tooltipSettings,
+    bar: {
+      style: {
+        cornerRadius: 0// 圆角
+      }
+    },
+    label: {
+      visible: true,
+      position: 'outside',
+      style: {
+        fontSize: 14,
+        fill: null
+      }
+    },
+    axes: [
+      { orient: 'bottom', sampling: true, label: { visible: true, style: { fill: '#6E6F73' }, autoRotate: false, autoRotateAngle: [0, 90], autoLimit: false }, unit: { visible: false, style: {}}},
+      { orient: 'left', label: { visible: true, style: { fill: '#6E6F73' }, autoLimit: false }, unit: { visible: false, style: {}}}
+    ],
+    legends: {
+      visible: false,
+      orient: 'top', // 图例位置
+      position: 'middle', // 对齐方式
+      item: {
+        label: {
+          style: {
+            // fill:'#0BF1DA',//图例字体颜色
+          }
+        }
+      }
     }
+  }
 }
-//条形图
-screenConstants.horizontalHistogramInit = {
-    type: screenConstants.type.horizontalHistogram,
-    category:screenConstants.category.vchart,
-    isDelete:false,
-    x: 0, // 初始化横坐标
-    y: 0, // 初始化纵坐标
-    w: 500, // 组件初始化宽度
-    h: 300, // 组件初始化高度
-    active: false,
-    zindex: 99,
-    locked:false,
-    refresh: false, // 是否定时刷新
-    refreshTime: 30000, // 定时刷新时间，单位(ms)
-    dataSource:'1',//数据来源 1静态数据 2动态数据
-    dynamicDataSettings:{
-        datasetId:"",//数据集
-        dataColumns:[],//数据列
-    },//动态数据配置
-    params: [], // 图表参数
-    clickType: '1', // 点击类型
-    thirdUrl: '', // 第三方跳转链接
-    bindComponent: null, // 绑定组件
-    hiddenParamSize:0,//隐藏参数个数
-    theme:"",//主题
-    amination:"",//动画效果
-    isborder:false,//是否添加边框
-    borderType:"",//边框类型
-    borderColor:[],//边框颜色
-    spec:{
-        'type':'bar',
-        color: [],
-        data: {
-            values: [
-                {
-                    province: '北京',
-                    value: 3080,
-                    type: 'top1'
-                },
-                {
-                    province: '天津',
-                    value: 2880,
-                    type: 'top2'
-                },
-                {
-                    province: '重庆',
-                    value: 880,
-                    type: 'top3'
-                },
-                {
-                    province: '深圳',
-                    value: 780,
-                    type: 'common'
-                },
-                {
-                    province: '广州',
-                    value: 680,
-                    type: 'common'
-                },
-                {
-                    province: '山东',
-                    value: 580,
-                    type: 'common'
-                },
-            ]
-        },
-        direction: 'horizontal',
-        seriesField: ['province'],
-        xField: ['value'],
-        yField: ['province'],
-        stack: true,
-        background: '',//背景颜色
-        barWidth:'100%',//柱体宽度
-        title:screenConstants.chartTitleSettings,
-      tooltip:screenConstants.tooltipSettings,
-        bar:{
-            style:{
-                cornerRadius:0,//圆角
-            }
-        },
-        label:{
-            visible:true,
-            position:'outside',
-            style:{
-                fontSize:14,
-                fill:null,
-            }
-        },
-        axes:[
-            {orient:'bottom',label:{visible:true,style:{fill:'#6E6F73'}},unit:{visible:false,style:{}}},
-            {orient:'left',label:{visible:true,style:{fill:'#6E6F73'}},unit:{visible:false,style:{}}}
-        ],
-        legends:{
-            visible:false,
-            orient: 'top',//图例位置
-            position:'middle',//对齐方式
-            item: {
-                label:{
-                  style:{
-                    // fill:'#0BF1DA',//图例字体颜色
-                  }
-                }
-            },
-        },
+// 大屏堆叠柱状图初始化数据
+screenConstants.stackHistogramInit = {
+  type: screenConstants.type.histogram,
+  category: screenConstants.category.vchart,
+  isDelete: false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 500, // 组件初始化宽度
+  h: 300, // 组件初始化高度
+  active: false,
+  zindex: 99,
+  locked: false,
+  refresh: false, // 是否定时刷新
+  refreshTime: 30000, // 定时刷新时间，单位(ms)
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
+  params: [], // 图表参数
+  clickType: '1', // 点击类型
+  thirdUrl: '', // 第三方跳转链接
+  bindComponent: null, // 绑定组件
+  hiddenParamSize: 0, // 隐藏参数个数
+  theme: '', // 主题
+  amination: '', // 动画效果
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  spec: {
+    'type': 'bar',
+    color: [],
+    data: {
+      values: [
+        { type: 'Nail polish', country: 'Africa', value: 4229 },
+        { type: 'Nail polish', country: 'EU', value: 4376 },
+        { type: 'Nail polish', country: 'China', value: 3054 },
+        { type: 'Nail polish', country: 'USA', value: 12814 },
+        { type: 'Eyebrow pencil', country: 'Africa', value: 3932 },
+        { type: 'Eyebrow pencil', country: 'EU', value: 3987 },
+        { type: 'Eyebrow pencil', country: 'China', value: 5067 },
+        { type: 'Eyebrow pencil', country: 'USA', value: 13012 },
+        { type: 'Rouge', country: 'Africa', value: 5221 },
+        { type: 'Rouge', country: 'EU', value: 3574 },
+        { type: 'Rouge', country: 'China', value: 7004 },
+        { type: 'Rouge', country: 'USA', value: 11624 }
+      ]
+    },
+    seriesField: ['type'],
+    xField: ['country'],
+    yField: ['value'],
+    stack: true,
+    background: '', // 背景颜色
+    barWidth: '100%', // 柱体宽度
+    title: screenConstants.chartTitleSettings,
+    tooltip: screenConstants.tooltipSettings,
+    bar: {
+      style: {
+        cornerRadius: 0// 圆角
+      }
+    },
+    label: {
+      visible: true,
+      position: 'outside',
+      style: {
+        fontSize: 14,
+        fill: null
+      }
+    },
+    axes: [
+      { orient: 'bottom', label: { visible: true, style: { fill: '#6E6F73' }}, unit: { visible: false, style: {}}},
+      { orient: 'left', label: { visible: true, style: { fill: '#6E6F73' }}, unit: { visible: false, style: {}}}
+    ],
+    legends: {
+      visible: false,
+      orient: 'top', // 图例位置
+      position: 'middle', // 对齐方式
+      item: {
+        label: {
+          style: {
+            // fill:'#0BF1DA',//图例字体颜色
+          }
+        }
+      }
     }
+  }
+}
+// 条形图
+screenConstants.horizontalHistogramInit = {
+  type: screenConstants.type.horizontalHistogram,
+  category: screenConstants.category.vchart,
+  isDelete: false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 500, // 组件初始化宽度
+  h: 300, // 组件初始化高度
+  active: false,
+  zindex: 99,
+  locked: false,
+  refresh: false, // 是否定时刷新
+  refreshTime: 30000, // 定时刷新时间，单位(ms)
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
+  params: [], // 图表参数
+  clickType: '1', // 点击类型
+  thirdUrl: '', // 第三方跳转链接
+  bindComponent: null, // 绑定组件
+  hiddenParamSize: 0, // 隐藏参数个数
+  theme: '', // 主题
+  amination: '', // 动画效果
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  spec: {
+    'type': 'bar',
+    color: [],
+    data: {
+      values: [
+        {
+          province: '北京',
+          value: 3080,
+          type: 'top1'
+        },
+        {
+          province: '天津',
+          value: 2880,
+          type: 'top2'
+        },
+        {
+          province: '重庆',
+          value: 880,
+          type: 'top3'
+        },
+        {
+          province: '深圳',
+          value: 780,
+          type: 'common'
+        },
+        {
+          province: '广州',
+          value: 680,
+          type: 'common'
+        },
+        {
+          province: '山东',
+          value: 580,
+          type: 'common'
+        }
+      ]
+    },
+    direction: 'horizontal',
+    seriesField: ['province'],
+    xField: ['value'],
+    yField: ['province'],
+    stack: true,
+    background: '', // 背景颜色
+    barWidth: '100%', // 柱体宽度
+    title: screenConstants.chartTitleSettings,
+    tooltip: screenConstants.tooltipSettings,
+    bar: {
+      style: {
+        cornerRadius: 0// 圆角
+      }
+    },
+    label: {
+      visible: true,
+      position: 'outside',
+      style: {
+        fontSize: 14,
+        fill: null
+      }
+    },
+    axes: [
+      { orient: 'bottom', label: { visible: true, style: { fill: '#6E6F73' }}, unit: { visible: false, style: {}}},
+      { orient: 'left', label: { visible: true, style: { fill: '#6E6F73' }}, unit: { visible: false, style: {}}}
+    ],
+    legends: {
+      visible: false,
+      orient: 'top', // 图例位置
+      position: 'middle', // 对齐方式
+      item: {
+        label: {
+          style: {
+            // fill:'#0BF1DA',//图例字体颜色
+          }
+        }
+      }
+    }
+  }
 }
 
 screenConstants.rangeHorizontalHistogramInit = {
   type: screenConstants.type.rangeHorizontalHistogram,
-  category:screenConstants.category.vchart,
-  isDelete:false,
+  category: screenConstants.category.vchart,
+  isDelete: false,
   x: 0, // 初始化横坐标
   y: 0, // 初始化纵坐标
   w: 500, // 组件初始化宽度
   h: 300, // 组件初始化高度
   active: false,
   zindex: 99,
-  locked:false,
+  locked: false,
   refresh: false, // 是否定时刷新
   refreshTime: 30000, // 定时刷新时间，单位(ms)
-  dataSource:'1',//数据来源 1静态数据 2动态数据
-  dynamicDataSettings:{
-      datasetId:"",//数据集
-      dataColumns:[],//数据列
-  },//动态数据配置
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
   params: [], // 图表参数
   clickType: '1', // 点击类型
   thirdUrl: '', // 第三方跳转链接
   bindComponent: null, // 绑定组件
-  hiddenParamSize:0,//隐藏参数个数
-  theme:"",//主题
-  amination:"",//动画效果
-  isborder:false,//是否添加边框
-  borderType:"",//边框类型
-  borderColor:[],//边框颜色
-  spec:{
-      'type':'rangeColumn',
-      color: [],
-      data: {
-          values: [
-            { type: 'Category One', min: 76, max: 100 },
-            { type: 'Category Two', min: 56, max: 108 },
-            { type: 'Category Three', min: 38, max: 129 },
-            { type: 'Category Four', min: 58, max: 155 },
-            { type: 'Category Five', min: 45, max: 120 },
-            { type: 'Category Six', min: 23, max: 99 },
-            { type: 'Category Seven', min: 18, max: 56 },
-            { type: 'Category Eight', min: 18, max: 34 }
-          ]
-      },
-      direction: 'horizontal',
-      seriesField: [],
-      xField: ['min', 'max'],
-      yField: ['type'],
-      background: '',//背景颜色
-      barWidth:'100%',//柱体宽度
-      title:screenConstants.chartTitleSettings,
-      tooltip:screenConstants.tooltipSettings,
-      bar:{
-          style:{
-              cornerRadius:0,//圆角
+  hiddenParamSize: 0, // 隐藏参数个数
+  theme: '', // 主题
+  amination: '', // 动画效果
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  spec: {
+    'type': 'rangeColumn',
+    color: [],
+    data: {
+      values: [
+        { type: 'Category One', min: 76, max: 100 },
+        { type: 'Category Two', min: 56, max: 108 },
+        { type: 'Category Three', min: 38, max: 129 },
+        { type: 'Category Four', min: 58, max: 155 },
+        { type: 'Category Five', min: 45, max: 120 },
+        { type: 'Category Six', min: 23, max: 99 },
+        { type: 'Category Seven', min: 18, max: 56 },
+        { type: 'Category Eight', min: 18, max: 34 }
+      ]
+    },
+    direction: 'horizontal',
+    seriesField: [],
+    xField: ['min', 'max'],
+    yField: ['type'],
+    background: '', // 背景颜色
+    barWidth: '100%', // 柱体宽度
+    title: screenConstants.chartTitleSettings,
+    tooltip: screenConstants.tooltipSettings,
+    bar: {
+      style: {
+        cornerRadius: 0// 圆角
+      }
+    },
+    label: {
+      visible: true,
+      position: 'outside',
+      style: {
+        fontSize: 14,
+        fill: null
+      }
+    },
+    axes: [
+      { orient: 'bottom', label: { visible: true, style: { fill: '#6E6F73' }}, unit: { visible: false, style: {}}},
+      { orient: 'left', label: { visible: true, style: { fill: '#6E6F73' }}, unit: { visible: false, style: {}}}
+    ],
+    legends: {
+      visible: false,
+      orient: 'top', // 图例位置
+      position: 'middle', // 对齐方式
+      item: {
+        label: {
+          style: {
+            // fill:'#0BF1DA',//图例字体颜色
           }
-      },
-      label:{
-          visible:true,
-          position:'outside',
-          style:{
-              fontSize:14,
-              fill:null,
-          }
-      },
-      axes:[
-          {orient:'bottom',label:{visible:true,style:{fill:'#6E6F73'}},unit:{visible:false,style:{}}},
-          {orient:'left',label:{visible:true,style:{fill:'#6E6F73'}},unit:{visible:false,style:{}}}
-      ],
-      legends:{
-          visible:false,
-          orient: 'top',//图例位置
-          position:'middle',//对齐方式
-          item: {
-              label:{
-                style:{
-                  // fill:'#0BF1DA',//图例字体颜色
-                }
-              }
-          },
-      },
+        }
+      }
+    }
   }
 }
-//堆叠条形图
+// 堆叠条形图
 screenConstants.stackHorizontalHistogramInit = {
-    type: screenConstants.type.stackHorizontalHistogram,
-    category:screenConstants.category.vchart,
-    isDelete:false,
-    x: 0, // 初始化横坐标
-    y: 0, // 初始化纵坐标
-    w: 500, // 组件初始化宽度
-    h: 300, // 组件初始化高度
-    active: false,
-    zindex: 99,
-    locked:false,
-    refresh: false, // 是否定时刷新
-    refreshTime: 30000, // 定时刷新时间，单位(ms)
-    dataSource:'1',//数据来源 1静态数据 2动态数据
-    dynamicDataSettings:{
-        datasetId:"",//数据集
-        dataColumns:[],//数据列
-    },//动态数据配置
-    params: [], // 图表参数
-    clickType: '1', // 点击类型
-    thirdUrl: '', // 第三方跳转链接
-    bindComponent: null, // 绑定组件
-    hiddenParamSize:0,//隐藏参数个数
-    theme:"",//主题
-    amination:"",//动画效果
-    isborder:false,//是否添加边框
-    borderType:"",//边框类型
-    borderColor:[],//边框颜色
-    spec:{
-        'type':'bar',
-        color: [],
-        data: {
-            values: [
-                { type: 'Nail polish', country: 'Africa', value: 4229 },
-                { type: 'Nail polish', country: 'EU', value: 4376 },
-                { type: 'Nail polish', country: 'China', value: 3054 },
-                { type: 'Nail polish', country: 'USA', value: 12814 },
-                { type: 'Eyebrow pencil', country: 'Africa', value: 3932 },
-                { type: 'Eyebrow pencil', country: 'EU', value: 3987 },
-                { type: 'Eyebrow pencil', country: 'China', value: 5067 },
-                { type: 'Eyebrow pencil', country: 'USA', value: 13012 },
-                { type: 'Rouge', country: 'Africa', value: 5221 },
-                { type: 'Rouge', country: 'EU', value: 3574 },
-                { type: 'Rouge', country: 'China', value: 7004 },
-                { type: 'Rouge', country: 'USA', value: 11624 },
-            ]
-        },
-        seriesField: ['type'],
-        xField: ['value'],
-        yField: ['country'],
-        stack: true,
-        background: '',//背景颜色
-        barWidth:'100%',//柱体宽度
-        direction: 'horizontal',
-        title:screenConstants.chartTitleSettings,
-      tooltip:screenConstants.tooltipSettings,
-        bar:{
-            style:{
-                cornerRadius:0,//圆角
-            }
-        },
-        label:{
-            visible:true,
-            position:'outside',
-            style:{
-                fontSize:14,
-                fill:null,
-            }
-        },
-        axes:[
-            {orient:'bottom',label:{visible:true,style:{fill:'#6E6F73'}},unit:{visible:false,style:{}}},
-            {orient:'left',label:{visible:true,style:{fill:'#6E6F73'}},unit:{visible:false,style:{}}}
-        ],
-        legends:{
-            visible:false,
-            orient: 'top',//图例位置
-            position:'middle',//对齐方式
-            item: {
-                label:{
-                  style:{
-                    // fill:'#0BF1DA',//图例字体颜色
-                  }
-                }
-            },
-        },
+  type: screenConstants.type.stackHorizontalHistogram,
+  category: screenConstants.category.vchart,
+  isDelete: false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 500, // 组件初始化宽度
+  h: 300, // 组件初始化高度
+  active: false,
+  zindex: 99,
+  locked: false,
+  refresh: false, // 是否定时刷新
+  refreshTime: 30000, // 定时刷新时间，单位(ms)
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
+  params: [], // 图表参数
+  clickType: '1', // 点击类型
+  thirdUrl: '', // 第三方跳转链接
+  bindComponent: null, // 绑定组件
+  hiddenParamSize: 0, // 隐藏参数个数
+  theme: '', // 主题
+  amination: '', // 动画效果
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  spec: {
+    'type': 'bar',
+    color: [],
+    data: {
+      values: [
+        { type: 'Nail polish', country: 'Africa', value: 4229 },
+        { type: 'Nail polish', country: 'EU', value: 4376 },
+        { type: 'Nail polish', country: 'China', value: 3054 },
+        { type: 'Nail polish', country: 'USA', value: 12814 },
+        { type: 'Eyebrow pencil', country: 'Africa', value: 3932 },
+        { type: 'Eyebrow pencil', country: 'EU', value: 3987 },
+        { type: 'Eyebrow pencil', country: 'China', value: 5067 },
+        { type: 'Eyebrow pencil', country: 'USA', value: 13012 },
+        { type: 'Rouge', country: 'Africa', value: 5221 },
+        { type: 'Rouge', country: 'EU', value: 3574 },
+        { type: 'Rouge', country: 'China', value: 7004 },
+        { type: 'Rouge', country: 'USA', value: 11624 }
+      ]
+    },
+    seriesField: ['type'],
+    xField: ['value'],
+    yField: ['country'],
+    stack: true,
+    background: '', // 背景颜色
+    barWidth: '100%', // 柱体宽度
+    direction: 'horizontal',
+    title: screenConstants.chartTitleSettings,
+    tooltip: screenConstants.tooltipSettings,
+    bar: {
+      style: {
+        cornerRadius: 0// 圆角
+      }
+    },
+    label: {
+      visible: true,
+      position: 'outside',
+      style: {
+        fontSize: 14,
+        fill: null
+      }
+    },
+    axes: [
+      { orient: 'bottom', label: { visible: true, style: { fill: '#6E6F73' }}, unit: { visible: false, style: {}}},
+      { orient: 'left', label: { visible: true, style: { fill: '#6E6F73' }}, unit: { visible: false, style: {}}}
+    ],
+    legends: {
+      visible: false,
+      orient: 'top', // 图例位置
+      position: 'middle', // 对齐方式
+      item: {
+        label: {
+          style: {
+            // fill:'#0BF1DA',//图例字体颜色
+          }
+        }
+      }
     }
+  }
 }
 
-//大屏折线图初始化数据
+// 大屏折线图初始化数据
 screenConstants.lineInit = {
-    type: screenConstants.type.line,
-    category:screenConstants.category.vchart,
-    isDelete:false,
-    x: 0, // 初始化横坐标
-    y: 0, // 初始化纵坐标
-    w: 500, // 组件初始化宽度
-    h: 300, // 组件初始化高度
-    active: false,
-    zindex: 99,
-    locked:false,
-    refresh: false, // 是否定时刷新
-    refreshTime: 30000, // 定时刷新时间，单位(ms)
-    dataSource:'1',//数据来源 1静态数据 2动态数据
-    dynamicDataSettings:{
-        datasetId:"",//数据集
-        dataColumns:[],//数据列
-    },//动态数据配置
-    params: [], // 图表参数
-    clickType: '1', // 点击类型
-    thirdUrl: '', // 第三方跳转链接
-    bindComponent: null, // 绑定组件
-    hiddenParamSize:0,//隐藏参数个数
-    theme:"",//主题
-    amination:"",//动画效果
-    isborder:false,//是否添加边框
-    borderType:"",//边框类型
-    borderColor:[],//边框颜色
-    spec:{
-        'type':'line',
-        color: [],
-        data: {
-            values: [
-                {
-                  time: '2:00',
-                  value: 8
-                },
-                {
-                  time: '4:00',
-                  value: 9
-                },
-                {
-                  time: '6:00',
-                  value: 11
-                },
-                {
-                  time: '8:00',
-                  value: 14
-                },
-                {
-                  time: '10:00',
-                  value: 16
-                },
-                {
-                  time: '12:00',
-                  value: 17
-                },
-                {
-                  time: '14:00',
-                  value: 17
-                },
-                {
-                  time: '16:00',
-                  value: 16
-                },
-                {
-                  time: '18:00',
-                  value: 15
-                }
-              ]
+  type: screenConstants.type.line,
+  category: screenConstants.category.vchart,
+  isDelete: false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 500, // 组件初始化宽度
+  h: 300, // 组件初始化高度
+  active: false,
+  zindex: 99,
+  locked: false,
+  refresh: false, // 是否定时刷新
+  refreshTime: 30000, // 定时刷新时间，单位(ms)
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
+  params: [], // 图表参数
+  clickType: '1', // 点击类型
+  thirdUrl: '', // 第三方跳转链接
+  bindComponent: null, // 绑定组件
+  hiddenParamSize: 0, // 隐藏参数个数
+  theme: '', // 主题
+  amination: '', // 动画效果
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  spec: {
+    'type': 'line',
+    color: [],
+    data: {
+      values: [
+        {
+          time: '2:00',
+          value: 8
         },
-        seriesField: [],
-        xField: ['time'],
-        yField: ['value'],
-        background: '',//背景颜色
-        lineLabel: { visible: false,style:{} },
-        line:{
-            style:{
-                lineWidth:2,
-                curveType:"linear"
-            }
+        {
+          time: '4:00',
+          value: 9
         },
-        title:screenConstants.chartTitleSettings,
-      tooltip:screenConstants.tooltipSettings,
-        label:{
-            visible:true,
-            position:'outside',
-            style:{
-                fontSize:14,
-                fill:null,
-            }
+        {
+          time: '6:00',
+          value: 11
         },
-        axes:[
-            {orient:'bottom',sampling: true,label:{visible:true,style:{fill:'#6E6F73'},autoRotate:false,autoRotateAngle: [0, 90],autoLimit:false},unit:{visible:false,style:{}}},
-            {orient:'left',label:{visible:true,style:{fill:'#6E6F73'},autoLimit:false},unit:{visible:false,style:{}}}
-        ],
-        legends:{
-            visible:false,
-            orient: 'top',//图例位置
-            position:'middle',//对齐方式
-            item: {
-                label:{
-                  style:{
-                    // fill:'#0BF1DA',//图例字体颜色
-                  }
-                }
-            },
+        {
+          time: '8:00',
+          value: 14
         },
+        {
+          time: '10:00',
+          value: 16
+        },
+        {
+          time: '12:00',
+          value: 17
+        },
+        {
+          time: '14:00',
+          value: 17
+        },
+        {
+          time: '16:00',
+          value: 16
+        },
+        {
+          time: '18:00',
+          value: 15
+        }
+      ]
+    },
+    seriesField: [],
+    xField: ['time'],
+    yField: ['value'],
+    background: '', // 背景颜色
+    lineLabel: { visible: false, style: {}},
+    line: {
+      style: {
+        lineWidth: 2,
+        curveType: 'linear'
+      }
+    },
+    title: screenConstants.chartTitleSettings,
+    tooltip: screenConstants.tooltipSettings,
+    label: {
+      visible: true,
+      position: 'outside',
+      style: {
+        fontSize: 14,
+        fill: null
+      }
+    },
+    axes: [
+      { orient: 'bottom', sampling: true, label: { visible: true, style: { fill: '#6E6F73' }, autoRotate: false, autoRotateAngle: [0, 90], autoLimit: false }, unit: { visible: false, style: {}}},
+      { orient: 'left', label: { visible: true, style: { fill: '#6E6F73' }, autoLimit: false }, unit: { visible: false, style: {}}}
+    ],
+    legends: {
+      visible: false,
+      orient: 'top', // 图例位置
+      position: 'middle', // 对齐方式
+      item: {
+        label: {
+          style: {
+            // fill:'#0BF1DA',//图例字体颜色
+          }
+        }
+      }
     }
+  }
 }
 
-//大屏垂直折线图初始化数据
+// 大屏垂直折线图初始化数据
 screenConstants.horizontalLineInit = {
-    type: screenConstants.type.horizontalLine,
-    category:screenConstants.category.vchart,
-    isDelete:false,
-    x: 0, // 初始化横坐标
-    y: 0, // 初始化纵坐标
-    w: 500, // 组件初始化宽度
-    h: 300, // 组件初始化高度
-    active: false,
-    zindex: 99,
-    locked:false,
-    refresh: false, // 是否定时刷新
-    refreshTime: 30000, // 定时刷新时间，单位(ms)
-    dataSource:'1',//数据来源 1静态数据 2动态数据
-    dynamicDataSettings:{
-        datasetId:"",//数据集
-        dataColumns:[],//数据列
-    },//动态数据配置
-    params: [], // 图表参数
-    clickType: '1', // 点击类型
-    thirdUrl: '', // 第三方跳转链接
-    bindComponent: null, // 绑定组件
-    hiddenParamSize:0,//隐藏参数个数
-    theme:"",//主题
-    amination:"",//动画效果
-    isborder:false,//是否添加边框
-    borderType:"",//边框类型
-    borderColor:[],//边框颜色
-    spec:{
-        'type':'line',
-        color: [],
-        data: {
-            values: [
-                {
-                  time: '2:00',
-                  value: 8
-                },
-                {
-                  time: '4:00',
-                  value: 9
-                },
-                {
-                  time: '6:00',
-                  value: 11
-                },
-                {
-                  time: '8:00',
-                  value: 14
-                },
-                {
-                  time: '10:00',
-                  value: 16
-                },
-                {
-                  time: '12:00',
-                  value: 17
-                },
-                {
-                  time: '14:00',
-                  value: 17
-                },
-                {
-                  time: '16:00',
-                  value: 16
-                },
-                {
-                  time: '18:00',
-                  value: 15
-                }
-              ]
+  type: screenConstants.type.horizontalLine,
+  category: screenConstants.category.vchart,
+  isDelete: false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 500, // 组件初始化宽度
+  h: 300, // 组件初始化高度
+  active: false,
+  zindex: 99,
+  locked: false,
+  refresh: false, // 是否定时刷新
+  refreshTime: 30000, // 定时刷新时间，单位(ms)
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
+  params: [], // 图表参数
+  clickType: '1', // 点击类型
+  thirdUrl: '', // 第三方跳转链接
+  bindComponent: null, // 绑定组件
+  hiddenParamSize: 0, // 隐藏参数个数
+  theme: '', // 主题
+  amination: '', // 动画效果
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  spec: {
+    'type': 'line',
+    color: [],
+    data: {
+      values: [
+        {
+          time: '2:00',
+          value: 8
         },
-        seriesField: [],
-        xField: ['value'],
-        yField: ['time'],
-        background: '',//背景颜色
-        direction: 'horizontal',
-        lineLabel: { visible: false ,style:{}},
-        line:{
-            style:{
-                lineWidth:2,
-                curveType:"linear"
-            }
+        {
+          time: '4:00',
+          value: 9
         },
-        title:screenConstants.chartTitleSettings,
-      tooltip:screenConstants.tooltipSettings,
-        label:{
-            visible:true,
-            position:'outside',
-            style:{
-                fontSize:14,
-                fill:null,
-            }
+        {
+          time: '6:00',
+          value: 11
         },
-        axes:[
-            {orient:'bottom',sampling: true,label:{visible:true,style:{fill:'#6E6F73'},autoRotate:false,autoRotateAngle: [0, 90],autoLimit:false},unit:{visible:false,style:{}}},
-            {orient:'left',label:{visible:true,style:{fill:'#6E6F73'},autoLimit:false},unit:{visible:false,style:{}}}
-        ],
-        legends:{
-            visible:false,
-            orient: 'top',//图例位置
-            position:'middle',//对齐方式
-            item: {
-                label:{
-                  style:{
-                    // fill:'#0BF1DA',//图例字体颜色
-                  }
-                }
-            },
+        {
+          time: '8:00',
+          value: 14
         },
+        {
+          time: '10:00',
+          value: 16
+        },
+        {
+          time: '12:00',
+          value: 17
+        },
+        {
+          time: '14:00',
+          value: 17
+        },
+        {
+          time: '16:00',
+          value: 16
+        },
+        {
+          time: '18:00',
+          value: 15
+        }
+      ]
+    },
+    seriesField: [],
+    xField: ['value'],
+    yField: ['time'],
+    background: '', // 背景颜色
+    direction: 'horizontal',
+    lineLabel: { visible: false, style: {}},
+    line: {
+      style: {
+        lineWidth: 2,
+        curveType: 'linear'
+      }
+    },
+    title: screenConstants.chartTitleSettings,
+    tooltip: screenConstants.tooltipSettings,
+    label: {
+      visible: true,
+      position: 'outside',
+      style: {
+        fontSize: 14,
+        fill: null
+      }
+    },
+    axes: [
+      { orient: 'bottom', sampling: true, label: { visible: true, style: { fill: '#6E6F73' }, autoRotate: false, autoRotateAngle: [0, 90], autoLimit: false }, unit: { visible: false, style: {}}},
+      { orient: 'left', label: { visible: true, style: { fill: '#6E6F73' }, autoLimit: false }, unit: { visible: false, style: {}}}
+    ],
+    legends: {
+      visible: false,
+      orient: 'top', // 图例位置
+      position: 'middle', // 对齐方式
+      item: {
+        label: {
+          style: {
+            // fill:'#0BF1DA',//图例字体颜色
+          }
+        }
+      }
     }
+  }
 }
 
-//大屏平滑折线图初始化数据
+// 大屏平滑折线图初始化数据
 screenConstants.smoothLineInit = {
-    type: screenConstants.type.line,
-    category:screenConstants.category.vchart,
-    isDelete:false,
-    x: 0, // 初始化横坐标
-    y: 0, // 初始化纵坐标
-    w: 500, // 组件初始化宽度
-    h: 300, // 组件初始化高度
-    active: false,
-    zindex: 99,
-    locked:false,
-    refresh: false, // 是否定时刷新
-    refreshTime: 30000, // 定时刷新时间，单位(ms)
-    dataSource:'1',//数据来源 1静态数据 2动态数据
-    dynamicDataSettings:{
-        datasetId:"",//数据集
-        dataColumns:[],//数据列
-    },//动态数据配置
-    params: [], // 图表参数
-    clickType: '1', // 点击类型
-    thirdUrl: '', // 第三方跳转链接
-    bindComponent: null, // 绑定组件
-    hiddenParamSize:0,//隐藏参数个数
-    theme:"",//主题
-    amination:"",//动画效果
-    isborder:false,//是否添加边框
-    borderType:"",//边框类型
-    borderColor:[],//边框颜色
-    spec:{
-        'type':'line',
-        color: [],
-        data: {
-            values: [
-                {
-                  time: '2:00',
-                  value: 8
-                },
-                {
-                  time: '4:00',
-                  value: 9
-                },
-                {
-                  time: '6:00',
-                  value: 11
-                },
-                {
-                  time: '8:00',
-                  value: 14
-                },
-                {
-                  time: '10:00',
-                  value: 16
-                },
-                {
-                  time: '12:00',
-                  value: 17
-                },
-                {
-                  time: '14:00',
-                  value: 17
-                },
-                {
-                  time: '16:00',
-                  value: 16
-                },
-                {
-                  time: '18:00',
-                  value: 15
-                }
-              ]
+  type: screenConstants.type.line,
+  category: screenConstants.category.vchart,
+  isDelete: false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 500, // 组件初始化宽度
+  h: 300, // 组件初始化高度
+  active: false,
+  zindex: 99,
+  locked: false,
+  refresh: false, // 是否定时刷新
+  refreshTime: 30000, // 定时刷新时间，单位(ms)
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
+  params: [], // 图表参数
+  clickType: '1', // 点击类型
+  thirdUrl: '', // 第三方跳转链接
+  bindComponent: null, // 绑定组件
+  hiddenParamSize: 0, // 隐藏参数个数
+  theme: '', // 主题
+  amination: '', // 动画效果
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  spec: {
+    'type': 'line',
+    color: [],
+    data: {
+      values: [
+        {
+          time: '2:00',
+          value: 8
         },
-        seriesField: [],
-        xField: ['time'],
-        yField: ['value'],
-        background: '',//背景颜色
-        lineLabel: { visible: false ,style:{}},
-        line:{
-            style:{
-                lineWidth:2,
-                curveType:"monotone"
-            }
+        {
+          time: '4:00',
+          value: 9
         },
-        title:screenConstants.chartTitleSettings,
-      tooltip:screenConstants.tooltipSettings,
-        label:{
-            visible:true,
-            position:'outside',
-            style:{
-                fontSize:14,
-                fill:null,
-            }
+        {
+          time: '6:00',
+          value: 11
         },
-        axes:[
-            {orient:'bottom',sampling: true,label:{visible:true,style:{fill:'#6E6F73'},autoRotate:false,autoRotateAngle: [0, 90],autoLimit:false},unit:{visible:false,style:{}}},
-            {orient:'left',label:{visible:true,style:{fill:'#6E6F73'},autoLimit:false},unit:{visible:false,style:{}}}
-        ],
-        legends:{
-            visible:false,
-            orient: 'top',//图例位置
-            position:'middle',//对齐方式
-            item: {
-                label:{
-                  style:{
-                    // fill:'#0BF1DA',//图例字体颜色
-                  }
-                }
-            },
+        {
+          time: '8:00',
+          value: 14
         },
+        {
+          time: '10:00',
+          value: 16
+        },
+        {
+          time: '12:00',
+          value: 17
+        },
+        {
+          time: '14:00',
+          value: 17
+        },
+        {
+          time: '16:00',
+          value: 16
+        },
+        {
+          time: '18:00',
+          value: 15
+        }
+      ]
+    },
+    seriesField: [],
+    xField: ['time'],
+    yField: ['value'],
+    background: '', // 背景颜色
+    lineLabel: { visible: false, style: {}},
+    line: {
+      style: {
+        lineWidth: 2,
+        curveType: 'monotone'
+      }
+    },
+    title: screenConstants.chartTitleSettings,
+    tooltip: screenConstants.tooltipSettings,
+    label: {
+      visible: true,
+      position: 'outside',
+      style: {
+        fontSize: 14,
+        fill: null
+      }
+    },
+    axes: [
+      { orient: 'bottom', sampling: true, label: { visible: true, style: { fill: '#6E6F73' }, autoRotate: false, autoRotateAngle: [0, 90], autoLimit: false }, unit: { visible: false, style: {}}},
+      { orient: 'left', label: { visible: true, style: { fill: '#6E6F73' }, autoLimit: false }, unit: { visible: false, style: {}}}
+    ],
+    legends: {
+      visible: false,
+      orient: 'top', // 图例位置
+      position: 'middle', // 对齐方式
+      item: {
+        label: {
+          style: {
+            // fill:'#0BF1DA',//图例字体颜色
+          }
+        }
+      }
     }
+  }
 }
 
-//大屏阶梯折线图初始化数据
+// 大屏阶梯折线图初始化数据
 screenConstants.stepLineInit = {
-    type: screenConstants.type.stepLine,
-    category:screenConstants.category.vchart,
-    isDelete:false,
-    x: 0, // 初始化横坐标
-    y: 0, // 初始化纵坐标
-    w: 500, // 组件初始化宽度
-    h: 300, // 组件初始化高度
-    active: false,
-    zindex: 99,
-    locked:false,
-    refresh: false, // 是否定时刷新
-    refreshTime: 30000, // 定时刷新时间，单位(ms)
-    dataSource:'1',//数据来源 1静态数据 2动态数据
-    dynamicDataSettings:{
-        datasetId:"",//数据集
-        dataColumns:[],//数据列
-    },//动态数据配置
-    params: [], // 图表参数
-    clickType: '1', // 点击类型
-    thirdUrl: '', // 第三方跳转链接
-    bindComponent: null, // 绑定组件
-    hiddenParamSize:0,//隐藏参数个数
-    theme:"",//主题
-    amination:"",//动画效果
-    isborder:false,//是否添加边框
-    borderType:"",//边框类型
-    borderColor:[],//边框颜色
-    spec:{
-        'type':'line',
-        color: [],
-        data: {
-            values: [
-                {
-                  time: '2:00',
-                  value: 8
-                },
-                {
-                  time: '4:00',
-                  value: 9
-                },
-                {
-                  time: '6:00',
-                  value: 11
-                },
-                {
-                  time: '8:00',
-                  value: 14
-                },
-                {
-                  time: '10:00',
-                  value: 16
-                },
-                {
-                  time: '12:00',
-                  value: 17
-                },
-                {
-                  time: '14:00',
-                  value: 17
-                },
-                {
-                  time: '16:00',
-                  value: 16
-                },
-                {
-                  time: '18:00',
-                  value: 15
-                }
-              ]
+  type: screenConstants.type.stepLine,
+  category: screenConstants.category.vchart,
+  isDelete: false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 500, // 组件初始化宽度
+  h: 300, // 组件初始化高度
+  active: false,
+  zindex: 99,
+  locked: false,
+  refresh: false, // 是否定时刷新
+  refreshTime: 30000, // 定时刷新时间，单位(ms)
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
+  params: [], // 图表参数
+  clickType: '1', // 点击类型
+  thirdUrl: '', // 第三方跳转链接
+  bindComponent: null, // 绑定组件
+  hiddenParamSize: 0, // 隐藏参数个数
+  theme: '', // 主题
+  amination: '', // 动画效果
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  spec: {
+    'type': 'line',
+    color: [],
+    data: {
+      values: [
+        {
+          time: '2:00',
+          value: 8
         },
-        seriesField: [],
-        xField: ['time'],
-        yField: ['value'],
-        background: '',//背景颜色
-        lineLabel: { visible: false ,style:{}},
-        line:{
-            style:{
-                lineWidth:2,
-                curveType:"stepAfter"
-            }
+        {
+          time: '4:00',
+          value: 9
         },
-        title:screenConstants.chartTitleSettings,
-      tooltip:screenConstants.tooltipSettings,
-        label:{
-            visible:true,
-            position:'outside',
-            style:{
-                fontSize:14,
-                fill:null,
-            }
+        {
+          time: '6:00',
+          value: 11
         },
-        axes:[
-            {orient:'bottom',sampling: true,label:{visible:true,style:{fill:'#6E6F73'},autoRotate:false,autoRotateAngle: [0, 90],autoLimit:false},unit:{visible:false,style:{}}},
-            {orient:'left',label:{visible:true,style:{fill:'#6E6F73'},autoLimit:false},unit:{visible:false,style:{}}}
-        ],
-        legends:{
-            visible:false,
-            orient: 'top',//图例位置
-            position:'middle',//对齐方式
-            item: {
-                label:{
-                  style:{
-                    // fill:'#0BF1DA',//图例字体颜色
-                  }
-                }
-            },
+        {
+          time: '8:00',
+          value: 14
         },
+        {
+          time: '10:00',
+          value: 16
+        },
+        {
+          time: '12:00',
+          value: 17
+        },
+        {
+          time: '14:00',
+          value: 17
+        },
+        {
+          time: '16:00',
+          value: 16
+        },
+        {
+          time: '18:00',
+          value: 15
+        }
+      ]
+    },
+    seriesField: [],
+    xField: ['time'],
+    yField: ['value'],
+    background: '', // 背景颜色
+    lineLabel: { visible: false, style: {}},
+    line: {
+      style: {
+        lineWidth: 2,
+        curveType: 'stepAfter'
+      }
+    },
+    title: screenConstants.chartTitleSettings,
+    tooltip: screenConstants.tooltipSettings,
+    label: {
+      visible: true,
+      position: 'outside',
+      style: {
+        fontSize: 14,
+        fill: null
+      }
+    },
+    axes: [
+      { orient: 'bottom', sampling: true, label: { visible: true, style: { fill: '#6E6F73' }, autoRotate: false, autoRotateAngle: [0, 90], autoLimit: false }, unit: { visible: false, style: {}}},
+      { orient: 'left', label: { visible: true, style: { fill: '#6E6F73' }, autoLimit: false }, unit: { visible: false, style: {}}}
+    ],
+    legends: {
+      visible: false,
+      orient: 'top', // 图例位置
+      position: 'middle', // 对齐方式
+      item: {
+        label: {
+          style: {
+            // fill:'#0BF1DA',//图例字体颜色
+          }
+        }
+      }
     }
+  }
 }
 
 screenConstants.stackLineInit = {
-    type: screenConstants.type.stackLine,
-    category:screenConstants.category.vchart,
-    isDelete:false,
-    x: 0, // 初始化横坐标
-    y: 0, // 初始化纵坐标
-    w: 500, // 组件初始化宽度
-    h: 300, // 组件初始化高度
-    active: false,
-    zindex: 99,
-    locked:false,
-    refresh: false, // 是否定时刷新
-    refreshTime: 30000, // 定时刷新时间，单位(ms)
-    dataSource:'1',//数据来源 1静态数据 2动态数据
-    dynamicDataSettings:{
-        datasetId:"",//数据集
-        dataColumns:[],//数据列
-    },//动态数据配置
-    params: [], // 图表参数
-    clickType: '1', // 点击类型
-    thirdUrl: '', // 第三方跳转链接
-    bindComponent: null, // 绑定组件
-    hiddenParamSize:0,//隐藏参数个数
-    theme:"",//主题
-    amination:"",//动画效果
-    isborder:false,//是否添加边框
-    borderType:"",//边框类型
-    borderColor:[],//边框颜色
-    spec:{
-        'type':'line',
-        color: [],
-        data: {
-            values: [
-                { type: 'Nail polish', country: 'Africa', value: 4229 },
-                { type: 'Nail polish', country: 'EU', value: 4376 },
-                { type: 'Nail polish', country: 'China', value: 3054 },
-                { type: 'Nail polish', country: 'USA', value: 12814 },
-                { type: 'Eyebrow pencil', country: 'Africa', value: 3932 },
-                { type: 'Eyebrow pencil', country: 'EU', value: 3987 },
-                { type: 'Eyebrow pencil', country: 'China', value: 5067 },
-                { type: 'Eyebrow pencil', country: 'USA', value: 13012 },
-                { type: 'Rouge', country: 'Africa', value: 5221 },
-                { type: 'Rouge', country: 'EU', value: 3574 },
-                { type: 'Rouge', country: 'China', value: 7004 },
-                { type: 'Rouge', country: 'USA', value: 11624 },
-                { type: 'Lipstick', country: 'Africa', value: 9256 },
-                { type: 'Lipstick', country: 'EU', value: 4376 },
-                { type: 'Lipstick', country: 'China', value: 9054 },
-                { type: 'Lipstick', country: 'USA', value: 8814 },
-                { type: 'Eyeshadows', country: 'Africa', value: 3308 },
-                { type: 'Eyeshadows', country: 'EU', value: 4572 },
-                { type: 'Eyeshadows', country: 'China', value: 12043 },
-                { type: 'Eyeshadows', country: 'USA', value: 12998 },
-                { type: 'Eyeliner', country: 'Africa', value: 5432 },
-                { type: 'Eyeliner', country: 'EU', value: 3417 },
-                { type: 'Eyeliner', country: 'China', value: 15067 },
-                { type: 'Eyeliner', country: 'USA', value: 12321 },
-                { type: 'Foundation', country: 'Africa', value: 13701 },
-                { type: 'Foundation', country: 'EU', value: 5231 },
-                { type: 'Foundation', country: 'China', value: 10119 },
-                { type: 'Foundation', country: 'USA', value: 10342 },
-                { type: 'Lip gloss', country: 'Africa', value: 4008 },
-                { type: 'Lip gloss', country: 'EU', value: 4572 },
-                { type: 'Lip gloss', country: 'China', value: 12043 },
-                { type: 'Lip gloss', country: 'USA', value: 22998 },
-                { type: 'Mascara', country: 'Africa', value: 18712 },
-                { type: 'Mascara', country: 'EU', value: 6134 },
-                { type: 'Mascara', country: 'China', value: 10419 },
-                { type: 'Mascara', country: 'USA', value: 11261 }
-            ]
-        },
-        stack: true,
-        seriesField: ['country'],
-        xField: ['type'],
-        yField: ['value'],
-        background: '',//背景颜色
-        lineLabel: { visible: false ,style:{}},
-        line:{
-            style:{
-                lineWidth:2,
-            }
-        },
-        title:screenConstants.chartTitleSettings,
-      tooltip:screenConstants.tooltipSettings,
-        label:{
-            visible:true,
-            position:'outside',
-            style:{
-                fontSize:14,
-                fill:null,
-            }
-        },
-        axes:[
-            {orient:'bottom',sampling: true,label:{visible:true,style:{fill:'#6E6F73'},autoRotate:false,autoRotateAngle: [0, 90],autoLimit:false},unit:{visible:false,style:{}}},
-            {orient:'left',label:{visible:true,style:{fill:'#6E6F73'},autoLimit:false},unit:{visible:false,style:{}}}
-        ],
-        legends:{
-            visible:false,
-            orient: 'top',//图例位置
-            position:'middle',//对齐方式
-            item: {
-                label:{
-                  style:{
-                    // fill:'#0BF1DA',//图例字体颜色
-                  }
-                }
-            },
-        },
-    }
-}
-
-//大屏面积图图初始化数据
-screenConstants.areaInit = {
-    type: screenConstants.type.area,
-    category:screenConstants.category.vchart,
-    isDelete:false,
-    x: 0, // 初始化横坐标
-    y: 0, // 初始化纵坐标
-    w: 500, // 组件初始化宽度
-    h: 300, // 组件初始化高度
-    active: false,
-    zindex: 99,
-    locked:false,
-    refresh: false, // 是否定时刷新
-    refreshTime: 30000, // 定时刷新时间，单位(ms)
-    dataSource:'1',//数据来源 1静态数据 2动态数据
-    dynamicDataSettings:{
-        datasetId:"",//数据集
-        dataColumns:[],//数据列
-    },//动态数据配置
-    params: [], // 图表参数
-    clickType: '1', // 点击类型
-    thirdUrl: '', // 第三方跳转链接
-    bindComponent: null, // 绑定组件
-    hiddenParamSize:0,//隐藏参数个数
-    theme:"",//主题
-    amination:"",//动画效果
-    isborder:false,//是否添加边框
-    borderType:"",//边框类型
-    borderColor:[],//边框颜色
-    spec:{
-        'type':'area',
-        color: [],
-        data: {
-            values: [
-                {
-                  time: '2:00',
-                  value: 8
-                },
-                {
-                  time: '4:00',
-                  value: 9
-                },
-                {
-                  time: '6:00',
-                  value: 11
-                },
-                {
-                  time: '8:00',
-                  value: 14
-                },
-                {
-                  time: '10:00',
-                  value: 16
-                },
-                {
-                  time: '12:00',
-                  value: 17
-                },
-                {
-                  time: '14:00',
-                  value: 17
-                },
-                {
-                  time: '16:00',
-                  value: 16
-                },
-                {
-                  time: '18:00',
-                  value: 15
-                }
-              ]
-        },
-        seriesField: [],
-        xField: ['time'],
-        yField: ['value'],
-        background: '',//背景颜色
-        lineLabel: { visible: false,style:{} },
-        line:{
-            style:{
-                lineWidth:2,
-                curveType:"linear"
-            }
-        },
-        title:screenConstants.chartTitleSettings,
-      tooltip:screenConstants.tooltipSettings,
-        label:{
-            visible:true,
-            position:'outside',
-            style:{
-                fontSize:14,
-                fill:null,
-            }
-        },
-        axes:[
-            {orient:'bottom',sampling: true,label:{visible:true,style:{fill:'#6E6F73'},autoRotate:false,autoRotateAngle: [0, 90],autoLimit:false},unit:{visible:false,style:{}}},
-            {orient:'left',label:{visible:true,style:{fill:'#6E6F73'},autoLimit:false},unit:{visible:false,style:{}}}
-        ],
-        legends:{
-            visible:false,
-            orient: 'top',//图例位置
-            position:'middle',//对齐方式
-            item: {
-                label:{
-                  style:{
-                    // fill:'#0BF1DA',//图例字体颜色
-                  }
-                }
-            },
-        },
-    }
-}
-//大屏垂直面积图图初始化数据
-screenConstants.horizontalAreaInit = {
-    type: screenConstants.type.horizontalArea,
-    category:screenConstants.category.vchart,
-    isDelete:false,
-    x: 0, // 初始化横坐标
-    y: 0, // 初始化纵坐标
-    w: 500, // 组件初始化宽度
-    h: 300, // 组件初始化高度
-    active: false,
-    zindex: 99,
-    locked:false,
-    refresh: false, // 是否定时刷新
-    refreshTime: 30000, // 定时刷新时间，单位(ms)
-    dataSource:'1',//数据来源 1静态数据 2动态数据
-    dynamicDataSettings:{
-        datasetId:"",//数据集
-        dataColumns:[],//数据列
-    },//动态数据配置
-    params: [], // 图表参数
-    clickType: '1', // 点击类型
-    thirdUrl: '', // 第三方跳转链接
-    bindComponent: null, // 绑定组件
-    hiddenParamSize:0,//隐藏参数个数
-    theme:"",//主题
-    amination:"",//动画效果
-    isborder:false,//是否添加边框
-    borderType:"",//边框类型
-    borderColor:[],//边框颜色
-    spec:{
-        'type':'area',
-        color: [],
-        data: {
-            values: [
-                {
-                  time: '2:00',
-                  value: 8
-                },
-                {
-                  time: '4:00',
-                  value: 9
-                },
-                {
-                  time: '6:00',
-                  value: 11
-                },
-                {
-                  time: '8:00',
-                  value: 14
-                },
-                {
-                  time: '10:00',
-                  value: 16
-                },
-                {
-                  time: '12:00',
-                  value: 17
-                },
-                {
-                  time: '14:00',
-                  value: 17
-                },
-                {
-                  time: '16:00',
-                  value: 16
-                },
-                {
-                  time: '18:00',
-                  value: 15
-                }
-              ]
-        },
-        seriesField: [],
-        xField: ['value'],
-        yField: ['time'],
-        direction: 'horizontal',
-        background: '',//背景颜色
-        lineLabel: { visible: false,style:{} },
-        line:{
-            style:{
-                lineWidth:2,
-                curveType:"linear"
-            }
-        },
-        title:screenConstants.chartTitleSettings,
-      tooltip:screenConstants.tooltipSettings,
-        label:{
-            visible:true,
-            position:'outside',
-            style:{
-                fontSize:14,
-                fill:null,
-            }
-        },
-        axes:[
-            {orient:'bottom',sampling: true,label:{visible:true,style:{fill:'#6E6F73'},autoRotate:false,autoRotateAngle: [0, 90],autoLimit:false},unit:{visible:false,style:{}}},
-            {orient:'left',label:{visible:true,style:{fill:'#6E6F73'},autoLimit:false},unit:{visible:false,style:{}}}
-        ],
-        legends:{
-            visible:false,
-            orient: 'top',//图例位置
-            position:'middle',//对齐方式
-            item: {
-                label:{
-                  style:{
-                    // fill:'#0BF1DA',//图例字体颜色
-                  }
-                }
-            },
-        },
-    }
-}
-//大屏平滑面积图初始化数据
-screenConstants.smoothAreaInit = {
-    type: screenConstants.type.smoothArea,
-    category:screenConstants.category.vchart,
-    isDelete:false,
-    x: 0, // 初始化横坐标
-    y: 0, // 初始化纵坐标
-    w: 500, // 组件初始化宽度
-    h: 300, // 组件初始化高度
-    active: false,
-    zindex: 99,
-    locked:false,
-    refresh: false, // 是否定时刷新
-    refreshTime: 30000, // 定时刷新时间，单位(ms)
-    dataSource:'1',//数据来源 1静态数据 2动态数据
-    dynamicDataSettings:{
-        datasetId:"",//数据集
-        dataColumns:[],//数据列
-    },//动态数据配置
-    params: [], // 图表参数
-    clickType: '1', // 点击类型
-    thirdUrl: '', // 第三方跳转链接
-    bindComponent: null, // 绑定组件
-    hiddenParamSize:0,//隐藏参数个数
-    theme:"",//主题
-    amination:"",//动画效果
-    isborder:false,//是否添加边框
-    borderType:"",//边框类型
-    borderColor:[],//边框颜色
-    spec:{
-        'type':'area',
-        color: [],
-        data: {
-            values: [
-                {
-                  time: '2:00',
-                  value: 8
-                },
-                {
-                  time: '4:00',
-                  value: 9
-                },
-                {
-                  time: '6:00',
-                  value: 11
-                },
-                {
-                  time: '8:00',
-                  value: 14
-                },
-                {
-                  time: '10:00',
-                  value: 16
-                },
-                {
-                  time: '12:00',
-                  value: 17
-                },
-                {
-                  time: '14:00',
-                  value: 17
-                },
-                {
-                  time: '16:00',
-                  value: 16
-                },
-                {
-                  time: '18:00',
-                  value: 15
-                }
-              ]
-        },
-        seriesField: [],
-        xField: ['time'],
-        yField: ['value'],
-        background: '',//背景颜色
-        lineLabel: { visible: false ,style:{}},
-        line:{
-            style:{
-                lineWidth:2,
-                curveType:"monotone"
-            }
-        },
-        title:screenConstants.chartTitleSettings,
-      tooltip:screenConstants.tooltipSettings,
-        label:{
-            visible:true,
-            position:'outside',
-            style:{
-                fontSize:14,
-                fill:null,
-            }
-        },
-        axes:[
-            {orient:'bottom',sampling: true,label:{visible:true,style:{fill:'#6E6F73'},autoRotate:false,autoRotateAngle: [0, 90],autoLimit:false},unit:{visible:false,style:{}}},
-            {orient:'left',label:{visible:true,style:{fill:'#6E6F73'},autoLimit:false},unit:{visible:false,style:{}}}
-        ],
-        legends:{
-            visible:false,
-            orient: 'top',//图例位置
-            position:'middle',//对齐方式
-            item: {
-                label:{
-                  style:{
-                    // fill:'#0BF1DA',//图例字体颜色
-                  }
-                }
-            },
-        },
-    }
-}
-
-//大屏阶梯面积图初始化数据
-screenConstants.stepAreaInit = {
-    type: screenConstants.type.stepArea,
-    category:screenConstants.category.vchart,
-    isDelete:false,
-    x: 0, // 初始化横坐标
-    y: 0, // 初始化纵坐标
-    w: 500, // 组件初始化宽度
-    h: 300, // 组件初始化高度
-    active: false,
-    zindex: 99,
-    locked:false,
-    refresh: false, // 是否定时刷新
-    refreshTime: 30000, // 定时刷新时间，单位(ms)
-    dataSource:'1',//数据来源 1静态数据 2动态数据
-    dynamicDataSettings:{
-        datasetId:"",//数据集
-        dataColumns:[],//数据列
-    },//动态数据配置
-    params: [], // 图表参数
-    clickType: '1', // 点击类型
-    thirdUrl: '', // 第三方跳转链接
-    bindComponent: null, // 绑定组件
-    hiddenParamSize:0,//隐藏参数个数
-    theme:"",//主题
-    amination:"",//动画效果
-    isborder:false,//是否添加边框
-    borderType:"",//边框类型
-    borderColor:[],//边框颜色
-    spec:{
-        'type':'area',
-        color: [],
-        data: {
-            values: [
-                {
-                  time: '2:00',
-                  value: 8
-                },
-                {
-                  time: '4:00',
-                  value: 9
-                },
-                {
-                  time: '6:00',
-                  value: 11
-                },
-                {
-                  time: '8:00',
-                  value: 14
-                },
-                {
-                  time: '10:00',
-                  value: 16
-                },
-                {
-                  time: '12:00',
-                  value: 17
-                },
-                {
-                  time: '14:00',
-                  value: 17
-                },
-                {
-                  time: '16:00',
-                  value: 16
-                },
-                {
-                  time: '18:00',
-                  value: 15
-                }
-              ]
-        },
-        seriesField: [],
-        xField: ['time'],
-        yField: ['value'],
-        background: '',//背景颜色
-        lineLabel: { visible: false ,style:{}},
-        line:{
-            style:{
-                lineWidth:2,
-                curveType:"stepAfter"
-            }
-        },
-        title:screenConstants.chartTitleSettings,
-      tooltip:screenConstants.tooltipSettings,
-        label:{
-            visible:true,
-            position:'outside',
-            style:{
-                fontSize:14,
-                fill:null,
-            }
-        },
-        axes:[
-            {orient:'bottom',sampling: true,label:{visible:true,style:{fill:'#6E6F73'},autoRotate:false,autoRotateAngle: [0, 90],autoLimit:false},unit:{visible:false,style:{}}},
-            {orient:'left',label:{visible:true,style:{fill:'#6E6F73'},autoLimit:false},unit:{visible:false,style:{}}}
-        ],
-        legends:{
-            visible:false,
-            orient: 'top',//图例位置
-            position:'middle',//对齐方式
-            item: {
-                label:{
-                  style:{
-                    // fill:'#0BF1DA',//图例字体颜色
-                  }
-                }
-            },
-        },
-    }
-}
-//堆叠面积图
-screenConstants.stackAreaInit = {
-    type: screenConstants.type.stackArea,
-    category:screenConstants.category.vchart,
-    isDelete:false,
-    x: 0, // 初始化横坐标
-    y: 0, // 初始化纵坐标
-    w: 500, // 组件初始化宽度
-    h: 300, // 组件初始化高度
-    active: false,
-    zindex: 99,
-    locked:false,
-    refresh: false, // 是否定时刷新
-    refreshTime: 30000, // 定时刷新时间，单位(ms)
-    dataSource:'1',//数据来源 1静态数据 2动态数据
-    dynamicDataSettings:{
-        datasetId:"",//数据集
-        dataColumns:[],//数据列
-    },//动态数据配置
-    params: [], // 图表参数
-    clickType: '1', // 点击类型
-    thirdUrl: '', // 第三方跳转链接
-    bindComponent: null, // 绑定组件
-    hiddenParamSize:0,//隐藏参数个数
-    theme:"",//主题
-    amination:"",//动画效果
-    isborder:false,//是否添加边框
-    borderType:"",//边框类型
-    borderColor:[],//边框颜色
-    spec:{
-        'type':'area',
-        color: [],
-        data: {
-            values: [
-                { type: 'Nail polish', country: 'Africa', value: 4229 },
-                { type: 'Nail polish', country: 'EU', value: 4376 },
-                { type: 'Nail polish', country: 'China', value: 3054 },
-                { type: 'Nail polish', country: 'USA', value: 12814 },
-                { type: 'Eyebrow pencil', country: 'Africa', value: 3932 },
-                { type: 'Eyebrow pencil', country: 'EU', value: 3987 },
-                { type: 'Eyebrow pencil', country: 'China', value: 5067 },
-                { type: 'Eyebrow pencil', country: 'USA', value: 13012 },
-                { type: 'Rouge', country: 'Africa', value: 5221 },
-                { type: 'Rouge', country: 'EU', value: 3574 },
-                { type: 'Rouge', country: 'China', value: 7004 },
-                { type: 'Rouge', country: 'USA', value: 11624 },
-                { type: 'Lipstick', country: 'Africa', value: 9256 },
-                { type: 'Lipstick', country: 'EU', value: 4376 },
-                { type: 'Lipstick', country: 'China', value: 9054 },
-                { type: 'Lipstick', country: 'USA', value: 8814 },
-                { type: 'Eyeshadows', country: 'Africa', value: 3308 },
-                { type: 'Eyeshadows', country: 'EU', value: 4572 },
-                { type: 'Eyeshadows', country: 'China', value: 12043 },
-                { type: 'Eyeshadows', country: 'USA', value: 12998 },
-                { type: 'Eyeliner', country: 'Africa', value: 5432 },
-                { type: 'Eyeliner', country: 'EU', value: 3417 },
-                { type: 'Eyeliner', country: 'China', value: 15067 },
-                { type: 'Eyeliner', country: 'USA', value: 12321 },
-                { type: 'Foundation', country: 'Africa', value: 13701 },
-                { type: 'Foundation', country: 'EU', value: 5231 },
-                { type: 'Foundation', country: 'China', value: 10119 },
-                { type: 'Foundation', country: 'USA', value: 10342 },
-                { type: 'Lip gloss', country: 'Africa', value: 4008 },
-                { type: 'Lip gloss', country: 'EU', value: 4572 },
-                { type: 'Lip gloss', country: 'China', value: 12043 },
-                { type: 'Lip gloss', country: 'USA', value: 22998 },
-                { type: 'Mascara', country: 'Africa', value: 18712 },
-                { type: 'Mascara', country: 'EU', value: 6134 },
-                { type: 'Mascara', country: 'China', value: 10419 },
-                { type: 'Mascara', country: 'USA', value: 11261 }
-            ]
-        },
-        seriesField: ['country'],
-        xField: ['type'],
-        yField: ['value'],
-        background: '',//背景颜色
-        lineLabel: { visible: false ,style:{}},
-        line:{
-            style:{
-                lineWidth:2,
-            }
-        },
-        stack: true,
-        title:screenConstants.chartTitleSettings,
-      tooltip:screenConstants.tooltipSettings,
-        label:{
-            visible:true,
-            position:'outside',
-            style:{
-                fontSize:14,
-                fill:null,
-            }
-        },
-        axes:[
-            {orient:'bottom',sampling: true,label:{visible:true,style:{fill:'#6E6F73'},autoRotate:false,autoRotateAngle: [0, 90],autoLimit:false},unit:{visible:false,style:{}}},
-            {orient:'left',label:{visible:true,style:{fill:'#6E6F73'},autoLimit:false},unit:{visible:false,style:{}}}
-        ],
-        legends:{
-            visible:false,
-            orient: 'top',//图例位置
-            position:'middle',//对齐方式
-            item: {
-                label:{
-                  style:{
-                    // fill:'#0BF1DA',//图例字体颜色
-                  }
-                }
-            },
-        },
-    }
-}
-//饼图
-screenConstants.pieInit = {
-    type: screenConstants.type.pie,
-    category:screenConstants.category.vchart,
-    isDelete:false,
-    x: 0, // 初始化横坐标
-    y: 0, // 初始化纵坐标
-    w: 500, // 组件初始化宽度
-    h: 300, // 组件初始化高度
-    active: false,
-    zindex: 99,
-    locked:false,
-    refresh: false, // 是否定时刷新
-    refreshTime: 30000, // 定时刷新时间，单位(ms)
-    dataSource:'1',//数据来源 1静态数据 2动态数据
-    dynamicDataSettings:{
-        datasetId:"",//数据集
-        dataColumns:[],//数据列
-    },//动态数据配置
-    params: [], // 图表参数
-    clickType: '1', // 点击类型
-    thirdUrl: '', // 第三方跳转链接
-    bindComponent: null, // 绑定组件
-    hiddenParamSize:0,//隐藏参数个数
-    theme:"",//主题
-    amination:"",//动画效果
-    isborder:false,//是否添加边框
-    borderType:"",//边框类型
-    borderColor:[],//边框颜色
-    spec:{
-        'type':'pie',
-        color: [],
-        data: {
-            values: [
-                { type: 'oxygen', value: '46.60' },
-                { type: 'silicon', value: '27.72' },
-                { type: 'aluminum', value: '8.13' },
-                { type: 'iron', value: '5' },
-                { type: 'calcium', value: '3.63' },
-                { type: 'sodium', value: '2.83' },
-                { type: 'potassium', value: '2.59' },
-                { type: 'others', value: '3.5' }
-            ]
-        },
-        padAngle:0,//扇区间隔
-        outerRadius: 0.8,
-        innerRadius:0,
-        categoryField: 'type',
-        valueField: 'value',
-        // seriesField: 'type',
-        background: '',//背景颜色
-        title:screenConstants.chartTitleSettings,
-      tooltip:screenConstants.tooltipSettings,
-        isLoop:false,//轮播展示
-        pie: {
-            style: {
-              cornerRadius: 0
-            },
-            state: {
-              hover: {
-               centerOffset: 10,
-              },
-              selected: {
-                centerOffset: 10
-              },
-              active: {
-                centerOffset: 10
-              }
-            }
-        },
-        interactions: [
-          {
-            type: 'element-active-by-legend'
+  type: screenConstants.type.stackLine,
+  category: screenConstants.category.vchart,
+  isDelete: false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 500, // 组件初始化宽度
+  h: 300, // 组件初始化高度
+  active: false,
+  zindex: 99,
+  locked: false,
+  refresh: false, // 是否定时刷新
+  refreshTime: 30000, // 定时刷新时间，单位(ms)
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
+  params: [], // 图表参数
+  clickType: '1', // 点击类型
+  thirdUrl: '', // 第三方跳转链接
+  bindComponent: null, // 绑定组件
+  hiddenParamSize: 0, // 隐藏参数个数
+  theme: '', // 主题
+  amination: '', // 动画效果
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  spec: {
+    'type': 'line',
+    color: [],
+    data: {
+      values: [
+        { type: 'Nail polish', country: 'Africa', value: 4229 },
+        { type: 'Nail polish', country: 'EU', value: 4376 },
+        { type: 'Nail polish', country: 'China', value: 3054 },
+        { type: 'Nail polish', country: 'USA', value: 12814 },
+        { type: 'Eyebrow pencil', country: 'Africa', value: 3932 },
+        { type: 'Eyebrow pencil', country: 'EU', value: 3987 },
+        { type: 'Eyebrow pencil', country: 'China', value: 5067 },
+        { type: 'Eyebrow pencil', country: 'USA', value: 13012 },
+        { type: 'Rouge', country: 'Africa', value: 5221 },
+        { type: 'Rouge', country: 'EU', value: 3574 },
+        { type: 'Rouge', country: 'China', value: 7004 },
+        { type: 'Rouge', country: 'USA', value: 11624 },
+        { type: 'Lipstick', country: 'Africa', value: 9256 },
+        { type: 'Lipstick', country: 'EU', value: 4376 },
+        { type: 'Lipstick', country: 'China', value: 9054 },
+        { type: 'Lipstick', country: 'USA', value: 8814 },
+        { type: 'Eyeshadows', country: 'Africa', value: 3308 },
+        { type: 'Eyeshadows', country: 'EU', value: 4572 },
+        { type: 'Eyeshadows', country: 'China', value: 12043 },
+        { type: 'Eyeshadows', country: 'USA', value: 12998 },
+        { type: 'Eyeliner', country: 'Africa', value: 5432 },
+        { type: 'Eyeliner', country: 'EU', value: 3417 },
+        { type: 'Eyeliner', country: 'China', value: 15067 },
+        { type: 'Eyeliner', country: 'USA', value: 12321 },
+        { type: 'Foundation', country: 'Africa', value: 13701 },
+        { type: 'Foundation', country: 'EU', value: 5231 },
+        { type: 'Foundation', country: 'China', value: 10119 },
+        { type: 'Foundation', country: 'USA', value: 10342 },
+        { type: 'Lip gloss', country: 'Africa', value: 4008 },
+        { type: 'Lip gloss', country: 'EU', value: 4572 },
+        { type: 'Lip gloss', country: 'China', value: 12043 },
+        { type: 'Lip gloss', country: 'USA', value: 22998 },
+        { type: 'Mascara', country: 'Africa', value: 18712 },
+        { type: 'Mascara', country: 'EU', value: 6134 },
+        { type: 'Mascara', country: 'China', value: 10419 },
+        { type: 'Mascara', country: 'USA', value: 11261 }
+      ]
+    },
+    stack: true,
+    seriesField: ['country'],
+    xField: ['type'],
+    yField: ['value'],
+    background: '', // 背景颜色
+    lineLabel: { visible: false, style: {}},
+    line: {
+      style: {
+        lineWidth: 2
+      }
+    },
+    title: screenConstants.chartTitleSettings,
+    tooltip: screenConstants.tooltipSettings,
+    label: {
+      visible: true,
+      position: 'outside',
+      style: {
+        fontSize: 14,
+        fill: null
+      }
+    },
+    axes: [
+      { orient: 'bottom', sampling: true, label: { visible: true, style: { fill: '#6E6F73' }, autoRotate: false, autoRotateAngle: [0, 90], autoLimit: false }, unit: { visible: false, style: {}}},
+      { orient: 'left', label: { visible: true, style: { fill: '#6E6F73' }, autoLimit: false }, unit: { visible: false, style: {}}}
+    ],
+    legends: {
+      visible: false,
+      orient: 'top', // 图例位置
+      position: 'middle', // 对齐方式
+      item: {
+        label: {
+          style: {
+            // fill:'#0BF1DA',//图例字体颜色
           }
-        ],
-        label:{
-            visible:true,
-            position:'outside',
-            formatter: '',//标签格式
-            style:{
-                fontSize:14,
-                fill:null,
-            }
-        },
-        legends:{
-            visible:false,
-            orient: 'top',//图例位置
-            position:'middle',//对齐方式
-            item: {
-                label:{
-                  style:{
-                    // fill:'#0BF1DA',//图例字体颜色
-                  }
-                }
-            },
-        },
+        }
+      }
     }
+  }
+}
+
+// 大屏面积图图初始化数据
+screenConstants.areaInit = {
+  type: screenConstants.type.area,
+  category: screenConstants.category.vchart,
+  isDelete: false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 500, // 组件初始化宽度
+  h: 300, // 组件初始化高度
+  active: false,
+  zindex: 99,
+  locked: false,
+  refresh: false, // 是否定时刷新
+  refreshTime: 30000, // 定时刷新时间，单位(ms)
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
+  params: [], // 图表参数
+  clickType: '1', // 点击类型
+  thirdUrl: '', // 第三方跳转链接
+  bindComponent: null, // 绑定组件
+  hiddenParamSize: 0, // 隐藏参数个数
+  theme: '', // 主题
+  amination: '', // 动画效果
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  spec: {
+    'type': 'area',
+    color: [],
+    data: {
+      values: [
+        {
+          time: '2:00',
+          value: 8
+        },
+        {
+          time: '4:00',
+          value: 9
+        },
+        {
+          time: '6:00',
+          value: 11
+        },
+        {
+          time: '8:00',
+          value: 14
+        },
+        {
+          time: '10:00',
+          value: 16
+        },
+        {
+          time: '12:00',
+          value: 17
+        },
+        {
+          time: '14:00',
+          value: 17
+        },
+        {
+          time: '16:00',
+          value: 16
+        },
+        {
+          time: '18:00',
+          value: 15
+        }
+      ]
+    },
+    seriesField: [],
+    xField: ['time'],
+    yField: ['value'],
+    background: '', // 背景颜色
+    lineLabel: { visible: false, style: {}},
+    line: {
+      style: {
+        lineWidth: 2,
+        curveType: 'linear'
+      }
+    },
+    title: screenConstants.chartTitleSettings,
+    tooltip: screenConstants.tooltipSettings,
+    label: {
+      visible: true,
+      position: 'outside',
+      style: {
+        fontSize: 14,
+        fill: null
+      }
+    },
+    axes: [
+      { orient: 'bottom', sampling: true, label: { visible: true, style: { fill: '#6E6F73' }, autoRotate: false, autoRotateAngle: [0, 90], autoLimit: false }, unit: { visible: false, style: {}}},
+      { orient: 'left', label: { visible: true, style: { fill: '#6E6F73' }, autoLimit: false }, unit: { visible: false, style: {}}}
+    ],
+    legends: {
+      visible: false,
+      orient: 'top', // 图例位置
+      position: 'middle', // 对齐方式
+      item: {
+        label: {
+          style: {
+            // fill:'#0BF1DA',//图例字体颜色
+          }
+        }
+      }
+    }
+  }
+}
+// 大屏垂直面积图图初始化数据
+screenConstants.horizontalAreaInit = {
+  type: screenConstants.type.horizontalArea,
+  category: screenConstants.category.vchart,
+  isDelete: false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 500, // 组件初始化宽度
+  h: 300, // 组件初始化高度
+  active: false,
+  zindex: 99,
+  locked: false,
+  refresh: false, // 是否定时刷新
+  refreshTime: 30000, // 定时刷新时间，单位(ms)
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
+  params: [], // 图表参数
+  clickType: '1', // 点击类型
+  thirdUrl: '', // 第三方跳转链接
+  bindComponent: null, // 绑定组件
+  hiddenParamSize: 0, // 隐藏参数个数
+  theme: '', // 主题
+  amination: '', // 动画效果
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  spec: {
+    'type': 'area',
+    color: [],
+    data: {
+      values: [
+        {
+          time: '2:00',
+          value: 8
+        },
+        {
+          time: '4:00',
+          value: 9
+        },
+        {
+          time: '6:00',
+          value: 11
+        },
+        {
+          time: '8:00',
+          value: 14
+        },
+        {
+          time: '10:00',
+          value: 16
+        },
+        {
+          time: '12:00',
+          value: 17
+        },
+        {
+          time: '14:00',
+          value: 17
+        },
+        {
+          time: '16:00',
+          value: 16
+        },
+        {
+          time: '18:00',
+          value: 15
+        }
+      ]
+    },
+    seriesField: [],
+    xField: ['value'],
+    yField: ['time'],
+    direction: 'horizontal',
+    background: '', // 背景颜色
+    lineLabel: { visible: false, style: {}},
+    line: {
+      style: {
+        lineWidth: 2,
+        curveType: 'linear'
+      }
+    },
+    title: screenConstants.chartTitleSettings,
+    tooltip: screenConstants.tooltipSettings,
+    label: {
+      visible: true,
+      position: 'outside',
+      style: {
+        fontSize: 14,
+        fill: null
+      }
+    },
+    axes: [
+      { orient: 'bottom', sampling: true, label: { visible: true, style: { fill: '#6E6F73' }, autoRotate: false, autoRotateAngle: [0, 90], autoLimit: false }, unit: { visible: false, style: {}}},
+      { orient: 'left', label: { visible: true, style: { fill: '#6E6F73' }, autoLimit: false }, unit: { visible: false, style: {}}}
+    ],
+    legends: {
+      visible: false,
+      orient: 'top', // 图例位置
+      position: 'middle', // 对齐方式
+      item: {
+        label: {
+          style: {
+            // fill:'#0BF1DA',//图例字体颜色
+          }
+        }
+      }
+    }
+  }
+}
+// 大屏平滑面积图初始化数据
+screenConstants.smoothAreaInit = {
+  type: screenConstants.type.smoothArea,
+  category: screenConstants.category.vchart,
+  isDelete: false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 500, // 组件初始化宽度
+  h: 300, // 组件初始化高度
+  active: false,
+  zindex: 99,
+  locked: false,
+  refresh: false, // 是否定时刷新
+  refreshTime: 30000, // 定时刷新时间，单位(ms)
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
+  params: [], // 图表参数
+  clickType: '1', // 点击类型
+  thirdUrl: '', // 第三方跳转链接
+  bindComponent: null, // 绑定组件
+  hiddenParamSize: 0, // 隐藏参数个数
+  theme: '', // 主题
+  amination: '', // 动画效果
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  spec: {
+    'type': 'area',
+    color: [],
+    data: {
+      values: [
+        {
+          time: '2:00',
+          value: 8
+        },
+        {
+          time: '4:00',
+          value: 9
+        },
+        {
+          time: '6:00',
+          value: 11
+        },
+        {
+          time: '8:00',
+          value: 14
+        },
+        {
+          time: '10:00',
+          value: 16
+        },
+        {
+          time: '12:00',
+          value: 17
+        },
+        {
+          time: '14:00',
+          value: 17
+        },
+        {
+          time: '16:00',
+          value: 16
+        },
+        {
+          time: '18:00',
+          value: 15
+        }
+      ]
+    },
+    seriesField: [],
+    xField: ['time'],
+    yField: ['value'],
+    background: '', // 背景颜色
+    lineLabel: { visible: false, style: {}},
+    line: {
+      style: {
+        lineWidth: 2,
+        curveType: 'monotone'
+      }
+    },
+    title: screenConstants.chartTitleSettings,
+    tooltip: screenConstants.tooltipSettings,
+    label: {
+      visible: true,
+      position: 'outside',
+      style: {
+        fontSize: 14,
+        fill: null
+      }
+    },
+    axes: [
+      { orient: 'bottom', sampling: true, label: { visible: true, style: { fill: '#6E6F73' }, autoRotate: false, autoRotateAngle: [0, 90], autoLimit: false }, unit: { visible: false, style: {}}},
+      { orient: 'left', label: { visible: true, style: { fill: '#6E6F73' }, autoLimit: false }, unit: { visible: false, style: {}}}
+    ],
+    legends: {
+      visible: false,
+      orient: 'top', // 图例位置
+      position: 'middle', // 对齐方式
+      item: {
+        label: {
+          style: {
+            // fill:'#0BF1DA',//图例字体颜色
+          }
+        }
+      }
+    }
+  }
+}
+
+// 大屏阶梯面积图初始化数据
+screenConstants.stepAreaInit = {
+  type: screenConstants.type.stepArea,
+  category: screenConstants.category.vchart,
+  isDelete: false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 500, // 组件初始化宽度
+  h: 300, // 组件初始化高度
+  active: false,
+  zindex: 99,
+  locked: false,
+  refresh: false, // 是否定时刷新
+  refreshTime: 30000, // 定时刷新时间，单位(ms)
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
+  params: [], // 图表参数
+  clickType: '1', // 点击类型
+  thirdUrl: '', // 第三方跳转链接
+  bindComponent: null, // 绑定组件
+  hiddenParamSize: 0, // 隐藏参数个数
+  theme: '', // 主题
+  amination: '', // 动画效果
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  spec: {
+    'type': 'area',
+    color: [],
+    data: {
+      values: [
+        {
+          time: '2:00',
+          value: 8
+        },
+        {
+          time: '4:00',
+          value: 9
+        },
+        {
+          time: '6:00',
+          value: 11
+        },
+        {
+          time: '8:00',
+          value: 14
+        },
+        {
+          time: '10:00',
+          value: 16
+        },
+        {
+          time: '12:00',
+          value: 17
+        },
+        {
+          time: '14:00',
+          value: 17
+        },
+        {
+          time: '16:00',
+          value: 16
+        },
+        {
+          time: '18:00',
+          value: 15
+        }
+      ]
+    },
+    seriesField: [],
+    xField: ['time'],
+    yField: ['value'],
+    background: '', // 背景颜色
+    lineLabel: { visible: false, style: {}},
+    line: {
+      style: {
+        lineWidth: 2,
+        curveType: 'stepAfter'
+      }
+    },
+    title: screenConstants.chartTitleSettings,
+    tooltip: screenConstants.tooltipSettings,
+    label: {
+      visible: true,
+      position: 'outside',
+      style: {
+        fontSize: 14,
+        fill: null
+      }
+    },
+    axes: [
+      { orient: 'bottom', sampling: true, label: { visible: true, style: { fill: '#6E6F73' }, autoRotate: false, autoRotateAngle: [0, 90], autoLimit: false }, unit: { visible: false, style: {}}},
+      { orient: 'left', label: { visible: true, style: { fill: '#6E6F73' }, autoLimit: false }, unit: { visible: false, style: {}}}
+    ],
+    legends: {
+      visible: false,
+      orient: 'top', // 图例位置
+      position: 'middle', // 对齐方式
+      item: {
+        label: {
+          style: {
+            // fill:'#0BF1DA',//图例字体颜色
+          }
+        }
+      }
+    }
+  }
+}
+// 堆叠面积图
+screenConstants.stackAreaInit = {
+  type: screenConstants.type.stackArea,
+  category: screenConstants.category.vchart,
+  isDelete: false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 500, // 组件初始化宽度
+  h: 300, // 组件初始化高度
+  active: false,
+  zindex: 99,
+  locked: false,
+  refresh: false, // 是否定时刷新
+  refreshTime: 30000, // 定时刷新时间，单位(ms)
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
+  params: [], // 图表参数
+  clickType: '1', // 点击类型
+  thirdUrl: '', // 第三方跳转链接
+  bindComponent: null, // 绑定组件
+  hiddenParamSize: 0, // 隐藏参数个数
+  theme: '', // 主题
+  amination: '', // 动画效果
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  spec: {
+    'type': 'area',
+    color: [],
+    data: {
+      values: [
+        { type: 'Nail polish', country: 'Africa', value: 4229 },
+        { type: 'Nail polish', country: 'EU', value: 4376 },
+        { type: 'Nail polish', country: 'China', value: 3054 },
+        { type: 'Nail polish', country: 'USA', value: 12814 },
+        { type: 'Eyebrow pencil', country: 'Africa', value: 3932 },
+        { type: 'Eyebrow pencil', country: 'EU', value: 3987 },
+        { type: 'Eyebrow pencil', country: 'China', value: 5067 },
+        { type: 'Eyebrow pencil', country: 'USA', value: 13012 },
+        { type: 'Rouge', country: 'Africa', value: 5221 },
+        { type: 'Rouge', country: 'EU', value: 3574 },
+        { type: 'Rouge', country: 'China', value: 7004 },
+        { type: 'Rouge', country: 'USA', value: 11624 },
+        { type: 'Lipstick', country: 'Africa', value: 9256 },
+        { type: 'Lipstick', country: 'EU', value: 4376 },
+        { type: 'Lipstick', country: 'China', value: 9054 },
+        { type: 'Lipstick', country: 'USA', value: 8814 },
+        { type: 'Eyeshadows', country: 'Africa', value: 3308 },
+        { type: 'Eyeshadows', country: 'EU', value: 4572 },
+        { type: 'Eyeshadows', country: 'China', value: 12043 },
+        { type: 'Eyeshadows', country: 'USA', value: 12998 },
+        { type: 'Eyeliner', country: 'Africa', value: 5432 },
+        { type: 'Eyeliner', country: 'EU', value: 3417 },
+        { type: 'Eyeliner', country: 'China', value: 15067 },
+        { type: 'Eyeliner', country: 'USA', value: 12321 },
+        { type: 'Foundation', country: 'Africa', value: 13701 },
+        { type: 'Foundation', country: 'EU', value: 5231 },
+        { type: 'Foundation', country: 'China', value: 10119 },
+        { type: 'Foundation', country: 'USA', value: 10342 },
+        { type: 'Lip gloss', country: 'Africa', value: 4008 },
+        { type: 'Lip gloss', country: 'EU', value: 4572 },
+        { type: 'Lip gloss', country: 'China', value: 12043 },
+        { type: 'Lip gloss', country: 'USA', value: 22998 },
+        { type: 'Mascara', country: 'Africa', value: 18712 },
+        { type: 'Mascara', country: 'EU', value: 6134 },
+        { type: 'Mascara', country: 'China', value: 10419 },
+        { type: 'Mascara', country: 'USA', value: 11261 }
+      ]
+    },
+    seriesField: ['country'],
+    xField: ['type'],
+    yField: ['value'],
+    background: '', // 背景颜色
+    lineLabel: { visible: false, style: {}},
+    line: {
+      style: {
+        lineWidth: 2
+      }
+    },
+    stack: true,
+    title: screenConstants.chartTitleSettings,
+    tooltip: screenConstants.tooltipSettings,
+    label: {
+      visible: true,
+      position: 'outside',
+      style: {
+        fontSize: 14,
+        fill: null
+      }
+    },
+    axes: [
+      { orient: 'bottom', sampling: true, label: { visible: true, style: { fill: '#6E6F73' }, autoRotate: false, autoRotateAngle: [0, 90], autoLimit: false }, unit: { visible: false, style: {}}},
+      { orient: 'left', label: { visible: true, style: { fill: '#6E6F73' }, autoLimit: false }, unit: { visible: false, style: {}}}
+    ],
+    legends: {
+      visible: false,
+      orient: 'top', // 图例位置
+      position: 'middle', // 对齐方式
+      item: {
+        label: {
+          style: {
+            // fill:'#0BF1DA',//图例字体颜色
+          }
+        }
+      }
+    }
+  }
+}
+// 饼图
+screenConstants.pieInit = {
+  type: screenConstants.type.pie,
+  category: screenConstants.category.vchart,
+  isDelete: false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 500, // 组件初始化宽度
+  h: 300, // 组件初始化高度
+  active: false,
+  zindex: 99,
+  locked: false,
+  refresh: false, // 是否定时刷新
+  refreshTime: 30000, // 定时刷新时间，单位(ms)
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
+  params: [], // 图表参数
+  clickType: '1', // 点击类型
+  thirdUrl: '', // 第三方跳转链接
+  bindComponent: null, // 绑定组件
+  hiddenParamSize: 0, // 隐藏参数个数
+  theme: '', // 主题
+  amination: '', // 动画效果
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  spec: {
+    'type': 'pie',
+    color: [],
+    data: {
+      values: [
+        { type: 'oxygen', value: '46.60' },
+        { type: 'silicon', value: '27.72' },
+        { type: 'aluminum', value: '8.13' },
+        { type: 'iron', value: '5' },
+        { type: 'calcium', value: '3.63' },
+        { type: 'sodium', value: '2.83' },
+        { type: 'potassium', value: '2.59' },
+        { type: 'others', value: '3.5' }
+      ]
+    },
+    padAngle: 0, // 扇区间隔
+    outerRadius: 0.8,
+    innerRadius: 0,
+    categoryField: 'type',
+    valueField: 'value',
+    // seriesField: 'type',
+    background: '', // 背景颜色
+    title: screenConstants.chartTitleSettings,
+    tooltip: screenConstants.tooltipSettings,
+    isLoop: false, // 轮播展示
+    pie: {
+      style: {
+        cornerRadius: 0
+      },
+      state: {
+        hover: {
+          centerOffset: 10
+        },
+        selected: {
+          centerOffset: 10
+        },
+        active: {
+          centerOffset: 10
+        }
+      }
+    },
+    interactions: [
+      {
+        type: 'element-active-by-legend'
+      }
+    ],
+    label: {
+      visible: true,
+      position: 'outside',
+      formatter: '', // 标签格式
+      style: {
+        fontSize: 14,
+        fill: null
+      }
+    },
+    legends: {
+      visible: false,
+      orient: 'top', // 图例位置
+      position: 'middle', // 对齐方式
+      item: {
+        label: {
+          style: {
+            // fill:'#0BF1DA',//图例字体颜色
+          }
+        }
+      }
+    }
+  }
 }
 
 screenConstants.pieRoseInit = {
-    type: screenConstants.type.pieRose,
-    category:screenConstants.category.vchart,
-    isDelete:false,
-    x: 0, // 初始化横坐标
-    y: 0, // 初始化纵坐标
-    w: 500, // 组件初始化宽度
-    h: 300, // 组件初始化高度
-    active: false,
-    zindex: 99,
-    locked:false,
-    refresh: false, // 是否定时刷新
-    refreshTime: 30000, // 定时刷新时间，单位(ms)
-    dataSource:'1',//数据来源 1静态数据 2动态数据
-    dynamicDataSettings:{
-        datasetId:"",//数据集
-        dataColumns:[],//数据列
-    },//动态数据配置
-    params: [], // 图表参数
-    clickType: '1', // 点击类型
-    thirdUrl: '', // 第三方跳转链接
-    bindComponent: null, // 绑定组件
-    hiddenParamSize:0,//隐藏参数个数
-    theme:"",//主题
-    amination:"",//动画效果
-    isborder:false,//是否添加边框
-    borderType:"",//边框类型
-    borderColor:[],//边框颜色
-    spec:{
-        'type':'rose',
-        color: [],
-        data: {
-            values: [
-                { value: 10, category: 'One' },
-                { value: 9, category: 'Two' },
-                { value: 6, category: 'Three' },
-                { value: 5, category: 'Four' },
-                { value: 4, category: 'Five' },
-                { value: 3, category: 'Six' },
-                { value: 1, category: 'Seven' }
-            ]
+  type: screenConstants.type.pieRose,
+  category: screenConstants.category.vchart,
+  isDelete: false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 500, // 组件初始化宽度
+  h: 300, // 组件初始化高度
+  active: false,
+  zindex: 99,
+  locked: false,
+  refresh: false, // 是否定时刷新
+  refreshTime: 30000, // 定时刷新时间，单位(ms)
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
+  params: [], // 图表参数
+  clickType: '1', // 点击类型
+  thirdUrl: '', // 第三方跳转链接
+  bindComponent: null, // 绑定组件
+  hiddenParamSize: 0, // 隐藏参数个数
+  theme: '', // 主题
+  amination: '', // 动画效果
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  spec: {
+    'type': 'rose',
+    color: [],
+    data: {
+      values: [
+        { value: 10, category: 'One' },
+        { value: 9, category: 'Two' },
+        { value: 6, category: 'Three' },
+        { value: 5, category: 'Four' },
+        { value: 4, category: 'Five' },
+        { value: 3, category: 'Six' },
+        { value: 1, category: 'Seven' }
+      ]
+    },
+    padAngle: 0, // 扇区间隔
+    outerRadius: 0.8,
+    innerRadius: 0,
+    categoryField: 'category',
+    valueField: 'value',
+    seriesField: 'category',
+    background: '', // 背景颜色
+    title: screenConstants.chartTitleSettings,
+    tooltip: screenConstants.tooltipSettings,
+    pie: {
+      style: {
+        cornerRadius: 0
+      },
+      state: {
+        hover: {
+          centerOffset: 10
         },
-        padAngle:0,//扇区间隔
-        outerRadius: 0.8,
-        innerRadius:0,
-        categoryField: 'category',
-        valueField: 'value',
-        seriesField: 'category',
-        background: '',//背景颜色
-        title:screenConstants.chartTitleSettings,
-      tooltip:screenConstants.tooltipSettings,
-        pie: {
-            style: {
-              cornerRadius: 0
-            },
-            state: {
-              hover: {
-               centerOffset: 10,
-              },
-              selected: {
-                centerOffset: 10
-              }
-            }
-        },
-        label:{
-            visible:true,
-            position:'outside',
-            formatter: '',//标签格式
-            style:{
-                fontSize:14,
-                fill:null,
-            }
-        },
-        legends:{
-            visible:false,
-            orient: 'top',//图例位置
-            position:'middle',//对齐方式
-            item: {
-                label:{
-                  style:{
-                    // fill:'#0BF1DA',//图例字体颜色
-                  }
-                }
-            },
-        },
+        selected: {
+          centerOffset: 10
+        }
+      }
+    },
+    label: {
+      visible: true,
+      position: 'outside',
+      formatter: '', // 标签格式
+      style: {
+        fontSize: 14,
+        fill: null
+      }
+    },
+    legends: {
+      visible: false,
+      orient: 'top', // 图例位置
+      position: 'middle', // 对齐方式
+      item: {
+        label: {
+          style: {
+            // fill:'#0BF1DA',//图例字体颜色
+          }
+        }
+      }
     }
+  }
 }
 
-//大屏散点图初始化数据
+// 大屏散点图初始化数据
 screenConstants.scatterInit = {
-    type: screenConstants.type.scatter,
-    category:screenConstants.category.vchart,
-    isDelete:false,
-    x: 0, // 初始化横坐标
-    y: 0, // 初始化纵坐标
-    w: 500, // 组件初始化宽度
-    h: 300, // 组件初始化高度
-    active: false,
-    zindex: 99,
-    locked:false,
-    refresh: false, // 是否定时刷新
-    refreshTime: 30000, // 定时刷新时间，单位(ms)
-    dataSource:'1',//数据来源 1静态数据 2动态数据
-    dynamicDataSettings:{
-        datasetId:"",//数据集
-        dataColumns:[],//数据列
-    },//动态数据配置
-    params: [], // 图表参数
-    clickType: '1', // 点击类型
-    thirdUrl: '', // 第三方跳转链接
-    bindComponent: null, // 绑定组件
-    hiddenParamSize:0,//隐藏参数个数
-    theme:"",//主题
-    amination:"",//动画效果
-    isborder:false,//是否添加边框
-    borderType:"",//边框类型
-    borderColor:[],//边框颜色
-    spec:{
-        'type':'scatter',
-        color: [],
-        data: {
-            values: [
-                {type:'A',x:9,y:81,r:63 },
-                {type:'A',x:98,y:5,r:89 },
-                {type:'A',x:51,y:50,r:73 },
-                {type:'A',x:41,y:22,r:14 },
-                {type:'A',x:58,y:24,r:20 },
-                {type:'A',x:78,y:37,r:34 },
-                {type:'A',x:55,y:56,r:53 },
-                {type:'A',x:18,y:45,r:70 },
-                {type:'A',x:42,y:44,r:28 },
-                {type:'A',x:3,y:52,r:59 },
-                {type:'A',x:31,y:18,r:97 },
-                {type:'A',x:79,y:91,r:63 },
-                {type:'A',x:93,y:23,r:23 },
-                {type:'A',x:44,y:83,r:22 }
-            ]
-        },
-        seriesField: 'type',
-        xField: 'x',
-        yField: 'y',
-        sizeField: '',
-        size: 20,
-        background: '',//背景颜色
-        title:screenConstants.chartTitleSettings,
-      tooltip:screenConstants.tooltipSettings,
-        label:{
-            visible:true,
-            position:'top',
-            style:{
-                fontSize:14,
-                fill:null,
-            }
-        },
-        axes:[
-            {type: 'linear', orient:'bottom',sampling: true,label:{visible:true,style:{fill:'#6E6F73'},autoRotate:false,autoRotateAngle: [0, 90],autoLimit:false},unit:{visible:false,style:{}}},
-            {type: 'linear', orient:'left',label:{visible:true,style:{fill:'#6E6F73'},autoLimit:false},unit:{visible:false,style:{}}}
-        ],
-        legends:{
-            visible:false,
-            orient: 'top',//图例位置
-            position:'middle',//对齐方式
-            item: {
-                label:{
-                  style:{
-                    // fill:'#0BF1DA',//图例字体颜色
-                  }
-                }
-            },
-        },
+  type: screenConstants.type.scatter,
+  category: screenConstants.category.vchart,
+  isDelete: false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 500, // 组件初始化宽度
+  h: 300, // 组件初始化高度
+  active: false,
+  zindex: 99,
+  locked: false,
+  refresh: false, // 是否定时刷新
+  refreshTime: 30000, // 定时刷新时间，单位(ms)
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
+  params: [], // 图表参数
+  clickType: '1', // 点击类型
+  thirdUrl: '', // 第三方跳转链接
+  bindComponent: null, // 绑定组件
+  hiddenParamSize: 0, // 隐藏参数个数
+  theme: '', // 主题
+  amination: '', // 动画效果
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  spec: {
+    'type': 'scatter',
+    color: [],
+    data: {
+      values: [
+        { type: 'A', x: 9, y: 81, r: 63 },
+        { type: 'A', x: 98, y: 5, r: 89 },
+        { type: 'A', x: 51, y: 50, r: 73 },
+        { type: 'A', x: 41, y: 22, r: 14 },
+        { type: 'A', x: 58, y: 24, r: 20 },
+        { type: 'A', x: 78, y: 37, r: 34 },
+        { type: 'A', x: 55, y: 56, r: 53 },
+        { type: 'A', x: 18, y: 45, r: 70 },
+        { type: 'A', x: 42, y: 44, r: 28 },
+        { type: 'A', x: 3, y: 52, r: 59 },
+        { type: 'A', x: 31, y: 18, r: 97 },
+        { type: 'A', x: 79, y: 91, r: 63 },
+        { type: 'A', x: 93, y: 23, r: 23 },
+        { type: 'A', x: 44, y: 83, r: 22 }
+      ]
+    },
+    seriesField: 'type',
+    xField: 'x',
+    yField: 'y',
+    sizeField: '',
+    size: 20,
+    background: '', // 背景颜色
+    title: screenConstants.chartTitleSettings,
+    tooltip: screenConstants.tooltipSettings,
+    label: {
+      visible: true,
+      position: 'top',
+      style: {
+        fontSize: 14,
+        fill: null
+      }
+    },
+    axes: [
+      { type: 'linear', orient: 'bottom', sampling: true, label: { visible: true, style: { fill: '#6E6F73' }, autoRotate: false, autoRotateAngle: [0, 90], autoLimit: false }, unit: { visible: false, style: {}}},
+      { type: 'linear', orient: 'left', label: { visible: true, style: { fill: '#6E6F73' }, autoLimit: false }, unit: { visible: false, style: {}}}
+    ],
+    legends: {
+      visible: false,
+      orient: 'top', // 图例位置
+      position: 'middle', // 对齐方式
+      item: {
+        label: {
+          style: {
+            // fill:'#0BF1DA',//图例字体颜色
+          }
+        }
+      }
     }
+  }
 }
 
-//大屏雷达图初始化数据
+// 大屏雷达图初始化数据
 screenConstants.radarInit = {
-    type: screenConstants.type.radar,
-    category:screenConstants.category.vchart,
-    isDelete:false,
-    x: 0, // 初始化横坐标
-    y: 0, // 初始化纵坐标
-    w: 500, // 组件初始化宽度
-    h: 300, // 组件初始化高度
-    active: false,
-    zindex: 99,
-    locked:false,
-    refresh: false, // 是否定时刷新
-    refreshTime: 30000, // 定时刷新时间，单位(ms)
-    dataSource:'1',//数据来源 1静态数据 2动态数据
-    dynamicDataSettings:{
-        datasetId:"",//数据集
-        dataColumns:[],//数据列
-    },//动态数据配置
-    params: [], // 图表参数
-    clickType: '1', // 点击类型
-    thirdUrl: '', // 第三方跳转链接
-    bindComponent: null, // 绑定组件
-    hiddenParamSize:0,//隐藏参数个数
-    theme:"",//主题
-    amination:"",//动画效果
-    isborder:false,//是否添加边框
-    borderType:"",//边框类型
-    borderColor:[],//边框颜色
-    spec:{
-        'type':'radar',
-        color: [],
-        data: {
-            values: [
-                {key:'Strength',value:5},
-                {key:'Speed',value:5},
-                {key:'Shooting',value:3},
-                {key:'Endurance',value:5},
-                {key:'Precision',value:5},
-                {key:'Growth',value:5}
-            ]
-        },
-        categoryField: 'key',
-        valueField: 'value',
-        seriesField: '',
-        line: {
-            style: {
-              lineWidth: 1
-            }
-        },
-        point: {
-            visible: true,
-            style:{
-                shape:'circle'
-            }
-        },
-        area: {
-            visible: true, // display area
-            state: {
-              // The style in the hover state of the area
-              hover: {
-                fillOpacity: 0.5
-              }
-            }
+  type: screenConstants.type.radar,
+  category: screenConstants.category.vchart,
+  isDelete: false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 500, // 组件初始化宽度
+  h: 300, // 组件初始化高度
+  active: false,
+  zindex: 99,
+  locked: false,
+  refresh: false, // 是否定时刷新
+  refreshTime: 30000, // 定时刷新时间，单位(ms)
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
+  params: [], // 图表参数
+  clickType: '1', // 点击类型
+  thirdUrl: '', // 第三方跳转链接
+  bindComponent: null, // 绑定组件
+  hiddenParamSize: 0, // 隐藏参数个数
+  theme: '', // 主题
+  amination: '', // 动画效果
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  spec: {
+    'type': 'radar',
+    color: [],
+    data: {
+      values: [
+        { key: 'Strength', value: 5 },
+        { key: 'Speed', value: 5 },
+        { key: 'Shooting', value: 3 },
+        { key: 'Endurance', value: 5 },
+        { key: 'Precision', value: 5 },
+        { key: 'Growth', value: 5 }
+      ]
+    },
+    categoryField: 'key',
+    valueField: 'value',
+    seriesField: '',
+    line: {
+      style: {
+        lineWidth: 1
+      }
+    },
+    point: {
+      visible: true,
+      style: {
+        shape: 'circle'
+      }
+    },
+    area: {
+      visible: true, // display area
+      state: {
+        // The style in the hover state of the area
+        hover: {
+          fillOpacity: 0.5
+        }
+      }
+    },
+    radius: 0.8,
+    background: '', // 背景颜色
+    title: screenConstants.chartTitleSettings,
+    tooltip: screenConstants.tooltipSettings,
+    label: {
+      visible: true,
+      position: 'right',
+      style: {
+        fontSize: 14,
+        fill: null
+      }
+    },
+    axes: [
+      {
+        orient: 'radius',
+        label: {
+          style: {
+            fill: '#333',
+            fontSize: 14
           },
-        radius:0.8,
-        background: '',//背景颜色
-        title:screenConstants.chartTitleSettings,
-      tooltip:screenConstants.tooltipSettings,
-        label:{
-            visible:true,
-            position:'right',
-            style:{
-                fontSize:14,
-                fill:null,
-            }
+          visible: true
         },
-        axes: [
-            {
-              orient: 'radius',
-              label: {
-                style:{
-                    fill:'#333',
-                    fontSize:14
-                },
-                visible: true
-              },
-              grid: {
-                smooth: true,
-                style:{
-                  stroke:'#333',
-                  lineDash: [0],
-                  opacity:0.5
-                }
-              }
-            },
-            {
-                orient: 'angle',
-                domainLine: {
-                    visible: true,
-                    style: {
-                        stroke: '#333',
-                        lineDash: [0]
-                      }
-                },
-                grid: {
-                     visible: true,
-                     style: {
-                        stroke: '#333',
-                        lineDash: [0],
-                        opacity:0.5
-                    }
-                 },
-                 label: {
-                    visible: true,
-                    space:10,
-                    style:{
-                      fill:'#333',
-                      fontSize:14
-                    }
-                    
-                },
-            }
-          ],
-        legends:{
-            visible:false,
-            orient: 'top',//图例位置
-            position:'middle',//对齐方式
-            item: {
-                label:{
-                  style:{
-                    // fill:'#0BF1DA',//图例字体颜色
-                  }
-                }
-            },
+        grid: {
+          smooth: true,
+          style: {
+            stroke: '#333',
+            lineDash: [0],
+            opacity: 0.5
+          }
+        }
+      },
+      {
+        orient: 'angle',
+        domainLine: {
+          visible: true,
+          style: {
+            stroke: '#333',
+            lineDash: [0]
+          }
         },
+        grid: {
+          visible: true,
+          style: {
+            stroke: '#333',
+            lineDash: [0],
+            opacity: 0.5
+          }
+        },
+        label: {
+          visible: true,
+          space: 10,
+          style: {
+            fill: '#333',
+            fontSize: 14
+          }
+
+        }
+      }
+    ],
+    legends: {
+      visible: false,
+      orient: 'top', // 图例位置
+      position: 'middle', // 对齐方式
+      item: {
+        label: {
+          style: {
+            // fill:'#0BF1DA',//图例字体颜色
+          }
+        }
+      }
     }
+  }
 }
 
-//大屏堆叠雷达图初始化数据
+// 大屏堆叠雷达图初始化数据
 screenConstants.stackRadarInit = {
-    type: screenConstants.type.radar,
-    category:screenConstants.category.vchart,
-    isDelete:false,
-    x: 0, // 初始化横坐标
-    y: 0, // 初始化纵坐标
-    w: 500, // 组件初始化宽度
-    h: 300, // 组件初始化高度
-    active: false,
-    zindex: 99,
-    locked:false,
-    refresh: false, // 是否定时刷新
-    refreshTime: 30000, // 定时刷新时间，单位(ms)
-    dataSource:'1',//数据来源 1静态数据 2动态数据
-    dynamicDataSettings:{
-        datasetId:"",//数据集
-        dataColumns:[],//数据列
-    },//动态数据配置
-    params: [], // 图表参数
-    clickType: '1', // 点击类型
-    thirdUrl: '', // 第三方跳转链接
-    bindComponent: null, // 绑定组件
-    hiddenParamSize:0,//隐藏参数个数
-    theme:"",//主题
-    amination:"",//动画效果
-    isborder:false,//是否添加边框
-    borderType:"",//边框类型
-    borderColor:[],//边框颜色
-    spec:{
-        'type':'radar',
-        color: [],
-        data: {
-            values: [
-                {month:'Jan.',value:45,type:'A'},{month:'Feb.',value:61,type:'A'},{month:'Mar.',value:92,type:'A'},{month:'Apr.',value:57,type:'A'},{month:'May.',value:46,type:'A'},{month:'Jun.',value:36,type:'A'},{month:'Jul.',value:33,type:'A'},{month:'Aug.',value:63,type:'A'},{month:'Sep.',value:57,type:'A'},{month:'Oct.',value:53,type:'A'},{month:'Nov.',value:69,type:'A'},{month:'Dec.',value:40,type:'A'},{month:'Jan.',value:31,type:'B'},{month:'Feb.',value:39,type:'B'},{month:'Mar.',value:81,type:'B'},{month:'Apr.',value:39,type:'B'},{month:'May.',value:64,type:'B'},{month:'Jun.',value:21,type:'B'},{month:'Jul.',value:58,type:'B'},{month:'Aug.',value:72,type:'B'},{month:'Sep.',value:47,type:'B'},{month:'Oct.',value:37,type:'B'},{month:'Nov.',value:80,type:'B'},{month:'Dec.',value:74,type:'B'},{month:'Jan.',value:90,type:'C'},{month:'Feb.',value:95,type:'C'},{month:'Mar.',value:62,type:'C'},{month:'Apr.',value:52,type:'C'},{month:'May.',value:74,type:'C'},{month:'Jun.',value:87,type:'C'},{month:'Jul.',value:80,type:'C'},{month:'Aug.',value:69,type:'C'},{month:'Sep.',value:74,type:'C'},{month:'Oct.',value:84,type:'C'},{month:'Nov.',value:94,type:'C'},{month:'Dec.',value:23,type:'C'}
-            ]
-        },
-        categoryField: 'month',
-        valueField: 'value',
-        seriesField: 'type',
-        line: {
-            style: {
-              lineWidth: 1
-            }
-        },
-        point: {
-            visible: true,
-            style:{
-                shape:'circle'
-            }
-        },
-        area: {
-            visible: true, // display area
-            state: {
-              // The style in the hover state of the area
-              hover: {
-                fillOpacity: 0.5
-              }
-            }
+  type: screenConstants.type.radar,
+  category: screenConstants.category.vchart,
+  isDelete: false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 500, // 组件初始化宽度
+  h: 300, // 组件初始化高度
+  active: false,
+  zindex: 99,
+  locked: false,
+  refresh: false, // 是否定时刷新
+  refreshTime: 30000, // 定时刷新时间，单位(ms)
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
+  params: [], // 图表参数
+  clickType: '1', // 点击类型
+  thirdUrl: '', // 第三方跳转链接
+  bindComponent: null, // 绑定组件
+  hiddenParamSize: 0, // 隐藏参数个数
+  theme: '', // 主题
+  amination: '', // 动画效果
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  spec: {
+    'type': 'radar',
+    color: [],
+    data: {
+      values: [
+        { month: 'Jan.', value: 45, type: 'A' }, { month: 'Feb.', value: 61, type: 'A' }, { month: 'Mar.', value: 92, type: 'A' }, { month: 'Apr.', value: 57, type: 'A' }, { month: 'May.', value: 46, type: 'A' }, { month: 'Jun.', value: 36, type: 'A' }, { month: 'Jul.', value: 33, type: 'A' }, { month: 'Aug.', value: 63, type: 'A' }, { month: 'Sep.', value: 57, type: 'A' }, { month: 'Oct.', value: 53, type: 'A' }, { month: 'Nov.', value: 69, type: 'A' }, { month: 'Dec.', value: 40, type: 'A' }, { month: 'Jan.', value: 31, type: 'B' }, { month: 'Feb.', value: 39, type: 'B' }, { month: 'Mar.', value: 81, type: 'B' }, { month: 'Apr.', value: 39, type: 'B' }, { month: 'May.', value: 64, type: 'B' }, { month: 'Jun.', value: 21, type: 'B' }, { month: 'Jul.', value: 58, type: 'B' }, { month: 'Aug.', value: 72, type: 'B' }, { month: 'Sep.', value: 47, type: 'B' }, { month: 'Oct.', value: 37, type: 'B' }, { month: 'Nov.', value: 80, type: 'B' }, { month: 'Dec.', value: 74, type: 'B' }, { month: 'Jan.', value: 90, type: 'C' }, { month: 'Feb.', value: 95, type: 'C' }, { month: 'Mar.', value: 62, type: 'C' }, { month: 'Apr.', value: 52, type: 'C' }, { month: 'May.', value: 74, type: 'C' }, { month: 'Jun.', value: 87, type: 'C' }, { month: 'Jul.', value: 80, type: 'C' }, { month: 'Aug.', value: 69, type: 'C' }, { month: 'Sep.', value: 74, type: 'C' }, { month: 'Oct.', value: 84, type: 'C' }, { month: 'Nov.', value: 94, type: 'C' }, { month: 'Dec.', value: 23, type: 'C' }
+      ]
+    },
+    categoryField: 'month',
+    valueField: 'value',
+    seriesField: 'type',
+    line: {
+      style: {
+        lineWidth: 1
+      }
+    },
+    point: {
+      visible: true,
+      style: {
+        shape: 'circle'
+      }
+    },
+    area: {
+      visible: true, // display area
+      state: {
+        // The style in the hover state of the area
+        hover: {
+          fillOpacity: 0.5
+        }
+      }
+    },
+    radius: 0.8,
+    background: '', // 背景颜色
+    title: screenConstants.chartTitleSettings,
+    tooltip: screenConstants.tooltipSettings,
+    label: {
+      visible: true,
+      position: 'right',
+      style: {
+        fontSize: 14,
+        fill: null
+      }
+    },
+    stack: true,
+    axes: [
+      {
+        orient: 'radius',
+        label: {
+          style: {
+            fill: '#333',
+            fontSize: 14
           },
-        radius:0.8,
-        background: '',//背景颜色
-        title:screenConstants.chartTitleSettings,
-      tooltip:screenConstants.tooltipSettings,
-        label:{
-            visible:true,
-            position:'right',
-            style:{
-                fontSize:14,
-                fill:null,
-            }
+          visible: true
         },
-        stack: true,
-        axes: [
-            {
-              orient: 'radius',
-              label: {
-                style:{
-                    fill:'#333',
-                    fontSize:14
-                },
-                visible: true
-              },
-              grid: {
-                smooth: true,
-                style:{
-                  stroke:'#333',
-                  lineDash: [0],
-                  opacity:0.5
-                }
-              }
-            },
-            {
-                orient: 'angle',
-                domainLine: {
-                    visible: true,
-                    style: {
-                        stroke: '#333',
-                        lineDash: [0]
-                      }
-                },
-                grid: {
-                     visible: true,
-                     style: {
-                        stroke: '#333',
-                        lineDash: [0],
-                        opacity:0.5
-                    }
-                 },
-                 label: {
-                    visible: true,
-                    space:10,
-                    style:{
-                      fill:'#333',
-                      fontSize:14
-                    }
-                    
-                },
-            }
-          ],
-        legends:{
-            visible:false,
-            orient: 'top',//图例位置
-            position:'middle',//对齐方式
-            item: {
-                label:{
-                  style:{
-                    // fill:'#0BF1DA',//图例字体颜色
-                  }
-                }
-            },
+        grid: {
+          smooth: true,
+          style: {
+            stroke: '#333',
+            lineDash: [0],
+            opacity: 0.5
+          }
+        }
+      },
+      {
+        orient: 'angle',
+        domainLine: {
+          visible: true,
+          style: {
+            stroke: '#333',
+            lineDash: [0]
+          }
         },
+        grid: {
+          visible: true,
+          style: {
+            stroke: '#333',
+            lineDash: [0],
+            opacity: 0.5
+          }
+        },
+        label: {
+          visible: true,
+          space: 10,
+          style: {
+            fill: '#333',
+            fontSize: 14
+          }
+
+        }
+      }
+    ],
+    legends: {
+      visible: false,
+      orient: 'top', // 图例位置
+      position: 'middle', // 对齐方式
+      item: {
+        label: {
+          style: {
+            // fill:'#0BF1DA',//图例字体颜色
+          }
+        }
+      }
     }
+  }
 }
 
-//大屏词云图初始化数据
+// 大屏词云图初始化数据
 screenConstants.wordCloudInit = {
-    type: screenConstants.type.wordCloud,
-    category:screenConstants.category.vchart,
-    isDelete:false,
-    x: 0, // 初始化横坐标
-    y: 0, // 初始化纵坐标
-    w: 500, // 组件初始化宽度
-    h: 300, // 组件初始化高度
-    active: false,
-    zindex: 99,
-    locked:false,
-    refresh: false, // 是否定时刷新
-    refreshTime: 30000, // 定时刷新时间，单位(ms)
-    dataSource:'1',//数据来源 1静态数据 2动态数据
-    dynamicDataSettings:{
-        datasetId:"",//数据集
-        dataColumns:[],//数据列
-    },//动态数据配置
-    params: [], // 图表参数
-    clickType: '1', // 点击类型
-    thirdUrl: '', // 第三方跳转链接
-    bindComponent: null, // 绑定组件
-    hiddenParamSize:0,//隐藏参数个数
-    theme:"",//主题
-    isborder:false,//是否添加边框
-    borderType:"",//边框类型
-    borderColor:[],//边框颜色
-    spec:{
-        'type':'wordCloud',
-        color: [],
-        data: {
-            values: [
-                {"challenge_name":"宅家dou剧场宅家dou剧场","sum_count":128},
-                {"challenge_name":"我的观影报告","sum_count":103},
-                {"challenge_name":"抖瓜小助手","sum_count":76},
-                {"challenge_name":"搞笑","sum_count":70},
-                {"challenge_name":"我要上热门","sum_count":69},
-                {"challenge_name":"热门","sum_count":54},
-                {"challenge_name":"正能量","sum_count":52},
-                {"challenge_name":"上热门","sum_count":36},
-                {"challenge_name":"情感","sum_count":34},
-                {"challenge_name":"dou上热门","sum_count":32},
-                {"challenge_name":"影视剪辑","sum_count":25}
-            ]
-        },
-        wordCloudConfig: {
-            drawOutOfBound: 'clip',
-            zoomToFit: {
-                enlarge: true
-            }
-        },
-        nameField: 'challenge_name',
-        valueField: 'sum_count',
-        seriesField: 'challenge_name',
-        background: '',//背景颜色
-    }
+  type: screenConstants.type.wordCloud,
+  category: screenConstants.category.vchart,
+  isDelete: false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 500, // 组件初始化宽度
+  h: 300, // 组件初始化高度
+  active: false,
+  zindex: 99,
+  locked: false,
+  refresh: false, // 是否定时刷新
+  refreshTime: 30000, // 定时刷新时间，单位(ms)
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
+  params: [], // 图表参数
+  clickType: '1', // 点击类型
+  thirdUrl: '', // 第三方跳转链接
+  bindComponent: null, // 绑定组件
+  hiddenParamSize: 0, // 隐藏参数个数
+  theme: '', // 主题
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  spec: {
+    'type': 'wordCloud',
+    color: [],
+    data: {
+      values: [
+        { 'challenge_name': '宅家dou剧场宅家dou剧场', 'sum_count': 128 },
+        { 'challenge_name': '我的观影报告', 'sum_count': 103 },
+        { 'challenge_name': '抖瓜小助手', 'sum_count': 76 },
+        { 'challenge_name': '搞笑', 'sum_count': 70 },
+        { 'challenge_name': '我要上热门', 'sum_count': 69 },
+        { 'challenge_name': '热门', 'sum_count': 54 },
+        { 'challenge_name': '正能量', 'sum_count': 52 },
+        { 'challenge_name': '上热门', 'sum_count': 36 },
+        { 'challenge_name': '情感', 'sum_count': 34 },
+        { 'challenge_name': 'dou上热门', 'sum_count': 32 },
+        { 'challenge_name': '影视剪辑', 'sum_count': 25 }
+      ]
+    },
+    wordCloudConfig: {
+      drawOutOfBound: 'clip',
+      zoomToFit: {
+        enlarge: true
+      }
+    },
+    nameField: 'challenge_name',
+    valueField: 'sum_count',
+    seriesField: 'challenge_name',
+    background: ''// 背景颜色
+  }
 }
 
-//大屏仪表盘初始化数据
+// 大屏仪表盘初始化数据
 screenConstants.gaugeInit = {
-    type: screenConstants.type.gauge,
-    category:screenConstants.category.vchart,
-    isDelete:false,
-    x: 0, // 初始化横坐标
-    y: 0, // 初始化纵坐标
-    w: 500, // 组件初始化宽度
-    h: 300, // 组件初始化高度
-    active: false,
-    zindex: 99,
-    locked:false,
-    refresh: false, // 是否定时刷新
-    refreshTime: 30000, // 定时刷新时间，单位(ms)
-    dataSource:'1',//数据来源 1静态数据 2动态数据
-    dynamicDataSettings:{
-        datasetId:"",//数据集
-        dataColumns:[],//数据列
-    },//动态数据配置
-    params: [], // 图表参数
-    clickType: '1', // 点击类型
-    thirdUrl: '', // 第三方跳转链接
-    bindComponent: null, // 绑定组件
-    hiddenParamSize:0,//隐藏参数个数
-    theme:"",//主题
-    amination:"",//动画效果
-    isborder:false,//是否添加边框
-    borderType:"",//边框类型
-    borderColor:[],//边框颜色
-    spec:{
-      type: 'gauge',
-      data: 
+  type: screenConstants.type.gauge,
+  category: screenConstants.category.vchart,
+  isDelete: false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 500, // 组件初始化宽度
+  h: 300, // 组件初始化高度
+  active: false,
+  zindex: 99,
+  locked: false,
+  refresh: false, // 是否定时刷新
+  refreshTime: 30000, // 定时刷新时间，单位(ms)
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
+  params: [], // 图表参数
+  clickType: '1', // 点击类型
+  thirdUrl: '', // 第三方跳转链接
+  bindComponent: null, // 绑定组件
+  hiddenParamSize: 0, // 隐藏参数个数
+  theme: '', // 主题
+  amination: '', // 动画效果
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  spec: {
+    type: 'gauge',
+    data:
         {
           values: [
             {
@@ -2830,40 +2835,40 @@ screenConstants.gaugeInit = {
             }
           ]
         },
-      color:['#4FC6B4'],
-      categoryField: 'type',
-      valueField: 'value',
-      outerRadius: 1,
-      innerRadius: 0.7,
-      startAngle: -180,
-      endAngle: 0,
-      padding:{
-        top:60
-      },
-      gauge: {
-        type: 'circularProgress',
-        progress: {},
-        track: {
-          style: {
-            fill: '#ccc'
-          }
-        },
+    color: ['#4FC6B4'],
+    categoryField: 'type',
+    valueField: 'value',
+    outerRadius: 1,
+    innerRadius: 0.7,
+    startAngle: -180,
+    endAngle: 0,
+    padding: {
+      top: 60
     },
-    pointer:{
-      visible:true,
-      style:{
+    gauge: {
+      type: 'circularProgress',
+      progress: {},
+      track: {
+        style: {
+          fill: '#ccc'
+        }
+      }
+    },
+    pointer: {
+      visible: true,
+      style: {
 
       }
     },
-    pin:{
-      visible:true,
-      style:{
+    pin: {
+      visible: true,
+      style: {
 
       }
     },
-    pinBackground:{
-      visible:true,
-      style:{
+    pinBackground: {
+      visible: true,
+      style: {
 
       }
     },
@@ -2874,18 +2879,18 @@ screenConstants.gaugeInit = {
         orient: 'angle',
         min: 0,
         max: 1,
-        tick:{
-          visible:true,
-          style:{}
+        tick: {
+          visible: true,
+          style: {}
         },
-        subTick:{
-           visible:true,
-           style:{}
+        subTick: {
+          visible: true,
+          style: {}
         },
-        label:{
-          visible:true,
-          inside:false,
-          style:{
+        label: {
+          visible: true,
+          inside: false,
+          style: {
 
           }
         }
@@ -2897,68 +2902,68 @@ screenConstants.gaugeInit = {
       content: {
         style: {
           text: '0.6',
-          fontSize: 20,
+          fontSize: 20
         }
       }
     },
-    background: '',//背景颜色
-      title:screenConstants.chartTitleSettings,
-      tooltip:screenConstants.tooltipSettings,
-      label:{
-          visible:true,
-          position:'right',
-          style:{
-              fontSize:14,
-              fill:null,
+    background: '', // 背景颜色
+    title: screenConstants.chartTitleSettings,
+    tooltip: screenConstants.tooltipSettings,
+    label: {
+      visible: true,
+      position: 'right',
+      style: {
+        fontSize: 14,
+        fill: null
+      }
+    },
+    legends: {
+      visible: false,
+      orient: 'top', // 图例位置
+      position: 'middle', // 对齐方式
+      item: {
+        label: {
+          style: {
+            // fill:'#0BF1DA',//图例字体颜色
           }
-      },
-      legends:{
-          visible:false,
-          orient: 'top',//图例位置
-          position:'middle',//对齐方式
-          item: {
-              label:{
-                style:{
-                  // fill:'#0BF1DA',//图例字体颜色
-                }
-              }
-          },
-      },
+        }
+      }
+    }
   }
 }
 
-//大屏刻度仪表盘初始化数据
+// 大屏刻度仪表盘初始化数据
 screenConstants.tickGaugeInit = {
   type: screenConstants.type.tickGauge,
-  category:screenConstants.category.vchart,
-  isDelete:false,
+  category: screenConstants.category.vchart,
+  isDelete: false,
   x: 0, // 初始化横坐标
   y: 0, // 初始化纵坐标
   w: 500, // 组件初始化宽度
   h: 300, // 组件初始化高度
   active: false,
   zindex: 99,
-  locked:false,
+  locked: false,
   refresh: false, // 是否定时刷新
   refreshTime: 30000, // 定时刷新时间，单位(ms)
-  dataSource:'1',//数据来源 1静态数据 2动态数据
-  dynamicDataSettings:{
-      datasetId:"",//数据集
-      dataColumns:[],//数据列
-  },//动态数据配置
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
   params: [], // 图表参数
   clickType: '1', // 点击类型
   thirdUrl: '', // 第三方跳转链接
   bindComponent: null, // 绑定组件
-  hiddenParamSize:0,//隐藏参数个数
-  theme:"",//主题
-  amination:"",//动画效果
-  isborder:false,//是否添加边框
-  borderType:"",//边框类型
-  borderColor:[],//边框颜色
-  spec:{
+  hiddenParamSize: 0, // 隐藏参数个数
+  theme: '', // 主题
+  amination: '', // 动画效果
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  spec: {
     type: 'gauge',
-    data: 
+    data:
       {
         values: [
           {
@@ -2967,15 +2972,15 @@ screenConstants.tickGaugeInit = {
           }
         ]
       },
-    color:['#4FC6B4'],
+    color: ['#4FC6B4'],
     categoryField: 'type',
     valueField: 'value',
     outerRadius: 1,
     innerRadius: 0.7,
     startAngle: -180,
     endAngle: 0,
-    padding:{
-      top:60
+    padding: {
+      top: 60
     },
     gauge: {
       type: 'circularProgress',
@@ -2999,120 +3004,120 @@ screenConstants.tickGaugeInit = {
         position: 'inside-inner',
         offsetRadius: 10,
         style: {
-          
+
         }
       }
-  },
-    pointer:{
-      visible:true,
-      style:{
-
-      }
     },
-    pin:{
-      visible:true,
-      style:{
-
-      }
-    },
-    pinBackground:{
-      visible:true,
-      style:{
-
-      }
-    },
-  axes: [
-    {
+    pointer: {
       visible: true,
-      type: 'linear',
-      orient: 'angle',
-      min: 0,
-      max: 1,
-      tick:{
-        visible:true,
-        style:{}
-      },
-      subTick:{
-         visible:true,
-         style:{}
-      },
-      label:{
-        visible:true,
-        inside:false,
-        style:{
-
-        }
-      }
-    }
-  ],
-  indicator: {
-    visible: true,
-    offsetY: '20',
-    content: {
       style: {
-        text: '0.6',
-        fontSize: 20,
+
+      }
+    },
+    pin: {
+      visible: true,
+      style: {
+
+      }
+    },
+    pinBackground: {
+      visible: true,
+      style: {
+
+      }
+    },
+    axes: [
+      {
+        visible: true,
+        type: 'linear',
+        orient: 'angle',
+        min: 0,
+        max: 1,
+        tick: {
+          visible: true,
+          style: {}
+        },
+        subTick: {
+          visible: true,
+          style: {}
+        },
+        label: {
+          visible: true,
+          inside: false,
+          style: {
+
+          }
+        }
+      }
+    ],
+    indicator: {
+      visible: true,
+      offsetY: '20',
+      content: {
+        style: {
+          text: '0.6',
+          fontSize: 20
+        }
+      }
+    },
+    background: '', // 背景颜色
+    title: screenConstants.chartTitleSettings,
+    tooltip: screenConstants.tooltipSettings,
+    label: {
+      visible: true,
+      position: 'right',
+      style: {
+        fontSize: 14,
+        fill: null
+      }
+    },
+    legends: {
+      visible: false,
+      orient: 'top', // 图例位置
+      position: 'middle', // 对齐方式
+      item: {
+        label: {
+          style: {
+            // fill:'#0BF1DA',//图例字体颜色
+          }
+        }
       }
     }
-  },
-  background: '',//背景颜色
-    title:screenConstants.chartTitleSettings,
-      tooltip:screenConstants.tooltipSettings,
-    label:{
-        visible:true,
-        position:'right',
-        style:{
-            fontSize:14,
-            fill:null,
-        }
-    },
-    legends:{
-        visible:false,
-        orient: 'top',//图例位置
-        position:'middle',//对齐方式
-        item: {
-            label:{
-              style:{
-                // fill:'#0BF1DA',//图例字体颜色
-              }
-            }
-        },
-    },
-}
+  }
 }
 
-//大屏系列仪表盘初始化数据
+// 大屏系列仪表盘初始化数据
 screenConstants.seriesGaugeInit = {
   type: screenConstants.type.seriesGauge,
-  category:screenConstants.category.vchart,
-  isDelete:false,
+  category: screenConstants.category.vchart,
+  isDelete: false,
   x: 0, // 初始化横坐标
   y: 0, // 初始化纵坐标
   w: 500, // 组件初始化宽度
   h: 300, // 组件初始化高度
   active: false,
   zindex: 99,
-  locked:false,
+  locked: false,
   refresh: false, // 是否定时刷新
   refreshTime: 30000, // 定时刷新时间，单位(ms)
-  dataSource:'1',//数据来源 1静态数据 2动态数据
-  dynamicDataSettings:{
-      datasetId:"",//数据集
-      dataColumns:[],//数据列
-  },//动态数据配置
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
   params: [], // 图表参数
   clickType: '1', // 点击类型
   thirdUrl: '', // 第三方跳转链接
   bindComponent: null, // 绑定组件
-  hiddenParamSize:0,//隐藏参数个数
-  theme:"",//主题
-  amination:"",//动画效果
-  isborder:false,//是否添加边框
-  borderType:"",//边框类型
-  borderColor:[],//边框颜色
-  spec:{
+  hiddenParamSize: 0, // 隐藏参数个数
+  theme: '', // 主题
+  amination: '', // 动画效果
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  spec: {
     type: 'gauge',
-    data: 
+    data:
       {
         values: [
           {
@@ -3125,7 +3130,7 @@ screenConstants.seriesGaugeInit = {
           }
         ]
       },
-    color:['#4FC6B4','#FFC528'],
+    color: ['#4FC6B4', '#FFC528'],
     categoryField: 'type',
     valueField: 'value',
     seriesField: 'type',
@@ -3133,8 +3138,8 @@ screenConstants.seriesGaugeInit = {
     innerRadius: 0.7,
     startAngle: -180,
     endAngle: 0,
-    padding:{
-      top:60
+    padding: {
+      top: 60
     },
     gauge: {
       type: 'gauge',
@@ -3160,120 +3165,120 @@ screenConstants.seriesGaugeInit = {
         position: 'inside-inner',
         offsetRadius: 10,
         style: {
-          
+
         }
       }
-  },
-    pointer:{
-      visible:true,
-      style:{
-
-      }
     },
-    pin:{
-      visible:true,
-      style:{
-
-      }
-    },
-    pinBackground:{
-      visible:true,
-      style:{
-
-      }
-    },
-  axes: [
-    {
+    pointer: {
       visible: true,
-      type: 'linear',
-      orient: 'angle',
-      min: 0,
-      max: 1,
-      tick:{
-        visible:true,
-        style:{}
-      },
-      subTick:{
-         visible:true,
-         style:{}
-      },
-      label:{
-        visible:true,
-        inside:false,
-        style:{
-
-        }
-      }
-    }
-  ],
-  indicator: {
-    visible: false,
-    offsetY: '20',
-    content: {
       style: {
-        text: '0.6',
-        fontSize: 20,
+
+      }
+    },
+    pin: {
+      visible: true,
+      style: {
+
+      }
+    },
+    pinBackground: {
+      visible: true,
+      style: {
+
+      }
+    },
+    axes: [
+      {
+        visible: true,
+        type: 'linear',
+        orient: 'angle',
+        min: 0,
+        max: 1,
+        tick: {
+          visible: true,
+          style: {}
+        },
+        subTick: {
+          visible: true,
+          style: {}
+        },
+        label: {
+          visible: true,
+          inside: false,
+          style: {
+
+          }
+        }
+      }
+    ],
+    indicator: {
+      visible: false,
+      offsetY: '20',
+      content: {
+        style: {
+          text: '0.6',
+          fontSize: 20
+        }
+      }
+    },
+    background: '', // 背景颜色
+    title: screenConstants.chartTitleSettings,
+    tooltip: screenConstants.tooltipSettings,
+    label: {
+      visible: true,
+      position: 'right',
+      style: {
+        fontSize: 14,
+        fill: null
+      }
+    },
+    legends: {
+      visible: false,
+      orient: 'top', // 图例位置
+      position: 'middle', // 对齐方式
+      item: {
+        label: {
+          style: {
+            // fill:'#0BF1DA',//图例字体颜色
+          }
+        }
       }
     }
-  },
-  background: '',//背景颜色
-    title:screenConstants.chartTitleSettings,
-      tooltip:screenConstants.tooltipSettings,
-    label:{
-        visible:true,
-        position:'right',
-        style:{
-            fontSize:14,
-            fill:null,
-        }
-    },
-    legends:{
-        visible:false,
-        orient: 'top',//图例位置
-        position:'middle',//对齐方式
-        item: {
-            label:{
-              style:{
-                // fill:'#0BF1DA',//图例字体颜色
-              }
-            }
-        },
-    },
-}
+  }
 }
 
-//大屏刻度系列仪表盘初始化数据
+// 大屏刻度系列仪表盘初始化数据
 screenConstants.tickSeriesGaugeInit = {
   type: screenConstants.type.tickSeriesGauge,
-  category:screenConstants.category.vchart,
-  isDelete:false,
+  category: screenConstants.category.vchart,
+  isDelete: false,
   x: 0, // 初始化横坐标
   y: 0, // 初始化纵坐标
   w: 500, // 组件初始化宽度
   h: 300, // 组件初始化高度
   active: false,
   zindex: 99,
-  locked:false,
+  locked: false,
   refresh: false, // 是否定时刷新
   refreshTime: 30000, // 定时刷新时间，单位(ms)
-  dataSource:'1',//数据来源 1静态数据 2动态数据
-  dynamicDataSettings:{
-      datasetId:"",//数据集
-      dataColumns:[],//数据列
-  },//动态数据配置
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
   params: [], // 图表参数
   clickType: '1', // 点击类型
   thirdUrl: '', // 第三方跳转链接
   bindComponent: null, // 绑定组件
-  hiddenParamSize:0,//隐藏参数个数
-  theme:"",//主题
-  amination:"",//动画效果
-  isborder:false,//是否添加边框
-  borderType:"",//边框类型
-  borderColor:[],//边框颜色
-  spec:{
+  hiddenParamSize: 0, // 隐藏参数个数
+  theme: '', // 主题
+  amination: '', // 动画效果
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  spec: {
     type: 'gauge',
-    data: 
+    data:
       {
         values: [
           {
@@ -3286,7 +3291,7 @@ screenConstants.tickSeriesGaugeInit = {
           }
         ]
       },
-    color:['#4FC6B4','#FFC528'],
+    color: ['#4FC6B4', '#FFC528'],
     categoryField: 'type',
     valueField: 'value',
     seriesField: 'type',
@@ -3294,8 +3299,8 @@ screenConstants.tickSeriesGaugeInit = {
     innerRadius: 0.7,
     startAngle: -180,
     endAngle: 0,
-    padding:{
-      top:60
+    padding: {
+      top: 60
     },
     gauge: {
       type: 'gauge',
@@ -3321,123 +3326,123 @@ screenConstants.tickSeriesGaugeInit = {
         position: 'inside-inner',
         offsetRadius: 10,
         style: {
-          
+
         }
       }
-  },
-    pointer:{
-      visible:true,
-      style:{
-
-      }
     },
-    pin:{
-      visible:true,
-      style:{
-
-      }
-    },
-    pinBackground:{
-      visible:true,
-      style:{
-
-      }
-    },
-  axes: [
-    {
+    pointer: {
       visible: true,
-      type: 'linear',
-      orient: 'angle',
-      min: 0,
-      max: 1,
-      tick:{
-        visible:true,
-        style:{}
-      },
-      subTick:{
-         visible:true,
-         style:{}
-      },
-      label:{
-        visible:true,
-        inside:false,
-        style:{
-
-        }
-      }
-    }
-  ],
-  indicator: {
-    visible: false,
-    offsetY: '20',
-    content: {
       style: {
-        text: '0.6',
-        fontSize: 20,
+
+      }
+    },
+    pin: {
+      visible: true,
+      style: {
+
+      }
+    },
+    pinBackground: {
+      visible: true,
+      style: {
+
+      }
+    },
+    axes: [
+      {
+        visible: true,
+        type: 'linear',
+        orient: 'angle',
+        min: 0,
+        max: 1,
+        tick: {
+          visible: true,
+          style: {}
+        },
+        subTick: {
+          visible: true,
+          style: {}
+        },
+        label: {
+          visible: true,
+          inside: false,
+          style: {
+
+          }
+        }
+      }
+    ],
+    indicator: {
+      visible: false,
+      offsetY: '20',
+      content: {
+        style: {
+          text: '0.6',
+          fontSize: 20
+        }
+      }
+    },
+    background: '', // 背景颜色
+    title: screenConstants.chartTitleSettings,
+    tooltip: screenConstants.tooltipSettings,
+    label: {
+      visible: true,
+      position: 'right',
+      style: {
+        fontSize: 14,
+        fill: null
+      }
+    },
+    legends: {
+      visible: false,
+      orient: 'top', // 图例位置
+      position: 'middle', // 对齐方式
+      item: {
+        label: {
+          style: {
+            // fill:'#0BF1DA',//图例字体颜色
+          }
+        }
       }
     }
-  },
-  background: '',//背景颜色
-    title:screenConstants.chartTitleSettings,
-      tooltip:screenConstants.tooltipSettings,
-    label:{
-        visible:true,
-        position:'right',
-        style:{
-            fontSize:14,
-            fill:null,
-        }
-    },
-    legends:{
-        visible:false,
-        orient: 'top',//图例位置
-        position:'middle',//对齐方式
-        item: {
-            label:{
-              style:{
-                // fill:'#0BF1DA',//图例字体颜色
-              }
-            }
-        },
-    },
- }
+  }
 }
 
 screenConstants.funnelInit = {
   type: screenConstants.type.funnel,
-  category:screenConstants.category.vchart,
-  isDelete:false,
+  category: screenConstants.category.vchart,
+  isDelete: false,
   x: 0, // 初始化横坐标
   y: 0, // 初始化纵坐标
   w: 500, // 组件初始化宽度
   h: 300, // 组件初始化高度
   active: false,
   zindex: 99,
-  locked:false,
+  locked: false,
   refresh: false, // 是否定时刷新
   refreshTime: 30000, // 定时刷新时间，单位(ms)
-  dataSource:'1',//数据来源 1静态数据 2动态数据
-  dynamicDataSettings:{
-      datasetId:"",//数据集
-      dataColumns:[],//数据列
-  },//动态数据配置
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
   params: [], // 图表参数
   clickType: '1', // 点击类型
   thirdUrl: '', // 第三方跳转链接
   bindComponent: null, // 绑定组件
-  hiddenParamSize:0,//隐藏参数个数
-  theme:"",//主题
-  amination:"",//动画效果
-  isborder:false,//是否添加边框
-  borderType:"",//边框类型
-  borderColor:[],//边框颜色
-  spec:{
-    type:'funnel',
+  hiddenParamSize: 0, // 隐藏参数个数
+  theme: '', // 主题
+  amination: '', // 动画效果
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  spec: {
+    type: 'funnel',
     maxSize: '75%',
     color: [],
     categoryField: 'name',
     valueField: 'value',
-    data: 
+    data:
       {
         values: [
           {
@@ -3462,82 +3467,82 @@ screenConstants.funnelInit = {
           }
         ]
       },
-    background: '',//背景颜色
-    title:screenConstants.chartTitleSettings,
-      tooltip:screenConstants.tooltipSettings,
-    shape: 'rect',//梯形 trapezoid 矩形rect
-    label:{
-      visible:true,
-      position:'outside',
-      formatter: '',//标签格式
-      style:{
-          fontSize:14,
-          fill:null,
+    background: '', // 背景颜色
+    title: screenConstants.chartTitleSettings,
+    tooltip: screenConstants.tooltipSettings,
+    shape: 'rect', // 梯形 trapezoid 矩形rect
+    label: {
+      visible: true,
+      position: 'outside',
+      formatter: '', // 标签格式
+      style: {
+        fontSize: 14,
+        fill: null
       }
     },
-    legends:{
-        visible:false,
-        orient: 'top',//图例位置
-        position:'middle',//对齐方式
-        item: {
-            label:{
-              style:{
-                // fill:'#0BF1DA',//图例字体颜色
-              }
-            }
-        },
+    legends: {
+      visible: false,
+      orient: 'top', // 图例位置
+      position: 'middle', // 对齐方式
+      item: {
+        label: {
+          style: {
+            // fill:'#0BF1DA',//图例字体颜色
+          }
+        }
+      }
     },
     outerLabel: {
-      visible:false,
+      visible: false,
       position: 'left',
-      style:{
-        fill:null,
-        fontSize:null
+      style: {
+        fill: null,
+        fontSize: null
       }
-    },
+    }
   }
 }
 
 screenConstants.circularProgressInit = {
   type: screenConstants.type.circularProgress,
-  category:screenConstants.category.vchart,
-  isDelete:false,
+  category: screenConstants.category.vchart,
+  isDelete: false,
   x: 0, // 初始化横坐标
   y: 0, // 初始化纵坐标
   w: 500, // 组件初始化宽度
   h: 300, // 组件初始化高度
   active: false,
   zindex: 99,
-  locked:false,
+  locked: false,
   refresh: false, // 是否定时刷新
   refreshTime: 30000, // 定时刷新时间，单位(ms)
-  dataSource:'1',//数据来源 1静态数据 2动态数据
-  dynamicDataSettings:{
-      datasetId:"",//数据集
-      dataColumns:[],//数据列
-  },//动态数据配置
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
   params: [], // 图表参数
   clickType: '1', // 点击类型
   thirdUrl: '', // 第三方跳转链接
   bindComponent: null, // 绑定组件
-  hiddenParamSize:0,//隐藏参数个数
-  theme:"",//主题
-  amination:"",//动画效果
-  isborder:false,//是否添加边框
-  borderType:"",//边框类型
-  borderColor:[],//边框颜色
-  spec:{
+  hiddenParamSize: 0, // 隐藏参数个数
+  theme: '', // 主题
+  amination: '', // 动画效果
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  spec: {
     type: 'circularProgress',
-    data: 
+    data:
       {
         values: [
           {
             type: '目标A',
-            value: 0.795,
+            value: 0.795
           }
         ]
       },
-    color:['#4FC6B4'],
+    color: ['#4FC6B4'],
     categoryField: 'type',
     valueField: 'value',
     seriesField: 'type',
@@ -3545,11 +3550,11 @@ screenConstants.circularProgressInit = {
     innerRadius: 0.9,
     roundCap: false,
     cornerRadius: 20,
-    background: '',//背景颜色
-    title:screenConstants.chartTitleSettings,
-      tooltip:screenConstants.tooltipSettings,
-    progress:{
-      style:{
+    background: '', // 背景颜色
+    title: screenConstants.chartTitleSettings,
+    tooltip: screenConstants.tooltipSettings,
+    progress: {
+      style: {
 
       }
     },
@@ -3563,19 +3568,19 @@ screenConstants.circularProgressInit = {
         visible: true,
         type: 'linear',
         orient: 'angle',
-        min:0,
-        max:1,
-        label:{
+        min: 0,
+        max: 1,
+        label: {
           formatter: '{value:~%}',
-          style:{}
+          style: {}
         }
       },
       {
         visible: false,
         type: 'band',
         orient: 'radius',
-        label:{
-          style:{}
+        label: {
+          style: {}
         }
       }
     ],
@@ -3587,178 +3592,178 @@ screenConstants.circularProgressInit = {
         visible: true,
         autoLimit: true,
         space: 12,
-        field:null,
+        field: null,
         style: {
           fontSize: 16,
           fill: '#000',
-          text:"目标A",
+          text: '目标A'
         }
       },
-      content: 
+      content:
         {
           visible: true,
-          field:null,
+          field: null,
           style: {
             fontSize: 16,
             fill: '#000',
-            text:"0.795",
+            text: '0.795'
           }
         }
-      
+
     },
-    label:{
-        visible:false,
-        position:'right',
-        style:{
-            fontSize:14,
-            fill:null,
+    label: {
+      visible: false,
+      position: 'right',
+      style: {
+        fontSize: 14,
+        fill: null
+      }
+    },
+    legends: {
+      visible: false,
+      orient: 'top', // 图例位置
+      position: 'middle', // 对齐方式
+      item: {
+        label: {
+          style: {
+            // fill:'#0BF1DA',//图例字体颜色
+          }
         }
-    },
-    legends:{
-        visible:false,
-        orient: 'top',//图例位置
-        position:'middle',//对齐方式
-        item: {
-            label:{
-              style:{
-                // fill:'#0BF1DA',//图例字体颜色
-              }
-            }
-        },
-    },
- }
+      }
+    }
+  }
 }
 
 screenConstants.barProgressInit = {
   type: screenConstants.type.barProgress,
-  category:screenConstants.category.vchart,
-  isDelete:false,
+  category: screenConstants.category.vchart,
+  isDelete: false,
   x: 0, // 初始化横坐标
   y: 0, // 初始化纵坐标
   w: 500, // 组件初始化宽度
   h: 300, // 组件初始化高度
   active: false,
   zindex: 99,
-  locked:false,
+  locked: false,
   refresh: false, // 是否定时刷新
   refreshTime: 30000, // 定时刷新时间，单位(ms)
-  dataSource:'1',//数据来源 1静态数据 2动态数据
-  dynamicDataSettings:{
-      datasetId:"",//数据集
-      dataColumns:[],//数据列
-  },//动态数据配置
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
   params: [], // 图表参数
   clickType: '1', // 点击类型
   thirdUrl: '', // 第三方跳转链接
   bindComponent: null, // 绑定组件
-  hiddenParamSize:0,//隐藏参数个数
-  theme:"",//主题
-  amination:"",//动画效果
-  isborder:false,//是否添加边框
-  borderType:"",//边框类型
-  borderColor:[],//边框颜色
-  spec:{
+  hiddenParamSize: 0, // 隐藏参数个数
+  theme: '', // 主题
+  amination: '', // 动画效果
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  spec: {
     type: 'linearProgress',
-    data: 
+    data:
     {
       values: [
         {
           type: 'Tradition Industries',
-          value: 0.795,
+          value: 0.795
         },
         {
           type: 'Business Companies',
-          value: 0.25,
+          value: 0.25
         },
         {
           type: 'Customer-facing Companies',
-          value: 0.65,
+          value: 0.65
         }
       ]
     },
-    color:['#4FC6B4','#F88D0A','#EF0EE4'],
+    color: ['#4FC6B4', '#F88D0A', '#EF0EE4'],
     direction: 'horizontal',
     xField: 'value',
     yField: 'type',
     seriesField: 'type',
     cornerRadius: 20,
     bandWidth: 30,
-    background: '',//背景颜色
-    title:screenConstants.chartTitleSettings,
-      tooltip:screenConstants.tooltipSettings,
+    background: '', // 背景颜色
+    title: screenConstants.chartTitleSettings,
+    tooltip: screenConstants.tooltipSettings,
     axes: [
       {
         orient: 'right',
-        label: { visible: true,style:{}},
+        label: { visible: true, style: {}},
         type: 'band',
         domainLine: { visible: false },
-        tick: { visible: false },
+        tick: { visible: false }
       },
-      { orient: 'bottom', label: { visible: true,formatter: '{value:~%}',style:{}}, type: 'linear', visible: true }
+      { orient: 'bottom', label: { visible: true, formatter: '{value:~%}', style: {}}, type: 'linear', visible: true }
     ],
-    label:{
-        visible:false,
-        position:'right',
-        style:{
-            fontSize:14,
-            fill:null,
+    label: {
+      visible: false,
+      position: 'right',
+      style: {
+        fontSize: 14,
+        fill: null
+      }
+    },
+    legends: {
+      visible: false,
+      orient: 'top', // 图例位置
+      position: 'middle', // 对齐方式
+      item: {
+        label: {
+          style: {
+            // fill:'#0BF1DA',//图例字体颜色
+          }
         }
-    },
-    legends:{
-        visible:false,
-        orient: 'top',//图例位置
-        position:'middle',//对齐方式
-        item: {
-            label:{
-              style:{
-                // fill:'#0BF1DA',//图例字体颜色
-              }
-            }
-        },
-    },
- }
+      }
+    }
+  }
 }
 screenConstants.liquidInit = {
   type: screenConstants.type.liquid,
-  category:screenConstants.category.vchart,
-  isDelete:false,
+  category: screenConstants.category.vchart,
+  isDelete: false,
   x: 0, // 初始化横坐标
   y: 0, // 初始化纵坐标
   w: 500, // 组件初始化宽度
   h: 300, // 组件初始化高度
   active: false,
   zindex: 99,
-  locked:false,
+  locked: false,
   refresh: false, // 是否定时刷新
   refreshTime: 30000, // 定时刷新时间，单位(ms)
-  dataSource:'1',//数据来源 1静态数据 2动态数据
-  dynamicDataSettings:{
-      datasetId:"",//数据集
-      dataColumns:[],//数据列
-  },//动态数据配置
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
   params: [], // 图表参数
   clickType: '1', // 点击类型
   thirdUrl: '', // 第三方跳转链接
   bindComponent: null, // 绑定组件
-  hiddenParamSize:0,//隐藏参数个数
-  theme:"",//主题
-  amination:"",//动画效果
-  isborder:false,//是否添加边框
-  borderType:"",//边框类型
-  borderColor:[],//边框颜色
-  spec:{
+  hiddenParamSize: 0, // 隐藏参数个数
+  theme: '', // 主题
+  amination: '', // 动画效果
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  spec: {
     type: 'liquid',
-    title:screenConstants.chartTitleSettings,
-      tooltip:screenConstants.tooltipSettings,
-    color:[],
-    categoryField:"name",
+    title: screenConstants.chartTitleSettings,
+    tooltip: screenConstants.tooltipSettings,
+    color: [],
+    categoryField: 'name',
     valueField: 'value',
-    maskShape:"circle",
+    maskShape: 'circle',
     data: {
       id: 'data',
       values: [
         {
-          name:"进度",
+          name: '进度',
           value: 0.3
         }
       ]
@@ -3769,17 +3774,17 @@ screenConstants.liquidInit = {
         visible: true,
         style: {
           text: '进度',
-          fill:'#000',
-          fontSize:20
+          fill: '#000',
+          fontSize: 20
         }
       },
-      content: 
+      content:
         {
           visible: true,
           style: {
             fill: '#000',
             text: '0.3',
-            fontSize:20
+            fontSize: 20
           }
         }
     }
@@ -3788,75 +3793,75 @@ screenConstants.liquidInit = {
 
 screenConstants.mapInit = {
   type: screenConstants.type.map,
-  category:screenConstants.category.vchart,
-  isDelete:false,
+  category: screenConstants.category.vchart,
+  isDelete: false,
   x: 0, // 初始化横坐标
   y: 0, // 初始化纵坐标
   w: 500, // 组件初始化宽度
   h: 300, // 组件初始化高度
   active: false,
   zindex: 99,
-  locked:false,
+  locked: false,
   refresh: false, // 是否定时刷新
   refreshTime: 30000, // 定时刷新时间，单位(ms)
-  dataSource:'1',//数据来源 1静态数据 2动态数据
-  dynamicDataSettings:{
-      datasetId:"",//数据集
-      dataColumns:[],//数据列
-  },//动态数据配置
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
   params: [], // 图表参数
-  hiddenParamSize:0,//隐藏参数个数
-  theme:"",//主题
-  amination:"",//动画效果
+  hiddenParamSize: 0, // 隐藏参数个数
+  theme: '', // 主题
+  amination: '', // 动画效果
   isDrill: false, // 是否支持下钻
-  isborder:false,//是否添加边框
-  borderType:"",//边框类型
-  borderColor:[],//边框颜色
-  spec:{
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  spec: {
     type: 'map',
-    title:screenConstants.chartTitleSettings,
-      tooltip:screenConstants.tooltipSettings,
+    title: screenConstants.chartTitleSettings,
+    tooltip: screenConstants.tooltipSettings,
     nameField: 'name',
     valueField: 'value',
     // nameProperty: 'name',
     map: '100000',
-    defaultFillColor:'#f3f3f3',
+    defaultFillColor: '#f3f3f3',
     data: {
       values: [
-          { name: '北京市', value: 80 },
-          { name: '天津市', value: 10 },
-          { name: '上海市', value: 100 },
-          { name: '重庆市', value: 20 },
-          { name: '河北省', value: 30 },
-          { name: '河南省', value: 400 },
-          { name: '云南省', value: 200 },
-          { name: '辽宁省', value: 110 },
-          { name: '黑龙江省', value: 160 },
-          { name: '湖南省', value: 45 },
-          { name: '安徽省', value: 70 },
-          { name: '山东省', value: 330 },
-          { name: '新疆维吾尔自治区', value: 290 },
-          { name: '江苏省', value: 140 },
-          { name: '浙江省', value: 222 },
-          { name: '江西省', value: 555 },
-          { name: '湖北省', value: 66 },
-          { name: '广西壮族自治区', value: 59 },
-          { name: '甘肃省', value: 452 },
-          { name: '山西省', value: 369 },
-          { name: '内蒙古自治区', value: 147 },
-          { name: '陕西省', value: 258 },
-          { name: '吉林省', value: 123 },
-          { name: '福建省', value: 85 },
-          { name: '贵州省', value: 98 },
-          { name: '广东省', value: 96 },
-          { name: '青海省', value: 32 },
-          { name: '西藏自治区', value: 69 },
-          { name: '四川省', value: 79 },
-          { name: '宁夏回族自治区', value: 65 },
-          { name: '海南省', value: 456 },
-          { name: '台湾省', value: 478 },
-          { name: '香港特别行政区', value: 589 },
-          { name: '澳门特别行政区', value: 413 }
+        { name: '北京市', value: 80 },
+        { name: '天津市', value: 10 },
+        { name: '上海市', value: 100 },
+        { name: '重庆市', value: 20 },
+        { name: '河北省', value: 30 },
+        { name: '河南省', value: 400 },
+        { name: '云南省', value: 200 },
+        { name: '辽宁省', value: 110 },
+        { name: '黑龙江省', value: 160 },
+        { name: '湖南省', value: 45 },
+        { name: '安徽省', value: 70 },
+        { name: '山东省', value: 330 },
+        { name: '新疆维吾尔自治区', value: 290 },
+        { name: '江苏省', value: 140 },
+        { name: '浙江省', value: 222 },
+        { name: '江西省', value: 555 },
+        { name: '湖北省', value: 66 },
+        { name: '广西壮族自治区', value: 59 },
+        { name: '甘肃省', value: 452 },
+        { name: '山西省', value: 369 },
+        { name: '内蒙古自治区', value: 147 },
+        { name: '陕西省', value: 258 },
+        { name: '吉林省', value: 123 },
+        { name: '福建省', value: 85 },
+        { name: '贵州省', value: 98 },
+        { name: '广东省', value: 96 },
+        { name: '青海省', value: 32 },
+        { name: '西藏自治区', value: 69 },
+        { name: '四川省', value: 79 },
+        { name: '宁夏回族自治区', value: 65 },
+        { name: '海南省', value: 456 },
+        { name: '台湾省', value: 478 },
+        { name: '香港特别行政区', value: 589 },
+        { name: '澳门特别行政区', value: 413 }
       ]
     },
     nameMap: {
@@ -3897,7 +3902,7 @@ screenConstants.mapInit = {
     },
     region: [
       {
-        roam: true,
+        roam: true
       }
     ],
     color: {
@@ -3913,16 +3918,16 @@ screenConstants.mapInit = {
         }
       }
     },
-    label:{
-      visible:true,
+    label: {
+      visible: true,
       // position:'outside',
-      formatter:'',
-      style:{
-          fontSize:10,
-          fill:null,
+      formatter: '',
+      style: {
+        fontSize: 10,
+        fill: null
       }
     },
-    legends: 
+    legends:
       {
         visible: false,
         type: 'color',
@@ -3934,33 +3939,33 @@ screenConstants.mapInit = {
           text: ''
         }
       }
-    
+
   }
 }
 
 screenConstants.scrollTableInit = {
   type: screenConstants.type.scrollTable,
-  category:screenConstants.category.table,
-  isDelete:false,
+  category: screenConstants.category.table,
+  isDelete: false,
   x: 0, // 初始化横坐标
   y: 0, // 初始化纵坐标
   w: 500, // 组件初始化宽度
   h: 300, // 组件初始化高度
   active: false,
   zindex: 99,
-  locked:false,
-  isborder:false,//是否添加边框
-  borderType:"",//边框类型
-  borderColor:[],//边框颜色
+  locked: false,
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
   refresh: false, // 是否定时刷新
   refreshTime: 30000, // 定时刷新时间，单位(ms)
-  dataSource:'1',//数据来源 1静态数据 2动态数据
-  dynamicDataSettings:{
-      datasetId:"",//数据集
-      dataColumns:[],//数据列
-  },//动态数据配置
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
   params: [], // 图表参数
-  hiddenParamSize:0,//隐藏参数个数
+  hiddenParamSize: 0, // 隐藏参数个数
   // 数据列
   tableColumn: [{ 'name': '销售数量', 'key': 'count', 'style': { 'width': '40' }}, { 'name': '日期', 'key': 'date', 'style': { 'width': '40' }}],
   headStyle: {
@@ -3970,7 +3975,7 @@ screenConstants.scrollTableInit = {
     fontSize: 12, // 字体大小
     fontWeight: 'bold' // 是否加粗 normal 和bold
   }, // 表头样式
-  style: {// 整体样式
+  style: { // 整体样式
     showIndex: true, // 是否显示序号
     isBorder: true, // 是否显示边框
     borderColor: '#FFFFFF', // 边框颜色
@@ -3978,7 +3983,7 @@ screenConstants.scrollTableInit = {
     borderStyle: 'solid', // 边框样式
     indexWidth: '20'
   },
-  bodyStyle: {// 表体样式
+  bodyStyle: { // 表体样式
     oddRowColor: '#33a3dc', // 奇数行颜色
     evenRowColor: '#2570a1', // 偶数行颜色
     height: 30, // 行高
@@ -3986,7 +3991,7 @@ screenConstants.scrollTableInit = {
     fontSize: 12, // 字体大小
     fontWeight: 'normal' // 是否加粗
   },
-  options: {// 表格配置项
+  options: { // 表格配置项
     step: 0.5, // 数值越大速度滚动越快
     limitMoveNum: 2, // 开始无缝滚动的数据量 this.dataList.length
     hoverStop: true, // 是否开启鼠标悬停stop
@@ -3996,7 +4001,7 @@ screenConstants.scrollTableInit = {
     singleWidth: 0, // 单步运动停止的宽度(默认值0是无缝不停止的滚动) direction => 2/3
     waitTime: 1000 // 单步运动停止的时间(默认值1000ms)
   },
-  spec:{
+  spec: {
     data: {
       values: [
         {
@@ -4030,56 +4035,56 @@ screenConstants.scrollTableInit = {
 }
 screenConstants.pageTableInit = {
   type: screenConstants.type.pageTable,
-  category:screenConstants.category.table,
-  isDelete:false,
+  category: screenConstants.category.table,
+  isDelete: false,
   x: 0, // 初始化横坐标
   y: 0, // 初始化纵坐标
   w: 500, // 组件初始化宽度
   h: 248, // 组件初始化高度
   active: false,
   zindex: 99,
-  locked:false,
-  isborder:false,//是否添加边框
-  borderType:"",//边框类型
-  borderColor:[],//边框颜色
+  locked: false,
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
   refresh: false, // 是否定时刷新
   refreshTime: 30000, // 定时刷新时间，单位(ms)
-  dataSource:'1',//数据来源 1静态数据 2动态数据
-  dynamicDataSettings:{
-      datasetId:"",//数据集
-      dataColumns:[],//数据列
-  },//动态数据配置
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
   params: [], // 图表参数
-  hiddenParamSize:0,//隐藏参数个数
+  hiddenParamSize: 0, // 隐藏参数个数
   // 数据列
-  tableColumn: [{ 'name': '销售数量', 'key': 'count'}, { 'name': '日期', 'key': 'date'}],
-  isIndex:true,//是否显示行号
-  indexWidth:50,//行号列宽度
-  align:'center',//对齐方式
-  overflow:true,
-  border:true,//边框
-  stripe:false,//斑马纹
-  highlight:false,
+  tableColumn: [{ 'name': '销售数量', 'key': 'count' }, { 'name': '日期', 'key': 'date' }],
+  isIndex: true, // 是否显示行号
+  indexWidth: 50, // 行号列宽度
+  align: 'center', // 对齐方式
+  overflow: true,
+  border: true, // 边框
+  stripe: false, // 斑马纹
+  highlight: false,
   headStyle: {
     backgroundColor: '#2570a1',
     color: '#00FFFF', // 字体颜色
     fontSize: 12, // 字体大小
     fontWeight: 'bold' // 是否加粗 normal 和bold
   }, // 表头样式
-  rowStyle:{
+  rowStyle: {
     backgroundColor: '#2570a1',
     color: '#00FFFF', // 字体颜色
     fontSize: 12, // 字体大小
     fontWeight: 'bold' // 是否加粗 normal 和bold
   },
-  pagination:{
-    pageSize:5,//每页显示条数
-    currentPage:1,//当前页
-    backgroundColor:"#2570a1",
+  pagination: {
+    pageSize: 5, // 每页显示条数
+    currentPage: 1, // 当前页
+    backgroundColor: '#2570a1'
   },
-  spec:{
+  spec: {
     data: {
-      total:8,//总条数
+      total: 8, // 总条数
       values: [
         {
           'count': '100',
@@ -4111,254 +4116,254 @@ screenConstants.pageTableInit = {
   }
 }
 
-//大屏箱型图初始化数据
+// 大屏箱型图初始化数据
 screenConstants.boxPlotInit = {
   type: screenConstants.type.boxPlot,
-  category:screenConstants.category.vchart,
-  isDelete:false,
+  category: screenConstants.category.vchart,
+  isDelete: false,
   x: 0, // 初始化横坐标
   y: 0, // 初始化纵坐标
   w: 500, // 组件初始化宽度
   h: 300, // 组件初始化高度
   active: false,
   zindex: 99,
-  locked:false,
+  locked: false,
   refresh: false, // 是否定时刷新
   refreshTime: 30000, // 定时刷新时间，单位(ms)
-  dataSource:'1',//数据来源 1静态数据 2动态数据
-  dynamicDataSettings:{
-      datasetId:"",//数据集
-      dataColumns:[],//数据列
-  },//动态数据配置
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
   params: [], // 图表参数
   clickType: '1', // 点击类型
   thirdUrl: '', // 第三方跳转链接
   bindComponent: null, // 绑定组件
-  hiddenParamSize:0,//隐藏参数个数
-  theme:"",//主题
-  amination:"",//动画效果
-  isborder:false,//是否添加边框
-  borderType:"",//边框类型
-  borderColor:[],//边框颜色
-  spec:{
-      type:'boxPlot',
-      color: [],
-      data: {
-          values: [
-            {
-              x: 'Sub-Saharan Africa',
-              y1: 8.72,
-              y2: 9.73,
-              y3: 10.17,
-              y4: 10.51,
-              y5: 11.64
-            },
-            {
-              x: 'South Asia',
-              y1: 9.4,
-              y2: 10.06,
-              y3: 10.75,
-              y4: 11.56,
-              y5: 12.5
-            },
-            {
-              x: 'Middle East & North Africa',
-              y1: 9.54,
-              y2: 10.6,
-              y3: 11.05,
-              y4: 11.5,
-              y5: 11.92
-            },
-            {
-              x: 'Latin America & Caribbean',
-              y1: 8.74,
-              y2: 9.46,
-              y3: 10.35,
-              y4: 10.94,
-              y5: 12.21
-            },
-            {
-              x: 'East Asia & Pacific',
-              y1: 7.8,
-              y2: 8.95,
-              y3: 10.18,
-              y4: 11.57,
-              y5: 13.25
-            },
-            {
-              x: 'Europe & Central Asia',
-              y1: 9.52,
-              y2: 10.39,
-              y3: 10.93,
-              y4: 11.69,
-              y5: 12.63
-            }
-          ]
-      },
-      xField: ['x'],
-      minField: 'y1',//箱型图最小值字段
-      q1Field: 'y2',//箱型图 Q1
-      medianField: 'y3',//箱型图 Q2
-      q3Field: 'y4',//箱型图 Q3
-      maxField: 'y5',//箱型图最大值字段
-      seriesField: null,
-      background: '',//背景颜色
-      title:screenConstants.chartTitleSettings,
-      tooltip:screenConstants.tooltipSettings,
-      direction: 'vertical',
-      boxPlot: {
-        style: {
-          // boxWidth: 50, // 不指定则自适应宽度
-          // shaftWidth: 60,
-          shaftShape: 'line',
-          lineWidth: 2
+  hiddenParamSize: 0, // 隐藏参数个数
+  theme: '', // 主题
+  amination: '', // 动画效果
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  spec: {
+    type: 'boxPlot',
+    color: [],
+    data: {
+      values: [
+        {
+          x: 'Sub-Saharan Africa',
+          y1: 8.72,
+          y2: 9.73,
+          y3: 10.17,
+          y4: 10.51,
+          y5: 11.64
+        },
+        {
+          x: 'South Asia',
+          y1: 9.4,
+          y2: 10.06,
+          y3: 10.75,
+          y4: 11.56,
+          y5: 12.5
+        },
+        {
+          x: 'Middle East & North Africa',
+          y1: 9.54,
+          y2: 10.6,
+          y3: 11.05,
+          y4: 11.5,
+          y5: 11.92
+        },
+        {
+          x: 'Latin America & Caribbean',
+          y1: 8.74,
+          y2: 9.46,
+          y3: 10.35,
+          y4: 10.94,
+          y5: 12.21
+        },
+        {
+          x: 'East Asia & Pacific',
+          y1: 7.8,
+          y2: 8.95,
+          y3: 10.18,
+          y4: 11.57,
+          y5: 13.25
+        },
+        {
+          x: 'Europe & Central Asia',
+          y1: 9.52,
+          y2: 10.39,
+          y3: 10.93,
+          y4: 11.69,
+          y5: 12.63
         }
+      ]
+    },
+    xField: ['x'],
+    minField: 'y1', // 箱型图最小值字段
+    q1Field: 'y2', // 箱型图 Q1
+    medianField: 'y3', // 箱型图 Q2
+    q3Field: 'y4', // 箱型图 Q3
+    maxField: 'y5', // 箱型图最大值字段
+    seriesField: null,
+    background: '', // 背景颜色
+    title: screenConstants.chartTitleSettings,
+    tooltip: screenConstants.tooltipSettings,
+    direction: 'vertical',
+    boxPlot: {
+      style: {
+        // boxWidth: 50, // 不指定则自适应宽度
+        // shaftWidth: 60,
+        shaftShape: 'line',
+        lineWidth: 2
       }
+    }
   }
 }
 
-//大屏气泡图初始化数据
+// 大屏气泡图初始化数据
 screenConstants.circlePackingInit = {
   type: screenConstants.type.circlePacking,
-  category:screenConstants.category.vchart,
-  isDelete:false,
+  category: screenConstants.category.vchart,
+  isDelete: false,
   x: 0, // 初始化横坐标
   y: 0, // 初始化纵坐标
   w: 500, // 组件初始化宽度
   h: 300, // 组件初始化高度
   active: false,
   zindex: 99,
-  locked:false,
+  locked: false,
   refresh: false, // 是否定时刷新
   refreshTime: 30000, // 定时刷新时间，单位(ms)
-  dataSource:'1',//数据来源 1静态数据 2动态数据
-  dynamicDataSettings:{
-      datasetId:"",//数据集
-      dataColumns:[],//数据列
-  },//动态数据配置
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
   params: [], // 图表参数
   clickType: '1', // 点击类型
   thirdUrl: '', // 第三方跳转链接
   bindComponent: null, // 绑定组件
-  hiddenParamSize:0,//隐藏参数个数
-  theme:"",//主题
-  amination:"",//动画效果
-  isborder:false,//是否添加边框
-  borderType:"",//边框类型
-  borderColor:[],//边框颜色
-  spec:{
-      type:'circlePacking',
-      color: [],
-      data: {
-          values: [
-            {
-                "name": "数据1",
-                "value": 1
-            },
-            {
-                "name": "数据2",
-                "value": 2
-            },
-            {
-                "name": "数据3",
-                "value": 3
-            },
-            {
-                "name": "数据4",
-                "value": 4
-            },
-            {
-                "name": "数据5",
-                "value": 5
-            },
-            {
-                "name": "数据6",
-                "value": 6
-            },
-            {
-                "name": "数据7",
-                "value": 7
-            },
-            {
-                "name": "数据8",
-                "value": 8
-            },
-            {
-                "name": "数据9",
-                "value": 9
-            },
-            {
-                "name": "数据10",
-                "value": 10
-            }
-        ]
-      },
-      categoryField: 'name',
-      valueField: 'value',
-      background: '',//背景颜色
-      title:screenConstants.chartTitleSettings,
-      tooltip:screenConstants.tooltipSettings,
-      drill: true,
-      layoutPadding: 5,
-      label: {
-        style: {
-          visible:true,
-          fontSize: 10,
-          text: datum => [`${datum.name}`, `${datum.value}`]
-        }
-      },
-      legends:{
-        visible:false,
-        orient: 'top',//图例位置
-        position:'middle',//对齐方式
-        item: {
-            label:{
-              style:{
-                // fill:'#0BF1DA',//图例字体颜色
-              }
-            }
+  hiddenParamSize: 0, // 隐藏参数个数
+  theme: '', // 主题
+  amination: '', // 动画效果
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  spec: {
+    type: 'circlePacking',
+    color: [],
+    data: {
+      values: [
+        {
+          'name': '数据1',
+          'value': 1
         },
+        {
+          'name': '数据2',
+          'value': 2
+        },
+        {
+          'name': '数据3',
+          'value': 3
+        },
+        {
+          'name': '数据4',
+          'value': 4
+        },
+        {
+          'name': '数据5',
+          'value': 5
+        },
+        {
+          'name': '数据6',
+          'value': 6
+        },
+        {
+          'name': '数据7',
+          'value': 7
+        },
+        {
+          'name': '数据8',
+          'value': 8
+        },
+        {
+          'name': '数据9',
+          'value': 9
+        },
+        {
+          'name': '数据10',
+          'value': 10
+        }
+      ]
     },
+    categoryField: 'name',
+    valueField: 'value',
+    background: '', // 背景颜色
+    title: screenConstants.chartTitleSettings,
+    tooltip: screenConstants.tooltipSettings,
+    drill: true,
+    layoutPadding: 5,
+    label: {
+      style: {
+        visible: true,
+        fontSize: 10,
+        text: datum => [`${datum.name}`, `${datum.value}`]
+      }
+    },
+    legends: {
+      visible: false,
+      orient: 'top', // 图例位置
+      position: 'middle', // 对齐方式
+      item: {
+        label: {
+          style: {
+            // fill:'#0BF1DA',//图例字体颜色
+          }
+        }
+      }
+    }
   }
 }
 
-//转化漏斗图初始化数据
+// 转化漏斗图初始化数据
 screenConstants.transformFunnelInit = {
   type: screenConstants.type.transformFunnel,
-  category:screenConstants.category.vchart,
-  isDelete:false,
+  category: screenConstants.category.vchart,
+  isDelete: false,
   x: 0, // 初始化横坐标
   y: 0, // 初始化纵坐标
   w: 500, // 组件初始化宽度
   h: 300, // 组件初始化高度
   active: false,
   zindex: 99,
-  locked:false,
+  locked: false,
   refresh: false, // 是否定时刷新
   refreshTime: 30000, // 定时刷新时间，单位(ms)
-  dataSource:'1',//数据来源 1静态数据 2动态数据
-  dynamicDataSettings:{
-      datasetId:"",//数据集
-      dataColumns:[],//数据列
-  },//动态数据配置
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
   params: [], // 图表参数
   clickType: '1', // 点击类型
   thirdUrl: '', // 第三方跳转链接
   bindComponent: null, // 绑定组件
-  hiddenParamSize:0,//隐藏参数个数
-  theme:"",//主题
-  amination:"",//动画效果
-  isborder:false,//是否添加边框
-  borderType:"",//边框类型
-  borderColor:[],//边框颜色
-  spec:{
-    'type':'funnel',
+  hiddenParamSize: 0, // 隐藏参数个数
+  theme: '', // 主题
+  amination: '', // 动画效果
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  spec: {
+    'type': 'funnel',
     color: [],
     categoryField: 'name',
     valueField: 'value',
     isTransform: true,
     isCone: false,
-    data: 
+    data:
       {
         values: [
           {
@@ -4382,32 +4387,31 @@ screenConstants.transformFunnelInit = {
             name: 'Purchased'
           }
         ]
-      }
-    ,
-    background: '',//背景颜色
-    title:screenConstants.chartTitleSettings,
-      tooltip:screenConstants.tooltipSettings,
-    shape: 'rect',//梯形 trapezoid 矩形rect
-    label:{
-      visible:true,
-      position:'outside',
-      formatter: '',//标签格式
-      style:{
-          fontSize:14,
-          fill:null,
+      },
+    background: '', // 背景颜色
+    title: screenConstants.chartTitleSettings,
+    tooltip: screenConstants.tooltipSettings,
+    shape: 'rect', // 梯形 trapezoid 矩形rect
+    label: {
+      visible: true,
+      position: 'outside',
+      formatter: '', // 标签格式
+      style: {
+        fontSize: 14,
+        fill: null
       }
     },
-    legends:{
-        visible:false,
-        orient: 'top',//图例位置
-        position:'middle',//对齐方式
-        item: {
-            label:{
-              style:{
-                // fill:'#0BF1DA',//图例字体颜色
-              }
-            }
-        },
+    legends: {
+      visible: false,
+      orient: 'top', // 图例位置
+      position: 'middle', // 对齐方式
+      item: {
+        label: {
+          style: {
+            // fill:'#0BF1DA',//图例字体颜色
+          }
+        }
+      }
     },
     transformLabel: {
       visible: true
@@ -4415,718 +4419,718 @@ screenConstants.transformFunnelInit = {
     outerLabel: {
       position: 'right',
       visible: true,
-      style:{
-        fill:"#00CCFF",
-        fontSize:null
+      style: {
+        fill: '#00CCFF',
+        fontSize: null
       }
-    },
+    }
   }
 }
 
-//大屏直方图初始化数据
+// 大屏直方图初始化数据
 screenConstants.zhifangtuInit = {
   type: screenConstants.type.zhifangtu,
-  category:screenConstants.category.vchart,
-  isDelete:false,
+  category: screenConstants.category.vchart,
+  isDelete: false,
   x: 0, // 初始化横坐标
   y: 0, // 初始化纵坐标
   w: 500, // 组件初始化宽度
   h: 300, // 组件初始化高度
   active: false,
   zindex: 99,
-  locked:false,
+  locked: false,
   refresh: false, // 是否定时刷新
   refreshTime: 30000, // 定时刷新时间，单位(ms)
-  dataSource:'1',//数据来源 1静态数据 2动态数据
-  dynamicDataSettings:{
-      datasetId:"",//数据集
-      dataColumns:[],//数据列
-  },//动态数据配置
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
   params: [], // 图表参数
   clickType: '1', // 点击类型
   thirdUrl: '', // 第三方跳转链接
   bindComponent: null, // 绑定组件
-  hiddenParamSize:0,//隐藏参数个数
-  theme:"",//主题
-  amination:"",//动画效果
-  isborder:false,//是否添加边框
-  borderType:"",//边框类型
-  borderColor:[],//边框颜色
-  spec:{
-      type:'histogram',
-      color: [],
-      data: {
-          values: [
-            {
-              from: 0,
-              to: 10,
-              profit: 2,
-              type: 'A'
-            },
-            {
-              from: 10,
-              to: 16,
-              profit: 3,
-              type: 'B'
-            },
-            {
-              from: 16,
-              to: 18,
-              profit: 15,
-              type: 'C'
-            },
-            {
-              from: 18,
-              to: 26,
-              profit: 12,
-              type: 'D'
-            },
-            {
-              from: 26,
-              to: 32,
-              profit: 22,
-              type: 'E'
-            },
-            {
-              from: 32,
-              to: 56,
-              profit: 7,
-              type: 'F'
-            },
-            {
-              from: 56,
-              to: 62,
-              profit: 17,
-              type: 'G'
-            }
-          ]
-      },
-      seriesField: 'type',
-      xField: "from",
-      x2Field:"to",
-      yField: 'profit',
-      background: '',//背景颜色
-      barWidth:'100%',//柱体宽度
-      title:screenConstants.chartTitleSettings,
-      tooltip:screenConstants.tooltipSettings,
-      bar:{
-          style:{
-              cornerRadius:0,//圆角
+  hiddenParamSize: 0, // 隐藏参数个数
+  theme: '', // 主题
+  amination: '', // 动画效果
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  spec: {
+    type: 'histogram',
+    color: [],
+    data: {
+      values: [
+        {
+          from: 0,
+          to: 10,
+          profit: 2,
+          type: 'A'
+        },
+        {
+          from: 10,
+          to: 16,
+          profit: 3,
+          type: 'B'
+        },
+        {
+          from: 16,
+          to: 18,
+          profit: 15,
+          type: 'C'
+        },
+        {
+          from: 18,
+          to: 26,
+          profit: 12,
+          type: 'D'
+        },
+        {
+          from: 26,
+          to: 32,
+          profit: 22,
+          type: 'E'
+        },
+        {
+          from: 32,
+          to: 56,
+          profit: 7,
+          type: 'F'
+        },
+        {
+          from: 56,
+          to: 62,
+          profit: 17,
+          type: 'G'
+        }
+      ]
+    },
+    seriesField: 'type',
+    xField: 'from',
+    x2Field: 'to',
+    yField: 'profit',
+    background: '', // 背景颜色
+    barWidth: '100%', // 柱体宽度
+    title: screenConstants.chartTitleSettings,
+    tooltip: screenConstants.tooltipSettings,
+    bar: {
+      style: {
+        cornerRadius: 0// 圆角
+      }
+    },
+    label: {
+      visible: true,
+      position: 'outside',
+      style: {
+        fontSize: 14,
+        fill: null
+      }
+    },
+    axes: [
+      { orient: 'bottom', sampling: true, label: { visible: true, style: { fill: '#6E6F73' }, autoRotate: false, autoRotateAngle: [0, 90], autoLimit: false }, unit: { visible: false, style: {}}},
+      { orient: 'left', label: { visible: true, style: { fill: '#6E6F73' }, autoLimit: false }, unit: { visible: false, style: {}}}
+    ],
+    legends: {
+      visible: false,
+      orient: 'top', // 图例位置
+      position: 'middle', // 对齐方式
+      item: {
+        label: {
+          style: {
+            // fill:'#0BF1DA',//图例字体颜色
           }
-      },
-      label:{
-          visible:true,
-          position:'outside',
-          style:{
-              fontSize:14,
-              fill:null,
-          }
-      },
-      axes:[
-          {orient:'bottom',sampling: true,label:{visible:true,style:{fill:'#6E6F73'},autoRotate:false,autoRotateAngle: [0, 90],autoLimit:false},unit:{visible:false,style:{}}},
-          {orient:'left',label:{visible:true,style:{fill:'#6E6F73'},autoLimit:false},unit:{visible:false,style:{}}}
-      ],
-      legends:{
-          visible:false,
-          orient: 'top',//图例位置
-          position:'middle',//对齐方式
-          item: {
-              label:{
-                style:{
-                  // fill:'#0BF1DA',//图例字体颜色
-                }
-              }
-          },
-      },
+        }
+      }
+    }
   }
 }
 
-//大屏桑葚图初始化数据
+// 大屏桑葚图初始化数据
 screenConstants.sankeyInit = {
   type: screenConstants.type.sankey,
-  category:screenConstants.category.vchart,
-  isDelete:false,
+  category: screenConstants.category.vchart,
+  isDelete: false,
   x: 0, // 初始化横坐标
   y: 0, // 初始化纵坐标
   w: 500, // 组件初始化宽度
   h: 300, // 组件初始化高度
   active: false,
   zindex: 99,
-  locked:false,
+  locked: false,
   refresh: false, // 是否定时刷新
   refreshTime: 30000, // 定时刷新时间，单位(ms)
-  dataSource:'1',//数据来源 1静态数据 2动态数据
-  dynamicDataSettings:{
-      datasetId:"",//数据集
-      dataColumns:[],//数据列
-  },//动态数据配置
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
   params: [], // 图表参数
   clickType: '1', // 点击类型
   thirdUrl: '', // 第三方跳转链接
   bindComponent: null, // 绑定组件
-  hiddenParamSize:0,//隐藏参数个数
-  theme:"",//主题
-  amination:"",//动画效果
-  isborder:false,//是否添加边框
-  borderType:"",//边框类型
-  borderColor:[],//边框颜色
-  spec:{
-      type:'sankey',
-      color: [],
-      data: {
-        values:[{
-          nodes: [
-            { name: 'Bight of Benin'},
-            { name: 'Brazil'},
-            { name: 'Bight of Biafra and Gulf of Guinea islands'},
-            { name: 'Gold Coast'},
-            { name: 'Others Dep.'},
-            { name: 'Senegambia and offshore Atlantic'},
-            { name: 'Sierra Leone e Windward Coast'},
-            { name: 'Southeast Africa and Indian Ocean islands'},
-            { name: 'West Central Africa and St. Helena'},
-            { name: 'Caribbean'},
-            { name: 'Mainland North America'},
-            { name: 'Others Arr'},
-            { name: 'Spanish American Mainland'}
-          ],
-          links: [
-            { target: 'Brazil', source: 'Bight of Benin', value: 733769 },
-            { target: 'Brazil', source: 'Bight of Biafra and Gulf of Guinea islands', value: 98256 },
-            { target: 'Brazil', source: 'Gold Coast', value: 40507 },
-            { target: 'Brazil', source: 'Others Dep.', value: 18627 },
-            { target: 'Brazil', source: 'Senegambia and offshore Atlantic', value: 86001 },
-            { target: 'Brazil', source: 'Sierra Leone e Windward Coast', value: 5409 },
-            { target: 'Brazil', source: 'Southeast Africa and Indian Ocean islands', value: 232940 },
-            { target: 'Brazil', source: 'West Central Africa and St. Helena', value: 1818611 },
-            { target: 'Caribbean', source: 'Bight of Benin', value: 494753 },
-            { target: 'Caribbean', source: 'Bight of Biafra and Gulf of Guinea islands', value: 678927 },
-            { target: 'Caribbean', source: 'Gold Coast', value: 517280 },
-            { target: 'Caribbean', source: 'Others Dep.', value: 192389 },
-            { target: 'Caribbean', source: 'Senegambia and offshore Atlantic', value: 144125 },
-            { target: 'Caribbean', source: 'Sierra Leone e Windward Coast', value: 284412 },
-            { target: 'Caribbean', source: 'Southeast Africa and Indian Ocean islands', value: 57138 },
-            { target: 'Caribbean', source: 'West Central Africa and St. Helena', value: 793963 },
-            { target: 'Mainland North America', source: 'Bight of Benin', value: 7153 },
-            { target: 'Mainland North America', source: 'Bight of Biafra and Gulf of Guinea islands', value: 39389 },
-            { target: 'Mainland North America', source: 'Gold Coast', value: 26918 },
-            { target: 'Mainland North America', source: 'Others Dep.', value: 12532 },
-            { target: 'Mainland North America', source: 'Senegambia and offshore Atlantic', value: 49118 },
-            { target: 'Mainland North America', source: 'Sierra Leone e Windward Coast', value: 40366 },
-            { target: 'Mainland North America', source: 'Southeast Africa and Indian Ocean islands', value: 3958 },
-            { target: 'Mainland North America', source: 'West Central Africa and St. Helena', value: 62966 },
-            { target: 'Others Arr', source: 'Bight of Benin', value: 40607 },
-            { target: 'Others Arr', source: 'Bight of Biafra and Gulf of Guinea islands', value: 34687 },
-            { target: 'Others Arr', source: 'Gold Coast', value: 2108 },
-            { target: 'Others Arr', source: 'Others Dep.', value: 1499 },
-            { target: 'Others Arr', source: 'Senegambia and offshore Atlantic', value: 8435 },
-            { target: 'Others Arr', source: 'Sierra Leone e Windward Coast', value: 12793 },
-            { target: 'Others Arr', source: 'Southeast Africa and Indian Ocean islands', value: 9924 },
-            { target: 'Others Arr', source: 'West Central Africa and St. Helena', value: 50046 },
-            { target: 'Spanish American Mainland', source: 'Bight of Benin', value: 15822 },
-            { target: 'Spanish American Mainland', source: 'Bight of Biafra and Gulf of Guinea islands', value: 13700 },
-            { target: 'Spanish American Mainland', source: 'Gold Coast', value: 5030 },
-            { target: 'Spanish American Mainland', source: 'Others Dep.', value: 5155 },
-            { target: 'Spanish American Mainland', source: 'Senegambia and offshore Atlantic', value: 44889 },
-            { target: 'Spanish American Mainland', source: 'Sierra Leone e Windward Coast', value: 326 },
-            { target: 'Spanish American Mainland', source: 'Southeast Africa and Indian Ocean islands', value: 14327 },
-            { target: 'Spanish American Mainland', source: 'West Central Africa and St. Helena', value: 131837 }
-          ],
-        }]
-      },
-      categoryField: 'name',
-      valueField: 'value',
-      sourceField: 'source',
-      targetField: 'target',
-      nodeKey: datum => datum.name,
-      background: '',//背景颜色
-      title:screenConstants.chartTitleSettings,
-      tooltip:screenConstants.tooltipSettings,
-      label:{
-          visible:true,
-          position:'outside',
-          style:{
-              fontSize:14,
-              fill:null,
-          }
-      },
-      node: {
-        state: {
-          hover: {
-            stroke: '#333333'
-          },
-          selected: {
-            fill: '#dddddd',
-            stroke: '#333333',
-            lineWidth: 1,
-            brighter: 1,
-            fillOpacity: 1
-          }
-        }
-      },
-    
-      link: {
-        style: {
-          fillOpacity: 0.1
+  hiddenParamSize: 0, // 隐藏参数个数
+  theme: '', // 主题
+  amination: '', // 动画效果
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  spec: {
+    type: 'sankey',
+    color: [],
+    data: {
+      values: [{
+        nodes: [
+          { name: 'Bight of Benin' },
+          { name: 'Brazil' },
+          { name: 'Bight of Biafra and Gulf of Guinea islands' },
+          { name: 'Gold Coast' },
+          { name: 'Others Dep.' },
+          { name: 'Senegambia and offshore Atlantic' },
+          { name: 'Sierra Leone e Windward Coast' },
+          { name: 'Southeast Africa and Indian Ocean islands' },
+          { name: 'West Central Africa and St. Helena' },
+          { name: 'Caribbean' },
+          { name: 'Mainland North America' },
+          { name: 'Others Arr' },
+          { name: 'Spanish American Mainland' }
+        ],
+        links: [
+          { target: 'Brazil', source: 'Bight of Benin', value: 733769 },
+          { target: 'Brazil', source: 'Bight of Biafra and Gulf of Guinea islands', value: 98256 },
+          { target: 'Brazil', source: 'Gold Coast', value: 40507 },
+          { target: 'Brazil', source: 'Others Dep.', value: 18627 },
+          { target: 'Brazil', source: 'Senegambia and offshore Atlantic', value: 86001 },
+          { target: 'Brazil', source: 'Sierra Leone e Windward Coast', value: 5409 },
+          { target: 'Brazil', source: 'Southeast Africa and Indian Ocean islands', value: 232940 },
+          { target: 'Brazil', source: 'West Central Africa and St. Helena', value: 1818611 },
+          { target: 'Caribbean', source: 'Bight of Benin', value: 494753 },
+          { target: 'Caribbean', source: 'Bight of Biafra and Gulf of Guinea islands', value: 678927 },
+          { target: 'Caribbean', source: 'Gold Coast', value: 517280 },
+          { target: 'Caribbean', source: 'Others Dep.', value: 192389 },
+          { target: 'Caribbean', source: 'Senegambia and offshore Atlantic', value: 144125 },
+          { target: 'Caribbean', source: 'Sierra Leone e Windward Coast', value: 284412 },
+          { target: 'Caribbean', source: 'Southeast Africa and Indian Ocean islands', value: 57138 },
+          { target: 'Caribbean', source: 'West Central Africa and St. Helena', value: 793963 },
+          { target: 'Mainland North America', source: 'Bight of Benin', value: 7153 },
+          { target: 'Mainland North America', source: 'Bight of Biafra and Gulf of Guinea islands', value: 39389 },
+          { target: 'Mainland North America', source: 'Gold Coast', value: 26918 },
+          { target: 'Mainland North America', source: 'Others Dep.', value: 12532 },
+          { target: 'Mainland North America', source: 'Senegambia and offshore Atlantic', value: 49118 },
+          { target: 'Mainland North America', source: 'Sierra Leone e Windward Coast', value: 40366 },
+          { target: 'Mainland North America', source: 'Southeast Africa and Indian Ocean islands', value: 3958 },
+          { target: 'Mainland North America', source: 'West Central Africa and St. Helena', value: 62966 },
+          { target: 'Others Arr', source: 'Bight of Benin', value: 40607 },
+          { target: 'Others Arr', source: 'Bight of Biafra and Gulf of Guinea islands', value: 34687 },
+          { target: 'Others Arr', source: 'Gold Coast', value: 2108 },
+          { target: 'Others Arr', source: 'Others Dep.', value: 1499 },
+          { target: 'Others Arr', source: 'Senegambia and offshore Atlantic', value: 8435 },
+          { target: 'Others Arr', source: 'Sierra Leone e Windward Coast', value: 12793 },
+          { target: 'Others Arr', source: 'Southeast Africa and Indian Ocean islands', value: 9924 },
+          { target: 'Others Arr', source: 'West Central Africa and St. Helena', value: 50046 },
+          { target: 'Spanish American Mainland', source: 'Bight of Benin', value: 15822 },
+          { target: 'Spanish American Mainland', source: 'Bight of Biafra and Gulf of Guinea islands', value: 13700 },
+          { target: 'Spanish American Mainland', source: 'Gold Coast', value: 5030 },
+          { target: 'Spanish American Mainland', source: 'Others Dep.', value: 5155 },
+          { target: 'Spanish American Mainland', source: 'Senegambia and offshore Atlantic', value: 44889 },
+          { target: 'Spanish American Mainland', source: 'Sierra Leone e Windward Coast', value: 326 },
+          { target: 'Spanish American Mainland', source: 'Southeast Africa and Indian Ocean islands', value: 14327 },
+          { target: 'Spanish American Mainland', source: 'West Central Africa and St. Helena', value: 131837 }
+        ]
+      }]
+    },
+    categoryField: 'name',
+    valueField: 'value',
+    sourceField: 'source',
+    targetField: 'target',
+    nodeKey: datum => datum.name,
+    background: '', // 背景颜色
+    title: screenConstants.chartTitleSettings,
+    tooltip: screenConstants.tooltipSettings,
+    label: {
+      visible: true,
+      position: 'outside',
+      style: {
+        fontSize: 14,
+        fill: null
+      }
+    },
+    node: {
+      state: {
+        hover: {
+          stroke: '#333333'
         },
-        state: {
-          hover: {
-            fillOpacity: 0.4
-          },
-          blur: {
-            fill: '#e8e8e8'
+        selected: {
+          fill: '#dddddd',
+          stroke: '#333333',
+          lineWidth: 1,
+          brighter: 1,
+          fillOpacity: 1
+        }
+      }
+    },
+
+    link: {
+      style: {
+        fillOpacity: 0.1
+      },
+      state: {
+        hover: {
+          fillOpacity: 0.4
+        },
+        blur: {
+          fill: '#e8e8e8'
+        }
+      }
+    },
+    emphasis: {
+      enable: true,
+      trigger: 'selected',
+      effect: 'adjacency'
+    },
+    legends: {
+      visible: false,
+      orient: 'top', // 图例位置
+      position: 'middle', // 对齐方式
+      item: {
+        label: {
+          style: {
+            // fill:'#0BF1DA',//图例字体颜色
           }
         }
-      },
-      emphasis: {
-        enable: true,
-        trigger: 'selected',
-        effect: 'adjacency'
-      },
-      legends:{
-          visible:false,
-          orient: 'top',//图例位置
-          position:'middle',//对齐方式
-          item: {
-              label:{
-                style:{
-                  // fill:'#0BF1DA',//图例字体颜色
-                }
-              }
-          },
-      },
+      }
+    }
   }
 }
 
-screenConstants.map=[
-  {value:'100000',label:'中华人民共和国'},
-  {value:'110000',label:'北京市'},
-  {value:'120000',label:'天津市'},
-  {value:'130000',label:'河北省'},
-  {value:'140000',label:'山西省'},
-  {value:'150000',label:'内蒙古自治区'},
-  {value:'210000',label:'辽宁省'},
-  {value:'220000',label:'吉林省'},
-  {value:'230000',label:'黑龙江省'},
-  {value:'310000',label:'上海市'},
-  {value:'320000',label:'江苏省'},
-  {value:'330000',label:'浙江省'},
-  {value:'340000',label:'安徽省'},
-  {value:'350000',label:'福建省'},
-  {value:'360000',label:'江西省'},
-  {value:'370000',label:'山东省'},
-  {value:'410000',label:'河南省'},
-  {value:'420000',label:'湖北省'},
-  {value:'430000',label:'湖南省'},
-  {value:'440000',label:'广东省'},
-  {value:'450000',label:'广西壮族自治区'},
-  {value:'460000',label:'海南省'},
-  {value:'500000',label:'重庆市'},
-  {value:'510000',label:'四川省'},
-  {value:'520000',label:'贵州省'},
-  {value:'530000',label:'云南省'},
-  {value:'540000',label:'西藏自治区'},
-  {value:'610000',label:'陕西省'},
-  {value:'620000',label:'甘肃省'},
-  {value:'630000',label:'青海省'},
-  {value:'640000',label:'宁夏回族自治区'},
-  {value:'650000',label:'新疆维吾尔自治区'},
-  {value:'710000',label:'台湾省'},
-  {value:'810000',label:'香港特别行政区'},
-  {value:'820000',label:'澳门特别行政区'},
-  {value:'110100',label:'北京市市辖区'},
-  {value:'120100',label:'天津市市辖区'},
-  {value:'130100',label:'石家庄市'},
-  {value:'130200',label:'唐山市'},
-  {value:'130300',label:'秦皇岛市'},
-  {value:'130400',label:'邯郸市'},
-  {value:'130500',label:'邢台市'},
-  {value:'130600',label:'保定市'},
-  {value:'130700',label:'张家口市'},
-  {value:'130800',label:'承德市'},
-  {value:'130900',label:'沧州市'},
-  {value:'131000',label:'廊坊市'},
-  {value:'131100',label:'衡水市'},
-  {value:'140100',label:'太原市'},
-  {value:'140200',label:'大同市'},
-  {value:'140300',label:'阳泉市'},
-  {value:'140400',label:'长治市'},
-  {value:'140500',label:'晋城市'},
-  {value:'140600',label:'朔州市'},
-  {value:'140700',label:'晋中市'},
-  {value:'140800',label:'运城市'},
-  {value:'140900',label:'忻州市'},
-  {value:'141000',label:'临汾市'},
-  {value:'141100',label:'吕梁市'},
-  {value:'150100',label:'呼和浩特市'},
-  {value:'150200',label:'包头市'},
-  {value:'150300',label:'乌海市'},
-  {value:'150400',label:'赤峰市'},
-  {value:'150500',label:'通辽市'},
-  {value:'150600',label:'鄂尔多斯市'},
-  {value:'150700',label:'呼伦贝尔市'},
-  {value:'150800',label:'巴彦淖尔市'},
-  {value:'150900',label:'乌兰察布市'},
-  {value:'152200',label:'兴安盟'},
-  {value:'152500',label:'锡林郭勒盟'},
-  {value:'152900',label:'阿拉善盟'},
-  {value:'210100',label:'沈阳市'},
-  {value:'210200',label:'大连市'},
-  {value:'210300',label:'鞍山市'},
-  {value:'210400',label:'抚顺市'},
-  {value:'210500',label:'本溪市'},
-  {value:'210600',label:'丹东市'},
-  {value:'210700',label:'锦州市'},
-  {value:'210800',label:'营口市'},
-  {value:'210900',label:'阜新市'},
-  {value:'211000',label:'辽阳市'},
-  {value:'211100',label:'盘锦市'},
-  {value:'211200',label:'铁岭市'},
-  {value:'211300',label:'朝阳市'},
-  {value:'211400',label:'葫芦岛市'},
-  {value:'220100',label:'长春市'},
-  {value:'220200',label:'吉林市'},
-  {value:'220300',label:'四平市'},
-  {value:'220400',label:'辽源市'},
-  {value:'220500',label:'通化市'},
-  {value:'220600',label:'白山市'},
-  {value:'220700',label:'松原市'},
-  {value:'220800',label:'白城市'},
-  {value:'222400',label:'延边朝鲜族自治州'},
-  {value:'230100',label:'哈尔滨市'},
-  {value:'230200',label:'齐齐哈尔市'},
-  {value:'230300',label:'鸡西市'},
-  {value:'230400',label:'鹤岗市'},
-  {value:'230500',label:'双鸭山市'},
-  {value:'230600',label:'大庆市'},
-  {value:'230700',label:'伊春市'},
-  {value:'230800',label:'佳木斯市'},
-  {value:'230900',label:'七台河市'},
-  {value:'231000',label:'牡丹江市'},
-  {value:'231100',label:'黑河市'},
-  {value:'231200',label:'绥化市'},
-  {value:'232700',label:'大兴安岭地区'},
-  {value:'310100',label:'上海市市辖区'},
-  {value:'320100',label:'南京市'},
-  {value:'320200',label:'无锡市'},
-  {value:'320300',label:'徐州市'},
-  {value:'320400',label:'常州市'},
-  {value:'320500',label:'苏州市'},
-  {value:'320600',label:'南通市'},
-  {value:'320700',label:'连云港市'},
-  {value:'320800',label:'淮安市'},
-  {value:'320900',label:'盐城市'},
-  {value:'321000',label:'扬州市'},
-  {value:'321100',label:'镇江市'},
-  {value:'321200',label:'泰州市'},
-  {value:'321300',label:'宿迁市'},
-  {value:'330100',label:'杭州市'},
-  {value:'330200',label:'宁波市'},
-  {value:'330300',label:'温州市'},
-  {value:'330400',label:'嘉兴市'},
-  {value:'330500',label:'湖州市'},
-  {value:'330600',label:'绍兴市'},
-  {value:'330700',label:'金华市'},
-  {value:'330800',label:'衢州市'},
-  {value:'330900',label:'舟山市'},
-  {value:'331000',label:'台州市'},
-  {value:'331100',label:'丽水市'},
-  {value:'340100',label:'合肥市'},
-  {value:'340200',label:'芜湖市'},
-  {value:'340300',label:'蚌埠市'},
-  {value:'340400',label:'淮南市'},
-  {value:'340500',label:'马鞍山市'},
-  {value:'340600',label:'淮北市'},
-  {value:'340700',label:'铜陵市'},
-  {value:'340800',label:'安庆市'},
-  {value:'341000',label:'黄山市'},
-  {value:'341100',label:'滁州市'},
-  {value:'341200',label:'阜阳市'},
-  {value:'341300',label:'宿州市'},
-  {value:'341500',label:'六安市'},
-  {value:'341600',label:'亳州市'},
-  {value:'341700',label:'池州市'},
-  {value:'341800',label:'宣城市'},
-  {value:'350100',label:'福州市'},
-  {value:'350200',label:'厦门市'},
-  {value:'350300',label:'莆田市'},
-  {value:'350400',label:'三明市'},
-  {value:'350500',label:'泉州市'},
-  {value:'350600',label:'漳州市'},
-  {value:'350700',label:'南平市'},
-  {value:'350800',label:'龙岩市'},
-  {value:'350900',label:'宁德市'},
-  {value:'360100',label:'南昌市'},
-  {value:'360200',label:'景德镇市'},
-  {value:'360300',label:'萍乡市'},
-  {value:'360400',label:'九江市'},
-  {value:'360500',label:'新余市'},
-  {value:'360600',label:'鹰潭市'},
-  {value:'360700',label:'赣州市'},
-  {value:'360800',label:'吉安市'},
-  {value:'360900',label:'宜春市'},
-  {value:'361000',label:'抚州市'},
-  {value:'361100',label:'上饶市'},
-  {value:'370100',label:'济南市'},
-  {value:'370200',label:'青岛市'},
-  {value:'370300',label:'淄博市'},
-  {value:'370400',label:'枣庄市'},
-  {value:'370500',label:'东营市'},
-  {value:'370600',label:'烟台市'},
-  {value:'370700',label:'潍坊市'},
-  {value:'370800',label:'济宁市'},
-  {value:'370900',label:'泰安市'},
-  {value:'371000',label:'威海市'},
-  {value:'371100',label:'日照市'},
-  {value:'371300',label:'临沂市'},
-  {value:'371400',label:'德州市'},
-  {value:'371500',label:'聊城市'},
-  {value:'371600',label:'滨州市'},
-  {value:'371700',label:'菏泽市'},
-  {value:'410100',label:'郑州市'},
-  {value:'410200',label:'开封市'},
-  {value:'410300',label:'洛阳市'},
-  {value:'410400',label:'平顶山市'},
-  {value:'410500',label:'安阳市'},
-  {value:'410600',label:'鹤壁市'},
-  {value:'410700',label:'新乡市'},
-  {value:'410800',label:'焦作市'},
-  {value:'410900',label:'濮阳市'},
-  {value:'411000',label:'许昌市'},
-  {value:'411100',label:'漯河市'},
-  {value:'411200',label:'三门峡市'},
-  {value:'411300',label:'南阳市'},
-  {value:'411400',label:'商丘市'},
-  {value:'411500',label:'信阳市'},
-  {value:'411600',label:'周口市'},
-  {value:'411700',label:'驻马店市'},
-  {value:'419001',label:'济源市'},
-  {value:'420100',label:'武汉市'},
-  {value:'420200',label:'黄石市'},
-  {value:'420300',label:'十堰市'},
-  {value:'420500',label:'宜昌市'},
-  {value:'420600',label:'襄阳市'},
-  {value:'420700',label:'鄂州市'},
-  {value:'420800',label:'荆门市'},
-  {value:'420900',label:'孝感市'},
-  {value:'421000',label:'荆州市'},
-  {value:'421100',label:'黄冈市'},
-  {value:'421200',label:'咸宁市'},
-  {value:'421300',label:'随州市'},
-  {value:'422800',label:'恩施土家族苗族自治州'},
-  {value:'429004',label:'仙桃市'},
-  {value:'429005',label:'潜江市'},
-  {value:'429006',label:'天门市'},
-  {value:'429021',label:'神农架林区'},
-  {value:'430100',label:'长沙市'},
-  {value:'430200',label:'株洲市'},
-  {value:'430300',label:'湘潭市'},
-  {value:'430400',label:'衡阳市'},
-  {value:'430500',label:'邵阳市'},
-  {value:'430600',label:'岳阳市'},
-  {value:'430700',label:'常德市'},
-  {value:'430800',label:'张家界市'},
-  {value:'430900',label:'益阳市'},
-  {value:'431000',label:'郴州市'},
-  {value:'431100',label:'永州市'},
-  {value:'431200',label:'怀化市'},
-  {value:'431300',label:'娄底市'},
-  {value:'433100',label:'湘西土家族苗族自治州'},
-  {value:'440100',label:'广州市'},
-  {value:'440200',label:'韶关市'},
-  {value:'440300',label:'深圳市'},
-  {value:'440400',label:'珠海市'},
-  {value:'440500',label:'汕头市'},
-  {value:'440600',label:'佛山市'},
-  {value:'440700',label:'江门市'},
-  {value:'440800',label:'湛江市'},
-  {value:'440900',label:'茂名市'},
-  {value:'441200',label:'肇庆市'},
-  {value:'441300',label:'惠州市'},
-  {value:'441400',label:'梅州市'},
-  {value:'441500',label:'汕尾市'},
-  {value:'441600',label:'河源市'},
-  {value:'441700',label:'阳江市'},
-  {value:'441800',label:'清远市'},
-  {value:'441900',label:'东莞市'},
-  {value:'442000',label:'中山市'},
-  {value:'445100',label:'潮州市'},
-  {value:'445200',label:'揭阳市'},
-  {value:'445300',label:'云浮市'},
-  {value:'450100',label:'南宁市'},
-  {value:'450200',label:'柳州市'},
-  {value:'450300',label:'桂林市'},
-  {value:'450400',label:'梧州市'},
-  {value:'450500',label:'北海市'},
-  {value:'450600',label:'防城港市'},
-  {value:'450700',label:'钦州市'},
-  {value:'450800',label:'贵港市'},
-  {value:'450900',label:'玉林市'},
-  {value:'451000',label:'百色市'},
-  {value:'451100',label:'贺州市'},
-  {value:'451200',label:'河池市'},
-  {value:'451300',label:'来宾市'},
-  {value:'451400',label:'崇左市'},
-  {value:'460100',label:'海口市'},
-  {value:'460200',label:'三亚市'},
-  {value:'460300',label:'三沙市'},
-  {value:'460400',label:'儋州市'},
-  {value:'469001',label:'五指山市'},
-  {value:'469002',label:'琼海市'},
-  {value:'469005',label:'文昌市'},
-  {value:'469006',label:'万宁市'},
-  {value:'469007',label:'东方市'},
-  {value:'469021',label:'定安县'},
-  {value:'469022',label:'屯昌县'},
-  {value:'469023',label:'澄迈县'},
-  {value:'469024',label:'临高县'},
-  {value:'469025',label:'白沙黎族自治县'},
-  {value:'469026',label:'昌江黎族自治县'},
-  {value:'469027',label:'乐东黎族自治县'},
-  {value:'469028',label:'陵水黎族自治县'},
-  {value:'469029',label:'保亭黎族苗族自治县'},
-  {value:'469030',label:'琼中黎族苗族自治县'},
-  {value:'500100',label:'重庆市市辖区'},
-  {value:'500200',label:'重庆市郊县'},
-  {value:'510100',label:'成都市'},
-  {value:'510300',label:'自贡市'},
-  {value:'510400',label:'攀枝花市'},
-  {value:'510500',label:'泸州市'},
-  {value:'510600',label:'德阳市'},
-  {value:'510700',label:'绵阳市'},
-  {value:'510800',label:'广元市'},
-  {value:'510900',label:'遂宁市'},
-  {value:'511000',label:'内江市'},
-  {value:'511100',label:'乐山市'},
-  {value:'511300',label:'南充市'},
-  {value:'511400',label:'眉山市'},
-  {value:'511500',label:'宜宾市'},
-  {value:'511600',label:'广安市'},
-  {value:'511700',label:'达州市'},
-  {value:'511800',label:'雅安市'},
-  {value:'511900',label:'巴中市'},
-  {value:'512000',label:'资阳市'},
-  {value:'513200',label:'阿坝藏族羌族自治州'},
-  {value:'513300',label:'甘孜藏族自治州'},
-  {value:'513400',label:'凉山彝族自治州'},
-  {value:'520100',label:'贵阳市'},
-  {value:'520200',label:'六盘水市'},
-  {value:'520300',label:'遵义市'},
-  {value:'520400',label:'安顺市'},
-  {value:'520500',label:'毕节市'},
-  {value:'520600',label:'铜仁市'},
-  {value:'522300',label:'黔西南布依族苗族自治州'},
-  {value:'522600',label:'黔东南苗族侗族自治州'},
-  {value:'522700',label:'黔南布依族苗族自治州'},
-  {value:'530100',label:'昆明市'},
-  {value:'530300',label:'曲靖市'},
-  {value:'530400',label:'玉溪市'},
-  {value:'530500',label:'保山市'},
-  {value:'530600',label:'昭通市'},
-  {value:'530700',label:'丽江市'},
-  {value:'530800',label:'普洱市'},
-  {value:'530900',label:'临沧市'},
-  {value:'532300',label:'楚雄彝族自治州'},
-  {value:'532500',label:'红河哈尼族彝族自治州'},
-  {value:'532600',label:'文山壮族苗族自治州'},
-  {value:'532800',label:'西双版纳傣族自治州'},
-  {value:'532900',label:'大理白族自治州'},
-  {value:'533100',label:'德宏傣族景颇族自治州'},
-  {value:'533300',label:'怒江傈僳族自治州'},
-  {value:'533400',label:'迪庆藏族自治州'},
-  {value:'540100',label:'拉萨市'},
-  {value:'540200',label:'日喀则市'},
-  {value:'540300',label:'昌都市'},
-  {value:'540400',label:'林芝市'},
-  {value:'540500',label:'山南市'},
-  {value:'540600',label:'那曲市'},
-  {value:'542500',label:'阿里地区'},
-  {value:'610100',label:'西安市'},
-  {value:'610200',label:'铜川市'},
-  {value:'610300',label:'宝鸡市'},
-  {value:'610400',label:'咸阳市'},
-  {value:'610500',label:'渭南市'},
-  {value:'610600',label:'延安市'},
-  {value:'610700',label:'汉中市'},
-  {value:'610800',label:'榆林市'},
-  {value:'610900',label:'安康市'},
-  {value:'611000',label:'商洛市'},
-  {value:'620100',label:'兰州市'},
-  {value:'620200',label:'嘉峪关市'},
-  {value:'620300',label:'金昌市'},
-  {value:'620400',label:'白银市'},
-  {value:'620500',label:'天水市'},
-  {value:'620600',label:'武威市'},
-  {value:'620700',label:'张掖市'},
-  {value:'620800',label:'平凉市'},
-  {value:'620900',label:'酒泉市'},
-  {value:'621000',label:'庆阳市'},
-  {value:'621100',label:'定西市'},
-  {value:'621200',label:'陇南市'},
-  {value:'622900',label:'临夏回族自治州'},
-  {value:'623000',label:'甘南藏族自治州'},
-  {value:'630100',label:'西宁市'},
-  {value:'630200',label:'海东市'},
-  {value:'632200',label:'海北藏族自治州'},
-  {value:'632300',label:'黄南藏族自治州'},
-  {value:'632500',label:'海南藏族自治州'},
-  {value:'632600',label:'果洛藏族自治州'},
-  {value:'632700',label:'玉树藏族自治州'},
-  {value:'632800',label:'海西蒙古族藏族自治州'},
-  {value:'640100',label:'银川市'},
-  {value:'640200',label:'石嘴山市'},
-  {value:'640300',label:'吴忠市'},
-  {value:'640400',label:'固原市'},
-  {value:'640500',label:'中卫市'},
-  {value:'650100',label:'乌鲁木齐市'},
-  {value:'650200',label:'克拉玛依市'},
-  {value:'650400',label:'吐鲁番市'},
-  {value:'650500',label:'哈密市'},
-  {value:'652300',label:'昌吉回族自治州'},
-  {value:'652700',label:'博尔塔拉蒙古自治州'},
-  {value:'652800',label:'巴音郭楞蒙古自治州'},
-  {value:'652900',label:'阿克苏地区'},
-  {value:'653000',label:'克孜勒苏柯尔克孜自治州'},
-  {value:'653100',label:'喀什地区'},
-  {value:'653200',label:'和田地区'},
-  {value:'654000',label:'伊犁哈萨克自治州'},
-  {value:'654200',label:'塔城地区'},
-  {value:'654300',label:'阿勒泰地区'},
-  {value:'659001',label:'石河子市'},
-  {value:'659002',label:'阿拉尔市'},
-  {value:'659003',label:'图木舒克市'},
-  {value:'659004',label:'五家渠市'},
-  {value:'659005',label:'北屯市'},
-  {value:'659006',label:'铁门关市'},
-  {value:'659007',label:'双河市'},
-  {value:'659008',label:'可克达拉市'},
-  {value:'659009',label:'昆玉市'},
-  {value:'810001',label:'中西区'},
-  {value:'810002',label:'湾仔区'},
-  {value:'810003',label:'东区'},
-  {value:'810004',label:'南区'},
-  {value:'810005',label:'油尖旺区'},
-  {value:'810006',label:'深水埗区'},
-  {value:'810007',label:'九龙城区'},
-  {value:'810008',label:'黄大仙区'},
-  {value:'810009',label:'观塘区'},
-  {value:'810010',label:'荃湾区'},
-  {value:'810011',label:'屯门区'},
-  {value:'810012',label:'元朗区'},
-  {value:'810013',label:'北区'},
-  {value:'810014',label:'大埔区'},
-  {value:'810015',label:'西贡区'},
-  {value:'810016',label:'沙田区'},
-  {value:'810017',label:'葵青区'},
-  {value:'810018',label:'离岛区'},
-  {value:'820001',label:'花地玛堂区'},
-  {value:'820002',label:'花王堂区'},
-  {value:'820003',label:'望德堂区'},
-  {value:'820004',label:'大堂区'},
-  {value:'820005',label:'风顺堂区'},
-  {value:'820006',label:'嘉模堂区'},
-  {value:'820007',label:'路凼填海区'},
-  {value:'820008',label:'圣方济各堂区'}
+screenConstants.map = [
+  { value: '100000', label: '中华人民共和国' },
+  { value: '110000', label: '北京市' },
+  { value: '120000', label: '天津市' },
+  { value: '130000', label: '河北省' },
+  { value: '140000', label: '山西省' },
+  { value: '150000', label: '内蒙古自治区' },
+  { value: '210000', label: '辽宁省' },
+  { value: '220000', label: '吉林省' },
+  { value: '230000', label: '黑龙江省' },
+  { value: '310000', label: '上海市' },
+  { value: '320000', label: '江苏省' },
+  { value: '330000', label: '浙江省' },
+  { value: '340000', label: '安徽省' },
+  { value: '350000', label: '福建省' },
+  { value: '360000', label: '江西省' },
+  { value: '370000', label: '山东省' },
+  { value: '410000', label: '河南省' },
+  { value: '420000', label: '湖北省' },
+  { value: '430000', label: '湖南省' },
+  { value: '440000', label: '广东省' },
+  { value: '450000', label: '广西壮族自治区' },
+  { value: '460000', label: '海南省' },
+  { value: '500000', label: '重庆市' },
+  { value: '510000', label: '四川省' },
+  { value: '520000', label: '贵州省' },
+  { value: '530000', label: '云南省' },
+  { value: '540000', label: '西藏自治区' },
+  { value: '610000', label: '陕西省' },
+  { value: '620000', label: '甘肃省' },
+  { value: '630000', label: '青海省' },
+  { value: '640000', label: '宁夏回族自治区' },
+  { value: '650000', label: '新疆维吾尔自治区' },
+  { value: '710000', label: '台湾省' },
+  { value: '810000', label: '香港特别行政区' },
+  { value: '820000', label: '澳门特别行政区' },
+  { value: '110100', label: '北京市市辖区' },
+  { value: '120100', label: '天津市市辖区' },
+  { value: '130100', label: '石家庄市' },
+  { value: '130200', label: '唐山市' },
+  { value: '130300', label: '秦皇岛市' },
+  { value: '130400', label: '邯郸市' },
+  { value: '130500', label: '邢台市' },
+  { value: '130600', label: '保定市' },
+  { value: '130700', label: '张家口市' },
+  { value: '130800', label: '承德市' },
+  { value: '130900', label: '沧州市' },
+  { value: '131000', label: '廊坊市' },
+  { value: '131100', label: '衡水市' },
+  { value: '140100', label: '太原市' },
+  { value: '140200', label: '大同市' },
+  { value: '140300', label: '阳泉市' },
+  { value: '140400', label: '长治市' },
+  { value: '140500', label: '晋城市' },
+  { value: '140600', label: '朔州市' },
+  { value: '140700', label: '晋中市' },
+  { value: '140800', label: '运城市' },
+  { value: '140900', label: '忻州市' },
+  { value: '141000', label: '临汾市' },
+  { value: '141100', label: '吕梁市' },
+  { value: '150100', label: '呼和浩特市' },
+  { value: '150200', label: '包头市' },
+  { value: '150300', label: '乌海市' },
+  { value: '150400', label: '赤峰市' },
+  { value: '150500', label: '通辽市' },
+  { value: '150600', label: '鄂尔多斯市' },
+  { value: '150700', label: '呼伦贝尔市' },
+  { value: '150800', label: '巴彦淖尔市' },
+  { value: '150900', label: '乌兰察布市' },
+  { value: '152200', label: '兴安盟' },
+  { value: '152500', label: '锡林郭勒盟' },
+  { value: '152900', label: '阿拉善盟' },
+  { value: '210100', label: '沈阳市' },
+  { value: '210200', label: '大连市' },
+  { value: '210300', label: '鞍山市' },
+  { value: '210400', label: '抚顺市' },
+  { value: '210500', label: '本溪市' },
+  { value: '210600', label: '丹东市' },
+  { value: '210700', label: '锦州市' },
+  { value: '210800', label: '营口市' },
+  { value: '210900', label: '阜新市' },
+  { value: '211000', label: '辽阳市' },
+  { value: '211100', label: '盘锦市' },
+  { value: '211200', label: '铁岭市' },
+  { value: '211300', label: '朝阳市' },
+  { value: '211400', label: '葫芦岛市' },
+  { value: '220100', label: '长春市' },
+  { value: '220200', label: '吉林市' },
+  { value: '220300', label: '四平市' },
+  { value: '220400', label: '辽源市' },
+  { value: '220500', label: '通化市' },
+  { value: '220600', label: '白山市' },
+  { value: '220700', label: '松原市' },
+  { value: '220800', label: '白城市' },
+  { value: '222400', label: '延边朝鲜族自治州' },
+  { value: '230100', label: '哈尔滨市' },
+  { value: '230200', label: '齐齐哈尔市' },
+  { value: '230300', label: '鸡西市' },
+  { value: '230400', label: '鹤岗市' },
+  { value: '230500', label: '双鸭山市' },
+  { value: '230600', label: '大庆市' },
+  { value: '230700', label: '伊春市' },
+  { value: '230800', label: '佳木斯市' },
+  { value: '230900', label: '七台河市' },
+  { value: '231000', label: '牡丹江市' },
+  { value: '231100', label: '黑河市' },
+  { value: '231200', label: '绥化市' },
+  { value: '232700', label: '大兴安岭地区' },
+  { value: '310100', label: '上海市市辖区' },
+  { value: '320100', label: '南京市' },
+  { value: '320200', label: '无锡市' },
+  { value: '320300', label: '徐州市' },
+  { value: '320400', label: '常州市' },
+  { value: '320500', label: '苏州市' },
+  { value: '320600', label: '南通市' },
+  { value: '320700', label: '连云港市' },
+  { value: '320800', label: '淮安市' },
+  { value: '320900', label: '盐城市' },
+  { value: '321000', label: '扬州市' },
+  { value: '321100', label: '镇江市' },
+  { value: '321200', label: '泰州市' },
+  { value: '321300', label: '宿迁市' },
+  { value: '330100', label: '杭州市' },
+  { value: '330200', label: '宁波市' },
+  { value: '330300', label: '温州市' },
+  { value: '330400', label: '嘉兴市' },
+  { value: '330500', label: '湖州市' },
+  { value: '330600', label: '绍兴市' },
+  { value: '330700', label: '金华市' },
+  { value: '330800', label: '衢州市' },
+  { value: '330900', label: '舟山市' },
+  { value: '331000', label: '台州市' },
+  { value: '331100', label: '丽水市' },
+  { value: '340100', label: '合肥市' },
+  { value: '340200', label: '芜湖市' },
+  { value: '340300', label: '蚌埠市' },
+  { value: '340400', label: '淮南市' },
+  { value: '340500', label: '马鞍山市' },
+  { value: '340600', label: '淮北市' },
+  { value: '340700', label: '铜陵市' },
+  { value: '340800', label: '安庆市' },
+  { value: '341000', label: '黄山市' },
+  { value: '341100', label: '滁州市' },
+  { value: '341200', label: '阜阳市' },
+  { value: '341300', label: '宿州市' },
+  { value: '341500', label: '六安市' },
+  { value: '341600', label: '亳州市' },
+  { value: '341700', label: '池州市' },
+  { value: '341800', label: '宣城市' },
+  { value: '350100', label: '福州市' },
+  { value: '350200', label: '厦门市' },
+  { value: '350300', label: '莆田市' },
+  { value: '350400', label: '三明市' },
+  { value: '350500', label: '泉州市' },
+  { value: '350600', label: '漳州市' },
+  { value: '350700', label: '南平市' },
+  { value: '350800', label: '龙岩市' },
+  { value: '350900', label: '宁德市' },
+  { value: '360100', label: '南昌市' },
+  { value: '360200', label: '景德镇市' },
+  { value: '360300', label: '萍乡市' },
+  { value: '360400', label: '九江市' },
+  { value: '360500', label: '新余市' },
+  { value: '360600', label: '鹰潭市' },
+  { value: '360700', label: '赣州市' },
+  { value: '360800', label: '吉安市' },
+  { value: '360900', label: '宜春市' },
+  { value: '361000', label: '抚州市' },
+  { value: '361100', label: '上饶市' },
+  { value: '370100', label: '济南市' },
+  { value: '370200', label: '青岛市' },
+  { value: '370300', label: '淄博市' },
+  { value: '370400', label: '枣庄市' },
+  { value: '370500', label: '东营市' },
+  { value: '370600', label: '烟台市' },
+  { value: '370700', label: '潍坊市' },
+  { value: '370800', label: '济宁市' },
+  { value: '370900', label: '泰安市' },
+  { value: '371000', label: '威海市' },
+  { value: '371100', label: '日照市' },
+  { value: '371300', label: '临沂市' },
+  { value: '371400', label: '德州市' },
+  { value: '371500', label: '聊城市' },
+  { value: '371600', label: '滨州市' },
+  { value: '371700', label: '菏泽市' },
+  { value: '410100', label: '郑州市' },
+  { value: '410200', label: '开封市' },
+  { value: '410300', label: '洛阳市' },
+  { value: '410400', label: '平顶山市' },
+  { value: '410500', label: '安阳市' },
+  { value: '410600', label: '鹤壁市' },
+  { value: '410700', label: '新乡市' },
+  { value: '410800', label: '焦作市' },
+  { value: '410900', label: '濮阳市' },
+  { value: '411000', label: '许昌市' },
+  { value: '411100', label: '漯河市' },
+  { value: '411200', label: '三门峡市' },
+  { value: '411300', label: '南阳市' },
+  { value: '411400', label: '商丘市' },
+  { value: '411500', label: '信阳市' },
+  { value: '411600', label: '周口市' },
+  { value: '411700', label: '驻马店市' },
+  { value: '419001', label: '济源市' },
+  { value: '420100', label: '武汉市' },
+  { value: '420200', label: '黄石市' },
+  { value: '420300', label: '十堰市' },
+  { value: '420500', label: '宜昌市' },
+  { value: '420600', label: '襄阳市' },
+  { value: '420700', label: '鄂州市' },
+  { value: '420800', label: '荆门市' },
+  { value: '420900', label: '孝感市' },
+  { value: '421000', label: '荆州市' },
+  { value: '421100', label: '黄冈市' },
+  { value: '421200', label: '咸宁市' },
+  { value: '421300', label: '随州市' },
+  { value: '422800', label: '恩施土家族苗族自治州' },
+  { value: '429004', label: '仙桃市' },
+  { value: '429005', label: '潜江市' },
+  { value: '429006', label: '天门市' },
+  { value: '429021', label: '神农架林区' },
+  { value: '430100', label: '长沙市' },
+  { value: '430200', label: '株洲市' },
+  { value: '430300', label: '湘潭市' },
+  { value: '430400', label: '衡阳市' },
+  { value: '430500', label: '邵阳市' },
+  { value: '430600', label: '岳阳市' },
+  { value: '430700', label: '常德市' },
+  { value: '430800', label: '张家界市' },
+  { value: '430900', label: '益阳市' },
+  { value: '431000', label: '郴州市' },
+  { value: '431100', label: '永州市' },
+  { value: '431200', label: '怀化市' },
+  { value: '431300', label: '娄底市' },
+  { value: '433100', label: '湘西土家族苗族自治州' },
+  { value: '440100', label: '广州市' },
+  { value: '440200', label: '韶关市' },
+  { value: '440300', label: '深圳市' },
+  { value: '440400', label: '珠海市' },
+  { value: '440500', label: '汕头市' },
+  { value: '440600', label: '佛山市' },
+  { value: '440700', label: '江门市' },
+  { value: '440800', label: '湛江市' },
+  { value: '440900', label: '茂名市' },
+  { value: '441200', label: '肇庆市' },
+  { value: '441300', label: '惠州市' },
+  { value: '441400', label: '梅州市' },
+  { value: '441500', label: '汕尾市' },
+  { value: '441600', label: '河源市' },
+  { value: '441700', label: '阳江市' },
+  { value: '441800', label: '清远市' },
+  { value: '441900', label: '东莞市' },
+  { value: '442000', label: '中山市' },
+  { value: '445100', label: '潮州市' },
+  { value: '445200', label: '揭阳市' },
+  { value: '445300', label: '云浮市' },
+  { value: '450100', label: '南宁市' },
+  { value: '450200', label: '柳州市' },
+  { value: '450300', label: '桂林市' },
+  { value: '450400', label: '梧州市' },
+  { value: '450500', label: '北海市' },
+  { value: '450600', label: '防城港市' },
+  { value: '450700', label: '钦州市' },
+  { value: '450800', label: '贵港市' },
+  { value: '450900', label: '玉林市' },
+  { value: '451000', label: '百色市' },
+  { value: '451100', label: '贺州市' },
+  { value: '451200', label: '河池市' },
+  { value: '451300', label: '来宾市' },
+  { value: '451400', label: '崇左市' },
+  { value: '460100', label: '海口市' },
+  { value: '460200', label: '三亚市' },
+  { value: '460300', label: '三沙市' },
+  { value: '460400', label: '儋州市' },
+  { value: '469001', label: '五指山市' },
+  { value: '469002', label: '琼海市' },
+  { value: '469005', label: '文昌市' },
+  { value: '469006', label: '万宁市' },
+  { value: '469007', label: '东方市' },
+  { value: '469021', label: '定安县' },
+  { value: '469022', label: '屯昌县' },
+  { value: '469023', label: '澄迈县' },
+  { value: '469024', label: '临高县' },
+  { value: '469025', label: '白沙黎族自治县' },
+  { value: '469026', label: '昌江黎族自治县' },
+  { value: '469027', label: '乐东黎族自治县' },
+  { value: '469028', label: '陵水黎族自治县' },
+  { value: '469029', label: '保亭黎族苗族自治县' },
+  { value: '469030', label: '琼中黎族苗族自治县' },
+  { value: '500100', label: '重庆市市辖区' },
+  { value: '500200', label: '重庆市郊县' },
+  { value: '510100', label: '成都市' },
+  { value: '510300', label: '自贡市' },
+  { value: '510400', label: '攀枝花市' },
+  { value: '510500', label: '泸州市' },
+  { value: '510600', label: '德阳市' },
+  { value: '510700', label: '绵阳市' },
+  { value: '510800', label: '广元市' },
+  { value: '510900', label: '遂宁市' },
+  { value: '511000', label: '内江市' },
+  { value: '511100', label: '乐山市' },
+  { value: '511300', label: '南充市' },
+  { value: '511400', label: '眉山市' },
+  { value: '511500', label: '宜宾市' },
+  { value: '511600', label: '广安市' },
+  { value: '511700', label: '达州市' },
+  { value: '511800', label: '雅安市' },
+  { value: '511900', label: '巴中市' },
+  { value: '512000', label: '资阳市' },
+  { value: '513200', label: '阿坝藏族羌族自治州' },
+  { value: '513300', label: '甘孜藏族自治州' },
+  { value: '513400', label: '凉山彝族自治州' },
+  { value: '520100', label: '贵阳市' },
+  { value: '520200', label: '六盘水市' },
+  { value: '520300', label: '遵义市' },
+  { value: '520400', label: '安顺市' },
+  { value: '520500', label: '毕节市' },
+  { value: '520600', label: '铜仁市' },
+  { value: '522300', label: '黔西南布依族苗族自治州' },
+  { value: '522600', label: '黔东南苗族侗族自治州' },
+  { value: '522700', label: '黔南布依族苗族自治州' },
+  { value: '530100', label: '昆明市' },
+  { value: '530300', label: '曲靖市' },
+  { value: '530400', label: '玉溪市' },
+  { value: '530500', label: '保山市' },
+  { value: '530600', label: '昭通市' },
+  { value: '530700', label: '丽江市' },
+  { value: '530800', label: '普洱市' },
+  { value: '530900', label: '临沧市' },
+  { value: '532300', label: '楚雄彝族自治州' },
+  { value: '532500', label: '红河哈尼族彝族自治州' },
+  { value: '532600', label: '文山壮族苗族自治州' },
+  { value: '532800', label: '西双版纳傣族自治州' },
+  { value: '532900', label: '大理白族自治州' },
+  { value: '533100', label: '德宏傣族景颇族自治州' },
+  { value: '533300', label: '怒江傈僳族自治州' },
+  { value: '533400', label: '迪庆藏族自治州' },
+  { value: '540100', label: '拉萨市' },
+  { value: '540200', label: '日喀则市' },
+  { value: '540300', label: '昌都市' },
+  { value: '540400', label: '林芝市' },
+  { value: '540500', label: '山南市' },
+  { value: '540600', label: '那曲市' },
+  { value: '542500', label: '阿里地区' },
+  { value: '610100', label: '西安市' },
+  { value: '610200', label: '铜川市' },
+  { value: '610300', label: '宝鸡市' },
+  { value: '610400', label: '咸阳市' },
+  { value: '610500', label: '渭南市' },
+  { value: '610600', label: '延安市' },
+  { value: '610700', label: '汉中市' },
+  { value: '610800', label: '榆林市' },
+  { value: '610900', label: '安康市' },
+  { value: '611000', label: '商洛市' },
+  { value: '620100', label: '兰州市' },
+  { value: '620200', label: '嘉峪关市' },
+  { value: '620300', label: '金昌市' },
+  { value: '620400', label: '白银市' },
+  { value: '620500', label: '天水市' },
+  { value: '620600', label: '武威市' },
+  { value: '620700', label: '张掖市' },
+  { value: '620800', label: '平凉市' },
+  { value: '620900', label: '酒泉市' },
+  { value: '621000', label: '庆阳市' },
+  { value: '621100', label: '定西市' },
+  { value: '621200', label: '陇南市' },
+  { value: '622900', label: '临夏回族自治州' },
+  { value: '623000', label: '甘南藏族自治州' },
+  { value: '630100', label: '西宁市' },
+  { value: '630200', label: '海东市' },
+  { value: '632200', label: '海北藏族自治州' },
+  { value: '632300', label: '黄南藏族自治州' },
+  { value: '632500', label: '海南藏族自治州' },
+  { value: '632600', label: '果洛藏族自治州' },
+  { value: '632700', label: '玉树藏族自治州' },
+  { value: '632800', label: '海西蒙古族藏族自治州' },
+  { value: '640100', label: '银川市' },
+  { value: '640200', label: '石嘴山市' },
+  { value: '640300', label: '吴忠市' },
+  { value: '640400', label: '固原市' },
+  { value: '640500', label: '中卫市' },
+  { value: '650100', label: '乌鲁木齐市' },
+  { value: '650200', label: '克拉玛依市' },
+  { value: '650400', label: '吐鲁番市' },
+  { value: '650500', label: '哈密市' },
+  { value: '652300', label: '昌吉回族自治州' },
+  { value: '652700', label: '博尔塔拉蒙古自治州' },
+  { value: '652800', label: '巴音郭楞蒙古自治州' },
+  { value: '652900', label: '阿克苏地区' },
+  { value: '653000', label: '克孜勒苏柯尔克孜自治州' },
+  { value: '653100', label: '喀什地区' },
+  { value: '653200', label: '和田地区' },
+  { value: '654000', label: '伊犁哈萨克自治州' },
+  { value: '654200', label: '塔城地区' },
+  { value: '654300', label: '阿勒泰地区' },
+  { value: '659001', label: '石河子市' },
+  { value: '659002', label: '阿拉尔市' },
+  { value: '659003', label: '图木舒克市' },
+  { value: '659004', label: '五家渠市' },
+  { value: '659005', label: '北屯市' },
+  { value: '659006', label: '铁门关市' },
+  { value: '659007', label: '双河市' },
+  { value: '659008', label: '可克达拉市' },
+  { value: '659009', label: '昆玉市' },
+  { value: '810001', label: '中西区' },
+  { value: '810002', label: '湾仔区' },
+  { value: '810003', label: '东区' },
+  { value: '810004', label: '南区' },
+  { value: '810005', label: '油尖旺区' },
+  { value: '810006', label: '深水埗区' },
+  { value: '810007', label: '九龙城区' },
+  { value: '810008', label: '黄大仙区' },
+  { value: '810009', label: '观塘区' },
+  { value: '810010', label: '荃湾区' },
+  { value: '810011', label: '屯门区' },
+  { value: '810012', label: '元朗区' },
+  { value: '810013', label: '北区' },
+  { value: '810014', label: '大埔区' },
+  { value: '810015', label: '西贡区' },
+  { value: '810016', label: '沙田区' },
+  { value: '810017', label: '葵青区' },
+  { value: '810018', label: '离岛区' },
+  { value: '820001', label: '花地玛堂区' },
+  { value: '820002', label: '花王堂区' },
+  { value: '820003', label: '望德堂区' },
+  { value: '820004', label: '大堂区' },
+  { value: '820005', label: '风顺堂区' },
+  { value: '820006', label: '嘉模堂区' },
+  { value: '820007', label: '路凼填海区' },
+  { value: '820008', label: '圣方济各堂区' }
 ]
 
 screenConstants.nameMap = {
@@ -9037,71 +9041,71 @@ screenConstants.nameMap = {
   }
 }
 
-//图表系统色系
+// 图表系统色系
 screenConstants.systemChartColorsNames = [
   {
-    "name": "粉青",
-    "value":"chalk"
+    'name': '粉青',
+    'value': 'chalk'
   },
   {
-    "name": "暗淡",
-    "value":"customed"
+    'name': '暗淡',
+    'value': 'customed'
   },
   {
-    "name": "明亮",
-    "value":"dark"
+    'name': '明亮',
+    'value': 'dark'
   },
   {
-    "name": "橘红",
-    "value":"essos"
+    'name': '橘红',
+    'value': 'essos'
   },
   {
-    "name": "马卡龙",
-    "value":"macarons"
+    'name': '马卡龙',
+    'value': 'macarons'
   },
   {
-    "name": "深紫",
-    "value":"purplepassion"
+    'name': '深紫',
+    'value': 'purplepassion'
   },
   {
-    "name": "罗马红",
-    "value":"roma"
+    'name': '罗马红',
+    'value': 'roma'
   },
   {
-    "name": "深色",
-    "value":"shine"
+    'name': '深色',
+    'value': 'shine'
   },
   {
-    "name": "复古",
-    "value":"vintage",
+    'name': '复古',
+    'value': 'vintage'
   },
   {
-    "name": "蓝绿",
-    "value":"walden"
+    'name': '蓝绿',
+    'value': 'walden'
   },
   {
-    "name": "灰粉",
-    "value":"westeros"
+    'name': '灰粉',
+    'value': 'westeros'
   },
   {
-    "name": "青草",
-    "value":"wonderland"
+    'name': '青草',
+    'value': 'wonderland'
   }
 ]
 
 screenConstants.systemChartColors = {
-  chalk:["#fc97af","#87f7cf","#f7f494","#72ccff","#f7c5a0","#d4a4eb","#d2f5a6","#76f2f2"],
-  customed:["#5470c6","#91cc75","#fac858","#ee6666","#73c0de","#3ba272","#fc8452","#9a60b4","#ea7ccc"],
-  dark:["#4992ff","#7cffb2","#fddd60","#ff6e76","#58d9f9","#05c091","#ff8a45","#8d48e3","#dd79ff"],
-  essos:["#893448","#d95850","#eb8146","#ffb248","#f2d643","#ebdba4"],
-  macarons:["#2ec7c9","#b6a2de","#5ab1ef","#ffb980","#d87a80","#8d98b3","#e5cf0d","#97b552","#95706d","#dc69aa","#07a2a4","#9a7fd1","#588dd5","#f5994e","#c05050","#59678c","#c9ab00","#7eb00a","#6f5553","#c14089"],
-  purplepassion:["#9b8bba","#e098c7","#8fd3e8","#71669e","#cc70af","#7cb4cc"],
-  roma:["#e01f54","#5e4ea5","#f5e8c8","#b8d2c7","#c6b38e","#a4d8c2","#f3d999","#d3758f","#dcc392","#2e4783","#82b6e9","#ff6347","#a092f1","#0a915d","#eaf889","#6699FF","#ff6666","#3cb371","#d5b158","#38b6b6"],
-  shine:["#c12e34","#e6b600","#0098d9","#2b821d","#005eaa","#339ca8","#cda819","#32a487"],
-  vintage:["#d87c7c","#919e8b","#d7ab82","#6e7074","#61a0a8","#efa18d","#787464","#cc7e63","#724e58","#4b565b"],
-  walden:["#3fb1e3","#6be6c1","#626c91","#a0a7e6","#c4ebad","#96dee8"],
-  westeros:["#516b91","#59c4e6","#edafda","#93b7e3","#a5e7f0","#cbb0e3"],
-  wonderland:["#4ea397","#22c3aa","#7bd9a5","#d0648a","#f58db2","#f2b3c9"]
+  chalk: ['#fc97af', '#87f7cf', '#f7f494', '#72ccff', '#f7c5a0', '#d4a4eb', '#d2f5a6', '#76f2f2'],
+  customed: ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc'],
+  dark: ['#4992ff', '#7cffb2', '#fddd60', '#ff6e76', '#58d9f9', '#05c091', '#ff8a45', '#8d48e3', '#dd79ff'],
+  essos: ['#893448', '#d95850', '#eb8146', '#ffb248', '#f2d643', '#ebdba4'],
+  macarons: ['#2ec7c9', '#b6a2de', '#5ab1ef', '#ffb980', '#d87a80', '#8d98b3', '#e5cf0d', '#97b552', '#95706d', '#dc69aa', '#07a2a4', '#9a7fd1', '#588dd5', '#f5994e', '#c05050', '#59678c', '#c9ab00', '#7eb00a', '#6f5553', '#c14089'],
+  purplepassion: ['#9b8bba', '#e098c7', '#8fd3e8', '#71669e', '#cc70af', '#7cb4cc'],
+  roma: ['#e01f54', '#5e4ea5', '#f5e8c8', '#b8d2c7', '#c6b38e', '#a4d8c2', '#f3d999', '#d3758f', '#dcc392', '#2e4783', '#82b6e9', '#ff6347', '#a092f1', '#0a915d', '#eaf889', '#6699FF', '#ff6666', '#3cb371', '#d5b158', '#38b6b6'],
+  shine: ['#c12e34', '#e6b600', '#0098d9', '#2b821d', '#005eaa', '#339ca8', '#cda819', '#32a487'],
+  vintage: ['#d87c7c', '#919e8b', '#d7ab82', '#6e7074', '#61a0a8', '#efa18d', '#787464', '#cc7e63', '#724e58', '#4b565b'],
+  walden: ['#3fb1e3', '#6be6c1', '#626c91', '#a0a7e6', '#c4ebad', '#96dee8'],
+  westeros: ['#516b91', '#59c4e6', '#edafda', '#93b7e3', '#a5e7f0', '#cbb0e3'],
+  wonderland: ['#4ea397', '#22c3aa', '#7bd9a5', '#d0648a', '#f58db2', '#f2b3c9']
 }
 
 screenConstants.pieLoopanimation = {
@@ -9117,10 +9121,10 @@ screenConstants.pieLoopanimation = {
               fillOpacity: { to: 1 },
               outerRadius: {
                 from: (...p) => {
-                  return p[1].graphicItem.attribute.outerRadius;
+                  return p[1].graphicItem.attribute.outerRadius
                 },
                 to: (...p) => {
-                  return p[1].graphicItem.attribute.outerRadius + 10;
+                  return p[1].graphicItem.attribute.outerRadius + 10
                 }
               }
             }
@@ -9133,10 +9137,10 @@ screenConstants.pieLoopanimation = {
               fillOpacity: { to: 1 },
               outerRadius: {
                 from: (...p) => {
-                  return p[1].graphicItem.attribute.outerRadius;
+                  return p[1].graphicItem.attribute.outerRadius
                 },
                 to: (...p) => {
-                  return p[1].graphicItem.attribute.outerRadius;
+                  return p[1].graphicItem.attribute.outerRadius
                 }
               }
             },
@@ -9147,7 +9151,7 @@ screenConstants.pieLoopanimation = {
         {
           effects: {
             channel: {
-              fillOpacity: { to: 1 },
+              fillOpacity: { to: 1 }
             }
           },
           duration: 500
@@ -9156,7 +9160,5 @@ screenConstants.pieLoopanimation = {
     }
   ]
 }
-
-
 
 export default screenConstants

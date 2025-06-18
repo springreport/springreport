@@ -42,7 +42,7 @@
             trigger="hover"
             placement="bottom"
           >
-            <!-- <el-button :type="item.type" :icon="item.icon" circle size="mini" /> -->
+            <!-- <el-button :type="item.type" :icon="item.icon" circle size="small" /> -->
             <div class="action-item df-c">
               <i v-if="item.iconClass || item.icon" :class="item.iconClass || item.icon" />
               <div>{{ item.label }}</div>

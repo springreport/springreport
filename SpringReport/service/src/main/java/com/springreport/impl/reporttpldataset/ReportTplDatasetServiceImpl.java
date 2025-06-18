@@ -265,7 +265,7 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 		}
 		queryWrapper = new QueryWrapper<ReportTplDataset>();
 		if(this.merchantmode == YesNoEnum.YES.getCode()) {
-			queryWrapper.eq("merchant_no", dataset.getMerchantNo());
+			queryWrapper.eq("merchant_no", userInfoDto.getMerchantNo());
 		}
 		queryWrapper.eq("is_common", YesNoEnum.YES.getCode());
 		queryWrapper.eq("common_type", dataset.getCommonType());

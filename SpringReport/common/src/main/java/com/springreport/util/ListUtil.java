@@ -295,7 +295,7 @@ public class ListUtil {
 	
 	public static Map<String, Object> getProperties(String str,Map<String, Object> datas,String datesetName)
 	{
-		Map<String, Object> result = new HashMap();
+		Map<String, Object> result = new LinkedHashMap<>();
 		Set<String> set = datas.keySet();
 
 		List<PropertyRatio> propertyRatios = new ArrayList<>();
@@ -305,7 +305,7 @@ public class ListUtil {
 				PropertyRatio propertyRatio = new PropertyRatio();
 				float ratio = getSimilarityRatio(str,o);
 				propertyRatio.setProperty(o);
-				propertyRatio.setRatio(ratio);
+ 				propertyRatio.setRatio(ratio);
 				propertyRatios.add(propertyRatio);
 			}
 		}

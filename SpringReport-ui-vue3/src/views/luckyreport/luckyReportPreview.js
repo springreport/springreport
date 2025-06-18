@@ -142,6 +142,9 @@ export default {
           rowInsertAfter:this.rowInsertAfter,
           rowDeleteAfter: this.rowDeleteAfter,
           highlightRowCol:this.highlightRowCol,
+          saveClick:this.submitDatas,
+          historyClick:this.getSubmitHis,
+          pictureClick:this.pictureClick,
         },
       },
       //modal配置 start
@@ -277,51 +280,6 @@ export default {
     }
     this.getReportParam();
     var that = this;
-    window.addEventListener('click', function (event) {
-      if (!event.target.className || !event.target.className.indexOf) {
-        return;
-      }
-      if (event.target.className.indexOf && event.target.className.indexOf('icon-saveas24') >= 0) {
-        //另存为协同编辑文档
-        that.modalConfig.show = true;
-      } else if (event.target.className.indexOf('icon-baocun2') >= 0) {
-        //保存
-        that.submitDatas();
-      } else if (event.target.className.indexOf('icon-lishijilu') >= 0) {
-        //上报历史记录
-        that.reportHisDialog = true;
-        that.searchtablelist();
-      } else if (event.target.className.indexOf('icon-8tupian-1') >= 0) {
-        //上传图片
-        if (that.ctx) {
-          var r = that.clickCellPosition.r;
-          var c = that.clickCellPosition.c;
-          var key = r + '_' + c;
-          var sheetIndex = luckysheet.getSheet().index;
-          //判断该单元格是否可编辑
-          if (that.cellAllowEditConfigs[sheetIndex]) {
-            var orginCell = that.extendCellOrigins[sheetIndex][key];
-            if (!orginCell) {
-              orginCell = that.getNewCellExtendOrigins(sheetIndex, r, c);
-            }
-            if (orginCell) {
-              var allowEdit =
-                that.cellAllowEditConfigs[sheetIndex][orginCell.r + '_' + orginCell.c];
-              if (!allowEdit) {
-                that.commonUtil.showMessage({ message: '该单元格不允许进行编辑。', type: 'error' });
-                return;
-              } else {
-                $('#uploadPic').click();
-              }
-            }
-          } else {
-            $('#uploadPic').click();
-          }
-        } else {
-          that.commonUtil.showMessage({ message: '请先点击选择要上传图片的单元格', type: 'error' });
-        }
-      }
-    });
   },
   methods: {
     initLuckySheet() {
@@ -899,6 +857,12 @@ export default {
                 ? 'wss' + '://' + location.host + '/SpringReport/api/coedit/websocket/luckysheet'
                 : 'ws' + '://' + location.host + '/SpringReport/api/coedit/websocket/luckysheet';
             luckysheet.setServerAttr('reportType', this.tplType);
+          }
+          if (response.responseData.isRefresh == 1 && response.responseData.refreshTime >0) {
+            var that = this;
+            setTimeout(function() {
+              that.$router.go(0)
+            }, response.responseData.refreshTime*1000);
           }
           this.refreshPage = response.responseData.refreshPage;
           if (!isCurrent) {
@@ -1582,7 +1546,7 @@ export default {
               // 下拉选择
               this.selectValidRules()
               if (this.cellConfig.datasourceId && this.cellConfig.dictType) {
-                this.getDictTypeDatas()
+                this.getDictTypeDatas(orginCell)
               }
               this.editDialog = true
               setTimeout(function() {
@@ -1888,23 +1852,35 @@ export default {
       }
     },
     //获取数据字典值
-    getDictTypeDatas() {
-      let obj = {
-        url: this.apis.reportDatasourceDictData.getDictDatasApi,
-        params: { datasourceId: this.cellConfig.datasourceId, dictType: this.cellConfig.dictType },
-        removeEmpty: false,
-      };
-      let headers = {};
-      if (this.isShare == 1) {
-        headers.shareCode = this.shareCode;
-        headers.shareUser = this.shareUser;
-        obj.url = this.apis.reportDatasourceDictData.getShareDictDatasApi;
-      }
-      this.commonUtil.doPost(obj, headers).then((response) => {
-        if (response.code == '200') {
-          this.dictTypeDatas = response.responseData;
+    getDictTypeDatas(orginCell) {
+      // let obj = {
+      //   url: this.apis.reportDatasourceDictData.getDictDatasApi,
+      //   params: { datasourceId: this.cellConfig.datasourceId, dictType: this.cellConfig.dictType },
+      //   removeEmpty: false,
+      // };
+      // let headers = {};
+      // if (this.isShare == 1) {
+      //   headers.shareCode = this.shareCode;
+      //   headers.shareUser = this.shareUser;
+      //   obj.url = this.apis.reportDatasourceDictData.getShareDictDatasApi;
+      // }
+      // this.commonUtil.doPost(obj, headers).then((response) => {
+      //   if (response.code == '200') {
+      //     this.dictTypeDatas = response.responseData;
+      //   }
+      // });
+      let sheetIndex = luckysheet.getSheet().index;
+      let key = sheetIndex + "_" + orginCell.r + "_" + orginCell.c;
+      this.dictTypeDatas = [];
+      if(this.dictDatas && this.dictDatas[key]){
+        for(var label in this.dictDatas[key]) {
+          let obj = {
+            dictLabel:label,
+            dictValue:this.dictDatas[key][label]
+          }
+          this.dictTypeDatas.push(obj);
         }
-      });
+      }
     },
     //提交数据
     async submitDatas() {
@@ -2106,7 +2082,7 @@ export default {
             let stc = dataRange.column[0];
             let edc = dataRange.column[1];
             for (let ri = str; ri <= edr; ri++) {
-              for (let ci = stc; ci < edc; ci++) {
+              for (let ci = stc; ci <= edc; ci++) {
                 let isChanged = false;
               var wrongMsg = []
               const element = luckysheetfile.data[ri][ci]
@@ -3347,6 +3323,35 @@ export default {
         this.commonUtil.showMessage({ message: '已开启选中单元格行列高亮模式。', type: this.commonConstants.messageType.success })
       }else{
         this.commonUtil.showMessage({ message: '已关闭选中单元格行列高亮模式。', type: this.commonConstants.messageType.success })
+      }
+    },
+    pictureClick(){
+      var that = this;
+      if (that.ctx) {
+        var r = that.clickCellPosition.r
+        var c = that.clickCellPosition.c
+        var key = r + '_' + c
+        var sheetIndex = luckysheet.getSheet().index
+        // 判断该单元格是否可编辑
+        if (that.cellAllowEditConfigs[sheetIndex]) {
+          var orginCell = that.extendCellOrigins[sheetIndex][key]
+          if (!orginCell) {
+            orginCell = that.getNewCellExtendOrigins(sheetIndex, r, c)
+          }
+          if (orginCell) {
+            var allowEdit = that.cellAllowEditConfigs[sheetIndex][orginCell.r + '_' + orginCell.c]
+            if (!allowEdit) {
+              that.commonUtil.showMessage({ message: '该单元格不允许进行编辑。', type: 'error' })
+              return
+            } else {
+              $('#uploadPic').click()
+            }
+          }
+        } else {
+          $('#uploadPic').click()
+        }
+      } else {
+        that.commonUtil.showMessage({ message: '请先点击选择要上传图片的单元格', type: 'error' })
       }
     }
   },

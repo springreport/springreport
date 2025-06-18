@@ -203,6 +203,7 @@ public class ScreenTplServiceImpl extends ServiceImpl<ScreenTplMapper, ScreenTpl
 		BaseEntity result = new BaseEntity();
 		ScreenTpl model = new ScreenTpl();
 		BeanUtils.copyProperties(mesScreenTplDto, model);
+		model.setBackground("#EDEDEF");//设置默认画板颜色
 		this.save(model);
 		//保存数据源
 		if(!ListUtil.isEmpty(mesScreenTplDto.getDataSource()))

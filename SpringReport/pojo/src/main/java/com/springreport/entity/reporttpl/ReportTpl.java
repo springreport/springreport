@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
  /**  
 * @Description: report_tpl - 
 * @author 
-* @date 2023-03-28 05:28:13
+* @date 2025-06-12 09:04:04
 * @version V1.0  
  */
 @Data
@@ -30,7 +30,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ReportTpl extends PageEntity {
 
-    /** id - 主键 */
+    /** id -  */
     
     @TableId(value = "id",type = IdType.ASSIGN_ID)
     private Long id;
@@ -114,7 +114,7 @@ public class ReportTpl extends PageEntity {
     /** show_gridlines - 预览是否显示网格线 1是 2否 */
     @TableField("show_gridlines")
     private Integer showGridlines;
-    
+
     /** refresh_page - 上报数据后是否刷新页面 1是 2否 */
     @TableField("refresh_page")
     private Integer refreshPage;
@@ -138,16 +138,24 @@ public class ReportTpl extends PageEntity {
     /** del_flag - 删除标记 1未删除 2已删除 */
     @TableField("del_flag")
     private Integer delFlag;
-    
+
     /** coedit_flag - 开启协同 1是 2否 */
     @TableField("coedit_flag")
     private Integer coeditFlag;
-    
+
     /** is_template - 是否是模板 1是 2否 */
     @TableField("is_template")
     private Integer isTemplate;
-    
+
     /** template_field - 模板所属行业 */
     @TableField("template_field")
     private Long templateField;
+
+    /** is_refresh - 是否自动刷新 1是 2否 */
+    @TableField("is_refresh")
+    private Integer isRefresh;
+
+    /** refresh_time - 自动刷新时长 单位：秒 */
+    @TableField("refresh_time")
+    private Long refreshTime;
 }

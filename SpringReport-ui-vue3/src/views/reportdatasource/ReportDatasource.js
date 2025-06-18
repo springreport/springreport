@@ -478,7 +478,7 @@ export default {
               }
               params.apiColumns = JSON.stringify(this.pageData.propsTableData);
               params.apiRequestHeader = JSON.stringify(this.pageData.headersTableData);
-              params.apiParams = JSON.parse(this.pageData.modalData.apiParams,null,2)
+              params.apiParams = this.pageData.modalData.apiParams
               params.apiColumnsPrefix = this.pageData.modalData.apiColumnsPrefix;
               params.apiRequestType = this.pageData.modalData.apiRequestType;
             }
