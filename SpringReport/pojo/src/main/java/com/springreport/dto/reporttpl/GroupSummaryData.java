@@ -34,4 +34,10 @@ public class GroupSummaryData {
 	 * @date 2022-02-19 10:21:02 
 	 */ 
 	private String property;
+	
+	 /** compare_attr1 - 同比/环比本期属性 */
+    private String compareAttr1;
+
+    /** compare_attr2 - 同比/环比同期属性 */
+    private String compareAttr2;
 }

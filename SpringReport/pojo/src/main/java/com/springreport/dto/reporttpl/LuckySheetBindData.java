@@ -578,4 +578,13 @@ public class LuckySheetBindData {
 
     private Integer priortyMoveDirection = 1;
     
+    /** sub_block_range -  子循环块范围*/
+    private String subBlockRange;
+    
+    /** compare_attr1 - 同比/环比本期属性 */
+    private String compareAttr1;
+
+    /** compare_attr2 - 同比/环比同期属性 */
+    private String compareAttr2;
+    
 }
