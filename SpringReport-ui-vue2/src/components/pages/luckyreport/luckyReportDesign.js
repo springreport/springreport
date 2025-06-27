@@ -2141,7 +2141,6 @@ export default {
           callback: this.doPostCallback
         }
         var _this = this
-        console.log(param)
         this.commonUtil.doPost(param).then(response => {
           if (response.code == '200') {
             const printSettings = response.responseData.printSettings
@@ -4227,8 +4226,8 @@ export default {
               unitTransfer: that.cellSubTotalForm.unitTransfer,
               transferType: that.cellSubTotalForm.transferType,
               multiple: that.cellSubTotalForm.multiple,
-              multiple: that.cellSubTotalForm.compareAttr1,
-              multiple: that.cellSubTotalForm.compareAttr2
+              compareAttr1: that.cellSubTotalForm.compareAttr1,
+              compareAttr2: that.cellSubTotalForm.compareAttr2
             }
             if (!that.cellForm.subTotalCells) {
               that.cellForm.subTotalCells = []

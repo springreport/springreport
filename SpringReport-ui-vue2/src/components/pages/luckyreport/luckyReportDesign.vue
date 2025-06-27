@@ -1683,7 +1683,7 @@
                     </p>
                     <p
                       class="column-tag"
-                      :title="o.vloopEmptyCount"
+                      :title="o.subBlockRange"
                       style="min-width: 220px; max-width: 220px"
                     >
                       子循环块范围：{{ o.subBlockRange }}
