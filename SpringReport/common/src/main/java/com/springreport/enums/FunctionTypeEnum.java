@@ -64,5 +64,23 @@ public enum FunctionTypeEnum implements BaseIntEnum{
 		public String getName() {
 			return "计数";
 		}
+	},
+	COMPARE {
+		public Integer getCode() {
+			return 6;
+		}
+
+		public String getName() {
+			return "同比/环比差值";
+		}
+	},
+	COMPARERATE {
+		public Integer getCode() {
+			return 7;
+		}
+
+		public String getName() {
+			return "同比/环比增长率";
+		}
 	}
 }

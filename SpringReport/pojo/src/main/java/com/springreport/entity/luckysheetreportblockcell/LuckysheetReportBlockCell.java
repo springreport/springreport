@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
  /**  
 * @Description: luckysheet_report_block_cell - 
 * @author 
-* @date 2023-05-04 04:45:57
+* @date 2025-06-23 12:14:21
 * @version V1.0  
  */
 @Data
@@ -118,4 +118,8 @@ public class LuckysheetReportBlockCell extends PageEntity {
     /** del_flag - 删除标记 1未删除 2已删除 */
     @TableField("del_flag")
     private Integer delFlag;
+
+    /** is_sub_cell - 是否子循环块单元格1是 2否 */
+    @TableField("is_sub_cell")
+    private Integer isSubCell;
 }

@@ -880,7 +880,9 @@ selectUtil.subtotalType = [
   { value: '2', label: '平均值' },
   { value: '3', label: '最大值' },
   { value: '4', label: '最小值' },
-  { value: '5', label: '计数' }
+  { value: '5', label: '计数' },
+  { value: '6', label: '同比/环比差值' },
+  { value: '7', label: '同比/环比增长率' }
 ]
 
 selectUtil.fontSize = [

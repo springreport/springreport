@@ -82,6 +82,13 @@ public class MesLuckySheetTplDto {
 	private Map<String, List<Map<String, Object>>> blockCells;
 	
 	/**  
+	 * @Fields subBlockCells : 子数据块单元格
+	 * @author caiyang
+	 * @date 2025年6月23日10:31:31
+	 */ 
+	private Map<String, List<Map<String, Object>>> subBlockCells;
+	
+	/**  
 	 * @Fields frozen : 冻结信息
 	 * @author caiyang
 	 * @date 2022-05-05 09:34:33 

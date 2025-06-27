@@ -346,4 +346,16 @@ public class LuckysheetReportCell extends PageEntity {
     /** dict_content - sql语句或者自定义数据字典内容 */
     @TableField("dict_content")
     private String dictContent;
+    
+    /** sub_block_range -  子循环块范围*/
+    @TableField("sub_block_range")
+    private String subBlockRange;
+    
+    /** compare_attr1 - 同比/环比本期属性 */
+    @TableField("compare_attr1")
+    private String compareAttr1;
+
+    /** compare_attr2 - 同比/环比同期属性 */
+    @TableField("compare_attr2")
+    private String compareAttr2;
 }

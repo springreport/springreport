@@ -288,6 +288,7 @@ export default {
         hloopCount:'',//横向循环次数
         hloopEmptyCount:'',//横向循环间隔空行数
         vloopEmptyCount:'',//纵向循环间隔空行数
+        subBlockRange:"",//子循环块范围
       },
       cellConditionVisiable: false, //单元格过滤条件对话框
       cellConditionForm: {
@@ -362,6 +363,8 @@ export default {
         priortyMoveDirection:1,//位置冲突后优先移动方向
         sourceType:1,
         dictContent:"",
+        compareAttr1:"",
+        compareAttr2:"",
         formsAttrs:{
           isOperationCol:false,//是否操作列
           valueType: '1', // 值类型 1文本 2数值 3日期 4下拉单选
@@ -742,6 +745,8 @@ export default {
         coords: '', //坐标
         type: '', //类型 1合计 2平均值 3最大值 4最小值 5计数
         digit: '2', //小数位数
+        compareAttr1:"",
+        compareAttr2:"",
         unitTransfer: false, // 是否数值单位转换
         transferType: 1, // 1 乘法 2除法
         multiple: '', // 倍数
@@ -1062,6 +1067,8 @@ export default {
         this.cellForm.priortyMoveDirection = cellFormData.priortyMoveDirection
         this.cellForm.sourceType = cellFormData.sourceType
         this.cellForm.dictContent = cellFormData.dictContent
+        this.cellForm.compareAttr1 = cellFormData.compareAttr1
+        this.cellForm.compareAttr2 = cellFormData.compareAttr2
         if (cellFormData.cellFillType) {
           this.cellForm.cellFillType = cellFormData.cellFillType;
         } else {
@@ -1125,6 +1132,8 @@ export default {
         this.cellForm.priortyMoveDirection = 1
         this.cellForm.sourceType = 1
         this.cellForm.dictContent = ""
+        this.cellForm.compareAttr1 = ""
+        this.cellForm.compareAttr2 = ""
         // this.getDrillReport();
       }
       if (this.cellForm.datasourceId) {
@@ -2300,12 +2309,14 @@ export default {
             ) {
               //有循环块则需区分，将循环块的单元格单独保存，并且将循环块作为一个单元格保存
               var blockCellMap = {};
+              var subBlockCellMap = {}
               var cellDatasMap = this.cellDatasToMap(cellDatas);
               var reportTplCells = [];
               var reportTplBlockCells = [];
               for (let t = 0; t < this.blockData[luckysheetfiles[index].index].length; t++) {
                 var element = this.blockData[luckysheetfiles[index].index][t];
                 var blockCellDatas = [];
+                var subBlockCellDatas = []
                 var blockInfos = this.getBlockInfos(element);
                 var blockCells = this.getBlockCells(
                   blockInfos.startx,
@@ -2323,13 +2334,25 @@ export default {
                   hloopCount: blockInfos.hloopCount,
                   hloopEmptyCount: blockInfos.hloopEmptyCount,
                   vloopEmptyCount: blockInfos.vloopEmptyCount,
+                  subBlockRange:blockInfos.subBlockRange,
                 };
                 reportTplBlockCells.push(reportTplBlockCell);
                 for (let i = 0; i < blockCells.length; i++) {
                   const blockCell = blockCells[i];
                   var data = cellDatasMap[blockCell];
                   if (data) {
-                    blockCellDatas.push(data);
+                    if(blockInfos.subBlockRange){
+                      if(data.r >= blockInfos.subRangeCoor.substartx && data.r <= blockInfos.subRangeCoor.subendx
+                        && data.c >= blockInfos.subRangeCoor.substarty && data.c <= blockInfos.subRangeCoor.subendy
+                      ){
+                        data.isSubCell = 1;
+                        blockCellDatas.push(data)
+                      }else{
+                        blockCellDatas.push(data)
+                      }
+                    }else{
+                      blockCellDatas.push(data)
+                    }
                     delete cellDatasMap[blockCell];
                   }
                 }
@@ -2341,6 +2364,7 @@ export default {
               configs.cellDatas = reportTplCells;
               configs.blockCellDatas = reportTplBlockCells;
               configs.blockCells = blockCellMap;
+              configs.subBlockCells = subBlockCellMap
             } else {
               //无循环块则直接保存所有的单元格信息即可
               configs.cellDatas = cellDatas;
@@ -2902,6 +2926,7 @@ export default {
             hloopCount: this.blockForm.hloopCount,
             hloopEmptyCount: this.blockForm.hloopEmptyCount,
             vloopEmptyCount: this.blockForm.vloopEmptyCount,
+            subBlockRange: this.blockForm.subBlockRange,
           };
           var sheetIndex = luckysheet.getSheet().index;
           var k = '';
@@ -2938,6 +2963,7 @@ export default {
       this.blockForm.hloopCount = obj.hloopCount
       this.blockForm.hloopEmptyCount = obj.hloopEmptyCount
       this.blockForm.vloopEmptyCount = obj.vloopEmptyCount
+      this.blockForm.subBlockRange = obj.subBlockRange
       this.blockVisiable = true;
     },
     //删除循环块
@@ -2977,6 +3003,20 @@ export default {
       result.hloopCount = hloopCount
       result.hloopEmptyCount = hloopEmptyCount
       result.vloopEmptyCount = vloopEmptyCount
+      result.subBlockRange = blockData.subBlockRange;
+      if(blockData.subBlockRange){
+        var subStartCell = blockData.subBlockRange.split(":")[0];
+        var subEndCell = blockData.subBlockRange.split(":")[1];
+        var substartx = subStartCell.replace(/[^0-9]/ig, '') - 1
+        var substarty = this.columnStringTonum(subStartCell.replace((substartx + 1), '')) - 1
+        var subendx = subEndCell.replace(/[^0-9]/ig, '') - 1
+        var subendy = this.columnStringTonum(subEndCell.replace((subendx + 1), '')) - 1
+        result.subRangeCoor = {}
+        result.subRangeCoor.substartx = substartx;
+        result.subRangeCoor.substarty = substarty;
+        result.subRangeCoor.subendx = subendx;
+        result.subRangeCoor.subendy = subendy;
+      }
       return result;
     },
     //获取循环块的单元格
@@ -4448,6 +4488,8 @@ export default {
             that.cellForm.subTotalCells[that.cellSubTotalForm.index].unitTransfer = that.cellSubTotalForm.unitTransfer
             that.cellForm.subTotalCells[that.cellSubTotalForm.index].transferType = that.cellSubTotalForm.transferType
             that.cellForm.subTotalCells[that.cellSubTotalForm.index].multiple = that.cellSubTotalForm.multiple
+            that.cellForm.subTotalCells[that.cellSubTotalForm.index].compareAttr1 = that.cellSubTotalForm.compareAttr1
+            that.cellForm.subTotalCells[that.cellSubTotalForm.index].compareAttr2 = that.cellSubTotalForm.compareAttr2
           } else {
             var data = {
               coords: that.cellSubTotalForm.coords,
@@ -4455,7 +4497,9 @@ export default {
               digit: that.cellSubTotalForm.digit,
               unitTransfer: that.cellSubTotalForm.unitTransfer,
               transferType: that.cellSubTotalForm.transferType,
-              multiple: that.cellSubTotalForm.multiple
+              multiple: that.cellSubTotalForm.multiple,
+              compareAttr1: that.cellSubTotalForm.compareAttr1,
+              compareAttr2: that.cellSubTotalForm.compareAttr2
             };
             if (!that.cellForm.subTotalCells) {
               that.cellForm.subTotalCells = [];
@@ -4480,6 +4524,8 @@ export default {
       this.cellSubTotalForm.unitTransfer = o.unitTransfer
       this.cellSubTotalForm.transferType = o.transferType
       this.cellSubTotalForm.multiple = o.multiple
+      this.cellSubTotalForm.compareAttr1 = o.compareAttr1
+      this.cellSubTotalForm.compareAttr2 = o.compareAttr2
       this.cellSubTotalVisiable = true;
     },
     deleteSubtotalCell(index) {

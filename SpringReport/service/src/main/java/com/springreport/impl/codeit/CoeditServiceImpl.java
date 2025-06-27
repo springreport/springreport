@@ -2087,7 +2087,7 @@ public class CoeditServiceImpl extends ServiceImpl<LuckysheetMapper, Luckysheet>
 					if(StringUtil.isNotEmpty(redisCache.getColhidden()))
 					{
 						JSONObject colhidden = JSONObject.parseObject(redisCache.getColhidden());
-						mesSheetConfig.setRowhidden(colhidden);
+						mesSheetConfig.setColhidden(colhidden);
 					}
 					if(StringUtil.isNotEmpty(redisCache.getBorderInfo()))
 					{

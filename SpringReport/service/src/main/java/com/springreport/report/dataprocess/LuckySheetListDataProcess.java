@@ -115,14 +115,20 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 				bindData.setSourceType(variableCells.get(i).getSourceType());
 				bindData.setDatasourceId(variableCells.get(i).getDatasourceId());
 				bindData.setDictType(variableCells.get(i).getDictType());
+				if(variableCells.get(i).getSourceType() != null && (variableCells.get(i).getSourceType() == 2 || variableCells.get(i).getSourceType() == 3)) {
+					bindData.setDictType(variableCells.get(i).getDictContent());
+				}
 				bindData.setHloopCount(variableCells.get(i).getHloopCount()==null?0:variableCells.get(i).getHloopCount());
 				bindData.setHloopEmptyCount(variableCells.get(i).getHloopEmptyCount()==null?0:variableCells.get(i).getHloopEmptyCount());
 				bindData.setVloopEmptyCount(variableCells.get(i).getVloopEmptyCount()==null?0:variableCells.get(i).getVloopEmptyCount());
+				bindData.setSubBlockRange(variableCells.get(i).getSubBlockRange());
 				bindData.setIsObject(variableCells.get(i).getIsObject());
 				bindData.setDataType(variableCells.get(i).getDataType());
 				bindData.setDataAttr(variableCells.get(i).getDataAttr());
 				bindData.setSubExtend(variableCells.get(i).getSubExtend());
 				bindData.setPriortyMoveDirection(variableCells.get(i).getPriortyMoveDirection());
+				bindData.setCompareAttr1(variableCells.get(i).getCompareAttr1());
+				bindData.setCompareAttr2(variableCells.get(i).getCompareAttr2());
 				if(StringUtil.isNotEmpty(variableCells.get(i).getFormsAttrs())) {
 					//填报设置如果设置了下拉单选数据字典，则以填报设置为准
 					JSONObject formsAttrs = JSON.parseObject(variableCells.get(i).getFormsAttrs());
@@ -200,6 +206,8 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 									subTotalSettings.put("unitTransfer", subtotalCells.getJSONObject(j).getBooleanValue("unitTransfer"));
 									subTotalSettings.put("transferType", subtotalCells.getJSONObject(j).getInteger("transferType"));
 									subTotalSettings.put("multiple", subtotalCells.getJSONObject(j).getInteger("multiple"));
+									subTotalSettings.put("compareAttr1", subtotalCells.getJSONObject(j).getString("compareAttr1"));
+									subTotalSettings.put("compareAttr2", subtotalCells.getJSONObject(j).getString("compareAttr2"));
 									subTotalDigits.put(subTotalKey, subTotalSettings);
 								}
 							}

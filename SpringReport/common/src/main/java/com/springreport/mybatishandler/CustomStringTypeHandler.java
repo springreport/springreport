@@ -19,6 +19,6 @@ public class CustomStringTypeHandler extends StringTypeHandler{
 	@Override
     public void setNonNullParameter(PreparedStatement ps, int i, String parameter, JdbcType jdbcType)
         throws SQLException {
-      ps.setString(i, StringUtil.trim(parameter));
+      ps.setString(i, parameter);
     }
 }
