@@ -6240,7 +6240,9 @@ commonConstants.dictionary={
       '2': '平均值',
       '3': '最大值',
       '4': '最小值',
-      '5': '计数'
+      '5': '计数',
+      '6': '同比/环比差值',
+      '7': '同比/环比增长率'
     },
     chartType: {
         'pie': '饼图',
@@ -6248,6 +6250,12 @@ commonConstants.dictionary={
         'horizontalHistogram': '条形图',
         'line': '折线图'
     },
+    transferType: {
+        1: '乘法',
+        2: '除法',
+        3: '乘法并转成中文大写',
+        4: '除法并转成中文大写',
+    }
 }
 
 /**

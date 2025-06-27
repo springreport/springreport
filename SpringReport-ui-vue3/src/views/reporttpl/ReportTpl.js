@@ -343,7 +343,7 @@ export default {
           showGridlines: 1,
           coeditFlag: 1,
           isRefresh:2,
-          refreshTime:0,
+          refreshTime:'0',
         },
         //modal 数据 end
         //modal 按钮 start

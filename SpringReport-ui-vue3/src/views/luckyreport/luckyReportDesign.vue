@@ -389,7 +389,41 @@
                     <el-option label="最大值" value="3"></el-option>
                     <el-option label="最小值" value="4"></el-option>
                     <el-option label="计数" value="5"></el-option>
+                    <el-option label="同比/环比差值" value="6" />
+                    <el-option label="同比/环比增长率" value="7" />
                   </el-select>
+                </el-form-item>
+                <el-form-item
+                  v-show="
+                    (cellForm.aggregateType == 'summary' ||
+                      cellForm.aggregateType == 'groupSummary') &&
+                      (cellForm.cellFunction == '6' || cellForm.cellFunction == '7')
+                  "
+                  label="本期属性"
+                >
+                  <el-input
+                    v-model="cellForm.compareAttr1"
+                    style="width: 100%"
+                    placeholder="本期属性"
+                    :disabled="attrDisabled"
+                    @input="changeCellAttr('compareAttr1')"
+                  />
+                </el-form-item>
+                <el-form-item
+                  v-show="
+                    (cellForm.aggregateType == 'summary' ||
+                      cellForm.aggregateType == 'groupSummary') &&
+                      (cellForm.cellFunction == '6' || cellForm.cellFunction == '7')
+                  "
+                  label="同期属性"
+                >
+                  <el-input
+                    v-model="cellForm.compareAttr2"
+                    style="width: 100%"
+                    placeholder="同期属性"
+                    :disabled="attrDisabled"
+                    @input="changeCellAttr('compareAttr2')"
+                  />
                 </el-form-item>
                 <el-form-item label="数值单位转换" class="df-form-item">
                   <el-switch
@@ -695,9 +729,51 @@
                     <p class="column-tag" style="min-width: 220px; max-width: 220px; margin: 0"
                       >小计类型：{{ commonUtil.getDictionaryValueName('subtotalType', o.type) }}</p
                     >
+                    <p
+                      class="column-tag"
+                      style="min-width: 220px; max-width: 220px; margin: 0"
+                      v-show="o.type == '6' || o.type == '7' "
+                    >
+                      本期属性：{{
+                        o.compareAttr1
+                      }}
+                    </p>
+                    <p
+                      class="column-tag"
+                      style="min-width: 220px; max-width: 220px; margin: 0"
+                      v-show="o.type == '6' || o.type == '7' "
+                    >
+                      同期属性：{{
+                        o.compareAttr2
+                      }}
+                    </p>
                     <p class="column-tag" style="min-width: 220px; max-width: 220px; margin: 0"
                       >小数位数：{{ o.digit }}</p
                     >
+                    <p
+                      class="column-tag"
+                      style="min-width: 220px; max-width: 220px; margin: 0"
+                    >
+                      数值单位转换：{{ o.unitTransfer?'是':'否' }}
+                    </p>
+                    <p
+                      class="column-tag"
+                      style="min-width: 220px; max-width: 220px; margin: 0"
+                      v-if="o.unitTransfer"
+                    >
+                      转换方式：{{commonUtil.getDictionaryValueName(
+                          "transferType",
+                          o.transferType
+                        ) }}
+                    </p>
+                    <p
+                      class="column-tag"
+                      style="min-width: 220px; max-width: 220px; margin: 0"
+                      v-if="o.unitTransfer"
+                    >
+                      倍数：{{o.multiple
+                        }}
+                    </p>
                   </el-collapse-item>
                 </el-collapse>
               </el-collapse-item>
@@ -1436,6 +1512,13 @@
                       style="min-width: 220px; max-width: 220px; margin: 0"
                     >
                       纵向循环间隔空行数：{{ o.vloopEmptyCount }}
+                    </p>
+                    <p
+                      class="column-tag"
+                      :title="o.subBlockRange"
+                      style="min-width: 220px; max-width: 220px; margin: 0"
+                    >
+                      子循环块范围：{{ o.subBlockRange }}
                     </p>
                   </el-collapse-item>
                 </el-collapse>
@@ -2617,6 +2700,17 @@
             placeholder="纵向循环间隔空行数"
           />
         </el-form-item>
+        <el-form-item
+          key="subRange"
+          label="子循环块范围"
+          prop="subRange"
+          :rules="filter_rules('子循环块范围', { required: false })"
+        >
+          <el-input
+            v-model="blockForm.subBlockRange"
+            placeholder="子循环块范围，例如: A1:A1"
+          />
+        </el-form-item>
       </el-form>
       <el-alert
         title="说明：起始结束单元格为单元格的坐标，如起始单元格坐标为A1，结束单元格坐标为E20，则循环块范围为A1:E20"
@@ -2935,6 +3029,26 @@
               :key="op.value"
             ></el-option>
           </el-select>
+        </el-form-item>
+        <el-form-item
+          v-show="(cellSubTotalForm.type == '6' || cellSubTotalForm.type == '7')"
+          label="本期属性"
+        >
+          <el-input
+          v-model="cellSubTotalForm.compareAttr1"
+          style="width: 100%"
+          placeholder="本期属性"
+         />
+        </el-form-item>
+          <el-form-item
+            v-show="(cellSubTotalForm.type == '6' || cellSubTotalForm.type == '7')"
+            label="同期属性"
+          >
+            <el-input
+              v-model="cellSubTotalForm.compareAttr2"
+              style="width: 100%"
+              placeholder="同期属性"
+            />
         </el-form-item>
         <el-form-item label="小数位数" :rules="filter_rules('小数位数', { required: true })">
           <el-input
