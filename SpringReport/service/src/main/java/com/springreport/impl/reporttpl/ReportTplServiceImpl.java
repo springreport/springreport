@@ -4586,7 +4586,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				int endCol = 0;
 				for (int m = 0; m < luckySheetBindData.getDatas().size(); m++) {
 					int z = 1;
-					if(loopCount > 0) {
+					if(loopCount > 1) {
 						z = (m+1)%loopCount;
 					}
 					String groupPropertyValue = luckySheetBindData.getDatas().get(m).get(0).get(groupProperty) == null?"":String.valueOf(luckySheetBindData.getDatas().get(m).get(0).get(groupProperty));
@@ -4621,10 +4621,10 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 										maxCol = fixedY.get(luckysheetReportBlockCells.get(t).getCoordsx()+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+luckysheetReportBlockCells.get(t).getCoordsy());
 									}else {
 										if(z == 0) {
-											maxRow = this.getMaxRow(maxCoordinate, luckysheetReportBlockCells.get(t).getCoordsx(),luckysheetReportBlockCells.get(t).getCoordsy()+(loopCount-1)*cols.size()+(hloopEmptyCount*loopCount-1),1);
+											maxRow = this.getMaxRow(maxCoordinate, luckysheetReportBlockCells.get(t).getCoordsx(),luckysheetReportBlockCells.get(t).getCoordsy()+(loopCount-1)*cols.size()+((hloopEmptyCount*loopCount-1)),1);
 											maxCol = fixedY.get(luckysheetReportBlockCells.get(t).getCoordsx()+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+luckysheetReportBlockCells.get(t).getCoordsy()) + (loopCount-1)*cols.size() + hloopEmptyCount*(loopCount-1);
 										}else {
-											maxRow = this.getMaxRow(maxCoordinate, luckysheetReportBlockCells.get(t).getCoordsx(),luckysheetReportBlockCells.get(t).getCoordsy()+(z-1)*cols.size()+hloopEmptyCount*(z-1),1);
+											maxRow = this.getMaxRow(maxCoordinate, luckysheetReportBlockCells.get(t).getCoordsx(),luckysheetReportBlockCells.get(t).getCoordsy()+(z-1)*cols.size()+(hloopEmptyCount*(z-1)),1);
 											maxCol = fixedY.get(luckysheetReportBlockCells.get(t).getCoordsx()+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+luckysheetReportBlockCells.get(t).getCoordsy()) + (z-1)*cols.size()+ hloopEmptyCount*(z-1);
 										}
 									}
@@ -4833,7 +4833,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 															maxRow = this.getMaxRow(maxCoordinate, subLuckysheetReportBlockCells.get(i).getCoordsx(),subLuckysheetReportBlockCells.get(i).getCoordsy()+(loopCount-1)*cols.size()+(hloopEmptyCount*loopCount-1),1);
 															maxCol = fixedY.get(subLuckysheetReportBlockCells.get(i).getCoordsx()+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+subLuckysheetReportBlockCells.get(i).getCoordsy()) + (loopCount-1)*cols.size() + hloopEmptyCount*(loopCount-1);
 														}else {
-															maxRow = this.getMaxRow(maxCoordinate, subLuckysheetReportBlockCells.get(i).getCoordsx(),subLuckysheetReportBlockCells.get(i).getCoordsy()+(z-1)*cols.size()+hloopEmptyCount*(z-1),1);
+															maxRow = this.getMaxRow(maxCoordinate, subLuckysheetReportBlockCells.get(i).getCoordsx(),subLuckysheetReportBlockCells.get(i).getCoordsy()+(z-1)*cols.size()+(hloopEmptyCount*(z-1)),1);
 															maxCol = fixedY.get(subLuckysheetReportBlockCells.get(i).getCoordsx()+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+subLuckysheetReportBlockCells.get(i).getCoordsy()) + (z-1)*cols.size()+ hloopEmptyCount*(z-1);
 														}
 													}
@@ -5122,7 +5122,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 													maxRow = this.getMaxRow(maxCoordinate, luckysheetReportBlockCells.get(t).getCoordsx(),luckysheetReportBlockCells.get(t).getCoordsy()+(loopCount-1)*cols.size()+(hloopEmptyCount*loopCount-1),1);
 													maxCol = fixedY.get(luckysheetReportBlockCells.get(t).getCoordsx()+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+luckysheetReportBlockCells.get(t).getCoordsy()) + (loopCount-1)*cols.size() + hloopEmptyCount*(loopCount-1);
 												}else {
-													maxRow = this.getMaxRow(maxCoordinate, luckysheetReportBlockCells.get(t).getCoordsx(),luckysheetReportBlockCells.get(t).getCoordsy()+(z-1)*cols.size()+hloopEmptyCount*(z-1),1);
+													maxRow = this.getMaxRow(maxCoordinate, luckysheetReportBlockCells.get(t).getCoordsx(),luckysheetReportBlockCells.get(t).getCoordsy()+(z-1)*cols.size()+(hloopEmptyCount*(z-1)),1);
 													maxCol = fixedY.get(luckysheetReportBlockCells.get(t).getCoordsx()+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+luckysheetReportBlockCells.get(t).getCoordsy()) + (z-1)*cols.size()+ hloopEmptyCount*(z-1);
 												}
 											}
@@ -10718,7 +10718,9 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
                         	coords.put(r+"_"+c, maxX);
                         }
                         cellData.put("v", new JSONObject());
-                        JSONObject cellType = (JSONObject) subtotalCellDatas.get("cellType-"+dataKeys.get(t));
+                        String[] splitKeys = dataKeys.get(t).split("-");
+                        String keys = splitKeys[0] + "-" + splitKeys[1] +"-"+ r + "-" + c + "-" + splitKeys[4] + "-" + splitKeys[5];
+                        JSONObject cellType = (JSONObject) subtotalCellDatas.get("cellType-"+keys);
                         if(cellType == null)
     		   	        {
     		   	        	cellType = new JSONObject();
@@ -10733,6 +10735,14 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         	   	       	    if(subTotalDigits.containsKey(digitKey)) {
         	   	       	    	groupSummaryData.setDigit(subTotalDigits.get(digitKey).getInteger("digit"));
         	   	       	    }
+	        	   	       	if(cellType.getInteger("type").intValue() == 6) {
+	        	   	      		if(subTotalDigits.containsKey(digitKey)) {
+	        	   	      			String compareAttr1 = subTotalDigits.get(digitKey).getString("compareAttr1");
+	        	   	      			String compareAttr2 = subTotalDigits.get(digitKey).getString("compareAttr2");
+	        	   	      			groupSummaryData.setCompareAttr1(compareAttr1);
+	        	   	      	        groupSummaryData.setCompareAttr2(compareAttr2);
+	        	   	      		}
+	        	   	      	}
         	   	       	    Object value = luckySheetGroupCalculates.get(cellType.getInteger("type")!=null?cellType.getInteger("type"):1).calculate(groupSummaryData);
         	   	       	 if(subTotalDigits.containsKey(digitKey)) {
         	   	        	int digit = subTotalDigits.get(digitKey).getInteger("digit");
