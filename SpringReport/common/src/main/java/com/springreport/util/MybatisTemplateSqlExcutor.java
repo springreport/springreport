@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -132,4 +133,13 @@ public class MybatisTemplateSqlExcutor {
 		return value;
 	}
 
+	public static void main(String[] args) throws SQLException {
+		String queryJson = "<if test=\"age!=null and age!=''\">\r\n"
+				+ "  {\"age\": {$gt: #{age}}\r\n"
+				+ "}</if>";
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("age", null);
+		String sql = parseSql(queryJson, param);
+		System.err.println(sql);
+	}
 }

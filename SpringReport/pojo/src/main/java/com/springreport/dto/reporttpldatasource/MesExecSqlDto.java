@@ -57,4 +57,18 @@ public class MesExecSqlDto {
 	 */  
 	private String sqlParams;
 	
+	/**  
+	 * @Fields mongoTable : mongodb对应的表
+	 * @author caiyang
+	 * @date 2025-06-30 02:06:26 
+	 */  
+	private String mongoTable;
+	
+	/**  
+	 * @Fields mongoSearchType : mongodb查询方式
+	 * @author caiyang
+	 * @date 2025-07-01 11:35:40 
+	 */  
+	private Integer mongoSearchType;
+	
 }

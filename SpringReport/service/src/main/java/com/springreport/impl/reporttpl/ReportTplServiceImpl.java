@@ -97,6 +97,7 @@ import com.springreport.util.ListUtil;
 import com.springreport.util.LuckysheetUtil;
 import com.springreport.util.Md5Util;
 import com.springreport.util.MessageUtil;
+import com.springreport.util.MongoClientUtil;
 import com.springreport.util.ParamUtil;
 import com.springreport.util.PropertyRatio;
 import com.springreport.util.RedisUtil;
@@ -3727,7 +3728,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			params = new HashMap<String, Object>();
 		}
 		params.putAll(subParams);
-		if(DatasetTypeEnum.SQL.getCode().intValue() == reportTplDataset.getDatasetType().intValue())
+		if(DatasetTypeEnum.SQL.getCode().intValue() == reportTplDataset.getDatasetType().intValue() || DatasetTypeEnum.MONGO.getCode().intValue() == reportTplDataset.getDatasetType().intValue())
 		{
 			String sql = reportTplDataset.getTplSql();
 			if(SqlTypeEnum.SQL.getCode().intValue() == reportTplDataset.getSqlType().intValue())
@@ -3821,6 +3822,42 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 						pagination = new HashMap<String, Object>();
 						pagination.put("totalCount", count);
 						pagination.put("pageCount", paramsPageCount);
+					}
+				}else if(type == 14){//mongodb
+					sql = JdbcUtils.processSqlParams(sql, params);
+					if(reportTplDataset.getMongoSearchType().intValue() == 1) {
+						if(isPagination && YesNoEnum.YES.getCode().intValue() == reportTplDataset.getIsPagination().intValue()) {
+							datas = MongoClientUtil.findGetPageData(String.valueOf(dataSetAndDatasource.get("jdbcUrl")), reportTplDataset.getMongoTable(), sql, reportTplDataset.getMongoOrder(),Integer.valueOf(String.valueOf(mesGenerateReportDto.getPagination().get("pageCount"))),Integer.valueOf(String.valueOf(mesGenerateReportDto.getPagination().get("currentPage"))));
+							long count = MongoClientUtil.findGetDataCount(String.valueOf(dataSetAndDatasource.get("jdbcUrl")), reportTplDataset.getMongoTable(), sql, reportTplDataset.getMongoOrder());
+							Long totalCount = (Long) mergePagination.get("totalCount");
+							Integer pageCount = (Integer) mergePagination.get("pageCount");
+							Integer paramsPageCount = Integer.valueOf(String.valueOf(mesGenerateReportDto.getPagination().get("pageCount")));
+							if(totalCount == null)
+							{
+								mergePagination.put("totalCount", count);
+							}else {
+								if(count > totalCount)
+								{
+									mergePagination.put("totalCount", count);
+								}
+							}
+							if(pageCount == null)
+							{
+								mergePagination.put("pageCount", paramsPageCount);
+							}else {
+								if(paramsPageCount < pageCount)
+								{
+									mergePagination.put("pageCount", paramsPageCount);
+								}
+							}
+							pagination = new HashMap<String, Object>();
+							pagination.put("totalCount", count);
+							pagination.put("pageCount", paramsPageCount);
+						}else {
+							datas = MongoClientUtil.findGetData(String.valueOf(dataSetAndDatasource.get("jdbcUrl")), reportTplDataset.getMongoTable(), sql, reportTplDataset.getMongoOrder());
+						}
+					}else if(reportTplDataset.getMongoSearchType().intValue() == 2) {
+						datas = MongoClientUtil.aggregateGetData(String.valueOf(dataSetAndDatasource.get("jdbcUrl")), reportTplDataset.getMongoTable(), sql);
 					}
 				}else {
 					sql = JdbcUtils.processSqlParams(sql,params);

@@ -154,4 +154,16 @@ public class ReportTplDataset extends PageEntity {
     /** fixed_column - 固定列 */
     @TableField("fixed_column")
     private String fixedColumn;
+    
+    /** mongo_table - mongodb表 */
+    @TableField("mongo_table")
+    private String mongoTable;
+    
+    /** mongo_search_type - mongo查询方式 1find 其他待扩展 */
+    @TableField("mongo_search_type")
+    private Integer mongoSearchType;
+    
+    /** mongo_order - mongodb排序方式 */
+    @TableField("mongo_order")
+    private String mongoOrder;
 }

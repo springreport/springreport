@@ -29,6 +29,7 @@ import com.springreport.util.InfluxDBConnection;
 import com.springreport.util.JdbcUtils;
 import com.springreport.util.ListUtil;
 import com.springreport.util.Md5Util;
+import com.springreport.util.MongoClientUtil;
 import com.springreport.util.ParamUtil;
 import com.springreport.util.RedisUtil;
 import com.springreport.util.ReportDataUtil;
@@ -114,7 +115,7 @@ public class ScreenDesignServiceImpl implements IScreenDesignService{
 		Map<String, Object> systemParams =ParamUtil.getSystemParam(userInfoDto);
 		params.putAll(systemParams);
 		ReportTplDataset reportTplDataset = (ReportTplDataset) dataSetAndDatasource.get("tplDataSet");
-		if(DatasetTypeEnum.SQL.getCode().intValue() == reportTplDataset.getDatasetType().intValue()) {
+		if(DatasetTypeEnum.SQL.getCode().intValue() == reportTplDataset.getDatasetType().intValue() || DatasetTypeEnum.MONGO.getCode().intValue() == reportTplDataset.getDatasetType().intValue()) {
 			String sql = reportTplDataset.getTplSql();
 			if(SqlTypeEnum.SQL.getCode().intValue() == reportTplDataset.getSqlType().intValue())
 			{
@@ -126,6 +127,13 @@ public class ScreenDesignServiceImpl implements IScreenDesignService{
 				{//tdengine
 					sql = JdbcUtils.processSqlParams(sql, params);
 					datas = ReportDataUtil.getDatasourceDataBySql(tDengineConnection.getConnection(), sql);
+				}else if(type == 14){//mongodb
+					sql = JdbcUtils.processSqlParams(sql, params);
+					if(reportTplDataset.getMongoSearchType().intValue() == 1) {
+						datas = MongoClientUtil.findGetData(String.valueOf(dataSetAndDatasource.get("jdbcUrl")), reportTplDataset.getMongoTable(), sql, reportTplDataset.getMongoOrder());
+					}else if(reportTplDataset.getMongoSearchType().intValue() == 2) {
+						datas = MongoClientUtil.aggregateGetData(String.valueOf(dataSetAndDatasource.get("jdbcUrl")), reportTplDataset.getMongoTable(), sql);
+					}
 				}else {
 					sql = JdbcUtils.processSqlParams(sql,params);
 					//根据sql获取数据
