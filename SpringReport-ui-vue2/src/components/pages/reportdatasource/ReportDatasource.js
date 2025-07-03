@@ -80,7 +80,7 @@ export default {
           { type: 'Table', label: '返回值属性', prop: 'apiResultProps', rules: { required: false }, tableCols: [], tableHandles: [], isPagination: false, isIndex: false },
           { type: 'Table', label: '请求header', prop: 'apiRequestHeader', rules: { required: false }, tableCols: [], tableHandles: [], isPagination: false, isIndex: false },
           { type: 'Textarea', label: 'JSON请求内容', prop: 'apiParams', rules: { required: false }, rows: 6, width: '500px' },
-          { type: 'Textarea', label: '接口返回结果', prop: 'apiResult', rules: { required: false }, rows: 6, width: '500px' }
+          { type: 'Textarea', label: '接口返回结果', prop: 'apiResult', rules: { required: false }, rows: 6, width: '500px' },
         ],
         apiResultProps: [
           { label: '属性值编码', prop: 'propCode', align: 'center',  overflow: true },
@@ -410,8 +410,17 @@ export default {
           this.pageData.modalForm[4].rules.required = true
           this.pageData.modalForm[5].rules.required = true
         }
-        this.pageData.modalForm[4].show = true
-        this.pageData.modalForm[5].show = true
+        if(this.pageData.modalData.type == '14'){
+          this.pageData.modalForm[4].show = false
+          this.pageData.modalForm[5].show = false
+          this.pageData.modalForm[4].rules.required = false
+          this.pageData.modalForm[5].rules.required = false
+        }else{
+          this.pageData.modalForm[4].show = true
+          this.pageData.modalForm[5].show = true
+          this.pageData.modalForm[4].rules.required = true
+          this.pageData.modalForm[5].rules.required = true
+        }
         this.pageData.modalForm[6].show = false
         this.pageData.modalForm[6].rules.required = false
         this.pageData.modalForm[7].show = false

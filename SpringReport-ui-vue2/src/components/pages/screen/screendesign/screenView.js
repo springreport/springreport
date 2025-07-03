@@ -195,6 +195,7 @@ export default {
     async initComponent() {
       for (let index = 0; index < this.components.length; index++) {
         const element = this.components[index]
+        element.active = false
         if (element.category == this.screenConstants.category.vchart) {
           if (element.type.toLowerCase().indexOf('map') >= 0) {
             const mapCode = element.spec.map
@@ -261,7 +262,9 @@ export default {
             }
           }
         }
-        this.$refs['draggable'].$refs[element.id][0].initData();
+        if(element.type != "picture"){
+          this.$refs['draggable'].$refs[element.id][0].initData();
+        }
       }
       this.closeSearch();
     },

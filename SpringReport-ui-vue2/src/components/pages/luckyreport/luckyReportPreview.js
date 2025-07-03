@@ -572,7 +572,7 @@ export default {
       const tplId = this.currentTplId
       const obj = {
         url: this.apis.previewReport.getLuckyPreviewReportDataApi,
-        params: { tplId: tplId, searchData: this.searchData.params, pagination: this.pageParam, apiHeaders: apiHeaders }
+        params: { tplId: tplId, searchData: this.commonUtil.processPageParam(this.searchData.params), pagination: this.pageParam, apiHeaders: apiHeaders }
       }
       if (isCurrent) {
         obj.params.sheetIndex = luckysheet.getSheet().index

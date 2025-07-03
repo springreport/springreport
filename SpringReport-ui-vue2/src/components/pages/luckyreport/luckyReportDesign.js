@@ -143,6 +143,8 @@ export default {
         headerName:"",
         valueField:"",
         fixedColumn:[],
+        mongoTable:'',
+        mongoSearchType:null,
       },
       dataSource: [], // 模板数据源
       isParamMerge: true,
@@ -1593,8 +1595,12 @@ export default {
       //   return
       // }
       this.addDatasetsDialogVisiable = false
-      if (this.datasourceType == '1') {
+      if (this.datasourceType == '1' || this.datasourceType == '3') {
         this.$refs.codeMirror.codemirror.setValue('')
+        if(this.$refs.orderCodeMirror){
+          this.$refs.orderCodeMirror.codemirror.setValue('')
+        }
+        
       }
 
       this.$refs['sqlRef'].resetFields()// 校验重置
@@ -1621,9 +1627,12 @@ export default {
     changeDatasource(isEdit) {
       for (let index = 0; index < this.dataSource.length; index++) {
         const element = this.dataSource[index]
-        if (this.sqlForm.datasourceId == element.datasourceId) {         
-          this.sqlColumnTableData.tableData = []          
+        if (this.sqlForm.datasourceId == element.datasourceId) {  
+          if(!isEdit){
+            this.sqlColumnTableData.tableData = []  
+          }
           if (element.type == '4') {
+            this.sqlColumnTableData.tableData = []  
             this.datasourceType = '2'
             if (element.apiColumns) {
               const columns = JSON.parse(element.apiColumns)
@@ -1638,6 +1647,10 @@ export default {
                 }
               }
             }
+          }else if (element.type == '14'){
+              this.datasourceType = '3'
+              this.sqlForm.sqlType = 1;
+              this.getDatabaseTables()
           } else {
             this.datasourceType = '1'
             this.getDatabaseTables()
@@ -1655,7 +1668,7 @@ export default {
             url: this.apis.reportDesign.execSqlApi,
             params: { tplId: reportTplId, tplSql: this.$refs.codeMirror.codemirror.getValue(), datasourceId: this.sqlForm.datasourceId, sqlType: this.sqlForm.sqlType,
               inParam: this.procedureInParamTableData.tableData ? JSON.stringify(this.procedureInParamTableData.tableData) : '', outParam: this.procedureOutParamTableData.tableData ? JSON.stringify(this.procedureOutParamTableData.tableData) : '',
-              sqlParams: this.paramTableData.tableData ? JSON.stringify(this.paramTableData.tableData) : '' },
+              sqlParams: this.paramTableData.tableData ? JSON.stringify(this.paramTableData.tableData) : '',mongoTable:this.sqlForm.mongoTable,mongoSearchType:this.sqlForm.mongoSearchType},
             removeEmpty: false
           }
           this.commonUtil.doPost(obj).then(response => {
@@ -1877,8 +1890,12 @@ export default {
     // 编辑数据及
     editDataSet(dataSet) {
       this.addDatasetsDialogVisiable = true
+      this.datasourceType = dataSet.datasetType
       this.$nextTick(() => {
         this.$refs.codeMirror.codemirror.setValue(dataSet.tplSql)
+        if(dataSet.datasetType == 3 && dataSet.mongoSearchType == 1){
+          this.$refs.orderCodeMirror.codemirror.setValue(dataSet.mongoOrder)
+        }
       })
       if (dataSet.tplParam) {
         this.paramTableData.tableData = eval('(' + dataSet.tplParam + ')')
@@ -1907,6 +1924,8 @@ export default {
       }else{
         this.sqlForm.fixedColumn = dataSet.fixedColumn;
       }
+      this.sqlForm.mongoTable = dataSet.mongoTable;
+      this.sqlForm.mongoSearchType = dataSet.mongoSearchType;
       
       if(dataSet.subParamAttrs){
         this.subParamAttrs = JSON.parse(dataSet.subParamAttrs);
@@ -1937,11 +1956,15 @@ export default {
       const reportTplId = this.$route.query.tplId// reportTplId
       let paginationValidate = true
       let tplSql = ''
-      if (this.datasourceType == '1') {
+      let orderSql = '';
+      if (this.datasourceType == '1' || this.datasourceType == '3') {
         tplSql = this.$refs.codeMirror.codemirror.getValue()
-        if (tplSql == null || tplSql == '') {
+        if (this.datasourceType == '1' && (tplSql == null || tplSql == '')) {
           this.commonUtil.showMessage({ message: 'sql语句不能为空', type: this.commonConstants.messageType.error })
           return
+        }
+        if(this.datasourceType == '3' && this.$refs.orderCodeMirror){
+          orderSql = this.$refs.orderCodeMirror.codemirror.getValue();
         }
         if (this.sqlForm.sqlType == '1') {
           this.$refs['paginationRef'].validate((valid) => {
@@ -1977,7 +2000,7 @@ export default {
             url: this.apis.reportDesign.addDataSetApi,
             params: { tplId: reportTplId, groupId: this.sqlForm.groupId, datasetType: this.datasourceType, sqlType: this.sqlForm.sqlType,isCommon:this.sqlForm.isCommon,commonType:1,isConvert:this.sqlForm.isConvert,valueField:this.sqlForm.valueField,headerName:this.sqlForm.headerName,fixedColumn:JSON.stringify(this.sqlForm.fixedColumn), tplSql: tplSql, tplParam: this.paramTableData.tableData ? JSON.stringify(this.paramTableData.tableData) : '', datasourceId: this.sqlForm.datasourceId, datasetName: this.sqlForm.datasetName, id: this.sqlForm.id,
               inParam: this.procedureInParamTableData.tableData ? JSON.stringify(this.procedureInParamTableData.tableData) : '', outParam: this.procedureOutParamTableData.tableData ? JSON.stringify(this.procedureOutParamTableData.tableData) : '',
-              isPagination: this.paginationForm.isPagination, pageCount: this.paginationForm.pageCount, currentPageAttr: this.paginationForm.currentPageAttr, pageCountAttr: this.paginationForm.pageCountAttr, totalAttr: this.paginationForm.totalAttr,subParamAttrs: JSON.stringify(this.subParamAttrs)},
+              isPagination: this.paginationForm.isPagination, pageCount: this.paginationForm.pageCount, currentPageAttr: this.paginationForm.currentPageAttr, pageCountAttr: this.paginationForm.pageCountAttr, totalAttr: this.paginationForm.totalAttr,subParamAttrs: JSON.stringify(this.subParamAttrs),mongoTable:this.sqlForm.mongoTable,mongoOrder:orderSql,mongoSearchType:this.sqlForm.mongoSearchType},
             removeEmpty: false
           }
           this.commonUtil.doPost(obj).then(response => {
@@ -2908,6 +2931,7 @@ export default {
         this.filedLoading = false
         if(isEdit){
           this.sqlColumnTableData.tableData = response.responseData
+          this.sqlColumnTableData.tablePage.pageTotal = response.responseData.length
         }
       })
     },
