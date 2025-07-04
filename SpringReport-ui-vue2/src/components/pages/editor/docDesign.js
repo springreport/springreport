@@ -1696,7 +1696,6 @@ export default {
               }
             }
           } else if (element.type == '14'){
-              console.log(123)
               this.datasourceType = '3'
               this.sqlForm.sqlType = 1;
               this.getDatabaseTables()

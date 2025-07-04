@@ -1166,8 +1166,6 @@ commonUtil.getComponentParams = function(componentParams)
             if(paramType == "number"){
                 if(element[element.paramCode]){
                     element[element.paramCode] = element[element.paramCode] * 1;
-                }else{
-
                 }
             }
             let prefix = element.paramPrefix;

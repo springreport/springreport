@@ -87,6 +87,7 @@ export default {
           that.dataSets = response.responseData
           that.dataSetForm.dataSetId = that.component.dynamicDataSettings.datasetId
           that.dataSetForm.column = that.component.dynamicDataSettings.dataColumns
+          that.changeDataset();
         }
       })
     },
@@ -206,6 +207,7 @@ export default {
         this.getDatasetColumn(this.dataSetForm.dataSetId)
       } else {
         this.dataColumn = []
+        this.dataSetForm.column = []
       }
     },
     getDatasetColumn(dataSetId) {
@@ -214,7 +216,7 @@ export default {
         params: { id: dataSetId },
         removeEmpty: false
       }
-      this.dataSetForm.column = []
+      // this.dataSetForm.column = []
       var that = this
       this.commonUtil.doPost(obj).then((response) => {
         if (response.code == '200') {
@@ -289,7 +291,6 @@ export default {
             that.component.params
           )
           params.params = Object.assign({}, componentParams, that.$route.query)
-          console.log(params.params)
           const obj = {
             url: that.apis.screenDesign.getDynamicDatasApi,
             params: params,
@@ -319,7 +320,6 @@ export default {
       this.closeDynamicDataDialog()
     },
     editDatasets(index, item) {
-      console.log(item)
       this.addDatasetsDialogVisiable = true
       this.datasourceType = item.datasetType
       this.getScreenTplDateSource()
