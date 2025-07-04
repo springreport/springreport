@@ -674,7 +674,7 @@ export default {
         url: this.apis.previewReport.getLuckyPreviewReportDataApi,
         params: {
           tplId: tplId,
-          searchData: this.searchData.params,
+          searchData: this.commonUtil.processPageParam(this.searchData.params),
           pagination: this.pageParam,
           apiHeaders: apiHeaders,
         },

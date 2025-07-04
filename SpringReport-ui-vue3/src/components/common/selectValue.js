@@ -20,6 +20,7 @@ selectUtil.datasourceType = [
   { value: 9, label: 'elasticsearch' },
   { value: 10, label: 'TDengine' },
   { value: 11, label: 'kingbase(人大金仓)' },
+  { value: 14, label: 'mongodb' }
 ];
 selectUtil.yesNo = [
   { value: 1, label: '是' },
@@ -959,5 +960,10 @@ selectUtil.borderType = [
   {"name":"dv-border-box-11","text":"边框11"},
   {"name":"dv-border-box-12","text":"边框12"},
   {"name":"dv-border-box-13","text":"边框13"},
+]
+
+selectUtil.mongoSearchType = [
+  { value: 1, name: '查询文档(find)' },
+  { value: 2, name: '聚合查询(aggregate)' }
 ]
 export default selectUtil;

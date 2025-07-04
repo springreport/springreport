@@ -584,6 +584,17 @@ export default {
           this.pageData.modalForm[4].rules.required = true;
           this.pageData.modalForm[5].rules.required = true;
         }
+        if(this.pageData.modalData.type == '14'){
+          this.pageData.modalForm[4].show = false
+          this.pageData.modalForm[5].show = false
+          this.pageData.modalForm[4].rules.required = false
+          this.pageData.modalForm[5].rules.required = false
+        }else{
+          this.pageData.modalForm[4].show = true
+          this.pageData.modalForm[5].show = true
+          this.pageData.modalForm[4].rules.required = true
+          this.pageData.modalForm[5].rules.required = true
+        }
         this.pageData.modalForm[4].show = true;
         this.pageData.modalForm[5].show = true;
         this.pageData.modalForm[6].show = false;

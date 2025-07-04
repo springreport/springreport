@@ -34,7 +34,9 @@ export default {
     mounted() {
     },
     methods:{
-
+        initData(){
+            
+        }
     }
 }
 </script>
