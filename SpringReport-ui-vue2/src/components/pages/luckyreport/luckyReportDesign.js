@@ -335,6 +335,8 @@ export default {
         dictContent:"",
         compareAttr1:"",
         compareAttr2:"",
+        dumpAttr:"",
+        isDump:false,
         formsAttrs:{
           isOperationCol:false,//是否操作列
           valueType: '1', // 值类型 1文本 2数值 3日期 4下拉单选
@@ -938,6 +940,9 @@ export default {
         this.cellForm.dictContent = cellFormData.dictContent
         this.cellForm.compareAttr1 = cellFormData.compareAttr1
         this.cellForm.compareAttr2 = cellFormData.compareAttr2
+        this.cellForm.dumpAttr = cellFormData.dumpAttr
+        this.cellForm.isDump = cellFormData.isDump
+        
         if(cellFormData.cellFillType){
           this.cellForm.cellFillType = cellFormData.cellFillType
         }else{
@@ -1003,6 +1008,8 @@ export default {
         this.cellForm.dictContent = ""
         this.cellForm.compareAttr1 = ""
         this.cellForm.compareAttr2 = ""
+        this.cellForm.dumpAttr = ""
+        this.cellForm.isDump = false
         // this.getDrillReport();
       }
       if (this.cellForm.datasourceId) {

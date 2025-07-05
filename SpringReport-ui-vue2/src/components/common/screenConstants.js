@@ -608,8 +608,8 @@ screenConstants.histogramInit = {
       }
     },
     axes: [
-      { orient: 'bottom', sampling: true, label: { visible: true, style: { fill: '#6E6F73' }, autoRotate: false, autoRotateAngle: [0, 90], autoLimit: false }, unit: { visible: false, style: {}}},
-      { orient: 'left', label: { visible: true, style: { fill: '#6E6F73' }, autoLimit: false }, unit: { visible: false, style: {}}}
+      { orient: 'bottom', sampling: true, label: { visible: true, style: { fill: '#6E6F73',fontSize:null }, autoRotate: false, autoRotateAngle: [0, 90], autoLimit: false }, unit: { visible: false, style: {}}},
+      { orient: 'left', label: { visible: true, style: { fill: '#6E6F73' ,fontSize:null}, autoLimit: false }, unit: { visible: false, style: {}}}
     ],
     legends: {
       visible: false,
