@@ -1,7 +1,7 @@
 <!-- 搜索表单 -->
 <template>
   <div>
-    <div class="search-content df-c-b">
+    <div class="search-content df-c-b"  v-if="!isScreen">
       <div class="left-warp" />
 
       <div class="headerLeft df-c" style="width: 30%">
@@ -562,6 +562,10 @@
 <script>
   export default {
     props: {
+      isScreen: {
+        type: Boolean,
+        default: false
+      },
       inline: {
         type: Boolean,
         default: true,

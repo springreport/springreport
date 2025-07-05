@@ -394,6 +394,33 @@
                   </el-select>
                 </el-form-item>
                 <el-form-item
+                  label="是否去重计算"
+                  size="small"
+                  class="df-form-item"
+                  v-show="cellForm.aggregateType == 'summary'"
+                >
+                  <el-switch
+                    v-model="cellForm.isDump"
+                    active-text="是"
+                    inactive-text="否"
+                    :disabled="attrDisabled"
+                    @change="changeCellAttr('isDump')"
+                  />
+                </el-form-item>
+                <el-form-item
+                  v-show="(cellForm.aggregateType == 'summary' && cellForm.isDump)"
+                  label="去重属性"
+                  size="small"
+                >
+                  <el-input
+                    v-model="cellForm.dumpAttr"
+                    style="width: 100%"
+                    placeholder="去重属性，多个用,分隔"
+                    :disabled="attrDisabled"
+                    @input="changeCellAttr('dumpAttr')"
+                  />
+                </el-form-item>
+                <el-form-item
                   v-show="
                     (cellForm.aggregateType == 'summary' ||
                       cellForm.aggregateType == 'groupSummary') &&
