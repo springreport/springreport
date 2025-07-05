@@ -32,6 +32,7 @@ import com.springreport.report.aggregate.LuckySheetFormsListAggregate;
 import com.springreport.report.aggregate.LuckySheetGroupAggregate;
 import com.springreport.report.aggregate.LuckySheetGroupSummaryAggregate;
 import com.springreport.report.aggregate.LuckySheetListAggregate;
+import com.springreport.report.aggregate.LuckySheetSummaryAggregate;
 import com.springreport.util.ListUtil;
 import com.springreport.util.SheetUtil;
 import com.springreport.util.StringUtil;
@@ -52,7 +53,7 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 	static{
 		aggregates.put(AggregateTypeEnum.GROUP.getCode(),new LuckySheetGroupAggregate());
 		aggregates.put(AggregateTypeEnum.LIST.getCode(),new LuckySheetListAggregate());
-		aggregates.put(AggregateTypeEnum.SUMMARY.getCode(),new LuckySheetListAggregate());
+		aggregates.put(AggregateTypeEnum.SUMMARY.getCode(),new LuckySheetSummaryAggregate());
 		aggregates.put(AggregateTypeEnum.GROUPSUMMARY.getCode(),new LuckySheetGroupSummaryAggregate());
 		aggregates.put(AggregateTypeEnum.CROSS.getCode(),new LuckySheetCrossAggregate());
 	}
@@ -129,6 +130,8 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 				bindData.setPriortyMoveDirection(variableCells.get(i).getPriortyMoveDirection());
 				bindData.setCompareAttr1(variableCells.get(i).getCompareAttr1());
 				bindData.setCompareAttr2(variableCells.get(i).getCompareAttr2());
+				bindData.setIsDump(variableCells.get(i).getIsDump());
+				bindData.setDumpAttr(variableCells.get(i).getDumpAttr());
 				if(StringUtil.isNotEmpty(variableCells.get(i).getFormsAttrs())) {
 					//填报设置如果设置了下拉单选数据字典，则以填报设置为准
 					JSONObject formsAttrs = JSON.parseObject(variableCells.get(i).getFormsAttrs());
@@ -244,6 +247,9 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 					bindData.setAggregateType(variableCells.get(i).getAggregateType());
 					bindData.setLastAggregateType(lastAggregateType);
 //					bindData.setContinueGroupMergeCount(continueGroupMergeCount);
+					if(AggregateTypeEnum.SUMMARY.getCode().equals(variableCells.get(i).getAggregateType()) && variableCells.get(i).getIsDump()) {
+						bindData.setDataFrom(DataFromEnum.ORIGINAL.getCode());
+					}
 					if(DataFromEnum.DEFAULT.getCode().intValue() == bindData.getDataFrom().intValue())
 					{//默认，使用上一个单元格计算完后的数据
 						bindData.setLastIsConditions(lastIsConditions);

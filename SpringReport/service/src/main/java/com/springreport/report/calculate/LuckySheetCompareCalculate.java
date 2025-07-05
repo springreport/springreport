@@ -29,6 +29,9 @@ public class LuckySheetCompareCalculate extends Calculate<LuckySheetBindData>{
 				Object object2 = this.getData(compareAttr2, bindData.getDatas().get(i).get(j));
 				result1 = result1.add(new BigDecimal(String.valueOf(object1)));
 				result2 = result2.add(new BigDecimal(String.valueOf(object2)));
+				if(bindData.getIsDump() && StringUtil.isNotEmpty(bindData.getDumpAttr())) {
+					break;
+				}
 			}
 		}
 		result = result1.subtract(result2);

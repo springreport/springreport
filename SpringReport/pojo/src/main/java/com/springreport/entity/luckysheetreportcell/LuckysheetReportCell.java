@@ -358,4 +358,12 @@ public class LuckysheetReportCell extends PageEntity {
     /** compare_attr2 - 同比/环比同期属性 */
     @TableField("compare_attr2")
     private String compareAttr2;
+    
+    /** is_dump - 去重属性 */
+    @TableField("is_dump")
+    private Boolean isDump;
+    
+    /** dump_attr - 去重属性 */
+    @TableField("dump_attr")
+    private String dumpAttr;
 }

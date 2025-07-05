@@ -65,6 +65,9 @@ public class LuckySheetAddCalculate extends Calculate<LuckySheetBindData>{
 					{
 						result = result.add(new BigDecimal(String.valueOf(object)));
 					}
+					if(bindData.getIsDump() && StringUtil.isNotEmpty(bindData.getDumpAttr())) {
+						break;
+					}
 				}
 			}
 		}

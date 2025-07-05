@@ -72,6 +72,9 @@ public class LuckySheetAvgCalculate extends Calculate<LuckySheetBindData>{
 						sum = sum.add(new BigDecimal(String.valueOf(object)));
 					}
 					size = size + 1;
+					if(bindData.getIsDump() && StringUtil.isNotEmpty(bindData.getDumpAttr())) {
+						break;
+					}
 				}
 			}
 		}

@@ -1964,6 +1964,10 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			luckysheetReportCell.setCompareAttr1(compareAttr1);
 			String compareAttr2 = extraCustomCellConfig.getString("compareAttr2");
 			luckysheetReportCell.setCompareAttr2(compareAttr2);
+			boolean isDump = extraCustomCellConfig.getBooleanValue("isDump");
+			luckysheetReportCell.setIsDump(isDump);
+			String dumpAttr = extraCustomCellConfig.getString("dumpAttr");
+			luckysheetReportCell.setDumpAttr(dumpAttr);
 		}
 		JSONObject hyperlink = hyperlinks.get(mapKey);
 		if(hyperlink != null)
@@ -2482,6 +2486,8 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 							extraCustomCellConfig.put("dictContent", luckysheetReportCell.getDictContent());
 							extraCustomCellConfig.put("compareAttr1", luckysheetReportCell.getCompareAttr1());
 							extraCustomCellConfig.put("compareAttr2", luckysheetReportCell.getCompareAttr2());
+							extraCustomCellConfig.put("isDump", luckysheetReportCell.getIsDump());
+							extraCustomCellConfig.put("dumpAttr", luckysheetReportCell.getDumpAttr());
 							if(luckysheetReportCell.getIsDrill())
 							{
 								extraCustomCellConfig.put(LuckySheetPropsEnum.DRILLID.getCode(), luckysheetReportCell.getDrillId());
