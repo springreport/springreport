@@ -61,13 +61,16 @@ export default {
   computed: {},
   watch: {},
   created() {},
+  activated(){
+    this.getIndexData()
+  },
   mounted() {
     this.getIndexData()
   },
   methods: {
     getIndexData() {
       var obj = {
-        params: {},
+        params: {merchantNo:localStorage.getItem(this.commonConstants.sessionItem.merchantNo)},
         removeEmpty: false,
         url: this.apis.index.getIndexDataApi
       }
