@@ -18,6 +18,7 @@ import com.springreport.entity.onlinetpl.OnlineTpl;
 import com.springreport.entity.reportdatasource.ReportDatasource;
 import com.springreport.entity.reporttpl.ReportTpl;
 import com.springreport.entity.screentpl.ScreenTpl;
+import com.springreport.entity.sysmerchant.SysMerchant;
 import com.springreport.enums.DelFlagEnum;
 import com.springreport.enums.YesNoEnum;
 
@@ -52,11 +53,11 @@ public class IIndexServiceImpl implements IIndexService{
 	 * @date 2024-12-08 06:54:04 
 	 */
 	@Override
-	public IndexDto getIndexData(UserInfoDto userInfoDto) {
+	public IndexDto getIndexData(SysMerchant sysMerchant,UserInfoDto userInfoDto) {
 		IndexDto result = new IndexDto();
 		QueryWrapper<ReportTpl> reportTplQueryWrapper = new QueryWrapper<>();
 		if(YesNoEnum.YES.getCode().intValue() == merchantmode.intValue()) {
-			reportTplQueryWrapper.eq("merchant_no", userInfoDto.getMerchantNo());
+			reportTplQueryWrapper.eq("merchant_no", sysMerchant.getMerchantNo());
 		}
 		reportTplQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
 		long excelCount = this.iReportTplService.count(reportTplQueryWrapper);
@@ -64,7 +65,7 @@ public class IIndexServiceImpl implements IIndexService{
 		
 		QueryWrapper<DocTpl> docTplQueryWrapper = new QueryWrapper<>();
 		if(YesNoEnum.YES.getCode().intValue() == merchantmode.intValue()) {
-			docTplQueryWrapper.eq("merchant_no", userInfoDto.getMerchantNo());
+			docTplQueryWrapper.eq("merchant_no", sysMerchant.getMerchantNo());
 		}
 		docTplQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
 		long wordCount = this.iDocTplService.count(docTplQueryWrapper);
@@ -72,7 +73,7 @@ public class IIndexServiceImpl implements IIndexService{
 		
 		QueryWrapper<OnlineTpl> onlineTplQueryWrapper = new QueryWrapper<>();
 		if(YesNoEnum.YES.getCode().intValue() == merchantmode.intValue()) {
-			onlineTplQueryWrapper.eq("merchant_no", userInfoDto.getMerchantNo());
+			onlineTplQueryWrapper.eq("merchant_no", sysMerchant.getMerchantNo());
 		}
 		onlineTplQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
 		long coeditCount = this.iOnlineTplService.count(onlineTplQueryWrapper);
@@ -80,7 +81,7 @@ public class IIndexServiceImpl implements IIndexService{
 		
 		QueryWrapper<ScreenTpl> screenTplQueryWrapper = new QueryWrapper<>();
 		if(YesNoEnum.YES.getCode().intValue() == merchantmode.intValue()) {
-			screenTplQueryWrapper.eq("merchant_no", userInfoDto.getMerchantNo());
+			screenTplQueryWrapper.eq("merchant_no", sysMerchant.getMerchantNo());
 		}
 		screenTplQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
 		long screenCount = this.iScreenTplService.count(screenTplQueryWrapper);
@@ -88,7 +89,7 @@ public class IIndexServiceImpl implements IIndexService{
 		
 		QueryWrapper<ReportDatasource> reportDatasourceQueryWrapper = new QueryWrapper<>();
 		if(YesNoEnum.YES.getCode().intValue() == merchantmode.intValue()) {
-			reportDatasourceQueryWrapper.eq("merchant_no", userInfoDto.getMerchantNo());
+			reportDatasourceQueryWrapper.eq("merchant_no", sysMerchant.getMerchantNo());
 		}
 		reportDatasourceQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
 		long datasourceCount = this.iReportDatasourceService.count(reportDatasourceQueryWrapper);

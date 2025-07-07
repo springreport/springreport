@@ -1208,8 +1208,11 @@ public class WordUtil {
     	// 2.图表相关设置
     	if(docChartSettingDto.getShowChartName().intValue() == YesNoEnum.YES.getCode().intValue()) {
     		chart.setTitleText(docChartSettingDto.getChartName()); // 图表标题
+    		chart.setTitleOverlay(false); // 图例是否覆盖标题
+    	}else {
+    		chart.setTitleText(""); // 图表标题
+    		chart.setTitleOverlay(true); // 图例是否覆盖标题
     	}
-        chart.setTitleOverlay(false); // 图例是否覆盖标题
         // 3.图例设置
         XDDFChartLegend legend = chart.getOrAddLegend();
         legend.setPosition(LegendPosition.BOTTOM); // 图例位置:上下左右
@@ -1288,8 +1291,11 @@ public class WordUtil {
     	//图表相关设置
     	if(docChartSettingDto.getShowChartName().intValue() == YesNoEnum.YES.getCode().intValue()) {
     		chart.setTitleText(docChartSettingDto.getChartName()); // 图表标题
+    		chart.setTitleOverlay(false); // 图例是否覆盖标题
+    	}else {
+    		chart.setTitleText(""); // 图表标题
+    		chart.setTitleOverlay(true); // 图例是否覆盖标题
     	}
-    	chart.setTitleOverlay(false); // 图例是否覆盖标题
     	
         //x轴 y轴设置
         XDDFCategoryAxis xAxis = chart.createCategoryAxis(AxisPosition.BOTTOM);
@@ -1377,8 +1383,11 @@ public class WordUtil {
     	//图表相关设置
     	if(docChartSettingDto.getShowChartName().intValue() == YesNoEnum.YES.getCode().intValue()) {
     		chart.setTitleText(docChartSettingDto.getChartName()); // 图表标题
+    		chart.setTitleOverlay(false); // 图例是否覆盖标题
+    	}else {
+    		chart.setTitleText(""); // 图表标题
+    		chart.setTitleOverlay(true); // 图例是否覆盖标题
     	}
-    	chart.setTitleOverlay(false); // 图例是否覆盖标题
     	
         //x轴 y轴设置
         XDDFCategoryAxis xAxis = chart.createCategoryAxis(AxisPosition.BOTTOM);

@@ -152,7 +152,7 @@ public class ReportDatasourceController extends BaseController {
 	*/
 	@RequestMapping(value = "/getReportDatasource",method = RequestMethod.POST)
 	@MethodLog(module="ReportDatasource",remark="获取数据源",operateType=Constants.OPERATE_TYPE_SEARCH)
-	@RequiresPermissions(value = {"reportTpl_insert","reportTpl_update","reportTpl_getDetail","screenTpl_screenDesign","reportTpl_search","screenTpl_search"},logical = Logical.OR)
+//	@RequiresPermissions(value = {"reportTpl_insert","reportTpl_update","reportTpl_getDetail","screenTpl_screenDesign","reportTpl_search","screenTpl_search"},logical = Logical.OR)
 	public Response getReportDatasource(@RequestBody MesReportDatasourceDto mesReportDatasourceDto) {
 		List<ReportDatasource> result = this.iReportDatasourceService.getReportDatasource(mesReportDatasourceDto);
 		return Response.success(result);
