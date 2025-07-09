@@ -69,8 +69,8 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 			Map<String, Map<String, List<List<Map<String, Object>>>>> processedCells,Map<String, LuckySheetBindData> blockBindDatas,
 			Map<String, Object> subtotalCellDatas,Map<String, Object> subtotalCellMap,String sheetIndex,Map<String, LuckySheetBindData> cellBindData,Map<String, JSONObject> subTotalDigits,int tplType,List<String> subTotalCellCoords) {
 		List<LuckySheetBindData> bindDatas = new ArrayList<LuckySheetBindData>();
-		if(!ListUtil.isEmpty(data))
-		{
+//		if(!ListUtil.isEmpty(data))
+//		{
 			Map<String, String> reliedGroupMergeCells = new HashMap<>();//被依赖的合一单元格和依赖单元格对应关系
 			Map<String, Integer> indexChains = new HashMap<String, Integer>();//依赖分组index对应的关系链
 			LuckySheetBindData bindData = null;
@@ -132,6 +132,7 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 				bindData.setCompareAttr2(variableCells.get(i).getCompareAttr2());
 				bindData.setIsDump(variableCells.get(i).getIsDump());
 				bindData.setDumpAttr(variableCells.get(i).getDumpAttr());
+				bindData.setKeepEmptyCell(variableCells.get(i).getKeepEmptyCell());
 				if(StringUtil.isNotEmpty(variableCells.get(i).getFormsAttrs())) {
 					//填报设置如果设置了下拉单选数据字典，则以填报设置为准
 					JSONObject formsAttrs = JSON.parseObject(variableCells.get(i).getFormsAttrs());
@@ -446,7 +447,7 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 					}
 				}
 			}
-		}
+//		}
 		
 		return bindDatas;
 	}

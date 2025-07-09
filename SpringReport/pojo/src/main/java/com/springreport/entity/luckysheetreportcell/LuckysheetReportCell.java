@@ -366,4 +366,8 @@ public class LuckysheetReportCell extends PageEntity {
     /** dump_attr - 去重属性 */
     @TableField("dump_attr")
     private String dumpAttr;
+    
+    /** keep_empty_cell - 没有数据时是否保留空单元格*/
+    @TableField("keep_empty_cell")
+    private Boolean keepEmptyCell;
 }
