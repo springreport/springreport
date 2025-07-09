@@ -208,11 +208,11 @@ public class JdbcUtils {
 	*/
 	public static String preprocessSqlText(String sqlText,int dataSourceType,Map<String, Object> params) throws SQLException {
         sqlText = StringUtils.stripEnd(sqlText.trim(), ";");
-        Pattern paramPattern=Pattern.compile("\\$\\s*\\{(.*?)}");
-		Matcher parammatcher=paramPattern.matcher(sqlText);
-		while(parammatcher.find()){
-			sqlText = parammatcher.replaceAll("''");
-		}
+//        Pattern paramPattern=Pattern.compile("\\$\\s*\\{(.*?)}");
+//		Matcher parammatcher=paramPattern.matcher(sqlText);
+//		while(parammatcher.find()){
+//			sqlText = parammatcher.replaceAll("''");
+//		}
 		sqlText = MybatisTemplateSqlExcutor.parseSql(sqlText,params);
 		System.err.println("解析后的sql:"+sqlText);
 		if(DriverClassEnum.MYSQL.getCode().intValue() == dataSourceType || DriverClassEnum.POSTGRESQL.getCode().intValue() == dataSourceType
