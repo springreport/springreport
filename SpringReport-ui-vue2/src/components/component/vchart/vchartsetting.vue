@@ -397,7 +397,9 @@
               </el-form-item>
             </div>
           </div>
-
+          <el-form-item label="背景颜色">
+            <input-color-picker :value="component.defaultOption.spec.background" @change="(val)=>{component.defaultOption.spec.background=val;reLoadChart()}" />
+          </el-form-item>
           <div class="cus-collapse-header df-c-b" style="margin: 12px 0 0px">
             <span>色系设置</span>
             <el-button
