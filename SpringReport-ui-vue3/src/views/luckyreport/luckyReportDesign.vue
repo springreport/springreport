@@ -247,6 +247,18 @@
                     <el-option label="交叉扩展" :value="4"></el-option>
                   </el-select>
                 </el-form-item>
+                <el-form-item
+                  v-show="
+                  cellForm.cellExtend != 4"
+                  label="没有数据时是否保留空白单元格"
+                  :disabled="attrDisabled"
+                  class="df-form-item"
+                >
+                  <el-switch
+                    v-model="cellForm.keepEmptyCell"
+                    @change="changeCellAttr('keepEmptyCell')"
+                  />
+                </el-form-item>
                 <el-form-item label="数据填充方式" v-if="cellForm.cellExtend != 4">
                   <el-select
                     v-model="cellForm.cellFillType"

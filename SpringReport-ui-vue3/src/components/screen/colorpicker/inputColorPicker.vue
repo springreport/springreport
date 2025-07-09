@@ -60,7 +60,7 @@ export default {
       if (val) {
         this.$emit('change', val)
       }else{
-        this.$emit('change', "rgba(128, 128, 128, 0.0)")
+        this.$emit('change', "")
       }
     }
   }

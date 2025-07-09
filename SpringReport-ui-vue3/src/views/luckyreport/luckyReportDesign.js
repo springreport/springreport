@@ -326,6 +326,7 @@ export default {
       cellForm: {
         //自定义单元格属性
         cellExtend: 1, //扩展方向1不扩展 2纵向扩展 2横向扩展
+        keepEmptyCell:false,
         aggregateType: 'list', //聚合类型 list：列表 group：分组 summary汇总
         digit: '2', //小数位数
         cellFunction: '', //函数
@@ -1076,6 +1077,7 @@ export default {
         this.cellForm.compareAttr2 = cellFormData.compareAttr2
         this.cellForm.dumpAttr = cellFormData.dumpAttr
         this.cellForm.isDump = cellFormData.isDump
+        this.cellForm.keepEmptyCell = cellFormData.keepEmptyCell
         if (cellFormData.cellFillType) {
           this.cellForm.cellFillType = cellFormData.cellFillType;
         } else {
@@ -1143,6 +1145,7 @@ export default {
         this.cellForm.compareAttr2 = ""
         this.cellForm.dumpAttr = ""
         this.cellForm.isDump = false
+        this.cellForm.keepEmptyCell = false
         // this.getDrillReport();
       }
       if (this.cellForm.datasourceId) {
