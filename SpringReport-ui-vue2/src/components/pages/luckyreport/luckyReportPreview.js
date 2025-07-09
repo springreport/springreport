@@ -1267,7 +1267,7 @@ export default {
             } else if (this.cellConfig.valueType == '4') {
               // 下拉选择
               this.selectValidRules()
-              if (this.cellConfig.datasourceId && this.cellConfig.dictType) {
+              if (orginCell) {
                 this.getDictTypeDatas(orginCell)
               }
               this.editDialog = true
