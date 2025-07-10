@@ -436,7 +436,7 @@ export default {
           moreFormats: true, // '更多格式'
           border: true, // '边框'
           textWrapMode: true, // '换行方式'
-          textRotateMode: false, // '文本旋转方式'       image: true, // '插入图片'
+          textRotateMode: true, // '文本旋转方式'       image: true, // '插入图片'
           chart: true, // '图表'（图标隐藏，但是如果配置了chart插件，右击仍然可以新建图表）
           postil: true, // '批注'
           pivotTable: false, // '数据透视表'

@@ -80,7 +80,7 @@
       </div>
       <div v-if="component.type.toLowerCase().indexOf('wordcloud')<0">
         <div class="right-dataset-title">
-          <span class="attr-dataset-title">标签设置</span>
+          <span class="attr-dataset-title">标题设置</span>
         </div>
         <div class="right-dataset-warp">
           <el-form-item label="是否显示" class="df-form-item">
@@ -444,7 +444,7 @@
           <el-form-item v-if="component.type.toLowerCase().indexOf('histogram')>=0" label="圆角">
             <el-input v-model.number="component.spec.bar.style.cornerRadius" @change="commonUtil.reLoadChart(chartsComponents,component)" />
           </el-form-item>
-          <el-form-item v-if="component.type.toLowerCase().indexOf('line')>=0 || component.type.toLowerCase().indexOf('area')>=0" label="折线标签是否显示" class="df-form-item">
+          <!-- <el-form-item v-if="component.type.toLowerCase().indexOf('line')>=0 || component.type.toLowerCase().indexOf('area')>=0" label="折线标签是否显示" class="df-form-item">
             <el-switch v-model="component.spec.lineLabel.visible" active-text="是" inactive-text="否" @change="commonUtil.reLoadChart(chartsComponents,component)" />
           </el-form-item>
           <el-form-item v-if="(component.type.toLowerCase().indexOf('line')>=0 || component.type.toLowerCase().indexOf('area')>=0) && component.spec.lineLabel.visible" label="标签位置">
@@ -459,8 +459,33 @@
           </el-form-item>
           <el-form-item v-if="(component.type.toLowerCase().indexOf('line')>=0 || component.type.toLowerCase().indexOf('area')>=0) && component.spec.lineLabel.visible" label="标签颜色">
             <input-color-picker :value="component.spec.lineLabel.style.fill" @change="(val)=>{component.spec.lineLabel.style.fill=val;commonUtil.reLoadChart(chartsComponents,component)}" />
+          </el-form-item> -->
+        </div>
+      </div>
+      <div v-if="component.type.toLowerCase().indexOf('combocharthl')>=0">
+        <div class="right-dataset-title">
+          <span class="attr-dataset-title">柱体/折线设置</span>
+        </div>
+        <div class="right-dataset-warp">
+          <el-form-item :label="'柱体宽度'">
+            <el-input v-model="component.spec.series[0].barWidth" @change="commonUtil.reLoadChart(chartsComponents,component)" />
           </el-form-item>
-          <div class="attr-dataset-title-small">坐标轴设置</div>
+          <el-form-item label="圆角">
+            <el-input v-model.number="component.spec.series[0].bar.style.cornerRadius" @change="commonUtil.reLoadChart(chartsComponents,component)" />
+          </el-form-item>
+          <el-form-item :label="'折线宽度'">
+            <el-input v-model="component.spec.series[1].line.style.lineWidth" @change="commonUtil.reLoadChart(chartsComponents,component)" />
+          </el-form-item>
+          <el-form-item v-if="(component.type.toLowerCase().indexOf('line')>=0 || component.type.toLowerCase().indexOf('area')>=0) && component.spec.lineLabel.visible" label="标签颜色">
+            <input-color-picker :value="component.spec.lineLabel.style.fill" @change="(val)=>{component.spec.lineLabel.style.fill=val;commonUtil.reLoadChart(chartsComponents,component)}" />
+          </el-form-item>
+        </div>
+      </div>
+      <div v-if="component.type.toLowerCase().indexOf('line')>=0 || component.type.toLowerCase().indexOf('area')>=0 || component.type.toLowerCase().indexOf('histogram')>=0 || component.type.toLowerCase().indexOf('combocharthl')>=0">
+        <div class="right-dataset-title">
+          <span class="attr-dataset-title">坐标轴设置</span>
+        </div>
+        <div class="right-dataset-warp">
 
           <el-form-item label="x轴字体颜色">
             <input-color-picker :value="component.spec.axes[0].label.style.fill" @change="(val)=>{component.spec.axes[0].label.style.fill=val;commonUtil.reLoadChart(chartsComponents,component)}" />
