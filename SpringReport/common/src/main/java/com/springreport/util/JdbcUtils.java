@@ -351,7 +351,9 @@ public class JdbcUtils {
             	column.put("dataType", rsMataData.getColumnTypeName(i));
             	column.put("width", rsMataData.getColumnDisplaySize(i));
             	column.put("className", rsMataData.getColumnClassName(i));
-            	column.put("remark", columnComments.get(columnName));
+            	if(columnComments != null) {
+            		column.put("remark", columnComments.get(columnName));
+            	}
             	result.add(column);
             }
         } catch (final SQLException ex) {
@@ -370,14 +372,18 @@ public class JdbcUtils {
 	/**获取字段注解*/
     private static Map<String, String> getColumnComments(DatabaseMetaData metaData, String tableName,Map<String, Map<String, String>> tableColumnRemarks) throws SQLException {
         Map<String, String> columnComments = new HashMap<>();
-        try (ResultSet columns = metaData.getColumns(null, null, tableName, null)) {
-            while (columns.next()) {
-                String columnName = columns.getString("COLUMN_NAME");
-                String columnComment = columns.getString("REMARKS");
-                columnComments.put(columnName, columnComment);
+        try {
+        	try (ResultSet columns = metaData.getColumns(null, null, tableName, null)) {
+                while (columns.next()) {
+                    String columnName = columns.getString("COLUMN_NAME");
+                    String columnComment = columns.getString("REMARKS");
+                    columnComments.put(columnName, columnComment);
+                }
             }
-        }
-        tableColumnRemarks.put(tableName, columnComments);
+            tableColumnRemarks.put(tableName, columnComments);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
         return columnComments;
     }
 	
