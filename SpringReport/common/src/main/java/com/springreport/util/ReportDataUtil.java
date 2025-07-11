@@ -36,6 +36,7 @@ import com.springreport.enums.OutParamTypeEnum;
 import com.springreport.enums.ResultTypeEnum;
 import com.springreport.exception.BizException;
 
+import dm.jdbc.driver.DmdbNClob;
 import lombok.extern.slf4j.Slf4j;
 
 /**  
@@ -182,7 +183,13 @@ public class ReportDataUtil {
             while(rs.next()){
                 Map<String, Object> map = new LinkedHashMap<String, Object>();
                 for(int i = 0; i < count; i++){
-                 map.put(rsMataData.getColumnLabel(i+1), rs.getObject(rsMataData.getColumnLabel(i+1)));
+                	Object value = rs.getObject(rsMataData.getColumnLabel(i+1));
+                	if(value instanceof DmdbNClob) {
+                		DmdbNClob dmdbNClob = (dm.jdbc.driver.DmdbNClob) value;
+                		map.put(rsMataData.getColumnLabel(i+1), dmdbNClob.data);
+                	}else {
+                		map.put(rsMataData.getColumnLabel(i+1), value);
+                	}
                 }
                 result.add(map);
             }
