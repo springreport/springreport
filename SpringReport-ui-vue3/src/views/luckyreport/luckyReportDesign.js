@@ -172,6 +172,8 @@ export default {
         headerName:"",
         valueField:"",
         fixedColumn:[],
+        mongoTable:'',
+        mongoSearchType:null,
       },
       dataSource: [], //模板数据源
       isParamMerge: true,
@@ -232,6 +234,7 @@ export default {
         lineWrapping: true,
       },
       sqlText: '',
+      orderSql:"",
       //sql解析对应的列表格数据
       sqlColumnTableData: {
         tableData: [],
@@ -323,6 +326,7 @@ export default {
       cellForm: {
         //自定义单元格属性
         cellExtend: 1, //扩展方向1不扩展 2纵向扩展 2横向扩展
+        keepEmptyCell:false,
         aggregateType: 'list', //聚合类型 list：列表 group：分组 summary汇总
         digit: '2', //小数位数
         cellFunction: '', //函数
@@ -365,6 +369,8 @@ export default {
         dictContent:"",
         compareAttr1:"",
         compareAttr2:"",
+        dumpAttr:"",
+        isDump:false,
         formsAttrs:{
           isOperationCol:false,//是否操作列
           valueType: '1', // 值类型 1文本 2数值 3日期 4下拉单选
@@ -463,7 +469,7 @@ export default {
           moreFormats: true, // '更多格式'
           border: true, // '边框'
           textWrapMode: true, // '换行方式'
-          textRotateMode: false, // '文本旋转方式'
+          textRotateMode: true, // '文本旋转方式'
           image: true, // '插入图片'
           chart: true, // '图表'（图标隐藏，但是如果配置了chart插件，右击仍然可以新建图表）
           postil: true, //'批注'
@@ -1069,6 +1075,9 @@ export default {
         this.cellForm.dictContent = cellFormData.dictContent
         this.cellForm.compareAttr1 = cellFormData.compareAttr1
         this.cellForm.compareAttr2 = cellFormData.compareAttr2
+        this.cellForm.dumpAttr = cellFormData.dumpAttr
+        this.cellForm.isDump = cellFormData.isDump
+        this.cellForm.keepEmptyCell = cellFormData.keepEmptyCell
         if (cellFormData.cellFillType) {
           this.cellForm.cellFillType = cellFormData.cellFillType;
         } else {
@@ -1134,6 +1143,9 @@ export default {
         this.cellForm.dictContent = ""
         this.cellForm.compareAttr1 = ""
         this.cellForm.compareAttr2 = ""
+        this.cellForm.dumpAttr = ""
+        this.cellForm.isDump = false
+        this.cellForm.keepEmptyCell = false
         // this.getDrillReport();
       }
       if (this.cellForm.datasourceId) {
@@ -1771,8 +1783,11 @@ export default {
     //关闭添加数据源
     closeAddDataSet() {
       this.addDatasetsDialogVisiable = false;
-      if (this.datasourceType == '1') {
+      if (this.datasourceType == '1' || this.datasourceType == '3') {
         this.sqlText = ' ';
+        if(this.$refs.orderCodeMirror){
+          this.orderSql = ' ';
+        }
       }
       this.commonUtil.clearObj(this.sqlForm);
       this.commonUtil.clearObj(this.paramForm);
@@ -1794,7 +1809,9 @@ export default {
       for (let index = 0; index < this.dataSource.length; index++) {
         const element = this.dataSource[index];
         if (this.sqlForm.datasourceId == element.datasourceId) {
-          this.sqlColumnTableData.tableData = []
+          if(!isEdit){
+            this.sqlColumnTableData.tableData = []  
+          }
           if (element.type == '4') {
             this.datasourceType = '2';
             if (element.apiColumns) {
@@ -1810,6 +1827,10 @@ export default {
                 }
               }
             }
+          }else if (element.type == '14'){
+              this.datasourceType = '3'
+              this.sqlForm.sqlType = 1;
+              this.getDatabaseTables()
           } else {
             this.datasourceType = '1';
             this.getDatabaseTables();
@@ -1839,6 +1860,7 @@ export default {
               sqlParams: this.paramTableData.tableData
                 ? JSON.stringify(this.paramTableData.tableData)
                 : '',
+                sqlParams: this.paramTableData.tableData ? JSON.stringify(this.paramTableData.tableData) : '',mongoTable:this.sqlForm.mongoTable,mongoSearchType:this.sqlForm.mongoSearchType
             },
             removeEmpty: false,
           };
@@ -2097,8 +2119,12 @@ export default {
     //编辑数据及
     editDataSet(dataSet) {
       this.addDatasetsDialogVisiable = true;
+      this.datasourceType = dataSet.datasetType
       this.$nextTick(() => {
         this.sqlText = dataSet.tplSql;
+        if(dataSet.datasetType == 3 && dataSet.mongoSearchType == 1){
+          this.orderSql = dataSet.mongoOrder;
+        }
       });
       if (dataSet.tplParam) {
         this.paramTableData.tableData = eval('(' + dataSet.tplParam + ')');
@@ -2129,6 +2155,8 @@ export default {
       }else{
         this.sqlForm.fixedColumn = dataSet.fixedColumn;
       }
+      this.sqlForm.mongoTable = dataSet.mongoTable;
+      this.sqlForm.mongoSearchType = dataSet.mongoSearchType;
       if(dataSet.subParamAttrs){
         this.subParamAttrs = JSON.parse(dataSet.subParamAttrs);
       }else{
@@ -2157,14 +2185,18 @@ export default {
       let reportTplId = this.$route.query.tplId; //reportTplId
       let paginationValidate = true;
       let tplSql = '';
-      if (this.datasourceType == '1') {
+      let orderSql = '';
+      if (this.datasourceType == '1' || this.datasourceType == '3') {
         tplSql = this.sqlText;
-        if (tplSql == null || tplSql == '') {
+        if (this.datasourceType == '1' && (tplSql == null || tplSql == '')) {
           this.commonUtil.showMessage({
             message: 'sql语句不能为空',
             type: this.commonConstants.messageType.error,
           });
           return;
+        }
+        if(this.datasourceType == '3' && this.$refs.orderCodeMirror){
+          orderSql = this.orderSql;
         }
         if (this.sqlForm.sqlType == '1') {
           this.$refs['paginationRef'].validate((valid) => {
@@ -2220,7 +2252,8 @@ export default {
               currentPageAttr: this.paginationForm.currentPageAttr,
               pageCountAttr: this.paginationForm.pageCountAttr,
               totalAttr: this.paginationForm.totalAttr,
-              subParamAttrs: JSON.stringify(this.subParamAttrs)
+              subParamAttrs: JSON.stringify(this.subParamAttrs),
+              mongoTable:this.sqlForm.mongoTable,mongoOrder:orderSql,mongoSearchType:this.sqlForm.mongoSearchType
             },
             removeEmpty: false,
           };
@@ -3124,6 +3157,7 @@ export default {
         this.filedLoading = false;
         if(isEdit){
           this.sqlColumnTableData.tableData = response.responseData
+          this.sqlColumnTableData.tablePage.pageTotal = response.responseData.length
         }
       });
     },

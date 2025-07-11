@@ -655,6 +655,7 @@ export default {
         } else {
           this.pageData.modalForm[5].disabled = this.commonUtil.undisabled;
         }
+        this.pageData.modalData.refreshTime = this.pageData.modalData.refreshTime + "";
         // this.showRoleSelect();
         this.changeTplType();
         this.changeIsRefresh();

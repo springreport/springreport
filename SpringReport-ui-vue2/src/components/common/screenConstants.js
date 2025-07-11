@@ -197,7 +197,8 @@ screenConstants.type = {
   circlePacking: 'circlePacking', // 基础气泡图
   transformFunnel: 'transformFunnel', // 转化漏斗图
   zhifangtu: 'zhifangtu', // 直方图
-  sankey: 'sankey'// 桑葚图
+  sankey: 'sankey',// 桑葚图
+  comboCharthl: 'comboCharthl'// 折柱图
 }
 
 screenConstants.category = {
@@ -231,6 +232,7 @@ screenConstants.componentsType1 = [
   { 'type': 'gauge', 'text': '仪表盘', icon: 'gauge' },
   { 'type': 'progress', 'text': '进度条', icon: 'progress' },
   { 'type': 'wordCloud', 'text': '词云图', icon: 'wordCloud' },
+  { 'type': 'comboChart', 'text': '组合图', icon: 'comboChart' },
   { 'type': 'map', 'text': '地图', icon: 'map' },
   { 'type': 'table', 'text': '表格', icon: 'table' }
 ]
@@ -412,6 +414,10 @@ screenConstants.zhifangtuType = [
 
 screenConstants.sankeyType = [
   { 'name': 'sankey', 'text': '桑葚图', 'src': 'https://www.springreport.vip/images/chart/sankey.png', category: screenConstants.category.vchart }
+]
+
+screenConstants.comboChartType = [
+  { 'name': 'comboCharthl', 'text': '折柱图', 'src': 'https://www.springreport.vip/images/chart/comboCharthl.png', category: screenConstants.category.vchart },
 ]
 
 screenConstants.chartTitleSettings = {
@@ -609,7 +615,7 @@ screenConstants.histogramInit = {
     },
     axes: [
       { orient: 'bottom', sampling: true, label: { visible: true, style: { fill: '#6E6F73' }, autoRotate: false, autoRotateAngle: [0, 90], autoLimit: false }, unit: { visible: false, style: {}}},
-      { orient: 'left', label: { visible: true, style: { fill: '#6E6F73' }, autoLimit: false }, unit: { visible: false, style: {}}}
+      { orient: 'left', label: { visible: true, style: { fill: '#6E6F73'}, autoLimit: false }, unit: { visible: false, style: {}}}
     ],
     legends: {
       visible: false,
@@ -1762,7 +1768,7 @@ screenConstants.horizontalAreaInit = {
   dynamicDataSettings: {
     datasetId: '', // 数据集
     dataColumns: []// 数据列
-  }, // 动态数据配置
+  }, // 态数据配置
   params: [], // 图表参数
   clickType: '1', // 点击类型
   thirdUrl: '', // 第三方跳转链接
@@ -4687,6 +4693,138 @@ screenConstants.sankeyInit = {
       trigger: 'selected',
       effect: 'adjacency'
     },
+    legends: {
+      visible: false,
+      orient: 'top', // 图例位置
+      position: 'middle', // 对齐方式
+      item: {
+        label: {
+          style: {
+            // fill:'#0BF1DA',//图例字体颜色
+          }
+        }
+      }
+    }
+  }
+}
+
+
+// 大屏折柱图初始化数据
+screenConstants.comboCharthlInit = {
+  type: screenConstants.type.comboCharthl,
+  category: screenConstants.category.vchart,
+  isDelete: false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 500, // 组件初始化宽度
+  h: 300, // 组件初始化高度
+  active: false,
+  zindex: 99,
+  locked: false,
+  refresh: false, // 是否定时刷新
+  refreshTime: 30000, // 定时刷新时间，单位(ms)
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  lineDataSource:'1',// 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: "", // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
+  lineDynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 折线图动态数据配置
+  params: [], // 图表参数
+  clickType: '1', // 点击类型
+  thirdUrl: '', // 第三方跳转链接
+  bindComponent: null, // 绑定组件
+  hiddenParamSize: 0, // 隐藏参数个数
+  theme: '', // 主题
+  amination: '', // 动画效果
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  spec: {
+    'type': 'bar',
+    color: [],
+    data: [
+      {
+        id: 'id0',
+        values: [
+          { x: '周一', type: '早餐', y: 15 },
+          { x: '周一', type: '午餐', y: 25 },
+          { x: '周二', type: '早餐', y: 12 },
+          { x: '周二', type: '午餐', y: 30 },
+          { x: '周三', type: '早餐', y: 15 },
+          { x: '周三', type: '午餐', y: 24 },
+          { x: '周四', type: '早餐', y: 10 },
+          { x: '周四', type: '午餐', y: 25 },
+          { x: '周五', type: '早餐', y: 13 },
+          { x: '周五', type: '午餐', y: 20 },
+          { x: '周六', type: '早餐', y: 10 },
+          { x: '周六', type: '午餐', y: 22 },
+          { x: '周日', type: '早餐', y: 12 },
+          { x: '周日', type: '午餐', y: 19 }
+        ]
+      },
+      {
+        id: 'id1',
+        values: [
+          { x: '周一', type: '饮料', y: 22 },
+          { x: '周二', type: '饮料', y: 43 },
+          { x: '周三', type: '饮料', y: 33 },
+          { x: '周四', type: '饮料', y: 22 },
+          { x: '周五', type: '饮料', y: 10 },
+          { x: '周六', type: '饮料', y: 30 },
+          { x: '周日', type: '饮料', y: 50 }
+        ]
+      }
+    ],
+    series: [
+      {
+        type: 'bar',
+        dataIndex: 0,
+        label: { visible: true },
+        seriesField: ['type'],
+        xField: ['x', 'type'],
+        yField: ['y'],
+        barWidth: '100%', // 柱体宽度
+        bar: {
+          style: {
+            cornerRadius: 0// 圆角
+          }
+        }
+      },
+      {
+        type: 'line',
+        dataIndex: 1,
+        label: { visible: true },
+        seriesField: ['type'],
+        xField: ['x'],
+        yField: ['y'],
+        stack: false,
+        lineLabel: { visible: false, style: {}},
+        line: {
+          style: {
+            lineWidth: 2,
+            curveType: 'linear'
+          }
+        },
+      }
+    ],
+    title: screenConstants.chartTitleSettings,
+    tooltip: screenConstants.tooltipSettings,
+    label: {
+      visible: true,
+      position: 'outside',
+      style: {
+        fontSize: 14,
+        fill: null
+      }
+    },
+    axes: [
+      { orient: 'bottom', sampling: true, label: { visible: true, style: { fill: '#6E6F73', }, autoRotate: false, autoRotateAngle: [0, 90], autoLimit: false }, unit: { visible: false, style: {}}},
+      { orient: 'left', label: { visible: true, style: { fill: '#6E6F73' }, autoLimit: false }, unit: { visible: false, style: {}}}
+    ],
     legends: {
       visible: false,
       orient: 'top', // 图例位置

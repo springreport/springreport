@@ -459,7 +459,7 @@
   }
 
   .el-form-item__label {
-    width: 100%;
+    // width: 100%;
   }
   .el-icon-arrow-right {
     position: absolute;

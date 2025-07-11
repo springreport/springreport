@@ -95,6 +95,7 @@ import com.springreport.util.JdbcUtils;
 import com.springreport.util.ListUtil;
 import com.springreport.util.Md5Util;
 import com.springreport.util.MessageUtil;
+import com.springreport.util.MongoClientUtil;
 import com.springreport.util.ParamUtil;
 import com.springreport.util.ReportDataUtil;
 import com.springreport.util.RowConvertColUtil;
@@ -1176,7 +1177,7 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 			params = new HashMap<String, Object>();
 		}
 		params.putAll(subParams);
-		if(DatasetTypeEnum.SQL.getCode().intValue() == reportTplDataset.getDatasetType().intValue()) {
+		if(DatasetTypeEnum.SQL.getCode().intValue() == reportTplDataset.getDatasetType().intValue() || DatasetTypeEnum.MONGO.getCode().intValue() == reportTplDataset.getDatasetType().intValue()) {
 			Object data = this.iReportTplDatasetService.getDatasetDatasource(reportDatasource);
 			if(data instanceof DataSource)
 			{
@@ -1198,6 +1199,13 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 					datas = ReportDataUtil.getDatasourceDataBySql(tDengineConnection.getConnection(), sql);
 				}else if(reportDatasource.getType().intValue() == 9) {
 					datas = ReportDataUtil.getDatasourceDataBySql(dataSource, sql,reportDatasource.getUserName(),reportDatasource.getPassword());
+				}else if(reportDatasource.getType().intValue() == 14){//mongodb
+					sql = JdbcUtils.processSqlParams(sql, params);
+					if(reportTplDataset.getMongoSearchType().intValue() == 1) {
+						datas = MongoClientUtil.findGetData(reportDatasource.getJdbcUrl(), reportTplDataset.getMongoTable(), sql, reportTplDataset.getMongoOrder());
+					}else if(reportTplDataset.getMongoSearchType().intValue() == 2) {
+						datas = MongoClientUtil.aggregateGetData(reportDatasource.getJdbcUrl(), reportTplDataset.getMongoTable(), sql);
+					}
 				}else {
 					datas = ReportDataUtil.getDatasourceDataBySql(dataSource, sql);
 				}
@@ -1270,7 +1278,7 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 		}
 		String datasetName = reportTplDataset.getDatasetName();
 		//处理数据
-		if(DatasetTypeEnum.SQL.getCode().intValue() == reportTplDataset.getDatasetType().intValue()) {
+		if(DatasetTypeEnum.SQL.getCode().intValue() == reportTplDataset.getDatasetType().intValue() || DatasetTypeEnum.MONGO.getCode().intValue() == reportTplDataset.getDatasetType().intValue()) {
 			//sql查询，如果数据集名称是以_v或者_V结尾的，则说明是列表数据，并且是竖向扩展，
 			//如果数据集名称是以_h或者_H结尾的，则说明是列表数据，并且是横向扩展
 			//如果数据集名称是以_l结尾的，则说明是列表数据，将列表数据直接返回

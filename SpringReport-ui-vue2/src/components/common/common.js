@@ -1093,19 +1093,22 @@ commonUtil.getDefaultValue = function(paramForm)
     var value = "";
     if (paramForm.paramType == "date") {
         if (paramForm.paramDefault != "" && paramForm.paramDefault != null) {
-            if (paramForm.paramDefault.toLowerCase() == "current") {
-                var now = new Date();
-                value = commonUtil.formatDate(now, "YYYY-MM-DD")
-            } else {
-                if (commonUtil.isNumber(paramForm.paramDefault)) {
-                    var days = parseInt(paramForm.paramDefault);
-                    value = commonUtil.calculateDate(days, "YYYY-MM-DD");
-                } else {
-                    var now = new Date();
-                    value = commonUtil.formatDate(now, "YYYY-MM-DD")
-                }
-            }
+            // if (paramForm.paramDefault.toLowerCase() == "current") {
+            //     var now = new Date();
+            //     value = commonUtil.formatDate(now, "YYYY-MM-DD")
+            // } else {
+            //     if (commonUtil.isNumber(paramForm.paramDefault)) {
+            //         var days = parseInt(paramForm.paramDefault);
+            //         value = commonUtil.calculateDate(days, "YYYY-MM-DD");
+            //     } else {
+            //         var now = new Date();
+            //         value = commonUtil.formatDate(now, "YYYY-MM-DD")
+            //     }
+            // }
+            value = commonUtil.getDefaultDateValue(paramForm);
         }
+    }else if(paramForm.paramType == "number"){
+       value = paramForm.paramDefault * 1; 
     }
     else {
         value = paramForm.paramDefault;
@@ -1159,6 +1162,12 @@ commonUtil.getComponentParams = function(componentParams)
         let prefixMap = {};
         for (let index = 0; index < componentParams.length; index++) {
             const element = componentParams[index];
+            let paramType = element.paramType;
+            if(paramType == "number"){
+                if(element[element.paramCode]){
+                    element[element.paramCode] = element[element.paramCode] * 1;
+                }
+            }
             let prefix = element.paramPrefix;
             let paramObj = null;
             if(prefix){
@@ -2329,5 +2338,27 @@ commonUtil.processSankeyData = function(component,datas){
       }
       component.spec.data.values[0].nodes = nodes;
       component.spec.data.values[0].links = datas;
+}
+
+//处理页面参数
+commonUtil.processPageParam = function(searchData){
+    let newSearchData = JSON.parse(JSON.stringify(searchData))
+    if(newSearchData && newSearchData.length > 0){
+        for (let index = 0; index < newSearchData.length; index++) {
+            let params = newSearchData[index].params;
+            if(params && params.length > 0){
+                for (let t = 0; t < params.length; t++) {
+                    const param = params[t];
+                    if(param.paramType == "number"){
+                        if(param[param.paramCode] != null && param[param.paramCode] != ""){
+                            param[param.paramCode] = param[param.paramCode] * 1;
+                        }
+                    }
+                }
+            }
+            
+        }
+    }
+    return newSearchData;
 }
 export default commonUtil;

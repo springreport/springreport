@@ -37,6 +37,7 @@
         :is-drill="1"
         v-model:drawer="drawer"
         @closeSearch="closeSearch"
+        :isScreen="true"
       />
     </div>
     <div

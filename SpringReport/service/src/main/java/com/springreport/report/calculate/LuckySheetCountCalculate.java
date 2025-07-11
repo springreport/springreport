@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import com.springreport.dto.reporttpl.LuckySheetBindData;
+import com.springreport.util.StringUtil;
 
 /**
 * <p>Title: LuckySheetCountCalculate</p>
@@ -17,7 +18,11 @@ public class LuckySheetCountCalculate extends Calculate<LuckySheetBindData>{
 	public String calculate(LuckySheetBindData bindData) {
 		int size = 0;
 		for (int i = 0; i < bindData.getDatas().size(); i++) {
-			size = size + bindData.getDatas().get(i).size();
+			if(bindData.getIsDump() && StringUtil.isNotEmpty(bindData.getDumpAttr())) {
+				size = size + 1;
+			}else {
+				size = size + bindData.getDatas().get(i).size(); 
+			}
 		}
 		BigDecimal result = new BigDecimal(size);
 		result = result.setScale(bindData.getDigit(), RoundingMode.HALF_UP);

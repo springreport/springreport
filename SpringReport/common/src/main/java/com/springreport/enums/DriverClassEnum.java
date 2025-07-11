@@ -120,4 +120,13 @@ public enum DriverClassEnum implements BaseIntEnum{
 			return "com.mysql.cj.jdbc.Driver";
 		}
 	},
+	MONGODB {
+		public Integer getCode() {
+			return 14;
+		}
+
+		public String getName() {
+			return "com.mongodb.jdbc.MongoDriver";
+		}
+	},
 }

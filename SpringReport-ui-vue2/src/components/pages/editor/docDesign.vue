@@ -829,7 +829,7 @@
               v-model="sqlForm.datasourceId"
               placeholder="选择数据源"
               size="small"
-              @change="changeDatasource"
+              @change="changeDatasource(false)"
             >
               <el-option
                 v-for="op in dataSource"
@@ -973,10 +973,48 @@
               />
             </el-select>
           </el-form-item>
+          <el-form-item
+            label="查询集合(表)"
+            prop="mongoTable"
+            :rules="filter_rules('查询集合(表)', { required: true })"
+            v-if="datasourceType == 3"
+          >
+            <el-select
+              v-model="sqlForm.mongoTable"
+              placeholder="查询集合(表)"
+              size="small"
+            >
+              <el-option
+                v-for="item in dataSourceTables"
+                :key="item.value"
+                :label="item.name"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            label="查询方式"
+            prop="mongoSearchType"
+            :rules="filter_rules('查询方式', { required: true })"
+            v-if="datasourceType == 3"
+          >
+            <el-select
+              v-model="sqlForm.mongoSearchType"
+              placeholder="查询方式"
+              size="small"
+            >
+              <el-option
+                v-for="item in selectUtil.mongoSearchType"
+                :key="item.value"
+                :label="item.name"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
         </el-form>
 
         <div class="df" style="width: 100%">
-          <div class="variable-content">
+          <div class="variable-content" v-show="datasourceType != 3">
             <div class="variable-title">选择变量</div>
             <div class="variable-warp">
               <div class="variable-warp-title">系统变量</div>
@@ -1086,7 +1124,7 @@
             </div>
           </div>
           <div class="sql-content">
-            <div v-if="datasourceType == 1" style="height: 25px">
+            <div v-if="datasourceType == 1 || datasourceType == 3" style="height: 25px">
               <el-tooltip
                 content="该操作将执行sql语句并校验sql语句的正确性，并将查询字段全部显示到下方的表格中"
                 placement="bottom"
@@ -1103,6 +1141,7 @@
                 size="small"
                 style="cursor: pointer"
                 @click="formatSql"
+                v-if="datasourceType == 1"
               ><i class="el-icon-document" />格式化</el-tag>
               </el-tooltip>
               <el-tooltip
@@ -1113,12 +1152,13 @@
                 size="small"
                 style="cursor: pointer"
                 @click="addComment(' <!--  -->')"
+                v-if="datasourceType == 1"
               ><i class="el-icon-circle-plus-outline" />添加注释</el-tag>
               </el-tooltip>
               <el-dropdown
                 v-if="
                   paramTableData.tableData &&
-                    paramTableData.tableData.length > 0
+                    paramTableData.tableData.length > 0 && datasourceType == 1
                 "
               >
                 <el-tag
@@ -1135,10 +1175,18 @@
                 </el-dropdown-menu>
               </el-dropdown>
             </div>
-            <div v-if="datasourceType == 1" style="height: 300px">
-              <div style="height: 100%; width: 100%">
+            <div v-if="datasourceType == 1 || datasourceType == 3" style="height: 300px">
+              <div style="height: 100%; width: 100%"  v-if="datasourceType == 1">
                 <codemirror ref="codeMirror" :options="cmOptions" />
               </div>
+              <div v-if="datasourceType == 3" style="height: 300px">
+              <div :style="{height: '100%',width: sqlForm.mongoSearchType == 1?'50%':'100%',float:'left'}" v-if="datasourceType == 3">
+                <codemirror ref="codeMirror" :options="cmOptions" />
+              </div>
+              <div style="height: 100%; width: 49%;float:right" v-if="datasourceType == 3 && sqlForm.mongoSearchType == 1">
+                <codemirror ref="orderCodeMirror" :options="cmOptions" />
+              </div>
+            </div>
             </div>
             <div style="height: 1px" />
             <div>

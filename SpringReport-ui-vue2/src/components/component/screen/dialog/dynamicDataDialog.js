@@ -27,6 +27,10 @@ export default {
     dynamicDialogVisiable: {
       type: Boolean,
       default: false
+    },
+    comboChartType:{
+      type:String,
+      default:'',//1 折柱图的柱状图部分 2、折柱图的折线部分
     }
   },
   data() {
@@ -45,7 +49,9 @@ export default {
         id: '',
         datasetName: '', // 数据集名称
         datasourceId: '', // 数据源id
-        sqlType: 1
+        sqlType: 1,
+        mongoTable:'',
+        mongoSearchType:null,
       }, // sql表单
       dataSource: [],
       // sql解析对应的列表格数据
@@ -59,7 +65,8 @@ export default {
         }
       },
       showDatasetsDialog: false,
-      datasourceType: '1' // 1 sql 2 api
+      datasourceType: '1', // 1 sql 2 api 3 mongodb
+      dataSourceTables:null,
     }
   },
   mounted() {
@@ -82,8 +89,14 @@ export default {
       this.commonUtil.doPost(obj).then((response) => {
         if (response.code == '200') {
           that.dataSets = response.responseData
-          that.dataSetForm.dataSetId = that.component.dynamicDataSettings.datasetId
-          that.dataSetForm.column = that.component.dynamicDataSettings.dataColumns
+          if(this.comboChartType == '2'){
+            that.dataSetForm.dataSetId = that.component.lineDynamicDataSettings.datasetId
+            that.dataSetForm.column = that.component.lineDynamicDataSettings.dataColumns
+          }else{
+            that.dataSetForm.dataSetId = that.component.dynamicDataSettings.datasetId
+            that.dataSetForm.column = that.component.dynamicDataSettings.dataColumns
+          }
+          that.changeDataset();
         }
       })
     },
@@ -130,6 +143,10 @@ export default {
                 }
               }
             }
+          } else if (element.type == '14'){
+              this.datasourceType = '3'
+              this.sqlForm.sqlType = 1;
+              this.getDatabaseTables()
           } else {
             this.datasourceType = '1'
           }
@@ -140,25 +157,30 @@ export default {
     addDataSet() {
       const tplId = this.$route.query.tplId // tplId
       let obj = {}
-      if (this.datasourceType == '1') {
+      if (this.datasourceType == '1' || this.datasourceType == '3') {
         const tplSql = this.$refs.codeMirror.codemirror.getValue()
-        if (!tplSql.trim()) {
+        let orderSql = '';
+        if (this.datasourceType == '1' && !tplSql.trim()) {
           this.commonUtil.showMessage({
             message: 'sql语句不能为空',
             type: this.commonConstants.messageType.error
           })
           return
         }
+        if(this.datasourceType == '3' && this.$refs.orderCodeMirror){
+          orderSql = this.$refs.orderCodeMirror.codemirror.getValue();
+        }
         obj = {
           url: this.apis.reportDesign.addDataSetApi,
           params: {
             id: this.sqlForm.id,
             tplId: tplId,
-            datasetType: 1,
+            datasetType: this.datasourceType,
             sqlType: 1,
             tplSql: tplSql,
             datasourceId: this.sqlForm.datasourceId,
-            datasetName: this.sqlForm.datasetName
+            datasetName: this.sqlForm.datasetName,
+            mongoTable:this.sqlForm.mongoTable,mongoOrder:orderSql,mongoSearchType:this.sqlForm.mongoSearchType
           },
           removeEmpty: false
         }
@@ -194,6 +216,7 @@ export default {
         this.getDatasetColumn(this.dataSetForm.dataSetId)
       } else {
         this.dataColumn = []
+        this.dataSetForm.column = []
       }
     },
     getDatasetColumn(dataSetId) {
@@ -202,7 +225,7 @@ export default {
         params: { id: dataSetId },
         removeEmpty: false
       }
-      this.dataSetForm.column = []
+      // this.dataSetForm.column = []
       var that = this
       this.commonUtil.doPost(obj).then((response) => {
         if (response.code == '200') {
@@ -218,7 +241,9 @@ export default {
             params: {
               tplSql: this.$refs.codeMirror.codemirror.getValue(),
               datasourceId: this.sqlForm.datasourceId,
-              sqlType: 1
+              sqlType: 1,
+              mongoTable:this.sqlForm.mongoTable,mongoSearchType:this.sqlForm.mongoSearchType,
+              sqlParams:JSON.stringify(this.component.params)
             },
             removeEmpty: false
           }
@@ -291,28 +316,50 @@ export default {
       })
     },
     processDynamicData(response) {
-      this.component.spec.data.values = response.responseData
-      this.component.dynamicDataSettings.datasetId = this.dataSetForm.dataSetId
-      this.component.dynamicDataSettings.dataColumns = this.dataSetForm.column
-      this.commonUtil.reLoadChart(this.chartsComponents, this.component)
       if (this.component.type == 'pageTable' && Array.isArray(this.component.spec.data.values)) {
+        this.component.spec.data.values = response.responseData
+        this.component.dynamicDataSettings.datasetId = this.dataSetForm.dataSetId
+        this.component.dynamicDataSettings.dataColumns = this.dataSetForm.column
         this.component.spec.data.total = this.component.spec.data.values.length
       } else if (this.component.type == 'sankey') {
+        this.component.spec.data.values = response.responseData
+        this.component.dynamicDataSettings.datasetId = this.dataSetForm.dataSetId
+        this.component.dynamicDataSettings.dataColumns = this.dataSetForm.column
         this.component.spec.data.values = [{ nodes: [], links: [] }]
         this.commonUtil.processSankeyData(this.component, response.responseData)
+      }else if (this.component.type == 'comboCharthl') {
+        if(this.comboChartType == '1'){
+          this.component.dynamicDataSettings.datasetId = this.dataSetForm.dataSetId
+          this.component.dynamicDataSettings.dataColumns = this.dataSetForm.column
+          this.component.spec.data[0].values = response.responseData;
+        }else{
+          this.component.lineDynamicDataSettings.datasetId = this.dataSetForm.dataSetId
+          this.component.lineDynamicDataSettings.dataColumns = this.dataSetForm.column
+          this.component.spec.data[1].values = response.responseData;
+        }
+      }else{
+        this.component.spec.data.values = response.responseData
+        this.component.dynamicDataSettings.datasetId = this.dataSetForm.dataSetId
+        this.component.dynamicDataSettings.dataColumns = this.dataSetForm.column
       }
+      this.commonUtil.reLoadChart(this.chartsComponents, this.component)
       this.closeDynamicDataDialog()
     },
     editDatasets(index, item) {
       this.addDatasetsDialogVisiable = true
+      this.datasourceType = item.datasetType
       this.getScreenTplDateSource()
       this.sqlForm.datasetName = item.datasetName
       this.sqlForm.datasourceId = item.datasourceId
       this.sqlForm.id = item.id
-      if (item.datasetType == 1) {
-        this.datasourceType = 1
+      this.sqlForm.mongoTable = item.mongoTable;
+      this.sqlForm.mongoSearchType = item.mongoSearchType;
+      if (item.datasetType == 1 || item.datasetType == 3) {
         this.$nextTick(() => {
           this.$refs.codeMirror.codemirror.setValue(item.tplSql)
+          if(item.datasetType == 3 && item.mongoSearchType == 1){
+            this.$refs.orderCodeMirror.codemirror.setValue(item.mongoOrder)
+          }
           this.execSql()
         })
       } else {
@@ -359,6 +406,20 @@ export default {
       pos2.line = pos1.line
       pos2.ch = pos1.ch
       this.$refs.codeMirror.codemirror.replaceRange(val, pos2)
-    }
+    },
+    getDatabaseTables() {
+      var obj = {
+        params: { id: this.sqlForm.datasourceId },
+        url: this.apis.reportDatasource.getDatabseTablesApi
+      }
+      var that = this
+      this.datasourceTableName = ''
+      this.tableColumns = []
+      this.commonUtil.doPost(obj).then(response => {
+        if (response.code == '200') {
+          that.dataSourceTables = response.responseData
+        }
+      })
+    },
   }
 }

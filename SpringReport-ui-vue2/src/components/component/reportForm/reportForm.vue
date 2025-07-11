@@ -2,7 +2,7 @@
 <template>
   <div>
     <!-- v-if="!reportForm || reportForm.length == 0" -->
-    <div class="search-content df-c-b">
+    <div class="search-content df-c-b" v-if="!isScreen">
       <div class="left-warp" />
 
       <div class="headerLeft df-c" style="width: 30%">
@@ -550,6 +550,10 @@
 export default {
   name: 'ReportForm',
   props: {
+    isScreen: {
+      type: Boolean,
+      default: false
+    },
     formsReport: {
       type: Boolean,
       default: false

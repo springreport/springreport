@@ -36,6 +36,7 @@
         :show-search="true"
         :is-drill="1"
         :drawer="drawer"
+        :isScreen="true"
       />
     </div>
     <div

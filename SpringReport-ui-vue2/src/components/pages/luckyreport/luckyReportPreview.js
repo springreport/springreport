@@ -572,7 +572,7 @@ export default {
       const tplId = this.currentTplId
       const obj = {
         url: this.apis.previewReport.getLuckyPreviewReportDataApi,
-        params: { tplId: tplId, searchData: this.searchData.params, pagination: this.pageParam, apiHeaders: apiHeaders }
+        params: { tplId: tplId, searchData: this.commonUtil.processPageParam(this.searchData.params), pagination: this.pageParam, apiHeaders: apiHeaders }
       }
       if (isCurrent) {
         obj.params.sheetIndex = luckysheet.getSheet().index
@@ -1267,7 +1267,7 @@ export default {
             } else if (this.cellConfig.valueType == '4') {
               // 下拉选择
               this.selectValidRules()
-              if (this.cellConfig.datasourceId && this.cellConfig.dictType) {
+              if (orginCell) {
                 this.getDictTypeDatas(orginCell)
               }
               this.editDialog = true
@@ -1295,20 +1295,23 @@ export default {
           }
           var wrongMsg = []
           const extraConfig = this.extraCustomCellConfigs[sheetIndex][originCell.r + '_' + originCell.c]
-          var rowFlag = 0
-          if (extraConfig.cellExtend == 1) { // 不扩展
-            rowFlag = 0
-          } else if (extraConfig.cellExtend == 2) { // 向右扩展
-            rowFlag = c - originCell.c
-          } else if (extraConfig.cellExtend == 3) { // 向下扩展
-            rowFlag = r - originCell.r
+          if(extraConfig){
+            var rowFlag = 0
+            if (extraConfig.cellExtend == 1) { // 不扩展
+              rowFlag = 0
+            } else if (extraConfig.cellExtend == 2) { // 向右扩展
+              rowFlag = c - originCell.c
+            } else if (extraConfig.cellExtend == 3) { // 向下扩展
+              rowFlag = r - originCell.r
+            }
+            this.dataVerify(r, c, originCell.r, originCell.c, v, sheetIndex, wrongMsg, rowFlag, extraConfig.cellExtend)
+            if (wrongMsg && wrongMsg.length > 0) {
+              this.errorCellSetting(r, c, wrongMsg, null)
+            } else {
+              this.removeErrorSetting(r, c, null)
+            }
           }
-          this.dataVerify(r, c, originCell.r, originCell.c, v, sheetIndex, wrongMsg, rowFlag, extraConfig.cellExtend)
-          if (wrongMsg && wrongMsg.length > 0) {
-            this.errorCellSetting(r, c, wrongMsg, null)
-          } else {
-            this.removeErrorSetting(r, c, null)
-          }
+          
           var cellData = luckysheet.getSheet().data[r][c]
           if (cellData) {
             var obj = {

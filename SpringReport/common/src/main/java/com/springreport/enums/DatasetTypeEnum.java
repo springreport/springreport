@@ -19,6 +19,15 @@ public enum DatasetTypeEnum implements BaseIntEnum{
 			return "sql语句";
 		}
 	},
+	MONGO {
+		public Integer getCode() {
+			return 3;
+		}
+
+		public String getName() {
+			return "MONGODB";
+		}
+	},
 	API {
 		public Integer getCode() {
 			return 2;

@@ -23,10 +23,12 @@ import com.springreport.util.InfluxDBConnection;
 import com.springreport.util.JdbcUtils;
 import com.springreport.util.ListUtil;
 import com.springreport.util.MessageUtil;
+import com.springreport.util.MongoClientUtil;
 import com.springreport.util.RedisUtil;
 import com.springreport.util.ReportDataUtil;
 import com.springreport.util.StringUtil;
 import com.github.pagehelper.PageHelper;
+import com.mongodb.client.MongoClient;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -172,6 +174,8 @@ public class ReportDatasourceServiceImpl extends ServiceImpl<ReportDatasourceMap
 			model.setDriverClass(DriverClassEnum.DORIS.getName());
 		}else if (DriverClassEnum.INFLUXDB.getCode().intValue() == model.getType().intValue()) {
 			model.setDriverClass(DriverClassEnum.INFLUXDB.getName());
+		}else if (DriverClassEnum.MONGODB.getCode().intValue() == model.getType().intValue()) {
+			model.setDriverClass(DriverClassEnum.MONGODB.getName());
 		}
 		this.save(model);
 		result.setStatusMsg(MessageUtil.getValue("info.insert"));
@@ -229,6 +233,8 @@ public class ReportDatasourceServiceImpl extends ServiceImpl<ReportDatasourceMap
 			model.setDriverClass(DriverClassEnum.DORIS.getName());
 		}else if (DriverClassEnum.INFLUXDB.getCode().intValue() == model.getType().intValue()) {
 			model.setDriverClass(DriverClassEnum.INFLUXDB.getName());
+		}else if (DriverClassEnum.MONGODB.getCode().intValue() == model.getType().intValue()) {
+			model.setDriverClass(DriverClassEnum.MONGODB.getName());
 		}
 		this.updateById(model);
 		result.setStatusMsg(MessageUtil.getValue("info.update"));
@@ -338,6 +344,13 @@ public class ReportDatasourceServiceImpl extends ServiceImpl<ReportDatasourceMap
 			TDengineConfig config = new TDengineConfig(mesExecSqlDto.getDatasourceId(), reportDatasource.getUserName(), reportDatasource.getPassword(), reportDatasource.getJdbcUrl());
 			TDengineConnection tDengineConnection = new TDengineConnection(config.getJdbcUrl(), config.getUsername(), config.getPassword());
 			result = JdbcUtils.parseMetaDataColumns(tDengineConnection.getConnection(), mesExecSqlDto.getTplSql(),reportDatasource.getType(),mesExecSqlDto.getSqlParams(),userInfoDto);
+		}else if(reportDatasource.getType().intValue() == 14) {
+			if(mesExecSqlDto.getMongoSearchType().intValue() == 1) {//find查询
+				result = MongoClientUtil.getFields(reportDatasource.getJdbcUrl(), mesExecSqlDto.getMongoTable());
+			}else if(mesExecSqlDto.getMongoSearchType().intValue() == 2){//aggregate查询
+				String sqlText = JdbcUtils.parseSql(mesExecSqlDto.getTplSql(), mesExecSqlDto.getSqlParams(), userInfoDto);
+				result = MongoClientUtil.getaggregateFields(reportDatasource.getJdbcUrl(), mesExecSqlDto.getMongoTable(),sqlText);
+			}
 		}else {
 			//获取数据源
 			DataSource dataSource = null;
@@ -426,6 +439,14 @@ public class ReportDatasourceServiceImpl extends ServiceImpl<ReportDatasourceMap
 			}else {
 				throw new BizException(StatusCode.FAILURE, "elasticsearch连接测试失败");
 			}
+		}else if(reportDatasource.getType().intValue() == 14) {
+			boolean isSuccess = JdbcUtils.mongoTest(reportDatasource.getJdbcUrl());
+			if(isSuccess)
+			{
+				result.setStatusMsg("mongodb连接测试成功！");
+			}else {
+				throw new BizException(StatusCode.FAILURE, "mongodb连接测试失败");
+			}
 		}else {
 			if(StringUtil.isNullOrEmpty(reportDatasource.getUserName()))
 			{
@@ -465,6 +486,9 @@ public class ReportDatasourceServiceImpl extends ServiceImpl<ReportDatasourceMap
 			}else if(DriverClassEnum.DORIS.getCode().intValue() == reportDatasource.getType().intValue())
 			{
 				reportDatasource.setDriverClass(DriverClassEnum.DORIS.getName());
+			}else if(DriverClassEnum.MONGODB.getCode().intValue() == reportDatasource.getType().intValue())
+			{
+				reportDatasource.setDriverClass(DriverClassEnum.MONGODB.getName());
 			}
 			//数据库
 			//数据源配置

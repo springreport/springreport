@@ -29,6 +29,9 @@ public class LuckySheetCompareRateCalculate extends Calculate<LuckySheetBindData
 				Object object2 = this.getData(compareAttr2, bindData.getDatas().get(i).get(j));
 				result1 = result1.add(new BigDecimal(String.valueOf(object1)));
 				result2 = result2.add(new BigDecimal(String.valueOf(object2)));
+				if(bindData.getIsDump() && StringUtil.isNotEmpty(bindData.getDumpAttr())) {
+					break;
+				}
 			}
 		}
 		if(result2.compareTo(new BigDecimal(0)) == 0) {

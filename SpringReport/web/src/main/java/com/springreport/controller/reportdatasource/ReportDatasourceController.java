@@ -152,7 +152,7 @@ public class ReportDatasourceController extends BaseController {
 	*/
 	@RequestMapping(value = "/getReportDatasource",method = RequestMethod.POST)
 	@MethodLog(module="ReportDatasource",remark="获取数据源",operateType=Constants.OPERATE_TYPE_SEARCH)
-	@RequiresPermissions(value = {"reportTpl_insert","reportTpl_update","reportTpl_getDetail","screenTpl_screenDesign","reportTpl_search","screenTpl_search"},logical = Logical.OR)
+//	@RequiresPermissions(value = {"reportTpl_insert","reportTpl_update","reportTpl_getDetail","screenTpl_screenDesign","reportTpl_search","screenTpl_search"},logical = Logical.OR)
 	public Response getReportDatasource(@RequestBody MesReportDatasourceDto mesReportDatasourceDto) {
 		List<ReportDatasource> result = this.iReportDatasourceService.getReportDatasource(mesReportDatasourceDto);
 		return Response.success(result);
@@ -167,7 +167,7 @@ public class ReportDatasourceController extends BaseController {
 	*/
 	@RequestMapping(value = "/execSql",method = RequestMethod.POST)
 	@MethodLog(module="ReportDatasource",remark="执行解析sql语句",operateType=Constants.OPERATE_TYPE_SEARCH)
-	@Check({"tplSql:required#sql语句","datasourceId:required#数据库id"})
+	@Check({"datasourceId:required#数据库id"})
 	@RequiresPermissions(value = {"reportDesign_addDataSet","reportDesign_editDataSet","screenTpl_screenDesign","reportForms_addDataSet","reportForms_editDataSet","screenTemplate_design","wordTemplate_design","excelTemplate_design","template_market","slidTpl_design","docTpl_design"},logical = Logical.OR)
 	public Response execSql(@RequestBody MesExecSqlDto mesExecSqlDto,@LoginUser UserInfoDto userInfoDto) throws Exception {
 		List<Map<String, Object>> result = this.iReportDatasourceService.execSql(mesExecSqlDto,userInfoDto);

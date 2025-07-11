@@ -35,6 +35,7 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.mongodb.client.MongoClient;
 import com.springreport.base.DataSourceConfig;
 import com.springreport.base.EsDataSourceConfig;
 import com.springreport.base.InfluxDbDataSourceConfig;
@@ -207,11 +208,11 @@ public class JdbcUtils {
 	*/
 	public static String preprocessSqlText(String sqlText,int dataSourceType,Map<String, Object> params) throws SQLException {
         sqlText = StringUtils.stripEnd(sqlText.trim(), ";");
-        Pattern paramPattern=Pattern.compile("\\$\\s*\\{(.*?)}");
-		Matcher parammatcher=paramPattern.matcher(sqlText);
-		while(parammatcher.find()){
-			sqlText = parammatcher.replaceAll("''");
-		}
+//        Pattern paramPattern=Pattern.compile("\\$\\s*\\{(.*?)}");
+//		Matcher parammatcher=paramPattern.matcher(sqlText);
+//		while(parammatcher.find()){
+//			sqlText = parammatcher.replaceAll("''");
+//		}
 		sqlText = MybatisTemplateSqlExcutor.parseSql(sqlText,params);
 		System.err.println("解析后的sql:"+sqlText);
 		if(DriverClassEnum.MYSQL.getCode().intValue() == dataSourceType || DriverClassEnum.POSTGRESQL.getCode().intValue() == dataSourceType
@@ -350,7 +351,9 @@ public class JdbcUtils {
             	column.put("dataType", rsMataData.getColumnTypeName(i));
             	column.put("width", rsMataData.getColumnDisplaySize(i));
             	column.put("className", rsMataData.getColumnClassName(i));
-            	column.put("remark", columnComments.get(columnName));
+            	if(columnComments != null) {
+            		column.put("remark", columnComments.get(columnName));
+            	}
             	result.add(column);
             }
         } catch (final SQLException ex) {
@@ -369,14 +372,18 @@ public class JdbcUtils {
 	/**获取字段注解*/
     private static Map<String, String> getColumnComments(DatabaseMetaData metaData, String tableName,Map<String, Map<String, String>> tableColumnRemarks) throws SQLException {
         Map<String, String> columnComments = new HashMap<>();
-        try (ResultSet columns = metaData.getColumns(null, null, tableName, null)) {
-            while (columns.next()) {
-                String columnName = columns.getString("COLUMN_NAME");
-                String columnComment = columns.getString("REMARKS");
-                columnComments.put(columnName, columnComment);
+        try {
+        	try (ResultSet columns = metaData.getColumns(null, null, tableName, null)) {
+                while (columns.next()) {
+                    String columnName = columns.getString("COLUMN_NAME");
+                    String columnComment = columns.getString("REMARKS");
+                    columnComments.put(columnName, columnComment);
+                }
             }
-        }
-        tableColumnRemarks.put(tableName, columnComments);
+            tableColumnRemarks.put(tableName, columnComments);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
         return columnComments;
     }
 	
@@ -1042,6 +1049,8 @@ public class JdbcUtils {
 				}
 				// 关闭连接
 				influxDB.close();
+			}else if (dataSourceConfig.getDriverClass().equals(DriverClassEnum.MONGODB.getName())) {
+				result = MongoClientUtil.getCollectionNames(dataSourceConfig.getJdbcUrl());
 			}else{
 				Class.forName(dataSourceConfig.getDriverClass());//加载驱动类
 				Connection conn=DriverManager.getConnection(dataSourceConfig.getJdbcUrl(),dataSourceConfig.getUser(),dataSourceConfig.getPassword());//用参数得到连接对象
@@ -1109,6 +1118,18 @@ public class JdbcUtils {
 		return result;
 	}
 	
+	public static boolean mongoTest(String url)
+	{
+		boolean result = true;
+		try {
+			MongoClientUtil.mongoConnectionTest(url);
+		} catch (Exception e) {
+			e.printStackTrace();
+			result = false;
+		}
+		return result;
+	}
+	
 	/**  
 	 * @MethodName: getTDengineConnection
 	 * @Description: 获取TDengineConnection
@@ -1150,6 +1171,64 @@ public class JdbcUtils {
             JdbcUtils.releaseJdbcResource(conn, stmt, rs);
         }
 	    return result;
+	}
+	
+	public static Map<String, Object> getDefaultParams(String sqlParams,UserInfoDto userInfoDto){
+		 Map<String, Object> params = new HashMap<>();
+		 if(StringUtil.isNotEmpty(sqlParams))
+			{
+				JSONArray jsonArray = JSONArray.parseArray(sqlParams);
+				if(!ListUtil.isEmpty(jsonArray))
+				{
+					for (int i = 0; i < jsonArray.size(); i++) {
+						String paramType = jsonArray.getJSONObject(i).getString("paramType");
+						String paramDefault = jsonArray.getJSONObject(i).getString("paramDefault");
+						String paramCode = jsonArray.getJSONObject(i).getString("paramCode");
+						String dateFormat = jsonArray.getJSONObject(i).getString("dateFormat");
+						dateFormat = procesDataFormat(dateFormat);
+						if(StringUtil.isNotEmpty(paramType))
+						{
+							if("date".equals(paramType.toLowerCase()))
+							{
+								params.put(paramCode, StringUtil.isNotEmpty(dateFormat)?DateUtil.getNow(dateFormat):DateUtil.getNow(DateUtil.FORMAT_LONOGRAM));
+							}else if("mutiselect".equals(paramType.toLowerCase()) || "multitreeselect".equals(paramType.toLowerCase()))
+							{
+								params.put(paramCode, new JSONArray());
+							}else if("number".equals(paramType.toLowerCase())) {
+								if(StringUtil.isNotEmpty(paramDefault)) {
+									params.put(paramCode, new BigDecimal(paramDefault));
+								}else {
+									params.put(paramCode, 0);
+								}
+							}else {
+								params.put(paramCode, paramDefault);
+							}
+						}else {
+							params.put(paramCode, paramDefault);
+						}
+						
+					}
+				}
+			}
+	       //系统变量
+			if(userInfoDto != null) {
+				JSONObject jsonObject = JSON.parseObject(JSON.toJSONString(userInfoDto));
+				for (int i = 0; i < Constants.SYSTEM_PARAM.length; i++) {
+					Object value = jsonObject.get(Constants.SYSTEM_PARAM[i]);
+					params.put(Constants.SYSTEM_PARAM[i], value);
+				}
+			}
+		 return params;
+	}
+	
+	public static String parseSql(String sqlText,String sqlParams,UserInfoDto userInfoDto){
+		Map<String, Object> params = getDefaultParams(sqlParams, userInfoDto);
+		try {
+			sqlText = JdbcUtils.preprocessSqlText(sqlText,14,params);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return sqlText;
 	}
 	
 	public static void main(String[] args) {

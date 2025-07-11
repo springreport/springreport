@@ -17,6 +17,7 @@ import com.springreport.base.Response;
 import com.springreport.base.UserInfoDto;
 import com.springreport.constants.Constants;
 import com.springreport.dto.index.IndexDto;
+import com.springreport.entity.sysmerchant.SysMerchant;
 import com.springreport.entity.sysuser.SysUser;
 
 @RestController
@@ -37,8 +38,8 @@ public class IndexController extends BaseController{
 	 */ 
 	@RequestMapping(value = "/getIndexData",method = RequestMethod.POST)
 	@MethodLog(module="index",remark="获取首页数据",operateType=Constants.OPERATE_TYPE_SEARCH)
-	public Response getIndexData(@LoginUser UserInfoDto userInfoDto) throws UnsupportedEncodingException {
-		IndexDto result = this.iIndexService.getIndexData(userInfoDto);
+	public Response getIndexData(@RequestBody SysMerchant sysMerchant,@LoginUser UserInfoDto userInfoDto) throws UnsupportedEncodingException {
+		IndexDto result = this.iIndexService.getIndexData(sysMerchant,userInfoDto);
 		return Response.success(result);
 	}
 }

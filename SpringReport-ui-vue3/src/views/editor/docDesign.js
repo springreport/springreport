@@ -61,6 +61,8 @@ export default {
         headerName:"",
         valueField:"",
         fixedColumn:[],
+        mongoTable:'',
+        mongoSearchType:null,
       },
       dataSource: [], // 模板数据源
       paramForm: {
@@ -163,6 +165,7 @@ export default {
         {label:'确认',type:'primary',handle:()=>this.confimModal()}
       ],
       sqlText:"",
+      orderSql:"",
       chartModalConfig:{ 
         title: "图表设置", //弹窗标题,值为:新增，查看，编辑
         show: false, //弹框显示
@@ -1485,7 +1488,8 @@ export default {
             url: this.apis.reportDesign.execSqlApi,
             params: { tplId: reportTplId, tplSql: this.sqlText, datasourceId: this.sqlForm.datasourceId, sqlType: this.sqlForm.sqlType,
               inParam: this.procedureInParamTableData.tableData ? JSON.stringify(this.procedureInParamTableData.tableData) : '', outParam: this.procedureOutParamTableData.tableData ? JSON.stringify(this.procedureOutParamTableData.tableData) : '',
-              sqlParams: this.paramTableData.tableData ? JSON.stringify(this.paramTableData.tableData) : '' },
+              sqlParams: this.paramTableData.tableData ? JSON.stringify(this.paramTableData.tableData) : '' ,
+              sqlParams: this.paramTableData.tableData ? JSON.stringify(this.paramTableData.tableData) : '',mongoTable:this.sqlForm.mongoTable,mongoSearchType:this.sqlForm.mongoSearchType},
             removeEmpty: false
           }
           this.commonUtil.doPost(obj).then(response => {
@@ -1704,6 +1708,7 @@ export default {
             this.sqlColumnTableData.tableData = []
           }
           if (element.type == '4') {
+            this.sqlColumnTableData.tableData = []
             this.datasourceType = '2'
             if (element.apiColumns) {
               const columns = JSON.parse(element.apiColumns)
@@ -1718,6 +1723,10 @@ export default {
                 }
               }
             }
+          } else if (element.type == '14'){
+              this.datasourceType = '3'
+              this.sqlForm.sqlType = 1;
+              this.getDatabaseTables()
           } else {
             this.datasourceType = '1'
             this.getDatabaseTables();
@@ -1729,8 +1738,12 @@ export default {
     // 编辑数据及
     editDataSet(dataSet) {
       this.addDatasetsDialogVisiable = true
+      this.datasourceType = dataSet.datasetType
       this.$nextTick(() => {
         this.sqlText = dataSet.tplSql;
+        if(dataSet.datasetType == 3 && dataSet.mongoSearchType == 1){
+          this.orderSql = dataSet.mongoOrder;
+        }
       })
       this.paramTableData.tableData = eval('(' + dataSet.tplParam + ')')
       this.sqlColumnTableData.tableData = dataSet.columns?dataSet.columns:[];
@@ -1752,6 +1765,8 @@ export default {
       }else{
         this.sqlForm.fixedColumn = dataSet.fixedColumn;
       }
+      this.sqlForm.mongoTable = dataSet.mongoTable;
+      this.sqlForm.mongoSearchType = dataSet.mongoSearchType;
       if(dataSet.subParamAttrs){
         this.subParamAttrs = JSON.parse(dataSet.subParamAttrs);
       }else{
@@ -1784,21 +1799,24 @@ export default {
       const reportTplId = this.$route.query.tplId// reportTplId
       let paginationValidate = true
       let tplSql = ''
-      if (this.datasourceType == '1') {
+      let orderSql = '';
+      if (this.datasourceType == '1' || this.datasourceType == '3') {
         tplSql = this.sqlText;
-        if (tplSql == null || tplSql == '') {
+        if (this.datasourceType == '1' && (tplSql == null || tplSql == '')) {
           this.commonUtil.showMessage({ message: 'sql语句不能为空', type: this.commonConstants.messageType.error })
           return
         }
       }
-
+      if(this.datasourceType == '3' && this.$refs.orderCodeMirror){
+        orderSql = this.orderSql;
+      }
       this.$refs['sqlRef'].validate((valid) => {
         if (valid) {
           const obj = {
             url: this.apis.reportDesign.addDataSetApi,
             params: { tplId: reportTplId,groupId: this.sqlForm.groupId, datasetType: this.datasourceType, sqlType: this.sqlForm.sqlType, isCommon:this.sqlForm.isCommon,commonType:2,isConvert:this.sqlForm.isConvert,valueField:this.sqlForm.valueField,headerName:this.sqlForm.headerName,fixedColumn:JSON.stringify(this.sqlForm.fixedColumn),tplSql: tplSql, tplParam: this.paramTableData.tableData ? JSON.stringify(this.paramTableData.tableData) : '', datasourceId: this.sqlForm.datasourceId, datasetName: this.sqlForm.datasetName, id: this.sqlForm.id,
               inParam: this.procedureInParamTableData.tableData ? JSON.stringify(this.procedureInParamTableData.tableData) : '', outParam: this.procedureOutParamTableData.tableData ? JSON.stringify(this.procedureOutParamTableData.tableData) : '',
-              subParamAttrs: JSON.stringify(this.subParamAttrs)},
+              subParamAttrs: JSON.stringify(this.subParamAttrs),mongoTable:this.sqlForm.mongoTable,mongoOrder:orderSql,mongoSearchType:this.sqlForm.mongoSearchType},
             removeEmpty: false
           }
           this.commonUtil.doPost(obj).then(response => {
@@ -1820,8 +1838,11 @@ export default {
       //   return
       // }
       this.addDatasetsDialogVisiable = false
-      if (this.datasourceType == '1') {
+      if (this.datasourceType == '1' || this.datasourceType == '3') {
         this.sqlText = " ";
+        if(this.$refs.orderCodeMirror){
+          this.orderSql = "";
+        }
       }
 
       this.$refs['sqlRef'].resetFields()// 校验重置
@@ -1875,6 +1896,7 @@ export default {
         }
         if(isEdit){
           this.sqlColumnTableData.tableData = response.responseData
+          this.sqlColumnTableData.tablePage.pageTotal = response.responseData.length
         }
       })
     },

@@ -137,7 +137,6 @@ export default {
       })
     },
     changeMerchant(key) {
-      console.log(key)
       this.merchantNo = key
       localStorage.setItem(
         this.commonConstants.sessionItem.merchantNo,

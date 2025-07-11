@@ -343,6 +343,11 @@
 		    <artifactId>HgdbJdbc</artifactId>
 		    <version>6.2.4</version>
 		</dependency>
+		<dependency>
+		    <groupId>org.mongodb</groupId>
+		    <artifactId>mongodb-driver-sync</artifactId>
+		    <version>5.5.1</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<resources>

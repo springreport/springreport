@@ -2,7 +2,7 @@
 <template>
   <div>
     <el-form class="demo-form-inline" :model="component" label-position="top" ref="settingForm">
-      <el-form-item for="-">
+      <el-form-item for="-" v-if="component.type.toLowerCase().indexOf('combocharthl') < 0">
         <template #label>
           <div style="width: 100%; margin-bottom: 4px" class="df-c-b">
             <span>请求方式</span>
@@ -15,6 +15,144 @@
           <el-option label="动态数据" value="2" />
         </el-select>
       </el-form-item>
+      <div
+            v-if="component.type.toLowerCase().indexOf('combocharthl') >= 0"
+          >
+          <div class="right-dataset-title">
+            <span class="attr-dataset-title">柱状图数据</span>
+          </div>
+          <el-form-item>
+            <div  style="width: 100%;" class="df-c-b">
+              <span>请求方式</span>
+              <div
+                class="config-btn"
+                @click="editcomboCharthlData(component,'1')"
+              >数据配置</div>
+            </div>
+            <el-select v-model="component.dataSource" placeholder="请选择">
+              <el-option label="静态数据" value="1" />
+              <el-option label="动态数据" value="2" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="x轴数据">
+              <el-select
+                v-model="component.spec.series[0].xField"
+                placeholder="请选择"
+                multiple
+                allow-create
+                filterable
+                @change="commonUtil.reLoadChart(chartsComponents, component)"
+              >
+                <el-option
+                  v-for="item in component.dynamicDataSettings.dataColumns"
+                  :key="item"
+                  :label="item"
+                  :value="item"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="y轴数据">
+              <el-select
+                v-model="component.spec.series[0].yField"
+                placeholder="请选择"
+                multiple
+                allow-create
+                filterable
+                @change="commonUtil.reLoadChart(chartsComponents, component)"
+              >
+                <el-option
+                  v-for="item in component.dynamicDataSettings.dataColumns"
+                  :key="item"
+                  :label="item"
+                  :value="item"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="系列分组">
+              <el-select
+                v-model="component.spec.series[0].seriesField"
+                placeholder="请选择"
+                multiple
+                allow-create
+                filterable
+                @change="commonUtil.reLoadChart(chartsComponents, component)"
+              >
+                <el-option
+                  v-for="item in component.dynamicDataSettings.dataColumns"
+                  :key="item"
+                  :label="item"
+                  :value="item"
+                />
+              </el-select>
+            </el-form-item>
+          <div class="right-dataset-title">
+            <span class="attr-dataset-title">折线图数据</span>
+          </div>
+          <el-form-item>
+            <div style="width: 100%;" class="df-c-b">
+              <span>请求方式</span>
+              <div
+                class="config-btn"
+                @click="editcomboCharthlData(component,'2')"
+              >数据配置</div>
+            </div>
+            <el-select v-model="component.lineDataSource" placeholder="请选择">
+              <el-option label="静态数据" value="1" />
+              <el-option label="动态数据" value="2" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="x轴数据">
+              <el-select
+                v-model="component.spec.series[1].xField"
+                placeholder="请选择"
+                multiple
+                allow-create
+                filterable
+                @change="commonUtil.reLoadChart(chartsComponents, component)"
+              >
+                <el-option
+                  v-for="item in component.lineDynamicDataSettings.dataColumns"
+                  :key="item"
+                  :label="item"
+                  :value="item"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="y轴数据">
+              <el-select
+                v-model="component.spec.series[1].yField"
+                placeholder="请选择"
+                multiple
+                allow-create
+                filterable
+                @change="commonUtil.reLoadChart(chartsComponents, component)"
+              >
+                <el-option
+                  v-for="item in component.lineDynamicDataSettings.dataColumns"
+                  :key="item"
+                  :label="item"
+                  :value="item"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="系列分组">
+              <el-select
+                v-model="component.spec.series[1].seriesField"
+                placeholder="请选择"
+                multiple
+                allow-create
+                filterable
+                @change="commonUtil.reLoadChart(chartsComponents, component)"
+              >
+                <el-option
+                  v-for="item in component.lineDynamicDataSettings.dataColumns"
+                  :key="item"
+                  :label="item"
+                  :value="item"
+                />
+              </el-select>
+            </el-form-item>
+          </div>
       <div
         v-if="
           component.type.toLowerCase().indexOf('line') >= 0 ||
@@ -664,12 +802,14 @@
       v-model:customDataDialogVisiable="customDataDialogVisiable"
       :component="component"
       :chartsComponents="chartsComponents"
+      :comboChartType="comboChartType"
     ></static-data-dialog>
     <dynamic-data-dialog
       v-if="dynamicDialogVisiable"
       v-model:dynamicDialogVisiable="dynamicDialogVisiable"
       :component="component"
       :chartsComponents="chartsComponents"
+      :comboChartType="comboChartType"
     ></dynamic-data-dialog>
   </div>
 </template>
@@ -697,14 +837,33 @@
       return {
         customDataDialogVisiable: false,
         dynamicDialogVisiable: false,
+        comboChartType:""
       };
     },
     methods: {
       editData(component) {
+        this.comboChartType = "";
         if (component.dataSource == '1') {
           this.customDataDialogVisiable = true;
         } else if (component.dataSource == '2') {
           this.dynamicDialogVisiable = true;
+        }
+      },
+      //编辑折柱图的数据
+      editcomboCharthlData(component,type) {
+        this.comboChartType = type;
+        if(type == "1"){
+          if (component.dataSource == '1') {
+            this.customDataDialogVisiable = true
+          } else if (component.dataSource == '2') {
+            this.dynamicDialogVisiable = true
+          }
+        }else{
+          if (component.lineDataSource == '1') {
+            this.customDataDialogVisiable = true
+          } else if (component.lineDataSource == '2') {
+            this.dynamicDialogVisiable = true
+          }
         }
       },
       changeBoxSeriesField(chartsComponents, component) {

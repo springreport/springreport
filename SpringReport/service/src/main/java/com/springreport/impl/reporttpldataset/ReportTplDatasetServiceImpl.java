@@ -36,6 +36,7 @@ import com.springreport.util.InfluxDBConnection;
 import com.springreport.util.JdbcUtils;
 import com.springreport.util.ListUtil;
 import com.springreport.util.MessageUtil;
+import com.springreport.util.MongoClientUtil;
 import com.springreport.util.RedisUtil;
 import com.springreport.util.ReportDataUtil;
 import com.springreport.util.StringUtil;
@@ -309,7 +310,7 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 			throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.check.notexist", new String[] {"数据库信息"}));
 		}
 		List<Map<String, Object>> cacheColumns = null;
-		if(DatasetTypeEnum.SQL.getCode().intValue() == dataset.getDatasetType().intValue())
+		if(DatasetTypeEnum.SQL.getCode().intValue() == dataset.getDatasetType().intValue() || DatasetTypeEnum.MONGO.getCode().intValue() == dataset.getDatasetType().intValue())
 		{//数据库
 			cacheColumns =(List<Map<String, Object>>) redisUtil.get(RedisPrefixEnum.DATASETCOLUMN.getCode()+String.valueOf(dataset.getId()));
 		}else {//api
@@ -320,7 +321,7 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 			return cacheColumns;
 		}
 		List<Map<String, Object>> columns = null;
-		if(DatasetTypeEnum.SQL.getCode().intValue() == dataset.getDatasetType().intValue())
+		if(DatasetTypeEnum.SQL.getCode().intValue() == dataset.getDatasetType().intValue() || DatasetTypeEnum.MONGO.getCode().intValue() == dataset.getDatasetType().intValue())
 		{
 			if(reportDatasource.getType().intValue() == 6)
 			{
@@ -334,6 +335,13 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 				TDengineConfig config = new TDengineConfig(dataset.getDatasourceId(), reportDatasource.getUserName(), reportDatasource.getPassword(), reportDatasource.getJdbcUrl());
 				TDengineConnection tDengineConnection = new TDengineConnection(config.getJdbcUrl(), config.getUsername(), config.getPassword());
 				columns = JdbcUtils.parseMetaDataColumns(tDengineConnection.getConnection(), dataset.getTplSql(),reportDatasource.getType(),dataset.getTplParam(),userInfoDto);
+			}else if(reportDatasource.getType().intValue() == 14) {
+				if(dataset.getMongoSearchType().intValue() == 1) {
+					columns = MongoClientUtil.getFields(reportDatasource.getJdbcUrl(), dataset.getMongoTable());
+				}else {
+					String sqlText = JdbcUtils.parseSql(dataset.getTplSql(), dataset.getTplParam(), userInfoDto);
+					columns = MongoClientUtil.getaggregateFields(reportDatasource.getJdbcUrl(), dataset.getMongoTable(),sqlText);
+				}
 			}else {
 				DataSource dataSource = null;
 				if(reportDatasource.getType().intValue() == 9)
@@ -490,6 +498,8 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 				TDengineConfig config = new TDengineConfig(reportTplDataset.getDatasourceId(), reportDatasource.getUserName(), reportDatasource.getPassword(), reportDatasource.getJdbcUrl());
 				TDengineConnection tDengineConnection = new TDengineConnection(config.getJdbcUrl(), config.getUsername(), config.getPassword());
 				columns = JdbcUtils.parseMetaDataColumns(tDengineConnection.getConnection(), reportTplDataset.getTplSql(),reportDatasource.getType(),reportTplDataset.getTplParam(),userInfoDto);
+			}else if(reportDatasource.getType().intValue() == 14) {
+				columns = MongoClientUtil.getFields(reportDatasource.getJdbcUrl(), reportTplDataset.getMongoTable());
 			}else {
 				DataSource dataSource = null;
 				if(reportDatasource.getType().intValue() == 9)
@@ -565,6 +575,8 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 			insertData.setValueField(reportTplDataset.getValueField());
 			insertData.setFixedColumn(reportTplDataset.getFixedColumn());
 			insertData.setCommonType(reportTplDataset.getCommonType());
+			insertData.setMongoTable(reportTplDataset.getMongoTable());
+			insertData.setMongoSearchType(reportTplDataset.getMongoSearchType());
 			this.save(insertData);
 			result.setId(insertData.getId());
 		}else {
@@ -681,6 +693,10 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 				result.put("password", reportDatasource.getPassword());
 				result.put("type", reportDatasource.getType());
 			}
+		}else if(reportDatasource.getType().intValue() == 14){//mongodb
+			result.put("tplDataSet", reportTplDataset);
+			result.put("type", reportDatasource.getType());
+			result.put("jdbcUrl", reportDatasource.getJdbcUrl());
 		}else {
 			//数据源配置
 			DataSourceConfig dataSourceConfig = new DataSourceConfig(reportTplDataset.getDatasourceId(), reportDatasource.getDriverClass(), reportDatasource.getJdbcUrl(), reportDatasource.getUserName(), reportDatasource.getPassword(), null);
@@ -988,7 +1004,7 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 			}
 			if(Constants.CURRENT_DATE.equals(StringUtil.trim(param.getParamDefault()).toLowerCase()))
 			{//当前日期
-				String currentDate = DateUtil.getNow(StringUtil.isNotEmpty(param.getDateFormat())?param.getDateFormat():DateUtil.FORMAT_LONOGRAM);
+				String currentDate = DateUtil.getNow(StringUtil.isNotEmpty(dateFormat)?dateFormat:DateUtil.FORMAT_LONOGRAM);
 				param.setParamDefault(currentDate);
 				param.setDateFormat(StringUtil.isNotEmpty(param.getDateFormat())?param.getDateFormat():DateUtil.FORMAT_LONOGRAM);
 			}else if(DefaultDateTypeEnum.WF.getCode().equals(StringUtil.trim(param.getParamDefault()).toLowerCase()))

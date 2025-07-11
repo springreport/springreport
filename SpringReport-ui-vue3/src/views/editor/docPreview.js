@@ -229,7 +229,7 @@ export default {
             let tplId = that.$route.query.tplId;
             let obj = {
                 url:that.apis.docTpl.previewDocApi,
-                params:{tplId:tplId,searchData:that.searchData.params,fileId:that.fileId,apiHeaders:apiHeaders},
+                params:{tplId:tplId,searchData:that.commonUtil.processPageParam(that.searchData.params),fileId:that.fileId,apiHeaders:apiHeaders},
             }
             let headers = {};
             if(that.isShare == 1)

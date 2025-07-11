@@ -67,7 +67,27 @@ export default {
       //数据初始化
       initData() {
         if (this.sendRequest) {
-          if (this.component.dataSource == "2") {
+          if(this.component.type == "comboCharthl"){
+              if(this.component.dataSource == "2"){
+                this.getComboCharthlData(this.component,"1");
+                if(this.component.refresh){
+                  var self = this;
+                    setInterval(() => {
+                        setTimeout(function(){self.getComboCharthlData(self.component,"1")}, 0)
+                    }, this.component.refreshTime)
+                }
+              }
+              if(this.component.lineDataSource == "2"){
+                this.getComboCharthlData(this.component,"2");
+                if(this.component.refresh){
+                  var self = this;
+                    setInterval(() => {
+                        setTimeout(function(){self.getComboCharthlData(self.component,"2")}, 0)
+                    }, this.component.refreshTime)
+                }
+              }
+          }else{
+            if (this.component.dataSource == "2") {
               this.getData(this.component);
               if(this.component.refresh){
                 var self = this;
@@ -75,6 +95,7 @@ export default {
                       setTimeout(function(){self.getData(self.component)}, 0)
                   }, this.component.refreshTime)
               }
+            }
           }
         }
       },
@@ -100,6 +121,40 @@ export default {
               component.spec.data.values = [{nodes:[],links:[]}];
               this.commonUtil.processSankeyData(component,response.responseData);
             }
+            this.commonUtil.reLoadChart(this.chartsComponents, component);
+          }
+        });
+      },
+
+      getComboCharthlData(component,type) {
+        let datasetId =  component.dynamicDataSettings.datasetId;
+        let dataColumns = component.dynamicDataSettings.dataColumns;
+        if(type == "2"){
+          datasetId =  component.lineDynamicDataSettings.datasetId;
+          dataColumns = component.lineDynamicDataSettings.dataColumns;
+        }
+        var params = {
+          dataSetId: datasetId,
+          dataColumns: dataColumns,
+          sqlType: "1",
+        };
+        var componentParams = this.commonUtil.getComponentParams(
+          component.params
+        );
+        params.params = Object.assign({}, componentParams, {});
+        let obj = {
+          url: this.apis.screenDesign.getDynamicDatasApi,
+          params: params,
+          removeEmpty: false,
+        };
+        this.commonUtil.doPost(obj).then((response) => {
+          if (response.code == "200") {
+            if(type == "2"){
+              component.spec.data[1].values = response.responseData;
+            }else{
+              component.spec.data[0].values = response.responseData;
+            }
+            
             this.commonUtil.reLoadChart(this.chartsComponents, component);
           }
         });

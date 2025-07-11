@@ -587,4 +587,26 @@ public class LuckySheetBindData {
     /** compare_attr2 - 同比/环比同期属性 */
     private String compareAttr2;
     
+    /** is_dump - 去重属性 */
+    private Boolean isDump;
+    
+    /** dump_attr - 去重属性 */
+    private String dumpAttr;
+    
+    private JSONObject extraCustomCellConfig;
+    
+    /**
+	* @Feilds:coordsx 原始横坐标
+	* @author caiyang
+	*/  
+	private Integer originalCoordsx;
+	
+	/**
+	* @Feilds:coordsy 原始纵坐标
+	* @author caiyang
+	*/  
+	private Integer originalCoordsy;
+	
+	/** keep_empty_cell - 没有数据时是否保留空单元格*/
+    private Boolean keepEmptyCell;
 }

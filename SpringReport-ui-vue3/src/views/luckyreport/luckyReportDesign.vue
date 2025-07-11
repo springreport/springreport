@@ -247,6 +247,18 @@
                     <el-option label="交叉扩展" :value="4"></el-option>
                   </el-select>
                 </el-form-item>
+                <el-form-item
+                  v-show="
+                  cellForm.cellExtend != 4"
+                  label="没有数据时是否保留空白单元格"
+                  :disabled="attrDisabled"
+                  class="df-form-item"
+                >
+                  <el-switch
+                    v-model="cellForm.keepEmptyCell"
+                    @change="changeCellAttr('keepEmptyCell')"
+                  />
+                </el-form-item>
                 <el-form-item label="数据填充方式" v-if="cellForm.cellExtend != 4">
                   <el-select
                     v-model="cellForm.cellFillType"
@@ -392,6 +404,33 @@
                     <el-option label="同比/环比差值" value="6" />
                     <el-option label="同比/环比增长率" value="7" />
                   </el-select>
+                </el-form-item>
+                <el-form-item
+                  label="是否去重计算"
+                  size="small"
+                  class="df-form-item"
+                  v-show="cellForm.aggregateType == 'summary'"
+                >
+                  <el-switch
+                    v-model="cellForm.isDump"
+                    active-text="是"
+                    inactive-text="否"
+                    :disabled="attrDisabled"
+                    @change="changeCellAttr('isDump')"
+                  />
+                </el-form-item>
+                <el-form-item
+                  v-show="(cellForm.aggregateType == 'summary' && cellForm.isDump)"
+                  label="去重属性"
+                  size="small"
+                >
+                  <el-input
+                    v-model="cellForm.dumpAttr"
+                    style="width: 100%"
+                    placeholder="去重属性，多个用,分隔"
+                    :disabled="attrDisabled"
+                    @input="changeCellAttr('dumpAttr')"
+                  />
                 </el-form-item>
                 <el-form-item
                   v-show="
@@ -1587,8 +1626,8 @@
       class="add-dataset-dialog"
     >
       <el-radio-group v-model="addDatasetType" size="large" style="margin-bottom: 16px">
-        <el-radio-button :label="1">sql语句</el-radio-button>
-        <el-radio-button :label="2">参数配置</el-radio-button>
+        <el-radio-button :value="1">sql语句</el-radio-button>
+        <el-radio-button :value="2">参数配置</el-radio-button>
       </el-radio-group>
       <div v-show="addDatasetType == 1">
         <el-form :inline="true" :model="sqlForm" class="demo-form-inline" ref="sqlRef">
@@ -1612,7 +1651,7 @@
             <el-select
               v-model="sqlForm.datasourceId"
               placeholder="选择数据源"
-              @change="changeDatasource"
+              @change="changeDatasource(false)"
             >
               <el-option
                 v-for="op in dataSource"
@@ -1750,10 +1789,48 @@
               />
             </el-select>
           </el-form-item>
+          <el-form-item
+            label="查询集合(表)"
+            prop="mongoTable"
+            :rules="filter_rules('查询集合(表)', { required: true })"
+            v-if="datasourceType == 3"
+            style="width: 270px"
+          >
+            <el-select
+              v-model="sqlForm.mongoTable"
+              placeholder="查询集合(表)"
+            >
+              <el-option
+                v-for="item in dataSourceTables"
+                :key="item.value"
+                :label="item.name"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            label="查询方式"
+            prop="mongoSearchType"
+            :rules="filter_rules('查询方式', { required: true })"
+            v-if="datasourceType == 3"
+            style="width: 270px"
+          >
+            <el-select
+              v-model="sqlForm.mongoSearchType"
+              placeholder="查询方式"
+            >
+              <el-option
+                v-for="item in selectUtil.mongoSearchType"
+                :key="item.value"
+                :label="item.name"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
         </el-form>
 
         <div class="df" style="width: 100%; border: 1px solid #e8e8e8">
-          <div v-show="selectVariableOpen" class="variable-content">
+          <div v-show="selectVariableOpen && datasourceType != 3" class="variable-content">
             <div class="variable-title">选择变量</div>
             <div class="variable-warp">
               <div class="variable-warp-title">系统变量</div>
@@ -1845,25 +1922,21 @@
             </div>
           </div>
           <div class="sql-content">
-            <div v-if="datasourceType == 1" style="height: 25px">
-              <el-tooltip
-                content="该操作将执行sql语句并校验sql语句的正确性，并将查询字段全部显示到下方的表格中"
-                placement="bottom"
-                ><el-tag type="success" @click="execSql" style="cursor: pointer"
-                  ><icon-play />执行</el-tag
-                ></el-tooltip
-              >
-              <el-tooltip content="该操作会将sql语句进行格式化并显示" placement="right"
-                ><el-tag @click="formatSql" style="cursor: pointer"
-                  ><icon-align-left-one />格式化</el-tag
-                >
+            <div v-if="datasourceType == 1 || datasourceType == 3" style="height: 25px">
+              <el-tooltip placement="bottom">
+                 <template #content>该操作将执行sql语句并校验sql语句的正确性，并将查询字段全部显示到下方的表格中</template>
+                <el-tag type="success" @click="execSql" style="cursor: pointer"
+                  ><icon-play />执行</el-tag>
+                  </el-tooltip>
+              <el-tooltip placement="right" v-if="datasourceType == 1">
+                <template #content>该操作会将sql语句进行格式化并显示</template>
+                <el-tag @click="formatSql" style="cursor: pointer" ><icon-align-left-one />格式化</el-tag>
               </el-tooltip>
-              <el-tooltip content="该操作会插入注释标签" placement="right"
-                ><el-tag @click="addComment(' <!--  -->')" type="warning" style="cursor: pointer"
-                  ><icon-add-one />添加注释</el-tag
-                >
+              <el-tooltip  placement="right" v-if="datasourceType == 1">
+                <template #content>该操作会插入注释标签</template>
+                <el-tag @click="addComment(' <!--  -->')" type="warning" style="cursor: pointer" ><icon-add-one />添加注释</el-tag>
               </el-tooltip>
-              <el-dropdown v-if="paramTableData.tableData && paramTableData.tableData.length > 0">
+              <el-dropdown v-if="paramTableData.tableData && paramTableData.tableData.length > 0 && datasourceType == 1" >
                 <el-tag type="danger" style="cursor: pointer"><icon-add-one />添加参数</el-tag>
                 <template #dropdown>
                   <el-dropdown-menu>
@@ -1878,12 +1951,20 @@
               </el-dropdown>
             </div>
             <div v-if="datasourceType == 1" style="height: 300px">
-              <div style="height: 100%; width: 100%">
+              <div style="height: 100%; width: 100%" v-if="datasourceType == 1">
                 <codemirror
                   ref="codeMirror"
                   :options="cmOptions"
                   v-model:value="sqlText"
                 ></codemirror>
+              </div>
+            </div>
+            <div v-if="datasourceType == 3" style="height: 300px">
+              <div :style="{height: '100%',width: sqlForm.mongoSearchType == 1?'50%':'100%',float:'left'}" v-if="datasourceType == 3">
+                <codemirror ref="codeMirror" :options="cmOptions" v-model:value="sqlText"/>
+              </div>
+              <div style="height: 100%; width: 49%;float:right" v-if="datasourceType == 3 && sqlForm.mongoSearchType == 1">
+                <codemirror ref="orderCodeMirror" :options="cmOptions" v-model:value="orderSql"/>
               </div>
             </div>
             <div class="table-warp">
@@ -1941,7 +2022,7 @@
       <div v-show="addDatasetType == 2" class="parameter-content">
         <div v-show="sqlForm.sqlType == '1' || datasourceType == 2" style="margin-bottom: 20px">
           <div class="parameter-warp">
-            <div v-if="datasourceType == 1 || datasourceType == 2" class="warp-title">分页参数</div>
+            <div v-if="datasourceType == 1 || datasourceType == 2 || datasourceType == 3" class="warp-title">分页参数</div>
 
             <el-form
               label-position="right"
@@ -1952,7 +2033,7 @@
               <el-form-item
                 label="是否分页"
                 prop="isPagination"
-                v-if="datasourceType == 1 || datasourceType == 2"
+                v-if="datasourceType == 1 || datasourceType == 2 || datasourceType == 3"
               >
                 <el-select v-model="paginationForm.isPagination" placeholder="是否分页">
                   <el-option label="是" :value="1"></el-option>

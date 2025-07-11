@@ -6198,7 +6198,10 @@ commonConstants.dictionary={
         '9': 'elasticsearch',
         '10': 'TDengine',
         '11': 'kingbase(人大金仓)',
-    },
+        '12': '瀚高(highgo)',
+        '13': '瀚高(doris)',
+        '14': 'mongodb'
+        },
     paramRequired:{
         "1":"是",
         "2":"否",
