@@ -53,6 +53,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    comboChartType:{
+      type:String,
+      default:'',//1 折柱图的柱状图部分 2、折柱图的折线部分
+    }
   },
   data() {
     return {
@@ -112,8 +116,14 @@ export default {
       this.commonUtil.doPost(obj).then((response) => {
         if (response.code == '200') {
           that.dataSets = response.responseData;
-          that.dataSetForm.dataSetId = that.component.dynamicDataSettings.datasetId;
-          that.dataSetForm.column = that.component.dynamicDataSettings.dataColumns;
+          if(this.comboChartType == '2'){
+            that.dataSetForm.dataSetId = that.component.lineDynamicDataSettings.datasetId
+            that.dataSetForm.column = that.component.lineDynamicDataSettings.dataColumns
+          }else{
+            that.dataSetForm.dataSetId = that.component.dynamicDataSettings.datasetId
+            that.dataSetForm.column = that.component.dynamicDataSettings.dataColumns
+          }
+          that.changeDataset();
         }
       });
     },
@@ -327,16 +337,33 @@ export default {
       });
     },
     processDynamicData(response) {
-      this.component.spec.data.values = response.responseData;
-      this.component.dynamicDataSettings.datasetId = this.dataSetForm.dataSetId;
-      this.component.dynamicDataSettings.dataColumns = this.dataSetForm.column;
-      this.commonUtil.reLoadChart(this.chartsComponents, this.component);
       if (this.component.type == 'pageTable' && Array.isArray(this.component.spec.data.values)) {
+        this.component.spec.data.values = response.responseData
+        this.component.dynamicDataSettings.datasetId = this.dataSetForm.dataSetId
+        this.component.dynamicDataSettings.dataColumns = this.dataSetForm.column
         this.component.spec.data.total = this.component.spec.data.values.length;
       } else if (this.component.type == 'sankey') {
+        this.component.spec.data.values = response.responseData
+        this.component.dynamicDataSettings.datasetId = this.dataSetForm.dataSetId
+        this.component.dynamicDataSettings.dataColumns = this.dataSetForm.column
         this.component.spec.data.values = [{ nodes: [], links: [] }];
         this.commonUtil.processSankeyData(this.component, response.responseData);
+      }else if (this.component.type == 'comboCharthl') {
+        if(this.comboChartType == '1'){
+          this.component.dynamicDataSettings.datasetId = this.dataSetForm.dataSetId
+          this.component.dynamicDataSettings.dataColumns = this.dataSetForm.column
+          this.component.spec.data[0].values = response.responseData;
+        }else{
+          this.component.lineDynamicDataSettings.datasetId = this.dataSetForm.dataSetId
+          this.component.lineDynamicDataSettings.dataColumns = this.dataSetForm.column
+          this.component.spec.data[1].values = response.responseData;
+        }
+      }else{
+        this.component.spec.data.values = response.responseData
+        this.component.dynamicDataSettings.datasetId = this.dataSetForm.dataSetId
+        this.component.dynamicDataSettings.dataColumns = this.dataSetForm.column
       }
+      this.commonUtil.reLoadChart(this.chartsComponents, this.component);
       this.closeDynamicDataDialog();
     },
     editDatasets(index, item) {

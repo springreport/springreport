@@ -90,6 +90,10 @@
         type: Boolean,
         default: false,
       },
+      comboChartType:{
+        type:String,
+        default:'',//1 折柱图的柱状图部分 2、折柱图的折线部分
+      }
     },
     mounted() {
       this.cmOptions = this.commonConstants.cmOptions;
@@ -106,51 +110,63 @@
         let sqlContent = this.sqlText;
         if (sqlContent.trim()) {
           try {
-            let values = eval('(' + sqlContent + ')');
-            if (typeof values === 'object' || Array.isArray(values)) {
-              if (this.component.type == 'pageTable') {
-                if (Array.isArray(values)) {
-                  this.component.spec.data.total = values.length;
+              const values = eval('(' + sqlContent + ')')
+              if (typeof values === 'object' || Array.isArray(values)) {
+                if (this.component.type == 'pageTable') {
+                  if (Array.isArray(values)) {
+                    this.component.spec.data.total = values.length
+                  } else {
+                    this.commonUtil.showMessage({ message: '请添加JSON对象数组格式的数据', type: this.commonConstants.messageType.error })
+                    return
+                  }
+                }
+                if (this.component.type == 'sankey') {
+                  this.component.spec.data.values = [{ nodes: [], links: [] }]
+                  this.commonUtil.processSankeyData(this.component, values)
+                }else if (this.component.type.toLowerCase().indexOf('combocharthl') >= 0){
+                  if(this.comboChartType == "1"){
+                    this.component.spec.data[0].values = values;
+                  }else{
+                    this.component.spec.data[1].values = values;
+                  }
                 } else {
-                  this.commonUtil.showMessage({
-                    message: '请添加JSON对象数组格式的数据',
-                    type: this.commonConstants.messageType.error,
-                  });
-                  return;
+                  this.component.spec.data.values = values
                 }
-              }
-              if (this.component.type == 'sankey') {
-                this.component.spec.data.values = [{ nodes: [], links: [] }];
-                this.commonUtil.processSankeyData(this.component, values);
+                if (this.component.category == this.screenConstants.category.vchart) {
+                  this.commonUtil.reLoadChart(this.chartsComponents, this.component)
+                }
+                
+                if (Array.isArray(values)) {
+                  if(this.comboChartType == "2"){
+                      this.component.lineDynamicDataSettings.dataColumns = []
+                  }else{
+                      this.component.dynamicDataSettings.dataColumns = []
+                  }
+                  for (var key in values[0]) {
+                    if(this.comboChartType == "2"){
+                      if(this.component.lineDynamicDataSettings.dataColumns.indexOf(key) == -1){
+                        this.component.lineDynamicDataSettings.dataColumns.push(key)
+                      }
+                    }else{
+                      if(this.component.dynamicDataSettings.dataColumns.indexOf(key) == -1){
+                        this.component.dynamicDataSettings.dataColumns.push(key)
+                      }
+                    }
+                  }
+                } else {
+                  this.component.dynamicDataSettings.dataColumns = []
+                  for (var key in values) {
+                    this.component.dynamicDataSettings.dataColumns.push(key)
+                  }
+                }
+                this.closeCustomDataDialog()
+                this.commonUtil.reLoadChart(this.chartsComponents, this.component)
               } else {
-                this.component.spec.data.values = values;
+                this.commonUtil.showMessage({ message: '请添加JSON格式的数据', type: this.commonConstants.messageType.error })
               }
-              if (this.component.category == this.screenConstants.category.vchart) {
-                this.commonUtil.reLoadChart(this.chartsComponents, this.component);
-              }
-              this.component.dynamicDataSettings.dataColumns = [];
-              if (Array.isArray(values)) {
-                for (var key in values[0]) {
-                  this.component.dynamicDataSettings.dataColumns.push(key);
-                }
-              } else {
-                for (var key in values) {
-                  this.component.dynamicDataSettings.dataColumns.push(key);
-                }
-              }
-              this.closeCustomDataDialog();
-              this.commonUtil.reLoadChart(this.chartsComponents, this.component);
-            } else {
-              this.commonUtil.showMessage({
-                message: '请添加JSON格式的数据',
-                type: this.commonConstants.messageType.error,
-              });
-            }
+            
           } catch (error) {
-            this.commonUtil.showMessage({
-              message: '请添加JSON格式的数据',
-              type: this.commonConstants.messageType.error,
-            });
+            this.commonUtil.showMessage({ message: '请添加JSON格式的数据', type: this.commonConstants.messageType.error })
           }
         }
       },
@@ -163,8 +179,16 @@
       init() {
         let dataContent = '';
         if (this.component.type.toLowerCase().indexOf('sankey') >= 0) {
+          //桑葚图
           dataContent = JSON.stringify(this.component.spec.data.values[0].links);
-        } else {
+        } else if (this.component.type.toLowerCase().indexOf('combocharthl') >= 0) {
+          //折柱图
+          if(this.comboChartType == '1'){
+            dataContent = JSON.stringify(this.component.spec.data[0].values);
+          }else{
+            dataContent = JSON.stringify(this.component.spec.data[1].values);
+          }
+        }else {
           dataContent = JSON.stringify(this.component.spec.data.values);
         }
         this.$nextTick(() => {
