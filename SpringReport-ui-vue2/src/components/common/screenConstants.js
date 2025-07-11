@@ -1768,7 +1768,7 @@ screenConstants.horizontalAreaInit = {
   dynamicDataSettings: {
     datasetId: '', // 数据集
     dataColumns: []// 数据列
-  }, // 柱状图动态数据配置
+  }, // 态数据配置
   params: [], // 图表参数
   clickType: '1', // 点击类型
   thirdUrl: '', // 第三方跳转链接

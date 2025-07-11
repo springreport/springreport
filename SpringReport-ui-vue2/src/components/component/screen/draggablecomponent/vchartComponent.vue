@@ -66,6 +66,7 @@ export default {
     methods:{
       //数据初始化
       initData() {
+        console.log(123)
         if (this.sendRequest) {
           if(this.component.type == "comboCharthl"){
               if(this.component.dataSource == "2"){
@@ -150,9 +151,9 @@ export default {
         this.commonUtil.doPost(obj).then((response) => {
           if (response.code == "200") {
             if(type == "2"){
-              component.spec.data[0].values = response.responseData;
-            }else{
               component.spec.data[1].values = response.responseData;
+            }else{
+              component.spec.data[0].values = response.responseData;
             }
             
             this.commonUtil.reLoadChart(this.chartsComponents, component);
