@@ -327,7 +327,7 @@ export default {
         this.component.dynamicDataSettings.dataColumns = this.dataSetForm.column
         this.component.spec.data.values = [{ nodes: [], links: [] }]
         this.commonUtil.processSankeyData(this.component, response.responseData)
-      }else if (this.component.type == 'comboCharthl') {
+      }else if (this.component.type == 'comboCharthl' || this.component.type == "comboChartdbbar") {
         if(this.comboChartType == '1'){
           this.component.dynamicDataSettings.datasetId = this.dataSetForm.dataSetId
           this.component.dynamicDataSettings.dataColumns = this.dataSetForm.column

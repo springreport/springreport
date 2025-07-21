@@ -210,9 +210,14 @@
             <input-color-picker :input-width="140" :value="component.spec.indicator.content.style.fill" @change="(val)=>{component.spec.indicator.content.style.fill=val;commonUtil.reLoadChart(chartsComponents,component)}" />
           </el-form-item>
 
-          <div v-if="component.type.toLowerCase().indexOf('seriesgauge')>=0">
-            <div class="attr-dataset-title-small">数值标签设置</div>
-            <el-form-item label="标签是否显示" class="df-form-item">
+          
+        </div>
+
+        <div class="right-dataset-title" v-if="component.type.toLowerCase().indexOf('seriesgauge')>=0">
+          <span class="attr-dataset-title">数值标签设置</span>
+        </div>
+        <div class="right-dataset-warp" v-if="component.type.toLowerCase().indexOf('seriesgauge')>=0">
+          <el-form-item label="标签是否显示" class="df-form-item">
               <el-switch v-model="component.spec.gauge.label.visible" active-text="是" inactive-text="否" @change="commonUtil.reLoadChart(chartsComponents,component)" />
             </el-form-item>
             <el-form-item v-if="component.spec.gauge.label.visible" label="标签位置">
@@ -237,9 +242,13 @@
 
               </el-input>
             </el-form-item>
-          </div>
-          <div class="attr-dataset-title-small">图例设置</div>
-          <el-form-item label="是否显示" class="df-form-item">
+        </div>
+
+        <div class="right-dataset-title">
+          <span class="attr-dataset-title">图例设置</span>
+        </div>
+        <div class="right-dataset-warp">
+          <el-form-item label="是否显示" class="df-form-item" >
             <el-switch v-model="component.spec.legends.visible" active-text="是" inactive-text="否" @change="commonUtil.reLoadChart(chartsComponents,component)" />
           </el-form-item>
           <el-form-item v-if="component.spec.legends.visible" label="图例位置">
@@ -510,6 +519,46 @@
           </el-form-item>
         </div>
       </div>
+      <div v-if="component.type.toLowerCase().indexOf('combochartdbbar')>=0 ">
+        <div class="right-dataset-title">
+          <span class="attr-dataset-title">坐标轴设置</span>
+        </div>
+        <div class="right-dataset-warp">
+          <el-form-item label="左侧x轴字体颜色">
+            <input-color-picker :value="component.spec.axes[1].label.style.fill" @change="(val)=>{component.spec.axes[1].label.style.fill=val;commonUtil.reLoadChart(chartsComponents,component)}" />
+          </el-form-item>
+          <el-form-item label="x轴字体大小">
+            <el-input v-model.number="component.spec.axes[1].label.style.fontSize" @change="commonUtil.reLoadChart(chartsComponents,component)" />
+          </el-form-item>
+          <el-form-item label="开启自动旋转" class="df-form-item">
+            <el-switch v-model="component.spec.axes[1].label.autoRotate" active-text="是" inactive-text="否" @change="changeAutoRotate(chartsComponents,component)" />
+          </el-form-item>
+          <el-form-item label="开启自动省略" class="df-form-item">
+            <el-switch v-model="component.spec.axes[1].label.autoLimit" active-text="是" inactive-text="否" @change="commonUtil.reLoadChart(chartsComponents,component)" />
+          </el-form-item>
+          <el-form-item label="右侧x轴字体颜色">
+            <input-color-picker :value="component.spec.axes[2].label.style.fill" @change="(val)=>{component.spec.axes[2].label.style.fill=val;commonUtil.reLoadChart(chartsComponents,component)}" />
+          </el-form-item>
+          <el-form-item label="x轴字体大小">
+            <el-input v-model.number="component.spec.axes[2].label.style.fontSize" @change="commonUtil.reLoadChart(chartsComponents,component)" />
+          </el-form-item>
+          <el-form-item label="开启自动旋转" class="df-form-item">
+            <el-switch v-model="component.spec.axes[2].label.autoRotate" active-text="是" inactive-text="否" @change="changeAutoRotate(chartsComponents,component)" />
+          </el-form-item>
+          <el-form-item label="开启自动省略" class="df-form-item">
+            <el-switch v-model="component.spec.axes[2].label.autoLimit" active-text="是" inactive-text="否" @change="commonUtil.reLoadChart(chartsComponents,component)" />
+          </el-form-item>
+          <el-form-item label="y轴字体颜色">
+            <input-color-picker :value="component.spec.axes[0].label.style.fill" @change="(val)=>{component.spec.axes[0].label.style.fill=val;commonUtil.reLoadChart(chartsComponents,component)}" />
+          </el-form-item>
+          <el-form-item label="y轴字体大小">
+            <el-input v-model.number="component.spec.axes[0].label.style.fontSize" @change="commonUtil.reLoadChart(chartsComponents,component)" />
+          </el-form-item>
+          <el-form-item label="开启自动省略" class="df-form-item">
+            <el-switch v-model="component.spec.axes[0].label.autoLimit" active-text="是" inactive-text="否" @change="commonUtil.reLoadChart(chartsComponents,component)" />
+          </el-form-item>
+        </div>
+      </div>
       <div v-if="component.type.toLowerCase().indexOf('wordcloud')<0 && component.type.toLowerCase().indexOf('gauge')<0 && component.type.toLowerCase().indexOf('circularprogress')<0 && component.type.toLowerCase().indexOf('barprogress')<0 && component.type.toLowerCase().indexOf('liquid')<0 && component.type.toLowerCase().indexOf('map')<0 && component.type.toLowerCase().indexOf('boxplot')<0">
         <div class="right-dataset-title">
           <span class="attr-dataset-title">标签设置</span>
@@ -520,7 +569,7 @@
             <el-switch v-model="component.spec.label.visible" active-text="是" inactive-text="否" @change="commonUtil.reLoadChart(chartsComponents,component)" />
           </el-form-item>
           <el-form-item v-if="component.spec.label.visible && component.type.toLowerCase().indexOf('funnel')<0" label="标签位置">
-            <el-select v-if="component.type.toLowerCase().indexOf('line')>=0 || component.type.toLowerCase().indexOf('area')>=0 || component.type.toLowerCase().indexOf('histogram')>=0 " v-model="component.spec.label.position" placeholder="请选择" style="width:180px" @change="commonUtil.reLoadChart(chartsComponents,component)">
+            <el-select v-if="component.type.toLowerCase().indexOf('line')>=0 || component.type.toLowerCase().indexOf('area')>=0 || component.type.toLowerCase().indexOf('histogram')>=0 || component.type.toLowerCase().indexOf('combochart')>=0" v-model="component.spec.label.position" placeholder="请选择" style="width:180px" @change="commonUtil.reLoadChart(chartsComponents,component)">
               <el-option
                 v-for="item in screenConstants.labelPosition"
                 :key="item.value"
@@ -564,37 +613,7 @@
               <el-button slot="suffix" type="text" @click="formatterRule()">设置规则</el-button>
             </el-input>
           </el-form-item>
-          <div class="attr-dataset-title-small">图例设置</div>
-
-          <el-form-item label="是否显示" class="df-form-item">
-            <el-switch v-model="component.spec.legends.visible" active-text="是" inactive-text="否" @change="commonUtil.reLoadChart(chartsComponents,component)" />
-          </el-form-item>
-          <el-form-item v-if="component.spec.legends.visible" label="图例位置">
-            <el-select v-model="component.spec.legends.orient" placeholder="请选择" style="width:180px" @change="commonUtil.reLoadChart(chartsComponents,component)">
-              <el-option
-                v-for="item in screenConstants.legendOrient"
-                :key="item.value"
-                :label="item.name"
-                :value="item.value"
-              />
-            </el-select>
-          </el-form-item>
-          <el-form-item v-if="component.spec.legends.visible" label="对齐方式">
-            <el-select v-model="component.spec.legends.position" placeholder="请选择" style="width:180px" @change="commonUtil.reLoadChart(chartsComponents,component)">
-              <el-option
-                v-for="item in screenConstants.legendPosition"
-                :key="item.value"
-                :label="item.name"
-                :value="item.value"
-              />
-            </el-select>
-          </el-form-item>
-          <el-form-item v-if="component.spec.legends.visible" label="字体颜色">
-            <input-color-picker :value="component.spec.legends.item.label.style.fill" @change="(val)=>{component.spec.legends.item.label.style.fill=val;commonUtil.reLoadChart(chartsComponents,component)}" />
-          </el-form-item>
-          <el-form-item v-if="component.spec.legends.visible" label="字体大小">
-            <el-input v-model.number="component.spec.legends.item.label.style.fontSize" @change="commonUtil.reLoadChart(chartsComponents,component)" />
-          </el-form-item>
+          
           <div v-if="component.type.toLowerCase().indexOf('funnel')>=0">
             <!-- <div class="attr-dataset-title-small">漏斗图形状</div> -->
 
@@ -631,7 +650,43 @@
             </el-form-item>
           </div>
         </div>
+
+        <div class="right-dataset-title">
+          <span class="attr-dataset-title">图例设置</span>
+        </div>
+        <div class="right-dataset-warp">
+          <el-form-item label="是否显示" class="df-form-item" v-if="component.type.indexOf('comboChartdbbar')<0">
+            <el-switch v-model="component.spec.legends.visible" active-text="是" inactive-text="否" @change="commonUtil.reLoadChart(chartsComponents,component)" />
+          </el-form-item>
+          <el-form-item v-if="component.spec.legends.visible && component.type.indexOf('comboChartdbbar')<0" label="图例位置" >
+            <el-select v-model="component.spec.legends.orient" placeholder="请选择" style="width:180px" @change="commonUtil.reLoadChart(chartsComponents,component)">
+              <el-option
+                v-for="item in screenConstants.legendOrient"
+                :key="item.value"
+                :label="item.name"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item v-if="component.spec.legends.visible" label="对齐方式">
+            <el-select v-model="component.spec.legends.position" placeholder="请选择" style="width:180px" @change="commonUtil.reLoadChart(chartsComponents,component)">
+              <el-option
+                v-for="item in screenConstants.legendPosition"
+                :key="item.value"
+                :label="item.name"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item v-if="component.spec.legends.visible" label="字体颜色">
+            <input-color-picker :value="component.spec.legends.item.label.style.fill" @change="(val)=>{component.spec.legends.item.label.style.fill=val;commonUtil.reLoadChart(chartsComponents,component)}" />
+          </el-form-item>
+          <el-form-item v-if="component.spec.legends.visible" label="字体大小">
+            <el-input v-model.number="component.spec.legends.item.label.style.fontSize" @change="commonUtil.reLoadChart(chartsComponents,component)" />
+          </el-form-item>
+        </div>
       </div>
+      <div v-if="component.type.toLowerCase().indexOf('combochart')<0"> 
       <div class="right-dataset-title">
         <span class="attr-dataset-title">提示框配置</span>
       </div>
@@ -639,6 +694,7 @@
         <el-form-item label="提示框标题">
           <el-input v-model="component.spec.tooltip.mark.title.value" style="width:120px" @change="commonUtil.reLoadChart(chartsComponents,component)" />
         </el-form-item>
+      </div>
       </div>
       <div class="right-dataset-title">
         <span class="attr-dataset-title">动画设置</span>

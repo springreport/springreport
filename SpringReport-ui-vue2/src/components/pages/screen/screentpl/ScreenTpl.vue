@@ -140,6 +140,15 @@
         :modal-handles="pageData.folderModalHandles"
         @closeModal="closeFolderModal()"
       />
+      <modal
+        ref="shareReport"
+        :modal-config="pageData.shareReportConfig"
+        :modal-form="pageData.shareReportForm"
+        :modal-data="pageData.shareReportModalData"
+        :modal-handles="pageData.shareReportModalHandles"
+        @closeModal="closeShareReportModal()"
+      />
+      <textarea id="clipboradInput" style="opacity:0;position:absolute" />
     </div>
   </div>
 </template>

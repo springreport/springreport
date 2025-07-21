@@ -2,7 +2,7 @@
   <div
         :style="{ height: '100%', width: '100%' }"
   >
-  <component :is="component.borderType.replace('-reverse','')" v-if="component.isborder && component.borderType" :color="component.borderColor" :reverse="component.borderType.indexOf('-reverse')>-1">
+  <component :is="component.borderType.replace('-reverse','')" v-if="component.isborder && component.borderType" :color="component.borderColor" :backgroundColor="component.borderBackgroundColor" :reverse="component.borderType.indexOf('-reverse')>-1">
     <div :id="component.id" :style="{height:component.h+'px',width:component.w+'px'}">
         <!-- <div
           :style="{ height: '28px', width: '100%' }"

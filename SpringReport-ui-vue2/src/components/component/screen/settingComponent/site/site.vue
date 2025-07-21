@@ -40,10 +40,10 @@
               <el-switch v-model="component.locked" active-text="是" inactive-text="否" />
             </el-form-item>
           </div>
-          <div class="right-dataset-title">
+          <div class="right-dataset-title" v-if="component.type!='picture' && component.type!='border' && component.type!='decoration'">
             <span class="attr-dataset-title">边框设置</span>
           </div>
-          <div class="right-dataset-warp">
+          <div class="right-dataset-warp" v-if="component.type!='picture' && component.type!='border' && component.type!='decoration'">
             <el-form-item label="显示边框" class="df-form-item">
               <el-switch v-model="component.isborder" active-text="是" inactive-text="否" @change="commonUtil.reLoadChart(chartsComponents,component)" />
             </el-form-item>
@@ -62,6 +62,9 @@
             </el-form-item>
             <el-form-item v-if="component.isborder && component.borderColor" label="边框颜色2">
               <input-color-picker :input-width="152" :value="component.borderColor[1]" @change="(val)=>{changeColor(1,val)}" />
+            </el-form-item>
+            <el-form-item  v-if="component.isborder" label="边框背景色">
+              <input-color-picker :value="component.borderBackgroundColor" @change="(val)=>{changeBorderBackgroundColor(val)}" />
             </el-form-item>
           </div>
         </el-form>
@@ -132,6 +135,9 @@ export default {
     },
     changeColor(index, val) {
       this.$set(this.component.borderColor, index, val)
+    },
+    changeBorderBackgroundColor( val) {
+      this.$set(this.component,"borderBackgroundColor",val)
     }
   }
 }

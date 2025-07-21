@@ -54,6 +54,8 @@ export default {
             { label: '编辑', type: 'text', auth: 'screenTpl_update', handle: (row) => this.showModal(this.commonConstants.modalType.update, row.id, row.type) },
             { label: '大屏设计', type: 'text', auth: 'screenTpl_screenDesign', handle: (row) => this.screenDesign(row), show: (row) => this.isShowBtn(row) },
             { label: '查看大屏', type: 'text', auth: 'screenTpl_viewScreen', handle: (row) => this.screenView(row), show: (row) => this.isShowBtn(row) },
+            { label: '复制大屏', type: 'text', auth: 'screenTpl_copy', handle: (row) => this.doCopy(row)},
+            { label: '大屏分享', type: 'text', auth: 'screenTpl_share', handle: (row) => this.showShareReport(row) },
             { label: '删除', type: 'text', auth: 'screenTpl_delete', handle: (row) => this.deleteOne(row.id, row.type) }
           ] },
           { label: '模板标识', prop: 'tplCode', align: 'left', overflow: true, icon: true },
@@ -154,9 +156,31 @@ export default {
         folderModalHandles: [
           { label: '取消', type: 'default', handle: () => this.closeFolderModal() },
           { label: '提交', type: 'primary', handle: () => this.saveFolder() }
-        ]
+        ],
+        shareReportConfig: {
+          title: '报表分享', // 弹窗标题,值为:新增，查看，编辑
+          show: false, // 弹框显示
+          formEditDisabled: false, // 编辑弹窗是否可编辑
+          width: '700px', // 弹出框宽度
+          modalRef: 'modalRef', // modal标识
+          type: '1'// 类型 1新增 2编辑 3保存
+        },
+        shareReportForm: [
+          { type: 'Select', label: '分享时长设置', prop: 'isShareForever', rules: { required: true }, options: this.selectUtil.shareTime,change: this.changeShareTimeType},
+          { type: 'Input', label: '有效时长(分)', prop: 'shareTime', rules: { required: true, type: 'integer'}},
+        ],
+        shareReportModalData: { // modal页面数据
+          tplId: null,
+          shareTime: '', // 有效时长(分)
+          isShareForever:null,
+        },
+        shareReportModalHandles: [
+          { label: '取消', type: 'default', handle: () => this.closeShareReportModal() },
+          { label: '获取分享链接', type: 'primary', handle: () => this.getShareUrl() }
+        ],
       },
       requestLoading: false // 请求loading
+      
     }
   },
   activated() {
@@ -444,24 +468,15 @@ export default {
     closeCopyModal() {
       this.pageData.copyModalConfig.show = false
     },
-    doCopy() {
-      this.$refs['copyModalRef'].$refs['modalFormRef'].validate((valid) => {
-        if (valid) {
-          var obj = {
-            params: this.pageData.copyModalData,
-            removeEmpty: false
-          }
-          obj.url = this.apis.screenTpl.doCopyScreenApi
-          this.commonUtil.doPost(obj).then(response => {
-            if (response.code == '200') {
-              this.closeCopyModal()
-              this.searchtablelist()
-            }
-          })
-        } else {
-          return false
-        }
-      })
+    doCopy(row) {
+      const obj = {
+        url: this.apis.screenTpl.doCopyScreenApi,
+        messageContent: this.commonUtil.getMessageFromList('confirm.screenCopy', null),
+        callback: this.removeNodeCallBack,
+        params: { id: row.id },
+        type: 'post'
+      }
+      this.commonUtil.showConfirm(obj)
     },
     loadData(tree, treeNode, resolve) {
       var obj = {
@@ -541,6 +556,52 @@ export default {
       this.searchtablelist()
       this.getReportType()
       this.getReportTypeTree()
+    },
+    showShareReport(row) {
+      this.pageData.shareReportConfig.show = true
+      this.pageData.shareReportModalData.tplId = row.id
+      this.pageData.shareReportModalData.tplType = row.tplType
+    },
+    getShareUrl() {
+      this.$refs['shareReport'].$refs['modalFormRef'].validate((valid) => {
+        if (valid) {
+          var extraParam = {}
+          if (localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)) {
+            extraParam.thirdPartyType = localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)
+          }
+          var obj = {
+            params: Object.assign({}, this.pageData.shareReportModalData, extraParam),
+            removeEmpty: false
+          }
+          obj.url = this.apis.screenTpl.getShareUrlApi
+          this.commonUtil.doPost(obj).then(response => {
+            if (response.code == '200') {
+              const input = document.getElementById('clipboradInput') // 承载复制内容
+              input.value = response.responseData.shareMsg // 修改文本框的内容
+              input.select() // 选中文本
+              document.execCommand('copy') // 执行浏览器复制命令
+              this.commonUtil.showMessage({ message: '分享链接已经添加到剪贴板。', type: this.commonConstants.messageType.success })
+              this.closeShareReportModal()
+            }
+          })
+        } else {
+          return false
+        }
+      })
+    },
+    closeShareReportModal() {
+      this.pageData.shareReportConfig.show = false
+      this.commonUtil.clearObj(this.pageData.shareReportModalData)// 清空modalData
+      this.$refs['shareReport'].$refs['modalFormRef'].resetFields()// 校验重置
+    },
+    changeShareTimeType(){
+      if(this.pageData.shareReportModalData.isShareForever == 1){
+        this.pageData.shareReportForm[1].show = false
+        this.pageData.shareReportForm[1].rules.required = false
+      }else{
+        this.pageData.shareReportForm[1].show = true
+        this.pageData.shareReportForm[1].rules.required = true
+      }
     }
   }
 }
