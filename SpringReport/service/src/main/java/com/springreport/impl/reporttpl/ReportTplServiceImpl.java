@@ -92,6 +92,7 @@ import com.springreport.util.DocumentToLuckysheetUtil;
 import com.springreport.util.FileUtil;
 import com.springreport.util.HttpClientUtil;
 import com.springreport.util.InfluxDBConnection;
+import com.springreport.util.JWTUtil;
 import com.springreport.util.JdbcUtils;
 import com.springreport.util.ListUtil;
 import com.springreport.util.LuckysheetUtil;
@@ -2237,22 +2238,27 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 	 */
 	@Override
 	@Transactional
-	public ResSheetsSettingsDto getLuckySheetTplSettings(ReportTpl reportTpl,UserInfoDto userInfoDto) throws Exception {
+	public ResSheetsSettingsDto getLuckySheetTplSettings(ReportTplDto reportTplDto,UserInfoDto userInfoDto) throws Exception {
 		ResSheetsSettingsDto settings = new ResSheetsSettingsDto();
 		List<ResLuckySheetTplSettingsDto> list = new ArrayList<>();
-		reportTpl = this.getById(reportTpl.getId());
+		ReportTpl reportTpl = this.getById(reportTplDto.getId());
 		if(reportTpl == null)
 		{
 			throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.exist", new String[] {"报表模板"}));
 		}
-		Object redisCache = redisUtil.get(RedisPrefixEnum.REPORTTPLTEMPCACHE.getCode()+"designMode-"+reportTpl.getId());
+		Object redisCache = null;
+		if(reportTplDto.isAllowUpdate()) {
+			redisCache = redisUtil.get(RedisPrefixEnum.REPORTTPLTEMPCACHE.getCode()+"designMode-"+reportTpl.getId());
+		}
 		if(redisCache != null)
 		{
 			settings = JSON.parseObject(redisCache.toString(), ResSheetsSettingsDto.class);
 		}else {
 			settings.setIsParamMerge(reportTpl.getIsParamMerge());
 			settings.setTplName(reportTpl.getTplName());
-			redisUtil.set(RedisPrefixEnum.REPORTTPLTEMPCACHE.getCode()+"designMode-"+reportTpl.getId(),JSON.toJSONString(settings),Constants.REPORT_TPL_CACHE_TIME);
+			if(reportTplDto.isAllowUpdate()) {
+				redisUtil.set(RedisPrefixEnum.REPORTTPLTEMPCACHE.getCode()+"designMode-"+reportTpl.getId(),JSON.toJSONString(settings),Constants.REPORT_TPL_CACHE_TIME);
+			}
 		}
 		//获取所有有权限的sheet
 		List<ReportTplSheet> sheets = null;
@@ -2297,7 +2303,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			isCreator = true;
 		}
 		if(!ListUtil.isEmpty(sheets)) {
-			this.processSheetCells(sheets, reportTpl, list,isCreator,userInfoDto.getUserId(),settings);
+			this.processSheetCells(sheets, reportTpl, list,isCreator,userInfoDto.getUserId(),settings,reportTplDto.isAllowUpdate());
 		}else {
 			//上一个版本的数据，创建一个sheet并更新cell表中的sheetid字段，做到兼容
 			ReportTplSheet reportTplSheet = new ReportTplSheet();
@@ -2318,7 +2324,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			this.iLuckysheetReportCellService.update(luckysheetReportCell, updateWrapper);
 			sheets = new ArrayList<>();
 			sheets.add(reportTplSheet);
-			this.processSheetCells(sheets, reportTpl, list,isCreator,userInfoDto.getUserId(),settings);
+			this.processSheetCells(sheets, reportTpl, list,isCreator,userInfoDto.getUserId(),settings,reportTplDto.isAllowUpdate());
 		}
 		settings.setCreator(isCreator);
 		settings.setSettings(list);
@@ -2339,7 +2345,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 	}
 
 	private void processSheetCells(List<ReportTplSheet> sheets,ReportTpl reportTpl,List<ResLuckySheetTplSettingsDto> list,
-			boolean isCreator,Long userId,ResSheetsSettingsDto settings) throws Exception {
+			boolean isCreator,Long userId,ResSheetsSettingsDto settings,boolean allowUpdate) throws Exception {
 		ObjectMapper objectMapper = new ObjectMapper();
 		List<String> databaseSheets = new ArrayList<>();//数据库中已经保存的sheet
 		for (int t = 0; t < sheets.size(); t++) {
@@ -2349,7 +2355,10 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			}
 			String key = RedisPrefixEnum.REPORTTPLSHEETTEMPCACHE.getCode()+"designMode-" +reportTpl.getId()+"-"+ sheets.get(t).getSheetIndex();
 			databaseSheets.add(key);
-			Object redisCache = redisUtil.get(key);
+			Object redisCache = null;
+			if(allowUpdate) {
+				redisCache = redisUtil.get(key);
+			}
 			ResLuckySheetTplSettingsDto result = new ResLuckySheetTplSettingsDto();
 			if(redisCache == null)
 			{
@@ -2710,7 +2719,9 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				settingQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
 				ReportSheetPdfPrintSetting setting = this.iReportSheetPdfPrintSettingService.getOne(settingQueryWrapper);
 				result.setReportSheetPdfPrintSetting(setting);
-				redisUtil.set(key, JSON.toJSONString(result),Constants.REPORT_TPL_CACHE_TIME);
+				if(allowUpdate) {
+					redisUtil.set(key, JSON.toJSONString(result),Constants.REPORT_TPL_CACHE_TIME);
+				}
 			}else {
 				result = JSON.parseObject(redisCache.toString(), ResLuckySheetTplSettingsDto.class);
 			}
@@ -2799,7 +2810,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			}
 		}
 		List<String> keys = redisUtil.getKeys(RedisPrefixEnum.REPORTTPLSHEETTEMPCACHE.getCode()+"designMode-" +reportTpl.getId());
-		if(!ListUtil.isEmpty(keys))
+		if(!ListUtil.isEmpty(keys) && allowUpdate)
 		{
 			for (int i = 0; i < keys.size(); i++) {
 				if(!databaseSheets.contains(keys.get(i)))
@@ -5507,6 +5518,8 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		if(!borderInfo.containsKey(luckySheetBindData.getCoordsx()+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+luckySheetBindData.getCoordsy()))
 		{
 			border = this.getBorderType(borderConfig, luckySheetBindData.getCoordsx(), luckySheetBindData.getCoordsy());//获取该单元格的边框信息
+		}else {
+			border = (List<Map<String, Object>>) borderInfo.get(luckySheetBindData.getCoordsx()+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+luckySheetBindData.getCoordsy());
 		}
 		if(luckySheetBindData.getIsRelyCell().intValue() != 1 && "删除".equals(luckySheetBindData.getCellValue())) {
 			return;
@@ -6092,6 +6105,8 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		if(!borderInfo.containsKey(luckySheetBindData.getOriginalCoordsx()+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+luckySheetBindData.getOriginalCoordsy()))
 		{
 			border = this.getBorderType(borderConfig, luckySheetBindData.getOriginalCoordsx(), luckySheetBindData.getOriginalCoordsy());//获取该单元格的边框信息
+		}else {
+			border = (List<Map<String, Object>>) borderInfo.get(luckySheetBindData.getOriginalCoordsx()+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+luckySheetBindData.getOriginalCoordsy());
 		}
 //		List<Map<String, Object>> border = this.getBorderType(borderConfig, luckySheetBindData.getCoordsx(), luckySheetBindData.getCoordsy());//获取该单元格的边框信息
 		//计算结果
@@ -6461,6 +6476,8 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		if(!borderInfo.containsKey(luckySheetBindData.getOriginalCoordsx()+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+luckySheetBindData.getOriginalCoordsy()))
 		{
 			border = this.getBorderType(borderConfig, luckySheetBindData.getOriginalCoordsx(), luckySheetBindData.getOriginalCoordsy());//获取该单元格的边框信息
+		}else {
+			border = (List<Map<String, Object>>) borderInfo.get(luckySheetBindData.getOriginalCoordsx()+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+luckySheetBindData.getOriginalCoordsy());
 		}
 		Integer maxX = maxXAndY.get("maxX");
 		Integer maxY = maxXAndY.get("maxY");
@@ -6736,6 +6753,8 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		if(!borderInfo.containsKey(luckySheetBindData.getOriginalCoordsx()+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+luckySheetBindData.getOriginalCoordsy()))
 		{
 			border = this.getBorderType(borderConfig, luckySheetBindData.getOriginalCoordsx(), luckySheetBindData.getOriginalCoordsy());//获取该单元格的边框信息
+		}else {
+			border = (List<Map<String, Object>>) borderInfo.get(luckySheetBindData.getOriginalCoordsx()+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+luckySheetBindData.getOriginalCoordsy());
 		}
 		Integer maxX = maxXAndY.get("maxX");
 		Integer maxY = maxXAndY.get("maxY");
@@ -7210,6 +7229,8 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		if(!borderInfo.containsKey(luckySheetBindData.getOriginalCoordsx()+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+luckySheetBindData.getOriginalCoordsy()))
 		{
 			border = this.getBorderType(borderConfig, luckySheetBindData.getOriginalCoordsx(), luckySheetBindData.getOriginalCoordsy());//获取该单元格的边框信息
+		}else {
+			border = (List<Map<String, Object>>) borderInfo.get(luckySheetBindData.getOriginalCoordsx()+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+luckySheetBindData.getOriginalCoordsy());
 		}
 		Integer maxX = maxXAndY.get("maxX");
 		Integer maxY = maxXAndY.get("maxY");
@@ -7987,6 +8008,8 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		if(!borderInfo.containsKey(luckySheetBindData.getOriginalCoordsx()+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+luckySheetBindData.getOriginalCoordsy()))
 		{
 			border = this.getBorderType(borderConfig, luckySheetBindData.getOriginalCoordsx(), luckySheetBindData.getOriginalCoordsy());//获取该单元格的边框信息
+		}else {
+			border = (List<Map<String, Object>>) borderInfo.get(luckySheetBindData.getOriginalCoordsx()+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+luckySheetBindData.getOriginalCoordsy());
 		}
 		Map<String, Integer> rowAndCol = null;
 		Integer maxX = maxXAndY.get("maxX");
@@ -8497,6 +8520,8 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		if(!borderInfo.containsKey(luckySheetBindData.getOriginalCoordsx()+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+luckySheetBindData.getOriginalCoordsy()))
 		{
 			border = this.getBorderType(borderConfig, luckySheetBindData.getOriginalCoordsx(), luckySheetBindData.getOriginalCoordsy());//获取该单元格的边框信息
+		}else {
+			border = (List<Map<String, Object>>) borderInfo.get(luckySheetBindData.getOriginalCoordsx()+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+luckySheetBindData.getOriginalCoordsy());
 		}
 //		List<Map<String, Object>> border = this.getBorderType(borderConfig, luckySheetBindData.getCoordsx(), luckySheetBindData.getCoordsy());//获取该单元格的边框信息
 		Map<String, Integer> rowAndCol = null;
@@ -9695,6 +9720,8 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		if(!borderInfo.containsKey(luckySheetBindData.getOriginalCoordsx()+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+luckySheetBindData.getOriginalCoordsy()))
 		{
 			border = this.getBorderType(borderConfig, luckySheetBindData.getOriginalCoordsx(), luckySheetBindData.getOriginalCoordsy());//获取该单元格的边框信息
+		}else {
+			border = (List<Map<String, Object>>) borderInfo.get(luckySheetBindData.getOriginalCoordsx()+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+luckySheetBindData.getOriginalCoordsy());
 		}
 		Map<String, Integer> rowAndCol = null;
 		Integer maxX = maxXAndY.get("maxX");
@@ -10435,6 +10462,8 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         		if(!borderInfo.containsKey(luckySheetBindData.getOriginalCoordsx()+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+luckySheetBindData.getOriginalCoordsy()+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+y))
         		{
         			border = this.getBorderType(borderConfig, luckySheetBindData.getOriginalCoordsx(), luckySheetBindData.getOriginalCoordsy());//获取该单元格的边框信息
+        		}else {
+        			border = (List<Map<String, Object>>) borderInfo.get(luckySheetBindData.getOriginalCoordsx()+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+luckySheetBindData.getOriginalCoordsy());
         		}
                 //该组数据向右扩展
                 Map<String, Object> cellData = null;
@@ -11337,6 +11366,8 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		if(!borderInfo.containsKey(luckySheetBindData.getOriginalCoordsx()+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+luckySheetBindData.getOriginalCoordsy()+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+n))
 		{
 			border = this.getBorderType(borderConfig, luckySheetBindData.getOriginalCoordsx(), luckySheetBindData.getOriginalCoordsy());//获取该单元格的边框信息
+		}else {
+			border = (List<Map<String, Object>>) borderInfo.get(luckySheetBindData.getOriginalCoordsx()+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+luckySheetBindData.getOriginalCoordsy());
 		}
 		Integer maxX = maxXAndY.get("maxX");
 		Integer maxY = maxXAndY.get("maxY");
@@ -13962,32 +13993,53 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		String shareCode = IdWorker.getIdStr();
 		String shareUrl = "";
 		String shareType = "电脑浏览器";
-		if(ShareTypeEnum.PC.getCode().intValue() == shareDto.getShareType().intValue())
-		{//pc
-			shareUrl = shareDto.getTplType().intValue() == 1?MessageUtil.getValue("showreport.share.url.pc"):MessageUtil.getValue("formsreport.share.url.pc");
-		}else if(ShareTypeEnum.H5.getCode().intValue() == shareDto.getShareType().intValue()){
-			//h5
-			shareUrl = shareDto.getTplType().intValue() == 1?MessageUtil.getValue("showreport.share.url.h5"):MessageUtil.getValue("formsreport.share.url.h5");
-			shareType = "手机浏览器";
-		}else {
-			throw new BizException(StatusCode.FAILURE, "分享类型传入错误");
-		}
-		if(StringUtil.isNotEmpty(shareDto.getThirdPartyType())) {
-			userInfoDto.setUserName(shareDto.getThirdPartyType());
-			shareUrl = shareUrl + "?tplId="+shareDto.getTplId()+"&shareCode="+shareCode+"&shareUser="+shareDto.getThirdPartyType();
-		}else {
-			shareUrl = shareUrl + "?tplId="+shareDto.getTplId()+"&shareCode="+shareCode+"&shareUser="+userInfoDto.getUserId();
-		}
-		if(shareDto.getTplType().intValue() == 1)
-		{
-			String shareMsg = MessageUtil.getValue("info.share.showreport", new String[] {shareUrl,userInfoDto.getUserName(),DateUtil.getNow(),String.valueOf(shareDto.getShareTime()),shareType});
+		if(YesNoEnum.YES.getCode().intValue() == shareDto.getIsShareForever().intValue()) {
+			SysUser sysUser = iSysUserService.getById(userInfoDto.getUserId());
+			if(sysUser == null) {
+				throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.notexist",new String[] {"用户信息"}));
+			}
+			String token = JWTUtil.sign(userInfoDto, sysUser.getPassword(),3153600000L);
+			if(ShareTypeEnum.PC.getCode().intValue() == shareDto.getShareType().intValue())
+			{//pc
+				shareUrl = MessageUtil.getValue("showreport.share.url.pc");
+			}else if(ShareTypeEnum.H5.getCode().intValue() == shareDto.getShareType().intValue()){
+				//h5
+				shareUrl = MessageUtil.getValue("showreport.share.url.h5");
+				shareType = "手机浏览器";
+			}else {
+				throw new BizException(StatusCode.FAILURE, "分享类型传入错误");
+			}
+			shareUrl = shareUrl + "?tplId="+shareDto.getTplId()+"&token="+token;
+			String shareMsg = MessageUtil.getValue("info.share.screen", new String[] {shareUrl,userInfoDto.getUserName(),DateUtil.getNow(),YesNoEnum.YES.getCode().intValue() == shareDto.getIsShareForever().intValue()?"永久有效":String.valueOf(shareDto.getShareTime())+"分钟"});
 			result.setShareMsg(shareMsg);
 		}else {
-			String shareMsg = MessageUtil.getValue("info.share.submitreport", new String[] {shareUrl,userInfoDto.getUserName(),DateUtil.getNow(),String.valueOf(shareDto.getShareTime()),shareType,shareDto.getAllowReport().intValue() == 1?"是":"否"});
-			result.setShareMsg(shareMsg);
+			if(ShareTypeEnum.PC.getCode().intValue() == shareDto.getShareType().intValue())
+			{//pc
+				shareUrl = MessageUtil.getValue("showreport.share.url.pc");
+			}else if(ShareTypeEnum.H5.getCode().intValue() == shareDto.getShareType().intValue()){
+				//h5
+				shareUrl = MessageUtil.getValue("showreport.share.url.h5");
+				shareType = "手机浏览器";
+			}else {
+				throw new BizException(StatusCode.FAILURE, "分享类型传入错误");
+			}
+			if(StringUtil.isNotEmpty(shareDto.getThirdPartyType())) {
+				userInfoDto.setUserName(shareDto.getThirdPartyType());
+				shareUrl = shareUrl + "?tplId="+shareDto.getTplId()+"&shareCode="+shareCode+"&shareUser="+shareDto.getThirdPartyType();
+			}else {
+				shareUrl = shareUrl + "?tplId="+shareDto.getTplId()+"&shareCode="+shareCode+"&shareUser="+userInfoDto.getUserId();
+			}
+			if(shareDto.getTplType().intValue() == 1)
+			{
+				String shareMsg = MessageUtil.getValue("info.share.showreport", new String[] {shareUrl,userInfoDto.getUserName(),DateUtil.getNow(),String.valueOf(shareDto.getShareTime()),shareType});
+				result.setShareMsg(shareMsg);
+			}else {
+				String shareMsg = MessageUtil.getValue("info.share.submitreport", new String[] {shareUrl,userInfoDto.getUserName(),DateUtil.getNow(),String.valueOf(shareDto.getShareTime()),shareType,shareDto.getAllowReport().intValue() == 1?"是":"否"});
+				result.setShareMsg(shareMsg);
+			}
+			redisUtil.set(RedisPrefixEnum.SHAREREPORT.getCode()+shareCode, shareDto.getAllowReport(), shareDto.getShareTime()*60);
 		}
 		
-		redisUtil.set(RedisPrefixEnum.SHAREREPORT.getCode()+shareCode, shareDto.getAllowReport(), shareDto.getShareTime()*60);
 		return result;
 	}
 

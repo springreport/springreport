@@ -34,4 +34,11 @@ public class MesLuckysheetsTplDto {
 	 * @date 2022-10-21 08:41:52 
 	 */  
 	private List<String> delSheetsIndex;
+	
+	/**  
+	 * @Fields allowUpdate : 是否允许协同编辑，不允许则不将模板数据放到redis中，每次都从数据库获取
+	 * @author caiyang
+	 * @date 2025-07-19 08:56:56 
+	 */  
+	private boolean allowUpdate;
 }

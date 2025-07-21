@@ -189,7 +189,7 @@ public class MyRealm extends AuthorizingRealm {
 			// 判断过期时间是否超过两个小时，超过两个小时，则token失效，两个小时之内允许访问并刷新token
 			long now = DateUtil.getTimestampLong();// 获取当前时间
 			long expireDate = userInfoDto.getExpireDate().getTime();// 获取过期时间
-			if ((now - expireDate) < JWTUtil.REFRESH_TIME) {
+			if ((now - expireDate) < JWTUtil.REFRESH_TIME && YesNoEnum.NO.getCode().intValue() == userInfoDto.getIsShareToken().intValue()) {
 				String newToken = JWTUtil.sign(userInfoDto, sysUser.getPassword());
 				httpServletResponse.setHeader("Authorization", newToken);// 刷新token
 				return new SimpleAuthenticationInfo(token, token, "my_realm");

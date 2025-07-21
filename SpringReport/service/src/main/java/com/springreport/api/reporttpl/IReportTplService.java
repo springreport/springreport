@@ -132,7 +132,7 @@ public interface IReportTplService extends IService<ReportTpl> {
 	 * @throws IOException 
 	 * @date 2022-02-01 04:38:13 
 	 */ 
-	ResSheetsSettingsDto getLuckySheetTplSettings(ReportTpl reportTpl,UserInfoDto userInfoDto) throws Exception;
+	ResSheetsSettingsDto getLuckySheetTplSettings(ReportTplDto reportTpl,UserInfoDto userInfoDto) throws Exception;
 	
 	/**  
 	 * @Title: previewLuckysheetReportData

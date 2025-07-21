@@ -321,4 +321,5 @@ public class Constants {
      * @date 2024-08-21 03:09:18 
      */  
     public static final String ICON_SET_RULE = "{\"cellrange\":[{\"column\":[1,1],\"row\":[2,2]}],\"format\":{\"len\":\"3\",\"top\":\"0\",\"leftMin\":\"0\"},\"type\":\"icons\"}";
+
 }

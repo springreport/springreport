@@ -26,7 +26,7 @@ public class ShareDto {
 	 * @author caiyang
 	 * @date 2023-06-25 01:57:29 
 	 */  
-	private Integer shareTime;
+	private Long shareTime;
 	
 	/**  
 	 * @Fields shareType : 分享类型 1 pc 2 h5
@@ -62,4 +62,11 @@ public class ShareDto {
 	 * @date 2025-01-09 09:22:32 
 	 */  
 	private String thirdPartyType;
+	
+	/**  
+	 * @Fields isShareForever : 分享是否永久有效
+	 * @author caiyang
+	 * @date 2025-07-19 06:59:08 
+	 */  
+	private Integer isShareForever = YesNoEnum.NO.getCode();
 }

@@ -102,4 +102,11 @@ public class UserInfoDto implements Serializable{
 	 */  
 	private Long deptId;
 	
+	/**  
+	 * @Fields isShareToken : 是否是分享链接的token
+	 * @author caiyang
+	 * @date 2025-07-20 07:49:33 
+	 */  
+	private Integer isShareToken = YesNoEnum.NO.getCode();
+	
 }
