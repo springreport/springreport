@@ -184,6 +184,7 @@ api.screenTpl = {
   getScreensApi: '/api/screenTpl/getScreens', //获取所有大屏api
   doCopyScreenApi: '/api/screenTpl/copyScreen', //复制大屏
   getChildrenApi: '/api/screenTpl/getChildren',
+  getShareUrlApi: '/api/screenTpl/getShareUrl',
 };
 
 //大屏组件对应的api

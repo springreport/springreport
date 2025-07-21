@@ -89,6 +89,7 @@
                           'sub-type-item-active': subComponentIndex === subIndex,
                         }"
                         @click="clickSubComponent(subIndex)"
+                        :title="subItem.text"
                       >
                         {{ subItem.text }}
                       </div>
