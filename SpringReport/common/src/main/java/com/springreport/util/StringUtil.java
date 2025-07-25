@@ -526,17 +526,40 @@ public class StringUtil {
         String replaced = str.replaceAll(character, "");
         return replaced.isEmpty(); // 如果替换后为空，则说明字符相同
     }
+    
+    /**  
+     * @MethodName: countChineseCharaceters
+     * @Description: 统计字符串中中文字符的数量
+     * @author caiyang
+     * @param Str
+     * @return boolean
+     * @date 2025-07-24 09:28:26 
+     */ 
+    public static int countChineseCharaceters(String str) {
+    	int count = 0;
+    	if(StringUtil.isNullOrEmpty(str)) {
+    		return 0;
+    	}
+    	char[] c = str.toCharArray();
+        for(int i = 0; i < c.length; i ++)
+        {
+            String len = Integer.toBinaryString(c[i]);
+            if(len.length() > 8)
+                count ++;
+        }
+        return count;
+    }
 
 	public static void main(String[] args) throws Exception {
-		 double number = 1;
-		 
-	        // 创建DecimalFormat对象，指定百分比格式
-	        DecimalFormat decimalFormat = new DecimalFormat("0.00%");
-	 
-	        // 格式化数字并输出结果
-	        String formattedNumber = decimalFormat.format(number);
-	        String value = "\n\n\ncdfadfad\n\n\n\n ";
-	        String [] split = value.split("\n");
-	        System.out.println(value.split("\n").length);
+//		 double number = 1;
+//		 
+//	        // 创建DecimalFormat对象，指定百分比格式
+//	        DecimalFormat decimalFormat = new DecimalFormat("0.00%");
+//	 
+//	        // 格式化数字并输出结果
+//	        String formattedNumber = decimalFormat.format(number);
+//	        String value = "\n\n\ncdfadfad\n\n\n\n ";
+//	        String [] split = value.split("\n");
+	        System.out.println(countChineseCharaceters("测试：12+3测试abc"));
 	}
 }
