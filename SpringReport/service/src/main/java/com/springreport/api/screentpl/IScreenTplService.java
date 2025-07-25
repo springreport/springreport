@@ -6,6 +6,8 @@ import com.springreport.entity.screentpl.ScreenTpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.springreport.base.BaseEntity;
 import com.springreport.base.PageEntity;
+import com.springreport.base.UserInfoDto;
+import com.springreport.dto.reporttpl.ShareDto;
 import com.springreport.dto.screentpl.MesScreenTplDto;
 import com.springreport.dto.screentpl.SaveScreenTplDto;
 import com.springreport.dto.screentpl.ScreenTplDto;
@@ -112,5 +114,16 @@ public interface IScreenTplService extends IService<ScreenTpl> {
 	 * @date 2025-04-04 12:51:12 
 	 */ 
 	BaseEntity copyScreen(ScreenTpl screenTpl);
+	
+	/**  
+	 * @MethodName: getShareUrl
+	 * @Description: 获取大屏分享链接
+	 * @author caiyang
+	 * @param shareDto
+	 * @param userInfoDto
+	 * @return BaseEntity
+	 * @date 2025-07-19 07:11:28 
+	 */ 
+	ShareDto getShareUrl(ShareDto shareDto,UserInfoDto userInfoDto);
 	
 }

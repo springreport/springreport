@@ -1,7 +1,9 @@
 package com.springreport.security.filter;
 
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletRequest;
@@ -17,11 +19,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.springreport.base.UserInfoDto;
+import com.springreport.constants.Constants;
 import com.springreport.constants.StatusCode;
 import com.springreport.enums.MsgLevelEnum;
 import com.springreport.enums.RedisPrefixEnum;
+import com.springreport.enums.YesNoEnum;
 import com.springreport.security.config.JWTToken;
 import com.springreport.util.HttpClientUtil;
+import com.springreport.util.JWTUtil;
 import com.springreport.util.MessageUtil;
 import com.springreport.util.RedisUtil;
 import com.springreport.util.StringUtil;
@@ -98,6 +104,21 @@ public class JWTFilter extends BasicHttpAuthenticationFilter{
     	}
     }
 
+    private static List<String> shareUrls = new ArrayList<>();
+    
+    static{
+    	shareUrls.add("/springReport/api/reportTplDataset/getReportDatasetsParam");
+    	shareUrls.add("/springReport/api/reportTpl/previewLuckysheetReportData");
+    	shareUrls.add("/springReport/api/luckysheetReportFormsHis/getTableList");
+    	shareUrls.add("/springReport/api/reportTpl/reportData");
+    	shareUrls.add("/springReport/api/common/upload");
+    	shareUrls.add("/springReport/api/reportTpl/uploadReportTpl");
+    	shareUrls.add("/springReport/api/reportTpl/getMobileReport");
+    	shareUrls.add("/springReport/api/login/getUserInfoByToken");
+    	shareUrls.add("/springReport/api/screenTpl/getScreenDesign");
+    	shareUrls.add("/springReport/api/screenDesign/getDynamicDatas");
+    }
+    
     /**
      *
      */
@@ -111,6 +132,15 @@ public class JWTFilter extends BasicHttpAuthenticationFilter{
         }
         String headerThirdPartyType = httpServletRequest.getHeader("thirdPartyType");
         log.info("判断用户是否想要登录x：{}，请求接口：{}",authorization,httpServletRequest.getServletPath());
+        if(StringUtil.isNullOrEmpty(headerThirdPartyType) || "null".equals(headerThirdPartyType)) {
+        	UserInfoDto userInfoDto = JWTUtil.getUserInfo(authorization);
+        	if(YesNoEnum.YES.getCode().intValue() == userInfoDto.getIsShareToken().intValue()) {
+        		String path = httpServletRequest.getServletPath();
+        		if(!shareUrls.contains(path)) {
+        			return false;
+        		}
+        	}
+        }
         JWTToken token = new JWTToken(authorization,headerThirdPartyType);
         // 提交给realm进行登入，如果错误他会抛出异常并被捕获
         try {

@@ -14,7 +14,7 @@ https://www.springreport.vip/
 986539100
 #### 项目文档
 
-https://gitee.com/springreport/springreport/wikis/pages
+https://www.springreport.vip/2.%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D.html
 
 ## 开源不易，如果项目对你有帮助请给个star支持一下！十分感谢！
 

@@ -19,6 +19,7 @@ import com.springreport.base.PageEntity;
 import com.springreport.base.Response;
 import com.springreport.base.UserInfoDto;
 import com.springreport.constants.Constants;
+import com.springreport.dto.reporttpl.ShareDto;
 import com.springreport.dto.screentpl.MesScreenTplDto;
 import com.springreport.dto.screentpl.SaveScreenTplDto;
 import com.springreport.dto.screentpl.ScreenTplDto;
@@ -212,5 +213,13 @@ public class ScreenTplController extends BaseController {
 	{
 		BaseEntity result = iScreenTplService.copyScreen(screenTpl);
 		return Response.success(result.getStatusMsg());
+	}
+	
+	@RequestMapping(value = "/getShareUrl",method = RequestMethod.POST)
+	@MethodLog(module="ScreenTpl",remark="获取分享链接",operateType=Constants.OPERATE_TYPE_SEARCH)
+	public Response getShareUrl(@RequestBody ShareDto shareDto,@LoginUser UserInfoDto userInfoDto)
+	{
+		ShareDto result = this.iScreenTplService.getShareUrl(shareDto, userInfoDto);
+		return Response.success(result);
 	}
 }

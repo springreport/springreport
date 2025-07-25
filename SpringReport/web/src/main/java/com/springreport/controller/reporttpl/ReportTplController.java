@@ -276,7 +276,7 @@ public class ReportTplController extends BaseController {
 	@MethodLog(module="ReportTpl",remark="获取模板设置",operateType=Constants.OPERATE_TYPE_SEARCH)
 	@Check({"id:required#主键ID"})
 	@RequiresPermissions(value = {"reportTpl_reportDesign","excelTemplate_design","template_market"},logical = Logical.OR)
-	public Response getLuckySheetTplSettings(@RequestBody ReportTpl reportTpl,@LoginUser UserInfoDto userInfoDto) throws Exception {
+	public Response getLuckySheetTplSettings(@RequestBody ReportTplDto reportTpl,@LoginUser UserInfoDto userInfoDto) throws Exception {
 		ResSheetsSettingsDto result = this.iReportTplService.getLuckySheetTplSettings(reportTpl,userInfoDto);
 		return Response.success(result);
 	}
@@ -806,7 +806,7 @@ public class ReportTplController extends BaseController {
 	 * @date 2023-06-25 01:55:01 
 	 */  
 	@RequestMapping("/getShareUrl")
-	@Check({"tplId:required#模板","shareTime:required#有效时长","shareType:required#分享类型"})
+	@Check({"tplId:required#模板","shareType:required#分享类型"})
 	public Response getShareUrl(@RequestBody ShareDto shareDto, @LoginUser UserInfoDto userInfoDto) {
 		ShareDto result = this.iReportTplService.getShareUrl(shareDto, userInfoDto);
 		return Response.success(result);

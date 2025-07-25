@@ -261,7 +261,7 @@ public class ReportExcelUtil {
                 }
                 JSONArray barCodeCells = new JSONArray();//条形码单元格
                 JSONArray qrCodeCells = new JSONArray();//二维码单元格
-                Map<String, Integer> wrapText = new HashMap<>();
+                Map<String, Object> wrapText = new HashMap<>();
                 cellUtil.setCellValues(cellDatas,hyperlinks,borderInfos,unProtectCells,mesExportExcel.getSheetConfigs().get(i).getMerge(),mesExportExcel.getSheetConfigs().get(i).getIsCoedit(), dataVerification,xxbtCells,false,barCodeCells,qrCodeCells,wrapText,noViewAuthCells);
                 cellUtil.setRowHeight(maxXAndY.get("maxX"), rowlen, rowhidden, wrapText);
                 JSONObject rowlenObj = JSONObject.parseObject(JSONObject.toJSONString(rowlen));
@@ -1365,7 +1365,7 @@ public class ReportExcelUtil {
                 }
                 JSONArray barCodeCells = new JSONArray();//条形码单元格
                 JSONArray qrCodeCells = new JSONArray();//二维码单元格
-                Map<String, Integer> wrapText = new HashMap<>();
+                Map<String, Object> wrapText = new HashMap<>();
                 mesExportExcel.getSheetConfigs().get(i).setWrapText(wrapText);
                 cellUtil.setCellValues(cellDatas,hyperlinks,borderInfos,null,mesExportExcel.getSheetConfigs().get(i).getMerge(),mesExportExcel.getSheetConfigs().get(i).getIsCoedit(), dataVerification,xxbtCells,true,barCodeCells,qrCodeCells,wrapText,noViewAuthCells);
                 cellUtil.setRowHeight(maxXAndY.get("maxX"), rowlen, rowhidden, wrapText);
@@ -1446,10 +1446,15 @@ public class ReportExcelUtil {
         		XSSFDrawing patriarch = sheet.createDrawingPatriarch();
         		 //图片信息
                 JSONObject iamgeData = (JSONObject) entry.getValue();
+                Integer zIndex = iamgeData.getInteger("zIndex");
+                if(zIndex == null) {
+                	zIndex = 0;
+                }
                  //图片的位置宽 高 距离左 距离右
                 JSONObject imageDefault = ((JSONObject) iamgeData.get("default"));
                 Map<String, Object> colrowMap = getColRowMap(imageDefault,columnlenObject, rowlenObject,rowhidden,colhidden);
-                
+                colrowMap.put("width", imageDefault.getFloat("width"));
+                colrowMap.put("height", imageDefault.getFloat("height"));
                 XSSFClientAnchor anchor = new XSSFClientAnchor((int)colrowMap.get("dx1"), (int)colrowMap.get("dy1"), (int)colrowMap.get("dx2"), (int)colrowMap.get("dy2"), (int)colrowMap.get("col1"), (int)colrowMap.get("row1"), (int)colrowMap.get("col2"), (int)colrowMap.get("row2"));
                 anchor.setAnchorType(AnchorType.MOVE_AND_RESIZE);
                 byte[] decoderBytes = new byte[0];
@@ -1465,6 +1470,7 @@ public class ReportExcelUtil {
                 	}
                  	if(imageInfos != null) {
                 		colrowMap.put("pictureBytes", decoderBytes);
+                		colrowMap.put("zIndex", zIndex);
                     	imageInfos.put(entry.getKey(), colrowMap);	
                     }
 				}

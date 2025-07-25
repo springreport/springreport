@@ -78,7 +78,7 @@
               >
                 <div class="sub-comp">
                   <div class="df-c-b sub-comp-header">
-                    <div class="sub-comp-title">{{ item.text }}</div>
+                    <div class="sub-comp-title" >{{ item.text }}</div>
                     <el-button
                       type="primary"
                       size="small"
@@ -102,6 +102,7 @@
                             subComponentIndex === subIndex,
                         }"
                         @click="clickSubComponent(subIndex)"
+                        :title="subItem.text"
                       >
                         {{ subItem.text }}
                       </div>

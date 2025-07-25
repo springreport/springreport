@@ -60,7 +60,7 @@
                         :size="btn.size"
                         :icon="btn.icon"
                         :class="{ 'el-dropdown-item-del': btn.type === 'danger' }"
-                        @click.native="btn.handle && btn.handle(item, index)"
+                        @click="btn.handle && btn.handle(item, index)"
                         >{{
                           (typeof btn.label).toLowerCase() == 'string' ? btn.label : btn.label(item)
                         }}</el-dropdown-item
@@ -122,6 +122,15 @@
         :modalHandles="pageData.folderModalHandles"
         @closeModal="closeFolderModal()"
       ></modal>
+      <modal
+        ref="shareReport"
+        :modal-config="pageData.shareReportConfig"
+        :modal-form="pageData.shareReportForm"
+        :modal-data="pageData.shareReportModalData"
+        :modal-handles="pageData.shareReportModalHandles"
+        @closeModal="closeShareReportModal()"
+      />
+      <textarea id="clipboradInput" style="opacity:0;position:absolute" />
     </div>
   </div>
 </template>

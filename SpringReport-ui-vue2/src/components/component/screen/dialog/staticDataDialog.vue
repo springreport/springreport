@@ -70,7 +70,7 @@ export default {
               if (this.component.type == 'sankey') {
                 this.component.spec.data.values = [{ nodes: [], links: [] }]
                 this.commonUtil.processSankeyData(this.component, values)
-              }else if (this.component.type.toLowerCase().indexOf('combocharthl') >= 0){
+              }else if (this.component.type.toLowerCase().indexOf('combocharthl') >= 0 || this.component.type.toLowerCase().indexOf('combochartdbbar') >= 0){
                 if(this.comboChartType == "1"){
                   this.component.spec.data[0].values = values;
                 }else{
@@ -126,7 +126,7 @@ export default {
       if (this.component.type.toLowerCase().indexOf('sankey') >= 0) {
         //桑葚图
         dataContent = JSON.stringify(this.component.spec.data.values[0].links)
-      } else if (this.component.type.toLowerCase().indexOf('combocharthl') >= 0) {
+      } else if (this.component.type.toLowerCase().indexOf('combocharthl') >= 0 || this.component.type.toLowerCase().indexOf('combochartdbbar') >= 0) {
         //折柱图
         if(this.comboChartType == '1'){
           dataContent = JSON.stringify(this.component.spec.data[0].values);

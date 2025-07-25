@@ -380,6 +380,7 @@ export default {
       chartxAxisData: [],
       chartOffsetings: {},
       sheetOptions: {
+        allowUpdate:true,
         container: 'luckysheet', // luckysheet为容器id
         title: '', // 表 头名
         lang: 'zh', // 中文
@@ -815,9 +816,10 @@ export default {
         this.sheetOptions.showtoolbarConfig.datasource = true;
       }
       if(this.isThirdParty != 1){
-        options.allowUpdate = true
         options.gridKey = 'designMode-' + reportTplId
         options.updateUrl = location.protocol === 'https:' ? 'wss' + '://' + location.host + '/SpringReport/api/coedit/websocket/luckysheet' : 'ws' + '://' + location.host + '/SpringReport/api/coedit/websocket/luckysheet'
+      }else{
+        options.allowUpdate = false
       }
       
       options.uploadImage = this.commonUtil.uploadImage
@@ -2168,6 +2170,7 @@ export default {
         params.isParamMerge = this.isParamMerge ? '1' : '2'
         params.configs = sheetConfigs
         params.delSheetsIndex = this.delSheetsIndex
+        params.allowUpdate=this.sheetOptions.allowUpdate
         const param = {
           url: this.apis.reportDesign.saveLuckySheetTplApi,
           params: params,
@@ -2616,7 +2619,7 @@ export default {
       const reportTplId = this.$route.query.tplId
       const param = {
         url: this.apis.reportDesign.getLuckySheetTplSettingsApi,
-        params: { id: reportTplId }
+        params: { id: reportTplId,allowUpdate:this.sheetOptions.allowUpdate}
       }
       var _this = this
       this.loading = true
@@ -3890,12 +3893,14 @@ export default {
       }
     },
     saveTplCache() {
-      const configs = this.getSheetDatas()
-      if (configs) {
-        const reportTplId = this.$route.query.tplId
-        var gridKey = 'designMode-' + reportTplId
-        const sheetIndex = luckysheet.getSheet().index
-        luckysheet.sendServerSocketMsg('reportTplTempCache', gridKey + '-' + sheetIndex, configs, { 'k': 'viewReportCache' })
+      if(this.sheetOptions.allowUpdate){
+        const configs = this.getSheetDatas()
+        if (configs) {
+          const reportTplId = this.$route.query.tplId
+          var gridKey = 'designMode-' + reportTplId
+          const sheetIndex = luckysheet.getSheet().index
+          luckysheet.sendServerSocketMsg('reportTplTempCache', gridKey + '-' + sheetIndex, configs, { 'k': 'viewReportCache' })
+        }
       }
     },
     saveNewSheetCache(sheet) {

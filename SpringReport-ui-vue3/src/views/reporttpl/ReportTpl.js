@@ -489,11 +489,12 @@ export default {
           type: '1', //类型 1新增 2编辑 3保存
         },
         shareReportForm: [
+          { type: 'Select', label: '分享时长设置', prop: 'isShareForever', rules: { required: true }, options: this.selectUtil.shareTime,change: this.changeShareTimeType},
           {
             type: 'Input',
             label: '有效时长(分)',
             prop: 'shareTime',
-            rules: { required: true, type: 'integer', min: 1, max: 120 },
+            rules: { required: true, type: 'integer'},
           },
           {
             type: 'Select',
@@ -513,6 +514,7 @@ export default {
         shareReportModalData: {
           //modal页面数据
           tplId: null,
+          isShareForever:null,
           shareTime: '', //有效时长(分)
           shareType: '', //分享类型
           tplType: '1', //报表类型
@@ -975,11 +977,11 @@ export default {
       this.pageData.shareReportModalData.tplId = row.id;
       this.pageData.shareReportModalData.tplType = row.tplType;
       if (row.tplType == 1) {
-        this.pageData.shareReportForm[2].show = false;
-        this.pageData.shareReportForm[2].rules.required = false;
+        this.pageData.shareReportForm[3].show = false;
+        this.pageData.shareReportForm[3].rules.required = false;
       } else {
-        this.pageData.shareReportForm[2].show = true;
-        this.pageData.shareReportForm[2].rules.required = true;
+        this.pageData.shareReportForm[3].show = true;
+        this.pageData.shareReportForm[3].rules.required = true;
       }
     },
     closeShareReportModal() {
@@ -1105,6 +1107,23 @@ export default {
         this.pageData.modalForm[16].rules.required = true
         // this.pageData.modalForm[9].show = false;
         // this.pageData.modalForm[9].rules.required = false;
+      }
+    },
+    changeShareTimeType(){
+      if(this.pageData.shareReportModalData.isShareForever == 1){
+        this.pageData.shareReportForm[1].show = false
+        this.pageData.shareReportForm[1].rules.required = false
+        if(this.pageData.shareReportModalData.tplType == 2){
+          this.pageData.shareReportForm[3].show = false
+          this.pageData.shareReportForm[3].rules.required = false
+        }
+      }else{
+        this.pageData.shareReportForm[1].show = true
+        this.pageData.shareReportForm[1].rules.required = true
+        if(this.pageData.shareReportModalData.tplType == 2){
+          this.pageData.shareReportForm[3].show = true
+          this.pageData.shareReportForm[3].rules.required = true
+        }
       }
     }
   },

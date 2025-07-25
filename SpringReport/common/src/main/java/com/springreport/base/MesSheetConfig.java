@@ -170,7 +170,7 @@ public class MesSheetConfig {
      * @author caiyang
      * @date 2024-10-13 03:50:46 
      */  
-    private Map<String, Integer> wrapText;
+    private Map<String, Object> wrapText;
     
     /**  
      * @Fields sheetIndex : sheet唯一标识

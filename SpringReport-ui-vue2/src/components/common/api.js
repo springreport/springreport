@@ -183,7 +183,8 @@ api.screenTpl = {
   getMultiScreenAndTplidsApi: '/api/screenTpl/getMultiScreenAndTplids', // 获取多大屏基本信息和关联的大屏id
   getScreensApi: '/api/screenTpl/getScreens', // 获取所有大屏api
   doCopyScreenApi: '/api/screenTpl/copyScreen', // 复制大屏
-  getChildrenApi: '/api/screenTpl/getChildren'
+  getChildrenApi: '/api/screenTpl/getChildren',
+  getShareUrlApi: '/api/screenTpl/getShareUrl',
 }
 
 // 大屏组件对应的api

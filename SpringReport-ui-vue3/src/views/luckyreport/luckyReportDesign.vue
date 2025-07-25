@@ -1590,6 +1590,18 @@
                       锁定：<el-switch v-model="o.isLocked" @change="changePictureLockStatus(o,index)"/>
                     </p>
                     <p
+                      class="switch-tag"
+                      style="min-width: 220px; max-width: 220px"
+                    >
+                      打印层级：
+                      <el-input
+                        v-model="o.zIndex"
+                        placeholder="打印层级"
+                        size="small"
+                      />
+                    </p>
+                    <br>
+                    <p
                       v-if="o.aggregateType == 'group'"
                       class="column-tag"
                       :title="o.groupProperty"

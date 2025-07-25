@@ -1,0 +1,1 @@
+INSERT INTO`sys_api`(`id`, `menu_id`, `api_code`, `api_name`, `api_function`, `sort`, `creator`, `create_time`, `updater`, `update_time`, `del_flag`) VALUES (1947088777613398018, 1421971956013498370, 'screenTpl_share', '大屏分享', '大屏分享', 13, 1404697301888294915, '2025-07-21 08:18:34', NULL, '2025-07-21 08:18:34', 1);

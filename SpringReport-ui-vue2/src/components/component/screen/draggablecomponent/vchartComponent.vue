@@ -18,9 +18,9 @@
             width: '100%',
           }"
         ></div> -->
-        <component :is="component.borderType.replace('-reverse','')" v-if="component.isborder && component.borderType" :color="component.borderColor" :reverse="component.borderType.indexOf('-reverse')>-1">
+        <component :is="component.borderType.replace('-reverse','')" v-if="component.isborder && component.borderType" :color="component.borderColor" :backgroundColor="component.borderBackgroundColor" :reverse="component.borderType.indexOf('-reverse')>-1">
           <div
-            style="height:100%;width:100%;display: flex;justify-content: center;align-items: center;"
+             style="height:100%;width:100%;display: flex;justify-content: center;align-items: center;"
           >
           <div
             :id="component.id"
@@ -66,9 +66,8 @@ export default {
     methods:{
       //数据初始化
       initData() {
-        console.log(123)
         if (this.sendRequest) {
-          if(this.component.type == "comboCharthl"){
+          if(this.component.type == "comboCharthl" || this.component.type == "comboChartdbbar"){
               if(this.component.dataSource == "2"){
                 this.getComboCharthlData(this.component,"1");
                 if(this.component.refresh){

@@ -63,10 +63,10 @@
           <el-switch v-model="component.locked" active-text="是" inactive-text="否" />
         </el-form-item>
       </div>
-      <div class="right-dataset-title">
+      <div class="right-dataset-title"  v-if="component.type!='picture' && component.type!='border' && component.type!='decoration'">
         <span class="attr-dataset-title">边框设置</span>
       </div>
-      <div class="right-dataset-warp">
+      <div class="right-dataset-warp"  v-if="component.type!='picture' && component.type!='border' && component.type!='decoration'">
         <el-form-item label="显示边框" class="df-form-item">
           <el-switch
             v-model="component.isborder"
@@ -111,6 +111,9 @@
             "
           />
         </el-form-item>
+        <el-form-item  v-if="component.isborder" label="边框背景色">
+              <input-color-picker :value="component.borderBackgroundColor" @change="(val)=>{changeBorderBackgroundColor(val)}" />
+            </el-form-item>
       </div>
     </el-form>
   </div>
@@ -177,6 +180,9 @@
       changeColor(index, val) {
         this.component.borderColor[index] = val;
       },
+      changeBorderBackgroundColor( val) {
+        this.component.borderBackgroundColor = val;
+      }
     },
   };
 </script>

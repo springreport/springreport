@@ -198,7 +198,8 @@ screenConstants.type = {
   transformFunnel: 'transformFunnel', // 转化漏斗图
   zhifangtu: 'zhifangtu', // 直方图
   sankey: 'sankey',// 桑葚图
-  comboCharthl: 'comboCharthl'// 折柱图
+  comboCharthl: 'comboCharthl',// 折柱图
+  comboChartdbbar: 'comboChartdbbar',// 双向条形图
 }
 
 screenConstants.category = {
@@ -285,7 +286,9 @@ screenConstants.compType = {
   circlePacking: { text: '气泡图', icon: 'circlePacking' },
   transformFunnel: { text: '转化漏斗图', icon: 'funnel' },
   zhifangtu: { text: '直方图', icon: 'histogram' },
-  sankey: { text: '桑葚图', icon: 'sankey' }
+  sankey: { text: '桑葚图', icon: 'sankey' },
+  comboCharthl: { text: '折柱图', icon: 'comboChart' },
+  comboChartdbbar: { text: '双向条形图', icon: 'comboChartdbbar' }
 }
 
 screenConstants.textType = [
@@ -418,6 +421,7 @@ screenConstants.sankeyType = [
 
 screenConstants.comboChartType = [
   { 'name': 'comboCharthl', 'text': '折柱图', 'src': 'https://www.springreport.vip/images/chart/comboCharthl.png', category: screenConstants.category.vchart },
+  { 'name': 'comboChartdbbar', 'text': '双向条形图', 'src': 'https://www.springreport.vip/images/chart/comboChartdbbar.png', category: screenConstants.category.vchart },
 ]
 
 screenConstants.chartTitleSettings = {
@@ -4836,6 +4840,292 @@ screenConstants.comboCharthlInit = {
           }
         }
       }
+    }
+  }
+}
+
+// 大屏双向条形图初始化数据
+screenConstants.comboChartdbbarInit = {
+  type: screenConstants.type.comboChartdbbar,
+  category: screenConstants.category.vchart,
+  isDelete: false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 500, // 组件初始化宽度
+  h: 300, // 组件初始化高度
+  active: false,
+  zindex: 99,
+  locked: false,
+  refresh: false, // 是否定时刷新
+  refreshTime: 30000, // 定时刷新时间，单位(ms)
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  lineDataSource:'1',// 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: "", // 数据集
+    dataColumns: []// 数据列
+  }, // 右侧数据配置
+  lineDynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 左侧数据配置
+  params: [], // 图表参数
+  clickType: '1', // 点击类型
+  thirdUrl: '', // 第三方跳转链接
+  bindComponent: null, // 绑定组件
+  hiddenParamSize: 0, // 隐藏参数个数
+  theme: '', // 主题
+  amination: '', // 动画效果
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  spec: {
+    type: 'common',
+    color: [],
+     data: [{
+        id: 'mainSeriesData',
+        values: [
+          {
+            value: 80,
+            type: '销售额',
+            name: '河北',
+          },
+          {
+            value: 60,
+            type: '销售额',
+            name: '山西',
+          },
+          {
+            value: 65,
+            type: '销售额',
+            name: '内蒙古',
+          },
+          {
+            value: 75,
+            type: '销售额',
+            name: '辽宁',
+          },
+          {
+            value: 66,
+            type: '销售额',
+            name: '吉林',
+          }
+        ],
+      },
+      {
+        id: 'subSeriesData',
+        values: [
+          {
+            value: 30,
+            type: '利润',
+            name: '河北',
+          },
+          {
+            value: 25,
+            type: '利润',
+            name: '山西',
+          },
+          {
+            value: 40,
+            type: '利润',
+            name: '内蒙古',
+          },
+          {
+            value: 39,
+            type: '利润',
+            name: '辽宁',
+          },
+          {
+            value: 20,
+            type: '利润',
+            name: '吉林',
+          }
+        ],
+      }],
+    series: [
+    {
+      id: 'mainSeries',
+      type: 'bar',
+      yField: ['name'],
+      xField: ['value'],
+      seriesField: ['type'],
+      direction: 'horizontal',
+      regionId: 'mainRegion',
+      dataIndex: 0,
+      stack: false,
+    },
+    {
+      id: 'subSeries',
+      type: 'bar',
+      yField: ['name'],
+      xField: ['value'],
+      seriesField: ['type'],
+      direction: 'horizontal',
+      regionId: 'subRegion',
+      dataIndex: 1,
+      stack: false,
+      bar: {
+        style: {
+          cornerRadius: 0,
+          lineWidth: 2,
+        }
+      },
+    }
+  ],
+  // layout
+  layout: {
+    type: 'grid',
+    row: 3,
+    col: 4,
+    elements: [
+      {
+        modelId: 'legend-discrete',
+        col: 0,
+        colSpan: 4,
+        row: 0
+      },
+      {
+        modelId: 'mainRegion',
+        col: 0,
+        row: 1
+      },
+      {
+        modelId: 'dimensionAxis',
+        col: 1,
+        row: 1
+      },
+      {
+        modelId: 'subRegion',
+        col: 3,
+        row: 1
+      },
+      {
+        modelId: 'measureAxisLeft',
+        col: 0,
+        row: 2
+      },
+      {
+        modelId: 'measureAxisRight',
+        col: 3,
+        row: 2
+      },
+      {
+        modelId: 'dimensionAxis2',
+        col: 2,
+        row: 1
+      }
+    ]
+  },
+  region: [
+    {
+      clip: true,
+      id: 'mainRegion'
+    },
+    {
+      id: 'subRegion'
+    }
+  ],
+  // component style
+  axes: [
+    {
+      id: 'dimensionAxis',
+      type: 'band',
+      orient: 'left',
+      visible: true,
+      label: {
+        visible: true,
+        style: {
+          fontSize: 12,
+        },
+      },
+      hover: true,
+      paddingInner: 0.35,
+      paddingOuter: 0.2,
+      maxWidth: 200,
+      
+      inverse: true,
+      offsetX: 0,      
+    },
+    {
+      id: 'measureAxisLeft',
+      type: 'linear',
+      orient: 'bottom',
+      visible: true,
+      label: {
+        visible: true,
+        space: 4,
+        flush: true,
+        padding: 0,
+        style: {
+          fontSize: 12,
+          maxLineWidth: 174,
+        },
+        
+      },
+      zero: true,
+      nice: true,
+      regionId: 'mainRegion',
+      seriesId: 'mainSeries',
+      inverse: true,
+    },
+    {
+      id: 'measureAxisRight',
+      type: 'linear',
+      orient: 'bottom',
+      visible: true,
+      label: {
+        visible: true,
+        space: 4,
+        flush: true,
+        padding: 0,
+        style: {
+          fontSize: 12,
+        },
+      },
+      regionId: 'subRegion',
+      seriesId: 'subSeries',
+    },
+    {
+      id: 'dimensionAxis2',
+      type: 'band',
+      orient: 'left',
+      visible: false,
+      paddingInner: 0.35,
+      paddingOuter: 0.2,
+      maxWidth: 0,
+      inverse: true,
+      offsetX: 0,
+      regionId: 'subRegion',
+      seriesId: 'subSeries',
+      ticks: true,
+      bandPadding: 0.22
+    }
+  ],
+    title: screenConstants.chartTitleSettings,
+    tooltip: screenConstants.tooltipSettings,
+    label: {
+      visible: true,
+      position: 'outside',
+      style: {
+        fontSize: 14,
+        fill: null
+      }
+    },
+    legends: {
+      type: 'discrete',
+      id: 'legend-discrete',
+      visible: true,
+      position: 'end',
+      item: {
+        focus: true,
+        focusIconStyle: {
+          size: 14
+        },
+        label: {
+          style: {
+            fontSize: 12,
+          }
+        },
+      },
     }
   }
 }

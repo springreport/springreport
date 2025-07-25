@@ -149,6 +149,8 @@ export default {
           saveClick:this.submitDatas,
           historyClick:this.getSubmitHis,
           pictureClick:this.pictureClick,
+          copyPasteBefore:this.copyPasteBefore,
+          pasteHandlerBefore: this.pasteHandlerBefore,
         }
       },
       // modal配置 start
@@ -1772,7 +1774,7 @@ export default {
               }
               var r = ri;
               var c = ci;
-              let v = element == null?null:element.m
+              let v = element == null?null:(element.v == null?element.m:element.v)
               var cs = 1;
               var rs = 1;
               if(element!=null &&element.v && element.mc && element.mc.rs){
@@ -2904,6 +2906,60 @@ export default {
       } else {
         that.commonUtil.showMessage({ message: '请先点击选择要上传图片的单元格', type: 'error' })
       }
+    },
+    copyPasteBefore(range, copyRange){
+      var str = range[0].row[0]
+      var edr = range[0].row[1]
+      var stc = range[0].column[0]
+      var edc = range[0].column[1]
+      let isAllowEdit = true;
+      for (let ri = str; ri <= edr; ri++) {
+          for (let ci = stc; ci <= edc; ci++) {
+            isAllowEdit = this.checkCellAllowEdit(ri,ci);
+          }
+          if(!isAllowEdit){
+              break;
+          }
+       }
+       return isAllowEdit;
+    },
+    pasteHandlerBefore(range, data){
+      var str = range[0].row[0]
+      var edr = range[0].row[1]
+      var stc = range[0].column[0]
+      var edc = range[0].column[1]
+      let isAllowEdit = true;
+       for (let ri = str; ri <= edr; ri++) {
+          for (let ci = stc; ci <= edc; ci++) {
+            isAllowEdit = this.checkCellAllowEdit(ri,ci);
+          }
+          if(!isAllowEdit){
+              break;
+          }
+       }
+       return isAllowEdit;
+    },
+    checkCellAllowEdit(r,c){
+      let result = true
+      var key = r + '_' + c
+      var sheetIndex = luckysheet.getSheet().index
+      // 判断该单元格是否可编辑
+      if(this.tplType == 2){
+        if (this.cellAllowEditConfigs[sheetIndex]) {
+          var orginCell = this.extendCellOrigins[sheetIndex][key]
+          if (!orginCell) {
+            orginCell = this.getNewCellExtendOrigins(sheetIndex, r, c)
+          }
+          if (orginCell) {
+            var allowEdit = this.cellAllowEditConfigs[sheetIndex][orginCell.r + '_' + orginCell.c]
+            if (!allowEdit) {
+              this.commonUtil.showMessage({ message: '单元格不允许进行编辑。', type: 'error' })
+              return false
+            }
+          }
+        }
+      }
+      return result;
     }
   }
 }

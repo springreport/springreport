@@ -22,6 +22,7 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.springreport.base.UserInfoDto;
 import com.springreport.constants.StatusCode;
+import com.springreport.enums.YesNoEnum;
 
 /**
  * @ClassName: JWTUtil
@@ -104,6 +105,27 @@ public class JWTUtil {
 				.withClaim("merchantMode", userInfoDto.getMerchantMode())
 				.withClaim("isSystemMerchant", userInfoDto.getIsSystemMerchant())
 				.withClaim("deptId", userInfoDto.getDeptId())
+				.withClaim("isShareToken", YesNoEnum.NO.getCode())
+				.withExpiresAt(date)
+				.sign(algorithm);
+	}
+	
+	public static String sign(UserInfoDto userInfoDto, String secret,Long expireTime) {
+		Date date = new Date(System.currentTimeMillis()+expireTime*1000);
+		Algorithm algorithm = Algorithm.HMAC512(secret);
+		// 附带username信息
+		return JWT.create()
+				.withClaim("userName", userInfoDto.getUserName())
+				.withClaim("userRealName", userInfoDto.getUserRealName())
+				.withClaim("userId", userInfoDto.getUserId())
+				.withClaim("roleId", userInfoDto.getRoleId())
+				.withClaim("roleName", userInfoDto.getRoleName())
+				.withClaim("isAdmin", userInfoDto.getIsAdmin())
+				.withClaim("merchantNo", userInfoDto.getMerchantNo())
+				.withClaim("merchantMode", userInfoDto.getMerchantMode())
+				.withClaim("isSystemMerchant", userInfoDto.getIsSystemMerchant())
+				.withClaim("deptId", userInfoDto.getDeptId())
+				.withClaim("isShareToken", YesNoEnum.YES.getCode())
 				.withExpiresAt(date)
 				.sign(algorithm);
 	}
@@ -135,6 +157,8 @@ public class JWTUtil {
 			userInfoDto.setIsSystemMerchant(isSystemMerchant);
 			Long deptId = jwt.getClaim("deptId").asLong();
 			userInfoDto.setDeptId(deptId);
+			Integer isShareToken = jwt.getClaim("isShareToken").asInt();
+			userInfoDto.setIsShareToken(isShareToken == null?YesNoEnum.NO.getCode():isShareToken);
 			return userInfoDto;
 		} catch (Exception e) {
 			return new UserInfoDto();

@@ -101,7 +101,7 @@ commonConstants.dictionary = {
     '10': 'TDengine',
     '11': 'kingbase(人大金仓)',
     '12': '瀚高(highgo)',
-    '13': '瀚高(doris)',
+    '13': 'doris',
     '14': 'mongodb'
   },
   paramRequired: {

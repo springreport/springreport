@@ -831,6 +831,11 @@ selectUtil.shareType = [
   { value: 2, label: 'h5' }
 ]
 
+selectUtil.shareTime = [
+  { value: 1, label: '永久有效' },
+  { value: 2, label: '自定义时长' }
+]
+
 selectUtil.reportExportType = [
   { value: 1, label: 'excel' },
   { value: 2, label: 'pdf' },
