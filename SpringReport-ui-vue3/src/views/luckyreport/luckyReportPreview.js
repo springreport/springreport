@@ -2095,7 +2095,7 @@ export default {
               }
               var r = ri;
               var c = ci;
-              let v = element == null?null:element.m
+              let v = element == null?null:(element.v == null?element.m:element.v)
               var cs = 1;
               var rs = 1;
               if(element!=null &&element.v && element.mc && element.mc.rs){
