@@ -197,8 +197,8 @@ export default {
         const element = this.components[index]
         element.active = false
         if (element.category == this.screenConstants.category.vchart) {
-          if (element.type.toLowerCase().indexOf('map') >= 0) {
-            const mapCode = element.spec.map
+          if (element.type.toLowerCase().indexOf('basicmap') >= 0) {
+            let mapCode = element.spec.map
             if (!VChart.getMap(mapCode)) {
               const geojson = await this.commonUtil.getMapData(mapCode)
               VChart.registerMap(mapCode, geojson)

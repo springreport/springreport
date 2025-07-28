@@ -783,7 +783,7 @@ export default {
     },
     clearColor() {
       this.systemColor = ''
-      if (this.component.chartAllType.toLowerCase().indexOf('map') >= 0) {
+      if (this.component.chartAllType.toLowerCase().indexOf('basicmap') >= 0) {
         this.component.defaultOption.spec.color.range = []
       } else {
         this.component.defaultOption.spec.color = []
@@ -798,7 +798,7 @@ export default {
         })
         return
       }
-      if (this.component.chartAllType.toLowerCase().indexOf('map') >= 0) {
+      if (this.component.chartAllType.toLowerCase().indexOf('basicmap') >= 0) {
         this.component.defaultOption.spec.color.range.push(this.color)
       } else {
         this.component.defaultOption.spec.color.push(this.color)
@@ -903,7 +903,7 @@ export default {
     },
     changeSystemColor() {
       const colors = this.screenConstants.systemChartColors[this.systemColor]
-      if (this.component.chartAllType.toLowerCase().indexOf('map') >= 0) {
+      if (this.component.chartAllType.toLowerCase().indexOf('basicmap') >= 0) {
         this.component.defaultOption.spec.color.range = colors
       } else {
         this.component.defaultOption.spec.color = colors
