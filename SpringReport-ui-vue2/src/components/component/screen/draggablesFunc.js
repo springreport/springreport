@@ -47,6 +47,10 @@ export default {
     isCtrl: { // 是否按下ctrl键
       type: Boolean,
       default: false
+    },
+    viewThat: { // 查看页面的this对象
+      type: Object,
+      default: () => ({}),
     }
   },
   data() {

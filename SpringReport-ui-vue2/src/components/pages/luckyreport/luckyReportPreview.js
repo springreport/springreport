@@ -1799,7 +1799,7 @@ export default {
                   }
                 }
               }
-              if(v && v.indexOf("附件:") == 0){
+              if(v && (v+"").indexOf("附件:") == 0){
                 if(luckysheetfile.hyperlink && luckysheetfile.hyperlink[r+"_"+c]){
                   if(luckysheetfile.hyperlink[r+"_"+c].linkType == "attachment"){
                     v = luckysheetfile.hyperlink[r+"_"+c].linkAddress;

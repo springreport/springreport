@@ -410,6 +410,9 @@
               />
             </el-select>
           </el-form-item>
+          <el-form-item label="开启下钻" class="df-form-item">
+            <el-switch v-model="component.isDrill" active-text="是" inactive-text="否" @change="changeIsDrill(chartsComponents,component)" />
+          </el-form-item>
           <el-form-item label="默认填充色">
             <input-color-picker :input-width="140" :value="component.spec.defaultFillColor" @change="(val)=>{component.spec.defaultFillColor=val;commonUtil.reLoadChart(chartsComponents,component)}" />
           </el-form-item>
@@ -460,6 +463,9 @@
               />
             </el-select>
           </el-form-item>
+          <!-- <el-form-item label="开启下钻" class="df-form-item">
+            <el-switch v-model="component.isDrill" active-text="是" inactive-text="否" @change="changeIsDrill(chartsComponents,component)" />
+          </el-form-item> -->
           <el-form-item label="地图填充色">
             <input-color-picker :input-width="140" :value="component.spec.series[0].area.style.fill" @change="(val)=>{component.spec.series[0].area.style.fill=val;commonUtil.reLoadChart(chartsComponents,component)}" />
           </el-form-item>
@@ -812,7 +818,8 @@ export default {
       predefineColors: [],
       addColorDialogVisiable: false,
       color: '',
-      systemColor: ''
+      systemColor: '',
+      mapCodes:{}
     }
   },
   mounted() {
@@ -940,6 +947,22 @@ export default {
         this.component.spec.color = colors
       }
       this.commonUtil.reLoadChart(this.chartsComponents, this.component)
+    },
+    changeIsDrill(chartsComponents,component){
+      const vchart = chartsComponents[component.id]
+      if(!vchart)
+      {
+        return;
+      }
+      var that = this;
+      if(component.isDrill){
+        vchart.on('click', (params) => {
+          that.commonUtil.mapDrill(chartsComponents,component,params,false,mapCodes);
+        })
+      }else{
+        vchart.off('click', null); // 卸载事件
+      }
+      
     }
   }
 }
