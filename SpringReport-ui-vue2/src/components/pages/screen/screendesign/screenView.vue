@@ -21,6 +21,7 @@
         :charts-components="chartsComponents"
         :is-design="false"
         :send-request="sendRequest"
+        :view-that="viewThat"
         :myclass="'myclass'"
       />
     </div>

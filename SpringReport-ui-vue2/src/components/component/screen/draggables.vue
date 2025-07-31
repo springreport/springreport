@@ -84,6 +84,7 @@
           :component="item"
           :send-request="sendRequest"
           :charts-components="chartsComponents"
+          :view-that="viewThat"
         />
       </div>
     </vue-draggable-resizable>

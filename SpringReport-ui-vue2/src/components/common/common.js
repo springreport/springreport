@@ -950,12 +950,14 @@ commonUtil.reInitChart=function(chartsComponents,component){
     chartsComponents[component.id] = chart;
 }
 
-commonUtil.reLoadChart = function(chartsComponents,component)
+commonUtil.reLoadChart = function(chartsComponents,component,sendRequest,that)
 {
     Vue.nextTick(function () {
         if(component.category == "vchart"){
-            chartsComponents[component.id].release();
-            chartsComponents[component.id] = null;
+            if(chartsComponents[component.id]){
+                chartsComponents[component.id].release();
+                chartsComponents[component.id] = null;
+            }
             var obj = { dom: component.id}
             if(component.theme){
                 obj.theme = component.theme
@@ -966,9 +968,16 @@ commonUtil.reLoadChart = function(chartsComponents,component)
         if(component.category == "vchart"){
             const vchart = new VChart(component.spec, obj);
             chartsComponents[component.id] = vchart;
-            var element = document.getElementById(component.id);
             // 绘制
             vchart.renderSync();
+            if(component.type == "basicMap" || component.type == "scatterMap"){
+                if(component.isDrill){
+                    vchart.off('click', null); // 卸载事件
+                    vchart.on('click', (params) => {
+                        commonUtil.mapDrill(chartsComponents,component,params,sendRequest,that);
+                    })
+                }
+            }
         }
     })
 }
@@ -1227,73 +1236,65 @@ commonUtil.getComponentParams = function(componentParams)
     }
     return result;
 }
+commonUtil.mapCodes = {}
 //地图下钻
-commonUtil.mapDrill = async function(chartsComponents,component,data,mapCodes){
-    if(data && data.adCode)
-    {
-      var isGetMap = true;
-      var mapCode = data.adCode
-      const registerMap = echarts.getMap(mapCode);
-      if(!registerMap)
-      {
-          await Axios.get("/geoJson/"+mapCode+".json").then(async (res)=>{
-            echarts.registerMap(mapCode,res.data);
-          }).catch(error => {
-            //错误处理
-            if (error && error.response)
-            {
-              isGetMap = false;
+commonUtil.mapDrill = async function(chartsComponents,component,data,sendRequest,that){
+    if(data && data.datum && Object.keys(data.datum).length > 0){
+        let adcode = data.datum.properties.adcode+'';
+        let name = data.datum.properties.name;
+        let parentCode = data.datum.properties.parent.adcode+'';
+        let geojson = null;
+        if (!VChart.getMap(adcode)) {
+            try {
+                geojson = await commonUtil.getMapData(adcode)
+                VChart.registerMap(adcode, geojson)
+            } catch (error) {
+                 commonUtil.showMessage({message:"未获取到地区【"+name+"】的地图数据",type: commonConstants.messageType.error})
+                 return;
             }
-        });
-      }
-      if(isGetMap)
-      {
-        if(!mapCodes[component.id])
-        {
-          mapCodes[component.id] = [];
         }
-        if(component.type == commonConstants.componentsType.map || component.type == commonConstants.componentsType.map3d)
-        {
-            mapCodes[component.id].push(component.options.series[0].map);
-            component.options.series[0].map = mapCode;
-        }else if(component.type == commonConstants.componentsType.mapScatter)
-        {
-            mapCodes[component.id].push(component.options.geo.map);
-            component.options.geo.map = mapCode;
+        if(component.type == "basicMap"){
+            component.spec.map = adcode;
+            component.spec.nameMap = screenConstants.nameMap[adcode];
+        }else if(component.type == "scatterMap"){
+            
         }
-        if(component.type == commonConstants.componentsType.map3d)
-        {
-            commonUtil.reInitChart(chartsComponents,component);
-        }else{
-            commonUtil.reLoadChart(chartsComponents,component);
+        commonUtil.mapCodes[adcode] = parentCode;
+        if(!sendRequest ){
+            chartsComponents[component.id].updateSpec(component.spec,true);
+        } else{
+            if(component.type != "picture"){
+                if(component.dataSource == "2"){
+                    that.$refs['draggable'].$refs[component.id][0].initData(that);
+                }else{
+                    chartsComponents[component.id].updateSpec(component.spec,true);
+                }
+            }
         }
-        return true;
-      }else{
-          return false;
-      }
-    }else{
-        return false
+    }else if(data && data.datum && Object.keys(data.datum).length == 0){
+        let adcode = component.spec.map+'';
+        let backCode = commonUtil.mapCodes[adcode];
+        if(backCode){
+            if(component.type == "basicMap"){
+                component.spec.map = backCode;
+                component.spec.nameMap = screenConstants.nameMap[backCode];
+            }else if(component.type == "scatterMap"){
+
+            }
+            if(!sendRequest ){
+                chartsComponents[component.id].updateSpec(component.spec,true);
+            } else{
+                if(component.type != "picture"){
+                    if(component.dataSource == "2"){
+                        that.$refs['draggable'].$refs[component.id][0].initData(that);
+                    }else{
+                        chartsComponents[component.id].updateSpec(component.spec,true);
+                    }
+                }
+            }
+        }
     }
 }
-commonUtil.mapBack = function(chartsComponents,component,mapCodes){
-    if(mapCodes[component.id] && mapCodes[component.id].length > 0)
-    {
-        var mapCode = mapCodes[component.id].pop();
-        if(component.type == commonConstants.componentsType.map || component.type == commonConstants.componentsType.map3d)
-        {
-            component.options.series[0].map = mapCode;
-        }else if(component.type == commonConstants.componentsType.mapScatter)
-        {
-            component.options.geo.map = mapCode;
-        }
-        if(component.type == commonConstants.componentsType.map3d)
-        {
-            commonUtil.reInitChart(chartsComponents,component);
-        }else{
-            commonUtil.reLoadChart(chartsComponents,component);
-        }
-    }
-  }
 
 commonUtil.initClickType = function(chartsComponents,component,that,isPreview){
     if(component.clickType == "1")

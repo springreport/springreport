@@ -249,7 +249,6 @@ export default {
       this.renameForm.text = this.renameForm.comName
     },
     clickSubComponent(index) {
-      console.log(index, 'index')
       this.subComponentIndex = index
     },
     subComponentsSrc(subComponents) {
@@ -314,10 +313,19 @@ export default {
           obj.active = true
           this.components.push(obj)
           if (item.category == this.screenConstants.category.vchart) {
-            if (obj.type.toLowerCase().indexOf('map') >= 0) {
+            if (obj.type.toLowerCase().indexOf('scattermap') >= 0) {
+              let mapCode = obj.spec.series[0].map
+              if (!VChart.getMap(mapCode)) {
+                const geojson = await this.commonUtil.getMapData(mapCode)
+                VChart.registerMap(mapCode, geojson)
+              }
+            }
+            else if (obj.type.toLowerCase().indexOf('basicmap') >= 0) {
               const mapCode = obj.spec.map
-              const geojson = await this.commonUtil.getMapData(mapCode)
-              VChart.registerMap(mapCode, geojson)
+              if (!VChart.getMap(mapCode)) {
+                const geojson = await this.commonUtil.getMapData(mapCode)
+                VChart.registerMap(mapCode, geojson)
+              }
             } else if (obj.type.toLowerCase().indexOf('circlepacking') >= 0) {
               const categoryField = obj.spec.categoryField
               const valueField = obj.spec.valueField
@@ -392,16 +400,24 @@ export default {
     },
     // 组件初始化
     async initComponent() {
+      var that = this;
       for (let index = 0; index < this.components.length; index++) {
         const element = this.components[index]
         if (element.category == this.screenConstants.category.vchart) {
-          if (element.type.toLowerCase().indexOf('map') >= 0) {
+          if (element.type.toLowerCase().indexOf('basicmap') >= 0) {
             const mapCode = element.spec.map
             if (!VChart.getMap(mapCode)) {
               const geojson = await this.commonUtil.getMapData(mapCode)
               VChart.registerMap(mapCode, geojson)
+              
             }
-          } else if (element.type.toLowerCase().indexOf('pie') >= 0) {
+          } else  if (element.type.toLowerCase().indexOf('scattermap') >= 0) {
+              let mapCode = element.spec.series[0].map
+              if (!VChart.getMap(mapCode)) {
+                const geojson = await this.commonUtil.getMapData(mapCode)
+                VChart.registerMap(mapCode, geojson)
+              }
+            }else if (element.type.toLowerCase().indexOf('pie') >= 0) {
             if (element.spec.isLoop) {
               element.spec.animationNormal =
                 this.screenConstants.pieLoopanimation
@@ -423,6 +439,13 @@ export default {
           const vchart = new VChart(element.spec, obj)
           // 绘制
           vchart.renderSync()
+          if(element.type == "basicMap"){
+            if(element.isDrill){
+              vchart.on('click', (params) => {
+                  that.commonUtil.mapDrill(that.chartsComponents,element,params);
+              })
+            }
+          }
           this.chartsComponents[element.id] = vchart
         } else if (element.category == this.screenConstants.category.text) {
           if (element.type == this.screenConstants.type.date) {
@@ -468,7 +491,6 @@ export default {
       })
     },
     selectComponent(item) {
-      console.log(this.components)
       if (this.activated) {
         this.activated.active = false
         // this.activated.zindex = 99

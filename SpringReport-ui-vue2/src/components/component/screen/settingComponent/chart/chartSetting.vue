@@ -41,7 +41,7 @@
             />
           </el-select>
         </el-form-item>
-        <div v-if="component.type.toLowerCase().indexOf('map')<0" class="df-c" style="flex-wrap: wrap;">
+        <div v-if="component.type.toLowerCase().indexOf('basicmap')<0 " class="df-c" style="flex-wrap: wrap;">
           <el-form-item v-for="(item,index) in component.spec.color" :key="index" label="" class="color-el-form-item">
             <el-color-picker v-model="component.spec.color[index]" size="mini" @change="commonUtil.reLoadChart(chartsComponents,component)" />
             <i
@@ -56,7 +56,7 @@
             />
           </el-form-item>
         </div>
-        <div v-if="component.type.toLowerCase().indexOf('map')>=0" class="df-c" style="flex-wrap: wrap;">
+        <div v-if="component.type.toLowerCase().indexOf('basicmap')>=0 " class="df-c" style="flex-wrap: wrap;">
           <el-form-item v-for="(item,index) in component.spec.color.range" :key="index" label="" style="position: relative;width:20%;">
             <el-color-picker v-model="component.spec.color.range[index]" size="mini" @change="commonUtil.reLoadChart(chartsComponents,component)" />
             <i
@@ -149,7 +149,7 @@
           </el-form-item>
         </div>
       </div>
-      <div v-if="component.type.toLowerCase().indexOf('scatter')>=0">
+      <div v-if="component.type=='scatter'">
         <div class="right-dataset-title">
           <span class="attr-dataset-title">散点设置</span>
         </div>
@@ -395,7 +395,7 @@
           </el-form-item>
         </div>
       </div>
-      <div v-if="component.type.toLowerCase().indexOf('map')>=0">
+      <div v-if="component.type.toLowerCase().indexOf('basicmap')>=0">
         <div class="right-dataset-title">
           <span class="attr-dataset-title">地图设置</span>
         </div>
@@ -410,8 +410,17 @@
               />
             </el-select>
           </el-form-item>
+          <el-form-item label="开启下钻" class="df-form-item">
+            <el-switch v-model="component.isDrill" active-text="是" inactive-text="否" @change="changeIsDrill(chartsComponents,component)" />
+          </el-form-item>
           <el-form-item label="默认填充色">
             <input-color-picker :input-width="140" :value="component.spec.defaultFillColor" @change="(val)=>{component.spec.defaultFillColor=val;commonUtil.reLoadChart(chartsComponents,component)}" />
+          </el-form-item>
+          <el-form-item label="地图边线色">
+            <input-color-picker :input-width="140" :value="component.spec.area.style.stroke" @change="(val)=>{component.spec.area.style.stroke=val;commonUtil.reLoadChart(chartsComponents,component)}" />
+          </el-form-item>
+          <el-form-item label="地图边线宽度">
+            <el-input v-model.number="component.spec.area.style.lineWidth" @change="commonUtil.reLoadChart(chartsComponents,component)" />
           </el-form-item>
           <div class="attr-dataset-title-small">标签设置</div>
           <el-form-item label="标签是否显示" class="df-form-item">
@@ -438,6 +447,65 @@
           </el-form-item>
         </div>
       </div>
+
+      <div v-if="component.type.toLowerCase().indexOf('scattermap')>=0">
+        <div class="right-dataset-title">
+          <span class="attr-dataset-title">地图设置</span>
+        </div>
+        <div class="right-dataset-warp">
+          <el-form-item label="地图类型">
+            <el-select v-model="component.spec.series[0].map" style="width:170px" filterable placeholder="地图类型" @change="changeMapType(component)">
+              <el-option
+                v-for="item in screenConstants.map"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <!-- <el-form-item label="开启下钻" class="df-form-item">
+            <el-switch v-model="component.isDrill" active-text="是" inactive-text="否" @change="changeIsDrill(chartsComponents,component)" />
+          </el-form-item> -->
+          <el-form-item label="地图填充色">
+            <input-color-picker :input-width="140" :value="component.spec.series[0].area.style.fill" @change="(val)=>{component.spec.series[0].area.style.fill=val;commonUtil.reLoadChart(chartsComponents,component)}" />
+          </el-form-item>
+          <el-form-item label="地图边线色">
+            <input-color-picker :input-width="140" :value="component.spec.series[0].area.style.stroke" @change="(val)=>{component.spec.series[0].area.style.stroke=val;commonUtil.reLoadChart(chartsComponents,component)}" />
+          </el-form-item>
+          <el-form-item label="地图边线宽度">
+            <el-input v-model.number="component.spec.series[0].area.style.lineWidth" @change="commonUtil.reLoadChart(chartsComponents,component)" />
+          </el-form-item>
+          <el-form-item label="散点大小">
+            <el-input v-model.number="component.spec.series[1].point.style.size" @change="commonUtil.reLoadChart(chartsComponents,component)" />
+          </el-form-item>
+          <el-form-item label="散点颜色">
+            <input-color-picker :input-width="160" :value="component.spec.series[1].point.style.fill" @change="(val)=>{component.spec.series[1].point.style.fill=val;commonUtil.reLoadChart(chartsComponents,component)}" />
+          </el-form-item>
+          <div class="attr-dataset-title-small">标签设置</div>
+          <el-form-item label="标签是否显示" class="df-form-item">
+            <el-switch v-model="component.spec.label.visible" active-text="是" inactive-text="否" @change="commonUtil.reLoadChart(chartsComponents,component)" />
+          </el-form-item>
+          <el-form-item v-if="component.spec.label.visible" label="标签颜色">
+            <input-color-picker :value="component.spec.label.style.fill" @change="(val)=>{component.spec.label.style.fill=val;commonUtil.reLoadChart(chartsComponents,component)}" />
+          </el-form-item>
+          <el-form-item v-if="component.spec.label.visible" label="字体大小">
+            <el-input v-model.number="component.spec.label.style.fontSize" @change="commonUtil.reLoadChart(chartsComponents,component)" />
+          </el-form-item>
+          <el-form-item v-if="component.spec.label.visible" label="标签格式">
+            <el-input v-model="component.spec.label.formatter" style="width:120px" @change="commonUtil.reLoadChart(chartsComponents,component)">
+              <el-button slot="suffix" type="text" @click="formatterRule()">设置规则</el-button>
+            </el-input>
+          </el-form-item>
+          <div class="attr-dataset-title-small">地区名称映射</div>
+          <el-form-item label="">
+            <div v-for="(value,key) in component.spec.nameMap" :key="key">
+              <el-tag :title="key" style="width:100px">{{ key.length>6?key.substring(0,6)+'...':key }}</el-tag> <b style="color:white">-></b>
+              <el-input v-model="component.spec.nameMap[key]" style="width:120px" size="small" @change="commonUtil.reLoadChart(chartsComponents,component)" />
+            </div>
+          </el-form-item>
+        </div>
+      </div>
+
       <div v-if="component.type.toLowerCase().indexOf('line')>=0 || component.type.toLowerCase().indexOf('area')>=0 || component.type.toLowerCase().indexOf('histogram')>=0">
         <div class="right-dataset-title">
           <span class="attr-dataset-title">{{ getColorLabel() }}设置</span>
@@ -559,7 +627,7 @@
           </el-form-item>
         </div>
       </div>
-      <div v-if="component.type.toLowerCase().indexOf('wordcloud')<0 && component.type.toLowerCase().indexOf('gauge')<0 && component.type.toLowerCase().indexOf('circularprogress')<0 && component.type.toLowerCase().indexOf('barprogress')<0 && component.type.toLowerCase().indexOf('liquid')<0 && component.type.toLowerCase().indexOf('map')<0 && component.type.toLowerCase().indexOf('boxplot')<0">
+      <div v-if="component.type.toLowerCase().indexOf('wordcloud')<0 && component.type.toLowerCase().indexOf('gauge')<0 && component.type.toLowerCase().indexOf('circularprogress')<0 && component.type.toLowerCase().indexOf('barprogress')<0 && component.type.toLowerCase().indexOf('liquid')<0 && component.type.toLowerCase().indexOf('basicmap')<0 && component.type.toLowerCase().indexOf('boxplot')<0  && component.type.toLowerCase().indexOf('basicmap')>=0">
         <div class="right-dataset-title">
           <span class="attr-dataset-title">标签设置</span>
         </div>
@@ -651,7 +719,7 @@
           </div>
         </div>
 
-        <div class="right-dataset-title">
+        <div class="right-dataset-title" >
           <span class="attr-dataset-title">图例设置</span>
         </div>
         <div class="right-dataset-warp">
@@ -750,7 +818,8 @@ export default {
       predefineColors: [],
       addColorDialogVisiable: false,
       color: '',
-      systemColor: ''
+      systemColor: '',
+      mapCodes:{}
     }
   },
   mounted() {
@@ -762,7 +831,7 @@ export default {
     },
     clearColor() {
       this.systemColor = ''
-      if (this.component.type.toLowerCase().indexOf('map') >= 0) {
+      if (this.component.type.toLowerCase().indexOf('basicmap') >= 0) {
         this.component.spec.color.range = []
       } else {
         this.component.spec.color = []
@@ -774,7 +843,7 @@ export default {
         this.commonUtil.showMessage({ message: '请选择颜色', type: this.commonConstants.messageType.error })
         return
       }
-      if (this.component.type.toLowerCase().indexOf('map') >= 0) {
+      if (this.component.type.toLowerCase().indexOf('basicmap') >= 0) {
         this.component.spec.color.range.push(this.color)
       } else {
         this.component.spec.color.push(this.color)
@@ -856,7 +925,12 @@ export default {
       this.commonUtil.reLoadChart(chartsComponents, component)
     },
     async changeMapType(component) {
-      const mapCode = component.spec.map
+      let mapCode = null;
+      if(component.type == "basicMap"){
+        mapCode = component.spec.map
+      }else{
+        mapCode = component.spec.series[0].map
+      }
 
       if (!VChart.getMap(mapCode)) {
         const geojson = await this.commonUtil.getMapData(mapCode)
@@ -867,12 +941,28 @@ export default {
     },
     changeSystemColor() {
       const colors = this.screenConstants.systemChartColors[this.systemColor]
-      if (this.component.type.toLowerCase().indexOf('map') >= 0) {
+      if (this.component.type.toLowerCase().indexOf('basicmap') >= 0) {
         this.component.spec.color.range = colors
       } else {
         this.component.spec.color = colors
       }
       this.commonUtil.reLoadChart(this.chartsComponents, this.component)
+    },
+    changeIsDrill(chartsComponents,component){
+      const vchart = chartsComponents[component.id]
+      if(!vchart)
+      {
+        return;
+      }
+      var that = this;
+      if(component.isDrill){
+        vchart.on('click', (params) => {
+          that.commonUtil.mapDrill(chartsComponents,component,params,false,mapCodes);
+        })
+      }else{
+        vchart.off('click', null); // 卸载事件
+      }
+      
     }
   }
 }

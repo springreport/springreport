@@ -24,6 +24,7 @@ import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.streaming.SXSSFCell;
@@ -148,6 +149,7 @@ public class LuckySheetCellUtil {
 		if(cellDatas != null && cellDatas.size() > 0)
 		{
 			JSONObject cellBorder = null;
+			JSONObject cellColSpan = new JSONObject();
 			Map<String, XSSFCellStyle> cellStyleMap = new HashMap<String, XSSFCellStyle>();
 			for (int i = 0; i < cellDatas.size(); i++) {
 				Map<String, Object> cellData = cellDatas.get(i);
@@ -160,6 +162,23 @@ public class LuckySheetCellUtil {
 					cellValue = new HashMap<String, Object>();
 				}
 				Cell cell = this.getCell(Integer.valueOf(String.valueOf(cellData.get(LuckySheetPropsEnum.R.getCode()))), Integer.valueOf(String.valueOf(cellData.get(LuckySheetPropsEnum.C.getCode()))));
+				if(YesNoEnum.NO.getCode().intValue() == isCoedit.intValue())
+				{
+					Map<String, Object> mergeCell = (Map<String, Object>) cellValue.get(LuckySheetPropsEnum.MERGECELLS.getCode());
+					if(mergeCell != null)
+					{
+						if(mergeCell.containsKey(LuckySheetPropsEnum.ROWSPAN.getCode()) && mergeCell.containsKey(LuckySheetPropsEnum.COLSPAN.getCode()))
+						{
+							int firstRow = Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.R.getCode())));
+							int lastRow = Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.R.getCode()))) + Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.ROWSPAN.getCode()))) - 1;
+							int firstCol = Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.C.getCode())));
+							int lastCol = Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.C.getCode()))) + Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.COLSPAN.getCode()))) - 1;
+							this.mergeCell(firstRow, lastRow, firstCol, lastCol);
+							cellColSpan.put(firstRow+"_"+firstCol, lastCol-firstCol+1);
+						}
+					}
+				}
+				
 				if(!isPdfStream && cellConfig != null && cellConfig.get("xxbt") != null && "1".equals(String.valueOf(cellConfig.get("xxbt")))
 						&& cellConfig.get("v") != null && String.valueOf(cellConfig.get("v")).contains("|") && String.valueOf(cellConfig.get("v")).split("\\|").length<5)
 				{
@@ -310,9 +329,15 @@ public class LuckySheetCellUtil {
 								if(wrapText.containsKey(maxKey)) {
 									if(cellValueString.length()>String.valueOf(wrapText.get(maxKey)).length()) {
 										wrapText.put(maxKey, cellValueString);
+										if(cellColSpan.containsKey(r+"_"+cell.getColumnIndex())) {
+											wrapText.put(maxKey+"_colspan", cellColSpan.get(r+"_"+cell.getColumnIndex()));
+										}
 									}
 								}else {
 									wrapText.put(maxKey, cellValueString);
+									if(cellColSpan.containsKey(r+"_"+cell.getColumnIndex())) {
+										wrapText.put(maxKey+"_colspan", cellColSpan.get(r+"_"+cell.getColumnIndex()));
+									}
 								}
 							}
 						}
@@ -355,21 +380,6 @@ public class LuckySheetCellUtil {
 					XSSFHyperlink  XSSFHyperlink = (XSSFHyperlink) createHelper.createHyperlink(HyperlinkType.URL);
 					XSSFHyperlink.setAddress(String.valueOf(link.get(LuckySheetPropsEnum.LINKADDRESS.getCode())));
 					cell.setHyperlink(XSSFHyperlink);
-				}
-				if(YesNoEnum.NO.getCode().intValue() == isCoedit.intValue())
-				{
-					Map<String, Object> mergeCell = (Map<String, Object>) cellValue.get(LuckySheetPropsEnum.MERGECELLS.getCode());
-					if(mergeCell != null)
-					{
-						if(mergeCell.containsKey(LuckySheetPropsEnum.ROWSPAN.getCode()) && mergeCell.containsKey(LuckySheetPropsEnum.COLSPAN.getCode()))
-						{
-							int firstRow = Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.R.getCode())));
-							int lastRow = Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.R.getCode()))) + Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.ROWSPAN.getCode()))) - 1;
-							int firstCol = Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.C.getCode())));
-							int lastCol = Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.C.getCode()))) + Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.COLSPAN.getCode()))) - 1;
-							this.mergeCell(firstRow, lastRow, firstCol, lastCol);
-						}
-					}
 				}
 				String ff = String.valueOf(cellConfig.get("ff"));//字体
 				if(barCodeCells != null && StringUtil.isNotEmpty(ff) && ff.contains("barCode128")) {

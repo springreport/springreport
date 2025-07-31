@@ -42,6 +42,7 @@
 </template>
 
 <script>
+import VChart from '@visactor/vchart'
 export default {
     name:"vchartComponent",
     components:{
@@ -58,6 +59,10 @@ export default {
         sendRequest:{//是否需要动态获取数据，//预览和设计的时候不需要动态获取数据，真正查看的时候才需要
             type:Boolean,
             default:false
+        },
+        viewThat: { // 查看页面的this对象
+          type: Object,
+          default: () => ({}),
         }
     },
     mounted() {
@@ -65,7 +70,7 @@ export default {
     },
     methods:{
       //数据初始化
-      initData() {
+      async initData() {
         if (this.sendRequest) {
           if(this.component.type == "comboCharthl" || this.component.type == "comboChartdbbar"){
               if(this.component.dataSource == "2"){
@@ -87,15 +92,29 @@ export default {
                 }
               }
           }else{
-            if (this.component.dataSource == "2") {
-              this.getData(this.component);
-              if(this.component.refresh){
-                var self = this;
-                  setInterval(() => {
-                      setTimeout(function(){self.getData(self.component)}, 0)
-                  }, this.component.refreshTime)
+            if (this.component.type.toLowerCase().indexOf('scattermap') >= 0) {
+              let mapCode = this.component.spec.series[0].map
+                if (!VChart.getMap(mapCode)) {
+                    const geojson = await this.commonUtil.getMapData(mapCode)
+                    VChart.registerMap(mapCode, geojson)
+                }
               }
-          }
+              else if (this.component.type.toLowerCase().indexOf('basicmap') >= 0) {
+                let mapCode = this.component.spec.map
+                if (!VChart.getMap(mapCode)) {
+                  const geojson = await this.commonUtil.getMapData(mapCode)
+                  VChart.registerMap(mapCode, geojson)
+                }
+              }
+                if (this.component.dataSource == "2") {
+                  this.getData(this.component);
+                  if(this.component.refresh){
+                    var self = this;
+                      setInterval(() => {
+                          setTimeout(function(){self.getData(self.component)}, 0)
+                      }, this.component.refreshTime)
+                  }
+              }
           }
         }
       },
@@ -108,6 +127,11 @@ export default {
         var componentParams = this.commonUtil.getComponentParams(
           component.params
         );
+        if (component.type.toLowerCase().indexOf('basicmap') >= 0) {
+          //地图组件，将地区编码添加到参数中，固定使用mapCode属性
+          let mapCode = component.spec.map;
+          componentParams.mapCode = mapCode;
+        }
         params.params = Object.assign({}, componentParams, {});
         let obj = {
           url: this.apis.screenDesign.getDynamicDatasApi,
@@ -121,7 +145,7 @@ export default {
               component.spec.data.values = [{nodes:[],links:[]}];
               this.commonUtil.processSankeyData(component,response.responseData);
             }
-            this.commonUtil.reLoadChart(this.chartsComponents, component);
+            this.commonUtil.reLoadChart(this.chartsComponents, component,this.sendRequest,this.viewThat);
           }
         });
       },
