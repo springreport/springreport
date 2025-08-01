@@ -49,6 +49,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    viewThat: { // 查看页面的this对象
+      type: Object,
+      default: () => ({}),
+    }
   },
   data() {
     return {

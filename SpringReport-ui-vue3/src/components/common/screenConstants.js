@@ -190,7 +190,8 @@ screenConstants.type = {
     barProgress:"barProgress",//条形进度条
     liquid:"liquid",//水波图
     wordCloud:"wordCloud",//词云
-    map:"map",//基础地图
+    basicMap:"basicMap",//基础地图
+    scatterMap: 'scatterMap', // 散点地图
     scrollTable:"scrollTable",//循环表格
     pageTable:"pageTable",//分页表格
     boxPlot:"boxPlot",//基础箱型图
@@ -280,7 +281,8 @@ screenConstants.compType = {
     barProgress: { text: '条形进度条', icon: 'progress'},
     wordCloud: { text: '词云图', icon: 'wordCloud'},
     liquid: { text: '水波图', icon: 'liquid'},
-    map: { text: '地图', icon: 'map'},
+    basicMap: { text: '地图', icon: 'map'},
+    scatterMap: { text: '地图', icon: 'map' },
     scrollTable: { text: '循环表格', icon: 'table'},
     pageTable: { text: '分页表格', icon: 'table'},
     boxPlot: { text: '箱型图', icon: 'boxPlot'},
@@ -396,7 +398,8 @@ screenConstants.progressType = [
 ]
 
 screenConstants.mapType = [
-  {"name":"map","text":"地图","src":"https://www.springreport.vip/images/chart/map.png",category:screenConstants.category.vchart},
+  { 'name': 'basicMap', 'text': '基础地图', 'src': 'https://www.springreport.vip/images/chart/map.png', category: screenConstants.category.vchart },
+  { 'name': 'scatterMap', 'text': '散点地图', 'src': 'https://www.springreport.vip/images/chart/scatterMap.png', category: screenConstants.category.vchart }
 ]
 
 screenConstants.tableType = [
@@ -3799,8 +3802,8 @@ screenConstants.liquidInit = {
   }
 }
 
-screenConstants.mapInit = {
-  type: screenConstants.type.map,
+screenConstants.basicMapInit = {
+  type: screenConstants.type.basicMap,
   category:screenConstants.category.vchart,
   isDelete:false,
   x: 0, // 初始化横坐标
@@ -3923,7 +3926,9 @@ screenConstants.mapInit = {
           field: 'value',
           scale: 'color',
           changeDomain: 'replace'
-        }
+        },
+        stroke:'#00EEFF',
+        lineWidth:2
       }
     },
     label:{
@@ -3948,6 +3953,107 @@ screenConstants.mapInit = {
         }
       }
     
+  }
+}
+
+screenConstants.scatterMapInit = {
+  type: screenConstants.type.scatterMap,
+  category: screenConstants.category.vchart,
+  isDelete: false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 500, // 组件初始化宽度
+  h: 300, // 组件初始化高度
+  active: false,
+  zindex: 99,
+  locked: false,
+  refresh: false, // 是否定时刷新
+  refreshTime: 30000, // 定时刷新时间，单位(ms)
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
+  params: [], // 图表参数
+  hiddenParamSize: 0, // 隐藏参数个数
+  theme: '', // 主题
+  amination: '', // 动画效果
+  isDrill: false, // 是否支持下钻
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  spec: {
+    type: 'common',
+    title: screenConstants.chartTitleSettings,
+    tooltip: screenConstants.tooltipSettings,
+    region: [
+    {
+      roam: true,
+      coordinate: 'geo',
+      longitudeField: 'lng',
+      latitudeField: 'lat',
+    }
+  ],
+    data: {
+      values: [
+        { name: '山东省', value: 80,lng:118.187759,lat: 36.376092},
+        { name: '江苏省', value: 40,lng:118.767413,lat: 32.041544},
+        { name: '河南省', value: 80,lng:113.665412,lat: 34.757975},
+        { name: '湖北省', value: 80,lng:114.298572,lat: 30.584355},
+        { name: '湖南省', value: 80,lng:112.982279,lat: 28.19409},
+        { name: '广东省', value: 80,lng:113.280637,lat: 23.125178},
+        { name: '海南省', value: 80,lng:110.33119,lat: 20.031971},
+        { name: '重庆市', value: 80,lng:106.504962,lat: 29.533155},
+        { name: '四川省', value: 80,lng:104.065735,lat: 30.659462},
+        { name: '陕西省', value: 80,lng:108.948024,lat: 34.263161},
+        { name: '宁夏回族自治区', value: 80,lng:106.278179,lat: 38.46637},
+        { name: '新疆维吾尔自治区', value: 80,lng:87.617733,lat: 43.792818},
+      ]
+    },
+    series: [
+       { type: 'map', map: '100000', tooltip: { visible: false }, 
+        area: {
+          style: {
+            fill: '#0A35F4',
+            stroke:'#00EEFF',
+            lineWidth:2
+          }
+        },
+      },
+       {
+          type: 'scatter',
+          xField: 'name',
+          yField: 'value',
+          point: {
+            style: {
+              size: 10,
+              fill: '#E0F409',
+            }
+          }
+        }
+    ],
+    label: {
+      visible: true,
+      // position:'outside',
+      formatter: '',
+      style: {
+        fontSize: 10,
+        fill: null
+      }
+    },
+    legends:
+      {
+        visible: false,
+        type: 'color',
+        field: 'value',
+        orient: 'bottom',
+        position: '',
+        title: {
+          visible: true,
+          text: ''
+        }
+      }
+
   }
 }
 

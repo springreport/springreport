@@ -96,6 +96,7 @@
           :sendRequest="sendRequest"
           :chartsComponents="chartsComponents"
           :ref="item.id"
+          :view-that="viewThat"
         ></vchart-component>
       </div>
     </Vue3DraggableResizable>
