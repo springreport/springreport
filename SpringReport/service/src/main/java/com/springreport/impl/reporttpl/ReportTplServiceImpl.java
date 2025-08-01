@@ -5580,11 +5580,13 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		int horizontalDataLenth = 1;
 		//固定值
 		String initCalculateSubtotalKey = "";
+		boolean isFirst = false;
 		if(luckySheetBindData.getIsRelyCell().intValue() == 1)
 		{
 			initCalculateSubtotalKey = luckySheetBindData.getSheetId()+"-"+luckySheetBindData.getRelyIndex()+"-"+luckySheetBindData.getCoordsx()+"-"+luckySheetBindData.getCoordsy();
 			if(luckySheetBindData.getLastCoordsx() == null)
 			{
+				isFirst = true;
 //				rowAndCol = this.getMaxRowAndCol(maxCoordinate, luckySheetBindData.getCoordsx(),luckySheetBindData.getCoordsy(),1,1);
 				JSONArray newCoords = getNewCoords(luckySheetBindData.getPriortyMoveDirection().intValue(), luckySheetBindData.getLastCoordsx()==null?luckySheetBindData.getCoordsx():luckySheetBindData.getLastCoordsx(), luckySheetBindData.getLastCoordsy()==null?luckySheetBindData.getCoordsy():luckySheetBindData.getLastCoordsy(), maxCoordinate, usedCells);
 				if(!ListUtil.isEmpty(newCoords)) {
@@ -5726,7 +5728,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			String f = String.valueOf(cellConfig.get("f"));
 			f = this.processCellFCustomF(f, luckySheetBindData);
 			if(luckySheetBindData.getIsRelyCell().intValue() == 1 && "list".equals(luckySheetBindData.getLastAggregateType())) {
-				if(luckySheetBindData.getLastCoordsx() == null) {
+				if(isFirst) {
 					String formula = SheetUtil.calculateFormula(String.valueOf(f),0, luckySheetBindData.getRelyCellExtend().intValue()==2?1:2);
 					cellConfig.put("f", formula);
 				}else {
