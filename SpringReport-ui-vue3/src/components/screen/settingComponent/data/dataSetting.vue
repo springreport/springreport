@@ -516,7 +516,7 @@
           </el-select>
         </el-form-item>
       </div>
-      <div v-if="component.type.toLowerCase().indexOf('scatter') >= 0">
+      <div v-if="component.type.toLowerCase().indexOf('scatter') >= 0  && component.type.toLowerCase().indexOf('scattermap') < 0">
         <el-form-item label="x轴数据">
           <el-select
             v-model="component.spec.xField"
@@ -711,7 +711,7 @@
           </el-select>
         </el-form-item>
       </div>
-      <div v-if="component.type.toLowerCase().indexOf('map') >= 0">
+      <div v-if="component.type.toLowerCase().indexOf('basicmap') >= 0">
         <el-form-item label="数值字段">
           <el-select
             v-model="component.spec.valueField"
@@ -747,6 +747,76 @@
           </el-select>
         </el-form-item>
       </div>
+      <div v-if="component.type.toLowerCase().indexOf('scattermap') >= 0">
+            <el-form-item label="数值字段">
+              <el-select
+                v-model="component.spec.series[1].yField"
+                placeholder="请选择"
+                allow-create
+                filterable
+                clearable
+                @change="commonUtil.reLoadChart(chartsComponents, component)"
+              >
+                <el-option
+                  v-for="item in component.dynamicDataSettings.dataColumns"
+                  :key="item"
+                  :label="item"
+                  :value="item"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="地区字段">
+              <el-select
+                v-model="component.spec.series[1].xField"
+                placeholder="请选择"
+                allow-create
+                filterable
+                clearable
+                @change="commonUtil.reLoadChart(chartsComponents, component)"
+              >
+                <el-option
+                  v-for="item in component.dynamicDataSettings.dataColumns"
+                  :key="item"
+                  :label="item"
+                  :value="item"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="经度">
+              <el-select
+                v-model="component.spec.region[0].longitudeField"
+                placeholder="请选择"
+                allow-create
+                filterable
+                clearable
+                @change="commonUtil.reLoadChart(chartsComponents, component)"
+              >
+                <el-option
+                  v-for="item in component.dynamicDataSettings.dataColumns"
+                  :key="item"
+                  :label="item"
+                  :value="item"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="纬度">
+              <el-select
+                v-model="component.spec.region[0].latitudeField"
+                placeholder="请选择"
+                allow-create
+                filterable
+                clearable
+                @change="commonUtil.reLoadChart(chartsComponents, component)"
+              >
+                <el-option
+                  v-for="item in component.dynamicDataSettings.dataColumns"
+                  :key="item"
+                  :label="item"
+                  :value="item"
+                />
+              </el-select>
+            </el-form-item>
+          </div>
       <div v-if="component.type.toLowerCase().indexOf('text') >= 0">
         <el-form-item label="数值字段">
           <el-select

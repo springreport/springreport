@@ -2087,7 +2087,7 @@ export default {
             let edc = dataRange.column[1];
             for (let ri = str; ri <= edr; ri++) {
               for (let ci = stc; ci <= edc; ci++) {
-                let isChanged = false;
+              let isChanged = false;
               var wrongMsg = []
               const element = luckysheetfile.data[ri][ci]
               if(element!=null &&element.v && element.mc && !element.mc.rs){
@@ -2096,6 +2096,9 @@ export default {
               var r = ri;
               var c = ci;
               let v = element == null?null:(element.v == null?element.m:element.v)
+              if(element && element.ct && element.ct.t == 'd'){//日期类型的单元格获取m的值
+                v = element.m
+              }
               var cs = 1;
               var rs = 1;
               if(element!=null &&element.v && element.mc && element.mc.rs){
@@ -2120,7 +2123,7 @@ export default {
                   }
                 }
               }
-              if(v && v.indexOf("附件:") == 0){
+              if(v && (v+"").indexOf("附件:") == 0){
                 if(luckysheetfile.hyperlink && luckysheetfile.hyperlink[r+"_"+c]){
                   if(luckysheetfile.hyperlink[r+"_"+c].linkType == "attachment"){
                     v = luckysheetfile.hyperlink[r+"_"+c].linkAddress;

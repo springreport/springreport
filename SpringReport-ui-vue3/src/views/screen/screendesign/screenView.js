@@ -46,9 +46,11 @@ export default {
         { label: '重置', drawerBtn: true, icon: 'el-icon-refresh-left', type: '', handle: () => this.refreshPage(), size: 'mini' },
       ],
       drawer:false,
+      viewThat:null
     };
   },
   mounted() {
+    this.viewThat = this;
     if (this.$route.query.sendRequest == 1) {
       this.sendRequest = true;
     } else {
@@ -204,7 +206,14 @@ export default {
         const element = this.components[index];
         element.active = false
         if (element.category == this.screenConstants.category.vchart) {
-          if (element.type.toLowerCase().indexOf('map') >= 0) {
+          if (element.type.toLowerCase().indexOf('scattermap') >= 0) {
+              let mapCode = element.spec.series[0].map
+              if (!VChart.getMap(mapCode)) {
+                  const geojson = await this.commonUtil.getMapData(mapCode)
+                  VChart.registerMap(mapCode, geojson)
+              }
+          }
+          else if (element.type.toLowerCase().indexOf('basicmap') >= 0) {
             let mapCode = element.spec.map;
             if (!VChart.getMap(mapCode)) {
               const geojson = await this.commonUtil.getMapData(mapCode);
@@ -228,6 +237,14 @@ export default {
           const vchart = new VChart(element.spec, obj);
           // 绘制
           vchart.renderSync();
+          var that = this;
+          if(element.type == "basicMap"){
+            if(element.isDrill){
+              vchart.on('click', (params) => {
+                  that.commonUtil.mapDrill(that.chartsComponents,element,params,that.sendRequest,that);
+              })
+            }
+          }
           this.chartsComponents[element.id] = vchart;
         } else if (element.category == this.screenConstants.category.text) {
           if (element.type == this.screenConstants.type.date) {
