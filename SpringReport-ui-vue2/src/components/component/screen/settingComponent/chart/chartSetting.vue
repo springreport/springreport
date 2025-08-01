@@ -818,8 +818,7 @@ export default {
       predefineColors: [],
       addColorDialogVisiable: false,
       color: '',
-      systemColor: '',
-      mapCodes:{}
+      systemColor: ''
     }
   },
   mounted() {
@@ -957,7 +956,7 @@ export default {
       var that = this;
       if(component.isDrill){
         vchart.on('click', (params) => {
-          that.commonUtil.mapDrill(chartsComponents,component,params,false,mapCodes);
+          that.commonUtil.mapDrill(chartsComponents,component,params,false);
         })
       }else{
         vchart.off('click', null); // 卸载事件
