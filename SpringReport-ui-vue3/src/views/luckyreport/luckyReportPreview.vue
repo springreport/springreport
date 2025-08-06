@@ -339,8 +339,9 @@
           prop="cellContent"
           v-if="cellConfig.valueType == '4'"
           :rules="filter_rules('选择项', rules)"
+          
         >
-          <el-select placeholder="请选择" size="default" v-model="editForm.cellContent" style="width: 400px">
+          <el-select placeholder="请选择" size="default" v-model="editForm.cellContent" style="width: 400px" filterable>
             <el-option
               v-for="op in dictTypeDatas"
               :label="op.dictLabel"
