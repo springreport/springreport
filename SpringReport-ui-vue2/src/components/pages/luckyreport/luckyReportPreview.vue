@@ -368,6 +368,7 @@
             v-model="editForm.cellContent"
             placeholder="请选择"
             size="small"
+            filterable
           >
             <el-option
               v-for="op in dictTypeDatas"
