@@ -366,7 +366,7 @@ public class ScreenTplServiceImpl extends ServiceImpl<ScreenTplMapper, ScreenTpl
 	 * @date 2021-08-02 04:38:59 
 	 */
 	@Override
-	public BaseEntity saveScreenDesign(SaveScreenTplDto saveScreenTplDto) throws JsonProcessingException {
+	public BaseEntity saveScreenDesign(SaveScreenTplDto saveScreenTplDto,UserInfoDto userInfoDto) throws JsonProcessingException {
 		BaseEntity result = new BaseEntity();
 		ScreenTpl exist = this.getById(saveScreenTplDto.getId());
 		if(exist == null)

@@ -103,7 +103,7 @@ public interface IDocTplService extends IService<DocTpl> {
 	 * @param model void
 	 * @date 2024-05-03 04:09:51 
 	 */ 
-	BaseEntity saveDocTplSettings(DocTplSettingsDto model);
+	BaseEntity saveDocTplSettings(DocTplSettingsDto model,UserInfoDto userInfoDto);
 	
 	/**  
 	 * @MethodName: downLoadDocTpl

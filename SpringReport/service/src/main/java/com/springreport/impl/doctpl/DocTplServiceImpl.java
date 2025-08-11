@@ -543,8 +543,17 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 	 * @date 2024-05-03 04:10:18 
 	 */
 	@Override
-	public BaseEntity saveDocTplSettings(DocTplSettingsDto model) {
+	public BaseEntity saveDocTplSettings(DocTplSettingsDto model,UserInfoDto userInfoDto) {
 		BaseEntity result = new BaseEntity();
+		DocTpl tpl = this.getById(model.getTplId());
+		if(tpl == null)
+		{
+			throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.notexist", new String[] {"报表模板"}));
+		}
+		if(tpl.getIsExample().intValue() == YesNoEnum.YES.getCode().intValue() && userInfoDto.getIsAdmin().intValue() != YesNoEnum.YES.getCode().intValue()) {
+			//示例模板只允许超级管理员去修改保存
+			throw new BizException(StatusCode.FAILURE, "该模板是示例模板，不允许修改，请见谅！");
+		}
 		DocTplSettings docTplSettings = new DocTplSettings();
 		BeanUtils.copyProperties(model, docTplSettings);
 		UpdateWrapper<DocTplSettings> updateWrapper = new UpdateWrapper<>();

@@ -86,4 +86,8 @@ public class DocTpl extends PageEntity {
     /** template_field - 模板所属行业 */
     @TableField("template_field")
     private Long templateField;
+    
+    /** is_example - 是否演示示例 1是 2否 */
+    @TableField("is_example")
+    private Integer isExample;
 }

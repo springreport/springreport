@@ -1078,6 +1078,15 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 	public BaseEntity saveLuckySheetTpl(MesLuckysheetsTplDto mesLuckySheetsTplDto,UserInfoDto userInfoDto) throws JsonProcessingException, SQLException {
 		ObjectMapper objectMapper = new ObjectMapper();
 		SaveLuckySheetTplDto result = new SaveLuckySheetTplDto();
+		ReportTpl tpl = this.getById(mesLuckySheetsTplDto.getTplId());
+		if(tpl == null)
+		{
+			throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.notexist", new String[] {"报表模板"}));
+		}
+		if(tpl.getIsExample().intValue() == YesNoEnum.YES.getCode().intValue() && userInfoDto.getIsAdmin().intValue() != YesNoEnum.YES.getCode().intValue()) {
+			//示例模板只允许超级管理员去修改保存
+			throw new BizException(StatusCode.FAILURE, "该模板是示例模板，不允许修改，请见谅！");
+		}
 		ReportTpl reportTpl = new ReportTpl();
 		reportTpl.setId(mesLuckySheetsTplDto.getTplId());
 		reportTpl.setIsParamMerge(mesLuckySheetsTplDto.getIsParamMerge());
@@ -10371,7 +10380,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				luckySheetBindData.setLastCoordsy(rowAndCol.get("maxY"));
 			}else if(luckySheetBindData.getRelyCellExtend().intValue() == CellExtendEnum.HORIZONTAL.getCode().intValue()){
 				luckySheetBindData.setLastCoordsx(rowAndCol.get("maxX"));
-				luckySheetBindData.setLastCoordsy(rowAndCol.get("maxY")+bindDatas.get(j).size()*luckySheetBindData.getColSpan());
+				luckySheetBindData.setLastCoordsy(rowAndCol.get("maxY")+(luckySheetBindData.getIsGroupMerge()?1:bindDatas.get(j).size())*luckySheetBindData.getColSpan());
 			}
 		}
 		if(luckySheetBindData.getIsRelied().intValue() == 1)

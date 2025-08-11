@@ -158,4 +158,8 @@ public class ReportTpl extends PageEntity {
     /** refresh_time - 自动刷新时长 单位：秒 */
     @TableField("refresh_time")
     private Long refreshTime;
+    
+    /** is_example - 是否演示示例 1是 2否 */
+    @TableField("is_example")
+    private Integer isExample;
 }
