@@ -185,6 +185,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    searchParams: {
+      type: Array,
+      default: () => []
+    },
   },
   mounted() {
     this.initData();

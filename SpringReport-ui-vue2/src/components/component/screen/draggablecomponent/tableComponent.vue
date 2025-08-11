@@ -138,6 +138,11 @@ export default {
     name:"tableComponent",
     components:{
     },
+    data() {
+    return {
+      tableTimer:{}
+    }
+  },
     props:{
         component:{
             type:Object,
@@ -150,7 +155,11 @@ export default {
         sendRequest:{//是否需要动态获取数据，//预览和设计的时候不需要动态获取数据，真正查看的时候才需要
             type:Boolean,
             default:false
-        }
+        },
+        searchParams: {
+          type: Array,
+          default: () => []
+        },
     },
     mounted() {
       this.initData();
@@ -167,7 +176,11 @@ export default {
                       setTimeout(function(){self.getData(self.component)}, 0)
                   }, this.component.refreshTime)
               }
+          }else{
+            this.autoPage(this.component);
           }
+        }else{
+          this.autoPage(this.component);
         }
       },
       getData(component) {
@@ -185,16 +198,36 @@ export default {
           params: params,
           removeEmpty: false,
         };
+        let that = this;
         this.commonUtil.doPost(obj).then((response) => {
           if (response.code == "200") {
             component.spec.data.values = response.responseData;
             if(component.type == "pageTable" && Array.isArray(component.spec.data.values)){
               component.spec.data.total = component.spec.data.values.length;
             }
+            that.autoPage(that.component);
           }
         });
       },
-
+      autoPage(component){
+        this.component.pagination.currentPage = 1;
+        let timer = this.tableTimer[component.id];
+        if(component.autoPage){
+          if(timer == null){
+            timer = setInterval(function(){
+              if((component.pagination.currentPage*component.pagination.pageSize)>=component.spec.data.total) {
+                component.pagination.currentPage = 1;
+              }else{
+                component.pagination.currentPage = component.pagination.currentPage + 1
+              }
+            },component.autoPageInterval?component.autoPageInterval*1000:5000);
+            this.tableTimer[component.id] = timer
+          }
+        }else{
+          clearInterval(timer);     
+          this.tableTimer[component.id] = null;
+        }
+      },
     }
 }
 </script>

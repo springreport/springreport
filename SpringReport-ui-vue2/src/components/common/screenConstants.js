@@ -2801,6 +2801,7 @@ screenConstants.wordCloudInit = {
         enlarge: true
       }
     },
+    tooltip: screenConstants.tooltipSettings,
     nameField: 'challenge_name',
     valueField: 'sum_count',
     seriesField: 'challenge_name',
@@ -9694,5 +9695,10 @@ screenConstants.pieLoopanimation = {
     }
   ]
 }
+
+screenConstants.mapDrillType = [
+  { name: '地图下钻', value: '1' },
+  { name: '跳转链接', value: '2' },
+]
 
 export default screenConstants
