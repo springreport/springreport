@@ -424,14 +424,6 @@
             </el-select>
           </el-form-item>
           <el-form-item label="跳转链接" class="df-form-item" v-if="component.isDrill && component.drillType == '2'">
-           <!-- <el-select  v-model="component.drillLink" placeholder="请选择" style="width:180px" @change="commonUtil.reLoadChart(chartsComponents,component)">
-              <el-option
-                v-for="item in screenConstants.mapDrillType"
-                :key="item.value"
-                :label="item.name"
-                :value="item.value"
-              />
-            </el-select> -->
             <el-input v-model="component.drillLink" type="textarea" :rows="3"/>
           </el-form-item>
           <el-form-item label="默认填充色">

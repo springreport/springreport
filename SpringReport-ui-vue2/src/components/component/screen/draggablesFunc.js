@@ -68,8 +68,7 @@ export default {
   },
   methods: {
     onActivated(index, item) {
-      if(this.isDesign){
-        if (this.current) {
+      if (this.current) {
           if (!this.isCtrl) {
             this.current.active = false
             this.multiActivated = []
@@ -98,10 +97,6 @@ export default {
             inline: 'nearest'
           })
         }
-      }else{
-        item.active = false
-        return false;
-      }
     },
     onDeactivated() {
       if (this.isCtrl) {

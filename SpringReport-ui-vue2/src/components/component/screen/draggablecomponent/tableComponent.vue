@@ -162,18 +162,18 @@ export default {
         },
     },
     mounted() {
-      this.initData();
+      this.initData(this.searchParams);
     },
     methods:{
       //数据初始化
-      initData() {
+      initData(searchParams) {
         if (this.sendRequest) {
           if (this.component.dataSource == "2") {
-              this.getData(this.component);
+              this.getData(this.component,searchParams);
               if(this.component.refresh){
                 var self = this;
                   setInterval(() => {
-                      setTimeout(function(){self.getData(self.component)}, 0)
+                      setTimeout(function(){self.getData(self.component,searchParams)}, 0)
                   }, this.component.refreshTime)
               }
           }else{
@@ -183,7 +183,8 @@ export default {
           this.autoPage(this.component);
         }
       },
-      getData(component) {
+      getData(component,searchParams) {
+        let pageParams = this.commonUtil.searchParamMap(searchParams)
         var params = {
           dataSetId: component.dynamicDataSettings.datasetId,
           dataColumns: component.dynamicDataSettings.dataColumns,
@@ -192,7 +193,7 @@ export default {
         var componentParams = this.commonUtil.getComponentParams(
           component.params
         );
-        params.params = Object.assign({}, componentParams, {});
+        params.params = Object.assign({}, componentParams, pageParams);
         let obj = {
           url: this.apis.screenDesign.getDynamicDatasApi,
           params: params,

@@ -123,7 +123,6 @@ export default {
         }
       },
       getData(component,searchParams) {
-        console.log(searchParams)
         let pageParams = this.commonUtil.searchParamMap(searchParams)
         var params = {
           dataSetId: component.dynamicDataSettings.datasetId,
@@ -157,6 +156,7 @@ export default {
       },
 
       getComboCharthlData(component,type,searchParams) {
+        let pageParams = this.commonUtil.searchParamMap(searchParams)
         let datasetId =  component.dynamicDataSettings.datasetId;
         let dataColumns = component.dynamicDataSettings.dataColumns;
         if(type == "2"){
@@ -171,7 +171,7 @@ export default {
         var componentParams = this.commonUtil.getComponentParams(
           component.params
         );
-        params.params = Object.assign({}, componentParams, {});
+        params.params = Object.assign({}, componentParams, pageParams);
         let obj = {
           url: this.apis.screenDesign.getDynamicDatasApi,
           params: params,
