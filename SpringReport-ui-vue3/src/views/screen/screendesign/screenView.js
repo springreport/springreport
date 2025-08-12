@@ -108,6 +108,7 @@ export default {
           that.setScale();
           let params = [];
           let paramsCode = {};
+          let tempComponent = [];
           if (
             response.responseData.components != null &&
             response.responseData.components.length > 0
@@ -116,7 +117,7 @@ export default {
               const element = response.responseData.components[index];
               const component = JSON.parse(element.content);
               component.locked = true;
-              that.components.push(component);
+              tempComponent.push(component)
               if(component.params && component.params.length > 0){
                 for (let index = 0; index < component.params.length; index++) {
                   const paramElement = component.params[index];
@@ -169,13 +170,14 @@ export default {
                 }
               }
             }
+            var dataSet = {}
+            dataSet.datasetId = 0
+            dataSet.datasetName = '组件参数'
+            dataSet.datasourceId = 0
+            dataSet.params = params
+            that.searchData.params.push(dataSet)
+            that.components = tempComponent;
             that.$nextTick(() => {
-              var dataSet = {}
-              dataSet.datasetId = 0
-              dataSet.datasetName = '组件参数'
-              dataSet.datasourceId = 0
-              dataSet.params = params
-              that.searchData.params.push(dataSet)
               that.initComponent();
             });
           }
@@ -267,27 +269,10 @@ export default {
       this.drawer = false;
     },
     refreshComponentData(){
-      let pageParams = {};
-      if(this.searchData.params && this.searchData.params.length > 0 && this.searchData.params[0] && this.searchData.params[0].params.length > 0){
-        for (let index = 0; index < this.searchData.params[0].params.length; index++) {
-          const element = this.searchData.params[0].params[index];
-          let paramCode = element.paramCode;
-          pageParams[paramCode] = element[element.paramCode];
-        }
-      }
       for (let index = 0; index < this.components.length; index++) {
         const element = this.components[index];
-        if(element && element.params && element.params.length > 0){
-          for (let index = 0; index < element.params.length; index++) {
-            const elementParam = element.params[index];
-            let paramCode = elementParam.paramCode;
-            if(pageParams[paramCode]){
-              elementParam[paramCode] = pageParams[paramCode]
-            }
-          }
-        }
         if(element.type != "picture"){
-          this.$refs['draggable'].$refs[element.id][0].initData();
+          this.$refs['draggable'].$refs[element.id][0].initData((this.searchData.params && this.searchData.params.length>0)?this.searchData.params[0].params:[]);
         }
       }
       this.closeSearch();

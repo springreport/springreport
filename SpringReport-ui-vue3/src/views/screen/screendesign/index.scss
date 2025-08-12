@@ -208,14 +208,14 @@
   color:white
 }
 
-:deep(.el-pager li){
-  background-color: var(--colorBlack) !important;
-  color:white
-}
-:deep(.el-pager .active){
-  background-color: var(--colorBlack) !important;
-  color:#409eff
-}
+// :deep(.el-pager li){
+//   background-color: var(--colorBlack) !important;
+//   color:white
+// }
+// :deep(.el-pager .active){
+//   background-color: var(--colorBlack) !important;
+//   color:#409eff
+// }
 
 :deep(.el-input--small .el-input__wrapper){
   // padding: 0px 0px;

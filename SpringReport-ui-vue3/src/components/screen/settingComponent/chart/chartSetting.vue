@@ -778,6 +778,19 @@
           <el-form-item label="开启下钻" class="df-form-item">
             <el-switch v-model="component.isDrill" active-text="是" inactive-text="否" @change="changeIsDrill(chartsComponents,component)" />
           </el-form-item>
+          <el-form-item label="下钻类型" class="df-form-item" v-if="component.isDrill">
+           <el-select  v-model="component.drillType" placeholder="请选择" style="width:180px" @change="commonUtil.reLoadChart(chartsComponents,component)">
+              <el-option
+                v-for="item in screenConstants.mapDrillType"
+                :key="item.value"
+                :label="item.name"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="跳转链接" class="df-form-item" v-if="component.isDrill && component.drillType == '2'">
+            <el-input v-model="component.drillLink" type="textarea" :rows="3"/>
+          </el-form-item>
           <el-form-item label="默认填充色">
             <input-color-picker
               :input-width="140"

@@ -133,6 +133,11 @@ export default {
     name:"tableComponent",
     components:{
     },
+    data() {
+      return {
+        tableTimer:{}
+      }
+    },
     props:{
         component:{
             type:Object,
@@ -145,27 +150,36 @@ export default {
         sendRequest:{//是否需要动态获取数据，//预览和设计的时候不需要动态获取数据，真正查看的时候才需要
             type:Boolean,
             default:false
-        }
+        },
+        searchParams: {
+          type: Array,
+          default: () => []
+        },
     },
     mounted() {
-      this.initData();
+      this.initData(this.searchParams);
     },
     methods:{
       //数据初始化
-      initData() {
+      initData(searchParams) {
         if (this.sendRequest) {
           if (this.component.dataSource == "2") {
-              this.getData(this.component);
+              this.getData(this.component,searchParams);
               if(this.component.refresh){
                 var self = this;
                   setInterval(() => {
-                      setTimeout(function(){self.getData(self.component)}, 0)
+                      setTimeout(function(){self.getData(self.component,searchParams)}, 0)
                   }, this.component.refreshTime)
               }
+          }else{
+            this.autoPage(this.component);
           }
+        }else{
+          this.autoPage(this.component);
         }
       },
-      getData(component) {
+      getData(component,searchParams) {
+        let pageParams = this.commonUtil.searchParamMap(searchParams)
         var params = {
           dataSetId: component.dynamicDataSettings.datasetId,
           dataColumns: component.dynamicDataSettings.dataColumns,
@@ -174,22 +188,42 @@ export default {
         var componentParams = this.commonUtil.getComponentParams(
           component.params
         );
-        params.params = Object.assign({}, componentParams, {});
+        params.params = Object.assign({}, componentParams, pageParams);
         let obj = {
           url: this.apis.screenDesign.getDynamicDatasApi,
           params: params,
           removeEmpty: false,
         };
+        let that = this;
         this.commonUtil.doPost(obj).then((response) => {
           if (response.code == "200") {
             component.spec.data.values = response.responseData;
             if(component.type == "pageTable" && Array.isArray(component.spec.data.values)){
               component.spec.data.total = component.spec.data.values.length;
             }
+            that.autoPage(that.component);
           }
         });
       },
-
+      autoPage(component){
+        this.component.pagination.currentPage = 1;
+        let timer = this.tableTimer[component.id];
+        if(component.autoPage){
+          if(timer == null){
+            timer = setInterval(function(){
+              if((component.pagination.currentPage*component.pagination.pageSize)>=component.spec.data.total) {
+                component.pagination.currentPage = 1;
+              }else{
+                component.pagination.currentPage = component.pagination.currentPage + 1
+              }
+            },component.autoPageInterval?component.autoPageInterval*1000:5000);
+            this.tableTimer[component.id] = timer
+          }
+        }else{
+          clearInterval(timer);     
+          this.tableTimer[component.id] = null;
+        }
+      },
     }
 }
 </script>
@@ -261,12 +295,12 @@ img {
 }
 
 :deep(.el-pagination.is-background .btn-prev), :deep(.el-pagination.is-background .btn-next), :deep(.el-pagination.is-background .el-pager li){
-  color:#ffffff !important
+  // color:#ffffff !important
   // #17b794
 }
 
 :deep(.el-pagination.is-background .el-pager .active){
-  color:#17b794!important
+  // color:#17b794!important
 }
 
 :deep(.el-table__body-wrapper::-webkit-scrollbar) {

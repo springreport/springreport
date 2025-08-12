@@ -34,7 +34,7 @@
           <p class="column-tag" style="min-width: 220px; max-width: 220px">
             列属性：{{ item.key }}
           </p>
-          <p class="column-tag" style="min-width: 220px; max-width: 220px">
+          <p class="column-tag" style="min-width: 220px; max-width: 220px" v-if="item.style">
             列宽：{{ item.style.width }}%
           </p>
         </el-collapse-item>
@@ -387,6 +387,21 @@
                   component.pagination.backgroundColor = val;
                 }
               "
+            />
+          </el-form-item>
+          <el-form-item label="自动翻页" class="df-form-item">
+            <el-switch
+              v-model="component.autoPage"
+              active-text="是"
+              inactive-text="否"
+              @change="changeAutoPage(component)"
+            />
+          </el-form-item>
+          <el-form-item label="翻页时间间隔(秒)" v-if="component.autoPage">
+            <el-input
+              v-model.number="component.autoPageInterval"
+              style="width: 160px"
+              @change="changeAutoPageInterval(component)"
             />
           </el-form-item>
         </div>

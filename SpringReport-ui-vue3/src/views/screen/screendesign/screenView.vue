@@ -23,6 +23,7 @@
         :sendRequest="sendRequest"
         :view-that="viewThat"
         :myclass="'myclass'"
+        :searchParams="(searchData.params && searchData.params.length>0)?searchData.params[0].params:[]"
       />
     </div>
     <div style="width: 100%; flex: none">
