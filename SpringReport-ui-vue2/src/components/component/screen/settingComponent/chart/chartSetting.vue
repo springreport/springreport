@@ -640,7 +640,7 @@
           </el-form-item>
         </div>
       </div>
-      <div v-if="component.type.toLowerCase().indexOf('wordcloud')<0 && component.type.toLowerCase().indexOf('gauge')<0 && component.type.toLowerCase().indexOf('circularprogress')<0 && component.type.toLowerCase().indexOf('barprogress')<0 && component.type.toLowerCase().indexOf('liquid')<0 && component.type.toLowerCase().indexOf('basicmap')<0 && component.type.toLowerCase().indexOf('boxplot')<0  && component.type.toLowerCase().indexOf('basicmap')>=0">
+      <div v-if="component.type.toLowerCase().indexOf('wordcloud')<0 && component.type.toLowerCase().indexOf('gauge')<0 && component.type.toLowerCase().indexOf('circularprogress')<0 && component.type.toLowerCase().indexOf('barprogress')<0 && component.type.toLowerCase().indexOf('liquid')<0 && component.type.toLowerCase().indexOf('basicmap')<0 && component.type.toLowerCase().indexOf('boxplot')<0">
         <div class="right-dataset-title">
           <span class="attr-dataset-title">标签设置</span>
         </div>

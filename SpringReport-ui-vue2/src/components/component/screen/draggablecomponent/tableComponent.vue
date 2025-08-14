@@ -13,7 +13,12 @@
         <div
             style="height:100%;width:100%;display: flex;justify-content: center;align-items: center;"
           >
-        <div :style="{height:(component.h-24)+'px',width:'92%'}" v-if="component.type == screenConstants.type.scrollTable">
+        <div :style="{ height:(component.h-(component.borderTop?component.borderTop:0)-(component.borderBottom?component.borderBottom:0))+'px',
+              width: (component.w-(component.borderLeft?component.borderLeft:0)-(component.borderRight?component.borderRight:0))+'px',
+              marginTop:(component.borderTop?component.borderTop:0)+'px',
+              marginBottom:(component.borderBottom?component.borderBottom:0)+'px',
+              marginLeft:(component.borderLeft?component.borderLeft:0)+'px',
+              marginRight:(component.borderRight?component.borderRight:0)+'px',}" v-if="component.type == screenConstants.type.scrollTable">
                 <!-- 表头 -->
                 <div class="warp-title" :style="{height:component.headStyle.height + 'px',backgroundColor:component.headStyle.backgroundColor,color:component.headStyle.color,fontSize:component.headStyle.fontSize+'pt',fontWeight:component.headStyle.fontWeight,borderWidth:component.style.isBorder?component.style.borderWidth+'px':'',borderStyle:component.style.isBorder?component.style.borderStyle:'',borderColor:component.style.isBorder?component.style.borderColor:''}">
                 <ul class="item">
@@ -25,7 +30,7 @@
                 </div>
                 <!-- 表格滚动区 -->
                 <div>
-                    <vue-seamless-scroll :style="{height: (component.h-component.headStyle.height-5-24) + 'px',borderWidth:component.style.isBorder?component.style.borderWidth+'px':'',borderStyle:component.style.isBorder?component.style.borderStyle:'',borderColor:component.style.isBorder?component.style.borderColor:''}" :data="component.spec.data.values" :class-option="component.options" class="warp-content" :ref="component.id">
+                    <vue-seamless-scroll :style="{height: (component.h-component.headStyle.height-5-(component.borderTop?component.borderTop:0)-(component.borderBottom?component.borderBottom:0)) + 'px',borderWidth:component.style.isBorder?component.style.borderWidth+'px':'',borderStyle:component.style.isBorder?component.style.borderStyle:'',borderColor:component.style.isBorder?component.style.borderColor:''}" :data="component.spec.data.values" :class-option="component.options" class="warp-content" :ref="component.id">
                         <li v-for="(d, t) in component.spec.data.values" :key="t" :style="{backgroundColor:((t+1)%2 == 0) ? component.bodyStyle.evenRowColor : component.bodyStyle.oddRowColor,height:component.bodyStyle.height + 'px', lineHeight:component.bodyStyle.height + 'px',color:component.bodyStyle.color,fontSize:component.bodyStyle.fontSize+'pt',fontWeight:component.bodyStyle.fontWeight,}">
                             <span v-if="component.style.showIndex" class="title" :style="{width: component.style.indexWidth+'%',borderWidth:component.style.isBorder?component.style.borderWidth+'px':'',borderStyle:component.style.isBorder?component.style.borderStyle:'',borderColor:component.style.isBorder?component.style.borderColor:''}">{{t+1}}</span> 
                             <span v-for="(column,i) in component.tableColumn" :key="i" class="title" :style="{width:column.style.width+'%',borderWidth:component.style.isBorder?component.style.borderWidth+'px':'',borderStyle:component.style.isBorder?component.style.borderStyle:'',borderColor:component.style.isBorder?component.style.borderColor:''}">{{d[column.key]}}</span>
@@ -101,6 +106,7 @@
             <el-table size="mini" :style="{background:component.rowStyle.backgroundColor}" :height="(component.h-30) + 'px'" :highlight-current-row="component.highlight" :border="component.border" :stripe="component.stripe" 
             :data="component.spec.data.values.slice((component.pagination.currentPage-1)*component.pagination.pageSize,component.pagination.currentPage*component.pagination.pageSize)"
             :header-cell-style="{fontSize: component.headStyle.fontSize+'px', backgroundColor: component.headStyle.backgroundColor,color:component.headStyle.color,fontWeight:component.headStyle.fontWeight}"
+            :header-row-style="{backgroundColor: component.headStyle.backgroundColor}"
             :row-style="{fontSize: component.rowStyle.fontSize+'px', backgroundColor: component.rowStyle.backgroundColor,color:component.rowStyle.color,fontWeight:component.rowStyle.fontWeight}">
                 <el-table-column v-if="component.isIndex" type="index" label="序号" align="center" :width="component.indexWidth"></el-table-column>
                 <el-table-column
@@ -211,6 +217,9 @@ export default {
         });
       },
       autoPage(component){
+        if(component.type != "pageTable"){
+          return;
+        }
         this.component.pagination.currentPage = 1;
         let timer = this.tableTimer[component.id];
         if(component.autoPage){
@@ -329,4 +338,16 @@ img {
 ::v-deep  .el-table__body{
   width: 100% !important;
 }
+
+/*最外层透明*/
+// ::v-deep .el-table, ::v-deep.el-table__expanded-cell{
+//     background-color: transparent;
+// }
+// /* 表格内背景颜色 */
+// ::v-deep .el-table th,
+// ::v-deep .el-table tr,
+// ::v-deep .el-table td {
+//     background-color: transparent;
+// }
+
 </style>

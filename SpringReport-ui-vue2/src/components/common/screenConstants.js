@@ -3579,7 +3579,7 @@ screenConstants.circularProgressInit = {
     // },
     axes: [
       {
-        visible: true,
+        visible: false,
         type: 'linear',
         orient: 'angle',
         min: 0,

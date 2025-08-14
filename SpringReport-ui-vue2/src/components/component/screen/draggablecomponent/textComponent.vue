@@ -30,6 +30,8 @@
       v-if="component.textType == 'text' || component.type == 'date'"
       class="text"
       :style="{
+        height: component.h-(component.borderTop?component.borderTop:0) + 'px',
+        width: component.w-(component.borderTop?component.borderTop:0) + 'px',
         'background-image': `linear-gradient(to ${
           component.style.direction ? component.style.direction : 'bottom'
         }, ${component.style.color}, ${
@@ -38,8 +40,7 @@
             : component.style.color
         })`,
       }"
-      >{{ component.content }}</span
-    >
+      v-html="component.content"></span>
     <MarqueeTips
       v-if="component.textType == 'marquee'"
       class="text"
@@ -118,7 +119,7 @@
             : component.style.color
         })`,
       }"
-      >{{ component.content }}</span
+      v-html="component.content" ></span
     >
     <MarqueeTips
       v-if="component.textType == 'marquee'"
@@ -240,9 +241,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.text {
+::v-deep .text {
   // text-align: center;
   -webkit-background-clip: text;
   color: transparent;
+  white-space: pre-wrap;
 }
 </style>
