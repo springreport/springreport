@@ -38,7 +38,7 @@
             : component.style.color
         })`,
       }"
-      >{{ component.content }}</span>
+      v-html="component.content"></span>
     <Vue3Marquee v-if="component.textType=='marquee'"  :duration="component.speed" :style="{height:component.h+'px',width:component.w+'px',lineHeight:component.h+'px'}">
       <span class="text" :style="{'background-image':`linear-gradient(to ${component.style.direction?component.style.direction:'bottom'}, ${component.style.color}, ${component.style.colorEnd?component.style.colorEnd:component.style.color})`}">{{component.content}}</span>
     </Vue3Marquee>
@@ -101,7 +101,7 @@
             : component.style.color
         })`,
       }"
-      >{{ component.content }}</span>
+      v-html="component.content"></span>
     <Vue3Marquee v-if="component.textType=='marquee'"  :duration="component.speed" :style="{height:component.h+'px',width:component.w+'px',lineHeight:component.h+'px'}">
       <span class="text" :style="{'background-image':`linear-gradient(to ${component.style.direction?component.style.direction:'bottom'}, ${component.style.color}, ${component.style.colorEnd?component.style.colorEnd:component.style.color})`}">{{component.content}}</span>
     </Vue3Marquee>
@@ -218,10 +218,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.text {
+:deep(.text) {
   // text-align: center;
   -webkit-background-clip: text;
-  // color: transparent;
+  color: transparent;
   display:inline;
+  white-space: pre-wrap;
 }
 </style>

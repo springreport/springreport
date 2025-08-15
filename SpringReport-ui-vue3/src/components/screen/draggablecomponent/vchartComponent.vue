@@ -1,6 +1,6 @@
 <template>
       <div
-        :style="{ height: '100%', width: '100%' }"
+        :style="{ height: component.h+'px', width: component.w+'px' }"
       >
         <!-- <div
           :style="{ height: '28px', width: '100%' }"
@@ -25,8 +25,12 @@
           <div
             :id="component.id"
             :style="{
-              height:'92%',
-              width: '92%',
+              height:(component.h-(component.borderTop?component.borderTop:0)-(component.borderBottom?component.borderBottom:0))+'px',
+              width: (component.w-(component.borderLeft?component.borderLeft:0)-(component.borderRight?component.borderRight:0))+'px',
+              marginTop:(component.borderTop?component.borderTop:0)+'px',
+              marginBottom:(component.borderBottom?component.borderBottom:0)+'px',
+              marginLeft:(component.borderLeft?component.borderLeft:0)+'px',
+              marginRight:(component.borderRight?component.borderRight:0)+'px',
             }"
           ></div>
           </div>
@@ -34,8 +38,8 @@
         <div v-else
           :id="component.id"
           :style="{
-            height:'100%',
-            width: '100%',
+            height:component.h+'px',
+            width: component.w+'px',
           }"
         ></div>
     </div>

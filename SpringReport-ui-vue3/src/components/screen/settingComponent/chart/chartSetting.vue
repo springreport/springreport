@@ -1147,9 +1147,9 @@
           component.type.toLowerCase().indexOf('circularprogress') < 0 &&
           component.type.toLowerCase().indexOf('barprogress') < 0 &&
           component.type.toLowerCase().indexOf('liquid') < 0 &&
-          component.type.toLowerCase().indexOf('map') < 0 &&
-          component.type.toLowerCase().indexOf('boxplot') < 0
-          && component.type.toLowerCase().indexOf('basicmap')>=0
+          component.type.toLowerCase().indexOf('basicmap') < 0 &&
+          component.type.toLowerCase().indexOf('boxplot') < 0 &&
+          component.type.toLowerCase().indexOf('combochartdbbar')<0
         "
       >
         <div class="right-dataset-title">
