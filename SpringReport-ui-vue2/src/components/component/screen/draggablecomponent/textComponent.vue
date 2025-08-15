@@ -30,8 +30,8 @@
       v-if="component.textType == 'text' || component.type == 'date'"
       class="text"
       :style="{
-        height: component.h-(component.borderTop?component.borderTop:0) + 'px',
-        width: component.w-(component.borderTop?component.borderTop:0) + 'px',
+        height: component.h + 'px',
+        width: component.w + 'px',
         'background-image': `linear-gradient(to ${
           component.style.direction ? component.style.direction : 'bottom'
         }, ${component.style.color}, ${
