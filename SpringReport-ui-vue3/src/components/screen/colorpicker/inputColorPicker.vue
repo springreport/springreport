@@ -29,11 +29,22 @@ export default {
   name: 'InputColorPicker',
   components: {},
   props: {
-    showAlpha: { type: Boolean, default: false },
+    showAlpha: { type: Boolean, default: true },
     predefineColors: {
       type: Array,
       default: () => {
-        return []
+        return [
+          '#000000',
+          '#ff4500',
+          '#ff8c00',
+          '#ffd700',
+          '#90ee90',
+          '#00ced1',
+          '#1e90ff',
+          '#c71585',
+          '#FF0000',
+          '#1CE611'
+        ]
       }
     },
     value: { type: String, default: '' },

@@ -479,6 +479,7 @@
           type: '1', // 1新增 2编辑
           index: null,
         },
+        tableTimer:{}
       };
     },
     methods: {
@@ -549,6 +550,32 @@
         this.commonUtil.clearObj(this.tableColumnForm);
         this.$refs['tableColumnForm'].resetFields(); // 校验重置
       },
+      changeAutoPage(component){
+        let timer = this.tableTimer[component.id];
+        if(component.autoPage){
+          if(timer == null){
+            timer = setInterval(function(){
+              if((component.pagination.currentPage*component.pagination.pageSize)>=component.spec.data.total) {
+                component.pagination.currentPage = 1;
+              }else{
+                component.pagination.currentPage = component.pagination.currentPage + 1
+              }
+            },component.autoPageInterval?component.autoPageInterval*1000:5000);
+            this.tableTimer[component.id] = timer
+          }
+        }else{
+          clearInterval(timer);     
+          this.tableTimer[component.id] = null;
+        }
+      },
+      changeAutoPageInterval(component){
+        let timer = this.tableTimer[component.id];
+        if(timer != null){
+          clearInterval(timer);     
+          this.tableTimer[component.id] = null;
+        }
+        this.changeAutoPage(component);
+      }
     },
   };
 </script>

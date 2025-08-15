@@ -113,7 +113,19 @@
         </el-form-item>
         <el-form-item  v-if="component.isborder" label="边框背景色">
               <input-color-picker :value="component.borderBackgroundColor" @change="(val)=>{changeBorderBackgroundColor(val)}" />
-            </el-form-item>
+        </el-form-item>
+        <el-form-item label="上边距" class="df-form-item" v-if="component.isborder && component.type!='text'">
+          <el-input-number v-model.number="component.borderTop" style="width: 100%;" placeholder="上边距" @change="commonUtil.reLoadChart(chartsComponents,component)" :disabled="component.locked" />
+        </el-form-item>
+        <el-form-item label="下边距" class="df-form-item" v-if="component.isborder && component.type!='text'">
+          <el-input-number v-model.number="component.borderBottom" style="width: 100%;" placeholder="下边距" @change="commonUtil.reLoadChart(chartsComponents,component)" :disabled="component.locked" />
+        </el-form-item>
+        <el-form-item label="左边距" class="df-form-item" v-if="component.isborder && component.type!='text'">
+          <el-input-number v-model.number="component.borderLeft" style="width: 100%;" placeholder="左边距" @change="commonUtil.reLoadChart(chartsComponents,component)" :disabled="component.locked" />
+        </el-form-item>
+        <el-form-item label="右边距" class="df-form-item" v-if="component.isborder && component.type!='text'">
+          <el-input-number v-model.number="component.borderRight" style="width: 100%;" placeholder="右边距" @change="commonUtil.reLoadChart(chartsComponents,component)" :disabled="component.locked" />
+        </el-form-item>
       </div>
     </el-form>
   </div>
