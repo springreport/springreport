@@ -38,9 +38,14 @@
                     </vue-seamless-scroll>
                 </div>
         </div>
-        <div  v-if="component.type == screenConstants.type.pageTable" :style="{height:(component.h-24)+'px',width:'92%'}">
-            <div :style="{height:(component.h-30-24)+'px',width:'100%'}">
-            <el-table size="mini" :style="{background:component.rowStyle.backgroundColor}" :height="(component.h-30-24) + 'px'" :highlight-current-row="component.highlight" :border="component.border" :stripe="component.stripe" 
+        <div  v-if="component.type == screenConstants.type.pageTable" :style="{height:(component.h-(component.borderTop?component.borderTop:0)-(component.borderBottom?component.borderBottom:0))+'px',
+        width:(component.w-(component.borderLeft?component.borderLeft:0)-(component.borderRight?component.borderRight:0))+'px',
+        marginTop:(component.borderTop?component.borderTop:0)+'px',
+        marginBottom:(component.borderBottom?component.borderBottom:0)+'px',
+        marginLeft:(component.borderLeft?component.borderLeft:0)+'px',
+        marginRight:(component.borderRight?component.borderRight:0)+'px'}">
+            <div :style="{}">
+            <el-table size="mini" :style="{background:component.rowStyle.backgroundColor}" :height="(component.h-24-(component.borderTop?component.borderTop:0)-(component.borderBottom?component.borderBottom:0)) + 'px'" :highlight-current-row="component.highlight" :border="component.border" :stripe="component.stripe" 
             :data="component.spec.data.values.slice((component.pagination.currentPage-1)*component.pagination.pageSize,component.pagination.currentPage*component.pagination.pageSize)"
             :header-cell-style="{fontSize: component.headStyle.fontSize+'px', backgroundColor: component.headStyle.backgroundColor,color:component.headStyle.color,fontWeight:component.headStyle.fontWeight}"
             :row-style="{fontSize: component.rowStyle.fontSize+'px', backgroundColor: component.rowStyle.backgroundColor,color:component.rowStyle.color,fontWeight:component.rowStyle.fontWeight}">
@@ -344,10 +349,10 @@ img {
 //     background-color: transparent;
 // }
 // /* 表格内背景颜色 */
-// ::v-deep .el-table th,
-// ::v-deep .el-table tr,
-// ::v-deep .el-table td {
-//     background-color: transparent;
-// }
+::v-deep .el-table th,
+::v-deep .el-table tr,
+::v-deep .el-table td {
+    background-color: transparent;
+}
 
 </style>
