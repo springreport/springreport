@@ -4367,7 +4367,13 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		List<Object> borderInfos = new ArrayList<Object>();
 		Object authority = config.get("authority");
 		Object colhidden = config.get(LuckySheetPropsEnum.COLHIDDEN.getCode());
+		if(colhidden == null) {
+			colhidden = new LinkedHashMap<>();
+		}
 		Object rowhidden = config.get(LuckySheetPropsEnum.ROWHIDDEN.getCode());
+		if(rowhidden == null) {
+			rowhidden = new LinkedHashMap<>();
+		}
 		Map<String, Object> configRowLen = config.get(LuckySheetPropsEnum.ROWLEN.getCode()) != null?(HashMap<String, Object>) config.get(LuckySheetPropsEnum.ROWLEN.getCode()):new HashMap<String, Object>() ;
 		Map<String, Object> configColumnLen = config.get(LuckySheetPropsEnum.COLUMNLEN.getCode()) != null?(HashMap<String, Object>) config.get(LuckySheetPropsEnum.COLUMNLEN.getCode()):new HashMap<String, Object>();
 		List<Map<String, Object>> borderConfig = config.get(LuckySheetPropsEnum.BORDERINFO.getCode()) != null?(List<Map<String, Object>>)config.get(LuckySheetPropsEnum.BORDERINFO.getCode()):new ArrayList<Map<String,Object>>();
@@ -10656,6 +10662,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
                     		{
                     			//do nothing
                     		}else {
+                    			((Map)rowhidden).put((x+k)+"", 0);
                     			Map<String, Object> mc = new HashMap<String, Object>();
                                 mc.put(LuckySheetPropsEnum.R.getCode(), x);
                                 mc.put(LuckySheetPropsEnum.C.getCode(), y);
@@ -13160,6 +13167,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		reportTpl.setTplName(newName);
 		reportTpl.setIsTemplate(YesNoEnum.NO.getCode());
 		reportTpl.setTemplateField(null);
+		reportTpl.setIsExample(YesNoEnum.NO.getCode());
 		reportTpl.setId(null);
 		//保存报表
 		this.save(reportTpl);

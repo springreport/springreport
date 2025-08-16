@@ -491,6 +491,7 @@ public class ScreenTplServiceImpl extends ServiceImpl<ScreenTplMapper, ScreenTpl
 		screenTpl.setTplName(newName);
 		screenTpl.setIsTemplate(YesNoEnum.NO.getCode());
 		screenTpl.setTemplateField(null);
+		screenTpl.setIsExample(YesNoEnum.NO.getCode());
 		screenTpl.setId(null);
 		this.save(screenTpl);
 		//获取所有的组件
