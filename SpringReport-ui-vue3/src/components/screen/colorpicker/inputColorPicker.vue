@@ -71,7 +71,7 @@ export default {
       if (val) {
         this.$emit('change', val)
       }else{
-        this.$emit('change', "")
+        this.$emit('change', null)
       }
     }
   }

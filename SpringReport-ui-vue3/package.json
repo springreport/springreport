@@ -24,7 +24,7 @@
     "@imengyu/vue3-context-menu": "^1.4.2",
     "@kjgl77/datav-vue3": "^1.7.3",
     "@soerenmartius/vue3-clipboard": "^0.1.2",
-    "@visactor/vchart": "^1.12.3",
+    "@visactor/vchart": "^2.0.0",
     "@visactor/vchart-theme": "^1.11.5",
     "axios": "^0.21.1",
     "codemirror": "5.x",
