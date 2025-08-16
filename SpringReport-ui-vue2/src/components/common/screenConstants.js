@@ -431,10 +431,12 @@ screenConstants.chartTitleSettings = {
   visible: false,
   text: '',
   align: 'center', // 水平对齐方式，left right center
+  verticalAlign:"top", //垂直对齐方式 'top' 'middle' 'bottom'
   textStyle: {
     // fill:'',//颜色
     // fontSize:'',
-  }
+  },
+  innerPadding:-10
 }
 
 screenConstants.tooltipSettings = {
@@ -2852,6 +2854,7 @@ screenConstants.gaugeInit = {
     color: ['#4FC6B4'],
     categoryField: 'type',
     valueField: 'value',
+    seriesField: 'type',
     outerRadius: 1,
     innerRadius: 0.7,
     startAngle: -180,
@@ -2913,6 +2916,16 @@ screenConstants.gaugeInit = {
     indicator: {
       visible: true,
       offsetY: '20',
+      title: {
+        visible: true,
+        autoLimit: true,
+        space: 12,
+        style: {
+          fontSize: 16,
+          fill: 'gray',
+          text: '目标A'
+        }
+      },
       content: {
         style: {
           text: '0.6',
@@ -2924,7 +2937,7 @@ screenConstants.gaugeInit = {
     title: screenConstants.chartTitleSettings,
     tooltip: screenConstants.tooltipSettings,
     label: {
-      visible: true,
+      visible: false,
       position: 'right',
       style: {
         fontSize: 14,
@@ -4903,7 +4916,15 @@ screenConstants.comboCharthlInit = {
           style: {
             cornerRadius: 0// 圆角
           }
-        }
+        },
+        label: {
+          visible: true,
+          position: 'outside',
+          style: {
+            fontSize: 14,
+            fill: null
+          }
+        },
       },
       {
         type: 'line',
@@ -4920,18 +4941,18 @@ screenConstants.comboCharthlInit = {
             curveType: 'linear'
           }
         },
+        label: {
+          visible: true,
+          position: 'outside',
+          style: {
+            fontSize: 14,
+            fill: null
+          }
+        },
       }
     ],
     title: screenConstants.chartTitleSettings,
     tooltip: screenConstants.tooltipSettings,
-    label: {
-      visible: true,
-      position: 'outside',
-      style: {
-        fontSize: 14,
-        fill: null
-      }
-    },
     axes: [
       { orient: 'bottom', sampling: true, label: { visible: true, style: { fill: '#6E6F73', }, autoRotate: false, autoRotateAngle: [0, 90], autoLimit: false }, unit: { visible: false, style: {}}},
       { orient: 'left', label: { visible: true, style: { fill: '#6E6F73' }, autoLimit: false }, unit: { visible: false, style: {}}}
