@@ -59,6 +59,7 @@ public class IIndexServiceImpl implements IIndexService{
 		if(YesNoEnum.YES.getCode().intValue() == merchantmode.intValue()) {
 			reportTplQueryWrapper.eq("merchant_no", sysMerchant.getMerchantNo());
 		}
+		reportTplQueryWrapper.eq("is_template", YesNoEnum.NO.getCode());
 		reportTplQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
 		long excelCount = this.iReportTplService.count(reportTplQueryWrapper);
 		result.setExcelCount(excelCount);
@@ -68,6 +69,7 @@ public class IIndexServiceImpl implements IIndexService{
 			docTplQueryWrapper.eq("merchant_no", sysMerchant.getMerchantNo());
 		}
 		docTplQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+		docTplQueryWrapper.eq("is_template", YesNoEnum.NO.getCode());
 		long wordCount = this.iDocTplService.count(docTplQueryWrapper);
 		result.setWordCount(wordCount);
 		
@@ -83,6 +85,7 @@ public class IIndexServiceImpl implements IIndexService{
 		if(YesNoEnum.YES.getCode().intValue() == merchantmode.intValue()) {
 			screenTplQueryWrapper.eq("merchant_no", sysMerchant.getMerchantNo());
 		}
+		screenTplQueryWrapper.eq("is_template", YesNoEnum.NO.getCode());
 		screenTplQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
 		long screenCount = this.iScreenTplService.count(screenTplQueryWrapper);
 		result.setScreenCount(screenCount);
