@@ -166,6 +166,9 @@
               "
             />
           </el-form-item>
+          <el-form-item v-if="component.spec.title.visible" label="字体大小">
+            <el-input v-model.number="component.spec.title.textStyle.fontSize" @change="commonUtil.reLoadChart(chartsComponents,component)" />
+          </el-form-item>
         </div>
       </div>
       <div v-if="component.type.toLowerCase().indexOf('pie') >= 0">
@@ -597,6 +600,11 @@
               />
             </el-select>
           </el-form-item>
+           </div>
+           <div class="right-dataset-title" >
+              <span class="attr-dataset-title">图例设置</span>
+            </div>
+            <div class="right-dataset-warp">
           <el-form-item label="是否显示" class="df-form-item">
             <el-switch
               v-model="component.spec.legends.visible"
@@ -777,6 +785,19 @@
           </el-form-item>
           <el-form-item label="开启下钻" class="df-form-item">
             <el-switch v-model="component.isDrill" active-text="是" inactive-text="否" @change="changeIsDrill(chartsComponents,component)" />
+          </el-form-item>
+          <el-form-item label="下钻类型" class="df-form-item" v-if="component.isDrill">
+           <el-select  v-model="component.drillType" placeholder="请选择" style="width:180px" @change="commonUtil.reLoadChart(chartsComponents,component)">
+              <el-option
+                v-for="item in screenConstants.mapDrillType"
+                :key="item.value"
+                :label="item.name"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="跳转链接" class="df-form-item" v-if="component.isDrill && component.drillType == '2'">
+            <el-input v-model="component.drillLink" type="textarea" :rows="3"/>
           </el-form-item>
           <el-form-item label="默认填充色">
             <input-color-picker
@@ -1020,12 +1041,64 @@
               <el-form-item label="圆角">
                 <el-input v-model.number="component.spec.series[0].bar.style.cornerRadius" @change="commonUtil.reLoadChart(chartsComponents,component)" />
               </el-form-item>
+              <el-form-item label="柱体标签是否显示" class="df-form-item">
+            <el-switch v-model="component.spec.series[0].label.visible" active-text="是" inactive-text="否" @change="commonUtil.reLoadChart(chartsComponents,component)" />
+          </el-form-item>
+          <el-form-item v-if="component.spec.series[0].label.visible" label="标签位置">
+            <el-select  v-model="component.spec.series[0].label.position" placeholder="请选择" style="width:180px" @change="commonUtil.reLoadChart(chartsComponents,component)">
+                    <el-option
+                      v-for="item in screenConstants.labelPosition"
+                      :key="item.value"
+                      :label="item.name"
+                      :value="item.value"
+                    />
+                  </el-select>
+            </el-form-item>
+            <el-form-item v-if="component.spec.series[0].label.visible" label="标签颜色">
+                  <input-color-picker :value="component.spec.series[0].label.style.fill" @change="(val)=>{component.spec.series[0].label.style.fill=val;commonUtil.reLoadChart(chartsComponents,component)}" />
+                </el-form-item>
+                <el-form-item v-if="component.spec.series[0].label.visible" label="字体大小">
+                  <el-input v-model.number="component.spec.series[0].label.style.fontSize" @change="commonUtil.reLoadChart(chartsComponents,component)" />
+                </el-form-item>
+                <el-form-item v-if="component.spec.series[0].label.visible" label="标签格式">
+                  <el-input v-model="component.spec.series[0].label.formatter" style="width:120px" @change="commonUtil.reLoadChart(chartsComponents,component)">
+                    <template #suffix>
+                    <el-button  type="text" @click="formatterRule()">设置规则</el-button>
+                    </template>
+                  </el-input>
+            </el-form-item>
               <el-form-item :label="'折线宽度'">
                 <el-input v-model="component.spec.series[1].line.style.lineWidth" @change="commonUtil.reLoadChart(chartsComponents,component)" />
               </el-form-item>
               <el-form-item v-if="(component.type.toLowerCase().indexOf('line')>=0 || component.type.toLowerCase().indexOf('area')>=0) && component.spec.lineLabel.visible" label="标签颜色">
                 <input-color-picker :value="component.spec.lineLabel.style.fill" @change="(val)=>{component.spec.lineLabel.style.fill=val;commonUtil.reLoadChart(chartsComponents,component)}" />
               </el-form-item>
+              <el-form-item label="折线标签是否显示" class="df-form-item">
+            <el-switch v-model="component.spec.series[1].label.visible" active-text="是" inactive-text="否" @change="commonUtil.reLoadChart(chartsComponents,component)" />
+          </el-form-item>
+          <el-form-item v-if="component.spec.series[1].label.visible" label="标签位置">
+            <el-select  v-model="component.spec.series[1].label.position" placeholder="请选择" style="width:180px" @change="commonUtil.reLoadChart(chartsComponents,component)">
+                    <el-option
+                      v-for="item in screenConstants.labelPosition"
+                      :key="item.value"
+                      :label="item.name"
+                      :value="item.value"
+                    />
+                  </el-select>
+            </el-form-item>
+            <el-form-item v-if="component.spec.series[1].label.visible" label="标签颜色">
+                  <input-color-picker :value="component.spec.series[1].label.style.fill" @change="(val)=>{component.spec.series[1].label.style.fill=val;commonUtil.reLoadChart(chartsComponents,component)}" />
+                </el-form-item>
+                <el-form-item v-if="component.spec.series[1].label.visible" label="字体大小">
+                  <el-input v-model.number="component.spec.series[1].label.style.fontSize" @change="commonUtil.reLoadChart(chartsComponents,component)" />
+                </el-form-item>
+                <el-form-item v-if="component.spec.series[1].label.visible" label="标签格式">
+                  <el-input v-model="component.spec.series[1].label.formatter" style="width:120px" @change="commonUtil.reLoadChart(chartsComponents,component)">
+                    <template #suffix>
+                    <el-button type="text" @click="formatterRule()">设置规则</el-button>
+                    </template>
+                  </el-input>
+            </el-form-item>
             </div>
           </div>
         <div v-if="component.type.toLowerCase().indexOf('line')>=0 || component.type.toLowerCase().indexOf('area')>=0 || component.type.toLowerCase().indexOf('histogram')>=0 || component.type.toLowerCase().indexOf('combocharthl')>=0">
@@ -1134,9 +1207,10 @@
           component.type.toLowerCase().indexOf('circularprogress') < 0 &&
           component.type.toLowerCase().indexOf('barprogress') < 0 &&
           component.type.toLowerCase().indexOf('liquid') < 0 &&
-          component.type.toLowerCase().indexOf('map') < 0 &&
-          component.type.toLowerCase().indexOf('boxplot') < 0
-          && component.type.toLowerCase().indexOf('basicmap')>=0
+          component.type.toLowerCase().indexOf('basicmap') < 0 &&
+          component.type.toLowerCase().indexOf('boxplot') < 0 &&
+          component.type.toLowerCase().indexOf('combochartdbbar')<0
+          && component.type.toLowerCase().indexOf('combocharthl')<0
         "
       >
         <div class="right-dataset-title">
@@ -1590,7 +1664,7 @@
         this.commonUtil.reLoadChart(this.chartsComponents, this.component);
       },
       changeSystemColor() {
-        let colors = this.screenConstants.systemChartColors[this.systemColor];
+        let colors = JSON.parse(JSON.stringify(this.screenConstants.systemChartColors[this.systemColor]));
         if (this.component.type.toLowerCase().indexOf('basicmap') >= 0) {
           this.component.spec.color.range = colors;
         } else {

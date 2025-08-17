@@ -34,7 +34,7 @@
           <p class="column-tag" style="min-width: 220px; max-width: 220px">
             列属性：{{ item.key }}
           </p>
-          <p class="column-tag" style="min-width: 220px; max-width: 220px">
+          <p class="column-tag" style="min-width: 220px; max-width: 220px" v-if="item.style">
             列宽：{{ item.style.width }}%
           </p>
         </el-collapse-item>
@@ -389,6 +389,21 @@
               "
             />
           </el-form-item>
+          <el-form-item label="自动翻页" class="df-form-item">
+            <el-switch
+              v-model="component.autoPage"
+              active-text="是"
+              inactive-text="否"
+              @change="changeAutoPage(component)"
+            />
+          </el-form-item>
+          <el-form-item label="翻页时间间隔(秒)" v-if="component.autoPage">
+            <el-input
+              v-model.number="component.autoPageInterval"
+              style="width: 160px"
+              @change="changeAutoPageInterval(component)"
+            />
+          </el-form-item>
         </div>
       </div>
     </el-form>
@@ -464,6 +479,7 @@
           type: '1', // 1新增 2编辑
           index: null,
         },
+        tableTimer:{}
       };
     },
     methods: {
@@ -534,6 +550,32 @@
         this.commonUtil.clearObj(this.tableColumnForm);
         this.$refs['tableColumnForm'].resetFields(); // 校验重置
       },
+      changeAutoPage(component){
+        let timer = this.tableTimer[component.id];
+        if(component.autoPage){
+          if(timer == null){
+            timer = setInterval(function(){
+              if((component.pagination.currentPage*component.pagination.pageSize)>=component.spec.data.total) {
+                component.pagination.currentPage = 1;
+              }else{
+                component.pagination.currentPage = component.pagination.currentPage + 1
+              }
+            },component.autoPageInterval?component.autoPageInterval*1000:5000);
+            this.tableTimer[component.id] = timer
+          }
+        }else{
+          clearInterval(timer);     
+          this.tableTimer[component.id] = null;
+        }
+      },
+      changeAutoPageInterval(component){
+        let timer = this.tableTimer[component.id];
+        if(timer != null){
+          clearInterval(timer);     
+          this.tableTimer[component.id] = null;
+        }
+        this.changeAutoPage(component);
+      }
     },
   };
 </script>

@@ -17,7 +17,7 @@
   "dependencies": {
     "@hufe921/canvas-editor": "^0.9.82",
     "@jiaminghi/data-view": "^2.10.0",
-    "@visactor/vchart": "^1.12.3",
+    "@visactor/vchart": "^2.0.0",
     "@visactor/vchart-theme": "^1.11.5",
     "@vue-office/docx": "^1.6.2",
     "@vue/composition-api": "^1.7.2",

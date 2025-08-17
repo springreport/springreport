@@ -51,7 +51,11 @@ export default {
     viewThat: { // 查看页面的this对象
       type: Object,
       default: () => ({}),
-    }
+    },
+    searchParams: {
+      type: Array,
+      default: () => []
+    },
   },
   data() {
     return {
@@ -65,34 +69,34 @@ export default {
   methods: {
     onActivated(index, item) {
       if (this.current) {
-        if (!this.isCtrl) {
-          this.current.active = false
-          this.multiActivated = []
-        } else {
-          this.multiActivated.push(this.current)
+          if (!this.isCtrl) {
+            this.current.active = false
+            this.multiActivated = []
+          } else {
+            this.multiActivated.push(this.current)
+          }
         }
-      }
-      if (this.isCtrl) {
-        this.multiActivated.push(item)
-      }
+        if (this.isCtrl) {
+          this.multiActivated.push(item)
+        }
 
-      item.active = true
-      // item.zindex = 100;
-      this.current = item
-      this.$emit('update:activated', item)
-      this.$emit('update:isBubblingEvent', true)
-      this.keyDown(item)
+        item.active = true
+        // item.zindex = 100;
+        this.current = item
+        this.$emit('update:activated', item)
+        this.$emit('update:isBubblingEvent', true)
+        this.keyDown(item)
 
-      // 左侧图层选中
-      const layerArr = document.querySelectorAll('.layer-item')
-      if (layerArr && layerArr.length) {
-        const currentLayerItem = layerArr[index]
-        currentLayerItem.scrollIntoView({
-          behavior: 'smooth',
-          block: 'center',
-          inline: 'nearest'
-        })
-      }
+        // 左侧图层选中
+        const layerArr = document.querySelectorAll('.layer-item')
+        if (layerArr && layerArr.length) {
+          const currentLayerItem = layerArr[index]
+          currentLayerItem.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center',
+            inline: 'nearest'
+          })
+        }
     },
     onDeactivated() {
       if (this.isCtrl) {

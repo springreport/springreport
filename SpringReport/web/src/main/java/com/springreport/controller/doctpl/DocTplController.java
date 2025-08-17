@@ -184,8 +184,8 @@ public class DocTplController extends BaseController {
 	@RequestMapping(value = "/saveDocTplSettings",method = RequestMethod.POST)
 	@RequiresPermissions(value = {"docTpl_save"})
 	@Check({"tplId:required#模板ID"})
-	public Response saveDocTplSettings(@RequestBody DocTplSettingsDto model) {
-		BaseEntity result = this.iDocTplService.saveDocTplSettings(model);
+	public Response saveDocTplSettings(@RequestBody DocTplSettingsDto model,@LoginUser UserInfoDto userInfoDto) {
+		BaseEntity result = this.iDocTplService.saveDocTplSettings(model,userInfoDto);
 		return Response.success(result.getStatusMsg());
 	}
 	

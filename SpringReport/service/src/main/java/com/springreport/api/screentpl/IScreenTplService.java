@@ -94,7 +94,7 @@ public interface IScreenTplService extends IService<ScreenTpl> {
 	 * @throws JsonProcessingException 
 	 * @date 2021-08-02 04:38:41 
 	 */ 
-	BaseEntity saveScreenDesign(SaveScreenTplDto saveScreenTplDto) throws JsonProcessingException;
+	BaseEntity saveScreenDesign(SaveScreenTplDto saveScreenTplDto,UserInfoDto userInfoDto) throws JsonProcessingException;
 	
 	/**  
 	 * @Title: getScreens

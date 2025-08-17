@@ -27,7 +27,7 @@
       :key="index"
       :parent="true"
       :style="{ 'z-index': item.active ? 1000 : item.zindex }"
-      :z="item.active ? 1000 : item.zindex"
+      :z="item.active ? 1000 : (item.zindex*1)"
       :isConflictCheck="false"
       :snap="true"
       :snapTolerance="10"
@@ -43,6 +43,7 @@
       v-show="!item.isDelete && item.isShow != false"
       :draggable="!item.locked"
       :resizable="!item.locked"
+      :class-name-active="isDesign?'active':''"
     >
       <div
         @contextmenu.prevent="onContextmenu($event, item)"
@@ -53,6 +54,7 @@
           :chartsComponents="chartsComponents"
           :sendRequest="sendRequest"
           :ref="item.id"
+          :searchParams="searchParams"
         ></text-component>
       </div>
       <div
@@ -84,6 +86,7 @@
           :sendRequest="sendRequest"
           :chartsComponents="chartsComponents"
           :ref="item.id"
+          :searchParams="searchParams"
         ></table-component>
       </div>
       <div
@@ -97,6 +100,7 @@
           :chartsComponents="chartsComponents"
           :ref="item.id"
           :view-that="viewThat"
+          :searchParams="searchParams"
         ></vchart-component>
       </div>
     </Vue3DraggableResizable>
@@ -124,7 +128,7 @@
         border: 3px dashed $--color-primary !important;
         left: -3px;
         top: -3px;
-        z-index: 0;
+        z-index: -10;
       }
     }
     .handle {

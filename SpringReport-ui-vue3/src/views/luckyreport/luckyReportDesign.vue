@@ -117,8 +117,8 @@
                         {{ datasetItem.datasetName }}
                       </div>
                       <div class="action-box df-c">
-                        <div class="action action-edit" @click.stop="editDataSet(datasetItem)" />
-                        <div class="action action-del" @click.stop="deleteDataSet(datasetItem)" />
+                        <div class="action action-edit" @click.stop="editDataSet(datasetItem)" v-has="'reportDesign_editDataSet'"/>
+                        <div class="action action-del" @click.stop="deleteDataSet(datasetItem)" v-has="'reportDesign_deleteDataSet'"/>
                       </div>
                     </div>
                   </template>

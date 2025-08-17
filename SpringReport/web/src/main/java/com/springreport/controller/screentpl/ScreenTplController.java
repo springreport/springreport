@@ -186,9 +186,9 @@ public class ScreenTplController extends BaseController {
 	@MethodLog(module="ScreenTpl",remark="保存大屏设计",operateType=Constants.OPERATE_TYPE_ADD)
 	@Check({"id:required#主键ID","width:required#大屏宽度","height:required#大屏高度"})
 	@RequiresPermissions(value = {"screenTpl_saveDesign","screenTemplate_design"},logical = Logical.OR)
-	public Response saveScreenDesign(@RequestBody SaveScreenTplDto saveScreenTplDto) throws JsonProcessingException
+	public Response saveScreenDesign(@RequestBody SaveScreenTplDto saveScreenTplDto,@LoginUser UserInfoDto userInfoDto) throws JsonProcessingException
 	{
-		BaseEntity result = this.iScreenTplService.saveScreenDesign(saveScreenTplDto);
+		BaseEntity result = this.iScreenTplService.saveScreenDesign(saveScreenTplDto,userInfoDto);
 		return Response.success(result.getStatusMsg());
 	}
 	

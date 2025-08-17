@@ -30,6 +30,8 @@
       v-if="component.textType == 'text' || component.type == 'date'"
       class="text"
       :style="{
+        height: component.h + 'px',
+        width: component.w + 'px',
         'background-image': `linear-gradient(to ${
           component.style.direction ? component.style.direction : 'bottom'
         }, ${component.style.color}, ${
@@ -38,8 +40,7 @@
             : component.style.color
         })`,
       }"
-      >{{ component.content }}</span
-    >
+      v-html="component.content"></span>
     <MarqueeTips
       v-if="component.textType == 'marquee'"
       class="text"
@@ -118,7 +119,7 @@
             : component.style.color
         })`,
       }"
-      >{{ component.content }}</span
+      v-html="component.content" ></span
     >
     <MarqueeTips
       v-if="component.textType == 'marquee'"
@@ -185,26 +186,31 @@ export default {
       type: Boolean,
       default: false,
     },
+    searchParams: {
+      type: Array,
+      default: () => []
+    },
   },
   mounted() {
-    this.initData();
+    this.initData(this.searchParams);
   },
   methods: {
     //数据初始化
-    initData() {
+    initData(searchParams) {
       if (this.sendRequest) {
         if (this.component.dataSource == "2") {
-            this.getData(this.component);
+            this.getData(this.component,searchParams);
             if(this.component.refresh){
                var self = this;
                 setInterval(() => {
-                    setTimeout(function(){self.getData(self.component)}, 0)
+                    setTimeout(function(){self.getData(self.component,searchParams)}, 0)
                 }, this.component.refreshTime)
             }
         }
       }
     },
-    getData(component) {
+    getData(component,searchParams) {
+      let pageParams = this.commonUtil.searchParamMap(searchParams)
       var params = {
         dataSetId: component.dynamicDataSettings.datasetId,
         dataColumns: component.dynamicDataSettings.dataColumns,
@@ -213,7 +219,7 @@ export default {
       var componentParams = this.commonUtil.getComponentParams(
         component.params
       );
-      params.params = Object.assign({}, componentParams, {});
+      params.params = Object.assign({}, componentParams, pageParams);
       let obj = {
         url: this.apis.screenDesign.getDynamicDatasApi,
         params: params,
@@ -235,9 +241,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.text {
+::v-deep .text {
   // text-align: center;
   -webkit-background-clip: text;
   color: transparent;
+  white-space: pre-wrap;
 }
 </style>

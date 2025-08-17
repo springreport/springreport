@@ -52,7 +52,11 @@ export default {
     viewThat: { // 查看页面的this对象
       type: Object,
       default: () => ({}),
-    }
+    },
+    searchParams: {
+      type: Array,
+      default: () => []
+    },
   },
   data() {
     return {

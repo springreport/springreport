@@ -8,7 +8,7 @@
       v-show="!item.isDelete && item.isShow != false"
       :key="index"
       :parent="true"
-      :z="item.active ? 1000 : item.zindex"
+      :z="item.active ? 1000 : (item.zindex*1)"
       :is-conflict-check="false"
       :snap="true"
       :snap-tolerance="10"
@@ -23,6 +23,7 @@
       @deactivated="onDeactivated"
       @resizestop="onResizstop"
       @dragstop="onDragstop"
+      :class-name-active="isDesign?'active':''"
     >
       <div
         v-if="item.category == screenConstants.category.text && !item.isDelete"
@@ -33,6 +34,7 @@
           :component="item"
           :charts-components="chartsComponents"
           :send-request="sendRequest"
+          :searchParams="searchParams"
         />
       </div>
       <div
@@ -70,6 +72,7 @@
           :component="item"
           :send-request="sendRequest"
           :charts-components="chartsComponents"
+          :searchParams="searchParams"
         />
       </div>
       <div
@@ -85,6 +88,7 @@
           :send-request="sendRequest"
           :charts-components="chartsComponents"
           :view-that="viewThat"
+          :searchParams="searchParams"
         />
       </div>
     </vue-draggable-resizable>
@@ -111,7 +115,7 @@
       content: "";
       width: 100%;
       height: 100%;
-      z-index: 0;
+      z-index: -10;
       border: 3px dashed $--color-primary !important;
       left: -3px;
       top: -3px;

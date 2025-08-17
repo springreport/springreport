@@ -1078,6 +1078,15 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 	public BaseEntity saveLuckySheetTpl(MesLuckysheetsTplDto mesLuckySheetsTplDto,UserInfoDto userInfoDto) throws JsonProcessingException, SQLException {
 		ObjectMapper objectMapper = new ObjectMapper();
 		SaveLuckySheetTplDto result = new SaveLuckySheetTplDto();
+		ReportTpl tpl = this.getById(mesLuckySheetsTplDto.getTplId());
+		if(tpl == null)
+		{
+			throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.notexist", new String[] {"报表模板"}));
+		}
+		if(tpl.getIsExample().intValue() == YesNoEnum.YES.getCode().intValue() && userInfoDto.getIsAdmin().intValue() != YesNoEnum.YES.getCode().intValue()) {
+			//示例模板只允许超级管理员去修改保存
+			throw new BizException(StatusCode.FAILURE, "该模板是示例模板，不允许修改，请见谅！");
+		}
 		ReportTpl reportTpl = new ReportTpl();
 		reportTpl.setId(mesLuckySheetsTplDto.getTplId());
 		reportTpl.setIsParamMerge(mesLuckySheetsTplDto.getIsParamMerge());
@@ -4358,7 +4367,13 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		List<Object> borderInfos = new ArrayList<Object>();
 		Object authority = config.get("authority");
 		Object colhidden = config.get(LuckySheetPropsEnum.COLHIDDEN.getCode());
+		if(colhidden == null) {
+			colhidden = new LinkedHashMap<>();
+		}
 		Object rowhidden = config.get(LuckySheetPropsEnum.ROWHIDDEN.getCode());
+		if(rowhidden == null) {
+			rowhidden = new LinkedHashMap<>();
+		}
 		Map<String, Object> configRowLen = config.get(LuckySheetPropsEnum.ROWLEN.getCode()) != null?(HashMap<String, Object>) config.get(LuckySheetPropsEnum.ROWLEN.getCode()):new HashMap<String, Object>() ;
 		Map<String, Object> configColumnLen = config.get(LuckySheetPropsEnum.COLUMNLEN.getCode()) != null?(HashMap<String, Object>) config.get(LuckySheetPropsEnum.COLUMNLEN.getCode()):new HashMap<String, Object>();
 		List<Map<String, Object>> borderConfig = config.get(LuckySheetPropsEnum.BORDERINFO.getCode()) != null?(List<Map<String, Object>>)config.get(LuckySheetPropsEnum.BORDERINFO.getCode()):new ArrayList<Map<String,Object>>();
@@ -10371,7 +10386,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				luckySheetBindData.setLastCoordsy(rowAndCol.get("maxY"));
 			}else if(luckySheetBindData.getRelyCellExtend().intValue() == CellExtendEnum.HORIZONTAL.getCode().intValue()){
 				luckySheetBindData.setLastCoordsx(rowAndCol.get("maxX"));
-				luckySheetBindData.setLastCoordsy(rowAndCol.get("maxY")+bindDatas.get(j).size()*luckySheetBindData.getColSpan());
+				luckySheetBindData.setLastCoordsy(rowAndCol.get("maxY")+(luckySheetBindData.getIsGroupMerge()?groupMergeRows:bindDatas.get(j).size()*luckySheetBindData.getColSpan()));
 			}
 		}
 		if(luckySheetBindData.getIsRelied().intValue() == 1)
@@ -10379,7 +10394,8 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			luckySheetBindData.setRecalculateCoords(YesNoEnum.NO.getCode().intValue());
 			luckySheetBindData.setRelyCellExtend(CellExtendEnum.HORIZONTAL.getCode());
 			luckySheetBindData.setLastCoordsx(rowAndCol.get("maxX"));
-			luckySheetBindData.setLastCoordsy(rowAndCol.get("maxY")+bindDatas.get(j).size());
+			luckySheetBindData.setLastCoordsy(rowAndCol.get("maxY")+(luckySheetBindData.getIsGroupMerge()?groupMergeRows:bindDatas.get(j).size()*luckySheetBindData.getColSpan()));
+			
 			this.processReliedCells(j, maxCoordinate, luckySheetBindData, cellDatas, hyperlinks, dataRowLen, dataColLen, rowlen, columnlen, 
 					mergeMap, objectMapper, maxXAndY, borderInfo, borderConfig, borderInfos, calcChain, configRowLen, configColumnLen, images, 
 					cellBindData,usedCells,dictsMap,nowFunction,functionCellFormat,dataVerification,drillCells,rowhidden,colhidden,null,null,null,cellConditionFormat,dynamicRange,subTotalDigits,coverCells,columnStartCoords,extendCellOrigin,subTotalCellCoords,isExport,dictCache);
@@ -10646,6 +10662,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
                     		{
                     			//do nothing
                     		}else {
+                    			((Map)rowhidden).put((x+k)+"", 0);
                     			Map<String, Object> mc = new HashMap<String, Object>();
                                 mc.put(LuckySheetPropsEnum.R.getCode(), x);
                                 mc.put(LuckySheetPropsEnum.C.getCode(), y);
@@ -13150,6 +13167,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		reportTpl.setTplName(newName);
 		reportTpl.setIsTemplate(YesNoEnum.NO.getCode());
 		reportTpl.setTemplateField(null);
+		reportTpl.setIsExample(YesNoEnum.NO.getCode());
 		reportTpl.setId(null);
 		//保存报表
 		this.save(reportTpl);

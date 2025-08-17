@@ -251,7 +251,7 @@ export default {
         params: { id: dataSetId },
         removeEmpty: false,
       };
-      this.dataSetForm.column = [];
+      // this.dataSetForm.column = [];
       var that = this;
       this.commonUtil.doPost(obj).then((response) => {
         if (response.code == '200') {

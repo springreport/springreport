@@ -976,6 +976,8 @@ commonUtil.reLoadChart = function(chartsComponents,component,sendRequest,that)
                     vchart.on('click', (params) => {
                         commonUtil.mapDrill(chartsComponents,component,params,sendRequest,that);
                     })
+                }else{
+                    vchart.off('click', null); // 卸载事件
                 }
             }
         }
@@ -1006,6 +1008,13 @@ commonUtil.chartProcess = function(component){
                 }
             }
         }
+        if(component.type == "gauge"){
+            if(component.spec.indicator.title){
+                component.spec.indicator.title.style.fontSize = component.spec.indicator.content.style.fontSize;
+                component.spec.indicator.title.style.fill = component.spec.indicator.content.style.fill;
+                component.spec.indicator.title.style.text = component.spec.seriesField?component.spec.data.values[0][component.spec.seriesField]:component.spec.data.values[0][component.spec.categoryField];
+            }
+        }
     }else if(component.type.toLowerCase().indexOf("circularprogress")>=0){
         component.spec.indicator.content.style.fontSize = component.spec.indicator.title.style.fontSize;
         component.spec.indicator.content.style.fill = component.spec.indicator.title.style.fill;
@@ -1015,14 +1024,12 @@ commonUtil.chartProcess = function(component){
                     component.spec.indicator.title.field = null;
                     component.spec.indicator.content.field = null;
                     component.spec.indicator.title.style.text = component.spec.seriesField?component.spec.data.values[0][component.spec.seriesField]:component.spec.data.values[0][component.spec.categoryField];
-                    component.spec.indicator.content.style.text = component.spec.data.values[0][component.spec.valueField];
+                   component.spec.indicator.content.style.text = component.spec.valueTextField?component.spec.data.values[0][component.spec.valueTextField]:component.spec.data.values[0][component.spec.valueField]*100+"%";
                 }else{
-                    // component.spec.indicator.title.text = null;
-                    // component.spec.indicator.content.text = null;
                     component.spec.indicator.title.field = component.spec.valueField;
                     component.spec.indicator.content.field = component.spec.seriesField?component.spec.seriesField:component.spec.categoryField;
                     component.spec.indicator.title.style.text = component.spec.seriesField?component.spec.data.values[0][component.spec.seriesField]:component.spec.data.values[0][component.spec.categoryField];
-                    component.spec.indicator.content.style.text = component.spec.data.values[0][component.spec.valueField];
+                    component.spec.indicator.content.style.text = component.spec.valueTextField?component.spec.data.values[0][component.spec.valueTextField]:component.spec.data.values[0][component.spec.valueField]*100+"%";
                 }
             }
         }
@@ -1242,36 +1249,46 @@ commonUtil.mapDrill = async function(chartsComponents,component,data,sendRequest
     if(data && data.datum && Object.keys(data.datum).length > 0){
         let adcode = data.datum.properties.adcode+'';
         let name = data.datum.properties.name;
-        let parentCode = data.datum.properties.parent.adcode+'';
-        let geojson = null;
-        if (!VChart.getMap(adcode)) {
-            try {
-                geojson = await commonUtil.getMapData(adcode)
-                VChart.registerMap(adcode, geojson)
-            } catch (error) {
-                 commonUtil.showMessage({message:"未获取到地区【"+name+"】的地图数据",type: commonConstants.messageType.error})
-                 return;
+        if(component.drillType == '2'){
+            if(component.drillLink){
+                let url = commonUtil.buildUrlWithParams(component.drillLink,{adcode:adcode});
+                window.open(url,'_blank')
             }
-        }
-        if(component.type == "basicMap"){
-            component.spec.map = adcode;
-            component.spec.nameMap = screenConstants.nameMap[adcode];
-        }else if(component.type == "scatterMap"){
-            
-        }
-        commonUtil.mapCodes[adcode] = parentCode;
-        if(!sendRequest ){
-            chartsComponents[component.id].updateSpec(component.spec,true);
-        } else{
-            if(component.type != "picture"){
-                if(component.dataSource == "2"){
-                    that.$refs['draggable'].$refs[component.id][0].initData(that);
-                }else{
-                    chartsComponents[component.id].updateSpec(component.spec,true);
+        }else{
+            let parentCode = data.datum.properties.parent.adcode+'';
+            let geojson = null;
+            if (!VChart.getMap(adcode)) {
+                try {
+                    geojson = await commonUtil.getMapData(adcode)
+                    VChart.registerMap(adcode, geojson)
+                } catch (error) {
+                    commonUtil.showMessage({message:"未获取到地区【"+name+"】的地图数据",type: commonConstants.messageType.error})
+                    return;
+                }
+            }
+            if(component.type == "basicMap"){
+                component.spec.map = adcode;
+                component.spec.nameMap = screenConstants.nameMap[adcode];
+            }else if(component.type == "scatterMap"){
+                
+            }
+            commonUtil.mapCodes[adcode] = parentCode;
+            if(!sendRequest ){
+                chartsComponents[component.id].updateSpec(component.spec,true);
+            } else{
+                if(component.type != "picture"){
+                    if(component.dataSource == "2"){
+                        that.$refs['draggable'].$refs[component.id][0].initData(that);
+                    }else{
+                        chartsComponents[component.id].updateSpec(component.spec,true);
+                    }
                 }
             }
         }
     }else if(data && data.datum && Object.keys(data.datum).length == 0){
+        if(component.drillType == '2'){
+            return;
+        }
         let adcode = component.spec.map+'';
         let backCode = commonUtil.mapCodes[adcode];
         if(backCode){
@@ -2361,5 +2378,25 @@ commonUtil.processPageParam = function(searchData){
         }
     }
     return newSearchData;
+}
+
+commonUtil.searchParamMap = function(searchParam){
+    let result = {};
+    if(searchParam && searchParam.length > 0){
+        for (let index = 0; index < searchParam.length; index++) {
+            const element = searchParam[index];
+            result[element.paramCode] = element[element.paramCode];
+        }
+    }
+    return result;
+}
+
+commonUtil.buildUrlWithParams = function(url = "", params = {}) {
+  //若参数对象不存在或为空，直接返回url
+  if (!params || Object.keys(params).length === 0) {
+    return url
+  }
+  //将参数转化为字符串 eg: {userId: 123,token:'abc'} => 'userId=123&token=abc'
+  return url + (url.includes("?") ? "&" : "?") + new URLSearchParams(params).toString()
 }
 export default commonUtil;

@@ -366,12 +366,16 @@ public class ScreenTplServiceImpl extends ServiceImpl<ScreenTplMapper, ScreenTpl
 	 * @date 2021-08-02 04:38:59 
 	 */
 	@Override
-	public BaseEntity saveScreenDesign(SaveScreenTplDto saveScreenTplDto) throws JsonProcessingException {
+	public BaseEntity saveScreenDesign(SaveScreenTplDto saveScreenTplDto,UserInfoDto userInfoDto) throws JsonProcessingException {
 		BaseEntity result = new BaseEntity();
 		ScreenTpl exist = this.getById(saveScreenTplDto.getId());
 		if(exist == null)
 		{
 			throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.notexist",new String[] {"大屏模板"}));
+		}
+		if(exist.getIsExample().intValue() == YesNoEnum.YES.getCode().intValue() && userInfoDto.getIsAdmin().intValue() != YesNoEnum.YES.getCode().intValue()) {
+			//示例模板只允许超级管理员去修改保存
+			throw new BizException(StatusCode.FAILURE, "该模板是示例模板，不允许修改，请见谅！");
 		}
 		ScreenTpl screenTpl = new ScreenTpl();
 		BeanUtils.copyProperties(saveScreenTplDto, screenTpl);
@@ -487,6 +491,7 @@ public class ScreenTplServiceImpl extends ServiceImpl<ScreenTplMapper, ScreenTpl
 		screenTpl.setTplName(newName);
 		screenTpl.setIsTemplate(YesNoEnum.NO.getCode());
 		screenTpl.setTemplateField(null);
+		screenTpl.setIsExample(YesNoEnum.NO.getCode());
 		screenTpl.setId(null);
 		this.save(screenTpl);
 		//获取所有的组件

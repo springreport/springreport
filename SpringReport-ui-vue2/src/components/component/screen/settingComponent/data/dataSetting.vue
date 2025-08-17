@@ -467,6 +467,23 @@
                 />
               </el-select>
             </el-form-item>
+            <el-form-item label="数据文本" v-if="component.type.toLowerCase().indexOf('circularprogress') >= 0">
+              <el-select
+                v-model="component.spec.valueTextField"
+                placeholder="请选择"
+                allow-create
+                filterable
+                clearable
+                @change="commonUtil.reLoadChart(chartsComponents, component)"
+              >
+                <el-option
+                  v-for="item in component.dynamicDataSettings.dataColumns"
+                  :key="item"
+                  :label="item"
+                  :value="item"
+                />
+              </el-select>
+            </el-form-item>
             <el-form-item label="系列分组">
               <el-select
                 v-model="component.spec.seriesField"

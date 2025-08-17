@@ -40,7 +40,7 @@
         <el-form-item
           label="数据列"
           prop="column"
-          :rules="filter_rules('返回值类型', { required: true })"
+          :rules="filter_rules('数据列', { required: true })"
         >
           <el-select
             v-model="dataSetForm.column"

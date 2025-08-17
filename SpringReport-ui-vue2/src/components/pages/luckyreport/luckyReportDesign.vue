@@ -133,9 +133,11 @@
                         <div
                           class="action action-edit"
                           @click.stop="editDataSet(datasetItem)"
+                          v-has="'reportDesign_editDataSet'"
                         />
                         <div
                           class="action action-del"
+                          v-has="'reportDesign_deleteDataSet'"
                           @click.stop="deleteDataSet(datasetItem)"
                         />
                       </div>
