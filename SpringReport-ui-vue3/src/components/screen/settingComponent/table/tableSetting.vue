@@ -28,14 +28,50 @@
             />
             <div class="right-el-icon-delete" @click.stop="deleteTableColumn(index)" />
           </template>
-          <p class="column-tag" style="min-width: 220px; max-width: 220px">
+          <p class="column-tag" style="min-width: 220px; max-width: 220px; margin: 0">
             列名称：{{ item.name }}
           </p>
-          <p class="column-tag" style="min-width: 220px; max-width: 220px">
+          <p class="column-tag" style="min-width: 220px; max-width: 220px; margin: 0">
             列属性：{{ item.key }}
           </p>
-          <p class="column-tag" style="min-width: 220px; max-width: 220px" v-if="item.style">
+          <p class="column-tag" style="min-width: 220px; max-width: 220px; margin: 0" v-if="item.style">
             列宽：{{ item.style.width }}%
+          </p>
+          <p class="column-tag" style="min-width: 220px; max-width: 220px; margin: 0">
+            是否超链接：{{ item.isHyperLink?'是':'否' }}
+          </p>
+          <p class="column-tag" style="min-width: 220px; max-width: 220px; margin: 0" v-if="item.isHyperLink">
+            超链接：{{ item.hyperLink }}
+          </p>
+          <p class="column-tag" style="min-width: 220px; max-width: 220px; margin: 0" v-if="item.isHyperLink">
+            超链接参数：{{ item.hyperLinkParam }}
+          </p>
+          <p class="column-tag" style="min-width: 220px; max-width: 220px; margin: 0" v-if="item.conditions && item.conditions.length > 0">
+            <el-collapse
+              class="sub-collapse"
+            >
+              <el-collapse-item
+                v-for="(conditionItem, conditionindex) in item.conditions"
+                :key="conditionindex"
+              >
+              <template v-slot:title>
+                {{ '自定义颜色条件'+ conditionindex}}
+              </template>
+                <p class="column-tag" style="min-width: 220px; max-width: 220px; margin: 0">
+                  属性：{{ conditionItem.conditionProperty }}
+                </p>
+                <p class="column-tag" style="min-width: 220px; max-width: 220px; margin: 0">
+                  操作符：{{ conditionItem.conditionOperator }}
+                </p>
+                <p class="column-tag" style="min-width: 220px; max-width: 220px; margin: 0">
+                  条件值：{{ conditionItem.conditionValue }}
+                </p>
+                <p class="column-tag" :style="{minWidth:'220px',maxWidth:'220px', margin: 0,color:conditionItem.conditionColor}">
+                  字体颜色：{{ conditionItem.conditionColor }}
+                </p>
+                
+              </el-collapse-item>
+            </el-collapse>
           </p>
         </el-collapse-item>
       </el-collapse>
