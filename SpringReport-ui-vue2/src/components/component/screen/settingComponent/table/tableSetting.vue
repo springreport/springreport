@@ -471,10 +471,10 @@
         <el-form-item label="是否超链接"  prop="isHyperLink" :rules="filter_rules('是否超链接', { required: true })">
           <el-switch v-model="tableColumnForm.isHyperLink" active-text="是" inactive-text="否"  />
         </el-form-item>
-        <el-form-item label="超链接"  prop="hyperLink" :rules="filter_rules('超链接', { required: true })">
+        <el-form-item label="超链接"  prop="hyperLink" :rules="filter_rules('超链接', { required: true })" v-if="tableColumnForm.isHyperLink">
           <el-input v-model="tableColumnForm.hyperLink" type="textarea" :rows="3" style="width:100%"></el-input>
         </el-form-item>
-        <el-form-item label="参数"  prop="hyperLinkParam" :rules="filter_rules('参数', { required: true })">
+        <el-form-item label="参数"  prop="hyperLinkParam" :rules="filter_rules('参数', { required: true })" v-if="tableColumnForm.isHyperLink">
           <el-input v-model="tableColumnForm.hyperLinkParam" placeholder="多个参数用,分隔" style="width:100%"></el-input>
         </el-form-item>
         <el-form-item
@@ -656,7 +656,7 @@ export default {
         this.tableColumnForm.type = type
         this.tableColumnForm.index = index
         this.tableColumnForm.conditions = row.conditions;
-        this.tableColumnForm.isHyperLink = row.isHyperLink;
+        this.tableColumnForm.isHyperLink = row.isHyperLink==null?false:row.isHyperLink;
         this.tableColumnForm.hyperLink = row.hyperLink;
         this.tableColumnForm.hyperLinkParam = row.hyperLinkParam;
       } else {

@@ -233,7 +233,7 @@ export default {
           // 绘制
           vchart.renderSync()
           var that = this;
-          if(element.type == "basicMap"){
+          if(element.type == "basicMap" || element.type == "scatterMap"){
             if(element.isDrill){
               vchart.on('click', (params) => {
                   that.commonUtil.mapDrill(that.chartsComponents,element,params,that.sendRequest,that);
