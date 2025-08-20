@@ -441,6 +441,49 @@
             <template #append>%</template>
           </el-input>
         </el-form-item>
+        <el-form-item label="是否超链接"  prop="isHyperLink" :rules="filter_rules('是否超链接', { required: true })">
+          <el-switch v-model="tableColumnForm.isHyperLink" active-text="是" inactive-text="否"  />
+        </el-form-item>
+        <el-form-item label="超链接"  prop="hyperLink" :rules="filter_rules('超链接', { required: true })" v-if="tableColumnForm.isHyperLink">
+          <el-input v-model="tableColumnForm.hyperLink" type="textarea" :rows="3" style="width:100%"></el-input>
+        </el-form-item>
+        <el-form-item label="参数"  prop="hyperLinkParam" :rules="filter_rules('参数', { required: true })" v-if="tableColumnForm.isHyperLink">
+          <el-input v-model="tableColumnForm.hyperLinkParam" placeholder="多个参数用,分隔" style="width:100%"></el-input>
+        </el-form-item>
+        <el-form-item
+          label="自定义字体颜色条件"
+        >
+        <el-button type="primary" @click="addColorCondition">添加条件</el-button>
+        <el-table
+          size="small"
+          :data="tableColumnForm.conditions"
+          style="width: 100%; margin-top: 12px"
+          :border="true"
+        >
+          <el-table-column prop="conditionProperty" label="属性" />
+          <el-table-column prop="conditionOperator" label="操作符" />
+          <el-table-column prop="conditionValue" label="条件值" />
+          <el-table-column prop="conditionColor" label="颜色" >
+             <template #default="scope">
+              <div  :style="{color:scope.row.conditionColor}">字体颜色</div>
+             </template>
+          </el-table-column>
+          <el-table-column label="操作" width="180">
+            <template #default="scope">
+              <el-link
+                type="info"
+                style="margin-right: 12px"
+                @click="editConditionColor(scope.row,scope.$index)"
+              >编辑</el-link>
+              <el-link
+                type="info"
+                @click="deleteConditionColor(scope.$index)"
+                v-show="scope.row.id != 0"
+              >删除</el-link>
+            </template>
+          </el-table-column>
+        </el-table>
+        </el-form-item>
       </el-form>
       <template #footer>
         <span class="dialog-footer">
@@ -448,6 +491,78 @@
           <el-button type="primary" @click="addTableColomn">确 定</el-button>
         </span>
       </template>
+    </el-dialog>
+    <el-dialog
+      title="自定义字体颜色条件"
+      v-model="colorConditionDialogVisiable"
+      :close-on-click-modal="false"
+      width="500px"
+      @close="closeColorConditionDialog"
+    >
+      <el-form
+        ref="colorConditionForm"
+        class="demo-form-inline"
+        :model="colorConditionForm"
+        label-position="top"
+        size="default"
+      >
+        <el-form-item
+          label="属性"
+          prop="conditionProperty"
+          :rules="filter_rules('属性', { required: true })"
+        >
+          <el-input v-model="colorConditionForm.conditionProperty" size="default" placeholder="属性"/>
+        </el-form-item>
+        <el-form-item
+          label="操作符"
+          prop="conditionOperator"
+          :rules="filter_rules('操作符', { required: true })"
+        >
+           <el-select
+            v-model="colorConditionForm.conditionOperator"
+            placeholder="操作符"
+            size="default"
+          >
+            <el-option
+              v-for="op in selectUtil.operate"
+              :key="op.value"
+              :label="op.label"
+              :value="op.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          label="条件值"
+          prop="conditionValue"
+          :rules="filter_rules('条件值', { required: true })"
+        >
+          <el-input
+            v-model="colorConditionForm.conditionValue"
+            placeholder="条件值"
+            size="default"
+          />
+        </el-form-item>
+        <el-form-item
+          label="字体颜色"
+          prop="conditionColor"
+          :rules="filter_rules('字体颜色', { required: true })"
+        >
+           <input-color-picker
+                  :value="colorConditionForm.conditionColor"
+                  @change="
+                    (val) => {
+                      colorConditionForm.conditionColor = val;
+                    }
+                  "
+                />
+        </el-form-item>
+      </el-form>
+       <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="closeColorConditionDialog">取 消</el-button>
+          <el-button type="primary" @click="confirmColorCondition">确 定</el-button>
+        </span>
+       </template>
     </el-dialog>
   </div>
 </template>
@@ -478,7 +593,19 @@
           width: '',
           type: '1', // 1新增 2编辑
           index: null,
+          conditions:[],//颜色条件
+          isHyperLink:false,
+          hyperLink:"",
+          hyperLinkParam:"",
         },
+        colorConditionForm:{
+          conditionOperator:'',
+          conditionProperty:'',
+          conditionValue:'',
+          conditionColor:'',
+          index:null
+        },
+        colorConditionDialogVisiable:false,
         tableTimer:{}
       };
     },
@@ -501,12 +628,19 @@
           }
           this.tableColumnForm.type = type;
           this.tableColumnForm.index = index;
+          this.tableColumnForm.conditions = row.conditions;
+          this.tableColumnForm.isHyperLink = row.isHyperLink==null?false:row.isHyperLink;
+          this.tableColumnForm.hyperLink = row.hyperLink;
+          this.tableColumnForm.hyperLinkParam = row.hyperLinkParam;
         } else {
           this.tableColumnForm.name = '';
           this.tableColumnForm.key = '';
           this.tableColumnForm.width = '';
           this.tableColumnForm.type = type;
           this.tableColumnForm.index = index;
+          this.tableColumnForm.isHyperLink = false;
+          this.tableColumnForm.hyperLink = '';
+          this.tableColumnForm.hyperLinkParam = '';
         }
       },
       addTableColomn() {
@@ -516,6 +650,9 @@
               var obj = {
                 name: this.tableColumnForm.name,
                 key: this.tableColumnForm.key,
+                isHyperLink: this.tableColumnForm.isHyperLink,
+                hyperLink: this.tableColumnForm.hyperLink,
+                hyperLinkParam: this.tableColumnForm.hyperLinkParam
               };
               if (this.component.type == 'scrollTable') {
                 obj.style = { width: this.tableColumnForm.width };
@@ -529,12 +666,23 @@
                 this.component.tableColumn[this.tableColumnForm.index].style.width =
                   this.tableColumnForm.width;
               }
+              this.component.tableColumn[this.tableColumnForm.index].conditions =
+                this.tableColumnForm.conditions
+              this.component.tableColumn[this.tableColumnForm.index].isHyperLink =
+                this.tableColumnForm.isHyperLink
+              this.component.tableColumn[this.tableColumnForm.index].hyperLink =
+                this.tableColumnForm.hyperLink
+              this.component.tableColumn[this.tableColumnForm.index].hyperLinkParam =
+                this.tableColumnForm.hyperLinkParam
             }
             this.tableColumnForm.name = '';
             this.tableColumnForm.key = '';
             this.tableColumnForm.width = '';
             this.tableColumnForm.type = '1';
             this.tableColumnForm.index = null;
+            this.tableColumnForm.isHyperLink = false
+            this.tableColumnForm.hyperLink = null
+            this.tableColumnForm.hyperLinkParam = null
             this.closeTableColumnDialog();
             this.reloadTable(this.component);
           }
@@ -575,6 +723,54 @@
           this.tableTimer[component.id] = null;
         }
         this.changeAutoPage(component);
+      },
+      addColorCondition(){
+        this.colorConditionDialogVisiable = true;
+      },
+      closeColorConditionDialog(){
+        this.colorConditionDialogVisiable = false;
+        this.$refs['colorConditionForm'].resetFields()// 校验重置
+        this.commonUtil.clearObj(this.colorConditionForm)
+      },
+      confirmColorCondition(){
+        this.$refs['colorConditionForm'].validate((valid) => {
+          if (valid) {
+            if (this.colorConditionForm.index != null) {
+                this.tableColumnForm.conditions[this.colorConditionForm.index].conditionOperator =
+                this.colorConditionForm.conditionOperator
+                this.tableColumnForm.conditions[this.colorConditionForm.index].conditionProperty =
+                this.colorConditionForm.conditionProperty
+                this.tableColumnForm.conditions[this.colorConditionForm.index].conditionValue =
+                this.colorConditionForm.conditionValue
+                this.tableColumnForm.conditions[this.colorConditionForm.index].conditionColor =
+                this.colorConditionForm.conditionColor
+            }else{
+              var obj = {
+                conditionOperator: this.colorConditionForm.conditionOperator,
+                conditionProperty: this.colorConditionForm.conditionProperty,
+                conditionValue: this.colorConditionForm.conditionValue,
+                conditionColor: this.colorConditionForm.conditionColor
+              }
+              if(!this.tableColumnForm.conditions){
+                this.tableColumnForm.conditions = [];
+              }
+              this.tableColumnForm.conditions.push(obj)
+            }
+            this.closeColorConditionDialog();
+            this.reloadTable(this.component)
+          }
+        })
+      },
+      editConditionColor(row,index){
+        this.colorConditionDialogVisiable = true;
+        this.colorConditionForm.conditionOperator = row.conditionOperator
+        this.colorConditionForm.conditionProperty = row.conditionProperty
+        this.colorConditionForm.conditionValue = row.conditionValue
+        this.colorConditionForm.conditionColor = row.conditionColor
+        this.colorConditionForm.index = index
+      },
+      deleteConditionColor(index){
+        this.tableColumnForm.conditions.splice(index, 1)
       }
     },
   };

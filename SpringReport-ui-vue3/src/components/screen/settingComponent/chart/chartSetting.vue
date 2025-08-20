@@ -887,9 +887,22 @@
               />
             </el-select>
           </el-form-item>
-          <!-- <el-form-item label="开启下钻" class="df-form-item">
+         <el-form-item label="开启下钻" class="df-form-item">
             <el-switch v-model="component.isDrill" active-text="是" inactive-text="否" @change="changeIsDrill(chartsComponents,component)" />
-          </el-form-item> -->
+          </el-form-item>
+          <el-form-item label="下钻类型" class="df-form-item" v-if="component.isDrill">
+           <el-select  v-model="component.drillType" placeholder="请选择" style="width:180px" @change="commonUtil.reLoadChart(chartsComponents,component)">
+              <el-option
+                v-for="item in screenConstants.mapDrillType"
+                :key="item.value"
+                :label="item.name"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="跳转链接" class="df-form-item" v-if="component.isDrill && component.drillType == '2'">
+            <el-input v-model="component.drillLink" type="textarea" :rows="3"/>
+          </el-form-item>
           <el-form-item label="地图填充色">
             <input-color-picker :input-width="140" :value="component.spec.series[0].area.style.fill" @change="(val)=>{component.spec.series[0].area.style.fill=val;commonUtil.reLoadChart(chartsComponents,component)}" />
           </el-form-item>
@@ -1476,6 +1489,30 @@
           </el-select>
         </el-form-item>
       </div>
+      <div class="right-dataset-title" v-if="component.type.toLowerCase().indexOf('basicmap')<0">
+        <span class="attr-dataset-title">下钻设置</span>
+      </div>
+      <div class="right-dataset-warp" v-if="component.type.toLowerCase().indexOf('basicmap')<0 || component.type.toLowerCase().indexOf('scattermap')<0">
+        <el-form-item label="开启下钻" class="df-form-item">
+            <el-switch v-model="component.isDrill" active-text="是" inactive-text="否" @change="changeIsDrill(chartsComponents,component)" />
+          </el-form-item>
+          <el-form-item label="下钻类型" class="df-form-item" v-if="component.isDrill">
+           <el-select  v-model="component.drillType" placeholder="请选择" style="width:180px" @change="commonUtil.reLoadChart(chartsComponents,component)">
+              <el-option
+                v-for="item in screenConstants.chartDrillType"
+                :key="item.value"
+                :label="item.name"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="跳转链接" class="df-form-item" v-if="component.isDrill && component.drillType == '2'">
+            <el-input v-model="component.drillLink" type="textarea" :rows="3"/>
+          </el-form-item>
+          <el-form-item label="下钻参数" class="df-form-item" v-if="component.isDrill && component.drillType == '2'">
+            <el-input v-model="component.drillParam" placeholder="多个参数用,分隔"/>
+          </el-form-item>
+      </div>
     </el-form>
     <el-dialog
       title="添加"
@@ -1681,7 +1718,11 @@
       var that = this;
       if(component.isDrill){
         vchart.on('click', (params) => {
-          that.commonUtil.mapDrill(chartsComponents,component,params,false);
+          if(component.type == "basicMap" || component.type == "scatterMap"){
+            that.commonUtil.mapDrill(chartsComponents,component,params,false);
+          }else{
+            that.commonUtil.chartDrill(chartsComponents,component,params);
+          }
         })
       }else{
         vchart.off('click', null); // 卸载事件

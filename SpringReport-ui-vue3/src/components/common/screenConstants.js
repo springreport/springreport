@@ -3808,7 +3808,7 @@ screenConstants.liquidInit = {
           visible: true,
           style: {
             fill: '#000',
-            text: '0.3',
+            text: '30%',
             fontSize:20
           }
         }
@@ -4800,14 +4800,11 @@ screenConstants.sankeyInit = {
     
       link: {
         style: {
-          fillOpacity: 0.1
+          fillOpacity: 0.3
         },
         state: {
-          hover: {
-            fillOpacity: 0.4
-          },
-          blur: {
-            fill: '#e8e8e8'
+          selected : {
+            fillOpacity: 1
           }
         }
       },
@@ -9718,6 +9715,10 @@ screenConstants.pieLoopanimation = {
 
 screenConstants.mapDrillType = [
   { name: '地图下钻', value: '1' },
+  { name: '跳转链接', value: '2' },
+]
+
+screenConstants.chartDrillType = [
   { name: '跳转链接', value: '2' },
 ]
 

@@ -240,12 +240,16 @@ export default {
           // 绘制
           vchart.renderSync();
           var that = this;
-          if(element.type == "basicMap"){
+          if(element.type == "basicMap" || element.type == "scatterMap"){
             if(element.isDrill){
               vchart.on('click', (params) => {
                   that.commonUtil.mapDrill(that.chartsComponents,element,params,that.sendRequest,that);
               })
             }
+          }else{
+            vchart.on('click', (params) => {
+                  that.commonUtil.chartDrill(that.chartsComponents,element,params);
+              })
           }
           this.chartsComponents[element.id] = vchart;
         } else if (element.category == this.screenConstants.category.text) {
