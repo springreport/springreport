@@ -439,12 +439,16 @@ export default {
           const vchart = new VChart(element.spec, obj)
           // 绘制
           vchart.renderSync()
-          if(element.type == "basicMap"){
+          if(element.type == "basicMap" || element.type == "scatterMap"){
             if(element.isDrill){
               vchart.on('click', (params) => {
                   that.commonUtil.mapDrill(that.chartsComponents,element,params);
               })
             }
+          }else{
+            vchart.on('click', (params) => {
+                  that.commonUtil.chartDrill(that.chartsComponents,element,params);
+              })
           }
           this.chartsComponents[element.id] = vchart
         } else if (element.category == this.screenConstants.category.text) {

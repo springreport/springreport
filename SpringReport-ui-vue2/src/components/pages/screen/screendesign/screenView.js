@@ -239,6 +239,10 @@ export default {
                   that.commonUtil.mapDrill(that.chartsComponents,element,params,that.sendRequest,that);
               })
             }
+          }else{
+            vchart.on('click', (params) => {
+                  that.commonUtil.chartDrill(that.chartsComponents,element,params);
+              })
           }
           this.chartsComponents[element.id] = vchart
         } else if (element.category == this.screenConstants.category.text) {
