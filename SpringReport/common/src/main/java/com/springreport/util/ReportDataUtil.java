@@ -81,6 +81,7 @@ public class ReportDataUtil {
 								resultObj = object;
 							}else {
 								jsonObject = JSONObject.parseObject(JSONObject.toJSONString(object));
+								apiResultObject = jsonObject;
 								if(StringUtil.isNotEmpty(totalAttr)) {
 									total = jsonObject.getLongValue(totalAttr);
 								}
