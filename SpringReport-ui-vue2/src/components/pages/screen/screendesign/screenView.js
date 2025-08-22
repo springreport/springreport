@@ -155,8 +155,10 @@ export default {
                     }else if(paramType == 'date'){
                       // paramDefault
                       if(paramDefault != null && paramDefault != ''){
-                        let value = that.commonUtil.getDefaultDateValue(paramElement);
-                        paramElement[paramCode] = value;
+                        if (!this.$route.query[paramCode]) {
+                          let value = that.commonUtil.getDefaultDateValue(paramElement);
+                          paramElement[paramCode] = value;
+                        }
                       }
                     }
                   }

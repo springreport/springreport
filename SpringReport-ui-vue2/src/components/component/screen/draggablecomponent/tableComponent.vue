@@ -33,7 +33,10 @@
                     <vue-seamless-scroll :style="{height: (component.h-component.headStyle.height-5-(component.borderTop?component.borderTop:0)-(component.borderBottom?component.borderBottom:0)) + 'px',borderWidth:component.style.isBorder?component.style.borderWidth+'px':'',borderStyle:component.style.isBorder?component.style.borderStyle:'',borderColor:component.style.isBorder?component.style.borderColor:''}" :data="component.spec.data.values" :class-option="component.options" class="warp-content" :ref="component.id">
                         <li v-for="(d, t) in component.spec.data.values" :key="t" :style="{backgroundColor:((t+1)%2 == 0) ? component.bodyStyle.evenRowColor : component.bodyStyle.oddRowColor,height:component.bodyStyle.height + 'px', lineHeight:component.bodyStyle.height + 'px',color:component.bodyStyle.color,fontSize:component.bodyStyle.fontSize+'pt',fontWeight:component.bodyStyle.fontWeight,}">
                             <span v-if="component.style.showIndex" class="title" :style="{width: component.style.indexWidth+'%',borderWidth:component.style.isBorder?component.style.borderWidth+'px':'',borderStyle:component.style.isBorder?component.style.borderStyle:'',borderColor:component.style.isBorder?component.style.borderColor:''}">{{t+1}}</span> 
-                            <span v-for="(column,i) in component.tableColumn" :key="i" class="title" :style="{width:column.style.width+'%',borderWidth:component.style.isBorder?component.style.borderWidth+'px':'',borderStyle:component.style.isBorder?component.style.borderStyle:'',borderColor:component.style.isBorder?component.style.borderColor:'',color:getCellColor(d,column)}"><a :href="getUrl(d,column)" :style="{color:'inherit',textDecoration:(column.isHyperLink && column.hyperLink)?'underline':'none'}" target="_blank">{{d[column.key]}}</a></span>
+                            <div v-for="(column,i) in component.tableColumn" :key="i" class="title " :style="{width:column.style.width+'%',borderWidth:component.style.isBorder?component.style.borderWidth+'px':'',borderStyle:component.style.isBorder?component.style.borderStyle:'',borderColor:component.style.isBorder?component.style.borderColor:'',color:getCellColor(d,column)}"> 
+                              <a  v-if="!column.isProgress" :href="getUrl(d,column)" :style="{color:'inherit',textDecoration:(column.isHyperLink && column.hyperLink)?'underline':'none'}" target="_blank">{{d[column.key]}}</a>
+                              <el-progress :style="{lineHeight:component.bodyStyle.height/20}"  :percentage="d[column.key]*1"  :stroke-width="column.progressWidth" v-if="column.isProgress" :color="customColor(d,column)" :text-color="column.textColor"></el-progress>
+                            </div>
                         </li>
                     </vue-seamless-scroll>
                 </div>
@@ -104,7 +107,10 @@
                     <vue-seamless-scroll :style="{height: (component.h-component.headStyle.height-5) + 'px',borderWidth:component.style.isBorder?component.style.borderWidth+'px':'',borderStyle:component.style.isBorder?component.style.borderStyle:'',borderColor:component.style.isBorder?component.style.borderColor:''}" :data="component.spec.data.values" :class-option="component.options" class="warp-content" :ref="component.id">
                         <li v-for="(d, t) in component.spec.data.values" :key="t" :style="{backgroundColor:((t+1)%2 == 0) ? component.bodyStyle.evenRowColor : component.bodyStyle.oddRowColor,height:component.bodyStyle.height + 'px', lineHeight:component.bodyStyle.height + 'px',color:component.bodyStyle.color,fontSize:component.bodyStyle.fontSize+'pt',fontWeight:component.bodyStyle.fontWeight,}">
                             <span v-if="component.style.showIndex" class="title" :style="{width: component.style.indexWidth+'%',borderWidth:component.style.isBorder?component.style.borderWidth+'px':'',borderStyle:component.style.isBorder?component.style.borderStyle:'',borderColor:component.style.isBorder?component.style.borderColor:''}">{{t+1}}</span> 
-                            <span v-for="(column,i) in component.tableColumn" :key="i" class="title" :style="{width:column.style.width+'%',borderWidth:component.style.isBorder?component.style.borderWidth+'px':'',borderStyle:component.style.isBorder?component.style.borderStyle:'',borderColor:component.style.isBorder?component.style.borderColor:'',color:getCellColor(d,column)}"> <a :href="getUrl(d,column)" :style="{color:'inherit',textDecoration:(column.isHyperLink && column.hyperLink)?'underline':'none'}" target="_blank">{{d[column.key]}}</a></span>
+                            <div v-for="(column,i) in component.tableColumn" :key="i" class="title " :style="{width:column.style.width+'%',borderWidth:component.style.isBorder?component.style.borderWidth+'px':'',borderStyle:component.style.isBorder?component.style.borderStyle:'',borderColor:component.style.isBorder?component.style.borderColor:'',color:getCellColor(d,column)}"> 
+                              <a  v-if="!column.isProgress" :href="getUrl(d,column)" :style="{color:'inherit',textDecoration:(column.isHyperLink && column.hyperLink)?'underline':'none'}" target="_blank">{{d[column.key]}}</a>
+                              <el-progress :style="{lineHeight:component.bodyStyle.height/20}"  :percentage="d[column.key]*1"  :stroke-width="column.progressWidth" v-if="column.isProgress" :color="customColor(d,column)" :text-color="column.textColor"></el-progress>
+                            </div>
                         </li>
                     </vue-seamless-scroll>
                 </div>
@@ -128,7 +134,10 @@
                   :highlight-selection-row="component.highlight"
                 >
                  <template slot-scope="scope">
-                    <div  :style="{color:getCellColor(scope.row,rowHeader)}"><a :href="getUrl(scope.row,rowHeader)" :style="{color:'inherit',textDecoration:(rowHeader.isHyperLink && rowHeader.hyperLink)?'underline':'none'}" target="_blank">{{scope.row[rowHeader.key]}}</a></div>
+                    <div  :style="{color:getCellColor(scope.row,rowHeader)}">
+                      <a :href="getUrl(scope.row,rowHeader)" v-if="!rowHeader.isProgress" :style="{color:'inherit',textDecoration:(rowHeader.isHyperLink && rowHeader.hyperLink)?'underline':'none'}" target="_blank">{{scope.row[rowHeader.key]}}</a>
+                      <el-progress :percentage="scope.row[rowHeader.key]*1"  :stroke-width="rowHeader.progressWidth" v-if="rowHeader.isProgress" :color="customColor(scope.row,rowHeader)" :text-color="rowHeader.textColor"></el-progress>
+                    </div>
                 </template>    
                 </el-table-column>
             </el-table>
@@ -342,6 +351,17 @@ export default {
           let url = this.commonUtil.buildUrlWithParams(column.hyperLink,params);
           // window.open(url,'_blank')
           return url
+        }
+      },
+      customColor(d,column){
+        let value = d[column.key]*1;
+        let thresholdValue = column.thresholdValue*1
+        if(value > thresholdValue){
+          return column.upColor;
+        }else if(value = thresholdValue){
+          return column.equalColor;
+        }else if(value < thresholdValue){
+          return column.downColor;
         }
       }
     }

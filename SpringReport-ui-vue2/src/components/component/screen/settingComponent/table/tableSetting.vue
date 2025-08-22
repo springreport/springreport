@@ -55,6 +55,8 @@
           <p class="column-tag" style="min-width: 220px; max-width: 220px" v-if="item.isHyperLink">
             超链接参数：{{ item.hyperLinkParam }}
           </p>
+          
+          
           <p class="column-tag" style="min-width: 220px; max-width: 220px" v-if="item.conditions && item.conditions.length > 0">
             <el-collapse
               class="sub-collapse"
@@ -472,6 +474,8 @@
       :close-on-click-modal="false"
       width="500px"
       @close="closeTableColumnDialog"
+      class="showAll_dialog"
+      top="50px"
     >
       <el-form
         ref="tableColumnForm"
@@ -513,6 +517,57 @@
         <el-form-item label="参数"  prop="hyperLinkParam" :rules="filter_rules('参数', { required: true })" v-if="tableColumnForm.isHyperLink">
           <el-input v-model="tableColumnForm.hyperLinkParam" placeholder="多个参数用,分隔" style="width:100%"></el-input>
         </el-form-item>
+
+        <el-form-item label="是否进度条"  prop="isProgress" :rules="filter_rules('是否进度条', { required: true })">
+          <el-switch v-model="tableColumnForm.isProgress" active-text="是" inactive-text="否"  />
+        </el-form-item>
+        <el-form-item label="阈值"  prop="isProgress" :rules="filter_rules('阈值', { required: true })" v-if="tableColumnForm.isProgress">
+          <el-input v-model="tableColumnForm.thresholdValue" placeholder="阈值" ></el-input>
+        </el-form-item>
+         <el-form-item label="进度条宽度"  prop="progressWidth" :rules="filter_rules('进度条宽度', { required: true })" v-if="tableColumnForm.isProgress">
+          <el-input v-model.number="tableColumnForm.progressWidth" placeholder="进度条宽度" ></el-input>
+        </el-form-item>
+        <el-form-item label="大于阈值显示的颜色"  prop="upColor" :rules="filter_rules('大于阈值显示的颜色', { required: true })" v-if="tableColumnForm.isProgress">
+           <input-color-picker
+                  :value="tableColumnForm.upColor"
+                  @change="
+                    (val) => {
+                      tableColumnForm.upColor = val;
+                    }
+                  "
+                />
+        </el-form-item>
+        <el-form-item label="小于阈值显示的颜色"  prop="downColor" :rules="filter_rules('小于阈值显示的颜色', { required: true })" v-if="tableColumnForm.isProgress">
+           <input-color-picker
+                  :value="tableColumnForm.downColor"
+                  @change="
+                    (val) => {
+                      tableColumnForm.downColor = val;
+                    }
+                  "
+                />
+        </el-form-item>
+        <el-form-item label="等于阈值显示的颜色"  prop="equalColor" :rules="filter_rules('等于阈值显示的颜色', { required: true })" v-if="tableColumnForm.isProgress">
+           <input-color-picker
+                  :value="tableColumnForm.equalColor"
+                  @change="
+                    (val) => {
+                      tableColumnForm.equalColor = val;
+                    }
+                  "
+                />
+        </el-form-item>
+        <el-form-item label="进度条字体颜色"  prop="textColor" :rules="filter_rules('进度条字体颜色', { required: true })" v-if="tableColumnForm.isProgress">
+           <input-color-picker
+                  :value="tableColumnForm.textColor"
+                  @change="
+                    (val) => {
+                      tableColumnForm.textColor = val;
+                    }
+                  "
+                />
+        </el-form-item>
+
         <el-form-item
           label="自定义字体颜色条件"
         >
@@ -656,7 +711,13 @@ export default {
         isHyperLink:false,
         hyperLink:"",
         hyperLinkParam:"",
-
+        isProgress:false,//是否进度条显示
+        progressWidth:10,
+        thresholdValue:"",//阈值
+        upColor:"",//大于阈值显示的颜色
+        downColor:"",//小于阈值显示的颜色
+        equalColor:"",//等于阈值显示的颜色
+        textColor:"",
       },
       colorConditionForm:{
         conditionOperator:'',
@@ -695,6 +756,13 @@ export default {
         this.tableColumnForm.isHyperLink = row.isHyperLink==null?false:row.isHyperLink;
         this.tableColumnForm.hyperLink = row.hyperLink;
         this.tableColumnForm.hyperLinkParam = row.hyperLinkParam;
+        this.tableColumnForm.isProgress = row.isProgress==null?false:row.isProgress;
+        this.tableColumnForm.thresholdValue = row.thresholdValue;
+        this.tableColumnForm.progressWidth = row.progressWidth;
+        this.tableColumnForm.upColor = row.upColor;
+        this.tableColumnForm.downColor = row.downColor;
+        this.tableColumnForm.equalColor = row.equalColor;
+        this.tableColumnForm.textColor = row.textColor;
       } else {
         this.tableColumnForm.name = ''
         this.tableColumnForm.key = ''
@@ -704,6 +772,13 @@ export default {
         this.tableColumnForm.isHyperLink = false;
         this.tableColumnForm.hyperLink = '';
         this.tableColumnForm.hyperLinkParam = '';
+        this.tableColumnForm.isProgress = false;
+        this.tableColumnForm.thresholdValue = '50';
+        this.tableColumnForm.progressWidth = 10;
+        this.tableColumnForm.upColor = '';
+        this.tableColumnForm.downColor = '';
+        this.tableColumnForm.equalColor = '';
+        this.tableColumnForm.textColor = null;
       }
     },
     addTableColomn() {
@@ -715,7 +790,14 @@ export default {
               key: this.tableColumnForm.key,
               isHyperLink: this.tableColumnForm.isHyperLink,
               hyperLink: this.tableColumnForm.hyperLink,
-              hyperLinkParam: this.tableColumnForm.hyperLinkParam
+              hyperLinkParam: this.tableColumnForm.hyperLinkParam,
+              isProgress: this.tableColumnForm.isProgress,
+              thresholdValue: this.tableColumnForm.thresholdValue,
+              progressWidth: this.tableColumnForm.progressWidth,
+              upColor: this.tableColumnForm.upColor,
+              downColor: this.tableColumnForm.downColor,
+              equalColor: this.tableColumnForm.equalColor,
+              textColor: this.tableColumnForm.textColor
             }
             if (this.component.type == 'scrollTable') {
               obj.style = { width: this.tableColumnForm.width }
@@ -739,6 +821,20 @@ export default {
               this.tableColumnForm.hyperLink
             this.component.tableColumn[this.tableColumnForm.index].hyperLinkParam =
               this.tableColumnForm.hyperLinkParam
+            this.component.tableColumn[this.tableColumnForm.index].isProgress =
+              this.tableColumnForm.isProgress
+            this.component.tableColumn[this.tableColumnForm.index].thresholdValue =
+              this.tableColumnForm.thresholdValue
+            this.component.tableColumn[this.tableColumnForm.index].progressWidth =
+              this.tableColumnForm.progressWidth
+            this.component.tableColumn[this.tableColumnForm.index].upColor =
+              this.tableColumnForm.upColor
+            this.component.tableColumn[this.tableColumnForm.index].downColor =
+              this.tableColumnForm.downColor
+            this.component.tableColumn[this.tableColumnForm.index].equalColor =
+              this.tableColumnForm.equalColor
+            this.component.tableColumn[this.tableColumnForm.index].textColor =
+              this.tableColumnForm.textColor
           }
           this.tableColumnForm.name = ''
           this.tableColumnForm.key = ''
@@ -748,6 +844,14 @@ export default {
           this.tableColumnForm.isHyperLink = false
           this.tableColumnForm.hyperLink = null
           this.tableColumnForm.hyperLinkParam = null
+
+          this.tableColumnForm.isProgress = false
+          this.tableColumnForm.thresholdValue = ""
+          this.tableColumnForm.progressWidth = 10
+          this.tableColumnForm.upColor = ""
+          this.tableColumnForm.downColor = ""
+          this.tableColumnForm.equalColor = ""
+          this.tableColumnForm.textColor = null
           this.closeTableColumnDialog()
           this.reloadTable(this.component)
         }
@@ -840,7 +944,7 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style scoped >
 .el-form-item {
   margin-bottom: 5px !important;
 }
@@ -856,4 +960,16 @@ export default {
 ::v-deep .customLabel .el-form-item__label {
   color: #15a585 !important;
 }
+
+.showAll_dialog {
+    overflow: hidden;
+
+}
+
+::v-deep .el-dialog {
+        height: 70%;
+        overflow: auto;
+    }
+
+
 </style>
