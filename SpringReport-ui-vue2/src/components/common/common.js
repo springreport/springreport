@@ -1052,7 +1052,7 @@ commonUtil.chartProcess = function(component){
             }
         }
         
-    }else if(component.type.toLowerCase().indexOf("text")>=0){
+    }else if(component.type.toLowerCase().indexOf("text")>=0 || component.type.toLowerCase().indexOf("numberflipper")>=0){
         if(component.spec.valueField && component.spec.data.values && component.spec.data.values.length > 0){
             component.content = component.spec.data.values[0][component.spec.valueField];
         }

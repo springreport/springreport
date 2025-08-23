@@ -6,6 +6,7 @@ import borderComponent from './draggablecomponent/borderComponent.vue'
 import decorationComponent from './draggablecomponent/decorationComponent.vue'
 import tableComponent from './draggablecomponent/tableComponent.vue'
 import vchartComponent from './draggablecomponent/vchartComponent.vue'
+import numberFlipperComponent from './draggablecomponent/numberFlipperComponent.vue'
 export default {
   components: {
     MarqueeTips,
@@ -13,7 +14,8 @@ export default {
     borderComponent,
     decorationComponent,
     tableComponent,
-    vchartComponent
+    vchartComponent,
+    numberFlipperComponent
   },
   props: {
     components: {

@@ -7,6 +7,7 @@
     <border-setting-component v-if="component.category == screenConstants.category.border" :component="component" :charts-components="chartsComponents" />
     <decoration-setting-component v-if="component.category == screenConstants.category.decoration" :component="component" :charts-components="chartsComponents" />
     <table-setting-component v-if="component.category == screenConstants.category.table" :component="component" :charts-components="chartsComponents" />
+    <number-flipper-setting-component v-if="component.category == screenConstants.category.numberFlipper" :component="component" :charts-components="chartsComponents"></number-flipper-setting-component>
   </div>
 </template>
 <script>
@@ -17,6 +18,7 @@ import pictureSettingComponent from '../pictureSetting/pictureSettingComponent.v
 import borderSettingComponent from '../borderSetting/borderSettingComponent.vue'
 import decorationSettingComponent from '../decorationSetting/decorationSettingComponent.vue'
 import tableSettingComponent from '../tableSetting/tableSettingComponent.vue'
+import numberFlipperSettingComponent from '../numberFlipper/numberFlipperSettingComponent.vue'
 export default {
   name: 'Settings',
   components: {
@@ -26,7 +28,8 @@ export default {
     pictureSettingComponent,
     borderSettingComponent,
     decorationSettingComponent,
-    tableSettingComponent
+    tableSettingComponent,
+    numberFlipperSettingComponent
   },
   props: {
     component: {

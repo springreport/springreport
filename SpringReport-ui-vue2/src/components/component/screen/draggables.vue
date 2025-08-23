@@ -38,6 +38,18 @@
         />
       </div>
       <div
+        v-if="item.category == screenConstants.category.numberFlipper && !item.isDelete"
+        @contextmenu.prevent="onContextmenu($event, item)"
+      >
+        <number-flipper-component
+        :ref="item.id"
+          :component="item"
+          :charts-components="chartsComponents"
+          :send-request="sendRequest"
+          :searchParams="searchParams"
+        />
+      </div>
+      <div
         v-if="
           item.category == screenConstants.category.border && !item.isDelete
         "
