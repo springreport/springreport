@@ -444,10 +444,10 @@ export default {
         sheetRightClickConfig: {
           delete: true, // 删除
           copy: true, // 复制
-          rename: false, //重命名
-          color: false, //更改颜色
-          hide: false, //隐藏，取消隐藏
-          move: false, //向左移，向右移
+          rename: true, // 重命名
+          color: true, // 更改颜色
+          hide: true, // 隐藏，取消隐藏
+          move: true // 向左移，向右移
         },
         allowEdit: true,
         showtoolbarConfig: {
@@ -1961,6 +1961,7 @@ export default {
       this.paramForm.paramHidden = row.paramHidden;
       this.paramForm.checkStrictly = row.checkStrictly;
       this.paramForm.paramPrefix = row.paramPrefix;
+      this.paramForm.datasourceId = row.datasourceId
     },
     //删除参数
     deleteParam(index) {
