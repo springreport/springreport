@@ -64,7 +64,10 @@
                   :highlight-selection-row="component.highlight"
                 >
                 <template slot-scope="scope">
-                    <div  :style="{color:getCellColor(scope.row,rowHeader)}"><a :href="getUrl(scope.row,rowHeader)" :style="{color:'inherit',textDecoration:(rowHeader.isHyperLink && rowHeader.hyperLink)?'underline':'none'}" target="_blank">{{scope.row[rowHeader.key]}}</a></div>
+                    <div  :style="{color:getCellColor(scope.row,rowHeader)}">
+                      <a :href="getUrl(scope.row,rowHeader)" v-if="!rowHeader.isProgress" :style="{color:'inherit',textDecoration:(rowHeader.isHyperLink && rowHeader.hyperLink)?'underline':'none'}" target="_blank">{{scope.row[rowHeader.key]}}</a>
+                      <el-progress :percentage="scope.row[rowHeader.key]*1"  :stroke-width="rowHeader.progressWidth" v-if="rowHeader.isProgress" :color="customColor(scope.row,rowHeader)" :text-color="rowHeader.textColor"></el-progress>
+                      </div>
                 </template> 
                 </el-table-column>
             </el-table>

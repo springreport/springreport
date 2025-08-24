@@ -221,7 +221,7 @@ export default {
   height: 80px; */
   text-align: center;
   /* line-height: 80px; */
-  border: 2px dashed #0962ba;
+  /* border: 2px dashed #0962ba; */
   margin-right: 8px;
   font-weight: bold;
   position: relative;

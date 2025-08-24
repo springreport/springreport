@@ -516,7 +516,7 @@ screenConstants.numberFlipperInit = {
   params: [], // 图表参数
   hiddenParamSize: 0, // 隐藏参数个数
   style: {
-     display: 'table-cell', textAlign: 'center', verticalAlign: 'middle', background: '', fontSize: '24', fontColor: '#ffffff', 
+     display: 'table-cell', textAlign: 'center', verticalAlign: 'middle', background: 'rgba(0, 206, 209, 1)', fontSize: '24', fontColor: '#ffffff', 
      duration:1000,prefix:"",prefixColor:"#FFF",prefixFontSize:"14",suffix:"",suffixColor:"#FFF",suffixFontSize:"14",boxHeight:"80",boxWidth:"60",
      thousandSeparator:false,decimalPlaces:0
   },
