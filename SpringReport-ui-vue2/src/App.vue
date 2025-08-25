@@ -22,7 +22,6 @@ export default {
         this.commonUtil.doPost(object).then((response) => {
             if (response.code === '200') {
                var responseData = response.responseData
-               console.log(responseData)
               localStorage.setItem(
                 that.commonConstants.sessionItem.position,
                 responseData.roleName
