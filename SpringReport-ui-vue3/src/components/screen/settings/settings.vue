@@ -34,6 +34,7 @@
       :component="component"
       :charts-components="chartsComponents"
     ></table-setting-component>
+    <number-flipper-setting-component v-if="component.category == screenConstants.category.numberFlipper" :component="component" :charts-components="chartsComponents"></number-flipper-setting-component>
   </div>
 </template>
 <script>
@@ -44,6 +45,7 @@
   import borderSettingComponent from '../borderSetting/borderSettingComponent.vue';
   import decorationSettingComponent from '../decorationSetting/decorationSettingComponent.vue';
   import tableSettingComponent from '../tableSetting/tableSettingComponent.vue';
+  import numberFlipperSettingComponent from '../numberFlipper/numberFlipperSettingComponent.vue'
   export default {
     name: 'settings',
     components: {
@@ -54,6 +56,7 @@
       borderSettingComponent,
       decorationSettingComponent,
       tableSettingComponent,
+      numberFlipperSettingComponent
     },
     props: {
       component: {

@@ -834,7 +834,7 @@
               </el-select>
             </el-form-item>
           </div>
-      <div v-if="component.type.toLowerCase().indexOf('text') >= 0">
+      <div v-if="component.type.toLowerCase().indexOf('text') >= 0 || component.type.toLowerCase().indexOf('numberflipper') >= 0">
         <el-form-item label="数值字段">
           <el-select
             v-model="component.spec.valueField"

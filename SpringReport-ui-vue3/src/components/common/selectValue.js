@@ -797,8 +797,8 @@ selectUtil.operate = [
   { value: '>=', label: '>=' },
   { value: '<', label: '<' },
   { value: '<=', label: '<=' },
-  { value: 'in', label: 'in' },
-  { value: 'not in', label: 'not in' },
+  { value: 'in', label: 'in(包含)' },
+  { value: 'not in', label: 'not in(不包含)' },
 ];
 selectUtil.type = [
   { value: 'varchar', label: '字符串' },

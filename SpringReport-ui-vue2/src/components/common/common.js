@@ -979,6 +979,15 @@ commonUtil.reLoadChart = function(chartsComponents,component,sendRequest,that)
                 }else{
                     vchart.off('click', null); // 卸载事件
                 }
+            }else{
+               if(component.isDrill){
+                    vchart.off('click', null); // 卸载事件
+                    vchart.on('click', (params) => {
+                        commonUtil.chartDrill(chartsComponents,component,params);
+                    })
+                }else{
+                    vchart.off('click', null); // 卸载事件
+                } 
             }
         }
     })
@@ -1039,11 +1048,11 @@ commonUtil.chartProcess = function(component){
         if(component.spec.data.values && component.spec.data.values.length > 0){
             if(component.spec.indicator.visible){
                 component.spec.indicator.title.style.text = component.spec.categoryField?component.spec.data.values[0][component.spec.categoryField]:"";
-                component.spec.indicator.content.style.text = component.spec.data.values[0][component.spec.valueField];
+                component.spec.indicator.content.style.text = component.spec.data.values[0][component.spec.valueField]*100+"%";
             }
         }
         
-    }else if(component.type.toLowerCase().indexOf("text")>=0){
+    }else if(component.type.toLowerCase().indexOf("text")>=0 || component.type.toLowerCase().indexOf("numberflipper")>=0){
         if(component.spec.valueField && component.spec.data.values && component.spec.data.values.length > 0){
             component.content = component.spec.data.values[0][component.spec.valueField];
         }
@@ -1247,6 +1256,12 @@ commonUtil.mapCodes = {}
 //地图下钻
 commonUtil.mapDrill = async function(chartsComponents,component,data,sendRequest,that){
     if(data && data.datum && Object.keys(data.datum).length > 0){
+        if(component.type == "scatterMap"){
+            let type = data.item.type;
+            if(type == "symbol"){
+                return;
+            }
+        }
         let adcode = data.datum.properties.adcode+'';
         let name = data.datum.properties.name;
         if(component.drillType == '2'){
@@ -1270,7 +1285,7 @@ commonUtil.mapDrill = async function(chartsComponents,component,data,sendRequest
                 component.spec.map = adcode;
                 component.spec.nameMap = screenConstants.nameMap[adcode];
             }else if(component.type == "scatterMap"){
-                
+                component.spec.series[0].map = adcode;
             }
             commonUtil.mapCodes[adcode] = parentCode;
             if(!sendRequest ){
@@ -1285,18 +1300,23 @@ commonUtil.mapDrill = async function(chartsComponents,component,data,sendRequest
                 }
             }
         }
-    }else if(data && data.datum && Object.keys(data.datum).length == 0){
+    }else if(data && (!data.datum || Object.keys(data.datum).length == 0)){
         if(component.drillType == '2'){
             return;
         }
-        let adcode = component.spec.map+'';
+        let adcode = "";
+        if(component.type == "basicMap"){
+            adcode = component.spec.map+'';
+        }else{
+            adcode = component.spec.series[0].map+'';
+        }
         let backCode = commonUtil.mapCodes[adcode];
         if(backCode){
             if(component.type == "basicMap"){
                 component.spec.map = backCode;
                 component.spec.nameMap = screenConstants.nameMap[backCode];
             }else if(component.type == "scatterMap"){
-
+                component.spec.series[0].map = backCode;
             }
             if(!sendRequest ){
                 chartsComponents[component.id].updateSpec(component.spec,true);
@@ -2398,5 +2418,59 @@ commonUtil.buildUrlWithParams = function(url = "", params = {}) {
   }
   //将参数转化为字符串 eg: {userId: 123,token:'abc'} => 'userId=123&token=abc'
   return url + (url.includes("?") ? "&" : "?") + new URLSearchParams(params).toString()
+}
+
+commonUtil.chartDrill = function(chartsComponents,component,data){
+    if(component.drillLink && data && data.datum && Object.keys(data.datum).length > 0){
+        if(component.type.toLowerCase().indexOf('histogram')>=0 || component.type.toLowerCase().indexOf('line')>=0 || component.type.toLowerCase().indexOf('area')>=0
+        || component.type.toLowerCase().indexOf('boxplot')>=0 || component.type.toLowerCase().indexOf('barprogress')>=0 || component.type.toLowerCase().indexOf('combocharthl')>=0
+        || component.type.toLowerCase().indexOf('combochartdbbar')>=0){
+            let itemName = data.item.name;
+            if(itemName == "axis"){
+                return;
+            }
+        }else if(component.type.toLowerCase().indexOf('radar')>=0){
+            let itemName = data.item.type;
+            if(itemName == "area"){
+                return;
+            }
+        }
+        let params = commonUtil.getChartDrillParams(data,component);
+        let url = commonUtil.buildUrlWithParams(component.drillLink,params);
+        window.open(url,'_blank')
+    }
+}
+
+commonUtil.getChartDrillParams = function(data,component){
+    let result = {};
+    if(component.drillParam){
+        let params = component.drillParam.split(",");
+        for (let index = 0; index < params.length; index++) {
+            const element = params[index];
+            if(data.datum[element]){
+                result[element] = data.datum[element];
+            }
+        }
+    }
+    return result;
+}
+
+commonUtil.getTableDrillParams = function(d,column){
+    let result = {};
+    if(column.hyperLinkParam){
+        let params = column.hyperLinkParam.split(",");
+        for (let index = 0; index < params.length; index++) {
+            const element = params[index];
+            if(d[element]){
+                result[element] = d[element];
+            }
+        }
+    }
+    return result;
+}
+
+commonUtil.isDate = function(str){
+    const date = new Date(str);
+    return !isNaN(date.getTime());
 }
 export default commonUtil;

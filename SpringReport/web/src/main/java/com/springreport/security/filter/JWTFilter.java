@@ -117,6 +117,11 @@ public class JWTFilter extends BasicHttpAuthenticationFilter{
     	shareUrls.add("/springReport/api/login/getUserInfoByToken");
     	shareUrls.add("/springReport/api/screenTpl/getScreenDesign");
     	shareUrls.add("/springReport/api/screenDesign/getDynamicDatas");
+    	shareUrls.add("/springReport/api/reportTpl/deleteReportData");
+    	shareUrls.add("/springReport/api/reportTpl/luckySheetExportExcel");
+    	shareUrls.add("/springReport/api/reportTpl/getSheetPdf");
+    	shareUrls.add("/springReport/api/reportTpl/getSheetPdfStream");
+    	shareUrls.add("/springReport/api/reportTpl/getDetail");
     }
     
     /**

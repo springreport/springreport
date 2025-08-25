@@ -156,6 +156,7 @@ screenConstants.funnelShape = [
 
 screenConstants.type = {
     text:"text",//文本
+    numberFlipper:'numberFlipper',//翻牌器
     date:"date",//日期时间
     picture:"picture",//图片
     border:"border",//边框
@@ -211,6 +212,7 @@ screenConstants.category = {
    border:"border",//边框
    decoration:"decoration",//装饰
    table:"table",
+   numberFlipper: 'numberFlipper', // 数字翻牌器
 }
 
 //大屏组件类型
@@ -218,6 +220,7 @@ screenConstants.category = {
 screenConstants.componentsType1 = [
   { 'type': 'panel', 'text': '画板', icon: 'panel' },
   { 'type': 'text', 'text': '文本', icon: 'text' },
+  { 'type': 'numberFlipper', 'text': '数字翻牌器', icon: 'text' },
   { 'type': 'picture', 'text': '图片', icon: 'picture' },
   { 'type': 'border', 'text': '边框', icon: 'border' },
   { 'type': 'decoration', 'text': '装饰', icon: 'decoration' },
@@ -246,6 +249,7 @@ screenConstants.componentsType2 = [
 screenConstants.compType = {
     text: { text: '文本', icon: 'text'},
     date: { text: '日期时间', icon: 'date'},
+    numberFlipper: { text: '数字翻牌器', icon: 'text' },
     picture: { text: '图片', icon: 'picture'},
     border: { text: '边框', icon: 'border'},
     decoration: { text: '装饰', icon: 'decoration'},
@@ -298,6 +302,11 @@ screenConstants.textType = [
   {"name":"text","text":"文本","src":"https://www.springreport.vip/images/chart/text.png",category:screenConstants.category.text},
   {"name":"date","text":"日期时间","src":"https://www.springreport.vip/images/chart/time.png",category:screenConstants.category.text},
 ]
+
+screenConstants.numberFlipperType = [
+  { 'name': 'numberFlipper', 'text': '数字翻牌器', 'src': 'https://www.springreport.vip/images/chart/text.png', category: screenConstants.category.numberFlipper },
+]
+
 screenConstants.pictureType = [
   {"name":"picture","text":"图片","src":"",category:screenConstants.category.picture},
 ]
@@ -483,6 +492,43 @@ screenConstants.textInit = {
       values:[ { value: '文本'}]
     },
     valueField:'value',
+  }
+}
+
+screenConstants.numberFlipperInit = {
+  type: screenConstants.type.numberFlipper,
+  category: screenConstants.category.numberFlipper,
+  isDelete: false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 500, // 组件初始化宽度
+  h: 100, // 组件初始化高度
+  active: false,
+  zindex: '99',
+  locked: false,
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  refresh: false, // 是否定时刷新
+  refreshTime: 30000, // 定时刷新时间，单位(ms)
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
+  params: [], // 图表参数
+  hiddenParamSize: 0, // 隐藏参数个数
+  style: {
+     display: 'table-cell', textAlign: 'center', verticalAlign: 'middle', background: 'rgba(0, 206, 209, 1)', fontSize: '24', fontColor: '#ffffff', 
+     duration:1000,prefix:"",prefixColor:"#FFF",prefixFontSize:"14",suffix:"",suffixColor:"#FFF",suffixFontSize:"14",boxHeight:"80",boxWidth:"60",
+     thousandSeparator:false,decimalPlaces:0
+  },
+  content: '666666',
+  spec: {
+    data: {
+      values: [{ value: '666666' }]
+    },
+    valueField: 'value'
   }
 }
 
@@ -3808,7 +3854,7 @@ screenConstants.liquidInit = {
           visible: true,
           style: {
             fill: '#000',
-            text: '0.3',
+            text: '30%',
             fontSize:20
           }
         }
@@ -4800,14 +4846,11 @@ screenConstants.sankeyInit = {
     
       link: {
         style: {
-          fillOpacity: 0.1
+          fillOpacity: 0.3
         },
         state: {
-          hover: {
-            fillOpacity: 0.4
-          },
-          blur: {
-            fill: '#e8e8e8'
+          selected : {
+            fillOpacity: 1
           }
         }
       },
@@ -9718,6 +9761,10 @@ screenConstants.pieLoopanimation = {
 
 screenConstants.mapDrillType = [
   { name: '地图下钻', value: '1' },
+  { name: '跳转链接', value: '2' },
+]
+
+screenConstants.chartDrillType = [
   { name: '跳转链接', value: '2' },
 ]
 

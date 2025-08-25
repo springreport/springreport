@@ -4442,7 +4442,10 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		maxXAndY.put("maxX", 0);//最大横坐标
 		maxXAndY.put("maxY", 0);//最大纵坐标
 		for (int i = 0; i < sortedBindData.size(); i++) {
-			if(cellBindData.get(sortedBindData.get(i).getCoordsx()+"_"+sortedBindData.get(i).getCoordsy()) != null)
+//			if(cellBindData.get(sortedBindData.get(i).getCoordsx()+"_"+sortedBindData.get(i).getCoordsy()) != null)
+			LuckySheetBindData curCellBindData = cellBindData.get(sortedBindData.get(i).getCoordsx()+"_"+sortedBindData.get(i).getCoordsy());
+			if(curCellBindData!=null && curCellBindData.getIsRelyCalculated() != 1)//未计算过的才计算
+			   //if(cellBindData.get(sortedBindData.get(i).getCoordsx()+"_"+sortedBindData.get(i).getCoordsy()) != null)
 			{
 				if(t == 0)
 				{
@@ -7028,7 +7031,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         		merge.put(LuckySheetPropsEnum.ROWSPAN.getCode(), rowSpan);
         		merge.put(LuckySheetPropsEnum.COLSPAN.getCode(), colSpan);
         		mergeMap.put(String.valueOf(rowAndCol.get("maxX"))+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+String.valueOf(rowAndCol.get("maxY")), merge);
-        		for (int k = 1; k < rowSpan; k++) {
+        		for (int k = 1; k <= rowSpan; k++) {
         			for (int i = 1; i <= colSpan; i++) {
         				if(k == 1 && i == 1)
     					{
@@ -7490,7 +7493,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         		merge.put(LuckySheetPropsEnum.ROWSPAN.getCode(), rowSpan);
         		merge.put(LuckySheetPropsEnum.COLSPAN.getCode(), colSpan);
         		mergeMap.put(String.valueOf(rowAndCol.get("maxX"))+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+String.valueOf(rowAndCol.get("maxY")), merge);
-        		for (int k = 1; k < rowSpan; k++) {
+        		for (int k = 1; k <= rowSpan; k++) {
         			for (int i = 1; i <= colSpan; i++) {
         				if(k == 1 && i == 1)
     					{
@@ -9626,7 +9629,8 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				if(j == (YesNoEnum.YES.getCode().intValue()==luckySheetBindData.getIsConditions()?luckySheetBindData.getFilterDatas().size():luckySheetBindData.getDatas().size()) - 1)
 				{
 					cellBindData.put(relyCellsArray[i]+"_remove", cellBindData.get(relyCellsArray[i]));
-					cellBindData.remove(relyCellsArray[i]);
+//					cellBindData.remove(relyCellsArray[i]);
+					cellBindData.get(relyCellsArray[i]).setIsRelyCalculated(1);
 				}
 			}else {
 				if(relyBindData != null && ((relyBindData.getCellExtend().intValue() == 4 && luckySheetBindData.getCellExtend().intValue() == 4)))
@@ -9647,7 +9651,8 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 					this.processReliedCrossListGroupValue(j, maxCoordinate, relyBindData, cellDatas, hyperlinks, dataRowLen, dataColLen, rowlen, columnlen, mergeMap, objectMapper, maxXAndY, borderInfo, borderConfig, borderInfos, calcChain, configRowLen, configColumnLen, images, usedCells, cellBindData,dataVerification,drillCells,rowhidden,colhidden,subCalculateDatas,cellConditionFormat,dynamicRange);
 					if(j == luckySheetBindData.getDatas().size() - 1 && luckySheetBindData.getRelyCrossIndex().intValue() == luckySheetBindData.getDatas().get(j).size() - 1)
 					{
-						cellBindData.remove(relyCellsArray[i]);
+//						cellBindData.remove(relyCellsArray[i]);
+						cellBindData.get(relyCellsArray[i]).setIsRelyCalculated(1);
 					}
 				}
 			}

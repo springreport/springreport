@@ -609,4 +609,6 @@ public class LuckySheetBindData {
 	
 	/** keep_empty_cell - 没有数据时是否保留空单元格*/
     private Boolean keepEmptyCell;
+    
+    private Integer isRelyCalculated = 2;
 }
