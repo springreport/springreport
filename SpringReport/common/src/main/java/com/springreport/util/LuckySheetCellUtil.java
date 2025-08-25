@@ -173,7 +173,12 @@ public class LuckySheetCellUtil {
 							int lastRow = Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.R.getCode()))) + Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.ROWSPAN.getCode()))) - 1;
 							int firstCol = Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.C.getCode())));
 							int lastCol = Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.C.getCode()))) + Integer.valueOf(String.valueOf(mergeCell.get(LuckySheetPropsEnum.COLSPAN.getCode()))) - 1;
-							this.mergeCell(firstRow, lastRow, firstCol, lastCol);
+							try {
+								this.mergeCell(firstRow, lastRow, firstCol, lastCol);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+							
 							cellColSpan.put(firstRow+"_"+firstCol, lastCol-firstCol+1);
 						}
 					}
