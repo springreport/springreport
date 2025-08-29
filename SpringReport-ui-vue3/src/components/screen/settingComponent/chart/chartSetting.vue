@@ -1492,7 +1492,7 @@
       <div class="right-dataset-title" v-if="component.type.toLowerCase().indexOf('basicmap')<0">
         <span class="attr-dataset-title">下钻设置</span>
       </div>
-      <div class="right-dataset-warp" v-if="component.type.toLowerCase().indexOf('basicmap')<0 || component.type.toLowerCase().indexOf('scattermap')<0">
+      <div class="right-dataset-warp" v-if="component.type.toLowerCase().indexOf('basicmap')<0 && component.type.toLowerCase().indexOf('scattermap')<0">
         <el-form-item label="开启下钻" class="df-form-item">
             <el-switch v-model="component.isDrill" active-text="是" inactive-text="否" @change="changeIsDrill(chartsComponents,component)" />
           </el-form-item>

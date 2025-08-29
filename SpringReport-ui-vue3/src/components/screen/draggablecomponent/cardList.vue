@@ -5,7 +5,7 @@
   <el-carousel-item v-for="i in getPageSize()" :key="i">
   <el-row :gutter="1" style="" type="flex" >
     <el-col v-for="(item, index) in getDatas(i)" :key="index" :span="Math.floor(24/component.pagination.pageColumn)">
-      <el-card class="box-card" shadow="always" :style="{background:component.bodyStyle.backgroundColor?component.bodyStyle.backgroundColor:'#fff'}">
+      <el-card class="box-card" shadow="always" :style="{background:component.bodyStyle.backgroundColor?component.bodyStyle.backgroundColor:'#fff',cursor:(component.isDrill && component.drillLink)?'pointer':'default'}"  v-on:click="cardDrill(item)">
         <template #header>
         <div class="header">
           <span :style="{color:getHeadColor(1,item),fontSize:component.leftHead.fontSize+'px',textAlign: 'center',fontWeight:component.leftHead.fontWeight}">{{item[component.leftHead.property]?item[component.leftHead.property]:component.leftHead.property}}</span>
@@ -159,6 +159,20 @@ export default {
           }
         }
         return "";
+      },
+      cardDrill(item){
+        if(this.component.isDrill && this.component.drillLink){
+          let paramsMap = {};
+          let params = this.component.drillParam.split(",");
+          for (let index = 0; index < params.length; index++) {
+            const element = params[index];
+            if(item[element]){
+                paramsMap[element] = item[element];
+            }
+          }
+          let url = this.commonUtil.buildUrlWithParams(this.component.drillLink,paramsMap);
+          window.open(url, "_blank");
+        }
       },
     }
 }
