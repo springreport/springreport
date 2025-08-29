@@ -6,6 +6,7 @@ import decorationComponent from './draggablecomponent/decorationComponent.vue';
 import tableComponent from './draggablecomponent/tableComponent.vue';
 import vchartComponent from './draggablecomponent/vchartComponent.vue';
 import numberFlipperComponent from './draggablecomponent/numberFlipperComponent.vue'
+import cardListComponent from './draggablecomponent/cardListComponent.vue'
 export default {
   components: {
     textComponent,
@@ -13,7 +14,8 @@ export default {
     decorationComponent,
     tableComponent,
     vchartComponent,
-    numberFlipperComponent
+    numberFlipperComponent,
+    cardListComponent
   },
   props: {
     components: {

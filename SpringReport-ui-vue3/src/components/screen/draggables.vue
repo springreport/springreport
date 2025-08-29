@@ -115,6 +115,18 @@
           :searchParams="searchParams"
         ></vchart-component>
       </div>
+      <div
+        v-if="item.category == screenConstants.category.cardList && !item.isDelete"
+        @contextmenu.prevent="onContextmenu($event, item)"
+      >
+        <card-list-component
+        :ref="item.id"
+          :component="item"
+          :charts-components="chartsComponents"
+          :send-request="sendRequest"
+          :searchParams="searchParams"
+        />
+      </div>
     </Vue3DraggableResizable>
   </div>
 </template>
