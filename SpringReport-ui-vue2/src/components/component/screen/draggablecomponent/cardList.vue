@@ -1,15 +1,16 @@
 <template>
 <div>
-  <el-carousel :height="(component.isborder && component.borderType)?((component.h-(component.borderTop?component.borderTop:0)-(component.borderBottom?component.borderBottom:0)) + 'px'):component.h + 'px'" :interval="component.pagination.autoPageInterval">
+  <el-carousel :height="(component.isborder && component.borderType)?((component.h-(component.borderTop?component.borderTop:0)-(component.borderBottom?component.borderBottom:0)) + 'px'):component.h + 'px'" :interval="component.pagination.autoPageInterval"
+  indicator-position="none">
   <el-carousel-item v-for="i in getPageSize()" :key="i">
   <el-row :gutter="1" style="" type="flex" >
-    <el-col v-for="(item, index) in getDatas(i)" :key="index" :span="Math.floor(24/component.pagination.pageColumn)">
-      <el-card class="box-card" shadow="always" :style="{background:component.bodyStyle.backgroundColor?component.bodyStyle.backgroundColor:'#fff'}">
-        <div slot="header" class="header">
+    <el-col v-for="(item, index) in getDatas(i)" :key="index" :span="Math.floor(24/component.pagination.pageColumn)" >
+      <el-card class="box-card" shadow="always" :style="{background:component.bodyStyle.backgroundColor?component.bodyStyle.backgroundColor:'#fff',cursor:(component.isDrill && component.drillLink)?'pointer':'default'}" v-on:click.native="cardDrill(item)">
+        <div slot="header" class="header" >
           <span :style="{color:getHeadColor(1,item),fontSize:component.leftHead.fontSize+'px',textAlign: 'center',fontWeight:component.leftHead.fontWeight}">{{item[component.leftHead.property]?item[component.leftHead.property]:component.leftHead.property}}</span>
           <span class="card-header-tag-green" :style="{color:getHeadColor(2,item),fontSize:component.rightHead.fontSize+'px',textAlign: 'center',fontWeight:component.rightHead.fontWeight}">{{item[component.rightHead.property]?item[component.rightHead.property]:component.rightHead.property}}</span>
         </div>
-        <div v-for="(rowContent, index) in component.bodyContent.rowContents" :key="index">
+        <div v-for="(rowContent, index) in component.bodyContent.rowContents" :key="index" >
           <div><div class="card-label" :style="{color:rowContent.titleColor,fontSize:rowContent.titleFontSize+'px',fontWeight:rowContent.titleFontWeight}">{{item[rowContent.title]?item[rowContent.title]:rowContent.title}}</div>
           <span :style="{color:rowContent.contentColor,fontSize:rowContent.contentFontSize+'px',fontWeight:rowContent.contentFontWeight}">{{item[rowContent.property]?item[rowContent.property]:rowContent.property}}</span>
           </div>
@@ -156,6 +157,20 @@ export default {
           }
         }
         return "";
+      },
+      cardDrill(item){
+        if(this.component.isDrill && this.component.drillLink){
+          let paramsMap = {};
+          let params = this.component.drillParam.split(",");
+          for (let index = 0; index < params.length; index++) {
+            const element = params[index];
+            if(item[element]){
+                paramsMap[element] = item[element];
+            }
+          }
+          let url = this.commonUtil.buildUrlWithParams(this.component.drillLink,paramsMap);
+          window.open(url, "_blank");
+        }
       },
     }
 }

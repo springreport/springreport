@@ -57,7 +57,6 @@ export default {
     }
   },
   mounted(){
-    console.log(this.component)
   },
   data() {
     return {

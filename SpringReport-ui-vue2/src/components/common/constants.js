@@ -416,12 +416,6 @@ commonConstants.routers = [
     meta: { title: '登录页' }
   },
   {
-    name: 'test',
-    path: '/test',
-    component: () => import('@/components/pages/text.vue'),
-    meta: { title: '测试' }
-  },
-  {
     name: 'h5ReportPreview',
     path: '/h5ReportPreview',
     component: () => import('@/components/pages/h5Report'),

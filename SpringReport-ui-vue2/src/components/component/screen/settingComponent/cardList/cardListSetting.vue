@@ -239,6 +239,30 @@
             />
           </el-form-item>
         </div>
+        <div class="right-dataset-title">
+          <span class="attr-dataset-title">下钻设置</span>
+        </div>
+        <div class="right-dataset-warp" v-if="component.type.toLowerCase().indexOf('basicmap')<0 && component.type.toLowerCase().indexOf('scattermap')<0">
+          <el-form-item label="开启下钻" class="df-form-item">
+              <el-switch v-model="component.isDrill" active-text="是" inactive-text="否"  />
+            </el-form-item>
+            <el-form-item label="下钻类型" class="df-form-item" v-if="component.isDrill">
+            <el-select  v-model="component.drillType" placeholder="请选择" style="width:180px">
+                <el-option
+                  v-for="item in screenConstants.chartDrillType"
+                  :key="item.value"
+                  :label="item.name"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="跳转链接" class="df-form-item" v-if="component.isDrill && component.drillType == '2'">
+              <el-input v-model="component.drillLink" type="textarea" :rows="3"/>
+            </el-form-item>
+            <el-form-item label="下钻参数" class="df-form-item" v-if="component.isDrill && component.drillType == '2'">
+              <el-input v-model="component.drillParam" placeholder="多个参数用,分隔"/>
+            </el-form-item>
+        </div>
     </el-form>
   <el-dialog
       title="自定义字体颜色条件"

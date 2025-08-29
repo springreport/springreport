@@ -249,7 +249,7 @@ screenConstants.componentsType2 = [
 screenConstants.compType = {
   text: { text: '文本', icon: 'text' },
   date: { text: '日期时间', icon: 'date' },
-  numberFlipper: { text: '数字翻牌器', icon: 'text' },
+  numberFlipper: { text: '数字翻牌器', icon: 'numberFlipper' },
   picture: { text: '图片', icon: 'picture' },
   border: { text: '边框', icon: 'border' },
   decoration: { text: '装饰', icon: 'decoration' },
