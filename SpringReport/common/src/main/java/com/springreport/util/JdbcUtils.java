@@ -868,7 +868,7 @@ public class JdbcUtils {
 	 */ 
 	public static String getPaginationSql(String sql,int dataSourceType,int pageCount,int currentPage) throws JSQLParserException {
 		sql = sql.replaceAll(";", "");
-		if(DriverClassEnum.MYSQL.getCode().intValue() == dataSourceType || DriverClassEnum.DAMENG.getCode().intValue() == dataSourceType || DriverClassEnum.DORIS.getCode().intValue() == dataSourceType)
+ 		if(DriverClassEnum.MYSQL.getCode().intValue() == dataSourceType || DriverClassEnum.DAMENG.getCode().intValue() == dataSourceType || DriverClassEnum.DORIS.getCode().intValue() == dataSourceType)
 		{
 			sql = sql + " limit " + (currentPage-1)*pageCount + "," + pageCount;
 		}else if(DriverClassEnum.ORACLE.getCode().intValue() == dataSourceType)
@@ -878,7 +878,7 @@ public class JdbcUtils {
 		}else if(DriverClassEnum.SQLSERVER.getCode().intValue() == dataSourceType) 
 		{
 			sql = "select row_number () over (order by rand()) page_row_number,* from (" + sql + ") as page_table_alias";
-			sql = "select top "+pageCount + " * from (" + sql + ") as page_table_alias where page_row_number > " + (currentPage-1)*pageCount + "order by page_row_number";
+			sql = "select top "+pageCount + " * from (" + sql + ") as page_table_alias where page_row_number > " + (currentPage-1)*pageCount + " order by page_row_number";
 		}else if(DriverClassEnum.POSTGRESQL.getCode().intValue() == dataSourceType || DriverClassEnum.KINGBASE.getCode().intValue() == dataSourceType || DriverClassEnum.HIGODB.getCode().intValue() == dataSourceType) {
 			sql = sql + " limit " + pageCount + " offset " + (currentPage-1)*pageCount;
 		}else if(DriverClassEnum.INFLUXDB.getCode().intValue() == dataSourceType || DriverClassEnum.TDENGINE.getCode().intValue() == dataSourceType) {
