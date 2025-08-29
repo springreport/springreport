@@ -2,59 +2,19 @@
   <div>
     <div class="btn-group df-c">
       <div
+        v-for="(item, index) in ['基础', '参数', '数据', '表格']"
+        :key="index"
         class="btn"
-        :class="{ 'btn-active': currentIndex === 0 }"
-        @click="currentIndex = 0"
+        :class="{ 'btn-active': currentIndex === index }"
+        @click="currentIndex = index"
       >
-        基础
-      </div>
-
-      <div
-        v-if="component.type != 'date'"
-        class="btn"
-        :class="{ 'btn-active': currentIndex === 1 }"
-        @click="currentIndex = 1"
-      >
-        参数
-      </div>
-
-      <div
-        v-if="component.type != 'date'"
-        class="btn"
-        :class="{ 'btn-active': currentIndex === 2 }"
-        @click="currentIndex = 2"
-      >
-        数据
-      </div>
-
-      <div
-        class="btn"
-        :class="{ 'btn-active': currentIndex === 3 }"
-        @click="currentIndex = 3"
-      >
-        {{ '翻牌器' }}
+        {{ item }}
       </div>
     </div>
-
     <site v-if="currentIndex==0" :component="component" :charts-components="chartsComponents" />
-    <param-setting
-      v-if="currentIndex==1"
-      :component="component"
-      :charts-components="chartsComponents"
-    />
-
-    <data-setting
-      v-if="currentIndex==2"
-      :component="component"
-      :charts-components="chartsComponents"
-    />
-
-    <numberFlipperSetting
-      v-if="currentIndex==3"
-      :component="component"
-      :charts-components="chartsComponents"
-    />
-
+    <param-setting v-else-if="currentIndex==1" :component="component" :charts-components="chartsComponents" />
+    <data-setting v-else-if="currentIndex==2" :component="component" :charts-components="chartsComponents" />
+    <card-list-setting v-else-if="currentIndex==3" :component="component" :charts-components="chartsComponents"></card-list-setting>
   </div>
 </template>
 
@@ -76,17 +36,15 @@ import 'codemirror/addon/fold/comment-fold.js'
 import 'codemirror/addon/selection/active-line'
 import site from '../settingComponent/site/site.vue'
 import dataSetting from '../settingComponent/data/dataSetting.vue'
-import chartSetting from '../settingComponent/chart/chartSetting.vue'
 import paramSetting from '../settingComponent/param/paramSetting.vue'
-import numberFlipperSetting from '../settingComponent/numberFlipper/numberFlipperSetting.vue'
+import cardListSetting from '../settingComponent/cardList/cardListSetting.vue'
 export default {
-  name: 'TextSettingComponent',
+  name: 'TableSettingComponent',
   components: {
     site,
     dataSetting,
-    chartSetting,
     paramSetting,
-    numberFlipperSetting
+    cardListSetting
   },
   props: {
     component: {
@@ -98,6 +56,9 @@ export default {
       default: () => ({})
     }
   },
+  mounted(){
+    console.log(this.component)
+  },
   data() {
     return {
       currentIndex: 0
@@ -106,8 +67,9 @@ export default {
 }
 </script>
 
-<style scoped>
-::v-deep .el-collapse-item__header {
-  border-top: 0px !important;
-}
+<style  scoped>
+ ::v-deep .el-collapse-item__header{
+    border-top: 0px !important;
+ }
+
 </style>

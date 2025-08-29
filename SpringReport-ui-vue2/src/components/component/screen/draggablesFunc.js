@@ -7,6 +7,7 @@ import decorationComponent from './draggablecomponent/decorationComponent.vue'
 import tableComponent from './draggablecomponent/tableComponent.vue'
 import vchartComponent from './draggablecomponent/vchartComponent.vue'
 import numberFlipperComponent from './draggablecomponent/numberFlipperComponent.vue'
+import cardListComponent from './draggablecomponent/cardListComponent.vue'
 export default {
   components: {
     MarqueeTips,
@@ -15,7 +16,8 @@ export default {
     decorationComponent,
     tableComponent,
     vchartComponent,
-    numberFlipperComponent
+    numberFlipperComponent,
+    cardListComponent
   },
   props: {
     components: {
@@ -88,7 +90,6 @@ export default {
         this.$emit('update:activated', item)
         this.$emit('update:isBubblingEvent', true)
         this.keyDown(item)
-
         // 左侧图层选中
         const layerArr = document.querySelectorAll('.layer-item')
         if (layerArr && layerArr.length) {
