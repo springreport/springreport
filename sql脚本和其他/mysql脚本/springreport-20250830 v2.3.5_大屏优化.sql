@@ -1,0 +1,1 @@
+ALTER TABLE screen_tpl MODIFY COLUMN background varchar(50);
