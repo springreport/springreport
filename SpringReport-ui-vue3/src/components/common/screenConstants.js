@@ -202,6 +202,7 @@ screenConstants.type = {
     sankey: 'sankey',// 桑葚图
     comboCharthl: 'comboCharthl',// 折柱图
     comboChartdbbar: 'comboChartdbbar',// 双向条形图
+    cardList: 'cardList',// 卡片列表
 }
 
 screenConstants.category = {
@@ -213,6 +214,7 @@ screenConstants.category = {
    decoration:"decoration",//装饰
    table:"table",
    numberFlipper: 'numberFlipper', // 数字翻牌器
+   cardList:'cardList',//卡片列表
 }
 
 //大屏组件类型
@@ -249,7 +251,7 @@ screenConstants.componentsType2 = [
 screenConstants.compType = {
     text: { text: '文本', icon: 'text'},
     date: { text: '日期时间', icon: 'date'},
-    numberFlipper: { text: '数字翻牌器', icon: 'text' },
+    numberFlipper: { text: '数字翻牌器', icon: 'numberFlipper' },
     picture: { text: '图片', icon: 'picture'},
     border: { text: '边框', icon: 'border'},
     decoration: { text: '装饰', icon: 'decoration'},
@@ -295,7 +297,8 @@ screenConstants.compType = {
     zhifangtu: { text: '直方图', icon: 'histogram' },
     sankey: { text: '桑葚图', icon: 'sankey' },
     comboCharthl: { text: '折柱图', icon: 'comboChart' },
-    comboChartdbbar: { text: '双向条形图', icon: 'comboChartdbbar' }
+    comboChartdbbar: { text: '双向条形图', icon: 'comboChartdbbar' },
+    cardList: { text: '卡片列表', icon: 'cardList' }
 }
 
 screenConstants.textType = [
@@ -304,7 +307,7 @@ screenConstants.textType = [
 ]
 
 screenConstants.numberFlipperType = [
-  { 'name': 'numberFlipper', 'text': '数字翻牌器', 'src': 'https://www.springreport.vip/images/chart/text.png', category: screenConstants.category.numberFlipper },
+  { 'name': 'numberFlipper', 'text': '数字翻牌器', 'src': 'https://www.springreport.vip/images/chart/numberflipper.png', category: screenConstants.category.numberFlipper },
 ]
 
 screenConstants.pictureType = [
@@ -414,6 +417,7 @@ screenConstants.mapType = [
 screenConstants.tableType = [
   {"name":"scrollTable","text":"轮播列表","src":"https://www.springreport.vip/images/chart/scrollTable.png",category:screenConstants.category.table},
   {"name":"pageTable","text":"分页列表","src":"https://www.springreport.vip/images/chart/pageTable.png",category:screenConstants.category.table},
+  { 'name': 'cardList', 'text': '卡片列表', 'src': 'https://www.springreport.vip/images/chart/cardlist.png', category: screenConstants.category.table }
 ]
 
 screenConstants.boxPlotType = [
@@ -4259,6 +4263,90 @@ screenConstants.pageTableInit = {
   spec:{
     data: {
       total:8,//总条数
+      values: [
+        {
+          'count': '100',
+          'date': '2021-08-01'
+        }, {
+          'count': '95',
+          'date': '2021-08-02'
+        }, {
+          'count': '112',
+          'date': '2021-08-03'
+        }, {
+          'count': '125',
+          'date': '2021-08-04'
+        }, {
+          'count': '144',
+          'date': '2021-08-05'
+        }, {
+          'count': '168',
+          'date': '2021-08-06'
+        }, {
+          'count': '158',
+          'date': '2021-08-07'
+        }, {
+          'count': '99',
+          'date': '2021-08-08'
+        }
+      ]
+    }
+  }
+}
+
+//大屏卡片列表组件初始化数据
+screenConstants.cardListInit = {
+  type: screenConstants.type.cardList,
+  category: screenConstants.category.cardList,
+  isDelete: false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 500, // 组件初始化宽度
+  h: 248, // 组件初始化高度
+  active: false,
+  zindex: 99,
+  locked: false,
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  refresh: false, // 是否定时刷新
+  refreshTime: 30000, // 定时刷新时间，单位(ms)
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
+  params: [], // 图表参数
+  hiddenParamSize: 0, // 隐藏参数个数
+  bodyStyle:{//卡片背景颜色
+    backgroundColor:"#FFF"
+  },
+  leftHead: {//表头左侧内容配置
+    property:"",//属性值，数据中没有属性对应的值则直接显示该属性
+    color: '#00FFFF', // 字体颜色
+    fontSize: 12, // 字体大小
+    fontWeight: 'bold', // 是否加粗 normal 和bold
+    conditions:[],//自定义字体颜色条件
+  },
+  rightHead: {//表头右侧内容配置
+    property:"",//属性值，数据中没有属性对应的值则直接显示该属性
+    color: '#00FFFF', // 字体颜色
+    fontSize: 12, // 字体大小
+    fontWeight: 'bold', // 是否加粗 normal 和bold
+    conditions:[],//自定义字体颜色条件
+  }, 
+  bodyContent:{
+    rowContents:[],//每一行显示的内容和对应的属性
+  },
+  pagination: {
+    pageColumn:2,//每页列数
+    pageSize: 6, // 每页显示条数
+    backgroundColor: '#2570a1',
+    autoPageInterval:3000
+  },
+  spec: {
+    data: {
+      total: 8, // 总条数
       values: [
         {
           'count': '100',

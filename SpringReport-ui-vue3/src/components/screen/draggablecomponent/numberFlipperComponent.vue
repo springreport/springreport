@@ -13,74 +13,13 @@
       color: component.style.color,
       verticalAlign: component.style.verticalAlign,
       fontSize: component.style.fontSize + 'pt',
-      letterSpacing: component.style.letterSpacing + 'px',
-      background: `linear-gradient(to ${
-        component.style.backgroundDirection
-          ? component.style.backgroundDirection
-          : 'bottom'
-      },${component.style.background},${
-        component.style.backgroundEnd
-          ? component.style.backgroundEnd
-          : component.style.background
-      })`,
       fontWeight: component.style.fontWeight ? 'bold' : 'normal',
     }"
   >
-    <span
-      v-if="component.textType == 'text' || component.type == 'date'"
-      class="text"
-      :style="{
-        height: component.h + 'px',
-        width: component.w + 'px',
-        'background-image': `linear-gradient(to ${
-          component.style.direction ? component.style.direction : 'bottom'
-        }, ${component.style.color}, ${
-          component.style.colorEnd
-            ? component.style.colorEnd
-            : component.style.color
-        })`,
-      }"
-      v-html="component.content"></span>
-    <MarqueeTips
-      v-if="component.textType == 'marquee'"
-      class="text"
-      :content="component.content"
-      :speed="component.speed"
-      :style="{
-        height: component.h + 'px',
-        width: component.w + 'px',
-        lineHeight: component.h + 'px',
-        'background-image': `linear-gradient(to ${
-          component.style.direction ? component.style.direction : 'bottom'
-        }, ${component.style.color}, ${
-          component.style.colorEnd
-            ? component.style.colorEnd
-            : component.style.color
-        })`,
-      }"
-    >
-    </MarqueeTips>
-    <span
-      ><a
-        v-if="component.textType == 'link'"
-        class="text"
-        :style="{
-          fontSize: component.style.fontSize + 'pt',
-          'background-image': `linear-gradient(to ${
-            component.style.direction ? component.style.direction : 'bottom'
-          }, ${component.style.color}, ${
-            component.style.colorEnd
-              ? component.style.colorEnd
-              : component.style.color
-          })`,
-          letterSpacing: component.style.letterSpacing + 'px',
-          fontWeight: component.style.fontWeight ? 'bold' : 'normal',
-        }"
-        :href="component.href"
-        target="_blank"
-        >{{ component.content }}</a
-      ></span
-    >
+  <NumberFlipper :value="component.content" :background="component.style.background" :fontColor="component.style.fontColor" :fontSize="component.style.fontSize" 
+    :duration="component.style.duration" :prefix="component.style.prefix" :suffix="component.style.suffix" :boxHeight="component.style.boxHeight" 
+    :boxWidth="component.style.boxWidth" :prefixColor="component.style.prefixColor" :prefixFontSize="component.style.prefixFontSize" :suffixColor="component.style.suffixColor" 
+    :suffixFontSize="component.style.suffixFontSize" :thousandSeparator="component.style.thousandSeparator" :decimalPlaces="component.style.decimalPlaces"/>
   </div>
  </component>
   <div
@@ -182,7 +121,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-::v-deep .text {
+:deep(.text) {
   // text-align: center;
   -webkit-background-clip: text;
   color: transparent;

@@ -341,7 +341,7 @@
           :rules="filter_rules('选择项', rules)"
           
         >
-          <el-select placeholder="请选择" size="default" v-model="editForm.cellContent" style="width: 400px" filterable>
+          <el-select placeholder="请选择" size="default" v-model="editForm.cellContent" style="width: 400px" filterable clearable>
             <el-option
               v-for="op in dictTypeDatas"
               :label="op.dictLabel"

@@ -963,10 +963,17 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 								content.put("value", value.replaceFirst("\n", ""));
 							}
 						}
-						if(paragraph == null) {
-							paragraph = doc.createParagraph();
+						List<JSONObject> processBlocks = WordUtil.processBlocks(content.getString("value"));
+						if(ListUtil.isNotEmpty(processBlocks)) {
+							for (int j = 0; j < processBlocks.size(); j++) {
+								WordUtil.addParagraph(doc.createParagraph(),processBlocks.get(j), null,false);
+							}
+						}else {
+							if(paragraph == null) {
+								paragraph = doc.createParagraph();
+							}
+							WordUtil.addParagraph(paragraph,content, null,false);
 						}
-						WordUtil.addParagraph(paragraph,content, null,false);
 						break;
 					case "title":
 						if(paragraph == null) {

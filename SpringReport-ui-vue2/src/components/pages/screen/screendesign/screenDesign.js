@@ -338,9 +338,6 @@ export default {
             }
             this.$nextTick(() => {
               const vchart = new VChart(obj.spec, { dom: obj.id })
-              vchart.on('dblclick', (params) => {
-                console.log(params)
-              })
               // 绘制
               vchart.renderSync()
               this.chartsComponents[obj.id] = vchart
@@ -355,6 +352,7 @@ export default {
           }
         }
       }
+      console.log(obj)
       this.$refs.draggable.changeCurrent(obj)
     },
     // 获取大屏设计信息

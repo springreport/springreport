@@ -18,6 +18,7 @@
             placeholder="请选择"
             style="width: 180px"
             @change="commonUtil.reLoadChart(chartsComponents, component)"
+            filterable clearable
           >
             <el-option
               v-for="item in screenConstants.vchartthemes"
@@ -58,6 +59,7 @@
             placeholder="请选择"
             style="width: 150px"
             @change="changeSystemColor"
+            filterable clearable
           >
             <el-option
               v-for="item in screenConstants.systemChartColorsNames"
@@ -771,7 +773,7 @@
             <el-select
               v-model="component.spec.map"
               style="width: 170px"
-              filterable
+              filterable clearable
               placeholder="地图类型"
               @change="changeMapType(component)"
             >
@@ -878,7 +880,7 @@
         </div>
         <div class="right-dataset-warp">
           <el-form-item label="地图类型">
-            <el-select v-model="component.spec.series[0].map" style="width:170px" filterable placeholder="地图类型" @change="changeMapType(component)">
+            <el-select v-model="component.spec.series[0].map" style="width:170px" filterable clearable placeholder="地图类型" @change="changeMapType(component)">
               <el-option
                 v-for="item in screenConstants.map"
                 :key="item.value"
@@ -1476,6 +1478,7 @@
         <el-form-item label="动画效果">
           <el-select
             v-model="component.amination"
+            clearable
             placeholder="请选择"
             style="width: 180px"
             @change="commonUtil.changeHistogramAmination(chartsComponents, component)"
@@ -1492,7 +1495,7 @@
       <div class="right-dataset-title" v-if="component.type.toLowerCase().indexOf('basicmap')<0">
         <span class="attr-dataset-title">下钻设置</span>
       </div>
-      <div class="right-dataset-warp" v-if="component.type.toLowerCase().indexOf('basicmap')<0 || component.type.toLowerCase().indexOf('scattermap')<0">
+      <div class="right-dataset-warp" v-if="component.type.toLowerCase().indexOf('basicmap')<0 && component.type.toLowerCase().indexOf('scattermap')<0">
         <el-form-item label="开启下钻" class="df-form-item">
             <el-switch v-model="component.isDrill" active-text="是" inactive-text="否" @change="changeIsDrill(chartsComponents,component)" />
           </el-form-item>

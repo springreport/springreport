@@ -1666,4 +1666,24 @@ public class WordUtil {
 			return "";//无色
 		}
 	}
+	
+	public static List<JSONObject> processBlocks(String value) {
+		List<JSONObject> result = new ArrayList<>();
+		if(StringUtil.isNotEmpty(value) && value.startsWith("{{?")) {
+			String[] textes = value.split("\n");
+			if(textes.length > 1) {
+				JSONObject blockStart = new JSONObject();
+				blockStart.put("value", textes[0]);
+				result.add(blockStart);
+				String elseBlockValue = "";
+				for (int i = 1; i < textes.length; i++) {
+					elseBlockValue = elseBlockValue + textes[i] + "\n";
+				}
+				JSONObject elseBlock = new JSONObject();
+				elseBlock.put("value", elseBlockValue);
+				result.add(elseBlock);
+			}
+		}
+		return result;
+	}
 }

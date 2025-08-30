@@ -66,7 +66,7 @@
                 :key="conditionindex"
               >
               <template slot="title">
-                {{ '自定义颜色条件'+ conditionindex}}
+                {{ '自定义颜色条件'+ (conditionindex+1)}}
               </template>
                 <p class="column-tag" style="min-width: 220px; max-width: 220px">
                   属性：{{ conditionItem.conditionProperty }}
@@ -967,7 +967,7 @@ export default {
 }
 
 ::v-deep .el-dialog {
-        height: 70%;
+        max-height: 80%;
         overflow: auto;
     }
 

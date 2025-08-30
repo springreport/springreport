@@ -2317,7 +2317,7 @@ export default {
             );
             var configs = this.getSheetConfigs(luckysheetfile);
             configs.luckysheetAlternateformatSave = luckysheetfile.luckysheet_alternateformat_save;
-            var emptyMergeCell = this.getEmptyMergeCell(configs.config.merge, cellDatas);
+            var emptyMergeCell = this.getEmptyMergeCell(configs.config.merge, cellDatas,luckysheetfile);
             cellDatas = cellDatas.concat(emptyMergeCell);
             var borderCellDatas = this.getEmptyBorderCellDatas(configs.config, cellDatas);
             cellDatas = cellDatas.concat(borderCellDatas);
@@ -2493,7 +2493,7 @@ export default {
       }
       return result;
     },
-    getEmptyMergeCell(merge, cellDatas) {
+    getEmptyMergeCell(merge, cellDatas,luckysheetfile) {
       var result = [];
       if (merge && Object.keys(merge).length > 0) {
         var obj = this.cellDatasToJsonObj(cellDatas);
@@ -2505,21 +2505,8 @@ export default {
             var cellData = {
               r: r,
               c: c,
-              v: {
-                ct: {
-                  fa: 'General',
-                  t: 'g',
-                },
-                v: '',
-                m: '',
-                mc: {
-                  r: r,
-                  c: c,
-                  rs: value.rs,
-                  cs: value.cs,
-                },
-              },
             };
+            cellData.v = luckysheetfile.data[r][c];
             result.push(cellData);
           }
         });
@@ -4190,7 +4177,7 @@ export default {
         );
         var configs = this.getSheetConfigs(luckysheetfile);
         configs.luckysheetAlternateformatSave = luckysheetfile.luckysheet_alternateformat_save;
-        var emptyMergeCell = this.getEmptyMergeCell(configs.config.merge, cellDatas);
+        var emptyMergeCell = this.getEmptyMergeCell(configs.config.merge, cellDatas,luckysheetfile);
         cellDatas = cellDatas.concat(emptyMergeCell);
         var borderCellDatas = this.getEmptyBorderCellDatas(configs.config, cellDatas);
         cellDatas = cellDatas.concat(borderCellDatas);

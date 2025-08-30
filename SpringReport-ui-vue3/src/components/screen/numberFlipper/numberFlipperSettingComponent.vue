@@ -32,19 +32,19 @@
         :class="{ 'btn-active': currentIndex === 3 }"
         @click="currentIndex = 3"
       >
-        {{ component.type != 'date' ? '文本' : '日期' }}
+       {{ '翻牌器' }}
       </div>
     </div>
 
     <site v-if="currentIndex==0" :component="component" :charts-components="chartsComponents" />
     <param-setting
-      v-if="component.type != 'date'&&currentIndex==1"
+      v-if="currentIndex==1"
       :component="component"
       :charts-components="chartsComponents"
     />
 
     <data-setting
-      v-if="component.type != 'date'&&currentIndex==2"
+      v-if="currentIndex==2"
       :component="component"
       :charts-components="chartsComponents"
     />

@@ -1836,7 +1836,7 @@ export default {
                       var mainKey = datasourceConfig.datasourceId + '|' + datasourceConfig.name + '|' + datasourceConfig.table + '|' + datasourceConfig.columnName;
                       if(v != null && v != "" && this.sheetMainDatasources[sheetIndex]){
                         if(this.sheetMainDatasources[sheetIndex]){
-                          if(this.sheetMainDatasources[sheetIndex][mainKey]){
+                          if(this.sheetMainDatasources[sheetIndex][mainKey] || isNew){
                             mainKey = sheetIndex + "|" + mainKey;
                             this.mainRowDatas[mainKey] = v;
                           }

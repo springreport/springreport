@@ -50,7 +50,7 @@
           prop="column"
           :rules="filter_rules('返回值类型', { required: true })"
         >
-          <el-select v-model="dataSetForm.column" placeholder="请选择" multiple>
+          <el-select v-model="dataSetForm.column" placeholder="请选择" multiple  filterable clearable>
             <el-option
               v-for="item in dataColumn"
               :key="item.name"
@@ -123,6 +123,7 @@
               v-model="sqlForm.mongoTable"
               placeholder="查询集合(表)"
               size="small"
+               filterable clearable
             >
               <el-option
                 v-for="item in dataSourceTables"

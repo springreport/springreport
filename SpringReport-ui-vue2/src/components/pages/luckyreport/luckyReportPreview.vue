@@ -369,6 +369,7 @@
             placeholder="请选择"
             size="small"
             filterable
+            clearable
           >
             <el-option
               v-for="op in dictTypeDatas"

@@ -2064,7 +2064,7 @@ export default {
             var extraCustomCellConfigs = this.getSheetExtraCustomCellConfigs(cellDatas, luckysheetfile.index)
             var configs = this.getSheetConfigs(luckysheetfile)
             configs.luckysheetAlternateformatSave = luckysheetfile.luckysheet_alternateformat_save
-            var emptyMergeCell = this.getEmptyMergeCell(configs.config.merge, cellDatas)
+            var emptyMergeCell = this.getEmptyMergeCell(configs.config.merge, cellDatas,luckysheetfile)
             cellDatas = cellDatas.concat(emptyMergeCell)
             var borderCellDatas = this.getEmptyBorderCellDatas(configs.config, cellDatas)
             cellDatas = cellDatas.concat(borderCellDatas)
@@ -2277,7 +2277,7 @@ export default {
       }
       return result
     },
-    getEmptyMergeCell(merge, cellDatas) {
+    getEmptyMergeCell(merge, cellDatas,luckysheetfile) {
       var result = []
       if (merge && Object.keys(merge).length > 0) {
         var obj = this.cellDatasToJsonObj(cellDatas)
@@ -2289,22 +2289,8 @@ export default {
             var cellData = {
               'r': r,
               'c': c,
-              'v': {
-                'ct': {
-                  'fa': 'General',
-                  't': 'g'
-                },
-                'v': '',
-                'm': '',
-                'mc': {
-                  'r': r,
-                  'c': c,
-                  'rs': value.rs,
-                  'cs': value.cs
-                }
-              }
-
             }
+            cellData.v = luckysheetfile.data[r][c];
             result.push(cellData)
           }
         })
@@ -3218,6 +3204,7 @@ export default {
     },
     // 单元格鼠标点击监听事件
     cellMousedown(cell, postion, sheetFile, ctx) {
+      console.log(cell)
       this.chartSettingShow = false
       var selectedRanges = luckysheet.getRange()
       var r = selectedRanges[0].row[0]
@@ -3926,7 +3913,7 @@ export default {
         var extraCustomCellConfigs = this.getSheetExtraCustomCellConfigs(cellDatas, luckysheetfile.index)
         var configs = this.getSheetConfigs(luckysheetfile)
         configs.luckysheetAlternateformatSave = luckysheetfile.luckysheet_alternateformat_save
-        var emptyMergeCell = this.getEmptyMergeCell(configs.config.merge, cellDatas)
+        var emptyMergeCell = this.getEmptyMergeCell(configs.config.merge, cellDatas,luckysheetfile)
         cellDatas = cellDatas.concat(emptyMergeCell)
         var borderCellDatas = this.getEmptyBorderCellDatas(configs.config, cellDatas)
         cellDatas = cellDatas.concat(borderCellDatas)

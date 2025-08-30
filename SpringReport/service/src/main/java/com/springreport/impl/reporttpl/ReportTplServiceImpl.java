@@ -5328,6 +5328,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 											merge.put(LuckySheetPropsEnum.C.getCode(), maxCol);
 											merge.put(LuckySheetPropsEnum.ROWSPAN.getCode(), luckysheetReportBlockCells.get(t).getRowSpan());
 											merge.put(LuckySheetPropsEnum.COLSPAN.getCode(), luckysheetReportBlockCells.get(t).getColSpan());
+											((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.MERGECELLS.getCode(), merge);
 											mergeMap.put(String.valueOf(maxRow)+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+String.valueOf(maxCol), merge);
 											if((maxRow + luckysheetReportBlockCells.get(t).getRowSpan()-1)> maxX)
 											{

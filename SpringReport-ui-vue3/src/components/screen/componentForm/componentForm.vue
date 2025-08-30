@@ -3,7 +3,7 @@
       <el-form :inline="true" class="demo-form-inline" @submit.prevent>
           <el-form-item label=""  v-for="(item,index) in params"  :key="index">
                 <el-input  v-if="item.paramType==='varchar' || item.paramType==='number'" v-model="params[index][item.paramCode]" :placeholder="item.paramName" size="small" :style="{width:item.width+'px'}" @keyup.enter="search"></el-input>
-                <el-select  v-if="item.paramType ==='select'" :placeholder="item.paramName" size="small" :style="{width:item.width+'px'}" v-model="params[index][item.paramCode]" @change="search">
+                <el-select  v-if="item.paramType ==='select'" :placeholder="item.paramName" size="small" :style="{width:item.width+'px'}" v-model="params[index][item.paramCode]" @change="search" filterable clearable>
                     <el-option v-for="op in item.selectData" :label="op.name" :value="op.value" :key="op.value"></el-option>
                 </el-select>
                 <el-date-picker type="date"  v-if="item.paramType==='date'" :placeholder="item.paramName" v-model="params[index][item.paramCode]" format="YYYY-MM-DD" value-format="YYYY-MM-DD" size="small" :style="{width:item.width+'px'}" :clearable="false" @change="search"></el-date-picker>
