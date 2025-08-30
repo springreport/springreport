@@ -235,6 +235,8 @@ export default {
             prop: 'dataSource',
             rules: { required: true },
             multiple: true,
+            filterable:true,
+            clearable:true,
             props: { label: 'name', value: 'id' },
           },
           {

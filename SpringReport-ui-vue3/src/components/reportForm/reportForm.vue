@@ -166,6 +166,7 @@
                     v-model="searchData.params[i].params[index][item.paramCode]"
                     :size="item.size"
                     clearable
+                    filterable
                     @focus="getSelectData(item)"
                   >
                     <el-option :label="'请选择'" value=""></el-option>
@@ -183,6 +184,7 @@
                     "
                     v-model="searchData.params[i].params[index][item.paramCode]"
                     :size="item.size"
+                    filterable clearable
                     @focus="
                       getRelyOnParamys(
                         item,
@@ -208,6 +210,7 @@
                     :multiple="true"
                     @focus="getSelectData(item)"
                     clearable
+                    filterable
                   >
                     <el-option
                       v-for="op in item.selectData"
@@ -227,6 +230,7 @@
                         searchData.params[i],
                         searchData.params[i].params[index])"
                     clearable
+                    filterable
                   >
                     <el-option
                       v-for="op in item.selectData"
@@ -354,6 +358,7 @@
                   "
                   v-model="searchData.params[0].params[index][item.paramCode]"
                   clearable
+                  filterable
                   :size="item.size"
                   @focus="getSelectData(item)"
                 >
@@ -372,6 +377,7 @@
                   "
                   v-model="searchData.params[0].params[index][item.paramCode]"
                   :size="item.size"
+                  filterable clearable
                   @focus="
                     getRelyOnParamys(item, searchData.params[0], searchData.params[0].params[index])
                   "
@@ -391,6 +397,7 @@
                   v-model="searchData.params[0].params[index][item.paramCode]"
                   :size="item.size"
                   :multiple="true"
+                  filterable clearable
                   @focus="getSelectData(item)"
                 >
                   <el-option
@@ -406,6 +413,7 @@
                   v-model="searchData.params[0].params[index][item.paramCode]"
                   :size="item.size"
                   :multiple="true"
+                  filterable clearable
                   @focus="getRelyOnParamys(
                       item,
                       searchData.params[0],

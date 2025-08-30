@@ -27,7 +27,7 @@
           label="数据列"
           :rules="filter_rules('返回值类型', { required: true })"
         >
-          <el-select v-model="dataSetForm.dataSetId" placeholder="请选择" @change="changeDataset">
+          <el-select v-model="dataSetForm.dataSetId" placeholder="请选择" @change="changeDataset" filterable clearable>
             <el-option
               v-for="item in dataSets"
               :key="item.id"
@@ -47,6 +47,7 @@
             placeholder="请选择"
             multiple
             style="width: 200px"
+            filterable clearable
           >
             <el-option
               v-for="item in dataColumn"
@@ -91,6 +92,7 @@
             v-model="sqlForm.datasourceId"
             placeholder="选择数据源"
             @change="changeDatasource"
+            filterable clearable
           >
             <el-option
               v-for="op in dataSource"
@@ -110,6 +112,7 @@
             <el-select
               v-model="sqlForm.mongoTable"
               placeholder="查询集合(表)"
+              filterable clearable
             >
               <el-option
                 v-for="item in dataSourceTables"
