@@ -698,6 +698,7 @@ public class DocumentToLuckysheetUtil {
                    		 v.put("ct", ct);
                    		 cellInfo.put("v", v);
                			 Object value = null;
+               			 Object mValue = null;
                			 XSSFRichTextString xSSFRichTextString = null;
                    		 if (cell.getCellType() == CellType.NUMERIC) {
                    			 value = cell.getNumericCellValue();
@@ -732,8 +733,10 @@ public class DocumentToLuckysheetUtil {
                                		 sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
                                	 }
                                	 value = sdf.format(cell.getDateCellValue());// 日期
+                               	 mValue = value;
                                 }else {
-                               	 value = formatter.formatRawCellContents(cell.getNumericCellValue(), cellStyle.getDataFormat(), cellStyle.getDataFormatString()); 
+                                 value = cell.getNumericCellValue();
+                               	 mValue = formatter.formatRawCellContents(cell.getNumericCellValue(), cellStyle.getDataFormat(), cellStyle.getDataFormatString()); 
                                 }
                                 String dataformatString = cellStyle.getDataFormatString();
                                 ct.put("fa", dataformatString);
@@ -744,6 +747,7 @@ public class DocumentToLuckysheetUtil {
                        			 final CellStyle cellStyle = cell.getCellStyle();
                        			 dataformatString = cellStyle.getDataFormatString();
                        			 value = evaluate.formatAsString();
+                       			 mValue = value;
 								} catch (Exception e) {
 									e.printStackTrace();
 								}
@@ -760,19 +764,22 @@ public class DocumentToLuckysheetUtil {
                				 if(xSSFRichTextString.numFormattingRuns() == 0)
                				 {
                					 value = cell.getStringCellValue();
+               					 mValue = cell.getStringCellValue();
                					 xSSFRichTextString = null;
                				 }
                				 ct.put("t", "s");
                        		 ct.put("fa", "@");
                             }else if (cell.getCellType() == CellType.BOOLEAN) {
                            	 value = cell.getBooleanCellValue();
+                           	 mValue = cell.getBooleanCellValue();
                             } else if (cell.getCellType() == CellType.ERROR) {
                            	 value = cell.getErrorCellValue();
+                           	 mValue = cell.getErrorCellValue();
                             }
                			 if(value != null)
                			 {
                				 v.put("v", value);
-               				 v.put("m", String.valueOf(value));
+               				 v.put("m", String.valueOf(mValue));
                			 }
                			 if(cell.getCellStyle().getFillForegroundColorColor() != null)
                			 {
