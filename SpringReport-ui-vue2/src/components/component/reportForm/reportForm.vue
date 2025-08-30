@@ -188,6 +188,7 @@
                     style="width: 100%"
                     size="mini"
                     clearable
+                    filterable
                     @focus="getSelectData(item)"
                   >
                     <el-option :label="'请选择'" value="" />
@@ -206,6 +207,7 @@
                     "
                     v-model="searchData.params[i].params[index][item.paramCode]"
                     clearable
+                    filterable
                     size="mini"
                     style="width: 100%"
                     @focus="
@@ -234,6 +236,7 @@
                     v-model="searchData.params[i].params[index][item.paramCode]"
                     size="mini"
                     :multiple="true"
+                    filterable
                     style="width: 100%"
                     @focus="getSelectData(item)"
                     clearable
@@ -261,6 +264,7 @@
                         searchData.params[i].params[index]
                       )"
                     clearable
+                    filterable
                   >
                     <el-option
                       v-for="op in item.selectData"
@@ -379,6 +383,7 @@
                   style="width: 100%"
                   size="mini"
                   clearable
+                  filterable
                   @focus="getSelectData(item)"
                 >
                   <el-option :label="'请选择'" value="" />
@@ -398,6 +403,7 @@
                   v-model="searchData.params[0].params[index][item.paramCode]"
                   style="width: 100%"
                   clearable
+                  filterable
                   size="mini"
                   @focus="
                     getRelyOnParamys(
@@ -429,6 +435,7 @@
                   :multiple="true"
                   @focus="getSelectData(item)"
                   clearable
+                  filterable
                 >
                   <el-option
                     v-for="op in item.selectData"
@@ -455,6 +462,7 @@
                       searchData.params[0].params[index]
                     )"
                   clearable
+                  filterable
                 >
                   <el-option
                     v-for="op in item.selectData"

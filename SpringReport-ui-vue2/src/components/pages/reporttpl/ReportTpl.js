@@ -90,7 +90,7 @@ export default {
           { type: 'Input', label: '报表标识', prop: 'tplCode', rules: { required: true, maxLength: 40 }},
           { type: 'Input', label: '报表名称', prop: 'tplName', rules: { required: true, maxLength: 40 }},
           { type: 'Select', label: '所属目录', prop: 'reportType', rules: { required: true }, props: { label: 'reportTypeName', value: 'id' }},
-          { type: 'Select', label: '报表数据源', prop: 'dataSource', rules: { required: true }, multiple: true, props: { label: 'name', value: 'id' }},
+          { type: 'Select', label: '报表数据源', prop: 'dataSource', rules: { required: true }, multiple: true, props: { label: 'name', value: 'id' },filterable:true,clearable:true},
           { type: 'Select', label: '查看权限', prop: 'viewAuth', rules: { required: true }, options: this.selectUtil.viewAuth, change: this.changeViewAuth },
           // {type:'Select',label:'角色配置',prop:'roles',rules:{required:false},multiple:true,width:'520px',props:{label:"roleName",value:"id"}},
           { type: 'Password', label: '设计密码', prop: 'designPwd', rules: { required: false, maxLength: 32 }},

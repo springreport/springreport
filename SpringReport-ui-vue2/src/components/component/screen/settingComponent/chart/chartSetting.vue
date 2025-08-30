@@ -9,7 +9,7 @@
       </div>
       <div class="right-dataset-warp">
         <el-form-item label="主题">
-          <el-select v-model="component.theme" placeholder="请选择" style="width:180px" @change="commonUtil.reLoadChart(chartsComponents,component)">
+          <el-select v-model="component.theme" placeholder="请选择" style="width:180px" @change="commonUtil.reLoadChart(chartsComponents,component)"  filterable clearable>
             <el-option
               v-for="item in screenConstants.vchartthemes"
               :key="item.value"
@@ -32,7 +32,7 @@
             ><i class="el-icon-plus el-icon--left" />添加</el-button>
           </div>
 
-          <el-select v-model="systemColor" placeholder="请选择" style="width:150px" @change="changeSystemColor">
+          <el-select v-model="systemColor" placeholder="请选择" style="width:150px" @change="changeSystemColor" filterable clearable>
             <el-option
               v-for="item in screenConstants.systemChartColorsNames"
               :key="item.value"
@@ -409,7 +409,7 @@
         </div>
         <div class="right-dataset-warp">
           <el-form-item label="地图类型">
-            <el-select v-model="component.spec.map" style="width:170px" filterable placeholder="地图类型" @change="changeMapType(component)">
+            <el-select v-model="component.spec.map" style="width:170px" filterable placeholder="地图类型" @change="changeMapType(component)" clearable>
               <el-option
                 v-for="item in screenConstants.map"
                 :key="item.value"
@@ -475,7 +475,7 @@
         </div>
         <div class="right-dataset-warp">
           <el-form-item label="地图类型">
-            <el-select v-model="component.spec.series[0].map" style="width:170px" filterable placeholder="地图类型" @change="changeMapType(component)">
+            <el-select v-model="component.spec.series[0].map" style="width:170px" filterable clearable placeholder="地图类型" @change="changeMapType(component)" >
               <el-option
                 v-for="item in screenConstants.map"
                 :key="item.value"
@@ -851,7 +851,7 @@
       </div>
       <div class="right-dataset-warp">
         <el-form-item label="动画效果">
-          <el-select v-model="component.amination" placeholder="请选择" style="width:180px" @change="commonUtil.changeHistogramAmination(chartsComponents,component)">
+          <el-select v-model="component.amination" placeholder="请选择" style="width:180px" @change="commonUtil.changeHistogramAmination(chartsComponents,component)" clearable>
             <el-option
               v-for="item in screenConstants.baranimation"
               :key="item.value"

@@ -8,7 +8,7 @@
   <div>
     <el-form :inline="true" class="demo-form-inline" @submit.native.prevent>
       <el-form-item v-for="(item,index) in params" :key="index" label="">
-        <el-input v-if="item.paramType==='varchar' || item.paramType==='number'" v-model="params[index][item.paramCode]" class="custom-input" :placeholder="item.paramName" size="mini" :style="{width:item.width+'px'}" @keyup.enter.native="search" />
+        <el-input v-if="item.paramType==='varchar' || item.paramType==='number'" v-model="params[index][item.paramCode]" class="custom-input" :placeholder="item.paramName" size="mini" :style="{width:item.width+'px'}" @keyup.enter.native="search"  filterable clearable/>
         <el-select v-if="item.paramType ==='select'" v-model="params[index][item.paramCode]" class="custom-input" :placeholder="item.paramName" size="mini" :style="{width:item.width+'px'}" @change="search">
           <el-option v-for="op in item.selectData" :key="op.value" :label="op.name" :value="op.value" />
         </el-select>
