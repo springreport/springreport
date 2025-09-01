@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Map;
 
-import com.springreport.dto.reporttpl.LuckySheetBindData;
+import com.springreport.base.LuckySheetBindData;
 import com.springreport.util.CheckUtil;
 import com.springreport.util.StringUtil;
 

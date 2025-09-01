@@ -3,7 +3,7 @@ package com.springreport.report.calculate;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import com.springreport.dto.reporttpl.LuckySheetBindData;
+import com.springreport.base.LuckySheetBindData;
 import com.springreport.dto.reporttpl.LuckySheetFormsBindData;
 
 /**

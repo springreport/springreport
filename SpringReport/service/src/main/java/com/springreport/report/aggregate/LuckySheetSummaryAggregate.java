@@ -13,7 +13,7 @@ import java.util.Map.Entry;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.springreport.dto.reporttpl.LuckySheetBindData;
+import com.springreport.base.LuckySheetBindData;
 import com.springreport.entity.luckysheetreportcell.LuckysheetReportCell;
 import com.springreport.enums.AggregateTypeEnum;
 import com.springreport.enums.YesNoEnum;

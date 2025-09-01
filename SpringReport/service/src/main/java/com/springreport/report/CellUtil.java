@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.alibaba.fastjson.JSONArray;
-import com.springreport.dto.reporttpl.LuckySheetBindData;
+import com.springreport.base.LuckySheetBindData;
 import com.springreport.dto.reporttpl.LuckySheetFormsBindData;
 import com.springreport.enums.CellExtendEnum;
 import com.springreport.enums.CellValueTypeEnum;

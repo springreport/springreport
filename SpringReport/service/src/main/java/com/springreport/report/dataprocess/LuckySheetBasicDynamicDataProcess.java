@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.alibaba.fastjson.JSONObject;
-import com.springreport.dto.reporttpl.LuckySheetBindData;
+import com.springreport.base.LuckySheetBindData;
 import com.springreport.dto.reporttpl.LuckySheetFormsBindData;
 import com.springreport.entity.luckysheetreportcell.LuckysheetReportCell;
 import com.springreport.entity.luckysheetreportformscell.LuckysheetReportFormsCell;

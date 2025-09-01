@@ -13,7 +13,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.springreport.constants.StatusCode;
-import com.springreport.dto.reporttpl.LuckySheetBindData;
+import com.springreport.base.LuckySheetBindData;
 import com.springreport.dto.reporttpl.LuckySheetFormsBindData;
 import com.springreport.entity.luckysheetreportcell.LuckysheetReportCell;
 import com.springreport.entity.luckysheetreportformscell.LuckysheetReportFormsCell;

@@ -48,7 +48,7 @@ import com.springreport.base.UserInfoDto;
 import com.springreport.constants.Constants;
 import com.springreport.constants.StatusCode;
 import com.springreport.dto.reporttpl.GroupSummaryData;
-import com.springreport.dto.reporttpl.LuckySheetBindData;
+import com.springreport.base.LuckySheetBindData;
 import com.springreport.dto.reporttpl.LuckySheetFormsBindData;
 import com.springreport.dto.reporttpl.MesGenerateReportDto;
 import com.springreport.dto.reporttpl.ReportCellDictsDto;

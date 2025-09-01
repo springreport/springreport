@@ -8,7 +8,7 @@ import java.util.Set;
 
 import com.googlecode.aviator.AviatorEvaluator;
 import com.googlecode.aviator.Options;
-import com.springreport.dto.reporttpl.LuckySheetBindData;
+import com.springreport.base.LuckySheetBindData;
 import com.springreport.util.CheckUtil;
 import com.springreport.util.ListUtil;
 import com.springreport.util.LuckysheetUtil;

@@ -139,7 +139,7 @@ import com.springreport.constants.StatusCode;
 import com.springreport.dto.onlinetpl.OnlineTplTreeDto;
 import com.springreport.dto.reporttpl.AlternateformatDto;
 import com.springreport.dto.reporttpl.GroupSummaryData;
-import com.springreport.dto.reporttpl.LuckySheetBindData;
+import com.springreport.base.LuckySheetBindData;
 import com.springreport.dto.reporttpl.MesChangePwd;
 import com.springreport.dto.reporttpl.MesGenerateReportDto;
 import com.springreport.dto.reporttpl.MesLuckySheetTplDto;
@@ -4562,7 +4562,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		{
 			this.processBlocks(maxCoordinate, bindData, mergeMap,configRowLen, configColumnLen, 
 					rowlen, columnlen, cellDatas, hyperlinks,dataRowLen,dataColLen,maxXAndY,borderInfo,borderConfig,borderInfos,calcChain,objectMapper,
-					images,usedCells,dataVerification,rowhidden,colhidden,datasetNameIdMap,columnNames);
+					images,usedCells,dataVerification,rowhidden,colhidden,datasetNameIdMap,columnNames,dynamicRange);
 		}
 		else {//动态值
 //			if(((Map<String, Object>)sortedBindData.get(i).getCellData().get(LuckySheetPropsEnum.CELLCONFIG.getCode())).containsKey(LuckySheetPropsEnum.MERGECELLS.getCode())
@@ -4624,7 +4624,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			List<Map<String, Object>> cellDatas,Map<String, Map<String, Object>> hyperlinks,Object dataRowLen,Object dataColLen,Map<String, Integer> maxXAndY,
 			Map<String, Object> borderInfo,List<Map<String, Object>> borderConfig,List<Object> borderInfos,List<JSONObject> calcChain,ObjectMapper objectMapper
 			, List<JSONObject> images,Map<String, Map<String, Object>> usedCells,JSONObject dataVerification,Object rowhidden,Object colhidden,Map<String, String> datasetNameIdMap,
-			List<List<String>> columnNames) throws JsonMappingException, JsonProcessingException {
+			List<List<String>> columnNames,JSONObject dynamicRange) throws JsonMappingException, JsonProcessingException {
 		//循环块
 		//获取循环块对应的单元格
 		QueryWrapper<LuckysheetReportBlockCell> queryWrapper = new QueryWrapper<LuckysheetReportBlockCell>();
@@ -4782,6 +4782,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 									}
 								}
 					        }
+					        this.processDynamicRange(luckySheetBindData, dynamicRange, maxRow, maxCol, cellData);
 							cellDatas.add(cellData);
 							if(YesNoEnum.YES.getCode().intValue() == luckysheetReportBlockCells.get(t).getIsMerge().intValue()) {
 								for (int k = 0; k < luckysheetReportBlockCells.get(t).getRowSpan(); k++) {
@@ -5418,6 +5419,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 											img.put("extend", 1);
 											images.add(img);
 										}
+										this.processDynamicRange(luckySheetBindData, dynamicRange, maxRow, maxCol, cellData);
 										cellDatas.add(cellData);
 										if(YesNoEnum.YES.getCode().intValue() == luckysheetReportBlockCells.get(t).getIsMerge().intValue()) {
 											for (int k = 0; k < luckysheetReportBlockCells.get(t).getRowSpan(); k++) {
