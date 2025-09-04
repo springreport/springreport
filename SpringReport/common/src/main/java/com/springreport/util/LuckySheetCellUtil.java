@@ -703,7 +703,7 @@ public class LuckySheetCellUtil {
 			}else if("1".equals(tb)) {
 				cellStyle.setWrapText(false);
 			}else if("0".equals(tb)) {
-				cellStyle.setAlignment(HorizontalAlignment.FILL);
+				cellStyle.setWrapText(true);
 			}
 			
 			cellStyle.setFont(font);
