@@ -4677,9 +4677,6 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 					}
 					String groupPropertyValue = luckySheetBindData.getDatas().get(m).get(0).get(groupProperty) == null?"":String.valueOf(luckySheetBindData.getDatas().get(m).get(0).get(groupProperty));
 					for (int t = 0; t < luckysheetReportBlockCells.size(); t++) {
-						if(t == 8) {
-							System.err.println();
-						}
 						List<Map<String, Object>> border = this.getBorderType(borderConfig, luckysheetReportBlockCells.get(t).getCoordsx(), luckysheetReportBlockCells.get(t).getCoordsy());//获取该单元格的边框信息
 						Integer maxX = maxXAndY.get("maxX");
 						Integer maxY = maxXAndY.get("maxY");
