@@ -591,11 +591,16 @@ public class LuckysheetUtil {
 	}
 	
 	public static String[] getDatasetNames(String datasetName) {
-		String[] datasetNames = datasetName.split(",");
-		List<String> datasetNameList = Arrays.asList(datasetNames);
-		Set<String> set = new HashSet(datasetNameList);
-		datasetNames=(String [])set.toArray(new String[0]);
-		return datasetNames;
+		if(StringUtil.isNotEmpty(datasetName)) {
+			String[] datasetNames = datasetName.split(",");
+			List<String> datasetNameList = Arrays.asList(datasetNames);
+			Set<String> set = new HashSet(datasetNameList);
+			datasetNames=(String [])set.toArray(new String[0]);
+			return datasetNames;
+		}else {
+			return new String[] {};
+		}
+		
 	}
 	
 	/**  
