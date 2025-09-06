@@ -3204,7 +3204,6 @@ export default {
     },
     // 单元格鼠标点击监听事件
     cellMousedown(cell, postion, sheetFile, ctx) {
-      console.log(cell)
       this.chartSettingShow = false
       var selectedRanges = luckysheet.getRange()
       var r = selectedRanges[0].row[0]
