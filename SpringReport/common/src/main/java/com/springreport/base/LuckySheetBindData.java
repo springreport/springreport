@@ -9,6 +9,12 @@ import com.springreport.enums.YesNoEnum;
 
 import lombok.Data;
 
+/**  
+ * @ClassName: LuckySheetBindData
+ * @Description: TODO
+ * @author caiyang
+ * @date 2025-09-08 03:27:42 
+*/ 
 @Data
 public class LuckySheetBindData {
 	
@@ -611,4 +617,18 @@ public class LuckySheetBindData {
     private Boolean keepEmptyCell;
     
     private Integer isRelyCalculated = 2;
+    
+    /**  
+     * @Fields datasetNamesCache : 数据集名称缓存
+     * @author caiyang
+     * @date 2025-09-08 03:27:50 
+     */  
+    private String[] datasetNamesCache;
+    
+    /**  
+     * @Fields propertiesCache : 数据集属性缓存数据
+     * @author caiyang
+     * @date 2025-09-08 03:41:02 
+     */  
+    private List<String> propertiesCache;
 }

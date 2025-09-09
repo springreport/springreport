@@ -8141,7 +8141,13 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		{
 			this.processColumnStartCoords(columnStartCoords, luckySheetBindData, rowAndCol);
 		}
-        String[] datasetNames = LuckysheetUtil.getDatasetNames(luckySheetBindData.getDatasetName());
+		String[] datasetNames = null;
+		if(luckySheetBindData.getDatasetNamesCache() == null) {
+			datasetNames = LuckysheetUtil.getDatasetNames(luckySheetBindData.getDatasetName());
+			luckySheetBindData.setDatasetNamesCache(datasetNames);
+		}else {
+			datasetNames = luckySheetBindData.getDatasetNamesCache();
+		}
         boolean isJustProperty = false;
         String property = luckySheetBindData.getProperty();
         Object value = null;
@@ -8169,6 +8175,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         	value = customSpringReportFunction.calculate(luckySheetBindData, null);
         }
         else {
+        	List<String> properties = null;
         	Map<String, Object> datas = new LinkedHashMap<String, Object>();
             if(datasetNames.length > 1)
             {
@@ -8178,7 +8185,17 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
             		datas.putAll(datasetDatas);
     			}
             }else {
-            	datas = ListUtil.getProperties(luckySheetBindData.getProperty(), bindDatas.get(j).get(0));	
+            	if(luckySheetBindData.getPropertiesCache() == null) {
+            		datas = ListUtil.getProperties(luckySheetBindData.getProperty(), bindDatas.get(j).get(0));
+                	properties = new ArrayList<String>();
+                	for (String key : datas.keySet()) {
+    					properties.add(key);
+    				}
+                	luckySheetBindData.setPropertiesCache(properties);
+            	}else {
+            		properties = luckySheetBindData.getPropertiesCache();
+            		datas = ListUtil.getProperties(properties, bindDatas.get(j).get(0));
+            	}
             }
             Set<String> set = datas.keySet();
             String cellText = luckySheetBindData.getCellText();
@@ -8746,7 +8763,19 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         	extraParams.put("index", j);
         	value = customSpringReportFunction.calculate(luckySheetBindData, extraParams);
         }else {
-        	Map<String, Object> datas = ListUtil.getProperties(luckySheetBindData.getProperty(), bindDatas.get(j).get(0));
+        	List<String> properties = null;
+        	Map<String, Object> datas = null;
+        	if(luckySheetBindData.getPropertiesCache() == null) {
+        		datas = ListUtil.getProperties(luckySheetBindData.getProperty(), bindDatas.get(j).get(0));
+        		properties = new ArrayList<String>();
+            	for (String propertyKey : datas.keySet()) {
+					properties.add(propertyKey);
+				}
+            	luckySheetBindData.setPropertiesCache(properties);
+        	}else {
+        		properties = luckySheetBindData.getPropertiesCache();
+        		datas = ListUtil.getProperties(properties, bindDatas.get(j).get(0));
+        	}
             Set<String> set = datas.keySet();
             String cellText = luckySheetBindData.getCellText();
             for (String o : set) {
@@ -9910,7 +9939,19 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         	extraParams.put("index", j);
         	value = customSpringReportFunction.calculate(luckySheetBindData, extraParams);
         }else {
-        	Map<String, Object> datas = ListUtil.getProperties(luckySheetBindData.getProperty(), bindDatas.get(j).get(0));
+        	List<String> properties = null;
+        	Map<String, Object> datas = null;
+        	if(luckySheetBindData.getPropertiesCache() == null) {
+        		datas = ListUtil.getProperties(luckySheetBindData.getProperty(), bindDatas.get(j).get(0));
+        		properties = new ArrayList<String>();
+            	for (String propertyKey : datas.keySet()) {
+					properties.add(propertyKey);
+				}
+            	luckySheetBindData.setPropertiesCache(properties);
+        	}else {
+        		properties = luckySheetBindData.getPropertiesCache();
+        		datas = ListUtil.getProperties(properties, bindDatas.get(j).get(0));
+        	}
             Set<String> set = datas.keySet();
             String cellText = luckySheetBindData.getCellText();
             for (String o : set) {
@@ -10504,6 +10545,8 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
             x = this.getMaxRow(maxCoordinate, luckySheetBindData.getCoordsx(), luckySheetBindData.getCoordsy(), 1);
             int y = rowAndCol.get("maxY");
             luckySheetBindData.setReliedCellSize(0);
+        	List<String> properties = null;
+        	Map<String, Object> datas = null;
             for (int n = 0; n < luckySheetBindData.getDatas().get(j).size(); n++) {
                 y = rowAndCol.get("maxY") + n*luckySheetBindData.getColSpan()+luckySheetBindData.getReliedCellSize()*luckySheetBindData.getColSpan();
                 List<Map<String, Object>> border = null;
@@ -10534,7 +10577,17 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
                 	}
                 }
                 usedCells.put(x+"_"+y, cellData);
-                Map<String, Object> datas = ListUtil.getProperties(luckySheetBindData.getProperty(), luckySheetBindData.getDatas().get(j).get(n));
+                if(luckySheetBindData.getPropertiesCache() == null) {
+                	datas = ListUtil.getProperties(luckySheetBindData.getProperty(), luckySheetBindData.getDatas().get(j).get(n));
+                	properties = new ArrayList<String>();
+                	for (String key : datas.keySet()) {
+    					properties.add(key);
+    				}
+                	luckySheetBindData.setPropertiesCache(properties);
+                }else {
+                	properties = luckySheetBindData.getPropertiesCache();
+                	datas = ListUtil.getProperties(properties, luckySheetBindData.getDatas().get(j).get(n));
+                }
                 Set<String> set = datas.keySet();
                 String property = luckySheetBindData.getProperty();
                 boolean isJustProperty = false;
@@ -11448,7 +11501,19 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
             	}
             }
             usedCells.put(x+"_"+y, cellData);
-            Map<String, Object> datas = ListUtil.getProperties(luckySheetBindData.getProperty(), luckySheetBindData.getDatas().get(0).get(n));
+            List<String> properties = null;
+            Map<String, Object> datas = null;
+        	if(luckySheetBindData.getPropertiesCache() == null) {
+        		datas = ListUtil.getProperties(luckySheetBindData.getProperty(), luckySheetBindData.getDatas().get(0).get(n));
+        		properties = new ArrayList<String>();
+            	for (String key : datas.keySet()) {
+					properties.add(key);
+				}
+            	luckySheetBindData.setPropertiesCache(properties);
+        	}else {
+        		properties = luckySheetBindData.getPropertiesCache();
+        		datas = ListUtil.getProperties(properties, luckySheetBindData.getDatas().get(0).get(n));
+        	}
             Set<String> set = datas.keySet();
             String property = luckySheetBindData.getProperty();
             boolean isJustProperty = false;
