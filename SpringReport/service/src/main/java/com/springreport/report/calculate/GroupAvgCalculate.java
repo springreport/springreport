@@ -2,6 +2,8 @@ package com.springreport.report.calculate;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -25,13 +27,22 @@ public class GroupAvgCalculate extends Calculate<GroupSummaryData>{
 		BigDecimal result = new BigDecimal(0);
 		BigDecimal sum = new BigDecimal(0);
 		int size = 0;
+		List<String> properties = new ArrayList<String>();
+		Map<String, Object> datas = null;
 		for (int i = 0; i < bindData.getDatas().size(); i++) {
 			String property = bindData.getProperty();
 			if(StringUtil.isNullOrEmpty(property)) {
 				break;
 			}
 			Object object = null;
-			Map<String, Object> datas = ListUtil.getProperties(bindData.getProperty(), bindData.getDatas().get(i));
+			if(ListUtil.isEmpty(properties)) {
+				datas = ListUtil.getProperties(bindData.getProperty(), bindData.getDatas().get(i));
+				for (String key : datas.keySet()) {
+					properties.add(key);
+				}
+			}else {
+				datas = ListUtil.getProperties(properties, bindData.getDatas().get(i));
+			}
 			Set<String> set = datas.keySet();
 			if(ListUtil.isNotEmpty(set))
 			{

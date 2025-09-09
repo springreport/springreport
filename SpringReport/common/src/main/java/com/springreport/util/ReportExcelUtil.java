@@ -1730,28 +1730,127 @@ public class ReportExcelUtil {
     }
     
     public static void insertUrlImg(XSSFWorkbook workbook,XSSFSheet sheet, List<JSONObject> imgDatas) {
-    	if(!ListUtil.isEmpty(imgDatas))
-    	{
-    		for (int i = 0; i < imgDatas.size(); i++) {
-    			JSONObject img = imgDatas.get(i);
-    			String url = img.getJSONObject("imgInfo").getString("src");
-    			int r = img.getIntValue("r");//横坐标
-				int c = img.getIntValue("c");//纵坐标
-				int isMerge = img.getIntValue("isMerge");
-				int endR = img.getIntValue("r");
-				int endC = img.getIntValue("c");
-				if(YesNoEnum.YES.getCode().intValue() == isMerge)
-				{
-					int rowSpan = img.getIntValue("rowSpan");
-					int colSpan = img.getIntValue("colSpan"); 
-					endR = endR + rowSpan - 1;
-					endC = endC + colSpan - 1;
+		if (imgDatas == null || imgDatas.isEmpty()) return;
+
+		Drawing<?> drawing = sheet.getDrawingPatriarch();
+		if (drawing == null) {
+			drawing = sheet.createDrawingPatriarch();
+		}
+
+		for (JSONObject img : imgDatas) {
+			try {
+				String url = img.getJSONObject("imgInfo").getString("src");
+				int r = img.getIntValue("r");
+				int c = img.getIntValue("c");
+
+				int mergeCellWidth = img.getJSONObject("imgInfo").getJSONObject("crop").getIntValue("width");
+				int mergeCellHeight = img.getJSONObject("imgInfo").getJSONObject("crop").getIntValue("height");
+				int endR = r;
+				int endC = c;
+				if (img.getIntValue("isMerge") == YesNoEnum.YES.getCode().intValue()) {
+					endR += img.getIntValue("rowSpan") - 1;
+					endC += img.getIntValue("colSpan") - 1;
 				}
-				byte[] bytes = HttpUtil.downloadBytes(url);
-				insertImg(workbook, sheet, bytes, r, endR, c, endC);
+
+				byte[] imgBytes = HttpUtil.downloadBytes(url);
+				if (imgBytes == null || imgBytes.length == 0) continue;
+
+				XSSFClientAnchor anchor = createCustomAnchor(workbook, sheet, imgBytes, c, mergeCellWidth, r, mergeCellHeight, endC, endR);
+				int pictureIndex = workbook.addPicture(imgBytes, Workbook.PICTURE_TYPE_PNG);
+				drawing.createPicture(anchor, pictureIndex);
+
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-    	}
-    }
+		}}
+    
+    private static XSSFClientAnchor createCustomAnchor (XSSFWorkbook wb, XSSFSheet sheet,byte[] imgBytes,
+    		int col1, int mergeCellWidth, int row1, int mergeCellHeight, int colEnd, int rowEnd) throws IOException {
+    			final float POINT_TO_PIXEL = 96f / 72f; // 行高：pt -> px
+
+    			// 1) 目标区宽度/高度（像素）
+    			double totalWidthPx = 0d;
+    			for (int c = col1; c <= colEnd; c++) {
+    				totalWidthPx += sheet.getColumnWidthInPixels(c);    // 精准列宽（像素）
+    			}
+    			double totalHeightPx = 0d;
+    			for (int r = row1; r <= rowEnd; r++) {
+    				float hPt = (sheet.getRow(r) != null) ? sheet.getRow(r).getHeightInPoints() : sheet.getDefaultRowHeightInPoints();
+    				totalHeightPx += hPt * POINT_TO_PIXEL;
+    			}
+
+    			// 2) 图片尺寸 & 居中缩放
+    			BufferedImage bi = ImageIO.read(new ByteArrayInputStream(imgBytes));
+    			if (bi == null) return null;
+    			int imgW = bi.getWidth(), imgH = bi.getHeight();
+
+    			double scale = Math.min(totalWidthPx / imgW, totalHeightPx / imgH);
+    			int scaledW = (int)Math.round(imgW * scale);
+    			int scaledH = (int)Math.round(imgH * scale);
+
+    			int offsetX = (int)Math.floor((totalWidthPx  - scaledW) / 2.0); // 居中：左右留白相等
+    			int offsetY = (int)Math.floor((totalHeightPx - scaledH) / 2.0);
+
+    			// 3) 把“区域内像素偏移 → 起点列/行 + dx1/dy1”
+    			int startCol = col1, dx1 = 0;
+    			double wSum = 0d;
+    			for (int c = col1; c <= colEnd; c++) {
+    				double w = sheet.getColumnWidthInPixels(c);
+    				if (wSum + w > offsetX) {
+    					startCol = c;
+    					dx1 = Units.pixelToEMU((int)Math.round(offsetX - wSum + 2));
+    					break;
+    				}
+    				wSum += w;
+    			}
+
+    			int startRow = row1, dy1 = 0;
+    			double hSum = 0d;
+    			for (int r = row1; r <= rowEnd; r++) {
+    				double h = ((sheet.getRow(r) != null) ? sheet.getRow(r).getHeightInPoints() : sheet.getDefaultRowHeightInPoints()) * POINT_TO_PIXEL;
+    				if (hSum + h > offsetY) {
+    					startRow = r;
+    					dy1 = Units.pixelToEMU((int)Math.round(offsetY - hSum + 2));
+    					break;
+    				}
+    				hSum += h;
+    			}
+
+    			// 4) 把“右下角像素位置 → 终点列/行 + dx2/dy2”
+    			int endCol = col1, dx2 = 0;
+    			wSum = 0d;
+    			int rightX = offsetX + scaledW;
+    			for (int c = col1; c <= colEnd; c++) {
+    				double w = sheet.getColumnWidthInPixels(c);
+    				if (wSum + w >= rightX) {
+    					endCol = c;
+    					dx2 = Units.pixelToEMU((int)Math.round(rightX - wSum));
+    					break;
+    				}
+    				wSum += w;
+    			}
+
+    			int endRow = row1, dy2 = 0;
+    			hSum = 0d;
+    			int bottomY = offsetY + scaledH;
+    			for (int r = row1; r <= rowEnd; r++) {
+    				double h = ((sheet.getRow(r) != null) ? sheet.getRow(r).getHeightInPoints() : sheet.getDefaultRowHeightInPoints()) * POINT_TO_PIXEL;
+    				if (hSum + h >= bottomY) {
+    					endRow = r;
+    					dy2 = Units.pixelToEMU((int)Math.round(bottomY - hSum));
+    					break;
+    				}
+    				hSum += h;
+    			}
+
+    			XSSFClientAnchor anchor = new XSSFClientAnchor(
+    					dx1, dy1, dx2, dy2,
+    					(short) startCol, startRow,
+    					(short) endCol,   endRow
+    			);
+    			anchor.setAnchorType(ClientAnchor.AnchorType.MOVE_AND_RESIZE);
+    			return anchor;
+    		}
     
     public static void insertUrlImg(SXSSFWorkbook workbook,SXSSFSheet sheet, List<JSONObject> imgDatas) {
     	if(!ListUtil.isEmpty(imgDatas))

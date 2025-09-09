@@ -286,7 +286,7 @@ public class ListUtil {
 					}
 				}
 			}else {
-				result.put(str, "");
+//				result.put(str, "");
 			}
 			
 		}
@@ -332,6 +332,17 @@ public class ListUtil {
 				} else {
 					result.put(datesetName+"."+propertyRatios.get(i).getProperty(), data);
 				}
+			}
+		}
+		return result;
+	}
+	
+	public static Map<String, Object> getProperties(List<String> attrs,Map<String, Object> datas)
+	{
+		Map<String, Object> result = new LinkedHashMap<>();
+		if(ListUtil.isNotEmpty(attrs)) {
+			for (int i = 0; i < attrs.size(); i++) {
+				result.put(attrs.get(i), datas.get(attrs.get(i)));
 			}
 		}
 		return result;
