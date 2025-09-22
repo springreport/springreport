@@ -1,8 +1,9 @@
 {
   "name": "SpringReport",
-  "version": "2.3.5",
+  "version": "2.3.6",
   "author": "caiyang <springreport@163.com>",
   "scripts": {
+    "fix-memory-limit": "cross-env LIMIT=8048 increase-memory-limit",
     "lint": "eslint \"src/**/*.{js,vue}\"",
     "serve": "cross-env NODE_ENV=development vite",
     "build": "cross-env NODE_ENV=production vite build",

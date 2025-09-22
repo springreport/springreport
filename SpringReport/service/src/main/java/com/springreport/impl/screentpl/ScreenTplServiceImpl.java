@@ -549,7 +549,7 @@ public class ScreenTplServiceImpl extends ServiceImpl<ScreenTplMapper, ScreenTpl
 		}else {
 			token = JWTUtil.sign(userInfoDto, sysUser.getPassword(),shareDto.getShareTime()*60L);
 		}
-		String shareUrl = MessageUtil.getValue("screen.share.url") + "&token="+token;
+		String shareUrl = MessageUtil.getValue("screen.share.url")+ "&tplId="+shareDto.getTplId()+ "&token="+token;
 		String shareMsg = MessageUtil.getValue("info.share.screen", new String[] {shareUrl,userInfoDto.getUserName(),DateUtil.getNow(),YesNoEnum.YES.getCode().intValue() == shareDto.getIsShareForever().intValue()?"永久有效":String.valueOf(shareDto.getShareTime())+"分钟"});
 		result.setShareMsg(shareMsg);
 		return result;

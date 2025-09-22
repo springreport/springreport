@@ -513,7 +513,7 @@ export default {
           chartMoveOrResize: this.chartMoveOrResize,
           userChanged: this.userChanged,
           cellUpdated: this.saveTplCache,
-          afterUpdateFormatCell: this.saveTplCache,
+          afterUpdateFormatCell: this.afterUpdateFormatCell,
           changeReportAttr: this.changeReportAttr,
           changeBorder: this.saveTplCache,
           afterMergeOperation: this.saveTplCache,
@@ -5119,6 +5119,7 @@ export default {
         luckysheet.addLuckysheetAuthRange(null);
       }
       this.showAuthInfoMsg();
+      this.setCellFormat(index);
     },
     loadDataAfter() {
       this.showAuthInfoMsg();
@@ -5971,6 +5972,22 @@ export default {
           let luckysheetFile = luckysheet.getSheet({"index":sheetIndex});
           let data = luckysheetFile.data;
           for(var key in sheetCellFormats) {
+            this.setCellFormat(sheetIndex);
+          }
+          luckysheet.refresh()
+        }
+
+      }
+    },
+    setCellFormat(sheetIndex){
+      if(!this.cellFormats){
+        return;
+      }
+      let sheetCellFormats = this.cellFormats[sheetIndex];
+        if(sheetCellFormats && Object.keys(sheetCellFormats).length > 0){
+          let luckysheetFile = luckysheet.getSheet({"index":sheetIndex});
+          let data = luckysheetFile.data;
+          for(var key in sheetCellFormats) {
             let r = parseInt(key.split("_")[0]);
             let c = parseInt(key.split("_")[1]);
             if(data[r]){
@@ -5982,8 +5999,35 @@ export default {
           }
           luckysheet.refresh()
         }
-
+    },
+    afterUpdateFormatCell(range,attr,foucsStatus){
+      if(attr == "ct"){
+        let luckysheetFile = luckysheet.getSheet();
+        if(!this.cellFormats[luckysheetFile.index]){
+          this.cellFormats[luckysheetFile.index] = {};
+        }
+        for (let index = 0; index < range.length; index++) {
+          const element = range[index];
+          const row = element.row;
+          const column = element.column;
+          let str = row[0];
+          let edr = row[1];
+          let stc = column[0];
+          let edc = column[1];
+          let data = luckysheetFile.data;
+          for (let r = str; r <= edr; r++) {
+            for (let c = stc; c <= edc; c++) {
+              let key = r + "_" + c;
+              if(data[r]){
+                if(data[r][c] != null){
+                  this.cellFormats[luckysheetFile.index][key] = data[r][c].ct
+                }
+              }
+            }
+          }
+        }
       }
+      this.saveTplCache();
     }
   },
 };

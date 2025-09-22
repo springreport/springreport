@@ -489,21 +489,34 @@ public class ReportDataUtil {
 		Connection conn = null;
 	    Statement stmt = null;
 	    ResultSet rs = null;
-	    List<Map<String, Object>> result = null;
+	    List<Map<String, Object>> result = new ArrayList<>();
 	    try {
 	    	conn = dataSource.getConnection();
 	    	stmt = conn.createStatement();
             rs = stmt.executeQuery(sqlText);
             final ResultSetMetaData rsMataData = rs.getMetaData();
             final int count = rsMataData.getColumnCount();
-            result = new ArrayList<>(count);
+            List<Map<String, Object>> selectDatas = new ArrayList<>(count);
             while(rs.next()){
                 Map<String, Object> map = new HashMap<String, Object>();
                 for(int i = 0; i < count; i++){
                  map.put(rsMataData.getColumnLabel(i+1).toLowerCase(), rs.getObject(rsMataData.getColumnLabel(i+1)));
                 }
-                result.add(map);
+                selectDatas.add(map);
             }
+            if(ListUtil.isNotEmpty(selectDatas)) {
+    			//根据value值去重
+    			List<String> values = new ArrayList<>();
+    			Map<String, Object> obj = null;
+    			for (int i = 0; i < selectDatas.size(); i++) {
+    				obj = selectDatas.get(i);
+    				Object value = obj.get("value");
+    				if(!values.contains(String.valueOf(value))) {
+    					result.add(obj);
+    					values.add(String.valueOf(value));
+    				}
+    			}
+    		}
         } catch (final SQLException ex) {
         	throw new BizException(StatusCode.FAILURE,"sql语句执行错误，请检查sql语句是否拼写正确或者数据源是否选择正确。错误信息："+ex.getMessage());
         } finally {

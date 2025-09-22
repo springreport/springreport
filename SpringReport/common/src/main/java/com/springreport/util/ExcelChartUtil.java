@@ -127,6 +127,7 @@ public class ExcelChartUtil {
 		{
 			JSONArray legendData = chartLegend.getJSONArray("data");
 			XDDFLineChartData data = (XDDFLineChartData) chart.createData(ChartTypes.LINE, bottomAxis, leftAxis);
+			data.setVaryColors(false);
 			for (int i = 0; i < datas.size(); i++) {
 				XDDFLineChartData.Series series = (XDDFLineChartData.Series) data.addSeries(category, datas.get(i));
 				series.setSmooth(false);
