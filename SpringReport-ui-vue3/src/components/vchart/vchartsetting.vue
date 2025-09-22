@@ -93,6 +93,30 @@
                   </el-option>
                 </el-select>
               </el-form-item>
+              <el-form-item label="数据分组计算">
+                <el-switch
+                  v-model="component.dataGroup"
+                />
+              </el-form-item>
+               <el-form-item
+                v-if="component.dataGroup"
+                label="计算字段"
+                class="df-form-item"
+              >
+                <el-select
+                  v-model="component.groupField"
+                  placeholder="请选择"
+                  style="width: 100%"
+                  multiple
+                >
+                  <el-option
+                    v-for="item in datasetColumns"
+                    :key="item.name"
+                    :label="item.name"
+                    :value="item.name"
+                  />
+                </el-select>
+              </el-form-item>
             </div>
 
             <el-form-item label="显示标题" style="margin: 14px 0 12px 0">
