@@ -709,27 +709,35 @@ public class ListUtil {
 	
 	public static List<List<Map<String, Object>>> groupDatas(List<Map<String, Object>> datas,List<String> attrs){
 		List<List<Map<String, Object>>> result = new ArrayList<>();
+		List<List<Map<String, Object>>> listDatas = new ArrayList<>();
 		if(ListUtil.isNotEmpty(datas) && ListUtil.isNotEmpty(attrs)) {
-			Map<String, List<Map<String, Object>>> dataMap = new LinkedHashMap<>();
+			listDatas.add(datas);
 			for (int j = 0; j < attrs.size(); j++) {
-				for (int i = 0; i < datas.size(); i++) {
-					List<Map<String, Object>> rowList = null;
-					String key = String.valueOf(datas.get(i).get(attrs.get(j)));
-					if (dataMap.containsKey(key)) {
-						rowList = dataMap.get(key);
-					}else {
-						rowList = new ArrayList<>();
-						dataMap.put(key, rowList);
+				Map<String, List<Map<String, Object>>> dataMap = null;
+				for (int t = 0; t < listDatas.size(); t++) {
+					dataMap = new LinkedHashMap<>();
+					datas = listDatas.get(t);
+					for (int i = 0; i < datas.size(); i++) {
+						List<Map<String, Object>> rowList = null;
+						String key = String.valueOf(datas.get(i).get(attrs.get(j)));
+						if (dataMap.containsKey(key)) {
+							rowList = dataMap.get(key);
+						}else {
+							rowList = new ArrayList<>();
+							dataMap.put(key, rowList);
+						}
+						rowList.add(datas.get(i));
 					}
-					rowList.add(datas.get(i));
 				}
+				Iterator<Entry<String, List<Map<String, Object>>>> entries = dataMap.entrySet().iterator();
+				while(entries.hasNext()){
+					result.add(entries.next().getValue());
+				}
+				listDatas = result;
 			}
-			Iterator<Entry<String, List<Map<String, Object>>>> entries = dataMap.entrySet().iterator();
-			while(entries.hasNext()){
-				result.add(entries.next().getValue());
-			}
+			
 		}
-		return result;
+		return listDatas;
 	}
 	
 	public static void main(String[] args) {

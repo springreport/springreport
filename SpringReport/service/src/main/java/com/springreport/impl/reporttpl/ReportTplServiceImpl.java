@@ -4086,18 +4086,56 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		String chartAllType = chartOptions.getString("chartAllType");
 		String chartId = chartOptions.getString("chart_id");
 		String dataset = chartOptions.getString("dataset");
+		boolean dataGroup = chartOptions.getBooleanValue("dataGroup");
 		Map<String, Object> configColumnLen = (Map<String, Object>) config.get(LuckySheetPropsEnum.COLUMNLEN.getCode());
 		Map<String, Object> configRowLen = (Map<String, Object>) config.get(LuckySheetPropsEnum.ROWLEN.getCode());
 		if(StringUtil.isNotEmpty(dataset)) {
 			List<Map<String, Object>> datas = datasetDatas.get(dataset);
 			String categoryField = chartOptions.getString("categoryField");
 			JSONArray valueField = chartOptions.getJSONArray("valueField");
+			JSONArray groupField = chartOptions.getJSONArray("groupField");
 			if(valueField == null) {
 				valueField = new JSONArray();
 			}
 			JSONArray seriesField = chartOptions.getJSONArray("seriesField");
 			if(seriesField == null) {
 				seriesField = new JSONArray();
+			}
+			if(dataGroup) {
+				List<String> attrs = new ArrayList<>();
+				if(ListUtil.isNotEmpty(groupField)) {
+					for (int i = 0; i < groupField.size(); i++) {
+						attrs.add(groupField.getString(i));
+					}
+				}else {
+					attrs.add(categoryField);
+				}
+				List<List<Map<String, Object>>> groupDatas = ListUtil.groupDatas(datas, attrs);
+				if(ListUtil.isNotEmpty(groupDatas)) {
+					List<Map<String, Object>> newDatas = new ArrayList<Map<String,Object>>();
+					for (int i = 0; i < groupDatas.size(); i++) {
+						if(groupDatas.get(i).size() > 1) {
+							Map<String, Object> newMap = new HashMap<>();
+							newMap.putAll(groupDatas.get(i).get(0));
+							for (int j = 0; j < valueField.size(); j++) {
+								BigDecimal newValue = new BigDecimal(0);
+								for (int t = 0; t < groupDatas.get(i).size(); t++) {
+									Object value = groupDatas.get(i).get(t).get(valueField.getString(j));
+									if(CheckUtil.isNumeric(String.valueOf(value))) {
+										newValue = newValue.add(new BigDecimal(String.valueOf(value)));
+									}
+								}
+								newMap.put(valueField.getString(j), newValue);
+							}
+							newDatas.add(newMap);
+						}else {
+							Map<String, Object> newMap = new HashMap<>();
+							newMap.putAll(groupDatas.get(i).get(0));
+							newDatas.add(newMap);
+						}
+					}
+					datas = newDatas;
+				}
 			}
 			JSONObject spec = chartOptions.getJSONObject("defaultOption").getJSONObject("spec");
 			if("echarts|column|default".equals(chartAllType) || "echarts|line|default".equals(chartAllType) || "echarts|line|smooth".equals(chartAllType)
@@ -7176,6 +7214,25 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         		}
         	}
         }
+        if(luckySheetBindData.getIsChartAttr().intValue() == YesNoEnum.YES.getCode().intValue())
+		{
+			if(luckySheetBindData.getStartx() == null || luckySheetBindData.getStartx() > rowAndCol.get("maxX"))
+			{
+				luckySheetBindData.setStartx(rowAndCol.get("maxX"));
+			}
+			if(luckySheetBindData.getStarty() == null || luckySheetBindData.getStarty() > rowAndCol.get("maxY"))
+			{
+				luckySheetBindData.setStarty(rowAndCol.get("maxY"));
+			}
+			if(luckySheetBindData.getEndx() == null || luckySheetBindData.getEndx() < (rowAndCol.get("maxX")+(luckySheetBindData.getIsGroupMerge()?groupMergeRows:data.size()*luckySheetBindData.getRowSpan())-1))
+			{
+				luckySheetBindData.setEndx(rowAndCol.get("maxX")+(luckySheetBindData.getIsGroupMerge()?groupMergeRows:data.size()*luckySheetBindData.getRowSpan())-1);
+			}
+			if(luckySheetBindData.getEndy() == null || luckySheetBindData.getEndy() < (rowAndCol.get("maxY")+luckySheetBindData.getColSpan()-1))
+			{
+				luckySheetBindData.setEndy(rowAndCol.get("maxY")+luckySheetBindData.getColSpan()-1);
+			}
+		}
         if(luckySheetBindData.getIsRelied().intValue() == 1)
         {
         	for (int i = 0; i < luckySheetBindData.getRowSpan(); i++) {
@@ -8170,6 +8227,9 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         		}else {
         			value = dicts.get(RedisPrefixEnum.REPORTDICT.getCode()+luckySheetBindData.getDatasourceId()+"_"+luckySheetBindData.getDictType()+"_"+bindDatas.get(j).get(0).get(property));
         		}
+        		if(value != null) {
+        			bindDatas.get(j).get(0).put(property, value);
+        		}
         	}
         }else if(customSpringReportFunction.isSpringReportFunction(property)) {
         	value = customSpringReportFunction.calculate(luckySheetBindData, null);
@@ -8756,6 +8816,9 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         			value = dicts.get(bindDatas.get(j).get(0).get(property)+"");
         		}else {
         			value = dicts.get(RedisPrefixEnum.REPORTDICT.getCode()+luckySheetBindData.getDatasourceId()+"_"+luckySheetBindData.getDictType()+"_"+bindDatas.get(j).get(0).get(property));
+        		}
+        		if(value != null) {
+        			bindDatas.get(j).get(0).put(property, value);
         		}
         	}
         }else if(customSpringReportFunction.isSpringReportFunction(property)) {
@@ -9932,6 +9995,9 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         			value = dicts.get(bindDatas.get(j).get(0).get(property)+"");
         		}else {
         			value = dicts.get(luckySheetBindData.getDatasourceId()+"_"+luckySheetBindData.getDictType()+"_"+bindDatas.get(j).get(0).get(property));
+        		}
+        		if(value != null) {
+        			bindDatas.get(j).get(0).put(property, value);
         		}
         	}
         }else if(customSpringReportFunction.isSpringReportFunction(property)) {
