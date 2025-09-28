@@ -688,6 +688,8 @@ export default {
         { type: 'Input', label: '右边距', prop: 'rightMargin', rules: { required: true ,type:'positiveInt'}},
         { type: 'Input', label: '上边距', prop: 'topMargin', rules: { required: true,type:'positiveInt'}},
         { type: 'Input', label: '下边距', prop: 'bottomMargin', rules: { required: true ,type:'positiveInt'}},
+        { type: 'Input', label: '字体缩放倍数', prop: 'fontMulti', rules: { required: true, type: 'number', min: 0.01, max: 10, float: 2 }},
+        { type: 'Input', label: '行高缩放倍数', prop: 'rowheightMulti', rules: { required: true, type: 'number', min: 0.01, max: 10, float: 2 }},
       ],
       settingFormData: {
         pageType: null, //纸张类型
@@ -713,6 +715,8 @@ export default {
         rightMargin:null,
         topMargin:null,
         bottomMargin:null,
+        fontMulti:1.0,
+        rowheightMulti:1.0
       },
       defaultSettingFormData: {
         pageType: 2, //纸张类型
@@ -738,6 +742,8 @@ export default {
         rightMargin:null,
         topMargin:null,
         bottomMargin:null,
+        fontMulti:1.0,
+        rowheightMulti:1.0
       },
       //modal 数据 end
       //modal 按钮 start
@@ -2904,6 +2910,8 @@ export default {
                 element.reportSheetPdfPrintSetting.rightMargin = element.reportSheetPdfPrintSetting.rightMargin + '';
                 element.reportSheetPdfPrintSetting.topMargin = element.reportSheetPdfPrintSetting.topMargin + '';
                 element.reportSheetPdfPrintSetting.bottomMargin = element.reportSheetPdfPrintSetting.bottomMargin + '';
+                element.reportSheetPdfPrintSetting.fontMulti = element.reportSheetPdfPrintSetting.fontMulti + '';
+                element.reportSheetPdfPrintSetting.rowheightMulti = element.reportSheetPdfPrintSetting.rowheightMulti + '';
                 _this.sheetPrintSettings[element.sheetIndex] = element.reportSheetPdfPrintSetting;
               }
             }
@@ -4088,6 +4096,8 @@ export default {
           printSettings.rightMargin = that.settingFormData.rightMargin
           printSettings.topMargin = that.settingFormData.topMargin
           printSettings.bottomMargin = that.settingFormData.bottomMargin
+          printSettings.fontMulti = that.settingFormData.fontMulti
+          printSettings.rowheightMulti = that.settingFormData.rowheightMulti
           if (printSettings.horizontalPage == 1) {
             luckysheet.addLuckysheetDivider(printSettings.horizontalPageColumn);
           } else {
@@ -5182,6 +5192,8 @@ export default {
         that.settingFormData.rightMargin = printSettings.rightMargin
         that.settingFormData.topMargin = printSettings.topMargin
         that.settingFormData.bottomMargin = printSettings.bottomMargin
+        that.settingFormData.fontMulti = printSettings.fontMulti
+        that.settingFormData.rowheightMulti = printSettings.rowheightMulti
       } else {
         that.settingFormData = { ...that.defaultSettingFormData };
       }

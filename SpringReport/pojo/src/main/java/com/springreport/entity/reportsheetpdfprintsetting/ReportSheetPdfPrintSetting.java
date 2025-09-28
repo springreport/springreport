@@ -150,4 +150,12 @@ public class ReportSheetPdfPrintSetting extends PageEntity {
     /** bottom_margin - 下边距 */
     @TableField("bottom_margin")
     private Integer bottomMargin;
+    
+    /** font_multi - 字体缩放倍数 */
+    @TableField("font_multi")
+    private Float fontMulti;
+
+    /** rowheight_multi - 行高缩放倍数 */
+    @TableField("rowheight_multi")
+    private Float rowheightMulti;
 }
