@@ -1033,12 +1033,12 @@ commonUtil.chartProcess = function(component){
                     component.spec.indicator.title.field = null;
                     component.spec.indicator.content.field = null;
                     component.spec.indicator.title.style.text = component.spec.seriesField?component.spec.data.values[0][component.spec.seriesField]:component.spec.data.values[0][component.spec.categoryField];
-                   component.spec.indicator.content.style.text = component.spec.valueTextField?component.spec.data.values[0][component.spec.valueTextField]:component.spec.data.values[0][component.spec.valueField]*100+"%";
+                    component.spec.indicator.content.style.text = (component.spec.valueTextField?component.spec.data.values[0][component.spec.valueTextField]:component.spec.data.values[0][component.spec.valueField]*100)+"%";
                 }else{
                     component.spec.indicator.title.field = component.spec.valueField;
                     component.spec.indicator.content.field = component.spec.seriesField?component.spec.seriesField:component.spec.categoryField;
                     component.spec.indicator.title.style.text = component.spec.seriesField?component.spec.data.values[0][component.spec.seriesField]:component.spec.data.values[0][component.spec.categoryField];
-                    component.spec.indicator.content.style.text = component.spec.valueTextField?component.spec.data.values[0][component.spec.valueTextField]:component.spec.data.values[0][component.spec.valueField]*100+"%";
+                    component.spec.indicator.content.style.text = (component.spec.valueTextField?component.spec.data.values[0][component.spec.valueTextField]:component.spec.data.values[0][component.spec.valueField]*100)+"%";
                 }
             }
         }
@@ -1048,7 +1048,7 @@ commonUtil.chartProcess = function(component){
         if(component.spec.data.values && component.spec.data.values.length > 0){
             if(component.spec.indicator.visible){
                 component.spec.indicator.title.style.text = component.spec.categoryField?component.spec.data.values[0][component.spec.categoryField]:"";
-                component.spec.indicator.content.style.text = component.spec.data.values[0][component.spec.valueField]*100+"%";
+                component.spec.indicator.content.style.text = (component.spec.data.values[0][component.spec.valueField]*100).toFixed(2)+"%";
             }
         }
         

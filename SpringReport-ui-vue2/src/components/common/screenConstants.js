@@ -4004,6 +4004,25 @@ screenConstants.basicMapInit = {
         fill: null
       }
     },
+    // tooltip:{
+    //   visible: true,
+      
+    //   mark: {
+    //     title: {
+    //       value: ''
+    //     },
+    //     content: [
+    //       {
+    //         keyFormatter: '{name1}',
+    //         valueFormatter: `{value}`
+    //       },
+    //       {
+    //         keyFormatter: '{name2}',
+    //         valueFormatter: `{value1}`
+    //       }
+    //     ],
+    //   }
+    // },
     legends:
       {
         visible: false,
