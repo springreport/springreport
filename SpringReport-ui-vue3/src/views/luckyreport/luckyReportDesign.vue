@@ -1158,6 +1158,18 @@
                   </el-form-item>
                 </div>
                 <el-form-item
+                  label="未修改数据时强制提交"
+                  class="df-form-item"
+                >
+                  <el-switch
+                    v-model="cellForm.formsAttrs.forceUpdate"
+                    active-text="是"
+                    inactive-text="否"
+                    :disabled="attrDisabled"
+                    @change="changeCellAttr('otherCellCompare','forceUpdate')"
+                  />
+                </el-form-item>
+                <el-form-item
                   label="与其他单元格比较"
                   class="df-form-item"
                 >

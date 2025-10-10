@@ -2165,7 +2165,7 @@ export default {
                       }
                       if(this.basicData && this.basicData[sheetIndex]){
                         let originalV = this.basicData[sheetIndex][r+"_"+c];
-                        if(v != originalV){
+                        if(v != originalV  || extraConfig.forceUpdate){
                           isChanged = true;
                         }
                       }else{
