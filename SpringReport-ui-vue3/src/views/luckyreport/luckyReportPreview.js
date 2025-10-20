@@ -342,8 +342,9 @@ export default {
     getReportParam() {
       let tplId = this.currentTplId;
       let urlParamsLength = 0;
+      let urlParams = {}
       if (this.$route.query) {
-        let urlParams = { ...this.$route.query };
+        urlParams = { ...this.$route.query };
         delete urlParams['tplId'];
         delete urlParams['token'];
         delete urlParams['thirdPartyType']
@@ -354,6 +355,7 @@ export default {
         params: {
           tplId: tplId,
           initSelectData: this.isDrill == 1 || this.isDrillBack == 1 || urlParamsLength > 0,
+          urlParams:urlParams
         },
       };
       let headers = {};

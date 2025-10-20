@@ -8,11 +8,13 @@
       v-if="component.category == screenConstants.category.vchart"
       :component="component"
       :charts-components="chartsComponents"
+      :components="components"
     ></chart-setting-component>
     <text-setting-component
       v-if="component.category == screenConstants.category.text"
       :component="component"
       :charts-components="chartsComponents"
+      :components="components"
     ></text-setting-component>
     <picture-setting-component
       v-if="component.category == screenConstants.category.picture"
@@ -33,9 +35,10 @@
       v-if="component.category == screenConstants.category.table"
       :component="component"
       :charts-components="chartsComponents"
+      :components="components"
     ></table-setting-component>
-    <number-flipper-setting-component v-if="component.category == screenConstants.category.numberFlipper" :component="component" :charts-components="chartsComponents"></number-flipper-setting-component>
-    <card-list-setting-component  v-if="component.category == screenConstants.category.cardList" :component="component" :charts-components="chartsComponents"></card-list-setting-component>
+    <number-flipper-setting-component v-if="component.category == screenConstants.category.numberFlipper" :component="component" :charts-components="chartsComponents" :components="components"></number-flipper-setting-component>
+    <card-list-setting-component  v-if="component.category == screenConstants.category.cardList" :component="component" :charts-components="chartsComponents" :components="components"></card-list-setting-component>
   </div>
 </template>
 <script>
@@ -65,6 +68,10 @@
       component: {
         type: Object,
         default: () => ({}),
+      },
+      components: {
+        type: Array,
+        default: () => []
       },
       chartsComponents: {
         type: Object,

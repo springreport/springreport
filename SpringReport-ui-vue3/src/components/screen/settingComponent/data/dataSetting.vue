@@ -75,6 +75,7 @@
                 multiple
                 allow-create
                 filterable
+                clearable
                 @change="commonUtil.reLoadChart(chartsComponents, component)"
               >
                 <el-option
@@ -142,6 +143,7 @@
                 multiple
                 allow-create
                 filterable
+                clearable
                 @change="commonUtil.reLoadChart(chartsComponents, component)"
               >
                 <el-option
@@ -213,6 +215,7 @@
                 multiple
                 allow-create
                 filterable
+                clearable
                 @change="commonUtil.reLoadChart(chartsComponents, component)"
               >
                 <el-option
@@ -280,6 +283,7 @@
                 multiple
                 allow-create
                 filterable
+                clearable
                 @change="commonUtil.reLoadChart(chartsComponents, component)"
               >
                 <el-option
@@ -339,6 +343,7 @@
             multiple
             allow-create
             filterable
+            clearable
             @change="commonUtil.reLoadChart(chartsComponents, component)"
           >
             <el-option
@@ -404,6 +409,7 @@
             v-model="component.spec.seriesField"
             placeholder="请选择"
             filterable
+            clearable
             @change="commonUtil.reLoadChart(chartsComponents, component)"
           >
             <el-option
@@ -1035,6 +1041,7 @@
       :component="component"
       :chartsComponents="chartsComponents"
       :comboChartType="comboChartType"
+      :components="components"
     ></dynamic-data-dialog>
   </div>
 </template>
@@ -1051,6 +1058,10 @@
       component: {
         type: Object,
         default: () => ({}),
+      },
+      components: {
+        type: Array,
+        default: () => []
       },
       chartsComponents: {
         type: Object,

@@ -25,6 +25,7 @@
       v-else-if="currentIndex == 2"
       :component="component"
       :chartsComponents="chartsComponents"
+      :components="components"
     ></data-setting>
     <chart-setting
       v-else-if="currentIndex == 3"
@@ -68,6 +69,10 @@
       component: {
         type: Object,
         default: () => ({}),
+      },
+      components: {
+        type: Array,
+        default: () => []
       },
       chartsComponents: {
         type: Object,

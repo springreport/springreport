@@ -250,6 +250,7 @@
             :component="activated"
             :charts-components="chartsComponents"
             :timer-map="timerMap"
+            :components="components"
           />
         </div>
       </div>
