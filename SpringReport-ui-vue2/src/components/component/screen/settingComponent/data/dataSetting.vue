@@ -415,6 +415,7 @@
                 v-model="component.spec.seriesField"
                 placeholder="请选择"
                 filterable
+                clearable
                 @change="commonUtil.reLoadChart(chartsComponents, component)"
               >
                 <el-option
@@ -1051,6 +1052,7 @@
       :component="component"
       :charts-components="chartsComponents"
       :comboChartType="comboChartType"
+      :components="components"
     />
   </div>
 </template>
@@ -1067,6 +1069,10 @@ export default {
     component: {
       type: Object,
       default: () => ({})
+    },
+    components: {
+      type: Array,
+      default: () => []
     },
     chartsComponents: {
       type: Object,

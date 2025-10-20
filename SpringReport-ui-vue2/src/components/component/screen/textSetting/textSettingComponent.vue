@@ -47,6 +47,7 @@
       v-if="component.type != 'date'&&currentIndex==2"
       :component="component"
       :charts-components="chartsComponents"
+      :components="components"
     />
 
     <text-setting
@@ -92,6 +93,10 @@ export default {
     component: {
       type: Object,
       default: () => ({})
+    },
+    components: {
+      type: Array,
+      default: () => []
     },
     chartsComponents: {
       type: Object,

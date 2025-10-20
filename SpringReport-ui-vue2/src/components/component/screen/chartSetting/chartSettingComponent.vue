@@ -13,7 +13,7 @@
     </div>
     <site v-if="currentIndex==0" :component="component" :charts-components="chartsComponents" />
     <param-setting v-else-if="currentIndex==1" :component="component" :charts-components="chartsComponents" />
-    <data-setting v-else-if="currentIndex==2" :component="component" :charts-components="chartsComponents" />
+    <data-setting v-else-if="currentIndex==2" :component="component" :charts-components="chartsComponents" :components="components"/>
     <chart-setting v-else-if="currentIndex==3" :component="component" :charts-components="chartsComponents" />
 
   </div>
@@ -53,6 +53,10 @@ export default {
     component: {
       type: Object,
       default: () => ({})
+    },
+    components: {
+      type: Array,
+      default: () => []
     },
     chartsComponents: {
       type: Object,

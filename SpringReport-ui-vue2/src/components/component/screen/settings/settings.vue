@@ -1,14 +1,14 @@
 <template>
   <div>
     <panel-component v-if="component.category == screenConstants.category.panel" :component="component" />
-    <chart-setting-component v-if="component.category == screenConstants.category.vchart" :component="component" :charts-components="chartsComponents" />
-    <text-setting-component v-if="component.category == screenConstants.category.text" :component="component" :charts-components="chartsComponents" />
+    <chart-setting-component v-if="component.category == screenConstants.category.vchart" :component="component" :charts-components="chartsComponents" :components="components"/>
+    <text-setting-component v-if="component.category == screenConstants.category.text" :component="component" :charts-components="chartsComponents" :components="components"/>
     <picture-setting-component v-if="component.category == screenConstants.category.picture" :component="component" :charts-components="chartsComponents" />
     <border-setting-component v-if="component.category == screenConstants.category.border" :component="component" :charts-components="chartsComponents" />
     <decoration-setting-component v-if="component.category == screenConstants.category.decoration" :component="component" :charts-components="chartsComponents" />
-    <table-setting-component v-if="component.category == screenConstants.category.table" :component="component" :charts-components="chartsComponents" />
-    <number-flipper-setting-component v-if="component.category == screenConstants.category.numberFlipper" :component="component" :charts-components="chartsComponents"></number-flipper-setting-component>
-    <card-list-setting-component  v-if="component.category == screenConstants.category.cardList" :component="component" :charts-components="chartsComponents"></card-list-setting-component>
+    <table-setting-component v-if="component.category == screenConstants.category.table" :component="component" :charts-components="chartsComponents" :components="components"/>
+    <number-flipper-setting-component v-if="component.category == screenConstants.category.numberFlipper" :component="component" :charts-components="chartsComponents" :components="components"></number-flipper-setting-component>
+    <card-list-setting-component  v-if="component.category == screenConstants.category.cardList" :component="component" :charts-components="chartsComponents" :components="components"></card-list-setting-component>
   </div>
 </template>
 <script>
@@ -38,6 +38,10 @@ export default {
     component: {
       type: Object,
       default: () => ({})
+    },
+    components: {
+      type: Array,
+      default: () => []
     },
     chartsComponents: {
       type: Object,

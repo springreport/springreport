@@ -329,8 +329,9 @@ export default {
     getReportParam() {
       const tplId = this.currentTplId
       let urlParamsLength = 0
+      let urlParams = {}
       if (this.$route.query) {
-        const urlParams = { ...this.$route.query }
+        urlParams = { ...this.$route.query }
         delete urlParams['tplId']
         delete urlParams['token']
         delete urlParams['thirdPartyType']
@@ -338,7 +339,7 @@ export default {
       }
       const obj = {
         url: this.apis.previewReport.getPreviewReportParamApi,
-        params: { tplId: tplId, initSelectData: this.isDrill == 1 || this.isDrillBack == 1 || urlParamsLength > 0 }
+        params: { tplId: tplId, initSelectData: this.isDrill == 1 || this.isDrillBack == 1 || urlParamsLength > 0 ,urlParams:urlParams}
       }
       const headers = {}
       if (this.isShare == 1) {
