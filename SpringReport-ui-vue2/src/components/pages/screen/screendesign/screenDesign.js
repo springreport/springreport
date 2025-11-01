@@ -352,7 +352,6 @@ export default {
           }
         }
       }
-      console.log(obj)
       this.$refs.draggable.changeCurrent(obj)
     },
     // 获取大屏设计信息

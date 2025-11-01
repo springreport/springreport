@@ -856,7 +856,8 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 											DataSourceConfig dataSourceConfig = new DataSourceConfig(reportDatasource.getId(), reportDatasource.getDriverClass(), reportDatasource.getJdbcUrl(), reportDatasource.getUserName(), reportDatasource.getPassword(), null);
 											//获取数据源
 											DataSource dataSource = JdbcUtils.getDataSource(dataSourceConfig);
-											List<Map<String, Object>> selectDatas = ReportDataUtil.getSelectData(dataSource, params.get(j).getSelectContent());
+											String sql = JdbcUtils.processSqlParams(params.get(j).getSelectContent(), reportTplDataset.getUrlParams());
+											List<Map<String, Object>> selectDatas = ReportDataUtil.getSelectData(dataSource, sql);
 											if (selectDatas != null) {
 												params.get(j).setSelectData(JSONArray.toJSON(selectDatas));
 											} else {

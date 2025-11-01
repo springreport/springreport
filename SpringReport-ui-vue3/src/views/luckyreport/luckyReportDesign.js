@@ -393,6 +393,7 @@ export default {
           compareCells: [],
           sourceType:1,
           content:"",
+          forceUpdate:false
         },//填报配置
       },
       delSheetsIndex: [], //删除的sheet index

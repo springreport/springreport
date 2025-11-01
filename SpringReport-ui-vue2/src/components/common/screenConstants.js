@@ -4341,21 +4341,24 @@ screenConstants.cardListInit = {
     backgroundColor:"#FFF"
   },
   leftHead: {//表头左侧内容配置
-    property:"",//属性值，数据中没有属性对应的值则直接显示该属性
+    property:"日期",//属性值，数据中没有属性对应的值则直接显示该属性
     color: '#00FFFF', // 字体颜色
     fontSize: 12, // 字体大小
     fontWeight: 'bold', // 是否加粗 normal 和bold
     conditions:[],//自定义字体颜色条件
   },
   rightHead: {//表头右侧内容配置
-    property:"",//属性值，数据中没有属性对应的值则直接显示该属性
+    property:"date",//属性值，数据中没有属性对应的值则直接显示该属性
     color: '#00FFFF', // 字体颜色
     fontSize: 12, // 字体大小
     fontWeight: 'bold', // 是否加粗 normal 和bold
     conditions:[],//自定义字体颜色条件
   }, 
   bodyContent:{
-    rowContents:[],//每一行显示的内容和对应的属性
+    rowContents:[
+      {title:"日期",titleFontSize:"14",titleFontWeight:"normal",titleColor:"#000",property:"date",contentFontSize:"14",contentFontWeight:"normal",contentColor:"#000"},
+      {title:"数量",titleFontSize:"14",titleFontWeight:"normal",titleColor:"#000",property:"count",contentFontSize:"14",contentFontWeight:"normal",contentColor:"#000"}
+    ],//每一行显示的内容和对应的属性
   },
   pagination: {
     pageColumn:2,//每页列数

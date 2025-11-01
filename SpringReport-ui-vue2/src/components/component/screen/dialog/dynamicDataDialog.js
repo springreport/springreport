@@ -20,6 +20,10 @@ export default {
       type: Object,
       default: () => ({})
     },
+    components: {
+      type: Array,
+      default: () => []
+    },
     chartsComponents: {
       type: Object,
       default: () => ({})
@@ -296,8 +300,8 @@ export default {
             requestKey: that.commonUtil.getUuid(),
             sqlType: '1'
           }
-          var componentParams = that.commonUtil.getComponentParams(
-            that.component.params
+          var componentParams = that.commonUtil.getChartsComponentsParams(
+            that.components
           )
           params.params = Object.assign({}, componentParams, that.$route.query)
           const obj = {

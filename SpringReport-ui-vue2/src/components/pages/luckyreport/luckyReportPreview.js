@@ -329,8 +329,9 @@ export default {
     getReportParam() {
       const tplId = this.currentTplId
       let urlParamsLength = 0
+      let urlParams = {}
       if (this.$route.query) {
-        const urlParams = { ...this.$route.query }
+        urlParams = { ...this.$route.query }
         delete urlParams['tplId']
         delete urlParams['token']
         delete urlParams['thirdPartyType']
@@ -338,7 +339,7 @@ export default {
       }
       const obj = {
         url: this.apis.previewReport.getPreviewReportParamApi,
-        params: { tplId: tplId, initSelectData: this.isDrill == 1 || this.isDrillBack == 1 || urlParamsLength > 0 }
+        params: { tplId: tplId, initSelectData: this.isDrill == 1 || this.isDrillBack == 1 || urlParamsLength > 0 ,urlParams:urlParams}
       }
       const headers = {}
       if (this.isShare == 1) {
@@ -1291,7 +1292,7 @@ export default {
           originCell = this.getNewCellExtendOrigins(sheetIndex, r, c)
         }
         if (originCell) {
-          var v = newValue ? newValue.m : ''
+          var v = newValue ? (newValue.m? newValue.m:(newValue.v+'')): ''
           if (v) {
             v = v.trim()
           }
@@ -1432,21 +1433,30 @@ export default {
     },
     removeErrorSetting(r, c, order) {
       var key = r + '_' + c
-      var sheetIndex = luckysheet.getSheet().index
+      let luckysheetFile = luckysheet.getSheet();
+      var sheetIndex = luckysheetFile.index
+      let data = luckysheetFile.data;
       var orginCell = this.extendCellOrigins[sheetIndex][key]
       if (!orginCell) {
         orginCell = this.getNewCellExtendOrigins(sheetIndex, r, c)
       }
       if (orginCell.ps) {
-        luckysheet.setCellFormat(r, c, 'ps', null, order)
-        luckysheet.setCellFormat(r, c, 'ps', orginCell.ps, order)
+        if(data[r] && data[r][c]){
+            data[r][c].ps = orginCell.ps;
+        }
       } else {
-        luckysheet.setCellFormat(r, c, 'ps', null, order)
+        if(data[r] && data[r][c]){
+          data[r][c].ps = null;
+        }
       }
       if (orginCell.bg) {
-        luckysheet.setCellFormat(r, c, 'bg', orginCell.bg, order)
+        if(data[r] && data[r][c]){
+          data[r][c].bg = orginCell.bg
+        }
       } else {
-        luckysheet.setCellFormat(r, c, 'bg', null, order)
+        if(data[r] && data[r][c]){
+          data[r][c].bg = null
+        }
       }
     },
     closeEditDialog() {
@@ -1463,7 +1473,7 @@ export default {
     confirmEdit() {
       this.$refs['editFormRef'].validate((valid) => {
         if (valid) {
-          luckysheet.setCellValue(this.editR, this.editC, this.editForm.cellContent + '', { isRefresh: false })
+          luckysheet.setCellValue(this.editR, this.editC, this.editForm.cellContent + '', { isRefresh: true })
           luckysheet.setRangeShow({ row: [this.editR, this.editR], column: [this.editC, this.editC] })
           this.removeErrorSetting(this.editR, this.editC, null)
           this.closeEditDialog()

@@ -1,5 +1,7 @@
 package com.springreport.dto.reporttpldataset;
 
+import java.util.Map;
+
 import com.springreport.entity.reporttpldataset.ReportTplDataset;
 import com.springreport.enums.YesNoEnum;
 
@@ -23,4 +25,11 @@ public class ReportTplDatasetDto extends ReportTplDataset{
 	 * @date 2024-05-09 11:16:15 
 	 */  
 	private Integer reportType = 1;
+	
+	/**  
+	 * @Fields urlParams : 页面参数
+	 * @author caiyang
+	 * @date 2025-10-13 11:04:41 
+	 */  
+	private Map<String, Object> urlParams;
 }

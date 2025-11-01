@@ -74,11 +74,11 @@
             prop="dateFormat"
             :rules="filter_rules('日期格式', { required: false })"
           >
-            <el-select v-model="paramForm.dateFormat" placeholder="日期格式" size="small">
-              <el-option label="年" value="yyyy" />
-              <el-option label="年-月" value="yyyy-MM" />
-              <el-option label="年-月-日" value="yyyy-MM-dd" />
-              <el-option label="年-月-日 时:分" value="yyyy-MM-dd HH:mm" />
+            <el-select v-model="paramForm.dateFormat" placeholder="日期格式">
+              <el-option label="年" value="YYYY" />
+              <el-option label="年-月" value="YYYY-MM" />
+              <el-option label="年-月-日" value="YYYY-MM-DD" />
+              <el-option label="年-月-日 时:分" value="YYYY-MM-DD HH:mm" />
             </el-select>
           </el-form-item>
           <el-form-item label="默认值">

@@ -35,6 +35,10 @@ module.exports = {
   devServer: {
     port: port,
     // open: true,
+    // allowedHosts: [
+    //   'springreport.s7.tunnelfrp.com', // 允许访问的域名地址，即花生壳内网穿透的地址
+    //   '.springreport.s7.tunnelfrp.com'   // .是二级域名的通配符   
+    // ],
     overlay: {
       warnings: false,
       errors: false

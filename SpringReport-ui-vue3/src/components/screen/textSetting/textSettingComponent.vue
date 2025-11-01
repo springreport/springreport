@@ -41,6 +41,7 @@
       :component="component"
       :chartsComponents="chartsComponents"
       v-if="component.type != 'date' && currentIndex == 2"
+      :components="components"
     ></data-setting>
     <text-setting
       v-if="currentIndex == 3"
@@ -84,6 +85,10 @@
       component: {
         type: Object,
         default: () => ({}),
+      },
+      components: {
+        type: Array,
+        default: () => []
       },
       chartsComponents: {
         type: Object,

@@ -25,6 +25,7 @@
       v-else-if="currentIndex == 2"
       :component="component"
       :chartsComponents="chartsComponents"
+      :components="components"
     ></data-setting>
     <table-setting
       v-else-if="currentIndex == 3"

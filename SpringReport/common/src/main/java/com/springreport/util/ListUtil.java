@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import com.alibaba.fastjson.JSONArray;
+import com.springreport.base.WordTableMerge;
 import com.springreport.enums.ConditionTypeEnum;
 import com.springreport.enums.OperatorEnum;
 
@@ -342,7 +343,28 @@ public class ListUtil {
 		Map<String, Object> result = new LinkedHashMap<>();
 		if(ListUtil.isNotEmpty(attrs)) {
 			for (int i = 0; i < attrs.size(); i++) {
-				result.put(attrs.get(i), datas.get(attrs.get(i)));
+				Object data = datas.get(attrs.get(i));
+				if(data instanceof Timestamp)
+				{
+					Timestamp timestamp = (Timestamp) data;
+		        	long stamp = timestamp.getTime();
+		        	String date = DateUtil.Stamp2String(stamp);
+		        	result.put(attrs.get(i), date);
+				}else if(data instanceof Date)
+				{
+					Date date = (Date) data;
+		        	long stamp = date.getTime();
+		        	String dateString = DateUtil.Stamp2String(stamp,DateUtil.FORMAT_LONOGRAM);
+		        	result.put(attrs.get(i), dateString);
+				}else if(data instanceof LocalDateTime)
+				{
+					LocalDateTime localDateTime = (java.time.LocalDateTime) data;
+		        	java.util.Date date = java.util.Date.from(localDateTime.toInstant(ZoneOffset.of("+8")));
+		        	String dateString =  DateUtil.date2String(date, DateUtil.FORMAT_FULL);
+		        	result.put(attrs.get(i), dateString);
+				}else {
+					result.put(attrs.get(i), data);
+				}
 			}
 		}
 		return result;
@@ -708,11 +730,12 @@ public class ListUtil {
 	}
 	
 	public static List<List<Map<String, Object>>> groupDatas(List<Map<String, Object>> datas,List<String> attrs){
-		List<List<Map<String, Object>>> result = new ArrayList<>();
+		List<List<Map<String, Object>>> result = null;
 		List<List<Map<String, Object>>> listDatas = new ArrayList<>();
 		if(ListUtil.isNotEmpty(datas) && ListUtil.isNotEmpty(attrs)) {
 			listDatas.add(datas);
 			for (int j = 0; j < attrs.size(); j++) {
+				result = new ArrayList<>();
 				Map<String, List<Map<String, Object>>> dataMap = null;
 				for (int t = 0; t < listDatas.size(); t++) {
 					dataMap = new LinkedHashMap<>();
@@ -728,14 +751,62 @@ public class ListUtil {
 						}
 						rowList.add(datas.get(i));
 					}
-				}
-				Iterator<Entry<String, List<Map<String, Object>>>> entries = dataMap.entrySet().iterator();
-				while(entries.hasNext()){
-					result.add(entries.next().getValue());
+					Iterator<Entry<String, List<Map<String, Object>>>> entries = dataMap.entrySet().iterator();
+					while(entries.hasNext()){
+						result.add(entries.next().getValue());
+					}
 				}
 				listDatas = result;
 			}
 			
+		}
+		return listDatas;
+	}
+	
+	public static List<List<Map<String, Object>>> groupDatas(List<Map<String, Object>> datas,List<String> attrs,Map<Integer, List<WordTableMerge>> mergeInfos){
+		List<List<Map<String, Object>>> result = null;
+		List<List<Map<String, Object>>> listDatas = new ArrayList<>();
+		if(ListUtil.isNotEmpty(datas) && ListUtil.isNotEmpty(attrs)) {
+			listDatas.add(datas);
+			for (int j = 0; j < attrs.size(); j++) {
+				result = new ArrayList<>();
+				Map<String, List<Map<String, Object>>> dataMap = null;
+				for (int t = 0; t < listDatas.size(); t++) {
+					dataMap = new LinkedHashMap<>();
+					datas = listDatas.get(t);
+					for (int i = 0; i < datas.size(); i++) {
+						List<Map<String, Object>> rowList = null;
+						String key = String.valueOf(datas.get(i).get(attrs.get(j)));
+						if (dataMap.containsKey(key)) {
+							rowList = dataMap.get(key);
+						}else {
+							rowList = new ArrayList<>();
+							dataMap.put(key, rowList);
+						}
+						rowList.add(datas.get(i));
+					}
+					Iterator<Entry<String, List<Map<String, Object>>>> entries = dataMap.entrySet().iterator();
+					while(entries.hasNext()){
+						result.add(entries.next().getValue());
+					}
+				}
+				listDatas = result;
+				//获取该列的分组信息
+				List<WordTableMerge> mergeInfo = new ArrayList<>();
+				int index = 0;
+				WordTableMerge wordTableMerge = null;
+				for (int i = 0; i < listDatas.size(); i++) {
+					int size = listDatas.get(i).size();
+					if(size > 1) {
+						wordTableMerge = new WordTableMerge();
+						wordTableMerge.setStr(index);
+						wordTableMerge.setEdr(index+size-1);
+						mergeInfo.add(wordTableMerge);
+					}
+					index = index + size;
+				}
+				mergeInfos.put(j, mergeInfo);
+			}
 		}
 		return listDatas;
 	}
