@@ -684,7 +684,24 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 							}
 						}
 					}else if(datasetData instanceof ServerTableData) {
-						
+						ServerTableData serverTableData = (ServerTableData) datasetData;
+						List<Map<String, Object>> datas = serverTableData.getGroupDataList();
+						if(ListUtil.isNotEmpty(attrs) && ListUtil.isNotEmpty(datas)) {
+							for (int t = 0; t < datas.size(); t++) {
+								for (int j = 0; j < attrs.size(); j++) {
+									if(datas.get(t).containsKey(attrs.getString(j))) {
+										JSONArray paramsArray = null;
+										if(subParams.containsKey(attrs.getString(j))) {
+											paramsArray = (JSONArray) subParams.get(attrs.getString(j));
+										}else {
+											paramsArray = new JSONArray();
+											subParams.put(attrs.getString(j), paramsArray);
+										}
+										paramsArray.add(datas.get(t).get(attrs.getString(j)));
+									}
+								}
+							}
+						}
 					}
 					else {
 						Map<String, Object> objectData = (Map<String, Object>) datasetData;
@@ -1378,6 +1395,14 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 					}
 					horizontal.add(datasetName);
 					return datas;
+				}else if(datasetName.toLowerCase().endsWith("_g")){
+					List<String> group = paramsType.get("group");
+					if(group == null) {
+						group = new ArrayList<>();
+						paramsType.put("group", group);
+					}
+					group.add(datasetName);
+					return this.getServerTableData(datas);	
 				}else {
 					List<String> vertical = paramsType.get("vertical");
 					if(vertical == null) {
@@ -1415,6 +1440,7 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 	
 	 private ServerTableData getServerTableData(List<Map<String, Object>> datas) {
 		 ServerTableData serverTableData = new ServerTableData();
+		 serverTableData.setGroupDataList(datas);
 		 List<RowRenderData> serverDataList = new ArrayList<>();
 		 Map<Integer, List<WordTableMerge>> mergeInfos = new LinkedHashMap<>();
 		 if(ListUtil.isNotEmpty(datas)) {

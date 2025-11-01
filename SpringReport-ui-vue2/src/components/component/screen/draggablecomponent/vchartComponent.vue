@@ -140,6 +140,9 @@ export default {
           //地图组件，将地区编码添加到参数中，固定使用mapCode属性
           let mapCode = component.spec.map;
           componentParams.mapCode = mapCode;
+        }else if(component.type.toLowerCase().indexOf('scattermap') >= 0){
+          let mapCode = component.spec.series[0].map;
+          componentParams.mapCode = mapCode;
         }
         params.params = Object.assign({}, componentParams, pageParams);
         let obj = {
