@@ -1309,7 +1309,7 @@ commonUtil.mapDrill = async function(chartsComponents,component,data,sendRequest
         let name = data.datum.properties.name;
         if(component.drillType == '2'){
             if(component.drillLink){
-                let url = commonUtil.buildUrlWithParams(component.drillLink,{adcode:adcode});
+                let url = commonUtil.buildUrlWithParams(component.drillLink,{mapCode:adcode});
                 window.open(url,'_blank')
             }
         }else{
