@@ -855,6 +855,36 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		return result;
 	}
 	
+	/**  
+	 * @Title: getDatasetParamInfo
+	 * @Description: 获取全部数据集的参数信息
+	 * @param mesGenerateReportDto
+	 * @return
+	 * @author caiyang
+	 * @date 2025年11月4日10:41:20
+	 */ 
+	private Map<String, Object> getDatasetParamInfoMap(MesGenerateReportDto mesGenerateReportDto){
+		Map<String, Object> result = null;
+		if(ListUtil.isEmpty(mesGenerateReportDto.getSearchData()))
+		{
+			return result;
+		}else {
+			result = new HashMap<String, Object>();
+			for (int i = 0; i < mesGenerateReportDto.getSearchData().size(); i++) {
+				result.putAll(mesGenerateReportDto.getSearchData().get(i));
+			}
+		}
+		return result;
+	}
+	
+	/**  
+	 * @Title: getDatasetParamInfo
+	 * @Description: 获取全部数据集的参数信息
+	 * @param mesGenerateReportDto
+	 * @return
+	 * @author caiyang
+	 * @date 2025年11月4日10:41:20
+	 */ 
 	private List<Map<String, Object>> getDatasetParamInfo(MesGenerateReportDto mesGenerateReportDto){
 		List<Map<String, Object>> result = null;
 		if(!ListUtil.isEmpty(mesGenerateReportDto.getSearchData()))
@@ -3006,7 +3036,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			Map<String, Map<String, String>> dictCache = new HashMap<>();//自定义和sql数据字典缓存
 			List<ReportTplDataset> reportTplDatasets = null;
 			//获取数据字典
-			ReportCellDictsDto cellDictsDto = this.getReportDict(sheets,dictCache,reportTpl.getTplType());
+			ReportCellDictsDto cellDictsDto = this.getReportDict(sheets,dictCache,reportTpl,mesGenerateReportDto,userInfoDto);
 			for (int t = 0; t < sheets.size(); t++) {
 				ResLuckySheetDataDto resLuckySheetDataDto = new ResLuckySheetDataDto();
 				resLuckySheetDataDto.setSheetId(sheets.get(t).getId());
@@ -15504,9 +15534,10 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 	 * @param sheets 
 	 * @return void
 	 * @throws JSQLParserException 
+	 * @throws ParseException 
 	 * @date 2022-11-28 09:43:56 
 	 */  
-	private ReportCellDictsDto getReportDict(List<ReportTplSheet> sheets,Map<String, Map<String, String>> dictCache,int tplType) throws JSQLParserException {
+	private ReportCellDictsDto getReportDict(List<ReportTplSheet> sheets,Map<String, Map<String, String>> dictCache,ReportTpl reportTpl,MesGenerateReportDto mesGenerateReportDto,UserInfoDto userInfoDto) throws JSQLParserException, ParseException {
 		ReportCellDictsDto result = new ReportCellDictsDto();
 		List<Long> sheetIds = new ArrayList<>();
 		Map<Long, String> sheetIndexMap = new HashMap<>();
@@ -15531,22 +15562,31 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				int valueType = cellAttrs.getIntValue("valueType");
 				if(valueType == 4 || list.get(i).getIsDict())
 				{
-					int sourceType = tplType == 1?list.get(i).getSourceType():cellAttrs.getInteger("sourceType");
+					int sourceType = reportTpl.getTplType().intValue() == 1?list.get(i).getSourceType():cellAttrs.getInteger("sourceType");
 					if(sourceType == 2) {
 						//sql语句
-						Long datasourceId = tplType == 1?list.get(i).getDatasourceId():cellAttrs.getLong("datasourceId");
-						String content = tplType == 1?list.get(i).getDictContent():cellAttrs.getString("content");
+						Long datasourceId = reportTpl.getTplType().intValue() == 1?list.get(i).getDatasourceId():cellAttrs.getLong("datasourceId");
+						String content = reportTpl.getTplType().intValue() == 1?list.get(i).getDictContent():cellAttrs.getString("content");
 						String key = datasourceId + "_" + content;
 						List<Map<String, Object>> selectDatas = null;
 						if(sqlDataTempCache.containsKey(key)) {
 							selectDatas = sqlDataTempCache.get(key);
 						}else {
+							Map<String, Object> searchInfo = this.getDatasetParamInfoMap(mesGenerateReportDto);
+							Map<String, Object> params = null;
+							if(searchInfo != null)
+							{
+								params = ParamUtil.getViewParams((JSONArray) searchInfo.get("params"),userInfoDto);
+							}
+							if(params == null) {
+								params = new HashMap<String, Object>();
+							}
 							ReportDatasource reportDatasource  = iReportDatasourceService.getById(datasourceId);
 							//数据源配置
 							DataSourceConfig dataSourceConfig = new DataSourceConfig(reportDatasource.getId(), reportDatasource.getDriverClass(), reportDatasource.getJdbcUrl(), reportDatasource.getUserName(), reportDatasource.getPassword(), null);
 							//获取数据源
 							DataSource dataSource = JdbcUtils.getDataSource(dataSourceConfig);
-							String sql = JdbcUtils.processSqlParams(content, null);
+							String sql = JdbcUtils.processSqlParams(content, params);
 							selectDatas = ReportDataUtil.getSelectData(dataSource, sql);
 							sqlDataTempCache.put(key, selectDatas);
 						}
@@ -15565,7 +15605,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 						}
 					}else if(sourceType == 3) {
 						//自定义
-						String content = tplType == 1?list.get(i).getDictContent():cellAttrs.getString("content");
+						String content = reportTpl.getTplType().intValue() == 1?list.get(i).getDictContent():cellAttrs.getString("content");
 						if(StringUtil.isNotEmpty(content)) {
 							JSONArray selectDatas = null;
 							try {
