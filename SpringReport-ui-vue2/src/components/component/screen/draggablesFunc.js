@@ -72,6 +72,9 @@ export default {
   },
   methods: {
     onActivated(index, item) {
+      if (!this.isDesign) {
+        return
+      }
       if (this.current) {
           if (!this.isCtrl) {
             this.current.active = false
