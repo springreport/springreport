@@ -220,17 +220,17 @@
             :is-hot-key="false"
             :step-length="50"
             :style="{
-              transformOrigin: '0 0',
-              transform: 'scale(' + scaleSelected / 100 + ')',
+              zoom: scaleSelected / 100,
               height: '100%',
               overflow: 'hidden',
+              height: screenProperties.height + 'px',
+              width: screenProperties.width + 'px',
             }"
           >
             <vuedraggable class="wrapper" :sort="false" :disabled="true">
               <div
                 id="draggableDiv"
                 :style="{
-                  transformOrigin: '0% 0%',
                   height: screenProperties.height + 'px',
                   width: screenProperties.width + 'px',
                   background: screenProperties.background,
@@ -1138,10 +1138,14 @@
 .infobox >>> .el-collapse-item__content {
   padding-bottom: 0;
 }
-.vue-ruler-wrapper {
-  height: 200% !important;
-  width: 200% !important;
-}
+// .vue-ruler-wrapper {
+//   height: 200% !important;
+//   width: 200% !important;
+// }
+::v-deep .vue-ruler-content {
+    width: 100% !important;
+    height: 100% !important;
+  }
 
 /*  .infobox>>>.el-form.demo-form-inline.el-form--label-left{
     padding:20px 16px;

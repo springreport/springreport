@@ -153,7 +153,12 @@
               </div>
 
               <div class="action df-c" @click.stop>
-                <div class="view" style="margin-right: 4px" @click="lockComponent(item)" :title="!item.locked?'锁定':'解锁'">
+                <div
+                  class="view"
+                  style="margin-right: 4px"
+                  @click="lockComponent(item)"
+                  :title="!item.locked ? '锁定' : '解锁'"
+                >
                   <component
                     :is="item.locked ? 'icon-lock' : 'icon-unlock'"
                     style="color: rgba(153, 153, 153, 1)"
@@ -162,7 +167,7 @@
                 <span
                   :class="item.isShow == false ? 'hide-icon' : 'show-icon'"
                   @click="showComponent(item)"
-                  :title="(item.isShow==undefined||item.isShow)?'隐藏':'显示'"
+                  :title="item.isShow == undefined || item.isShow ? '隐藏' : '显示'"
                 />
               </div>
             </div>
@@ -172,7 +177,6 @@
 
       <div ref="dragContainer" class="mainbox">
         <div class="mainwrap">
-          <!--  -->
           <vue3-ruler-tool
             ref="rulerTool"
             :value="[]"
@@ -182,21 +186,18 @@
             :step-length="50"
             :parent="true"
             :style="{
-              transformOrigin: '0 0',
-              transform: 'scale(' + scaleSelected / 100 + ')',
+              zoom: scaleSelected / 100,
               height: '100%',
               overflow: 'hidden',
+              height: screenProperties.height + 'px',
+              width: screenProperties.width + 'px',
             }"
           >
-            <!-- <vuedraggable class="wrapper" :sort= "false" :disabled= "true"> -->
-            <!-- transform: 'scale(' + scaleSelected / 100 + ')', -->
             <div
               id="draggableDiv"
               :style="{
-                transformOrigin: '0% 0%',
-
-                height: screenProperties.height + 'px',
-                width: screenProperties.width + 'px',
+                height: '100%',
+                width: '100%',
                 background: screenProperties.background,
                 backgroundImage: 'url(' + screenProperties.imgUrl + ')',
                 backgroundSize: 'cover',
@@ -217,7 +218,6 @@
                 :isCtrl="isCtrl"
               />
             </div>
-            <!-- </vuedraggable> -->
           </vue3-ruler-tool>
         </div>
         <div class="scaleWrap">
@@ -1086,9 +1086,10 @@
   .infobox ::v-deep .el-collapse-item__content {
     padding-bottom: 0;
   }
-  .vue-ruler-wrapper {
-    height: 200% !important;
-    width: 200% !important;
+
+  ::v-deep .vue-ruler-content {
+    width: 100% !important;
+    height: 100% !important;
   }
 
   /*  .infobox::v-deep.el-form.demo-form-inline.el-form--label-left{
