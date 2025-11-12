@@ -92,7 +92,7 @@ export default {
         this.current = item
         this.$emit('update:activated', item)
         this.$emit('update:isBubblingEvent', true)
-        this.keyDown(item)
+        // this.keyDown(item)
         // 左侧图层选中
         const layerArr = document.querySelectorAll('.layer-item')
         if (layerArr && layerArr.length) {
