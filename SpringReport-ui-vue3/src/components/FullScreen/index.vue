@@ -10,7 +10,7 @@
     />
   </span>
   <div class="line" />
-  <div class="tem df-c" @click="goTemStore" v-has="'template_market'">
+  <div class="tem df-c" @click="goTemStore" >
     <img src="@/assets/img/template/tem.png" style="width: 24px; height: 24px; display: block" />
     <div class="tem-name">模板市场</div>
   </div>
