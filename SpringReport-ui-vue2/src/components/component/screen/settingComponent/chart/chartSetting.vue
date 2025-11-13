@@ -1142,6 +1142,7 @@ export default {
           component.spec.tooltip.mark.title.value = component.spec.tooltip.mark.title.valueStr
         }
       } catch (error) {
+        console.log(error)
         component.spec.tooltip.mark.title.value = component.spec.tooltip.mark.title.valueStr
       }
       this.commonUtil.reLoadChart(chartsComponents,component)

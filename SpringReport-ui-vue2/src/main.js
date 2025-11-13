@@ -167,11 +167,13 @@ Vue.directive('has', {
       }
       // 此处store.getters.getMenuBtnList代表vuex中储存的按钮菜单数据
       const apis = localStorage.getItem('apiList')
-      const list = apis.split(',')
-      if (list != null && list.length > 0) {
-        for (const item of list) {
-          if (item === value) {
-            return true
+      if(apis != null){
+        const list = apis.split(',')
+        if (list != null && list.length > 0) {
+          for (const item of list) {
+            if (item === value) {
+              return true
+            }
           }
         }
       }

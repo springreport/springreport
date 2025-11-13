@@ -6,7 +6,7 @@
         <img v-show="navShow" src="@/static/img/logo.png" height="24px" style="margin-left: 20px">
       </div>
       <div class="right df-c">
-        <div class="tem df-c" @click="goTemStore" v-has="'template_market'">
+        <div class="tem df-c" @click="goTemStore">
             <img src="@/static/img/template/tem.png" style="width: 24px;height: 24px;display: block;">
             <div class="tem-name">模板市场</div>
           </div>

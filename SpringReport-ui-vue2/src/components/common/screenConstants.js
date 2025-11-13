@@ -4006,20 +4006,15 @@ screenConstants.basicMapInit = {
     },
     tooltip:{
       visible: true,
-      
       mark: {
         title: {
-          valueStr:"",
-          value: {field:"name"},
+          valueStr:'{"field":"name"}',
+          value: {"field":"name"},
         },
         content: [
           {
-            keyFormatter: '{name1}',
+            keyFormatter: '{name}',
             valueFormatter: '{value}'
-          },
-          {
-            keyFormatter: '{name2}',
-            valueFormatter: '{value1}'
           }
         ],
       }
