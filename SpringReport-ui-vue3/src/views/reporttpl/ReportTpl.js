@@ -1034,11 +1034,12 @@ export default {
       });
     },
     isShowShare(row) {
-      if (row.tplType == 1) {
-        return true;
-      } else {
-        return false;
-      }
+      // if (row.tplType == 1) {
+      //   return true;
+      // } else {
+      //   return false;
+      // }
+      return true;
     },
     routerToTask(row) {
       this.$router.push({

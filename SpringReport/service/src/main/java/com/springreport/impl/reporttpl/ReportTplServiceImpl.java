@@ -14698,7 +14698,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 					printSettingsDto.setKeyWords("SpringReport_2.1.0");
 					printSettingsDto.setHorizontalPage(resPreviewData.getSheetDatas().get(i).getPrintSettings() == null?2:resPreviewData.getSheetDatas().get(i).getPrintSettings().getHorizontalPage());
 					printSettingsDto.setPageDivider(resPreviewData.getSheetDatas().get(i).getPageDivider());
-					objects.add(new ExcelObject("excel",new ByteArrayInputStream(baos.toByteArray()),x,y,endx,endy,mesGenerateReportDto.getPdfType(),colhidden,rowhidden,i,resPreviewData.getSheetDatas().get(i).getXxbtScreenshot(),printSettingsDto,mesExportExcel.getImageInfos(),mesExportExcel.getBackImages()));
+					objects.add(new ExcelObject("excel",new ByteArrayInputStream(baos.toByteArray()),x,y,endx,endy,mesGenerateReportDto.getPdfType(),colhidden,rowhidden,i,resPreviewData.getSheetDatas().get(i).getXxbtScreenshot(),printSettingsDto,mesExportExcel.getImageInfos(),mesExportExcel.getBackImages(),mesExportExcel.getSheetConfigs().get(i).getWrapText()));
 					ByteArrayOutputStream pdfbaos = new ByteArrayOutputStream();
 					Excel2Pdf pdf = new Excel2Pdf(objects, pdfbaos);
 					pdf.convert();

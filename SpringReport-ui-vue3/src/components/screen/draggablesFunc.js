@@ -109,6 +109,7 @@ export default {
       if (this.isCtrl) {
         return;
       }
+      document.onkeydown = null;
       if (this.multiActivated && this.multiActivated.length > 0) {
         var that = this;
         setTimeout(() => {

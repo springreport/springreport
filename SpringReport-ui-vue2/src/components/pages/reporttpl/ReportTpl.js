@@ -717,11 +717,12 @@ export default {
       })
     },
     isShowShare(row) {
-      if (row.tplType == 1) {
-        return true
-      } else {
-        return false
-      }
+      // if (row.tplType == 1) {
+      //   return true
+      // } else {
+      //   return false
+      // }
+      return true;
     },
     routerToTask(row) {
       this.$store.commit('setParameters', { key: 'taskTplId', value: row.id })

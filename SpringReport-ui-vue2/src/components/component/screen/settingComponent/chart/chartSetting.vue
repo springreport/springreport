@@ -842,7 +842,45 @@
       </div>
       <div class="right-dataset-warp">
         <el-form-item label="提示框标题">
-          <el-input v-model="component.spec.tooltip.mark.title.value" style="width:120px" @change="commonUtil.reLoadChart(chartsComponents,component)" />
+          <el-input v-model="component.spec.tooltip.mark.title.valueStr" style="width:120px" @change="changeTooltipMarkTitle(chartsComponents,component)" />
+        </el-form-item>
+        <el-form-item>
+        <div slot="label" class="df-c-b" v-if="component.type.toLowerCase().indexOf('basicmap')>=0">
+            <span>提示框内容配置</span>
+            <el-button
+              type="primary"
+              size="mini"
+              class="addBtn"
+              @click="addTooltipContent(component)"
+            ><i class="el-icon-plus el-icon--left" />添加</el-button>
+          </div>
+          <el-collapse
+            v-if="component.spec.tooltip.mark.content && component.spec.tooltip.mark.content.length > 0 && component.type.toLowerCase().indexOf('basicmap')>=0"
+            class="sub-collapse"
+          >
+            <el-collapse-item
+              v-for="(item, index) in component.spec.tooltip.mark.content"
+              :key="index"
+            >
+              <template slot="title">
+                内容配置{{ index + 1 }}
+                <div
+                  class="right-block-el-icon-edit"
+                  @click.stop="editTooltipContent(item, index)"
+                />
+                <div
+                  class="right-el-icon-delete"
+                  @click.stop="deleteTooltipContent(index)"
+                />
+              </template>
+              <p class="column-tag" style="min-width: 220px; max-width: 220px">
+                名称属性：{{ item.keyFormatter }}
+              </p>
+              <p class="column-tag" style="min-width: 220px; max-width: 220px">
+                数值属性：{{ item.valueFormatter }}
+              </p>
+            </el-collapse-item>
+          </el-collapse>
         </el-form-item>
       </div>
       </div>
@@ -899,6 +937,21 @@
         <el-button type="primary" size="small" @click="confirmAddColor">确 定</el-button>
       </span>
     </el-dialog>
+
+    <el-dialog title="提示框配置" width="32%" :visible.sync="addTooltipVisiable" :close-on-click-modal="false" @close="closeAddTooltip">
+      <el-form ref="addToolTipRef" label-position="top" class="demo-form-inline" size="mini" :model="tooltipForm">
+        <el-form-item key="keyFormatter" label="名称属性" prop="keyFormatter" :rules="filter_rules('名称属性', { required: true })">
+          <el-input v-model="tooltipForm.keyFormatter" placeholder="名称属性"/>
+        </el-form-item>
+        <el-form-item key="valueFormatter" label="数值属性" prop="valueFormatter" :rules="filter_rules('数值属性', { required: true })">
+          <el-input v-model="tooltipForm.valueFormatter" placeholder="数值属性"/>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="small" @click="closeAddTooltip">取 消</el-button>
+        <el-button type="primary" size="small" @click="confirmAddTooltip">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -923,6 +976,12 @@ export default {
     return {
       predefineColors: [],
       addColorDialogVisiable: false,
+      addTooltipVisiable: false,
+      tooltipForm:{
+        index:null,
+        keyFormatter: '',
+        valueFormatter: ''
+      },
       color: '',
       systemColor: ''
     }
@@ -1073,6 +1132,61 @@ export default {
         vchart.off('click', null); // 卸载事件
       }
       
+    },
+    changeTooltipMarkTitle(chartsComponents,component){
+      try {
+        let result = JSON.parse(component.spec.tooltip.mark.title.valueStr)
+        if(typeof result == "object"){
+          component.spec.tooltip.mark.title.value = result;
+        }else{
+          component.spec.tooltip.mark.title.value = component.spec.tooltip.mark.title.valueStr
+        }
+      } catch (error) {
+        console.log(error)
+        component.spec.tooltip.mark.title.value = component.spec.tooltip.mark.title.valueStr
+      }
+      this.commonUtil.reLoadChart(chartsComponents,component)
+    },
+    closeAddTooltip(){
+      this.addTooltipVisiable = false;
+      this.$refs['addToolTipRef'].resetFields()// 校验重置
+      this.commonUtil.clearObj(this.tooltipForm)
+    },
+    confirmAddTooltip(){
+      var that = this;
+      this.$refs['addToolTipRef'].validate((valid) => {
+        if (valid) {
+          if(that.tooltipForm.index != null){
+            that.component.spec.tooltip.mark.content[that.tooltipForm.index].keyFormatter = that.tooltipForm.keyFormatter
+            that.component.spec.tooltip.mark.content[that.tooltipForm.index].valueFormatter = that.tooltipForm.valueFormatter
+          }else{
+            var obj = {}
+            obj.keyFormatter = that.tooltipForm.keyFormatter
+            obj.valueFormatter = that.tooltipForm.valueFormatter
+            if(!that.component.spec.tooltip.mark.content){
+              that.component.spec.tooltip.mark.content = [];
+            }
+            that.component.spec.tooltip.mark.content.push(obj)
+          }
+          that.commonUtil.reLoadChart(that.chartsComponents,that.component)
+          that.closeAddTooltip();
+        } else {
+          return false
+        }
+      })
+    },
+    addTooltipContent(){
+      this.addTooltipVisiable = true;
+    },
+    editTooltipContent(item, index){
+      this.tooltipForm.index = index
+      this.tooltipForm.keyFormatter = item.keyFormatter
+      this.tooltipForm.valueFormatter = item.valueFormatter
+      this.addTooltipContent();
+    },
+    deleteTooltipContent(index){
+      this.component.spec.tooltip.mark.content.splice(index, 1)
+      this.commonUtil.reLoadChart(this.chartsComponents,this.component)
     }
   }
 }

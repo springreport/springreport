@@ -42,6 +42,36 @@
         }
       if (token && !localStorage.getItem('token')) {
         localStorage.setItem('token', token);
+        let userInfo = parseJWT(token);
+        localStorage.setItem(
+                commonConstants.sessionItem.position,
+                userInfo.roleName
+              ) // 用户职位
+              localStorage.setItem(
+                commonConstants.sessionItem.userName,
+                userInfo.userName
+              ) // 用户名
+              localStorage.setItem(
+                commonConstants.sessionItem.roleName,
+                userInfo.roleName
+              ) // 用户名
+              
+              localStorage.setItem(
+                commonConstants.sessionItem.isSystemMerchant,
+                userInfo.isSystemMerchant
+              ) 
+              localStorage.setItem(
+                commonConstants.sessionItem.merchantNo,
+                userInfo.merchantNo
+              ) 
+              localStorage.setItem(
+                commonConstants.sessionItem.isAdmin,
+                userInfo.isAdmin
+              )
+              localStorage.setItem(
+                commonConstants.sessionItem.userId,
+                userInfo.userId
+              )
         getUserInfoByToken();
       }
     }
@@ -50,6 +80,15 @@
   const changeBodyWidth = () => {
     const flag = document.body.getBoundingClientRect().width - 1 < 992;
     store.dispatch('setting/changeMobile', flag);
+  };
+
+  const parseJWT = (token) => {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    return JSON.parse(jsonPayload);
   };
 
   const changeResize = () => {

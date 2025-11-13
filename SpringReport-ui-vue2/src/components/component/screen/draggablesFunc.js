@@ -105,6 +105,7 @@ export default {
         }
     },
     onDeactivated() {
+      document.onkeydown = null;
       if (this.isCtrl) {
         return
       }
