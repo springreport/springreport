@@ -118,6 +118,18 @@ export default {
               const component = JSON.parse(element.content);
               component.locked = true;
               tempComponent.push(component)
+               if(component.category == this.screenConstants.category.tabsCard){
+                //选项卡组件则将选项卡绑定的所有子组件参数先组装放到component.params里面
+                if(component.tabs && component.tabs.length > 0){
+                  for (let t = 0; t < component.tabs.length; t++) {
+                    const subComponent = component.tabs[t].subComponent;
+                    if(!component.params){
+                      component.params = [];
+                    }
+                    component.params = component.params.concat(subComponent.params);
+                  }
+                }
+              }
               if(component.params && component.params.length > 0){
                 for (let index = 0; index < component.params.length; index++) {
                   const paramElement = component.params[index];
