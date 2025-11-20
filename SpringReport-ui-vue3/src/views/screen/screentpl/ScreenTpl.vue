@@ -28,11 +28,11 @@
         :search-handle="pageData.searchHandle"
         :table-handles="pageData.tableHandles"
       />
-      <div v-loading="requestLoading" element-loading-text="加载中" class="screen-list">
+      <div element-loading-text="加载中" class="screen-list">
         <el-row v-if="pageData.tableData.length > 0" :gutter="24">
           <el-col
             v-for="(item, index) in pageData.tableData"
-            :key="item.id"
+            :key="index"
             :xs="12"
             :sm="12"
             :md="8"
@@ -43,18 +43,15 @@
                 <div class="tpl-code">
                   {{ item.tplCode }}
                 </div>
-                <!-- :teleported="false" -->
                 <el-dropdown size="small" class="table-dropdown">
                   <div class="more-btn">
                     <img src="@/assets/img/template/more.png" width="18px" height="18px" />
                   </div>
                   <template #dropdown>
                     <el-dropdown-menu>
+                      <div v-for="(btn,index) in pageData.tableCols[0].btnList" :key="index" v-show="btn.show ? btn.show(item) : true" v-has="btn.auth">
                       <el-dropdown-item
-                        v-for="btn in pageData.tableCols[0].btnList"
-                        v-show="btn.show ? btn.show(item) : true"
                         :key="(typeof btn.label).toLowerCase() == 'string' ? btn.label : btn.auth"
-                        v-has="btn.auth"
                         :disabled="btn.disabled && btn.disabled(item)"
                         :type="btn.type"
                         :size="btn.size"
@@ -65,6 +62,7 @@
                           (typeof btn.label).toLowerCase() == 'string' ? btn.label : btn.label(item)
                         }}</el-dropdown-item
                       >
+                      </div>
                     </el-dropdown-menu>
                   </template>
                 </el-dropdown>
