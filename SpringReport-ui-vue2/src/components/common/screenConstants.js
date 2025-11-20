@@ -203,6 +203,7 @@ screenConstants.type = {
   comboCharthl: 'comboCharthl',// 折柱图
   comboChartdbbar: 'comboChartdbbar',// 双向条形图
   cardList: 'cardList',// 卡片列表
+  tabsCard:'tabsCard',//tabs选项卡
 }
 
 screenConstants.category = {
@@ -215,6 +216,7 @@ screenConstants.category = {
   table: 'table',
   numberFlipper: 'numberFlipper', // 数字翻牌器
   cardList:'cardList',//卡片列表
+  tabsCard:'tabsCard',//选项卡
 }
 
 // 大屏组件类型
@@ -241,7 +243,8 @@ screenConstants.componentsType1 = [
   { 'type': 'wordCloud', 'text': '词云图', icon: 'wordCloud' },
   { 'type': 'comboChart', 'text': '组合图', icon: 'comboChart' },
   { 'type': 'map', 'text': '地图', icon: 'map' },
-  { 'type': 'table', 'text': '表格', icon: 'table' }
+  { 'type': 'table', 'text': '表格', icon: 'table' },
+  { 'type': 'tabsCard', 'text': '选项卡', icon: 'table' }
 ]
 screenConstants.componentsType2 = [
 
@@ -280,7 +283,7 @@ screenConstants.compType = {
   tickGauge: { text: '刻度仪表盘', icon: 'gauge' },
   seriesGauge: { text: '系列仪表盘', icon: 'gauge' },
   tickSeriesGauge: { text: '刻度系列仪表盘', icon: 'gauge' },
-  progress: { text: '进度条', icon: 'progress' },
+  // progress: { text: '进度条', icon: 'progress' },
   circularProgress: { text: '环形进度条', icon: 'circleProgress' },
   barProgress: { text: '条形进度条', icon: 'progress' },
   wordCloud: { text: '词云图', icon: 'wordCloud' },
@@ -296,146 +299,151 @@ screenConstants.compType = {
   sankey: { text: '桑葚图', icon: 'sankey' },
   comboCharthl: { text: '折柱图', icon: 'comboChart' },
   comboChartdbbar: { text: '双向条形图', icon: 'comboChartdbbar' },
-  cardList: { text: '卡片列表', icon: 'cardList' }
+  cardList: { text: '卡片列表', icon: 'cardList' },
+  tabsCard: { text: '选项卡', icon: 'tabsCard' },
 }
 
 screenConstants.textType = [
-  { 'name': 'text', 'text': '文本', 'src': 'https://www.springreport.vip/images/chart/text.png', category: screenConstants.category.text },
-  { 'name': 'date', 'text': '日期时间', 'src': 'https://www.springreport.vip/images/chart/time.png', category: screenConstants.category.text }
+  { 'name': 'text', 'text': '文本', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/text.png', category: screenConstants.category.text },
+  { 'name': 'date', 'text': '日期时间', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/time.png', category: screenConstants.category.text }
 ]
 
 screenConstants.numberFlipperType = [
-  { 'name': 'numberFlipper', 'text': '数字翻牌器', 'src': 'https://www.springreport.vip/images/chart/numberflipper.png', category: screenConstants.category.numberFlipper },
+  { 'name': 'numberFlipper', 'text': '数字翻牌器', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/numberflipper.png', category: screenConstants.category.numberFlipper },
 ]
 screenConstants.pictureType = [
   { 'name': 'picture', 'text': '图片', 'src': '', category: screenConstants.category.picture }
 ]
 
 screenConstants.borderType = [
-  { 'name': 'dv-border-box-1', 'text': '边框1', 'src': 'https://www.springreport.vip/images/chart/border1.png', category: screenConstants.category.border },
-  { 'name': 'dv-border-box-2', 'text': '边框2', 'src': 'https://www.springreport.vip/images/chart/border2.png', category: screenConstants.category.border },
-  { 'name': 'dv-border-box-3', 'text': '边框3', 'src': 'https://www.springreport.vip/images/chart/border3.png', category: screenConstants.category.border },
-  { 'name': 'dv-border-box-4', 'text': '边框4', 'src': 'https://www.springreport.vip/images/chart/border4.png', category: screenConstants.category.border },
-  { 'name': 'dv-border-box-4', 'text': '边框4(反向)', 'src': 'https://www.springreport.vip/images/chart/rborder4.png', category: screenConstants.category.border },
-  { 'name': 'dv-border-box-5', 'text': '边框5', 'src': 'https://www.springreport.vip/images/chart/border5.png', category: screenConstants.category.border },
-  { 'name': 'dv-border-box-5', 'text': '边框5(反向)', 'src': 'https://www.springreport.vip/images/chart/rborder5.png', category: screenConstants.category.border },
-  { 'name': 'dv-border-box-6', 'text': '边框6', 'src': 'https://www.springreport.vip/images/chart/border6.png', category: screenConstants.category.border },
-  { 'name': 'dv-border-box-7', 'text': '边框7', 'src': 'https://www.springreport.vip/images/chart/border7.png', category: screenConstants.category.border },
-  { 'name': 'dv-border-box-8', 'text': '边框8', 'src': 'https://www.springreport.vip/images/chart/border8.png', category: screenConstants.category.border },
-  { 'name': 'dv-border-box-8', 'text': '边框8(反向)', 'src': 'https://www.springreport.vip/images/chart/border8.png', category: screenConstants.category.border },
-  { 'name': 'dv-border-box-9', 'text': '边框9', 'src': 'https://www.springreport.vip/images/chart/border9.png', category: screenConstants.category.border },
-  { 'name': 'dv-border-box-10', 'text': '边框10', 'src': 'https://www.springreport.vip/images/chart/border10.png', category: screenConstants.category.border },
-  { 'name': 'dv-border-box-11', 'text': '边框11', 'src': 'https://www.springreport.vip/images/chart/border11.png', category: screenConstants.category.border },
-  { 'name': 'dv-border-box-12', 'text': '边框12', 'src': 'https://www.springreport.vip/images/chart/border12.png', category: screenConstants.category.border },
-  { 'name': 'dv-border-box-13', 'text': '边框13', 'src': 'https://www.springreport.vip/images/chart/border13.png', category: screenConstants.category.border }
+  { 'name': 'dv-border-box-1', 'text': '边框1', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/border1.png', category: screenConstants.category.border },
+  { 'name': 'dv-border-box-2', 'text': '边框2', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/border2.png', category: screenConstants.category.border },
+  { 'name': 'dv-border-box-3', 'text': '边框3', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/border3.png', category: screenConstants.category.border },
+  { 'name': 'dv-border-box-4', 'text': '边框4', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/border4.png', category: screenConstants.category.border },
+  { 'name': 'dv-border-box-4', 'text': '边框4(反向)', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/rborder4.png', category: screenConstants.category.border },
+  { 'name': 'dv-border-box-5', 'text': '边框5', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/border5.png', category: screenConstants.category.border },
+  { 'name': 'dv-border-box-5', 'text': '边框5(反向)', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/rborder5.png', category: screenConstants.category.border },
+  { 'name': 'dv-border-box-6', 'text': '边框6', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/border6.png', category: screenConstants.category.border },
+  { 'name': 'dv-border-box-7', 'text': '边框7', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/border7.png', category: screenConstants.category.border },
+  { 'name': 'dv-border-box-8', 'text': '边框8', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/border8.png', category: screenConstants.category.border },
+  { 'name': 'dv-border-box-8', 'text': '边框8(反向)', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/border8.png', category: screenConstants.category.border },
+  { 'name': 'dv-border-box-9', 'text': '边框9', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/border9.png', category: screenConstants.category.border },
+  { 'name': 'dv-border-box-10', 'text': '边框10', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/border10.png', category: screenConstants.category.border },
+  { 'name': 'dv-border-box-11', 'text': '边框11', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/border11.png', category: screenConstants.category.border },
+  { 'name': 'dv-border-box-12', 'text': '边框12', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/border12.png', category: screenConstants.category.border },
+  { 'name': 'dv-border-box-13', 'text': '边框13', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/border13.png', category: screenConstants.category.border }
 ]
 screenConstants.decorationType = [
-  { 'name': 'dv-decoration-1', 'text': '装饰1', 'src': 'https://www.springreport.vip/images/chart/decoration1.png', category: screenConstants.category.decoration },
-  { 'name': 'dv-decoration-2', 'text': '装饰2', 'src': 'https://www.springreport.vip/images/chart/decoration2.png', category: screenConstants.category.decoration },
-  { 'name': 'dv-decoration-2', 'text': '装饰2(反向)', 'src': 'https://www.springreport.vip/images/chart/rdecoration2.png', category: screenConstants.category.decoration },
-  { 'name': 'dv-decoration-3', 'text': '装饰3', 'src': 'https://www.springreport.vip/images/chart/decoration3.png', category: screenConstants.category.decoration },
-  { 'name': 'dv-decoration-4', 'text': '装饰4', 'src': 'https://www.springreport.vip/images/chart/decoration4.png', category: screenConstants.category.decoration },
-  { 'name': 'dv-decoration-4', 'text': '装饰4(反向)', 'src': 'https://www.springreport.vip/images/chart/rdecoration4.png', category: screenConstants.category.decoration },
-  { 'name': 'dv-decoration-5', 'text': '装饰5', 'src': 'https://www.springreport.vip/images/chart/decoration5.png', category: screenConstants.category.decoration },
-  { 'name': 'dv-decoration-6', 'text': '装饰6', 'src': 'https://www.springreport.vip/images/chart/decoration6.png', category: screenConstants.category.decoration },
-  { 'name': 'dv-decoration-7', 'text': '装饰7', 'src': 'https://www.springreport.vip/images/chart/decoration7.png', category: screenConstants.category.decoration },
-  { 'name': 'dv-decoration-8', 'text': '装饰8', 'src': 'https://www.springreport.vip/images/chart/rdecoration8.png', category: screenConstants.category.decoration },
-  { 'name': 'dv-decoration-8', 'text': '装饰8(反向)', 'src': 'https://www.springreport.vip/images/chart/decoration8.png', category: screenConstants.category.decoration },
-  { 'name': 'dv-decoration-9', 'text': '装饰9', 'src': 'https://www.springreport.vip/images/chart/decoration9.png', category: screenConstants.category.decoration },
-  { 'name': 'dv-decoration-10', 'text': '装饰10', 'src': 'https://www.springreport.vip/images/chart/decoration10.png', category: screenConstants.category.decoration },
-  { 'name': 'dv-decoration-11', 'text': '装饰111', 'src': 'https://www.springreport.vip/images/chart/decoration11.png', category: screenConstants.category.decoration }
+  { 'name': 'dv-decoration-1', 'text': '装饰1', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/decoration1.png', category: screenConstants.category.decoration },
+  { 'name': 'dv-decoration-2', 'text': '装饰2', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/decoration2.png', category: screenConstants.category.decoration },
+  { 'name': 'dv-decoration-2', 'text': '装饰2(反向)', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/rdecoration2.png', category: screenConstants.category.decoration },
+  { 'name': 'dv-decoration-3', 'text': '装饰3', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/decoration3.png', category: screenConstants.category.decoration },
+  { 'name': 'dv-decoration-4', 'text': '装饰4', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/decoration4.png', category: screenConstants.category.decoration },
+  { 'name': 'dv-decoration-4', 'text': '装饰4(反向)', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/rdecoration4.png', category: screenConstants.category.decoration },
+  { 'name': 'dv-decoration-5', 'text': '装饰5', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/decoration5.png', category: screenConstants.category.decoration },
+  { 'name': 'dv-decoration-6', 'text': '装饰6', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/decoration6.png', category: screenConstants.category.decoration },
+  { 'name': 'dv-decoration-7', 'text': '装饰7', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/decoration7.png', category: screenConstants.category.decoration },
+  { 'name': 'dv-decoration-8', 'text': '装饰8', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/rdecoration8.png', category: screenConstants.category.decoration },
+  { 'name': 'dv-decoration-8', 'text': '装饰8(反向)', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/decoration8.png', category: screenConstants.category.decoration },
+  { 'name': 'dv-decoration-9', 'text': '装饰9', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/decoration9.png', category: screenConstants.category.decoration },
+  { 'name': 'dv-decoration-10', 'text': '装饰10', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/decoration10.png', category: screenConstants.category.decoration },
+  { 'name': 'dv-decoration-11', 'text': '装饰111', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/decoration11.png', category: screenConstants.category.decoration }
 ]
 // 柱状图类型
 screenConstants.histogramType = [
-  { 'name': 'histogram', 'text': '柱状图', 'src': 'https://www.springreport.vip/images/chart/histogram.png', category: screenConstants.category.vchart },
-  { 'name': 'stackHistogram', 'text': '堆叠柱状图', 'src': 'https://www.springreport.vip/images/chart/stackHistogram.png', category: screenConstants.category.vchart },
-  { 'name': 'rangeHistogram', 'text': '区间柱状图', 'src': 'https://www.springreport.vip/images/chart/rangeHistogram.png', category: screenConstants.category.vchart },
-  { 'name': 'horizontalHistogram', 'text': '条形图', 'src': 'https://www.springreport.vip/images/chart/horizontalHistogram.png', category: screenConstants.category.vchart },
-  { 'name': 'stackHorizontalHistogram', 'text': '堆叠条形图', 'src': 'https://www.springreport.vip/images/chart/stackHorizontalHistogram.png', category: screenConstants.category.vchart },
-  { 'name': 'rangeHorizontalHistogram', 'text': '区间条形图', 'src': 'https://www.springreport.vip/images/chart/rangeHorizontalHistogram.png', category: screenConstants.category.vchart }
+  { 'name': 'histogram', 'text': '柱状图', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/histogram.png', category: screenConstants.category.vchart },
+  { 'name': 'stackHistogram', 'text': '堆叠柱状图', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/stackHistogram.png', category: screenConstants.category.vchart },
+  { 'name': 'rangeHistogram', 'text': '区间柱状图', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/rangeHistogram.png', category: screenConstants.category.vchart },
+  { 'name': 'horizontalHistogram', 'text': '条形图', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/horizontalHistogram.png', category: screenConstants.category.vchart },
+  { 'name': 'stackHorizontalHistogram', 'text': '堆叠条形图', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/stackHorizontalHistogram.png', category: screenConstants.category.vchart },
+  { 'name': 'rangeHorizontalHistogram', 'text': '区间条形图', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/rangeHorizontalHistogram.png', category: screenConstants.category.vchart }
 ]
 
 screenConstants.lineType = [
-  { 'name': 'line', 'text': '折线图', 'src': 'https://www.springreport.vip/images/chart/line.png', category: screenConstants.category.vchart },
-  { 'name': 'horizontalLine', 'text': '垂直折线图', 'src': 'https://www.springreport.vip/images/chart/horizontalLine.png', category: screenConstants.category.vchart },
-  { 'name': 'smoothLine', 'text': '平滑折线图', 'src': 'https://www.springreport.vip/images/chart/smoothLine.png', category: screenConstants.category.vchart },
-  { 'name': 'stepLine', 'text': '阶梯折线图', 'src': 'https://www.springreport.vip/images/chart/stepLine.png', category: screenConstants.category.vchart },
-  { 'name': 'stackLine', 'text': '堆叠折线图', 'src': 'https://www.springreport.vip/images/chart/stackLine.png', category: screenConstants.category.vchart }
+  { 'name': 'line', 'text': '折线图', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/line.png', category: screenConstants.category.vchart },
+  { 'name': 'horizontalLine', 'text': '垂直折线图', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/horizontalLine.png', category: screenConstants.category.vchart },
+  { 'name': 'smoothLine', 'text': '平滑折线图', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/smoothLine.png', category: screenConstants.category.vchart },
+  { 'name': 'stepLine', 'text': '阶梯折线图', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/stepLine.png', category: screenConstants.category.vchart },
+  { 'name': 'stackLine', 'text': '堆叠折线图', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/stackLine.png', category: screenConstants.category.vchart }
 ]
 
 screenConstants.areaType = [
-  { 'name': 'area', 'text': '面积图', 'src': 'https://www.springreport.vip/images/chart/area.png', category: screenConstants.category.vchart },
-  { 'name': 'horizontalArea', 'text': '垂直面积图', 'src': 'https://www.springreport.vip/images/chart/horizontalArea.png', category: screenConstants.category.vchart },
-  { 'name': 'smoothArea', 'text': '平滑面积图', 'src': 'https://www.springreport.vip/images/chart/smoothArea.png', category: screenConstants.category.vchart },
-  { 'name': 'stepArea', 'text': '阶梯面积图', 'src': 'https://www.springreport.vip/images/chart/stepArea.png', category: screenConstants.category.vchart },
-  { 'name': 'stackArea', 'text': '堆叠面积图', 'src': 'https://www.springreport.vip/images/chart/stackArea.png', category: screenConstants.category.vchart }
+  { 'name': 'area', 'text': '面积图', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/area.png', category: screenConstants.category.vchart },
+  { 'name': 'horizontalArea', 'text': '垂直面积图', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/horizontalArea.png', category: screenConstants.category.vchart },
+  { 'name': 'smoothArea', 'text': '平滑面积图', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/smoothArea.png', category: screenConstants.category.vchart },
+  { 'name': 'stepArea', 'text': '阶梯面积图', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/stepArea.png', category: screenConstants.category.vchart },
+  { 'name': 'stackArea', 'text': '堆叠面积图', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/stackArea.png', category: screenConstants.category.vchart }
 ]
 screenConstants.pieType = [
-  { 'name': 'pie', 'text': '饼图', 'src': 'https://www.springreport.vip/images/chart/pie.png', category: screenConstants.category.vchart },
-  { 'name': 'pieRose', 'text': '玫瑰图', 'src': 'https://www.springreport.vip/images/chart/pieRose.png', category: screenConstants.category.vchart }
+  { 'name': 'pie', 'text': '饼图', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/pie.png', category: screenConstants.category.vchart },
+  { 'name': 'pieRose', 'text': '玫瑰图', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/pieRose.png', category: screenConstants.category.vchart }
 ]
 
 screenConstants.scatterType = [
-  { 'name': 'scatter', 'text': '散点图', 'src': 'https://www.springreport.vip/images/chart/scatter.png', category: screenConstants.category.vchart }
+  { 'name': 'scatter', 'text': '散点图', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/scatter.png', category: screenConstants.category.vchart }
 ]
 
 screenConstants.radarType = [
-  { 'name': 'radar', 'text': '雷达图', 'src': 'https://www.springreport.vip/images/chart/radar.png', category: screenConstants.category.vchart },
-  { 'name': 'stackRadar', 'text': '堆叠雷达图', 'src': 'https://www.springreport.vip/images/chart/stackRadar.png', category: screenConstants.category.vchart }
+  { 'name': 'radar', 'text': '雷达图', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/radar.png', category: screenConstants.category.vchart },
+  { 'name': 'stackRadar', 'text': '堆叠雷达图', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/stackRadar.png', category: screenConstants.category.vchart }
 ]
 
 screenConstants.wordCloudType = [
-  { 'name': 'wordCloud', 'text': '词云图', 'src': 'https://www.springreport.vip/images/chart/wordCloud.png', category: screenConstants.category.vchart }
+  { 'name': 'wordCloud', 'text': '词云图', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/wordCloud.png', category: screenConstants.category.vchart }
 ]
 
 screenConstants.funnelType = [
-  { 'name': 'funnel', 'text': '漏斗图', 'src': 'https://www.springreport.vip/images/chart/funnel.png', category: screenConstants.category.vchart },
-  { 'name': 'transformFunnel', 'text': '转化漏斗图', 'src': 'https://www.springreport.vip/images/chart/funnel.png', category: screenConstants.category.vchart }
+  { 'name': 'funnel', 'text': '漏斗图', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/funnel.png', category: screenConstants.category.vchart },
+  { 'name': 'transformFunnel', 'text': '转化漏斗图', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/funnel.png', category: screenConstants.category.vchart }
 ]
 
 screenConstants.gaugeType = [
-  { 'name': 'gauge', 'text': '仪表盘', 'src': 'https://www.springreport.vip/images/chart/gauge.png', category: screenConstants.category.vchart },
-  { 'name': 'tickGauge', 'text': '刻度仪表盘', 'src': 'https://www.springreport.vip/images/chart/tickGauge.png', category: screenConstants.category.vchart },
-  { 'name': 'seriesGauge', 'text': '系列仪表盘', 'src': 'https://www.springreport.vip/images/chart/seriesGauge.png', category: screenConstants.category.vchart },
-  { 'name': 'tickSeriesGauge', 'text': '刻度系列仪表盘', 'src': 'https://www.springreport.vip/images/chart/tickSeriesGauge.png', category: screenConstants.category.vchart }
+  { 'name': 'gauge', 'text': '仪表盘', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/gauge.png', category: screenConstants.category.vchart },
+  { 'name': 'tickGauge', 'text': '刻度仪表盘', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/tickGauge.png', category: screenConstants.category.vchart },
+  { 'name': 'seriesGauge', 'text': '系列仪表盘', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/seriesGauge.png', category: screenConstants.category.vchart },
+  { 'name': 'tickSeriesGauge', 'text': '刻度系列仪表盘', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/tickSeriesGauge.png', category: screenConstants.category.vchart }
 ]
 
 screenConstants.progressType = [
-  { 'name': 'circularProgress', 'text': '环形进度条', 'src': 'https://www.springreport.vip/images/chart/circularProgress.png', category: screenConstants.category.vchart },
-  { 'name': 'barProgress', 'text': '条形进度条', 'src': 'https://www.springreport.vip/images/chart/linearProgress.png', category: screenConstants.category.vchart },
-  { 'name': 'liquid', 'text': '水波图', 'src': 'https://www.springreport.vip/images/chart/liquid.png', category: screenConstants.category.vchart }
+  { 'name': 'circularProgress', 'text': '环形进度条', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/circularProgress.png', category: screenConstants.category.vchart },
+  { 'name': 'barProgress', 'text': '条形进度条', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/linearProgress.png', category: screenConstants.category.vchart },
+  { 'name': 'liquid', 'text': '水波图', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/liquid.png', category: screenConstants.category.vchart }
 ]
 
 screenConstants.mapType = [
-  { 'name': 'basicMap', 'text': '基础地图', 'src': 'https://www.springreport.vip/images/chart/map.png', category: screenConstants.category.vchart },
-  { 'name': 'scatterMap', 'text': '散点地图', 'src': 'https://www.springreport.vip/images/chart/scatterMap.png', category: screenConstants.category.vchart }
+  { 'name': 'basicMap', 'text': '基础地图', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/map.png', category: screenConstants.category.vchart },
+  { 'name': 'scatterMap', 'text': '散点地图', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/scatterMap.png', category: screenConstants.category.vchart }
 ]
 
 screenConstants.tableType = [
-  { 'name': 'scrollTable', 'text': '轮播列表', 'src': 'https://www.springreport.vip/images/chart/scrollTable.png', category: screenConstants.category.table },
-  { 'name': 'pageTable', 'text': '分页列表', 'src': 'https://www.springreport.vip/images/chart/pageTable.png', category: screenConstants.category.table },
-  { 'name': 'cardList', 'text': '卡片列表', 'src': 'https://www.springreport.vip/images/chart/cardlist.png', category: screenConstants.category.table }
+  { 'name': 'scrollTable', 'text': '轮播列表', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/scrollTable.png', category: screenConstants.category.table },
+  { 'name': 'pageTable', 'text': '分页列表', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/pageTable.png', category: screenConstants.category.table },
+  { 'name': 'cardList', 'text': '卡片列表', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/cardlist.png', category: screenConstants.category.table }
 ]
 
 screenConstants.boxPlotType = [
-  { 'name': 'boxPlot', 'text': '箱型图', 'src': 'https://www.springreport.vip/images/chart/boxPlot.png', category: screenConstants.category.vchart }
+  { 'name': 'boxPlot', 'text': '箱型图', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/boxPlot.png', category: screenConstants.category.vchart }
 ]
 
 screenConstants.circlePackingType = [
-  { 'name': 'circlePacking', 'text': '气泡图', 'src': 'https://www.springreport.vip/images/chart/circlePacking.png', category: screenConstants.category.vchart }
+  { 'name': 'circlePacking', 'text': '气泡图', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/circlePacking.png', category: screenConstants.category.vchart }
 ]
 
 screenConstants.zhifangtuType = [
-  { 'name': 'zhifangtu', 'text': '直方图', 'src': 'https://www.springreport.vip/images/chart/zhifangtu.png', category: screenConstants.category.vchart }
+  { 'name': 'zhifangtu', 'text': '直方图', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/zhifangtu.png', category: screenConstants.category.vchart }
 ]
 
 screenConstants.sankeyType = [
-  { 'name': 'sankey', 'text': '桑葚图', 'src': 'https://www.springreport.vip/images/chart/sankey.png', category: screenConstants.category.vchart }
+  { 'name': 'sankey', 'text': '桑葚图', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/sankey.png', category: screenConstants.category.vchart }
 ]
 
 screenConstants.comboChartType = [
-  { 'name': 'comboCharthl', 'text': '折柱图', 'src': 'https://www.springreport.vip/images/chart/comboCharthl.png', category: screenConstants.category.vchart },
-  { 'name': 'comboChartdbbar', 'text': '双向条形图', 'src': 'https://www.springreport.vip/images/chart/comboChartdbbar.png', category: screenConstants.category.vchart },
+  { 'name': 'comboCharthl', 'text': '折柱图', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/comboCharthl.png', category: screenConstants.category.vchart },
+  { 'name': 'comboChartdbbar', 'text': '双向条形图', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/comboChartdbbar.png', category: screenConstants.category.vchart },
+]
+
+screenConstants.tabsCardType = [
+  { 'name': 'tabsCard', 'text': '选项卡', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/tabsCard.png', category: screenConstants.category.tabsCard },
 ]
 
 screenConstants.chartTitleSettings = {
@@ -5403,6 +5411,48 @@ screenConstants.comboChartdbbarInit = {
       },
     }
   }
+}
+
+screenConstants.tabsCardInit = {
+  type: screenConstants.type.tabsCard,
+  category: screenConstants.category.tabsCard,
+  isDelete: false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 500, // 组件初始化宽度
+  h: 300, // 组件初始化高度
+  active: false,
+  zindex: '99',
+  locked: false,
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  refresh: false, // 是否定时刷新
+  refreshTime: 30000, // 定时刷新时间，单位(ms)
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
+  params: [], // 图表参数
+  hiddenParamSize: 0, // 隐藏参数个数
+  autoChangeTab:false,
+  changeTabInterval:5000,
+  style: {
+    backgroundColor:"",
+    titleStyle:{
+      height: 30, // 高度
+      width:80,//宽度
+      color: '#rgba(0, 0, 0, 1)', // 字体颜色
+      activeColor:'#ffffff',//激活字体颜色
+      fontSize: 14, // 字体大小
+      fontWeight: 'normal', // 是否加粗
+      tagColor:'rgba(248, 248, 248, 1)',//标签颜色
+      activeTagColor:'rgba(255, 69, 0, 1)',//激活标签颜色
+      tabinterval:"10",//标签间隔
+    }
+  },
+  tabs:[]
 }
 
 screenConstants.map = [

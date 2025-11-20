@@ -212,7 +212,7 @@ export default {
         ]}
       ],
       docTplCharts:[],//文档图表
-      chartUrlPrefix:"https://www.springreport.vip/images/chart/",//图表图片的前缀
+      chartUrlPrefix:import.meta.env.VITE_BASE_URL_PREFIX+"/images/chart/",//图表图片的前缀
       highlightVisiable:false,
       highlightForm:{
         color:"",

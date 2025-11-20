@@ -367,15 +367,29 @@ export default {
     },
     //组件初始化
     async initComponent() {
-      var that = this;
       for (let index = 0; index < this.components.length; index++) {
-        const element = this.components[index];
-        if (element.category == this.screenConstants.category.vchart) {
+        const element = this.components[index]
+        if (element.category == this.screenConstants.category.vchart || element.category == this.screenConstants.category.text) {
+          this.initSingleComponent(element)
+        } else if (element.category == this.screenConstants.category.tabsCard) {
+          if(element.tabs && element.tabs.length > 0){
+            for (let i = 0; i < element.tabs.length; i++) {
+              const subComponent = element.tabs[i].subComponent;
+              this.initSingleComponent(subComponent)
+            }
+          }
+        }
+      }
+    },
+    async initSingleComponent(element){
+      var that = this;
+      if (element.category == this.screenConstants.category.vchart) {
           if (element.type.toLowerCase().indexOf('basicmap') >= 0) {
-            let mapCode = element.spec.map;
+            const mapCode = element.spec.map
             if (!VChart.getMap(mapCode)) {
-              const geojson = await this.commonUtil.getMapData(mapCode);
-              VChart.registerMap(mapCode, geojson);
+              const geojson = await this.commonUtil.getMapData(mapCode)
+              VChart.registerMap(mapCode, geojson)
+              
             }
           } else  if (element.type.toLowerCase().indexOf('scattermap') >= 0) {
               let mapCode = element.spec.series[0].map
@@ -385,25 +399,26 @@ export default {
               }
             }else if (element.type.toLowerCase().indexOf('pie') >= 0) {
             if (element.spec.isLoop) {
-              element.spec.animationNormal = this.screenConstants.pieLoopanimation;
+              element.spec.animationNormal =
+                this.screenConstants.pieLoopanimation
             }
           } else if (element.type.toLowerCase().indexOf('circlepacking') >= 0) {
-            let categoryField = element.spec.categoryField;
-            let valueField = element.spec.valueField;
+            const categoryField = element.spec.categoryField
+            const valueField = element.spec.valueField
             element.spec.label.style.text = (datum) => [
               `${datum[categoryField]}`,
-              `${datum[valueField]}`,
-            ];
+              `${datum[valueField]}`
+            ]
           } else if (element.type.toLowerCase().indexOf('sankey') >= 0) {
-            element.spec.nodeKey = (datum) => datum.name;
+            element.spec.nodeKey = (datum) => datum.name
           }
-          var obj = { dom: element.id };
+          var obj = { dom: element.id }
           if (element.theme) {
-            obj.theme = element.theme;
+            obj.theme = element.theme
           }
-          const vchart = new VChart(element.spec, obj);
+          const vchart = new VChart(element.spec, obj)
           // 绘制
-          vchart.renderSync();
+          vchart.renderSync()
           if(element.type == "basicMap" || element.type == "scatterMap"){
             if(element.isDrill){
               vchart.on('click', (params) => {
@@ -415,19 +430,18 @@ export default {
                   that.commonUtil.chartDrill(that.chartsComponents,element,params);
               })
           }
-          this.chartsComponents[element.id] = vchart;
-        } else if (element.category == this.screenConstants.category.text) {
+          this.chartsComponents[element.id] = vchart
+        }else if (element.category == this.screenConstants.category.text) {
           if (element.type == this.screenConstants.type.date) {
-            element.content = '';
+            element.content = ''
             setInterval(() => {
-              const self = this;
-              setTimeout(function () {
-                self.refreshTime(element);
-              }, 0);
-            }, 1000);
+              const self = this
+              setTimeout(function() {
+                self.refreshTime(element)
+              }, 0)
+            }, 1000)
           }
         }
-      }
     },
     //保存模板
     save() {

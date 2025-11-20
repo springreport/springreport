@@ -8,6 +8,7 @@ import tableComponent from './draggablecomponent/tableComponent.vue'
 import vchartComponent from './draggablecomponent/vchartComponent.vue'
 import numberFlipperComponent from './draggablecomponent/numberFlipperComponent.vue'
 import cardListComponent from './draggablecomponent/cardListComponent.vue'
+import tabsCardComponent from './draggablecomponent/tabsCardComponent.vue'
 export default {
   components: {
     MarqueeTips,
@@ -17,7 +18,8 @@ export default {
     tableComponent,
     vchartComponent,
     numberFlipperComponent,
-    cardListComponent
+    cardListComponent,
+    tabsCardComponent
   },
   props: {
     components: {
@@ -219,6 +221,14 @@ export default {
       this.activated = obj
       obj.x = obj.x + 10
       obj.y = obj.y + 10
+      if(obj.category == this.screenConstants.category.tabsCard){
+        if(obj.tabs && obj.tabs.length > 0){
+          for (let index = 0; index < obj.tabs.length; index++) {
+            const subComponnet = obj.tabs[index].subComponent;
+            subComponnet.id = this.commonUtil.getUuid();
+          }
+        }
+      }
       this.components.push(obj)
       if (obj.category == this.screenConstants.category.vchart) {
         this.$nextTick(() => {
@@ -230,6 +240,25 @@ export default {
           vchart.renderSync()
           this.chartsComponents[obj.id] = vchart
         })
+      }else if(obj.category == this.screenConstants.category.tabsCard){
+        var that = this;
+          this.$nextTick(() => {
+             if(obj.tabs && obj.tabs.length > 0){
+              for (let index = 0; index < obj.tabs.length; index++) {
+                const subComponnet = obj.tabs[index].subComponent;
+                if (subComponnet.category == that.screenConstants.category.vchart) {
+                  if (subComponnet.type.toLowerCase().indexOf('sankey') >= 0) {
+                    subComponnet.spec.nodeKey = (datum) => datum.name
+                  }
+                  const vchart = new VChart(subComponnet.spec, { dom: subComponnet.id })
+                  // 绘制
+                  vchart.renderSync()
+                  that.chartsComponents[subComponnet.id] = vchart
+                }
+              }
+            }
+            
+          })
       }
       this.clearMultiActivated('active', false)
     },

@@ -118,6 +118,18 @@ export default {
               const component = JSON.parse(element.content);
               component.locked = true;
               tempComponent.push(component)
+               if(component.category == this.screenConstants.category.tabsCard){
+                //选项卡组件则将选项卡绑定的所有子组件参数先组装放到component.params里面
+                if(component.tabs && component.tabs.length > 0){
+                  for (let t = 0; t < component.tabs.length; t++) {
+                    const subComponent = component.tabs[t].subComponent;
+                    if(!component.params){
+                      component.params = [];
+                    }
+                    component.params = component.params.concat(subComponent.params);
+                  }
+                }
+              }
               if(component.params && component.params.length > 0){
                 for (let index = 0; index < component.params.length; index++) {
                   const paramElement = component.params[index];
@@ -204,12 +216,27 @@ export default {
              this.screenProperties.offsetY = offsetY/scale
            }, 100) // 100可以替换为50，如果还嫌慢 直接去掉setTimeout延时器也行，本意是防抖
     },
-    //组件初始化
+    // 组件初始化
     async initComponent() {
       for (let index = 0; index < this.components.length; index++) {
-        const element = this.components[index];
+        const element = this.components[index]
         element.active = false
-        if (element.category == this.screenConstants.category.vchart) {
+        if (element.category == this.screenConstants.category.vchart || element.category == this.screenConstants.category.text) {
+          this.initSingleComponent(element);
+        }else if (element.category == this.screenConstants.category.tabsCard) {
+          if(element.tabs && element.tabs.length > 0){
+            for (let i = 0; i < element.tabs.length; i++) {
+              const subComponent = element.tabs[i].subComponent;
+              this.initSingleComponent(subComponent)
+            }
+          }
+        }
+      }
+    },
+
+    async initSingleComponent(element){
+      var that = this;
+      if (element.category == this.screenConstants.category.vchart) {
           if (element.type.toLowerCase().indexOf('scattermap') >= 0) {
               let mapCode = element.spec.series[0].map
               if (!VChart.getMap(mapCode)) {
@@ -218,10 +245,10 @@ export default {
               }
           }
           else if (element.type.toLowerCase().indexOf('basicmap') >= 0) {
-            let mapCode = element.spec.map;
+            let mapCode = element.spec.map
             if (!VChart.getMap(mapCode)) {
-              const geojson = await this.commonUtil.getMapData(mapCode);
-              VChart.registerMap(mapCode, geojson);
+              const geojson = await this.commonUtil.getMapData(mapCode)
+              VChart.registerMap(mapCode, geojson)
             }
           }else if(element.type.toLowerCase().indexOf("pie")>=0){
             if(element.spec.isLoop){
@@ -234,13 +261,13 @@ export default {
           }else if(element.type.toLowerCase().indexOf("sankey") >= 0){
             element.spec.nodeKey = datum => datum.name;
         }
-          var obj = { dom: element.id };
+          var obj = { dom: element.id }
           if (element.theme) {
-            obj.theme = element.theme;
+            obj.theme = element.theme
           }
-          const vchart = new VChart(element.spec, obj);
+          const vchart = new VChart(element.spec, obj)
           // 绘制
-          vchart.renderSync();
+          vchart.renderSync()
           var that = this;
           if(element.type == "basicMap" || element.type == "scatterMap"){
             if(element.isDrill){
@@ -253,17 +280,16 @@ export default {
                   that.commonUtil.chartDrill(that.chartsComponents,element,params);
               })
           }
-          this.chartsComponents[element.id] = vchart;
+          this.chartsComponents[element.id] = vchart
         } else if (element.category == this.screenConstants.category.text) {
           if (element.type == this.screenConstants.type.date) {
-            element.content = '';
-            // setInterval(() => {
-            //     const self = this
-            //     setTimeout(function() { self.refreshTime(element) }, 0)
-            // }, 1000)
+            element.content = ''
+            setInterval(() => {
+              const self = this
+              setTimeout(function() { self.refreshTime(element) }, 0)
+            }, 1000)
           }
         }
-      }
     },
     refreshTime(component) {
       component.content = this.commonUtil.getCurrentDate(component);

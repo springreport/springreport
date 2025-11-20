@@ -9,6 +9,7 @@
     <table-setting-component v-if="component.category == screenConstants.category.table" :component="component" :charts-components="chartsComponents" :components="components"/>
     <number-flipper-setting-component v-if="component.category == screenConstants.category.numberFlipper" :component="component" :charts-components="chartsComponents" :components="components"></number-flipper-setting-component>
     <card-list-setting-component  v-if="component.category == screenConstants.category.cardList" :component="component" :charts-components="chartsComponents" :components="components"></card-list-setting-component>
+    <tabs-card-setting-component v-if="component.category == screenConstants.category.tabsCard" :component="component" :charts-components="chartsComponents" :components="components"></tabs-card-setting-component>
   </div>
 </template>
 <script>
@@ -21,6 +22,7 @@ import decorationSettingComponent from '../decorationSetting/decorationSettingCo
 import tableSettingComponent from '../tableSetting/tableSettingComponent.vue'
 import numberFlipperSettingComponent from '../numberFlipper/numberFlipperSettingComponent.vue'
 import cardListSettingComponent from '../cardList/cardListSettingComponent.vue'
+import tabsCardSettingComponent from '../tabsCard/tabsCardSettingComponent.vue'
 export default {
   name: 'Settings',
   components: {
@@ -32,7 +34,8 @@ export default {
     decorationSettingComponent,
     tableSettingComponent,
     numberFlipperSettingComponent,
-    cardListSettingComponent
+    cardListSettingComponent,
+    tabsCardSettingComponent
   },
   props: {
     component: {

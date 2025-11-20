@@ -38,7 +38,7 @@ export default {
                     "url":""
                   },
                 ],
-                allowUpdate:true,
+                allowUpdate:false,
                 // updateImageUrl: location.origin + "/luckysheet/api/updateImg",
                 updateUrl: '',
                 gridKey: '',

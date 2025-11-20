@@ -2382,7 +2382,7 @@ commonUtil.changeHistogramAmination = function(chartsComponents,component){
 
 //获取map数据
 commonUtil.getMapData = async function(mapCode){
-    const response = await fetch('https://www.springreport.vip/geoJson/'+mapCode+".json");
+    const response = await fetch(import.meta.env.VITE_BASE_URL_PREFIX+'/geoJson/'+mapCode+".json");
     const geojson = await response.json();
     return geojson;
 }

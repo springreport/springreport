@@ -603,16 +603,16 @@ export default {
 .el-form-item {
   margin-bottom: 5px !important;
 }
-::v-deep .el-form-item__label-wrap {
+:deep(.el-form-item__label-wrap) {
   margin-left: 0px !important;
 }
-::v-deep .el-color-picker__trigger {
+:deep(.el-color-picker__trigger) {
   /* top:-12px */
 }
-::v-deep .customLabel {
+:deep(.customLabel) {
   font-weight: bold;
 }
-::v-deep .customLabel .el-form-item__label {
+:deep(.customLabel .el-form-item__label) {
   color: #15a585 !important;
 }
 
@@ -621,11 +621,11 @@ export default {
 
 }
 
-::v-deep .el-dialog {
+:deep(.el-dialog) {
     max-height: 70%;
     overflow: auto;
 }
-::v-deep .el-col{
+:deep(.el-col){
   padding-left: 0.5px;
   padding-right: 0.5px;
 }

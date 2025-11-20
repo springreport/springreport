@@ -115,6 +115,18 @@
           :searchParams="searchParams"
         />
       </div>
+       <div
+        v-if="item.category == screenConstants.category.tabsCard && !item.isDelete"
+        @contextmenu.prevent="onContextmenu($event, item)"
+      >
+        <tabs-card-component
+        :ref="item.id"
+          :component="item"
+          :charts-components="chartsComponents"
+          :send-request="sendRequest"
+          :searchParams="searchParams"
+        />
+      </div>
     </vue-draggable-resizable>
   </div>
 </template>
