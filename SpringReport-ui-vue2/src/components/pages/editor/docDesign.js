@@ -204,7 +204,7 @@ export default {
         ] }
       ],
       docTplCharts: [], // 文档图表
-      chartUrlPrefix: 'https://www.springreport.vip/images/chart/', // 图表图片的前缀
+      chartUrlPrefix: `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/', // 图表图片的前缀
       highlightVisiable: false,
       highlightForm: {
         color: ''

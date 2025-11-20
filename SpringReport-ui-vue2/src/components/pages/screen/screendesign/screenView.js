@@ -202,7 +202,22 @@ export default {
       for (let index = 0; index < this.components.length; index++) {
         const element = this.components[index]
         element.active = false
-        if (element.category == this.screenConstants.category.vchart) {
+        if (element.category == this.screenConstants.category.vchart || element.category == this.screenConstants.category.text) {
+          this.initSingleComponent(element);
+        }else if (element.category == this.screenConstants.category.tabsCard) {
+          if(element.tabs && element.tabs.length > 0){
+            for (let i = 0; i < element.tabs.length; i++) {
+              const subComponent = element.tabs[i].subComponent;
+              this.initSingleComponent(subComponent)
+            }
+          }
+        }
+      }
+    },
+
+    async initSingleComponent(element){
+      var that = this;
+      if (element.category == this.screenConstants.category.vchart) {
           if (element.type.toLowerCase().indexOf('scattermap') >= 0) {
               let mapCode = element.spec.series[0].map
               if (!VChart.getMap(mapCode)) {
@@ -256,7 +271,6 @@ export default {
             }, 1000)
           }
         }
-      }
     },
     refreshTime(component) {
       component.content = this.commonUtil.getCurrentDate(component)

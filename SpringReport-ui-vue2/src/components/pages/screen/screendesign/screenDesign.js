@@ -397,10 +397,23 @@ export default {
     },
     // 组件初始化
     async initComponent() {
-      var that = this;
       for (let index = 0; index < this.components.length; index++) {
         const element = this.components[index]
-        if (element.category == this.screenConstants.category.vchart) {
+        if (element.category == this.screenConstants.category.vchart || element.category == this.screenConstants.category.text) {
+          this.initSingleComponent(element)
+        } else if (element.category == this.screenConstants.category.tabsCard) {
+          if(element.tabs && element.tabs.length > 0){
+            for (let i = 0; i < element.tabs.length; i++) {
+              const subComponent = element.tabs[i].subComponent;
+              this.initSingleComponent(subComponent)
+            }
+          }
+        }
+      }
+    },
+    async initSingleComponent(element){
+      var that = this;
+      if (element.category == this.screenConstants.category.vchart) {
           if (element.type.toLowerCase().indexOf('basicmap') >= 0) {
             const mapCode = element.spec.map
             if (!VChart.getMap(mapCode)) {
@@ -448,7 +461,7 @@ export default {
               })
           }
           this.chartsComponents[element.id] = vchart
-        } else if (element.category == this.screenConstants.category.text) {
+        }else if (element.category == this.screenConstants.category.text) {
           if (element.type == this.screenConstants.type.date) {
             element.content = ''
             setInterval(() => {
@@ -459,7 +472,6 @@ export default {
             }, 1000)
           }
         }
-      }
     },
     // 保存模板
     save() {

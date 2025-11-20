@@ -4,10 +4,10 @@
     <!-- <el-collapse>
       <el-collapse-item title="通用设置"> -->
         <el-form ref="settingForm" class="demo-form-inline" label-position="top" :model="component" size="mini">
-          <div class="right-dataset-title">
+          <div class="right-dataset-title" v-if="!component.isSubContent">
             <span class="attr-dataset-title">位置设置</span>
           </div>
-          <div class="right-dataset-warp">
+          <div class="right-dataset-warp" v-if="!component.isSubContent">
             <el-form-item label="左" class="df-form-item">
               <el-input-number v-model.number="component.x" style="width: 100%;" placeholder="左" :disabled="component.locked" />
             </el-form-item>
@@ -26,10 +26,10 @@
               <el-input-number v-model.number="component.h" style="width: 100%;" placeholder="高度" :disabled="component.locked" />
             </el-form-item>
           </div>
-          <div class="right-dataset-title">
+          <div class="right-dataset-title" v-if="!component.isSubContent">
             <span class="attr-dataset-title">组件设置</span>
           </div>
-          <div class="right-dataset-warp">
+          <div class="right-dataset-warp" v-if="!component.isSubContent">
             <el-form-item label="组件名称" class="df-form-item">
               <el-input v-model="component.text" placeholder="组件名称" />
             </el-form-item>
@@ -40,10 +40,10 @@
               <el-switch v-model="component.locked" active-text="是" inactive-text="否" />
             </el-form-item>
           </div>
-          <div class="right-dataset-title" v-if="component.type!='picture' && component.type!='border' && component.type!='decoration'">
+          <div class="right-dataset-title" v-if="component.type!='picture' && component.type!='border' && component.type!='decoration' && !component.isSubContent">
             <span class="attr-dataset-title">边框设置</span>
           </div>
-          <div class="right-dataset-warp" v-if="component.type!='picture' && component.type!='border' && component.type!='decoration'">
+          <div class="right-dataset-warp" v-if="component.type!='picture' && component.type!='border' && component.type!='decoration' && !component.isSubContent">
             <el-form-item label="显示边框" class="df-form-item">
               <el-switch v-model="component.isborder" active-text="是" inactive-text="否" @change="commonUtil.reLoadChart(chartsComponents,component)" />
             </el-form-item>

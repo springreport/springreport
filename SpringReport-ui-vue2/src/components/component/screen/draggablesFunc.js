@@ -8,6 +8,7 @@ import tableComponent from './draggablecomponent/tableComponent.vue'
 import vchartComponent from './draggablecomponent/vchartComponent.vue'
 import numberFlipperComponent from './draggablecomponent/numberFlipperComponent.vue'
 import cardListComponent from './draggablecomponent/cardListComponent.vue'
+import tabsCardComponent from './draggablecomponent/tabsCardComponent.vue'
 export default {
   components: {
     MarqueeTips,
@@ -17,7 +18,8 @@ export default {
     tableComponent,
     vchartComponent,
     numberFlipperComponent,
-    cardListComponent
+    cardListComponent,
+    tabsCardComponent
   },
   props: {
     components: {
