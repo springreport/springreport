@@ -230,6 +230,9 @@ export default {
                 }
                 delete that.chartsComponents[subComponentId]
                 if(that.component.tabs[index].subComponent.category == that.screenConstants.category.vchart){
+                  if (that.component.tabs[index].subComponent.type.toLowerCase().indexOf('sankey') >= 0) {
+                    that.component.tabs[index].subComponent.spec.nodeKey = (datum) => datum.name
+                  }
                   const vchart = new VChart(that.component.tabs[index].subComponent.spec, { dom: that.component.tabs[index].subComponent.id })
                   // 绘制
                   vchart.renderSync()
