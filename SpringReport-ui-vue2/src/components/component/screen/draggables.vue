@@ -127,6 +127,20 @@
           :searchParams="searchParams"
         />
       </div>
+      <div
+        v-if="item.category == screenConstants.category.tableMap && !item.isDelete"
+        @contextmenu.prevent="onContextmenu($event, item)"
+      >
+      <table-map-component
+        :ref="item.id"
+        :style="{ height: item.h + 'px', width: item.w + 'px' }"
+          :component="item"
+          :charts-components="chartsComponents"
+          :send-request="sendRequest"
+          :searchParams="searchParams"
+          :view-that="viewThat"
+        />
+      </div>
     </vue-draggable-resizable>
   </div>
 </template>

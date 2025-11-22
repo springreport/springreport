@@ -341,6 +341,11 @@ export default {
           this.component.lineDynamicDataSettings.dataColumns = this.dataSetForm.column
           this.component.spec.data[1].values = response.responseData;
         }
+      }else if (this.component.type == 'tableMap') {
+        this.component.tableDatas = response.responseData
+        this.component.spec.data.values = response.responseData
+        this.component.dynamicDataSettings.datasetId = this.dataSetForm.dataSetId
+        this.component.dynamicDataSettings.dataColumns = this.dataSetForm.column
       }else{
         this.component.spec.data.values = response.responseData
         this.component.dynamicDataSettings.datasetId = this.dataSetForm.dataSetId
@@ -349,6 +354,18 @@ export default {
       this.commonUtil.reLoadChart(this.chartsComponents, this.component)
       this.closeDynamicDataDialog()
     },
+    // tableMapFilter(mapCode,datas){
+    //   let result = [];
+    //   if(datas && datas.length > 0){
+    //     for (let index = 0; index < datas.length; index++) {
+    //       const element = datas[index];
+    //       if(element.pmapCode == mapCode){
+    //         result.push(element);
+    //       }
+    //     }
+    //   }
+    //   return result;
+    // },
     editDatasets(index, item) {
       this.addDatasetsDialogVisiable = true
       this.datasourceType = item.datasetType
