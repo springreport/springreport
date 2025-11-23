@@ -221,15 +221,15 @@ export default {
       for (let index = 0; index < this.components.length; index++) {
         const element = this.components[index]
         element.active = false
-        if (element.category == this.screenConstants.category.vchart || element.category == this.screenConstants.category.text) {
-          this.initSingleComponent(element);
-        }else if (element.category == this.screenConstants.category.tabsCard) {
+        if (element.category == this.screenConstants.category.tabsCard) {
           if(element.tabs && element.tabs.length > 0){
             for (let i = 0; i < element.tabs.length; i++) {
               const subComponent = element.tabs[i].subComponent;
               this.initSingleComponent(subComponent)
             }
           }
+        }else{
+          this.initSingleComponent(element);
         }
       }
     },
@@ -268,7 +268,6 @@ export default {
           const vchart = new VChart(element.spec, obj)
           // 绘制
           vchart.renderSync()
-          var that = this;
           if(element.type == "basicMap" || element.type == "scatterMap"){
             if(element.isDrill){
               vchart.on('click', (params) => {
@@ -289,7 +288,22 @@ export default {
               setTimeout(function() { self.refreshTime(element) }, 0)
             }, 1000)
           }
-        }
+        }else if (element.type == this.screenConstants.type.tableMap) {
+              const mapCode = element.spec.map
+              if (!VChart.getMap(mapCode)) {
+                const geojson = await this.commonUtil.getMapData(mapCode)
+                VChart.registerMap(mapCode, geojson)
+              }
+              const vchart = new VChart(element.spec, { dom: element.id })
+                // 绘制
+                vchart.renderSync()
+                if(element.isDrill){
+                  vchart.on('click', (params) => {
+                      that.commonUtil.mapDrill(that.chartsComponents,element,params,that.sendRequest,that);
+                  })
+                }
+                this.chartsComponents[element.id] = vchart
+          }
     },
     refreshTime(component) {
       component.content = this.commonUtil.getCurrentDate(component);

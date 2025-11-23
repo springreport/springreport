@@ -204,6 +204,7 @@ screenConstants.type = {
     comboChartdbbar: 'comboChartdbbar',// 双向条形图
     cardList: 'cardList',// 卡片列表
     tabsCard:'tabsCard',//tabs选项卡
+    tableMap:'tableMap',//地图表格
 }
 
 screenConstants.category = {
@@ -217,6 +218,7 @@ screenConstants.category = {
    numberFlipper: 'numberFlipper', // 数字翻牌器
    cardList:'cardList',//卡片列表
    tabsCard:'tabsCard',//选项卡
+   tableMap:'tableMap',//地图表格
 }
 
 //大屏组件类型
@@ -303,6 +305,7 @@ screenConstants.compType = {
     comboChartdbbar: { text: '双向条形图', icon: 'comboChartdbbar' },
     cardList: { text: '卡片列表', icon: 'cardList' },
     tabsCard: { text: '选项卡', icon: 'tabsCard' },
+    tableMap: { text: '地图表格', icon: 'tableMap' },
 }
 
 screenConstants.textType = [
@@ -443,6 +446,7 @@ screenConstants.sankeyType = [
 screenConstants.comboChartType = [
   { 'name': 'comboCharthl', 'text': '折柱图', 'src': import.meta.env.VITE_BASE_URL_PREFIX+'/images/chart/comboCharthl.png', category: screenConstants.category.vchart },
   { 'name': 'comboChartdbbar', 'text': '双向条形图', 'src': import.meta.env.VITE_BASE_URL_PREFIX+'/images/chart/comboChartdbbar.png', category: screenConstants.category.vchart },
+  { 'name': 'tableMap', 'text': '地图表格', 'src': import.meta.env.VITE_BASE_URL_PREFIX+'/images/chart/tableMap.png', category: screenConstants.category.tableMap },
 ]
 
 screenConstants.tabsCardType = [
@@ -5453,6 +5457,203 @@ screenConstants.tabsCardInit = {
     }
   },
   tabs:[]
+}
+
+screenConstants.tableMapInit = {
+  type: screenConstants.type.tableMap,
+  category: screenConstants.category.tableMap,
+  isDelete: false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 500, // 组件初始化宽度
+  h: 300, // 组件初始化高度
+  active: false,
+  zindex: 99,
+  locked: false,
+  refresh: false, // 是否定时刷新
+  refreshTime: 30000, // 定时刷新时间，单位(ms)
+  dataSource: '1', // 数据来源 1静态数据 2动态数据
+  dynamicDataSettings: {
+    datasetId: '', // 数据集
+    dataColumns: []// 数据列
+  }, // 动态数据配置
+  params: [], // 图表参数
+  hiddenParamSize: 0, // 隐藏参数个数
+  theme: '', // 主题
+  amination: '', // 动画效果
+  isDrill: false, // 是否支持下钻
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  chartWidth:200,//图表宽度
+  // 数据列
+  tableColumn: [{ 'name': '地区名称', 'key': 'name' }, { 'name': '数量', 'key': 'value' }],
+  isIndex: true, // 是否显示行号
+  indexWidth: 50, // 行号列宽度
+  align: 'center', // 对齐方式
+  overflow: true,
+  border: true, // 边框
+  stripe: false, // 斑马纹
+  highlight: false,
+  headStyle: {
+    backgroundColor: '#2570a1',
+    color: '#00FFFF', // 字体颜色
+    fontSize: 12, // 字体大小
+    fontWeight: 'bold' // 是否加粗 normal 和bold
+  }, // 表头样式
+  rowStyle: {
+    backgroundColor: '#2570a1',
+    color: '#00FFFF', // 字体颜色
+    fontSize: 12, // 字体大小
+    fontWeight: 'bold' // 是否加粗 normal 和bold
+  },
+  pagination: {
+    pageSize: 5, // 每页显示条数
+    currentPage: 1, // 当前页
+    backgroundColor: '#2570a1'
+  },
+  tableDatas:[],//现在的值跟spec的values值是一样的，后续如果需要根据地区编码过滤值就可以直接使用该属性过滤，不会影响地图数据
+  spec: {
+    type: 'map',
+    title: screenConstants.chartTitleSettings,
+    tooltip: screenConstants.tooltipSettings,
+    nameField: 'name',
+    valueField: 'value',
+    // nameProperty: 'name',
+    map: '100000',
+    defaultFillColor: '#f3f3f3',
+    data: {
+      values: [
+        { name: '北京市', value: 80 },
+        { name: '天津市', value: 10 },
+        { name: '上海市', value: 100 },
+        { name: '重庆市', value: 20 },
+        { name: '河北省', value: 30 },
+        { name: '河南省', value: 400 },
+        { name: '云南省', value: 200 },
+        { name: '辽宁省', value: 110 },
+        { name: '黑龙江省', value: 160 },
+        { name: '湖南省', value: 45 },
+        { name: '安徽省', value: 70 },
+        { name: '山东省', value: 330 },
+        { name: '新疆维吾尔自治区', value: 290 },
+        { name: '江苏省', value: 140 },
+        { name: '浙江省', value: 222 },
+        { name: '江西省', value: 555 },
+        { name: '湖北省', value: 66 },
+        { name: '广西壮族自治区', value: 59 },
+        { name: '甘肃省', value: 452 },
+        { name: '山西省', value: 369 },
+        { name: '内蒙古自治区', value: 147 },
+        { name: '陕西省', value: 258 },
+        { name: '吉林省', value: 123 },
+        { name: '福建省', value: 85 },
+        { name: '贵州省', value: 98 },
+        { name: '广东省', value: 96 },
+        { name: '青海省', value: 32 },
+        { name: '西藏自治区', value: 69 },
+        { name: '四川省', value: 79 },
+        { name: '宁夏回族自治区', value: 65 },
+        { name: '海南省', value: 456 },
+        { name: '台湾省', value: 478 },
+        { name: '香港特别行政区', value: 589 },
+        { name: '澳门特别行政区', value: 413 }
+      ]
+    },
+    nameMap: {
+      '新疆维吾尔自治区': '新疆维吾尔自治区',
+      '西藏自治区': '西藏自治区',
+      '内蒙古自治区': '内蒙古自治区',
+      '青海省': '青海省',
+      '四川省': '四川省',
+      '黑龙江省': '黑龙江省',
+      '甘肃省': '甘肃省',
+      '云南省': '云南省',
+      '广西壮族自治区': '广西壮族自治区',
+      '湖南省': '湖南省',
+      '陕西省': '陕西省',
+      '广东省': '广东省',
+      '吉林省': '吉林省',
+      '河北省': '河北省',
+      '湖北省': '湖北省',
+      '贵州省': '贵州省',
+      '山东省': '山东省',
+      '江西省': '江西省',
+      '河南省': '河南省',
+      '辽宁省': '辽宁省',
+      '山西省': '山西省',
+      '安徽省': '安徽省',
+      '福建省': '福建省',
+      '浙江省': '浙江省',
+      '江苏省': '江苏省',
+      '重庆市': '重庆市',
+      '宁夏回族自治区': '宁夏回族自治区',
+      '海南省': '海南省',
+      '台湾省': '台湾省',
+      '北京市': '北京市',
+      '天津市': '天津市',
+      '上海市': '上海市',
+      '香港特别行政区': '香港特别行政区',
+      '澳门特别行政区': '澳门特别行政区'
+    },
+    region: [
+      {
+        roam: true
+      }
+    ],
+    color: {
+      type: 'linear',
+      range: ['rgb(252,250,97)', 'rgb(252,150,134)', 'rgb(87,33,15)']
+    },
+    area: {
+      style: {
+        fill: {
+          field: 'value',
+          scale: 'color',
+          changeDomain: 'replace'
+        },
+        stroke:'#00EEFF',
+        lineWidth:2
+      }
+    },
+    label: {
+      visible: true,
+      // position:'outside',
+      formatter: '',
+      style: {
+        fontSize: 10,
+        fill: null
+      }
+    },
+    tooltip:{
+      visible: true,
+      mark: {
+        title: {
+          valueStr:'{"field":"name"}',
+          value: {"field":"name"},
+        },
+        content: [
+          {
+            keyFormatter: '{name}',
+            valueFormatter: '{value}'
+          }
+        ],
+      }
+    },
+    legends:
+      {
+        visible: false,
+        type: 'color',
+        field: 'value',
+        orient: 'bottom',
+        position: '',
+        title: {
+          visible: true,
+          text: ''
+        }
+      }
+
+  }
 }
 
 screenConstants.map=[

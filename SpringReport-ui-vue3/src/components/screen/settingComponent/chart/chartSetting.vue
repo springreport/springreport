@@ -8,6 +8,14 @@
       label-position="top"
       size="small"
     >
+    <div class="right-dataset-title" v-if="component.type == 'tableMap'">
+        <span class="attr-dataset-title">图表设置</span>
+      </div>
+      <div class="right-dataset-warp" v-if="component.type == 'tableMap'">
+        <el-form-item label="图表宽度">
+          <el-input v-model.number="component.chartWidth" @change="commonUtil.reLoadChart(chartsComponents,component)"/>
+        </el-form-item>
+      </div>
       <div class="right-dataset-title">
         <span class="attr-dataset-title">主题设置</span>
       </div>
@@ -70,7 +78,7 @@
           </el-select>
         </el-form-item>
         <div
-          v-if="component.type.toLowerCase().indexOf('basicmap') < 0"
+          v-if="component.type.toLowerCase().indexOf('basicmap') < 0 && component.type.toLowerCase().indexOf('tablemap')<0"
           class="df-c"
           style="flex-wrap: wrap"
         >
@@ -94,7 +102,7 @@
           </el-form-item>
         </div>
         <div
-          v-if="component.type.toLowerCase().indexOf('basicmap') >= 0"
+          v-if="component.type.toLowerCase().indexOf('basicmap') >= 0 || component.type.toLowerCase().indexOf('tablemap')>=0"
           class="df-c"
           style="flex-wrap: wrap"
         >
@@ -764,7 +772,7 @@
           </el-form-item>
         </div>
       </div>
-      <div v-if="component.type.toLowerCase().indexOf('basicmap') >= 0">
+      <div v-if="component.type.toLowerCase().indexOf('basicmap') >= 0 || component.type.toLowerCase().indexOf('tablemap')>=0">
         <div class="right-dataset-title">
           <span class="attr-dataset-title">地图设置</span>
         </div>
@@ -1226,6 +1234,7 @@
           component.type.toLowerCase().indexOf('boxplot') < 0 &&
           component.type.toLowerCase().indexOf('combochartdbbar')<0
           && component.type.toLowerCase().indexOf('combocharthl')<0
+          && component.type.toLowerCase().indexOf('tablemap')<0
         "
       >
         <div class="right-dataset-title">
@@ -1522,10 +1531,10 @@
           </el-select>
         </el-form-item>
       </div>
-      <div class="right-dataset-title" v-if="component.type.toLowerCase().indexOf('basicmap')<0">
+      <div class="right-dataset-title" v-if="component.type.toLowerCase().indexOf('basicmap')<0 && component.type.toLowerCase().indexOf('scattermap')<0 && component.type.toLowerCase().indexOf('tablemap')<0">
         <span class="attr-dataset-title">下钻设置</span>
       </div>
-      <div class="right-dataset-warp" v-if="component.type.toLowerCase().indexOf('basicmap')<0 && component.type.toLowerCase().indexOf('scattermap')<0">
+      <div class="right-dataset-warp" v-if="component.type.toLowerCase().indexOf('basicmap')<0 && component.type.toLowerCase().indexOf('scattermap')<0 && component.type.toLowerCase().indexOf('tablemap')<0">
         <el-form-item label="开启下钻" class="df-form-item">
             <el-switch v-model="component.isDrill" active-text="是" inactive-text="否" @change="changeIsDrill(chartsComponents,component)" />
           </el-form-item>
@@ -1633,7 +1642,7 @@
       },
       clearColor() {
         this.systemColor = '';
-        if (this.component.type.toLowerCase().indexOf('basicmap') >= 0) {
+        if (this.component.type.toLowerCase().indexOf('basicmap') >= 0 || this.component.type.toLowerCase().indexOf('tablemap') >= 0) {
           this.component.spec.color.range = [];
         } else {
           this.component.spec.color = [];
@@ -1743,7 +1752,7 @@
       },
       async changeMapType(component) {
         let mapCode = null;
-        if(component.type == "basicMap"){
+        if(component.type == "basicMap" || component.type == "tableMap"){
           mapCode = component.spec.map
         }else{
           mapCode = component.spec.series[0].map
@@ -1758,7 +1767,7 @@
       },
       changeSystemColor() {
         let colors = JSON.parse(JSON.stringify(this.screenConstants.systemChartColors[this.systemColor]));
-        if (this.component.type.toLowerCase().indexOf('basicmap') >= 0) {
+        if (this.component.type.toLowerCase().indexOf('basicmap') >= 0 || this.component.type.toLowerCase().indexOf('tablemap') >= 0) {
           this.component.spec.color.range = colors;
         } else {
           this.component.spec.color = colors;
@@ -1774,7 +1783,7 @@
       var that = this;
       if(component.isDrill){
         vchart.on('click', (params) => {
-          if(component.type == "basicMap" || component.type == "scatterMap"){
+          if(component.type == "basicMap" || component.type == "scatterMap" || component.type == "tableMap"){
             that.commonUtil.mapDrill(chartsComponents,component,params,false);
           }else{
             that.commonUtil.chartDrill(chartsComponents,component,params);
