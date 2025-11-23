@@ -1051,6 +1051,20 @@ public class JdbcUtils {
 				influxDB.close();
 			}else if (dataSourceConfig.getDriverClass().equals(DriverClassEnum.MONGODB.getName())) {
 				result = MongoClientUtil.getCollectionNames(dataSourceConfig.getJdbcUrl());
+			}else if (dataSourceConfig.getDriverClass().equals(DriverClassEnum.TDENGINE.getName())) {
+				Class.forName(dataSourceConfig.getDriverClass());//加载驱动类
+				Connection conn=DriverManager.getConnection(dataSourceConfig.getJdbcUrl(),dataSourceConfig.getUser(),dataSourceConfig.getPassword());//用参数得到连接对象
+				Statement stmt = conn.createStatement();
+				String sql = "SHOW TABLES";
+	            try (ResultSet rs = stmt.executeQuery(sql)) {
+	                while (rs.next()) {
+	                    String tableName = rs.getString("table_name");
+	                    Map<String, String> map = new HashMap<>();
+	                    map.put("name", tableName);
+						map.put("value", tableName);
+						result.add(map);
+	                }
+	            }
 			}else{
 				Class.forName(dataSourceConfig.getDriverClass());//加载驱动类
 				Connection conn=DriverManager.getConnection(dataSourceConfig.getJdbcUrl(),dataSourceConfig.getUser(),dataSourceConfig.getPassword());//用参数得到连接对象
