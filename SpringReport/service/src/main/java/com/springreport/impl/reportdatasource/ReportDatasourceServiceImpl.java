@@ -176,6 +176,8 @@ public class ReportDatasourceServiceImpl extends ServiceImpl<ReportDatasourceMap
 			model.setDriverClass(DriverClassEnum.INFLUXDB.getName());
 		}else if (DriverClassEnum.MONGODB.getCode().intValue() == model.getType().intValue()) {
 			model.setDriverClass(DriverClassEnum.MONGODB.getName());
+		}else if (DriverClassEnum.TDENGINE.getCode().intValue() == model.getType().intValue()) {
+			model.setDriverClass(DriverClassEnum.TDENGINE.getName());
 		}
 		this.save(model);
 		result.setStatusMsg(MessageUtil.getValue("info.insert"));
@@ -235,6 +237,8 @@ public class ReportDatasourceServiceImpl extends ServiceImpl<ReportDatasourceMap
 			model.setDriverClass(DriverClassEnum.INFLUXDB.getName());
 		}else if (DriverClassEnum.MONGODB.getCode().intValue() == model.getType().intValue()) {
 			model.setDriverClass(DriverClassEnum.MONGODB.getName());
+		}else if (DriverClassEnum.TDENGINE.getCode().intValue() == model.getType().intValue()) {
+			model.setDriverClass(DriverClassEnum.TDENGINE.getName());
 		}
 		this.updateById(model);
 		result.setStatusMsg(MessageUtil.getValue("info.update"));

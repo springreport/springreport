@@ -364,6 +364,11 @@ export default {
           this.component.lineDynamicDataSettings.dataColumns = this.dataSetForm.column
           this.component.spec.data[1].values = response.responseData;
         }
+      }else if (this.component.type == 'tableMap') {
+        this.component.tableDatas = response.responseData
+        this.component.spec.data.values = response.responseData
+        this.component.dynamicDataSettings.datasetId = this.dataSetForm.dataSetId
+        this.component.dynamicDataSettings.dataColumns = this.dataSetForm.column
       }else{
         this.component.spec.data.values = response.responseData
         this.component.dynamicDataSettings.datasetId = this.dataSetForm.dataSetId

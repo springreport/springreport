@@ -323,6 +323,19 @@ export default {
             //     self.refreshTime(obj)
             //   }, 0)
             // }, 1000)
+          }else if (obj.type == this.screenConstants.type.tableMap) {
+              const mapCode = obj.spec.map
+              if (!VChart.getMap(mapCode)) {
+                const geojson = await this.commonUtil.getMapData(mapCode)
+                VChart.registerMap(mapCode, geojson)
+              }
+              obj.tableDatas = obj.spec.data.values;
+              this.$nextTick(() => {
+                const vchart = new VChart(obj.spec, { dom: obj.id })
+                // 绘制
+                vchart.renderSync()
+                this.chartsComponents[obj.id] = vchart
+            })
           }
         }
       }
@@ -369,15 +382,15 @@ export default {
     async initComponent() {
       for (let index = 0; index < this.components.length; index++) {
         const element = this.components[index]
-        if (element.category == this.screenConstants.category.vchart || element.category == this.screenConstants.category.text) {
-          this.initSingleComponent(element)
-        } else if (element.category == this.screenConstants.category.tabsCard) {
+         if (element.category == this.screenConstants.category.tabsCard) {
           if(element.tabs && element.tabs.length > 0){
             for (let i = 0; i < element.tabs.length; i++) {
               const subComponent = element.tabs[i].subComponent;
               this.initSingleComponent(subComponent)
             }
           }
+        }else{
+          this.initSingleComponent(element)
         }
       }
     },
@@ -441,7 +454,24 @@ export default {
               }, 0)
             }, 1000)
           }
-        }
+        }else if (element.type == this.screenConstants.type.tableMap) {
+              const mapCode = element.spec.map
+              if (!VChart.getMap(mapCode)) {
+                const geojson = await this.commonUtil.getMapData(mapCode)
+                VChart.registerMap(mapCode, geojson)
+              }
+              this.$nextTick(() => {
+                const vchart = new VChart(element.spec, { dom: element.id })
+                // 绘制
+                vchart.renderSync()
+                if(element.isDrill){
+                  vchart.on('click', (params) => {
+                      that.commonUtil.mapDrill(that.chartsComponents,element,params);
+                  })
+                }
+                this.chartsComponents[element.id] = vchart
+            })
+          }
     },
     //保存模板
     save() {

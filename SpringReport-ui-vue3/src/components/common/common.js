@@ -950,7 +950,7 @@ commonUtil.reInitChart=function(chartsComponents,component){
 commonUtil.reLoadChart = function(chartsComponents,component,sendRequest,that)
 {
     nextTick(()=>{
-        if(component.category == "vchart"){
+        if(component.category == "vchart"  || component.category == "tableMap"){
             if(chartsComponents[component.id]){
                 chartsComponents[component.id].release();
                 chartsComponents[component.id] = null;
@@ -962,12 +962,12 @@ commonUtil.reLoadChart = function(chartsComponents,component,sendRequest,that)
         }
        
         commonUtil.chartProcess(component);
-        if(component.category == "vchart"){
+        if(component.category == "vchart" || component.category == "tableMap"){
             const vchart = new VChart(component.spec, obj);
             chartsComponents[component.id] = vchart;
             // 绘制
             vchart.renderSync();
-            if(component.type == "basicMap" || component.type == "scatterMap"){
+            if(component.type == "basicMap" || component.type == "scatterMap" || component.type == "tableMap"){
                 if(component.isDrill){
                     vchart.off('click', null); // 卸载事件
                     vchart.on('click', (params) => {
@@ -1288,8 +1288,18 @@ commonUtil.getChartsComponentsParams = function(chartsComponents)
     if(chartsComponents){
         for (let index = 0; index < chartsComponents.length; index++) {
             const element = chartsComponents[index];
-            let params = commonUtil.getComponentParams(element.params)
-            result = Object.assign(result, params)
+             if(element.type == "tabsCard"){
+                if(element.tabs && element.tabs.length > 0){
+                    for (let i = 0; i < element.tabs.length; i++) {
+                        const subElement = element.tabs[index].subComponent;
+                        let params = commonUtil.getComponentParams(subElement.params)
+                        result = Object.assign(result, params)
+                    }
+                }
+            }else{
+                let params = commonUtil.getComponentParams(element.params)
+                result = Object.assign(result, params)
+            }
         }
     }
     return result;
@@ -1324,7 +1334,7 @@ commonUtil.mapDrill = async function(chartsComponents,component,data,sendRequest
                     return;
                 }
             }
-            if(component.type == "basicMap"){
+            if(component.type == "basicMap" || component.type == "tableMap"){
                 component.spec.map = adcode;
                 component.spec.nameMap = screenConstants.nameMap[adcode];
             }else if(component.type == "scatterMap"){
@@ -1349,14 +1359,14 @@ commonUtil.mapDrill = async function(chartsComponents,component,data,sendRequest
             return;
         }
         let adcode = "";
-        if(component.type == "basicMap"){
+        if(component.type == "basicMap" || component.type == "tableMap"){
             adcode = component.spec.map+'';
         }else{
             adcode = component.spec.series[0].map+'';
         }
         let backCode = commonUtil.mapCodes[adcode];
         if(backCode){
-            if(component.type == "basicMap"){
+            if(component.type == "basicMap" || component.type == "tableMap"){
                 component.spec.map = backCode;
                 component.spec.nameMap = screenConstants.nameMap[backCode];
             }else if(component.type == "scatterMap"){

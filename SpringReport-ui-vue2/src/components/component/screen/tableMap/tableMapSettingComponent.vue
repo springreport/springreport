@@ -2,7 +2,7 @@
   <div>
     <div class="btn-group df-c">
       <div
-        v-for="(item, index) in ['基础', '标签']"
+        v-for="(item, index) in ['基础', '参数', '数据', '图表','表格']"
         :key="index"
         class="btn"
         :class="{ 'btn-active': currentIndex === index }"
@@ -12,8 +12,10 @@
       </div>
     </div>
     <site v-if="currentIndex==0" :component="component" :charts-components="chartsComponents" />
-    <!-- <param-setting v-else-if="currentIndex==1" :component="component" :charts-components="chartsComponents" /> -->
-    <tabs-card-setting v-else-if="currentIndex==1" :component="component" :charts-components="chartsComponents"></tabs-card-setting>
+    <param-setting v-else-if="currentIndex==1" :component="component" :charts-components="chartsComponents" />
+    <data-setting v-else-if="currentIndex==2" :component="component" :charts-components="chartsComponents" :components="components"/>
+    <chart-setting v-else-if="currentIndex==3" :component="component" :charts-components="chartsComponents" />
+    <page-table-setting v-else-if="currentIndex==4" :component="component" :charts-components="chartsComponents" ></page-table-setting>
   </div>
 </template>
 
@@ -35,15 +37,19 @@ import 'codemirror/addon/fold/comment-fold.js'
 import 'codemirror/addon/selection/active-line'
 import site from '../settingComponent/site/site.vue'
 import dataSetting from '../settingComponent/data/dataSetting.vue'
+import chartSetting from '../settingComponent/chart/chartSetting.vue'
 import paramSetting from '../settingComponent/param/paramSetting.vue'
-import tabsCardSetting from '../settingComponent/tabsCard/tabsCardSetting.vue'
+import textSetting from '../settingComponent/text/textSetting.vue'
+import pageTableSetting from '../settingComponent/tableMap/pageTableSetting.vue'
 export default {
-  name: 'TableSettingComponent',
+  name: 'ChartSettingComponent',
   components: {
     site,
     dataSetting,
+    chartSetting,
     paramSetting,
-    tabsCardSetting
+    textSetting,
+    pageTableSetting
   },
   props: {
     component: {
@@ -58,8 +64,6 @@ export default {
       type: Object,
       default: () => ({})
     }
-  },
-  mounted(){
   },
   data() {
     return {

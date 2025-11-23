@@ -5,22 +5,13 @@
         基础
       </div>
 
-      <div
-        class="btn"
-        :class="{ 'btn-active': currentIndex === 1 }"
-        @click="currentIndex = 1"
-        v-if="component.type != 'date'"
-      >
-        参数
-      </div>
-
       <div class="btn" :class="{ 'btn-active': currentIndex === 2 }" @click="currentIndex = 2">
         标签
       </div>
     </div>
     <site v-if="currentIndex==0" :component="component" :charts-components="chartsComponents" />
-    <param-setting v-else-if="currentIndex==1" :component="component" :charts-components="chartsComponents" />
-    <tabs-card-setting v-else-if="currentIndex==2" :component="component" :charts-components="chartsComponents"></tabs-card-setting>
+    <!-- <param-setting v-else-if="currentIndex==1" :component="component" :charts-components="chartsComponents" /> -->
+    <tabs-card-setting v-else-if="currentIndex==1" :component="component" :charts-components="chartsComponents"></tabs-card-setting>
   </div>
 </template>
 

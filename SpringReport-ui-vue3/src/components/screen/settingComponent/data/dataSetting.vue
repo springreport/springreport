@@ -734,7 +734,7 @@
           </el-select>
         </el-form-item>
       </div>
-      <div v-if="component.type.toLowerCase().indexOf('basicmap') >= 0">
+      <div v-if="component.type.toLowerCase().indexOf('basicmap') >= 0 || component.type.toLowerCase().indexOf('tablemap') >= 0">
         <el-form-item label="数值字段">
           <el-select
             v-model="component.spec.valueField"
