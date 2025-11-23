@@ -1262,7 +1262,7 @@ commonUtil.getChartsComponentsParams = function(chartsComponents)
             if(element.type == "tabsCard"){
                 if(element.tabs && element.tabs.length > 0){
                     for (let i = 0; i < element.tabs.length; i++) {
-                        const subElement = element.tabs[index];
+                        const subElement = element.tabs[index].subComponent;
                         let params = commonUtil.getComponentParams(subElement.params)
                         result = Object.assign(result, params)
                     }
@@ -1347,7 +1347,6 @@ commonUtil.mapDrill = async function(chartsComponents,component,data,sendRequest
             } else{
                 if(component.type != "picture"){
                     if(component.dataSource == "2"){
-                        console.log(that.$refs['draggable'])
                         that.$refs['draggable'].$refs[component.id][0].initData(that);
                     }else{
                         chartsComponents[component.id].updateSpec(component.spec,true);

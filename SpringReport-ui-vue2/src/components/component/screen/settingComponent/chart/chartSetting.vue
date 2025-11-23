@@ -1003,7 +1003,7 @@ export default {
     },
     clearColor() {
       this.systemColor = ''
-      if (this.component.type.toLowerCase().indexOf('basicmap') >= 0) {
+      if (this.component.type.toLowerCase().indexOf('basicmap') >= 0 || this.component.type.toLowerCase().indexOf('tablemap') >= 0) {
         this.component.spec.color.range = []
       } else {
         this.component.spec.color = []
@@ -1113,7 +1113,7 @@ export default {
     },
     changeSystemColor() {
       const colors = JSON.parse(JSON.stringify(this.screenConstants.systemChartColors[this.systemColor]))
-      if (this.component.type.toLowerCase().indexOf('basicmap') >= 0) {
+      if (this.component.type.toLowerCase().indexOf('basicmap') >= 0 || this.component.type.toLowerCase().indexOf('tablemap') >= 0) {
         this.component.spec.color.range = colors
       } else {
         this.component.spec.color = colors

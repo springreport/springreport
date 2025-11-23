@@ -45,7 +45,6 @@
             </div>
         </div>
     </div>
- </div>
 </div>
 </template>
 
@@ -54,6 +53,11 @@ import VChart from '@visactor/vchart'
 export default {
     name:"vchartComponent",
     components:{
+    },
+    data() {
+      return {
+        tableTimer:{}
+      }
     },
     props:{
         component:{
@@ -97,7 +101,11 @@ export default {
                           setTimeout(function(){self.getData(self.component,searchParams)}, 0)
                     }, this.component.refreshTime)
                 }
+            }else{
+              this.autoPage(this.component);
             }
+        }else{
+              this.autoPage(this.component);
         }
       },
       getData(component,searchParams) {
@@ -123,6 +131,7 @@ export default {
             component.tableDatas = response.responseData;
             component.spec.data.values = response.responseData;
             this.commonUtil.reLoadChart(this.chartsComponents, component,this.sendRequest,this.viewThat);
+            this.autoPage(this.component);
           }
         });
       },
@@ -145,6 +154,25 @@ export default {
           let url = this.commonUtil.buildUrlWithParams(column.hyperLink,params);
           // window.open(url,'_blank')
           return url
+        }
+      },
+      autoPage(component){
+        this.component.pagination.currentPage = 1;
+        let timer = this.tableTimer[component.id];
+        if(component.autoPage){
+          if(timer == null){
+            timer = setInterval(function(){
+              if((component.pagination.currentPage*component.pagination.pageSize)>=component.tableDatas.length) {
+                component.pagination.currentPage = 1;
+              }else{
+                component.pagination.currentPage = component.pagination.currentPage + 1
+              }
+            },component.autoPageInterval?component.autoPageInterval*1000:5000);
+            this.tableTimer[component.id] = timer
+          }
+        }else{
+          clearInterval(timer);     
+          this.tableTimer[component.id] = null;
         }
       },
     }
