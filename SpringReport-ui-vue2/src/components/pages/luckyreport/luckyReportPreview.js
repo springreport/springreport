@@ -8,12 +8,15 @@
  */
 import Axios from 'axios'
 import vchartsetting from '../../component/vchart/vchartsetting.vue'
+import headerReportForm from '../../component/reportForm/headerReportForm.vue'
 export default {
   components: {
-    vchartsetting
+    vchartsetting,
+    headerReportForm
   },
   data() {
     return {
+      searchFormType:"1",//查询条件组件类型 1在页面头部(查询条件较少，对表格显示范围影响小的情况适用) 2侧边栏弹出(查询条件多，放在表头影响表格显示范围建议使用该种方式)
       sheetPagination:{},
       drawer:false,
       chartOptions: {},
@@ -348,24 +351,6 @@ export default {
         obj.url = this.apis.previewReport.getSharePreviewReportParamApi
       }
       this.searchHandle = [
-        { label: '查询当前页', drawerBtn: true, icon: 'el-icon-search', type: 'info', handle: () => this.getReportData(2, true), size: 'mini' },
-        { label: '查询全部', drawerBtn: true, icon: 'el-icon-search', type: 'primary', handle: () => this.getReportData(), size: 'mini' },
-        { label: '重置', drawerBtn: true, icon: 'el-icon-refresh-left', type: '', handle: () => this.resetSearch(), size: 'mini' },
-        {
-          btnType: 'dropDown', label: '导出全部', icon: 'action-icon action-icon-export-all',
-          downs: [
-            { label: '导出全部Excel', handle: () => this.exportExcel(false) },
-            { label: '导出全部Excel(大数据)', handle: () => this.exportExcel(true) },
-            { label: '导出全部PDF', handle: () => this.pdfExport(1) }
-          ]
-        },
-        {btnType: 'button', label: '打印', iconClass: 'action-icon action-icon-print',handle: () => this.pdfPrint(1), size: 'mini'}
-        // {
-        //   btnType: 'dropDown', label: '打印', icon: 'action-icon action-icon-print',
-        //   downs: [
-        //     { label: '打印全部', handle: () => this.pdfPrint(1) }
-        //   ]
-        // }
       ]
       var that = this
       this.commonUtil.doPost(obj, headers).then(response => {
@@ -374,6 +359,38 @@ export default {
           this.searchData.params = []
           that.apiHeaders = response.responseData.apiHeaders
           const isPagination = response.responseData.isPagination// 是否分页
+          this.searchFormType = response.responseData.searchFormType
+          if(this.searchFormType == "1"){
+            this.searchHandle = [
+              {btnType: 'button', label: '查询当前页', drawerBtn: false, iconClass: 'el-icon-search', type: 'info', handle: () => this.getReportData(2, true), size: 'mini' },
+              {btnType: 'button', label: '查询全部', drawerBtn: false, iconClass: 'el-icon-search', type: 'primary', handle: () => this.getReportData(), size: 'mini' },
+              {btnType: 'button', label: '重置', drawerBtn: false, iconClass: 'el-icon-refresh-left', type: '', handle: () => this.resetSearch(), size: 'mini' },
+              {
+                btnType: 'dropDown', label: '导出全部', icon: 'action-icon action-icon-export-all',
+                downs: [
+                  { label: '导出全部Excel', handle: () => this.exportExcel(false) },
+                  { label: '导出全部Excel(大数据)', handle: () => this.exportExcel(true) },
+                  { label: '导出全部PDF', handle: () => this.pdfExport(1) }
+                ]
+              },
+              {btnType: 'button', label: '打印', iconClass: 'action-icon action-icon-print',handle: () => this.pdfPrint(1), size: 'mini'}
+            ]
+          }else{
+            this.searchHandle = [
+              { label: '查询当前页', drawerBtn: true, icon: 'el-icon-search', type: 'info', handle: () => this.getReportData(2, true), size: 'mini' },
+              { label: '查询全部', drawerBtn: true, icon: 'el-icon-search', type: 'primary', handle: () => this.getReportData(), size: 'mini' },
+              { label: '重置', drawerBtn: true, icon: 'el-icon-refresh-left', type: '', handle: () => this.resetSearch(), size: 'mini' },
+              {
+                btnType: 'dropDown', label: '导出全部', icon: 'action-icon action-icon-export-all',
+                downs: [
+                  { label: '导出全部Excel', handle: () => this.exportExcel(false) },
+                  { label: '导出全部Excel(大数据)', handle: () => this.exportExcel(true) },
+                  { label: '导出全部PDF', handle: () => this.pdfExport(1) }
+                ]
+              },
+              {btnType: 'button', label: '打印', iconClass: 'action-icon action-icon-print',handle: () => this.pdfPrint(1), size: 'mini'}
+            ]
+          }
           for (let i = 0; i < result.length; i++) {
             var dataSet = {}
             dataSet.datasetId = result[i].datasetId
