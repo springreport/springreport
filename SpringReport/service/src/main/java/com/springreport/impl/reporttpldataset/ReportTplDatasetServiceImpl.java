@@ -728,6 +728,7 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 		boolean isPagination = false;
 		List<DatasetsParamDto> datasetsParams = new ArrayList<DatasetsParamDto>();
 		int isParamMerge = YesNoEnum.YES.getCode();
+		int searchFormType = 1;
 		if(reportTplDataset.getReportType().intValue() == 1) {
 			ReportTpl reportTpl = this.iReportTplService.getById(reportTplDataset.getTplId());
 			if (reportTpl == null) {
@@ -739,6 +740,7 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 			}else {
 				isParamMerge = reportTpl.getIsParamMerge();
 			}
+			searchFormType = reportTpl.getSearchFormType();
 		}else if(reportTplDataset.getReportType().intValue() == 2) {
 			DocTpl docTpl = this.iDocTplService.getById(reportTplDataset.getTplId());
 			if (docTpl == null) {
@@ -977,6 +979,7 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 		resultMap.put("isParamMerge", isParamMerge);
 		resultMap.put("pagination", paginationMap);
 		resultMap.put("apiHeaders", apiHeaders);
+		resultMap.put("searchFormType", searchFormType);
 		return resultMap;
 	}
 	
