@@ -2801,7 +2801,7 @@
       }
 
       .el-form-item__content {
-        width: calc(100% - 92px);
+        // width: calc(100% - 92px);
       }
     }
   }

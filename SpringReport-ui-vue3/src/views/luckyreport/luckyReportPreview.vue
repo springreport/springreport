@@ -11,63 +11,6 @@
     <div class="pagebox">
       <div class="contentbox" v-loading="loading" :element-loading-text="loadingText">
         <div class="mainbox" style="height: 100%; display: flex; flex-direction: column">
-          <!-- <div style="width: 100%; flex: none">
-            <el-header class="_header df-c-b">
-              <div class="headerLeft df-c" style="width: 30%">
-                <div
-                  class="tplname"
-                  style="
-                    width: 100%;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    white-space: nowrap;
-                  "
-                  :title="tplName"
-                >
-                  {{ tplName }}
-                  <el-button
-                    v-if="!showSearch"
-                    style="font-size: 14px"
-                    type="primary"
-                    icon="icon-down"
-                    circle
-                    @click="showSearchClick"
-                    size="small"
-                    title="展开搜索"
-                  ></el-button>
-                </div>
-              </div>
-              <div class="headerRight df-c">
-                <el-dropdown
-                  class="white font"
-                  trigger="click"
-                  placement="bottom"
-                  v-if="users.length > 0"
-                >
-                  <span class="el-dropdown-link df-c">
-                    <el-avatar
-                      size="small"
-                      :style="{ marginRight: '4px', backgroundColor: item.color + ' !important' }"
-                      shape="circle"
-                      :title="item.userName"
-                      v-for="(item, index) in headerUsers"
-                      :key="index"
-                    >
-                      {{ item.userName.slice(0, 1).toUpperCase() }}
-                    </el-avatar>
-                    <icon-down theme="outline" size="16" />
-                  </span>
-                  <template #dropdown>
-                    <el-dropdown-menu>
-                      <el-dropdown-item v-for="(item, index) in users" :key="index">{{
-                        item.userName
-                      }}</el-dropdown-item>
-                    </el-dropdown-menu>
-                  </template>
-                </el-dropdown>
-              </div>
-            </el-header>
-          </div> -->
           <div style="display: none">
           <input
             id="uploadAttachmentBtn"
@@ -76,7 +19,23 @@
             @change="changeAttachment"
           >
         </div>
-          <div style="width: 100%; flex: none; overflow: auto">
+        <div style="width: 100%; flex: none" v-if="searchFormType == '1'">
+        <headerReportForm
+          ref="reportRef"
+          :report-name="tplName"
+          :report-form="reportForm"
+          :search-data="searchData"
+          :search-handle="searchHandle"
+          :activiti-name="activitiName"
+          :show-search="showSearch"
+          :is-param-merge="isParamMerge"
+          :is-drill="isDrill"
+          :users="users"
+          :headerUsers="headerUsers"
+          :drawer="drawer"
+        />
+      </div>
+          <div style="width: 100%; flex: none; overflow: auto" v-if="searchFormType != '1'">
             <reportForm
               v-if="showReportForm && showSearch"
               ref="reportRef"

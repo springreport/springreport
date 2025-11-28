@@ -1,4 +1,4 @@
-/* .el-form-item__content .el-select__wrapper{
-    min-width:170px !important;
-    max-width:200px !important;
-} */
+.el-form-item__content .el-select__wrapper{
+    min-width:192px !important;
+    max-width:220px !important;
+}
