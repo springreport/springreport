@@ -15587,7 +15587,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 							//获取数据源
 							DataSource dataSource = JdbcUtils.getDataSource(dataSourceConfig);
 							String sql = JdbcUtils.processSqlParams(content, viewParams);
-							selectDatas = ReportDataUtil.getSelectData(dataSource, sql);
+							selectDatas = ReportDataUtil.getSelectData(dataSource, sql,true);
 							sqlDataTempCache.put(key, selectDatas);
 						}
 						if(ListUtil.isNotEmpty(selectDatas)) {

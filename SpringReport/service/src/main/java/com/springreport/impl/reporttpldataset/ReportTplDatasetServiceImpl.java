@@ -859,7 +859,7 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 											//获取数据源
 											DataSource dataSource = JdbcUtils.getDataSource(dataSourceConfig);
 											String sql = JdbcUtils.processSqlParams(params.get(j).getSelectContent(), reportTplDataset.getUrlParams());
-											List<Map<String, Object>> selectDatas = ReportDataUtil.getSelectData(dataSource, sql);
+											List<Map<String, Object>> selectDatas = ReportDataUtil.getSelectData(dataSource, sql,true);
 											if (selectDatas != null) {
 												params.get(j).setSelectData(JSONArray.toJSON(selectDatas));
 											} else {
@@ -900,7 +900,7 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 									if (params.get(j).getIsRelyOnParams().intValue() == 1) {
 										sql = JdbcUtils.processSqlParams(sql, new HashMap<>());
 									}
-									List<Map<String, Object>> list = ReportDataUtil.getSelectData(dataSource, sql);
+									List<Map<String, Object>> list = ReportDataUtil.getSelectData(dataSource, sql,false);
 									List<Map<String, Object>> resultList = new ArrayList<>();
 									if (!ListUtil.isEmpty(list)) {
 										Map<String, Map<String, Object>> entityMap = new HashMap<>();
@@ -1240,7 +1240,7 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 		//获取数据源
 		DataSource dataSource = JdbcUtils.getDataSource(dataSourceConfig);
 		String sql = JdbcUtils.processSqlParams(mesGetRelyOnSelectData.getSelectContent(), mesGetRelyOnSelectData.getParams());
-		List<Map<String, Object>> selectDatas = ReportDataUtil.getSelectData(dataSource, sql);
+		List<Map<String, Object>> selectDatas = ReportDataUtil.getSelectData(dataSource, sql,true);
 		return selectDatas;
 	}
 
@@ -1316,7 +1316,7 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 		//获取数据源
 		DataSource dataSource = JdbcUtils.getDataSource(dataSourceConfig);
 		String sql = JdbcUtils.processSqlParams(mesGetRelyOnSelectData.getSelectContent(), mesGetRelyOnSelectData.getParams());
-		List<Map<String, Object>> selectDatas = ReportDataUtil.getSelectData(dataSource, sql);
+		List<Map<String, Object>> selectDatas = ReportDataUtil.getSelectData(dataSource, sql,true);
 		return selectDatas;
 	
 	}
@@ -1341,7 +1341,7 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 		//获取数据源
 		DataSource dataSource = JdbcUtils.getDataSource(dataSourceConfig);
 		String sql = JdbcUtils.processSqlParams(mesGetRelyOnSelectData.getSelectContent(), mesGetRelyOnSelectData.getParams());
-		List<Map<String, Object>> list = ReportDataUtil.getSelectData(dataSource, sql);
+		List<Map<String, Object>> list = ReportDataUtil.getSelectData(dataSource, sql,false);
 		List<Map<String, Object>> resultList = new ArrayList<>();
 		if(!ListUtil.isEmpty(list)) {
 			Map<String, Map<String, Object>> entityMap = new HashMap<>();

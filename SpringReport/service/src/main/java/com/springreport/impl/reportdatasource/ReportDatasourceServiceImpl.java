@@ -520,7 +520,7 @@ public class ReportDatasourceServiceImpl extends ServiceImpl<ReportDatasourceMap
 		DataSourceConfig dataSourceConfig = new DataSourceConfig(reportDatasource.getId(), reportDatasource.getDriverClass(), reportDatasource.getJdbcUrl(), reportDatasource.getUserName(), reportDatasource.getPassword(), null);
 		//获取数据源
 		DataSource dataSource = JdbcUtils.getDataSource(dataSourceConfig);
-		List<Map<String, Object>> selectDatas = ReportDataUtil.getSelectData(dataSource, mesGetSelectDataDto.getSelectContent());
+		List<Map<String, Object>> selectDatas = ReportDataUtil.getSelectData(dataSource, mesGetSelectDataDto.getSelectContent(),true);
 		if (selectDatas == null) {
 			selectDatas = new ArrayList<Map<String, Object>>();
 		}
