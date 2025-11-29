@@ -749,6 +749,7 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 			if(docTpl.getParamMerge().intValue() == YesNoEnum.NO.getCode().intValue()) {
 				isParamMerge = YesNoEnum.NO.getCode();
 			}
+			searchFormType = docTpl.getSearchFormType();
 		}
 		List<String> usedDataset = new ArrayList<>();
 		if(reportTplDataset.getReportType().intValue() == 1) {
