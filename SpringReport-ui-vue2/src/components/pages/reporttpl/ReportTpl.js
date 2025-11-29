@@ -105,7 +105,7 @@ export default {
           { type: 'Select', label: '是否开启协同', prop: 'coeditFlag', rules: { required: true }, options: this.selectUtil.yesNo },
           { type: 'Select', label: '是否开启定时刷新', prop: 'isRefresh', rules: { required: true }, options: this.selectUtil.yesNo, change: this.changeIsRefresh },
           { type: 'Input', label: '刷新间隔时长(秒)', prop: 'refreshTime', rules: { required: true,type:"positiveInt"}, },
-          { type: 'Select', label: '查询组件类型', prop: 'searchFormType', rules: { required: true }, options: this.selectUtil.searchFormType },
+          { type: 'Select', label: '查询组件位置', prop: 'searchFormType', rules: { required: true }, options: this.selectUtil.searchFormType },
         ],
         // modal表单 end
         // modal 数据 start
