@@ -1,0 +1,2 @@
+ALTER TABLE report_tpl ADD COLUMN search_form_type tinyint(4) DEFAULT 1 COMMENT '预览页面查询组件显示位置 1页面顶部显示 2侧边框形式';
+ALTER TABLE doc_tpl ADD COLUMN search_form_type tinyint(4) DEFAULT 1 COMMENT '预览页面查询组件显示位置 1页面顶部显示 2侧边框形式'; 

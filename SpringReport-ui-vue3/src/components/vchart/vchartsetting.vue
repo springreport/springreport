@@ -100,7 +100,7 @@
               </el-form-item>
                <el-form-item
                 v-if="component.dataGroup"
-                label="计算字段"
+                label="分组计算字段"
                 class="df-form-item"
               >
                 <el-select
@@ -116,6 +116,11 @@
                     :value="item.name"
                   />
                 </el-select>
+              </el-form-item>
+              <el-form-item label="数据单元格强制关联">
+                <el-switch
+                  v-model="component.forceRelyonCell"
+                />
               </el-form-item>
             </div>
 

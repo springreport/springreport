@@ -81,7 +81,8 @@ export default {
           { type: 'Select', label: '数据源', prop: 'dataSource', rules: { required: true }, multiple: true, props: { label: 'name', value: 'id' }},
           { type: 'Select', label: '参数是否合并', prop: 'paramMerge', rules: { required: true }, options: this.selectUtil.yesNo },
           { type: 'Select', label: '首页页眉页脚是否显示', prop: 'firstpageHeaderFooterShow', rules: { required: true }, options: this.selectUtil.yesNo },
-          { type: 'Select', label: '所属目录', prop: 'reportType', rules: { required: true }, props: { label: 'reportTypeName', value: 'id' }}
+          { type: 'Select', label: '所属目录', prop: 'reportType', rules: { required: true }, props: { label: 'reportTypeName', value: 'id' }},
+          { type: 'Select', label: '查询组件位置', prop: 'searchFormType', rules: { required: true }, options: this.selectUtil.searchFormType },
         ],
         // modal表单 end
         // modal 数据 start
@@ -91,7 +92,8 @@ export default {
           dataSource: [], // 报表数据源
           paramMerge: 1,
           reportType: '',
-          firstpageHeaderFooterShow: 1
+          firstpageHeaderFooterShow: 1,
+          searchFormType:1,
         },
         // modal 数据 end
         // modal 按钮 start

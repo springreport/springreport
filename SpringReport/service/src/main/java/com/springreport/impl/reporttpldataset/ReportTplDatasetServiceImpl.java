@@ -728,6 +728,7 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 		boolean isPagination = false;
 		List<DatasetsParamDto> datasetsParams = new ArrayList<DatasetsParamDto>();
 		int isParamMerge = YesNoEnum.YES.getCode();
+		int searchFormType = 1;
 		if(reportTplDataset.getReportType().intValue() == 1) {
 			ReportTpl reportTpl = this.iReportTplService.getById(reportTplDataset.getTplId());
 			if (reportTpl == null) {
@@ -739,6 +740,7 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 			}else {
 				isParamMerge = reportTpl.getIsParamMerge();
 			}
+			searchFormType = reportTpl.getSearchFormType();
 		}else if(reportTplDataset.getReportType().intValue() == 2) {
 			DocTpl docTpl = this.iDocTplService.getById(reportTplDataset.getTplId());
 			if (docTpl == null) {
@@ -747,6 +749,7 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 			if(docTpl.getParamMerge().intValue() == YesNoEnum.NO.getCode().intValue()) {
 				isParamMerge = YesNoEnum.NO.getCode();
 			}
+			searchFormType = docTpl.getSearchFormType();
 		}
 		List<String> usedDataset = new ArrayList<>();
 		if(reportTplDataset.getReportType().intValue() == 1) {
@@ -857,7 +860,7 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 											//获取数据源
 											DataSource dataSource = JdbcUtils.getDataSource(dataSourceConfig);
 											String sql = JdbcUtils.processSqlParams(params.get(j).getSelectContent(), reportTplDataset.getUrlParams());
-											List<Map<String, Object>> selectDatas = ReportDataUtil.getSelectData(dataSource, sql);
+											List<Map<String, Object>> selectDatas = ReportDataUtil.getSelectData(dataSource, sql,true);
 											if (selectDatas != null) {
 												params.get(j).setSelectData(JSONArray.toJSON(selectDatas));
 											} else {
@@ -898,7 +901,7 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 									if (params.get(j).getIsRelyOnParams().intValue() == 1) {
 										sql = JdbcUtils.processSqlParams(sql, new HashMap<>());
 									}
-									List<Map<String, Object>> list = ReportDataUtil.getSelectData(dataSource, sql);
+									List<Map<String, Object>> list = ReportDataUtil.getSelectData(dataSource, sql,false);
 									List<Map<String, Object>> resultList = new ArrayList<>();
 									if (!ListUtil.isEmpty(list)) {
 										Map<String, Map<String, Object>> entityMap = new HashMap<>();
@@ -977,6 +980,7 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 		resultMap.put("isParamMerge", isParamMerge);
 		resultMap.put("pagination", paginationMap);
 		resultMap.put("apiHeaders", apiHeaders);
+		resultMap.put("searchFormType", searchFormType);
 		return resultMap;
 	}
 	
@@ -1237,7 +1241,7 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 		//获取数据源
 		DataSource dataSource = JdbcUtils.getDataSource(dataSourceConfig);
 		String sql = JdbcUtils.processSqlParams(mesGetRelyOnSelectData.getSelectContent(), mesGetRelyOnSelectData.getParams());
-		List<Map<String, Object>> selectDatas = ReportDataUtil.getSelectData(dataSource, sql);
+		List<Map<String, Object>> selectDatas = ReportDataUtil.getSelectData(dataSource, sql,true);
 		return selectDatas;
 	}
 
@@ -1313,7 +1317,7 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 		//获取数据源
 		DataSource dataSource = JdbcUtils.getDataSource(dataSourceConfig);
 		String sql = JdbcUtils.processSqlParams(mesGetRelyOnSelectData.getSelectContent(), mesGetRelyOnSelectData.getParams());
-		List<Map<String, Object>> selectDatas = ReportDataUtil.getSelectData(dataSource, sql);
+		List<Map<String, Object>> selectDatas = ReportDataUtil.getSelectData(dataSource, sql,true);
 		return selectDatas;
 	
 	}
@@ -1338,7 +1342,7 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 		//获取数据源
 		DataSource dataSource = JdbcUtils.getDataSource(dataSourceConfig);
 		String sql = JdbcUtils.processSqlParams(mesGetRelyOnSelectData.getSelectContent(), mesGetRelyOnSelectData.getParams());
-		List<Map<String, Object>> list = ReportDataUtil.getSelectData(dataSource, sql);
+		List<Map<String, Object>> list = ReportDataUtil.getSelectData(dataSource, sql,false);
 		List<Map<String, Object>> resultList = new ArrayList<>();
 		if(!ListUtil.isEmpty(list)) {
 			Map<String, Map<String, Object>> entityMap = new HashMap<>();

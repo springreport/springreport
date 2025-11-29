@@ -191,6 +191,7 @@ export default {
             rules: { required: true },
             props: { label: 'reportTypeName', value: 'id' },
           },
+          { type: 'Select', label: '查询组件位置', prop: 'searchFormType', rules: { required: true }, options: this.selectUtil.searchFormType },
         ],
         //modal表单 end
         //modal 数据 start
@@ -202,6 +203,7 @@ export default {
           paramMerge: 1,
           reportType: '',
           firstpageHeaderFooterShow: 1,
+          searchFormType:1,
         },
         //modal 数据 end
         //modal 按钮 start

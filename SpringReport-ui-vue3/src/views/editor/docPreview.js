@@ -8,12 +8,15 @@
  */
 
 // import VueOfficePdf from '@vue-office/pdf'
+import headerReportForm from '../../components/reportForm/headerReportForm.vue'
 export default {
     components:{
         // VueOfficePdf
+        headerReportForm
     },
     data() {
         return{
+            searchFormType:"1",//查询条件组件类型 1在页面头部(查询条件较少，对显示范围影响小的情况适用) 2侧边栏弹出(查询条件多，放在表头影响显示范围建议使用该种方式)
             drawer:false,
             showReportSql:false,
             reportSqls:{},
@@ -62,9 +65,9 @@ export default {
                 obj.url = this.apis.previewReport.getSharePreviewReportParamApi
             }
             this.searchHandle=[
-                {label:'查询',drawerBtn: true, icon:'el-icon-search',type:'primary',handle:()=>this.getReportData(),size:'small'},
-                {label:'重置',drawerBtn: true, icon:'el-icon-refresh-left',type:'',handle:()=>this.resetSearch(),size:'small'},
-                {label:'导出word',icon:'icon-word',type:'success',handle:()=>this.downLoadDoc(1),size:'small'},
+                // {label:'查询',drawerBtn: true, icon:'el-icon-search',type:'primary',handle:()=>this.getReportData(),size:'small'},
+                // {label:'重置',drawerBtn: true, icon:'el-icon-refresh-left',type:'',handle:()=>this.resetSearch(),size:'small'},
+                // {label:'导出word',icon:'icon-word',type:'success',handle:()=>this.downLoadDoc(1),size:'small'},
             ];
             var that = this;
             this.commonUtil.doPost(obj,headers) .then(response=>{
@@ -73,6 +76,21 @@ export default {
                     let result = response.responseData.params;
                     this.searchData.params = [];
                     that.apiHeaders = response.responseData.apiHeaders;
+                    this.searchFormType = response.responseData.searchFormType
+                    if(this.searchFormType == "1"){
+                        this.searchHandle=[
+                            { btnType: 'button',label: '查询', iconClass: 'action-icon-search', handle: () => this.getReportData(), size: 'mini' },
+                            { btnType: 'button',label: '重置',  iconClass: 'action-icon-refresh', handle: () => this.resetSearch(), size: 'mini' },
+                            {btnType: 'button', label: '导出word', iconClass: 'iconfont icon-daochuword',handle: () => this.downLoadDoc(1), size: 'mini'}
+                        ];
+
+                    }else{
+                        this.searchHandle=[
+                            { label: '查询', drawerBtn: true, iconClass: 'icon-search', type: 'primary', handle: () => this.getReportData(), size: 'mini' },
+                            { label: '重置', drawerBtn: true, iconClass: 'icon-refresh', type: '', handle: () => this.resetSearch(), size: 'mini' },
+                            {btnType: 'button', label: '导出word', iconClass: 'iconfont icon-daochuword',handle: () => this.downLoadDoc(1), size: 'mini'}
+                        ];
+                    }
                     for(let i = 0;i<result.length;i++)
                     {
                         var dataSet = {};

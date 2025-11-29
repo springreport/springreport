@@ -245,6 +245,7 @@
                     v-if="item.paramType === 'date'"
                     :size="item.size"
                     v-model="searchData.params[i].params[index][item.paramCode]"
+                    style="width:100%"
                     :format="
                       item.dateFormat == 'YYYY-MM-DD' || item.dateFormat == 'yyyy-MM-dd'
                         ? 'YYYY-MM-DD'
@@ -432,6 +433,7 @@
                 <el-date-picker
                   v-if="item.paramType === 'date'"
                   :size="item.size"
+                  style="width:100%"
                   v-model="searchData.params[0].params[index][item.paramCode]"
                   :format="
                     item.dateFormat == 'YYYY-MM-DD' || item.dateFormat == 'yyyy-MM-dd'

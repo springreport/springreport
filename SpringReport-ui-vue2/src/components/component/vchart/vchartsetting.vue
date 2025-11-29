@@ -132,6 +132,11 @@
                   />
                 </el-select>
               </el-form-item>
+              <el-form-item label="数据单元格强制关联">
+                <el-switch
+                  v-model="component.forceRelyonCell"
+                />
+              </el-form-item>
             </div>
 
             <el-form-item label="显示标题" style="margin: 14px 0 12px 0">

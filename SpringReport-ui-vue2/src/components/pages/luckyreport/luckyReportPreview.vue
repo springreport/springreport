@@ -69,7 +69,23 @@
             @change="changeAttachment"
           >
         </div>
-    <div style="width: 100%; flex: none">
+      <div style="width: 100%; flex: none" v-if="searchFormType == '1'">
+        <headerReportForm
+          ref="reportRef"
+          :report-name="tplName"
+          :report-form="reportForm"
+          :search-data="searchData"
+          :search-handle="searchHandle"
+          :activiti-name="activitiName"
+          :show-search.sync="showSearch"
+          :is-param-merge="isParamMerge"
+          :is-drill="isDrill"
+          :users="users"
+          :headerUsers="headerUsers"
+          :drawer="drawer"
+        />
+      </div>
+    <div style="width: 100%; flex: none" v-if="searchFormType != '1'">
       <reportForm
         v-if="showReportForm && showSearch"
         ref="reportRef"

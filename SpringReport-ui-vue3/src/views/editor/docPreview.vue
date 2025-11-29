@@ -8,25 +8,11 @@
 -->
 <template>
     <div class="_tablepage" style="height: 100vh;display: flex;flex-direction: column;" v-loading="loading" :element-loading-text="loadingText">
-       <!-- <div style="width: 100%;flex: none;">
-            <el-header class="_header df-c-b">
-                <div class="headerLeft df-c" style="width:30%">
-                <div class="tplname" style="width: 100%;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;" :title="tplName">
-                        {{tplName}} 
-                        <el-button v-if="!showSearch"
-                          style="font-size:14px"
-                          type="primary"
-                          icon="icon-down"
-                          circle
-                          @click="showSearchClick"
-                          size="small"
-                          title="展开搜索"
-                        ></el-button>
-                    </div>
-                </div>
-            </el-header>
-        </div> -->
-        <div style="width: 100%;flex: none;">
+        <div style="width: 100%;flex: none;"  v-if="searchFormType == '1'">
+        <headerReportForm ref="reportRef" :reportName="tplName" :reportForm="reportForm" :searchData="searchData" :searchHandle="searchHandle" :activitiName="activitiName" :isParamMerge="isParamMerge" :isDrill="2" :drawer="drawer">
+        </headerReportForm>
+        </div>
+        <div style="width: 100%;flex: none;"  v-if="searchFormType != '1'">
         <reportForm v-if="showReportForm && showSearch" ref="reportRef" :reportName="tplName" :reportForm="reportForm" :searchData="searchData" :searchHandle="searchHandle" :activitiName="activitiName" 
         v-model:showSearch="showSearch" :isParamMerge="isParamMerge" :isDrill="2" :drawer="drawer" @searchClick="searchClick" @closeSearch="closeSearch">
         </reportForm>

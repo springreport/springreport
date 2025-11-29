@@ -973,4 +973,10 @@ selectUtil.mongoSearchType = [
   { value: 1, name: '查询文档(find)' },
   { value: 2, name: '聚合查询(aggregate)' }
 ]
+
+selectUtil.searchFormType = [
+  { value: 1, label: '页面顶部' },
+  { value: 2, label: '侧边栏弹出' }
+]
+
 export default selectUtil

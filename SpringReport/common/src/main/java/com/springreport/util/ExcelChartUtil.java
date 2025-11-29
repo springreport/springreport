@@ -122,14 +122,31 @@ public class ExcelChartUtil {
 		XDDFValueAxis leftAxis = chart.createValueAxis(AxisPosition.LEFT);
 		JSONArray axisData = axis.getJSONArray("data");
 		XDDFCategoryDataSource category = XDDFDataSourcesFactory.fromArray(axisData.toArray(new String[axisData.size()]));
-		List<XDDFNumericalDataSource<Double>> datas = getSeriesArea(sheet, chartOptions, axisData.size(),isCoedit);
-		if(ListUtil.isNotEmpty(datas))
+		boolean forceRelyonCell = chartOptions.getBooleanValue("forceRelyonCell");
+		List<XDDFNumericalDataSource<Double>> datas = null;
+		List<List<Double>> seriesData = null;
+		int size = 0;
+		if(forceRelyonCell) {
+			datas = getSeriesArea(sheet, chartOptions, axisData.size(),isCoedit);
+			size = datas.size();
+		}else {
+			seriesData = getLineSeriesData(sheet, chartOptions, chartData, isCoedit);
+			size = seriesData.size();
+		}
+		if(ListUtil.isNotEmpty(datas) || ListUtil.isNotEmpty(seriesData))
 		{
 			JSONArray legendData = chartLegend.getJSONArray("data");
 			XDDFLineChartData data = (XDDFLineChartData) chart.createData(ChartTypes.LINE, bottomAxis, leftAxis);
 			data.setVaryColors(false);
-			for (int i = 0; i < datas.size(); i++) {
-				XDDFLineChartData.Series series = (XDDFLineChartData.Series) data.addSeries(category, datas.get(i));
+			XDDFLineChartData.Series series = null;
+			for (int i = 0; i < size; i++) {
+				if(forceRelyonCell) {
+					series = (XDDFLineChartData.Series) data.addSeries(category, datas.get(i));
+				}else {
+					Double[] yArray = seriesData.get(i).toArray(new Double[seriesData.get(i).size()]);
+					XDDFNumericalDataSource<Double> lineDatas = XDDFDataSourcesFactory.fromArray(yArray);
+					series = (XDDFLineChartData.Series) data.addSeries(category, lineDatas);
+				}
 				series.setSmooth(false);
 				if(ListUtil.isNotEmpty(legendData) && i < legendData.size())
 				{
@@ -215,13 +232,30 @@ public class ExcelChartUtil {
 		XDDFValueAxis leftAxis = chart.createValueAxis(AxisPosition.LEFT);
 		JSONArray axisData = axis.getJSONArray("data");
 		XDDFCategoryDataSource category = XDDFDataSourcesFactory.fromArray(axisData.toArray(new String[axisData.size()]));
-		List<XDDFNumericalDataSource<Double>> datas = getSeriesArea(sheet, chartOptions, axisData.size(),isCoedit);
-		if(ListUtil.isNotEmpty(datas))
+		boolean forceRelyonCell = chartOptions.getBooleanValue("forceRelyonCell");
+		List<XDDFNumericalDataSource<Double>> datas = null;
+		List<List<Double>> seriesData = null;
+		int size = 0;
+		if(forceRelyonCell) {
+			datas = getSeriesArea(sheet, chartOptions, axisData.size(),isCoedit);
+			size = datas.size();
+		}else {
+			seriesData = getLineSeriesData(sheet, chartOptions, chartData, isCoedit);
+			size = seriesData.size();
+		}
+		if(ListUtil.isNotEmpty(datas) || ListUtil.isNotEmpty(seriesData))
 		{
 			JSONArray legendData = chartLegend.getJSONArray("data");
 			XDDFAreaChartData data = (XDDFAreaChartData) chart.createData(ChartTypes.AREA, bottomAxis, leftAxis);
-			for (int i = 0; i < datas.size(); i++) {
-				XDDFAreaChartData.Series series = (XDDFAreaChartData.Series) data.addSeries(category, datas.get(i));
+			XDDFAreaChartData.Series series = null;
+			for (int i = 0; i < size; i++) {
+				if(forceRelyonCell) {
+					series = (XDDFAreaChartData.Series) data.addSeries(category, datas.get(i));
+				}else {
+					Double[] yArray = seriesData.get(i).toArray(new Double[seriesData.get(i).size()]);
+					XDDFNumericalDataSource<Double> lineDatas = XDDFDataSourcesFactory.fromArray(yArray);
+					series = (XDDFAreaChartData.Series) data.addSeries(category, lineDatas);
+				}
 				if(ListUtil.isNotEmpty(legendData) && i < legendData.size())
 				{
 					series.setTitle(legendData.getString(i), null);
@@ -298,8 +332,18 @@ public class ExcelChartUtil {
 		leftAxis.setCrossBetween(AxisCrossBetween.BETWEEN);
 		JSONArray axisData = axis.getJSONArray("data");
 		XDDFCategoryDataSource category = XDDFDataSourcesFactory.fromArray(axisData.toArray(new String[axisData.size()]));
-		List<XDDFNumericalDataSource<Double>> datas = getSeriesArea(sheet, chartOptions, axisData.size(),isCoedit);
-		if(ListUtil.isNotEmpty(datas))
+		boolean forceRelyonCell = chartOptions.getBooleanValue("forceRelyonCell");
+		List<XDDFNumericalDataSource<Double>> datas = null;
+		List<List<Double>> seriesData = null;
+		int size = 0;
+		if(forceRelyonCell) {
+			datas = getSeriesArea(sheet, chartOptions, axisData.size(),isCoedit);
+			size = datas.size();
+		}else {
+			seriesData = getLineSeriesData(sheet, chartOptions, chartData, isCoedit);
+			size = seriesData.size();
+		}
+		if(ListUtil.isNotEmpty(datas) || ListUtil.isNotEmpty(seriesData))
 		{
 			JSONArray legendData = chartLegend.getJSONArray("data");
 			XDDFBarChartData data = (XDDFBarChartData) chart.createData(ChartTypes.BAR, bottomAxis, leftAxis);
@@ -316,8 +360,16 @@ public class ExcelChartUtil {
 				data.setBarGrouping(BarGrouping.STACKED); // 设置堆叠样式	
 				data.setOverlap((byte)100);
 			}
-			for (int i = 0; i < datas.size(); i++) {
-				XDDFBarChartData.Series series = (XDDFBarChartData.Series) data.addSeries(category, datas.get(i));
+			XDDFBarChartData.Series series = null;
+			for (int i = 0; i < size; i++) {
+				if(forceRelyonCell) {
+					series = (XDDFBarChartData.Series) data.addSeries(category, datas.get(i));
+				}else {
+					Double[] yArray = seriesData.get(i).toArray(new Double[seriesData.get(i).size()]);
+					XDDFNumericalDataSource<Double> lineDatas = XDDFDataSourcesFactory.fromArray(yArray);
+					series = (XDDFBarChartData.Series) data.addSeries(category, lineDatas);
+				}
+//				XDDFBarChartData.Series series = (XDDFBarChartData.Series) data.addSeries(category, datas.get(i));
 				if(ListUtil.isNotEmpty(legendData) && i < legendData.size())
 				{
 					series.setTitle(legendData.getString(i), null);
@@ -396,12 +448,25 @@ public class ExcelChartUtil {
 			}
 		}
 		boolean rangeConfigCheck = chartOptions.getBooleanValue("rangeConfigCheck");
+		boolean forceRelyonCell = chartOptions.getBooleanValue("forceRelyonCell");
 		JSONArray names = getAxesData(chartData,rangeConfigCheck);
+		List<XDDFNumericalDataSource<Double>> datas = null;
+		XDDFNumericalDataSource<Double> pieDatas = null;
 		XDDFCategoryDataSource category = XDDFDataSourcesFactory.fromArray(names.toArray(new String[names.size()]));
-		List<XDDFNumericalDataSource<Double>> datas = getSeriesArea(sheet, chartOptions, names.size(),isCoedit);
-		if(ListUtil.isNotEmpty(datas)) {
+		if(forceRelyonCell) {
+			datas = getSeriesArea(sheet, chartOptions, names.size(),isCoedit);
+		}else {
+			List<Double> pieData = getSeriesData(sheet, chartOptions, chartData, isCoedit);
+			Double[] yArray = pieData.toArray(new Double[pieData.size()]);
+			pieDatas = XDDFDataSourcesFactory.fromArray(yArray);
+		}
+		if(ListUtil.isNotEmpty(datas) || pieDatas != null) {
 			XDDFPieChartData data = (XDDFPieChartData)chart.createData(ChartTypes.PIE, null, null);
-			XDDFPieChartData.Series series = (XDDFPieChartData.Series)data.addSeries(category, datas.get(0));
+			if(forceRelyonCell) {
+				XDDFPieChartData.Series series = (XDDFPieChartData.Series)data.addSeries(category, datas.get(0));
+			}else {
+				XDDFPieChartData.Series series = (XDDFPieChartData.Series)data.addSeries(category, pieDatas);
+			}
 			chart.plot(data);
 			CTDLbls dLbls = chart.getCTChart().getPlotArea().getPieChartArray(0).getSerArray(0).addNewDLbls();
 	        dLbls.addNewShowVal().setVal(false);
@@ -474,12 +539,25 @@ public class ExcelChartUtil {
 			}
 		}
 		boolean rangeConfigCheck = chartOptions.getBooleanValue("rangeConfigCheck");
+		boolean forceRelyonCell = chartOptions.getBooleanValue("forceRelyonCell");
 		JSONArray names = getAxesData(chartData,rangeConfigCheck);
+		List<XDDFNumericalDataSource<Double>> datas = null;
+		XDDFNumericalDataSource<Double> pieDatas = null;
 		XDDFCategoryDataSource category = XDDFDataSourcesFactory.fromArray(names.toArray(new String[names.size()]));
-		List<XDDFNumericalDataSource<Double>> datas = getSeriesArea(sheet, chartOptions, names.size(),isCoedit);
-		if(ListUtil.isNotEmpty(datas)) {
+		if(forceRelyonCell) {
+			datas = getSeriesArea(sheet, chartOptions, names.size(),isCoedit);
+		}else {
+			List<Double> pieData = getSeriesData(sheet, chartOptions, chartData, isCoedit);
+			Double[] yArray = pieData.toArray(new Double[pieData.size()]);
+			pieDatas = XDDFDataSourcesFactory.fromArray(yArray);
+		}
+		if(ListUtil.isNotEmpty(datas) || pieDatas != null) {
 			XDDFDoughnutChartData data = (XDDFDoughnutChartData)chart.createData(ChartTypes.DOUGHNUT, null, null);
-			XDDFDoughnutChartData.Series series = (XDDFDoughnutChartData.Series)data.addSeries(category, datas.get(0));
+			if(forceRelyonCell) {
+				XDDFDoughnutChartData.Series series = (XDDFDoughnutChartData.Series)data.addSeries(category, datas.get(0));
+			}else {
+				XDDFDoughnutChartData.Series series = (XDDFDoughnutChartData.Series)data.addSeries(category, pieDatas);
+			}
 			chart.plot(data);
 			CTDLbls dLbls = chart.getCTChart().getPlotArea().getDoughnutChartArray(0).getSerArray(0).addNewDLbls();
 	        dLbls.addNewShowVal().setVal(false);
@@ -562,8 +640,18 @@ public class ExcelChartUtil {
 		JSONObject pieSeries = getLegend(chartOptions, chartData);
 		JSONArray names = pieSeries.getJSONArray("data");
 		XDDFCategoryDataSource category = XDDFDataSourcesFactory.fromArray(indicator.toArray(new String[indicator.size()]));
-		List<XDDFNumericalDataSource<Double>> datas = getSeriesArea(sheet, chartOptions, indicator.size(),isCoedit);
-		if(ListUtil.isNotEmpty(datas)) {
+		boolean forceRelyonCell = chartOptions.getBooleanValue("forceRelyonCell");
+		List<XDDFNumericalDataSource<Double>> datas = null;
+		List<List<Double>> seriesData = null;
+		int size = 0;
+		if(forceRelyonCell) {
+			datas = getSeriesArea(sheet, chartOptions, indicator.size(),isCoedit);
+			size = datas.size();
+		}else {
+			seriesData = getLineSeriesData(sheet, chartOptions, chartData, isCoedit);
+			size = seriesData.size();
+		}
+		if(ListUtil.isNotEmpty(datas) || ListUtil.isNotEmpty(seriesData)) {
 			// 网格线
 			XDDFShapeProperties yGridProperties = leftAxis.getOrAddMajorGridProperties();
 			XDDFLineProperties yGridLine = new XDDFLineProperties();
@@ -572,8 +660,15 @@ public class ExcelChartUtil {
 			yGridProperties.setLineProperties(yGridLine);
 			XDDFRadarChartData data = (XDDFRadarChartData) chart.createData(ChartTypes.RADAR, bottomAxis, leftAxis);
 			data.setStyle(RadarStyle.MARKER);
-			for (int i = 0; i < datas.size(); i++) {
-				XDDFRadarChartData.Series series = (XDDFRadarChartData.Series) data.addSeries(category, datas.get(i));
+			XDDFRadarChartData.Series series = null;
+			for (int i = 0; i < size; i++) {
+				if(forceRelyonCell) {
+					series = (XDDFRadarChartData.Series) data.addSeries(category, datas.get(i));
+				}else {
+					Double[] yArray = seriesData.get(i).toArray(new Double[seriesData.get(i).size()]);
+					XDDFNumericalDataSource<Double> lineDatas = XDDFDataSourcesFactory.fromArray(yArray);
+					series = (XDDFRadarChartData.Series) data.addSeries(category, lineDatas);
+				}
 				if(ListUtil.isNotEmpty(names) && i < names.size())
 				{
 					series.setTitle(names.getString(i), null);
@@ -682,6 +777,59 @@ public class ExcelChartUtil {
     	JSONArray data = getAxesData(chartData,rangeConfigCheck);
     	result.put("data", data);
 		return result;
+    }
+    
+    private static List<Double> getSeriesData(XSSFSheet sheet,JSONObject chartOptions,List<JSONArray> chartData,int isCoedit){
+    	List<Double> result = new ArrayList<Double>();
+    	boolean rangeConfigCheck = chartOptions.getBooleanValue("rangeConfigCheck");
+    	if(!ListUtil.isEmpty(chartData))
+		{
+			if(rangeConfigCheck) {
+				JSONArray datas = chartData.get(0);
+				for (int i = 0; i < datas.size(); i++) {
+					JSONObject data = datas.getJSONObject(i);
+					Double value = data.getDouble("value");
+					result.add(value);
+				}
+			}else {
+				for (int i = 0; i < chartData.size(); i++) {
+					JSONObject data = chartData.get(i).getJSONObject(0);
+					Double value = data.getDouble("value");
+					result.add(value);
+				}
+			}
+		}
+    	
+    	return result;
+    }
+    
+    private static List<List<Double>> getLineSeriesData(XSSFSheet sheet,JSONObject chartOptions,List<JSONArray> chartData,int isCoedit){
+    	List<List<Double>> result = new ArrayList<List<Double>>();
+    	boolean rangeConfigCheck = chartOptions.getBooleanValue("rangeConfigCheck");
+    	if(ListUtil.isNotEmpty(chartData)) {
+    		Map<String, List<Double>> mapData = new LinkedHashMap<String, List<Double>>();
+    		if(ListUtil.isNotEmpty(chartData)) {
+    			List<Double> seriesData = null;
+    			for (int i = 0; i < chartData.size(); i++) {
+    				JSONArray datas = chartData.get(i);
+    				for (int j = 0; j < datas.size(); j++) {
+    					String seriesField = datas.getJSONObject(j).getString("seriesField");
+    					Double value = datas.getJSONObject(j).getDoubleValue("value");
+    					if(mapData.containsKey(seriesField)) {
+    						seriesData = mapData.get(seriesField);
+    					}else {
+    						seriesData = new ArrayList<Double>();
+    						mapData.put(seriesField, seriesData);
+    					}
+    					seriesData.add(value);
+    				}
+    			}
+    			for (String key : mapData.keySet()) {
+    				result.add(mapData.get(key));
+    			}
+    		}
+    	}
+    	return result;
     }
     
     private static List<XDDFNumericalDataSource<Double>> getSeriesArea(XSSFSheet sheet,JSONObject chartOptions,int axisDataSize,int isCoedit){

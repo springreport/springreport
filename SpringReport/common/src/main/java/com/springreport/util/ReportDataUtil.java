@@ -485,7 +485,7 @@ public class ReportDataUtil {
 	 * @author caiyang
 	 * @date 2021-11-18 02:15:52 
 	 */ 
-	public static List<Map<String, Object>> getSelectData(DataSource dataSource, String sqlText) {
+	public static List<Map<String, Object>> getSelectData(DataSource dataSource, String sqlText,boolean isDistinct) {
 		Connection conn = null;
 	    Statement stmt = null;
 	    ResultSet rs = null;
@@ -503,6 +503,9 @@ public class ReportDataUtil {
                  map.put(rsMataData.getColumnLabel(i+1).toLowerCase(), rs.getObject(rsMataData.getColumnLabel(i+1)));
                 }
                 selectDatas.add(map);
+            }
+            if(!isDistinct) {
+            	return selectDatas;
             }
             if(ListUtil.isNotEmpty(selectDatas)) {
     			//根据value值去重
