@@ -27,6 +27,7 @@
           @click="item.handle()"
         >
           <i v-if="item.iconClass" :class="item.iconClass" />
+          <!-- <component v-if="item.iconClass" :is="item.iconClass" theme="outline" size="16" fill="#d2d2d2"></component> -->
           <div style="overflow: hidden;text-overflow:ellipsis;white-space: nowrap;">{{ item.label }}</div>
         </div>
 

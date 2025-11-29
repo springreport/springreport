@@ -380,9 +380,9 @@ export default {
           that.searchFormType = response.responseData.searchFormType
           if(that.searchFormType == "1"){
             that.searchHandle = [
-              {btnType: 'button', label: '查询当前页', drawerBtn: false, iconClass: 'icon-search', type: 'info', handle: () => that.getReportData(2, true), size: 'mini' },
-              {btnType: 'button', label: '查询全部', drawerBtn: false, iconClass: 'icon-search', type: 'primary', handle: () => that.getReportData(), size: 'mini' },
-              {btnType: 'button', label: '重置', drawerBtn: false, iconClass: 'icon-refresh', type: '', handle: () => that.resetSearch(), size: 'mini' },
+              {btnType: 'button', label: '查询当前页', drawerBtn: false, iconClass: 'action-icon-search', type: 'info', handle: () => that.getReportData(2, true), size: 'mini' },
+              {btnType: 'button', label: '查询全部', drawerBtn: false, iconClass: 'action-icon-search', type: 'primary', handle: () => that.getReportData(), size: 'mini' },
+              {btnType: 'button', label: '重置', drawerBtn: false, iconClass: 'action-icon-refresh', type: '', handle: () => that.resetSearch(), size: 'mini' },
               {
                 btnType: 'dropDown', label: '导出全部', icon: 'action-icon-export-all',
                 downs: [
@@ -395,9 +395,9 @@ export default {
             ]
           }else{
             that.searchHandle = [
-              { label: '查询当前页', drawerBtn: true, icon: 'icon-search', type: 'info', handle: () => that.getReportData(2, true), size: 'mini' },
-              { label: '查询全部', drawerBtn: true, icon: 'icon-search', type: 'primary', handle: () => that.getReportData(), size: 'mini' },
-              { label: '重置', drawerBtn: true, icon: 'icon-refresh', type: '', handle: () => that.resetSearch(), size: 'mini' },
+              { label: '查询当前页', drawerBtn: true, icon: 'action-icon-search', type: 'info', handle: () => that.getReportData(2, true), size: 'mini' },
+              { label: '查询全部', drawerBtn: true, icon: 'action-icon-search', type: 'primary', handle: () => that.getReportData(), size: 'mini' },
+              { label: '重置', drawerBtn: true, icon: 'action-icon-refresh', type: '', handle: () => that.resetSearch(), size: 'mini' },
               {
                 btnType: 'dropDown', label: '导出全部', icon: 'action-icon-export-all',
                 downs: [
