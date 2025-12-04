@@ -264,6 +264,7 @@ public class ReportExcelUtil {
                 Map<String, Object> wrapText = new HashMap<>();
                 cellUtil.setCellValues(cellDatas,hyperlinks,borderInfos,unProtectCells,mesExportExcel.getSheetConfigs().get(i).getMerge(),mesExportExcel.getSheetConfigs().get(i).getIsCoedit(), dataVerification,xxbtCells,false,barCodeCells,qrCodeCells,wrapText,noViewAuthCells);
                 cellUtil.setRowHeight(maxXAndY.get("maxX"), rowlen, rowhidden, wrapText);
+                cellUtil.setWrapTextRowHeight(maxXAndY.get("maxX"), rowlen, rowhidden, wrapText);
                 JSONObject rowlenObj = JSONObject.parseObject(JSONObject.toJSONString(rowlen));
                 JSONObject columnlenObj = JSONObject.parseObject(JSONObject.toJSONString(columnlen));
                 setImages(wb,sheet,images,columnlenObj,rowlenObj,rowhidden,colhidden,mesExportExcel.getImageInfos(),mesExportExcel.getBackImages());

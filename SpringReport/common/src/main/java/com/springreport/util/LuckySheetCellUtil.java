@@ -1,6 +1,8 @@
 package com.springreport.util;
 
 import java.awt.Color;
+import java.awt.font.FontRenderContext;
+import java.awt.geom.AffineTransform;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -117,9 +119,10 @@ public class LuckySheetCellUtil {
    				if(rowhidden.get(i+"") != null && rowhidden.getIntValue(i+"") == 0)
    				{
    					row.setZeroHeight(true);
+   					continue;
    				}
    			}
-   			if(!wrapText.containsKey(i+"")) {
+   			if(!wrapText.containsKey("row_"+i+"")) {
    				if(rowlen.get(String.valueOf(i)) != null)
    	   			{
    	   				try {
@@ -132,6 +135,48 @@ public class LuckySheetCellUtil {
    		}
    	}
    	
+   	public void setWrapTextRowHeight(int maxX,Map<String, Object> rowlen,JSONObject rowhidden,Map<String, Object> wrapText) {
+   		if(rowlen == null)
+   		{
+   			rowlen = new HashMap<String, Object>();
+   		}
+   		for (int i = 0; i <= maxX; i++) {
+   			XSSFRow row = sheet.getRow(i);
+   			if(rowhidden != null && !rowhidden.isEmpty())
+   			{
+   				if(rowhidden.get(i+"") != null && rowhidden.getIntValue(i+"") == 0)
+   				{
+   					row.setZeroHeight(true);
+   					continue;
+   				}
+   			}
+   			if(wrapText.containsKey("row_"+i+"")) {
+   				int column = (int) wrapText.get("row_"+i+"");
+   				int colspan = (int) wrapText.get("maxrow_"+i+"_colspan");
+   				float colWidth = getColWidth(column,colspan);
+   				String maxKey = "maxrow_" + (i);
+   				String cellValue = String.valueOf(wrapText.get(maxKey));
+				FontRenderContext frc = new FontRenderContext(new AffineTransform(), true, true);
+				XSSFCellStyle style = row.getCell(column).getCellStyle();
+				java.awt.Font font = new java.awt.Font("微软雅黑", style.getFont().getBold()?1:0, style.getFont().getFontHeightInPoints());
+				int width = (int) font.getStringBounds(cellValue, frc).getWidth();
+				String wordContent = "田";
+				java.awt.Rectangle rec = font.getStringBounds(wordContent, frc).getBounds();
+				int rows = (int) Math.ceil(width/colWidth) ;
+				float poiHeight = (float) ((rec.height+3) * rows);
+				row.setHeightInPoints(poiHeight);
+   			}
+   			
+   		}
+   	}
+    
+   	private float getColWidth(int startColumn,int colspan) {
+   		float total = 0;
+   		for (int i = 0; i < colspan; i++) {
+   			total = total + sheet.getColumnWidthInPixels(startColumn+i);
+		}
+   		return total;
+   	}
    	
    	/**  
 	 * @Title: setCellValues

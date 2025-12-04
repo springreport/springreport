@@ -113,9 +113,10 @@ public class LuckySheetCellUtil2 {
    				if(rowhidden.get(i+"") != null && rowhidden.getIntValue(i+"") == 0)
    				{
    					row.setZeroHeight(true);
+   					continue;
    				}
    			}
-   			if(!wrapText.containsKey(i+"")) {
+   			if(!wrapText.containsKey("row_"+i+"")) {
    				if(rowlen.get(String.valueOf(i)) != null)
    	   			{
    	   				try {

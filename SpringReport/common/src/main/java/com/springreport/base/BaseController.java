@@ -12,6 +12,7 @@ import org.apache.shiro.authz.UnauthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.springreport.constants.StatusCode;
@@ -55,6 +56,9 @@ public class BaseController {
 		}else if(e instanceof UnauthorizedException)
 		{
 			return Response.error(StatusCode.AUTH_FAILURE, "访问权限不足。",currentUrl);
+		}else if(e instanceof DuplicateKeyException)
+		{
+			return Response.error(StatusCode.AUTH_FAILURE, e.getMessage(),currentUrl);
 		}
 		else {
 			StackTraceElement[] elements = e.getStackTrace();
