@@ -22,115 +22,50 @@
       </el-tree>
     </div>
     <div class="_tablepage">
-      <searchForm
-        :search-form="pageData.searchForm"
-        :search-data="pageData.queryData"
-        :search-handle="pageData.searchHandle"
-        :table-handles="pageData.tableHandles"
-      />
-      <div element-loading-text="加载中" class="screen-list">
-        <el-row v-if="pageData.tableData.length > 0" :gutter="24">
-          <el-col
-            v-for="(item, index) in pageData.tableData"
-            :key="index"
-            :xs="12"
-            :sm="12"
-            :md="8"
-            :xl="6"
-          >
-            <div class="screen-item">
-              <div class="df-c-b">
-                <div class="tpl-code">
-                  {{ item.tplCode }}
-                </div>
-                <el-dropdown size="small" class="table-dropdown">
-                  <div class="more-btn">
-                    <img src="@/assets/img/template/more.png" width="18px" height="18px" />
-                  </div>
-                  <template #dropdown>
-                    <el-dropdown-menu>
-                      <div v-for="(btn,index) in pageData.tableCols[0].btnList" :key="index" v-show="btn.show ? btn.show(item) : true" v-has="btn.auth">
-                      <el-dropdown-item
-                        :key="(typeof btn.label).toLowerCase() == 'string' ? btn.label : btn.auth"
-                        :disabled="btn.disabled && btn.disabled(item)"
-                        :type="btn.type"
-                        :size="btn.size"
-                        :icon="btn.icon"
-                        :class="{ 'el-dropdown-item-del': btn.type === 'danger' }"
-                        @click="btn.handle && btn.handle(item, index)"
-                        >{{
-                          (typeof btn.label).toLowerCase() == 'string' ? btn.label : btn.label(item)
-                        }}</el-dropdown-item
-                      >
-                      </div>
-                    </el-dropdown-menu>
-                  </template>
-                </el-dropdown>
-              </div>
-              <div class="img-box">
-                <!-- style="object-fit: contain" 这个根据情况改 -->
-                <img
-                  class="img"
-                  style="object-fit: contain"
-                  src="@/assets/img/template/screen-tem-default.png"
-                />
-              </div>
-              <div class="name overflow-text">{{ item.tplName }}</div>
-              <div class="size">尺寸：{{ item.width }}*{{ item.height }}</div>
-            </div>
-          </el-col>
-        </el-row>
-        <el-empty v-else description="暂无数据" />
-      </div>
-
-      <section class="ces-pagination df-c-b">
-        <div class="pagination-total"> 共 {{ pageData.tablePage.pageTotal }} 项数据 </div>
-        <el-pagination
-          background
-          layout="sizes ,prev, pager, next,jumper"
-          :page-size="pageData.tablePage.pageSize"
-          :page-sizes="pageData.tablePage.pageSizeRange"
-          v-model:current-page="pageData.tablePage.currentPage"
-          v-model:total="pageData.tablePage.pageTotal"
-          @current-change="handleCurrentChange"
-          @size-change="handleSizeChange"
-        />
-      </section>
-      <modal
-        ref="modalRef"
-        :modalConfig="pageData.modalConfig"
-        :modalForm="pageData.modalForm"
-        :modalData="pageData.modalData"
-        :modalHandles="pageData.modalHandles"
-        @closeModal="closeModal()"
-      ></modal>
-      <modal
-        ref="copyModalRef"
-        :modalConfig="pageData.copyModalConfig"
-        :modalForm="pageData.copyModalForm"
-        :modalData="pageData.copyModalData"
-        :modalHandles="pageData.copyModalHandles"
-        @closeModal="closeCopyModal()"
-      ></modal>
-      <modal
-        ref="folderModalRef"
-        :modalConfig="pageData.folderModalConfig"
-        :modalForm="pageData.folderModalForm"
-        :modalData="pageData.folderModalData"
-        :modalHandles="pageData.folderModalHandles"
-        @closeModal="closeFolderModal()"
-      ></modal>
-      <modal
-        ref="shareReport"
-        :modal-config="pageData.shareReportConfig"
-        :modal-form="pageData.shareReportForm"
-        :modal-data="pageData.shareReportModalData"
-        :modal-handles="pageData.shareReportModalHandles"
-        @closeModal="closeShareReportModal()"
-      />
-      <textarea id="clipboradInput" style="opacity:0;position:absolute" />
-    </div>
+    <searchForm :search-form="pageData.searchForm" :search-data="pageData.queryData" :search-handle="pageData.searchHandle" :table-handles="pageData.tableHandles" />
+    <cusTable
+      ref="custable"
+      :is-selection="true"
+      :is-index="false"
+      :is-pagination="true"
+      :is-handle="true"
+      :table-cols="pageData.tableCols"
+      :table-data="pageData.tableData"
+      :table-page="pageData.tablePage"
+      :lazy="pageData.lazy"
+      @handleCurrentChange="searchtablelist()"
+      @selectChange="selectChange"
+    />
+    <modal
+      ref="modalRef"
+      :modal-config="pageData.modalConfig"
+      :modal-form="pageData.modalForm"
+      :modal-data="pageData.modalData"
+      :modal-handles="pageData.modalHandles"
+      @closeModal="closeModal()"
+    />
+    <modal
+      ref="copyModalRef"
+      :modal-config="pageData.copyModalConfig"
+      :modal-form="pageData.copyModalForm"
+      :modal-data="pageData.copyModalData"
+      :modal-handles="pageData.copyModalHandles"
+      @closeModal="closeCopyModal()"
+    />
+    <modal
+      ref="folderModalRef"
+      :modal-config="pageData.folderModalConfig"
+      :modal-form="pageData.folderModalForm"
+      :modal-data="pageData.folderModalData"
+      :modal-handles="pageData.folderModalHandles"
+      @closeModal="closeFolderModal()"
+    />
   </div>
+  <div style="display: none">
+        <input id="uploadPic" type="file" accept=".sr" @change="uploadPic">
+      </div>
+      <textarea id="clipboradInput" style="opacity:0;position:absolute" />
+</div>
 </template>
 <script src="./ScreenTpl.js"></script>
 <style scoped lang="scss">

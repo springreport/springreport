@@ -390,4 +390,17 @@ api.springreportField = {
   deleteOneApi:"/api/springreportField/delete",
   getTemplatesApi:"/api/springreportField/getTemplates",
 }
+
+api.templateExportImport = {
+  templateExportImportApi:"/api/templateExportImport/exportExcelReportTemplate",
+  templateExcelUploadApi:"/api/templateExportImport/excelUpload",
+  templateWordImportApi:"/api/templateExportImport/exportWordReportTemplate",
+  templateWordUploadApi:"/api/templateExportImport/wordUpload",
+  templateScreenImportApi:"/api/templateExportImport/exportScreenTemplate",
+  templateScreenUploadApi:"/api/templateExportImport/screenUpload",
+  templateSlideImportApi:"/api/slideTpl/exportSlideTemplate",
+  templateSlideUploadApi:"/api/slideTpl/slideUpload",
+  templateOnlyofficeImportApi:"/api/docOnlyOffice/exportOnlyofficeTemplate",
+  templateOnlyofficeUploadApi:"/api/docOnlyOffice/onlyofficeUpload",
+}
 export default api;

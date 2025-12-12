@@ -303,6 +303,22 @@ html {
   margin-right: 4px;
   background-image: url("@/assets/img/common/import.png");
 }
+.action-icon-download {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-size: 100% 100%;
+  margin-right: 4px;
+  background-image: url("@/assets/img/common/download.png");
+}
+.action-icon-upload {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-size: 100% 100%;
+  margin-right: 4px;
+  background-image: url("@/assets/img/common/upload.png");
+}
 .action-icon-refresh {
   display: inline-block;
   width: 16px;

@@ -48,6 +48,7 @@ MSG_LIST["error.empty.apiresultprops"] = "请添加接口返回值属性。";
 MSG_LIST["error.sharemode.enter"] = "当前已经开启分享模式，不允许再次开启，分享人：{0}";
 MSG_LIST["error.auth.operate"] = "选区内或者公式计算结果包含暂无编辑权限的单元格，如需编辑可联系创建者【{0}】。";
 MSG_LIST["error.upload.filetype"] = "请上传{0}格式的文件。";
+MSG_LIST["error.batchexport.empty"] = "请选择需要导出的数据。";
 //错误消息end
 
 //确认消息start
@@ -66,6 +67,7 @@ MSG_LIST["confirm.exit.sharemode"] = "是否确定退出分享模式？";
 MSG_LIST["confirm.copy"] = "此操作将会复制该报表，是否继续？";
 MSG_LIST["confirm.usetemplate"] = "此操作将会使用该报表模板，是否继续？";
 MSG_LIST["confirm.screenCopy"] = "此操作将会复制该报表，是否继续？";
+MSG_LIST["confirm.export"] = "此操作将会导出数据，是否继续？";
 //确认消息end
 
 //通知成功消息start

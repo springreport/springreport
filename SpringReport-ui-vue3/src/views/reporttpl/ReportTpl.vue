@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" v-loading="loading">
     <div class="left">
       <el-tree
         :data="pageData.treeData"
@@ -24,7 +24,7 @@
     <div class="_tablepage">
      <searchForm :search-form="pageData.searchForm" :search-data="pageData.queryData" :search-handle="pageData.searchHandle" :table-handles="pageData.tableHandles" />
       <cusTable
-        :isSelection="false"
+        :isSelection="true"
         :isIndex="false"
         :isPagination="true"
         :isHandle="true"
@@ -77,6 +77,9 @@
       ></modal>
       <textarea id="clipboradInput" style="opacity: 0; position: absolute" />
     </div>
+    <div style="display: none">
+        <input id="uploadPic" type="file" accept=".sr" @change="uploadPic">
+      </div>
   </div>
 </template>
 <script src="./ReportTpl.js"></script>

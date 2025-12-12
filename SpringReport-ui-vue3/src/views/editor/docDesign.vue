@@ -815,7 +815,6 @@
             label="数据源"
             prop="datasourceId"
             :rules="filter_rules('选择数据源', { required: true })"
-            style="width: 270px"
           >
             <el-select
               v-model="sqlForm.datasourceId"
@@ -835,7 +834,6 @@
             prop="sqlType"
             :rules="filter_rules('选择sql类型', { required: true })"
             v-if="datasourceType == 1"
-            style="width: 270px"
           >
             <el-select v-model="sqlForm.sqlType" placeholder="选择sql类型">
               <el-option
@@ -850,7 +848,6 @@
             label="是否公共数据集"
             prop="isCommon"
             :rules="filter_rules('是否公共数据集', { required: true })"
-            style="width: 270px"
           >
             <el-select
               v-model="sqlForm.isCommon"
@@ -868,7 +865,6 @@
             label="分组"
             prop="groupId"
             :rules="filter_rules('选择分组', { required: true })"
-            style="width: 270px"
             v-if="sqlForm.isCommon == 2"
           >
             <el-select v-model="sqlForm.groupId" placeholder="选择分组">
@@ -885,7 +881,6 @@
             label="行列转置"
             prop="isConvert"
             :rules="filter_rules('行列转置', { required: true })"
-            style="width: 270px"
           >
             <el-select
               v-model="sqlForm.isConvert"

@@ -462,6 +462,9 @@ commonUtil.showConfirm = function(params)
                 callback:params.callback,
             }
             commonUtil.doGet(object);
+        }else if(params.type && params.type.toLowerCase() == "file")
+        {
+            commonUtil.downloadFile(params.url,params.params,params.callback,null)
         }else{
             var object = {
                 url:params.url,
