@@ -621,7 +621,7 @@ public class LuckysheetUtil {
 			rowhiddenJsonobject = JSONObject.parseObject(JSON.toJSONString(rowhidden));
 		}
 		for (int i = 0; i < r; i++) {
-			if(rowhidden != null && rowhiddenJsonobject.containsKey(i))
+			if(rowhidden != null && rowhiddenJsonobject.containsKey(i+""))
 			{
 				continue;
 			}
@@ -646,7 +646,7 @@ public class LuckysheetUtil {
 			colhiddenJsonobject = JSONObject.parseObject(JSON.toJSONString(colhidden));
 		}
 		for (int i = 0; i < c; i++) {
-			if(colhiddenJsonobject != null && colhiddenJsonobject.containsKey(i))
+			if(colhiddenJsonobject != null && colhiddenJsonobject.containsKey(i+""))
 			{
 				hiddenCount = hiddenCount + 1;
 				continue;
@@ -659,7 +659,7 @@ public class LuckysheetUtil {
 			}
 			result = result +temp;
 		}
-		result = result  - hiddenCount;
+		result = result  - hiddenCount + c;
 		return Math.ceil(result);
 	}
 	

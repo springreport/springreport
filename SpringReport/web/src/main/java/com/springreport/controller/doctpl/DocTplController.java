@@ -29,6 +29,7 @@ import com.springreport.dto.reporttpl.MesGenerateReportDto;
 import com.springreport.entity.doctpl.DocTpl;
 import com.springreport.entity.doctplsettings.DocTplSettings;
 import com.springreport.entity.reporttype.ReportType;
+import com.alibaba.fastjson.JSON;
 import com.springreport.annotation.Check;
 import com.springreport.annotation.LoginUser;
 import com.springreport.annotation.MethodLog;

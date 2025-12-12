@@ -487,7 +487,6 @@ public class LuckysheetCacheConsumer implements RocketMQListener<String>{
 				mqOperateHisDto.setChangeBefore(luckysheet.getRowhidden());
 				luckysheet.setColhidden(JSON.toJSONString(v));
 				mqOperateHisDto.setChangeBefore(luckysheet.getRowhidden());
-				luckysheet.setRowhidden(JSON.toJSONString(v));
 				mqOperateHisDto.setChangeAfter(v);
 				mqOperateHisDto.setToken(mqCacheMsgDto.getToken());
 				mqOperateHisDto.setListId(mqCacheMsgDto.getListId());

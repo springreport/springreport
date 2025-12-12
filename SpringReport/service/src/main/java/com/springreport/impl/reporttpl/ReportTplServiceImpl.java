@@ -14643,6 +14643,14 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				{
 					borderInfoList = (List<Object>) borderInfos;
 				}
+				JSONObject authority = null;
+				if(resPreviewData.getSheetDatas().get(i).getConfig() != null)
+				{
+					borderInfos = resPreviewData.getSheetDatas().get(i).getConfig().get(LuckySheetPropsEnum.BORDERINFO.getCode());
+					rowlen = (Map<String, Object>) resPreviewData.getSheetDatas().get(i).getConfig().get(LuckySheetPropsEnum.ROWLEN.getCode());//行高
+					columnlen = (Map<String, Object>) resPreviewData.getSheetDatas().get(i).getConfig().get(LuckySheetPropsEnum.COLUMNLEN.getCode());//列宽
+					authority = JSON.parseObject(JSON.toJSONString(resPreviewData.getSheetDatas().get(i).getConfig().get("authority")));
+				}
 				mesSheetConfig.setCellDatas(resPreviewData.getSheetDatas().get(i).getCellDatas());
 				mesSheetConfig.setSheetname(resPreviewData.getSheetDatas().get(i).getSheetName());
 				mesSheetConfig.setBorderInfos(borderInfoList);
@@ -14655,6 +14663,11 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				mesSheetConfig.setImageDatas(resPreviewData.getSheetDatas().get(i).getImageDatas());
 				mesSheetConfig.setChart(resPreviewData.getSheetDatas().get(i).getChart());
 				mesSheetConfig.setChartCells(resPreviewData.getSheetDatas().get(i).getChartCells());
+				mesSheetConfig.setColhidden(resPreviewData.getSheetDatas().get(i).getColhidden());
+				mesSheetConfig.setRowhidden(resPreviewData.getSheetDatas().get(i).getRowhidden());
+				mesSheetConfig.setDataVerification(resPreviewData.getSheetDatas().get(i).getDataVerification());
+				mesSheetConfig.setAuthority(authority);
+				mesSheetConfig.setLuckysheetConditionformatSave(resPreviewData.getSheetDatas().get(i).getLuckysheetConditionformatSave());
 				if(resPreviewData.getSheetDatas().get(i).getMaxXAndY() != null)
 				{
 					mesSheetConfig.setMaxXAndY(resPreviewData.getSheetDatas().get(i).getMaxXAndY());	
@@ -14801,6 +14814,10 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				mesSheetConfig.setImageDatas(resPreviewData.getSheetDatas().get(i).getImageDatas());
 				mesSheetConfig.setChart(resPreviewData.getSheetDatas().get(i).getChart());
 				mesSheetConfig.setChartCells(resPreviewData.getSheetDatas().get(i).getChartCells());
+				mesSheetConfig.setColhidden(resPreviewData.getSheetDatas().get(i).getColhidden());
+				mesSheetConfig.setRowhidden(resPreviewData.getSheetDatas().get(i).getRowhidden());
+				mesSheetConfig.setDataVerification(resPreviewData.getSheetDatas().get(i).getDataVerification());
+				mesSheetConfig.setLuckysheetConditionformatSave(resPreviewData.getSheetDatas().get(i).getLuckysheetConditionformatSave());
 				if(resPreviewData.getSheetDatas().get(i).getMaxXAndY() != null)
 				{
 					mesSheetConfig.setMaxXAndY(resPreviewData.getSheetDatas().get(i).getMaxXAndY());	
