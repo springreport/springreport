@@ -7,7 +7,7 @@
  * @LastEditTime: 2022-07-05 18:51:03
 -->
 <template>
-  <div class="container">
+  <div class="container" v-loading="loading">
     <div class="left">
       <el-tree
         :data="pageData.treeData"
@@ -33,7 +33,7 @@
       <searchForm :search-form="pageData.searchForm" :search-data="pageData.queryData" :search-handle="pageData.searchHandle" :table-handles="pageData.tableHandles" />
       <cusTable
         ref="custable"
-        :is-selection="false"
+        :is-selection="true"
         :is-index="false"
         :is-pagination="true"
         :is-handle="true"
@@ -85,6 +85,9 @@
         @closeModal="closeFolderModal()"
       />
       <textarea id="clipboradInput" style="opacity:0;position:absolute" />
+      <div style="display: none">
+        <input id="uploadPic" type="file" accept=".sr" @change="uploadPic">
+      </div>
     </div>
   </div>
 </template>

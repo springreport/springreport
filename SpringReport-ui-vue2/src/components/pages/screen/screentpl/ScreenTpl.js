@@ -1,7 +1,9 @@
+import Axios from 'axios'
 export default {
   name: 'screenTpl',
   data() {
     return {
+      loading:false,
       defaultProps: {
         children: 'children',
         label: 'label'
@@ -35,16 +37,18 @@ export default {
           { label: '报表模板', type: 'primary', position: 'right', iconClass: 'action-icon-template', handle: () => this.goTemStore(), auth: 'template_market' },
           { label: '新建目录', type: 'primary', position: 'right', iconClass: 'action-icon-add', handle: () => this.showModal(this.commonConstants.modalType.insert, null, '1'), auth: 'screenTpl_folder' },
           { label: '新建文档', type: 'info', position: 'right', iconClass: 'action-icon-add', handle: () => this.showModal(this.commonConstants.modalType.insert, null, '2'), auth: 'screenTpl_insert' },
-          { label: '刷新', type: 'danger', position: 'left', iconClass: 'action-icon-refresh', handle: () => this.searchtablelist(), auth: 'screenTpl_search' }
+          { label: '刷新', type: 'danger', position: 'left', iconClass: 'action-icon-refresh', handle: () => this.searchtablelist(), auth: 'screenTpl_search' },
+          { label: '导出模板', type: 'warning', position: 'right', iconClass: 'el-icon-download', handle: () => this.exportTemplate(), auth: 'screen_export' },
+          { label: '导入模板', type: 'danger', position: 'right', iconClass: 'el-icon-upload2', handle: () => this.importTemplate(), auth: 'screen_import' },
         ],
         // 表格工具栏按钮 end
         selectList: [], // 表格选中的数据
         // 表格分页信息start
         tablePage: {
           currentPage: 1,
-          pageSize: 12,
+          pageSize: 10,
           pageTotal: 0,
-          pageSizeRange: [12, 24, 36]
+          pageSizeRange: [5, 10, 20, 50]
         },
         // 表格分页信息end
         // 表格列表头start
@@ -602,6 +606,79 @@ export default {
         this.pageData.shareReportForm[1].show = true
         this.pageData.shareReportForm[1].rules.required = true
       }
-    }
+    },
+    exportTemplate(){
+      const length = this.pageData.selectList.length
+      if (length == 0) {
+        this.commonUtil.showMessage({ message: this.commonUtil.getMessageFromList('error.batchexport.empty', null), type: this.commonConstants.messageType.error })
+      } else {
+        const ids = new Array()
+        for (let i = 0; i < length; i++) {
+          ids.push(this.pageData.selectList[i].id)
+        }
+        const obj = {
+          url: this.apis.templateExportImport.templateScreenImportApi,
+          messageContent: this.commonUtil.getMessageFromList('confirm.export', null),
+          callback: null,
+          params: {ids:ids},
+          type: 'file'
+        }
+        this.commonUtil.showConfirm(obj)
+      }
+    },
+    exportImportCallback(response){
+      
+    },
+    importTemplate(){
+      $('#uploadPic').click()
+    },
+    uploadPic(evt) {
+      const files = evt.target.files
+      if (files == null || files.length == 0) {
+        alert('请选择文件')
+        return
+      }
+      this.loading = true;
+      const formData = new FormData()
+      formData.append('file', files[0])
+      const config = {
+        headers: { 'Content-Type': 'multipart/form-data',
+          'Authorization': localStorage.getItem(this.commonConstants.sessionItem.authorization),
+        }
+      }
+      var that = this
+      Axios.post(this.apis.templateExportImport.templateScreenUploadApi , formData, config)
+        .then(res => {
+          if(res.status == 200)
+          {//请求成功
+             var result = res.data;//请求返回结果
+            if(result.newToken)
+            {
+                localStorage.setItem(commonConstants.sessionItem.authorization, result.newToken);
+            }
+            if(result.message)
+            {
+                that.commonUtil.showMessage({message:result.message,type: result.msgLevel})
+            }
+            if(result.code == "50004")//50004说明token超时，需重新登录
+            {
+                localStorage.removeItem(commonConstants.sessionItem.authorization);
+                router.replace('/login');
+                that.commonUtil.showMessage({message:result.message,type: result.msgLevel})
+            }
+          }
+          evt.target.value = '';
+          that.searchtablelist()
+          that.getReportType()
+          that.getReportDatasource()
+          that.getReportTypeTree()
+          that.loading = false;
+        }).catch(error => {
+          that.loading = false;
+          evt.target.value = '';
+        })
+        .finally(() => {
+        });
+    },
   }
 }
