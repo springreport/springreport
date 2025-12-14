@@ -9457,10 +9457,11 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		}else {
 			bindDatas = bindData.getDatas();
 		}
-		if(bindDatas.get(j).size() <= 1)
-		{
-			return;
-		}
+		//单行小计
+//		if(bindDatas.get(j).size() <= 1)
+//		{
+//			return;
+//		}
 		Integer maxX = maxXAndY.get("maxX");
 		Integer maxY = maxXAndY.get("maxY");
 		maxX = this.getMaxRow(maxCoordinate, bindData.getCoordsx(), bindData.getCoordsy(), 1);
