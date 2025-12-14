@@ -345,10 +345,11 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 										}
 									}
 									for (int k = 0; k < datas.size(); k++) {
-										if(datas.get(k).size() > 1)
-										{
+										//单行小计
+//										if(datas.get(k).size() > 1)
+//										{
 											subtotalCount = subtotalCount + 1;
-										}
+//										}
 									}
 								}
 								groupSubtotalCount.put(t, subtotalCount);
@@ -378,10 +379,11 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 							int index = 0;
 							for (int t = 0; t < bindDatas2.size(); t++) {
 								index = index + bindDatas2.get(t).size();
-								if(bindDatas2.get(t).size() <= 1)
-								{
-									continue;
-								}
+								//单行小计
+//								if(bindDatas2.get(t).size() <= 1)
+//								{
+//									continue;
+//								}
 								for (int j = 0; j < subtotalCells.size(); j++) {
 									JSONObject subtotalCell = subtotalCells.getJSONObject(j);
 									String coords = subtotalCell.getString("coords").toUpperCase();
