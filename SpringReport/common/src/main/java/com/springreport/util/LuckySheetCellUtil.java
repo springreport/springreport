@@ -381,12 +381,16 @@ public class LuckySheetCellUtil {
 										wrapText.put(maxKey, cellValueString);
 										if(cellColSpan.containsKey(r+"_"+cell.getColumnIndex())) {
 											wrapText.put(maxKey+"_colspan", cellColSpan.get(r+"_"+cell.getColumnIndex()));
+										}else {
+											wrapText.put(maxKey+"_colspan", 1);
 										}
 									}
 								}else {
 									wrapText.put(maxKey, cellValueString);
 									if(cellColSpan.containsKey(r+"_"+cell.getColumnIndex())) {
 										wrapText.put(maxKey+"_colspan", cellColSpan.get(r+"_"+cell.getColumnIndex()));
+									}else {
+										wrapText.put(maxKey+"_colspan", 1);
 									}
 								}
 							}
