@@ -157,6 +157,8 @@ import com.springreport.dto.reporttpl.SaveLuckySheetTplDto;
 import com.springreport.dto.reporttpl.ShareDto;
 import com.springreport.dto.sysrolereport.MesRoleReportDto;
 
+import java.awt.font.FontRenderContext;
+import java.awt.geom.AffineTransform;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -4614,7 +4616,20 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				wrapDatas.add(dynamicRange.get(key));
 			}
 		}
-		result.setWrapDatas(wrapDatas);
+//		result.setWrapDatas(wrapDatas);
+		FontRenderContext frc = new FontRenderContext(new AffineTransform(), true, true);
+		if(ListUtil.isNotEmpty(wrapDatas)) {
+			for (int i = 0; i < wrapDatas.size(); i++) {
+				LuckysheetUtil.calculateWrapRowLen(wrapDatas.getJSONObject(i), rowlen, columnlen, frc);
+			}
+		}
+		if(ListUtil.isNotEmpty(images)){
+			JSONObject rowhiddenObj = JSONObject.parseObject(JSON.toJSONString(rowhidden));
+			JSONObject colhiddenObj = JSONObject.parseObject(JSON.toJSONString(colhidden));
+			for (int i = 0; i < images.size(); i++) {
+				LuckysheetUtil.calculateImg(images.get(i), rowlen, columnlen, rowhiddenObj, colhiddenObj);
+			}
+		}
 		return result;
 	}
 	
@@ -5178,17 +5193,17 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 											}
 											if(isImg)
 											{
-												double top = LuckysheetUtil.calculateTop(rowlen, maxRow,rowhidden);
-												double left = LuckysheetUtil.calculateLeft(columnlen, maxCol,colhidden);
-												Object width = LuckysheetUtil.calculateWidth(columnlen, maxCol, subLuckysheetReportBlockCells.get(i).getColSpan());
-												Object height = LuckysheetUtil.calculateHeight(rowlen, maxRow, subLuckysheetReportBlockCells.get(i).getRowSpan());
+//												double top = LuckysheetUtil.calculateTop(rowlen, maxRow,rowhidden);
+//												double left = LuckysheetUtil.calculateLeft(columnlen, maxCol,colhidden);
+//												Object width = LuckysheetUtil.calculateWidth(columnlen, maxCol, subLuckysheetReportBlockCells.get(i).getColSpan());
+//												Object height = LuckysheetUtil.calculateHeight(rowlen, maxRow, subLuckysheetReportBlockCells.get(i).getRowSpan());
 												JSONObject imgInfo = JSONObject.parseObject(Constants.DEFAULT_IMG_INFO);
-												imgInfo.getJSONObject("default").put("top", top);
-												imgInfo.getJSONObject("default").put("left", left);
-												imgInfo.getJSONObject("default").put("width", width);
-												imgInfo.getJSONObject("default").put("height", height);
-												imgInfo.getJSONObject("crop").put("width", width);
-												imgInfo.getJSONObject("crop").put("height", height);
+//												imgInfo.getJSONObject("default").put("top", top);
+//												imgInfo.getJSONObject("default").put("left", left);
+//												imgInfo.getJSONObject("default").put("width", width);
+//												imgInfo.getJSONObject("default").put("height", height);
+//												imgInfo.getJSONObject("crop").put("width", width);
+//												imgInfo.getJSONObject("crop").put("height", height);
 												imgInfo.put("src", property);
 												JSONObject img = new JSONObject();
 												img.put("imgInfo", imgInfo);
@@ -5458,17 +5473,17 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 								        }
 										if(isImg)
 										{
-											double top = LuckysheetUtil.calculateTop(rowlen, maxRow,rowhidden);
-											double left = LuckysheetUtil.calculateLeft(columnlen, maxCol,colhidden);
-											Object width = LuckysheetUtil.calculateWidth(columnlen, maxCol, luckysheetReportBlockCells.get(t).getColSpan());
-											Object height = LuckysheetUtil.calculateHeight(rowlen, maxRow, luckysheetReportBlockCells.get(t).getRowSpan());
+//											double top = LuckysheetUtil.calculateTop(rowlen, maxRow,rowhidden);
+//											double left = LuckysheetUtil.calculateLeft(columnlen, maxCol,colhidden);
+//											Object width = LuckysheetUtil.calculateWidth(columnlen, maxCol, luckysheetReportBlockCells.get(t).getColSpan());
+//											Object height = LuckysheetUtil.calculateHeight(rowlen, maxRow, luckysheetReportBlockCells.get(t).getRowSpan());
 											JSONObject imgInfo = JSONObject.parseObject(Constants.DEFAULT_IMG_INFO);
-											imgInfo.getJSONObject("default").put("top", top);
-											imgInfo.getJSONObject("default").put("left", left);
-											imgInfo.getJSONObject("default").put("width", width);
-											imgInfo.getJSONObject("default").put("height", height);
-											imgInfo.getJSONObject("crop").put("width", width);
-											imgInfo.getJSONObject("crop").put("height", height);
+//											imgInfo.getJSONObject("default").put("top", top);
+//											imgInfo.getJSONObject("default").put("left", left);
+//											imgInfo.getJSONObject("default").put("width", width);
+//											imgInfo.getJSONObject("default").put("height", height);
+//											imgInfo.getJSONObject("crop").put("width", width);
+//											imgInfo.getJSONObject("crop").put("height", height);
 											imgInfo.put("src", property);
 											JSONObject img = new JSONObject();
 											img.put("imgInfo", imgInfo);
@@ -6005,17 +6020,17 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		}
 		if(isImg)
 		{
-			double top = LuckysheetUtil.calculateTop(rowlen, rowAndCol.get("maxX"),rowhidden);
-			double left = LuckysheetUtil.calculateLeft(columnlen, rowAndCol.get("maxY"),colhidden);
-			Object width = LuckysheetUtil.calculateWidth(columnlen, rowAndCol.get("maxY"), horizontalDataLenth*luckySheetBindData.getColSpan());
-			Object height = LuckysheetUtil.calculateHeight(rowlen, rowAndCol.get("maxX"), verticalDataLenth*luckySheetBindData.getRowSpan());
+//			double top = LuckysheetUtil.calculateTop(rowlen, rowAndCol.get("maxX"),rowhidden);
+//			double left = LuckysheetUtil.calculateLeft(columnlen, rowAndCol.get("maxY"),colhidden);
+//			Object width = LuckysheetUtil.calculateWidth(columnlen, rowAndCol.get("maxY"), horizontalDataLenth*luckySheetBindData.getColSpan());
+//			Object height = LuckysheetUtil.calculateHeight(rowlen, rowAndCol.get("maxX"), verticalDataLenth*luckySheetBindData.getRowSpan());
 			JSONObject imgInfo = JSONObject.parseObject(Constants.DEFAULT_IMG_INFO);
-			imgInfo.getJSONObject("default").put("top", top);
-			imgInfo.getJSONObject("default").put("left", left);
-			imgInfo.getJSONObject("default").put("width", width);
-			imgInfo.getJSONObject("default").put("height", height);
-			imgInfo.getJSONObject("crop").put("width", width);
-			imgInfo.getJSONObject("crop").put("height", height);
+//			imgInfo.getJSONObject("default").put("top", top);
+//			imgInfo.getJSONObject("default").put("left", left);
+//			imgInfo.getJSONObject("default").put("width", width);
+//			imgInfo.getJSONObject("default").put("height", height);
+//			imgInfo.getJSONObject("crop").put("width", width);
+//			imgInfo.getJSONObject("crop").put("height", height);
 			imgInfo.put("src", originalValue);
 			JSONObject img = new JSONObject();
 			img.put("imgInfo", imgInfo);
@@ -8508,17 +8523,17 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		}
 		if(isImg)
 		{
-			double top = LuckysheetUtil.calculateTop(rowlen, rowAndCol.get("maxX"),rowhidden);
-			double left = LuckysheetUtil.calculateLeft(columnlen, rowAndCol.get("maxY"),colhidden);
-			Object width = LuckysheetUtil.calculateWidth(columnlen, rowAndCol.get("maxY"), horizontalDataLenth*luckySheetBindData.getColSpan());
-			Object height = LuckysheetUtil.calculateHeight(rowlen, rowAndCol.get("maxX"), verticalDataLenth*luckySheetBindData.getRowSpan());
+//			double top = LuckysheetUtil.calculateTop(rowlen, rowAndCol.get("maxX"),rowhidden);
+//			double left = LuckysheetUtil.calculateLeft(columnlen, rowAndCol.get("maxY"),colhidden);
+//			Object width = LuckysheetUtil.calculateWidth(columnlen, rowAndCol.get("maxY"), horizontalDataLenth*luckySheetBindData.getColSpan());
+//			Object height = LuckysheetUtil.calculateHeight(rowlen, rowAndCol.get("maxX"), verticalDataLenth*luckySheetBindData.getRowSpan());
 			JSONObject imgInfo = JSONObject.parseObject(Constants.DEFAULT_IMG_INFO);
-			imgInfo.getJSONObject("default").put("top", top);
-			imgInfo.getJSONObject("default").put("left", left);
-			imgInfo.getJSONObject("default").put("width", width);
-			imgInfo.getJSONObject("default").put("height", height);
-			imgInfo.getJSONObject("crop").put("width", width);
-			imgInfo.getJSONObject("crop").put("height", height);
+//			imgInfo.getJSONObject("default").put("top", top);
+//			imgInfo.getJSONObject("default").put("left", left);
+//			imgInfo.getJSONObject("default").put("width", width);
+//			imgInfo.getJSONObject("default").put("height", height);
+//			imgInfo.getJSONObject("crop").put("width", width);
+//			imgInfo.getJSONObject("crop").put("height", height);
 			imgInfo.put("src", property);
 			JSONObject img = new JSONObject();
 			img.put("imgInfo", imgInfo);
@@ -9263,17 +9278,17 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         }
         if(isImg)
 		{
-        	double top = LuckysheetUtil.calculateTop(rowlen, rowAndCol.get("maxX"),rowhidden);
-			double left = LuckysheetUtil.calculateLeft(columnlen, rowAndCol.get("maxY"),colhidden);
-			Object width = LuckysheetUtil.calculateWidth(columnlen, rowAndCol.get("maxY"), luckySheetBindData.getColSpan());
-			Object height = LuckysheetUtil.calculateHeight(rowlen, rowAndCol.get("maxX"), (luckySheetBindData.getIsGroupMerge()?groupMergeRows:bindDatas.get(j).size())*luckySheetBindData.getRowSpan());
+//        	double top = LuckysheetUtil.calculateTop(rowlen, rowAndCol.get("maxX"),rowhidden);
+//			double left = LuckysheetUtil.calculateLeft(columnlen, rowAndCol.get("maxY"),colhidden);
+//			Object width = LuckysheetUtil.calculateWidth(columnlen, rowAndCol.get("maxY"), luckySheetBindData.getColSpan());
+//			Object height = LuckysheetUtil.calculateHeight(rowlen, rowAndCol.get("maxX"), (luckySheetBindData.getIsGroupMerge()?groupMergeRows:bindDatas.get(j).size())*luckySheetBindData.getRowSpan());
 			JSONObject imgInfo = JSONObject.parseObject(Constants.DEFAULT_IMG_INFO);
-			imgInfo.getJSONObject("default").put("top", top);
-			imgInfo.getJSONObject("default").put("left", left);
-			imgInfo.getJSONObject("default").put("width", width);
-			imgInfo.getJSONObject("default").put("height", height);
-			imgInfo.getJSONObject("crop").put("width", width);
-			imgInfo.getJSONObject("crop").put("height", height);
+//			imgInfo.getJSONObject("default").put("top", top);
+//			imgInfo.getJSONObject("default").put("left", left);
+//			imgInfo.getJSONObject("default").put("width", width);
+//			imgInfo.getJSONObject("default").put("height", height);
+//			imgInfo.getJSONObject("crop").put("width", width);
+//			imgInfo.getJSONObject("crop").put("height", height);
 			imgInfo.put("src", property);
 			JSONObject img = new JSONObject();
 			img.put("imgInfo", imgInfo);
@@ -10422,17 +10437,17 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         }
         if(isImg)
 		{
-        	double top = LuckysheetUtil.calculateTop(rowlen, rowAndCol.get("maxX"),rowhidden);
-			double left = LuckysheetUtil.calculateLeft(columnlen, rowAndCol.get("maxY"),colhidden);
-			Object width = LuckysheetUtil.calculateWidth(columnlen, rowAndCol.get("maxY"), (luckySheetBindData.getIsGroupMerge()?groupMergeRows:bindDatas.get(j).size())*luckySheetBindData.getColSpan());
-			Object height = LuckysheetUtil.calculateHeight(rowlen, rowAndCol.get("maxX"), luckySheetBindData.getRowSpan());
+//        	double top = LuckysheetUtil.calculateTop(rowlen, rowAndCol.get("maxX"),rowhidden);
+//			double left = LuckysheetUtil.calculateLeft(columnlen, rowAndCol.get("maxY"),colhidden);
+//			Object width = LuckysheetUtil.calculateWidth(columnlen, rowAndCol.get("maxY"), (luckySheetBindData.getIsGroupMerge()?groupMergeRows:bindDatas.get(j).size())*luckySheetBindData.getColSpan());
+//			Object height = LuckysheetUtil.calculateHeight(rowlen, rowAndCol.get("maxX"), luckySheetBindData.getRowSpan());
 			JSONObject imgInfo = JSONObject.parseObject(Constants.DEFAULT_IMG_INFO);
-			imgInfo.getJSONObject("default").put("top", top);
-			imgInfo.getJSONObject("default").put("left", left);
-			imgInfo.getJSONObject("default").put("width", width);
-			imgInfo.getJSONObject("default").put("height", height);
-			imgInfo.getJSONObject("crop").put("width", width);
-			imgInfo.getJSONObject("crop").put("height", height);
+//			imgInfo.getJSONObject("default").put("top", top);
+//			imgInfo.getJSONObject("default").put("left", left);
+//			imgInfo.getJSONObject("default").put("width", width);
+//			imgInfo.getJSONObject("default").put("height", height);
+//			imgInfo.getJSONObject("crop").put("width", width);
+//			imgInfo.getJSONObject("crop").put("height", height);
 			imgInfo.put("src", property);
 			JSONObject img = new JSONObject();
 			img.put("imgInfo", imgInfo);
@@ -10930,17 +10945,17 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
                 }
                 if(isImg)
         		{
-                	double top = LuckysheetUtil.calculateTop(rowlen, x,rowhidden);
-        			double left = LuckysheetUtil.calculateLeft(columnlen, y,colhidden);
-        			Object width = LuckysheetUtil.calculateWidth(columnlen, y, luckySheetBindData.getColSpan());
-        			Object height = LuckysheetUtil.calculateHeight(rowlen, x, (luckySheetBindData.getIsGroupMerge()?1:dataSize)*luckySheetBindData.getRowSpan());
+//                	double top = LuckysheetUtil.calculateTop(rowlen, x,rowhidden);
+//        			double left = LuckysheetUtil.calculateLeft(columnlen, y,colhidden);
+//        			Object width = LuckysheetUtil.calculateWidth(columnlen, y, luckySheetBindData.getColSpan());
+//        			Object height = LuckysheetUtil.calculateHeight(rowlen, x, (luckySheetBindData.getIsGroupMerge()?1:dataSize)*luckySheetBindData.getRowSpan());
         			JSONObject imgInfo = JSONObject.parseObject(Constants.DEFAULT_IMG_INFO);
-        			imgInfo.getJSONObject("default").put("top", top);
-        			imgInfo.getJSONObject("default").put("left", left);
-        			imgInfo.getJSONObject("default").put("width", width);
-        			imgInfo.getJSONObject("default").put("height", height);
-        			imgInfo.getJSONObject("crop").put("width", width);
-        			imgInfo.getJSONObject("crop").put("height", height);
+//        			imgInfo.getJSONObject("default").put("top", top);
+//        			imgInfo.getJSONObject("default").put("left", left);
+//        			imgInfo.getJSONObject("default").put("width", width);
+//        			imgInfo.getJSONObject("default").put("height", height);
+//        			imgInfo.getJSONObject("crop").put("width", width);
+//        			imgInfo.getJSONObject("crop").put("height", height);
         			imgInfo.put("src", property);
         			JSONObject img = new JSONObject();
         			img.put("imgInfo", imgInfo);
@@ -11345,17 +11360,17 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
                 }
                 if(isImg)
         		{
-                	double top = LuckysheetUtil.calculateTop(rowlen, x,rowhidden);
-        			double left = LuckysheetUtil.calculateLeft(columnlen, y,colhidden);
-        			Object width = LuckysheetUtil.calculateWidth(columnlen, y, (luckySheetBindData.getIsGroupMerge()?1:luckySheetBindData.getDatas().get(j).size())*luckySheetBindData.getColSpan());
-        			Object height = LuckysheetUtil.calculateHeight(rowlen, x, luckySheetBindData.getRowSpan());
+//                	double top = LuckysheetUtil.calculateTop(rowlen, x,rowhidden);
+//        			double left = LuckysheetUtil.calculateLeft(columnlen, y,colhidden);
+//        			Object width = LuckysheetUtil.calculateWidth(columnlen, y, (luckySheetBindData.getIsGroupMerge()?1:luckySheetBindData.getDatas().get(j).size())*luckySheetBindData.getColSpan());
+//        			Object height = LuckysheetUtil.calculateHeight(rowlen, x, luckySheetBindData.getRowSpan());
         			JSONObject imgInfo = JSONObject.parseObject(Constants.DEFAULT_IMG_INFO);
-        			imgInfo.getJSONObject("default").put("top", top);
-        			imgInfo.getJSONObject("default").put("left", left);
-        			imgInfo.getJSONObject("default").put("width", width);
-        			imgInfo.getJSONObject("default").put("height", height);
-        			imgInfo.getJSONObject("crop").put("width", width);
-        			imgInfo.getJSONObject("crop").put("height", height);
+//        			imgInfo.getJSONObject("default").put("top", top);
+//        			imgInfo.getJSONObject("default").put("left", left);
+//        			imgInfo.getJSONObject("default").put("width", width);
+//        			imgInfo.getJSONObject("default").put("height", height);
+//        			imgInfo.getJSONObject("crop").put("width", width);
+//        			imgInfo.getJSONObject("crop").put("height", height);
         			imgInfo.put("src", property);
         			JSONObject img = new JSONObject();
         			img.put("imgInfo", imgInfo);
@@ -11853,17 +11868,17 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
             }
             if(isImg)
     		{
-            	double top = LuckysheetUtil.calculateTop(rowlen, x,rowhidden);
-    			double left = LuckysheetUtil.calculateLeft(columnlen, y,colhidden);
-    			Object width = LuckysheetUtil.calculateWidth(columnlen, y, luckySheetBindData.getColSpan());
-    			Object height = LuckysheetUtil.calculateHeight(rowlen, x, (luckySheetBindData.getLastIsGroupMerge()?1:dataSize)*luckySheetBindData.getRowSpan());
+//            	double top = LuckysheetUtil.calculateTop(rowlen, x,rowhidden);
+//    			double left = LuckysheetUtil.calculateLeft(columnlen, y,colhidden);
+//    			Object width = LuckysheetUtil.calculateWidth(columnlen, y, luckySheetBindData.getColSpan());
+//    			Object height = LuckysheetUtil.calculateHeight(rowlen, x, (luckySheetBindData.getLastIsGroupMerge()?1:dataSize)*luckySheetBindData.getRowSpan());
     			JSONObject imgInfo = JSONObject.parseObject(Constants.DEFAULT_IMG_INFO);
-    			imgInfo.getJSONObject("default").put("top", top);
-    			imgInfo.getJSONObject("default").put("left", left);
-    			imgInfo.getJSONObject("default").put("width", width);
-    			imgInfo.getJSONObject("default").put("height", height);
-    			imgInfo.getJSONObject("crop").put("width", width);
-    			imgInfo.getJSONObject("crop").put("height", height);
+//    			imgInfo.getJSONObject("default").put("top", top);
+//    			imgInfo.getJSONObject("default").put("left", left);
+//    			imgInfo.getJSONObject("default").put("width", width);
+//    			imgInfo.getJSONObject("default").put("height", height);
+//    			imgInfo.getJSONObject("crop").put("width", width);
+//    			imgInfo.getJSONObject("crop").put("height", height);
     			imgInfo.put("src", property);
     			JSONObject img = new JSONObject();
     			img.put("imgInfo", imgInfo);
@@ -12210,17 +12225,17 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
             }
             if(isImg)
     		{
-            	double top = LuckysheetUtil.calculateTop(rowlen, x,rowhidden);
-    			double left = LuckysheetUtil.calculateLeft(columnlen, y,colhidden);
-    			Object width = LuckysheetUtil.calculateWidth(columnlen, y, (luckySheetBindData.getLastIsGroupMerge()?1:luckySheetBindData.getDatas().get(0).size())*luckySheetBindData.getColSpan());
-    			Object height = LuckysheetUtil.calculateHeight(rowlen, x, luckySheetBindData.getRowSpan());
+//            	double top = LuckysheetUtil.calculateTop(rowlen, x,rowhidden);
+//    			double left = LuckysheetUtil.calculateLeft(columnlen, y,colhidden);
+//    			Object width = LuckysheetUtil.calculateWidth(columnlen, y, (luckySheetBindData.getLastIsGroupMerge()?1:luckySheetBindData.getDatas().get(0).size())*luckySheetBindData.getColSpan());
+//    			Object height = LuckysheetUtil.calculateHeight(rowlen, x, luckySheetBindData.getRowSpan());
     			JSONObject imgInfo = JSONObject.parseObject(Constants.DEFAULT_IMG_INFO);
-    			imgInfo.getJSONObject("default").put("top", top);
-    			imgInfo.getJSONObject("default").put("left", left);
-    			imgInfo.getJSONObject("default").put("width", width);
-    			imgInfo.getJSONObject("default").put("height", height);
-    			imgInfo.getJSONObject("crop").put("width", width);
-    			imgInfo.getJSONObject("crop").put("height", height);
+//    			imgInfo.getJSONObject("default").put("top", top);
+//    			imgInfo.getJSONObject("default").put("left", left);
+//    			imgInfo.getJSONObject("default").put("width", width);
+//    			imgInfo.getJSONObject("default").put("height", height);
+//    			imgInfo.getJSONObject("crop").put("width", width);
+//    			imgInfo.getJSONObject("crop").put("height", height);
     			imgInfo.put("src", property);
     			JSONObject img = new JSONObject();
     			img.put("imgInfo", imgInfo);
@@ -13886,7 +13901,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			printSettingsDto.setAuthor(userInfoDto.getUserName());
 			printSettingsDto.setTitle(reportTpl.getTplName());
 			printSettingsDto.setSubject(resPreviewData.getSheetDatas().get(0).getSheetName());
-			printSettingsDto.setKeyWords("SpringReport_2.1.0");
+			printSettingsDto.setKeyWords("SpringReport_2.3.6");
 			printSettingsDto.setHorizontalPage(
 					resPreviewData.getSheetDatas().get(0).getPrintSettings() == null?2:resPreviewData.getSheetDatas().get(0).getPrintSettings().getHorizontalPage());
 			printSettingsDto.setPageDivider(resPreviewData.getSheetDatas().get(0).getPageDivider());
@@ -14351,7 +14366,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				printSettingsDto.setAuthor(userInfoDto.getUserName());
 				printSettingsDto.setTitle(reportTpl.getTplName());
 				printSettingsDto.setSubject(resPreviewData.getSheetDatas().get(i).getSheetName());
-				printSettingsDto.setKeyWords("SpringReport_2.1.0");
+				printSettingsDto.setKeyWords("SpringReport_2.3.6");
 				printSettingsDto.setHorizontalPage(resPreviewData.getSheetDatas().get(i).getPrintSettings()!=null?resPreviewData.getSheetDatas().get(i).getPrintSettings().getHorizontalPage():2);
 				printSettingsDto.setPageDivider(resPreviewData.getSheetDatas().get(i).getPageDivider());
 				objects.add(new ExcelObject("excel",is,x,y,endx,endy,mesGenerateReportDto.getPdfType(),colhidden,rowhidden,resPreviewData.getSheetDatas().get(i).getXxbtScreenshot(),printSettingsDto,mesExportExcel.getImageInfos(),mesExportExcel.getBackImages(),mesExportExcel.getSheetConfigs().get(0).getWrapText()));
@@ -14713,7 +14728,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 					}
 					printSettingsDto.setTitle(reportTpl.getTplName());
 					printSettingsDto.setSubject(resPreviewData.getSheetDatas().get(i).getSheetName());
-					printSettingsDto.setKeyWords("SpringReport_2.1.0");
+					printSettingsDto.setKeyWords("SpringReport_2.3.6");
 					printSettingsDto.setHorizontalPage(resPreviewData.getSheetDatas().get(i).getPrintSettings() == null?2:resPreviewData.getSheetDatas().get(i).getPrintSettings().getHorizontalPage());
 					printSettingsDto.setPageDivider(resPreviewData.getSheetDatas().get(i).getPageDivider());
 					objects.add(new ExcelObject("excel",new ByteArrayInputStream(baos.toByteArray()),x,y,endx,endy,mesGenerateReportDto.getPdfType(),colhidden,rowhidden,i,resPreviewData.getSheetDatas().get(i).getXxbtScreenshot(),printSettingsDto,mesExportExcel.getImageInfos(),mesExportExcel.getBackImages(),mesExportExcel.getSheetConfigs().get(i).getWrapText()));
@@ -14851,7 +14866,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			printSettingsDto.setAuthor(userInfoDto.getUserName());
 			printSettingsDto.setTitle(reportTpl.getTplName());
 			printSettingsDto.setSubject(resPreviewData.getSheetDatas().get(0).getSheetName());
-			printSettingsDto.setKeyWords("SpringReport_2.1.0");
+			printSettingsDto.setKeyWords("SpringReport_2.3.6");
 			printSettingsDto.setHorizontalPage(resPreviewData.getSheetDatas().get(0).getPrintSettings() == null?2:resPreviewData.getSheetDatas().get(0).getPrintSettings().getHorizontalPage());
 			printSettingsDto.setPageDivider(resPreviewData.getSheetDatas().get(0).getPageDivider());
 			if(mesGenerateReportDto.isPatination()) {
@@ -15090,10 +15105,20 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			if(v.get("v") != null) {
 				value = String.valueOf(v.get("v"));
 			}
+			Object fs = null;
+			if(v.get("fs") != null) {
+				fs = v.get("fs");
+			}
+			Object ls = null;
+			if(v.get("ls") != null) {
+				ls = v.get("ls");
+			}
 			if(value.length() > rangeValue.length()) {
 				range.put("r", x);//内容长度最长的单元格x坐标
 				range.put("c", y);//内容长度最长的单元格x坐标
-				range.put("value", value);//内容长度最长的单元格x坐标
+				range.put("value", value);//内容
+				range.put("fs", fs);//内容字体大小
+				range.put("ls", ls);//内容间距
 			}
 		}else {
 			range = new JSONObject();
@@ -15107,7 +15132,17 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			if(v.get("v") != null) {
 				value = String.valueOf(v.get("v"));
 			}
+			Object fs = null;
+			if(v.get("fs") != null) {
+				fs = v.get("fs");
+			}
+			Object ls = null;
+			if(v.get("ls") != null) {
+				ls = v.get("ls");
+			}
 			range.put("value", value);//内容长度最长的单元格x坐标
+			range.put("fs", fs);//内容字体大小
+			range.put("ls", ls);//内容间距
 			dynamicRange.put(key, range);
 		}
 	}

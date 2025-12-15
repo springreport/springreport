@@ -1,5 +1,6 @@
 package com.springreport.util;
 
+import java.awt.font.FontRenderContext;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -1021,6 +1022,49 @@ public class LuckysheetUtil {
 		result.put("r", r);
 		result.put("dy", temp);
 		return result;
+	}
+	
+	public static void calculateWrapRowLen(JSONObject wrapData,Map<String, Object> rowlen,Map<String, Object> columnlen,FontRenderContext frc) {
+		int str = wrapData.getIntValue("str");
+		int edr = wrapData.getIntValue("edr");
+		int stc = wrapData.getIntValue("stc");
+		int edc = wrapData.getIntValue("edc");
+		int ls = wrapData.getIntValue("ls");;
+		String value = wrapData.getString("value");
+		short fs = wrapData.getShortValue("fs");
+		java.awt.Font font = new java.awt.Font("微软雅黑", 0, fs);
+		int width = (int) font.getStringBounds(value, frc).getWidth();
+		java.awt.Rectangle rec = font.getStringBounds("田", frc).getBounds();
+		double collen = LuckysheetUtil.calculateWidth(columnlen, stc, edc-stc+1);
+		double rows = Math.ceil(width/collen);
+		float poiHeight = (float) ((rec.height+ls) * rows)*(rows>1?1.88f:1f);
+		for (int i = str; i <= edr; i++) {
+			if(rowlen.containsKey(i+"")) {
+				float height = Float.parseFloat(rowlen.get(i+"")+"");
+				if(poiHeight > height) {
+					rowlen.put(i+"", poiHeight);
+				}
+			}else {
+				rowlen.put(i+"", poiHeight);
+			}
+		}
+	}
+	
+	public static void calculateImg(JSONObject img,Map<String, Object> rowlen,Map<String, Object> columnlen,JSONObject rowhidden,JSONObject colhidden) {
+		int r = img.getIntValue("r");
+		int c = img.getIntValue("c");
+		int rowSpan = img.getIntValue("rowSpan");
+		int colSpan = img.getIntValue("colSpan");
+		double top = LuckysheetUtil.calculateTop(rowlen, r,rowhidden);
+		double left = LuckysheetUtil.calculateLeft(columnlen, c,colhidden);
+		Object width = LuckysheetUtil.calculateWidth(columnlen, c, colSpan==0?1:colSpan);
+		Object height = LuckysheetUtil.calculateHeight(rowlen, r, rowSpan==0?1:rowSpan);
+		img.getJSONObject("imgInfo").getJSONObject("default").put("top", top);
+		img.getJSONObject("imgInfo").getJSONObject("default").put("left", left);
+		img.getJSONObject("imgInfo").getJSONObject("default").put("width", width);
+		img.getJSONObject("imgInfo").getJSONObject("default").put("height", height);
+		img.getJSONObject("imgInfo").getJSONObject("crop").put("width", width);
+		img.getJSONObject("imgInfo").getJSONObject("crop").put("height", height);
 	}
 	
 	public static void main(String[] args) {
