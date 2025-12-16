@@ -117,6 +117,7 @@
         :activitiName="activitiName"
         :showSearch="showSearch"
         :isParamMerge="isParamMerge"
+        @submit.enter.prevent
       >
         <div v-show="isShowSearch" style="display: flex; width: 100%">
           <!-- <div style="display: flex; width: 15%">
