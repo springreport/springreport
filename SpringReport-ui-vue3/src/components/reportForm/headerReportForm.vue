@@ -109,6 +109,7 @@
         :show-search="showSearch"
         :is-param-merge="isParamMerge"
         :inline="true"
+        @submit.enter.prevent
       >
           <div style="display: flex; width: 100%; padding-left: 0px">
             <el-tabs
