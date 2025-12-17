@@ -262,16 +262,28 @@
                     v-if="item.paramType === 'date'"
                     v-model="searchData.params[i].params[index][item.paramCode]"
                     
-                    :format="item.dateFormat"
-                    :value-format="item.dateFormat"
+                     :format="
+                      item.dateFormat == 'YYYY-MM-DD' || item.dateFormat == 'yyyy-MM-dd'
+                        ? 'YYYY-MM-DD'
+                        : item.dateFormat == 'yyyy-MM-dd HH:mm:ss'
+                        ? 'YYYY-MM-DD HH:mm:ss'
+                        : item.dateFormat
+                    "
+                    :value-format="
+                      item.dateFormat == 'YYYY-MM-DD' || item.dateFormat == 'yyyy-MM-dd'
+                        ? 'YYYY-MM-DD'
+                        : item.dateFormat == 'yyyy-MM-dd HH:mm:ss'
+                        ? 'YYYY-MM-DD HH:mm:ss'
+                        : item.dateFormat
+                    "
                     :type="
-                      item.dateFormat == 'yyyy-MM-dd'
+                      item.dateFormat == 'YYYY-MM-DD' || item.dateFormat == 'yyyy-MM-dd'
                         ? 'date'
-                        : item.dateFormat == 'yyyy-MM'
-                          ? 'month'
-                          : item.dateFormat == 'yyyy'
-                            ? 'year'
-                            : 'datetime'
+                        : item.dateFormat == 'YYYY-MM'
+                        ? 'month'
+                        : item.dateFormat == 'YYYY'
+                        ? 'year'
+                        : 'datetime'
                     "
                   />
                   <el-tree-select
@@ -439,16 +451,28 @@
                   v-if="item.paramType === 'date'"
                   v-model="searchData.params[0].params[index][item.paramCode]"
                   
-                  :format="item.dateFormat"
-                  :value-format="item.dateFormat"
+                   :format="
+                    item.dateFormat == 'YYYY-MM-DD' || item.dateFormat == 'yyyy-MM-dd'
+                      ? 'YYYY-MM-DD'
+                      : item.dateFormat == 'yyyy-MM-dd HH:mm:ss'
+                      ? 'YYYY-MM-DD HH:mm:ss'
+                      : item.dateFormat
+                  "
+                   :value-format="
+                    item.dateFormat == 'YYYY-MM-DD' || item.dateFormat == 'yyyy-MM-dd'
+                      ? 'YYYY-MM-DD'
+                      : item.dateFormat == 'yyyy-MM-dd HH:mm:ss'
+                      ? 'YYYY-MM-DD HH:mm:ss'
+                      : item.dateFormat
+                  "
                   :type="
-                    item.dateFormat == 'yyyy-MM-dd'
+                    item.dateFormat == 'YYYY-MM-DD' || item.dateFormat == 'yyyy-MM-dd'
                       ? 'date'
-                      : item.dateFormat == 'yyyy-MM'
-                        ? 'month'
-                        : item.dateFormat == 'yyyy'
-                          ? 'year'
-                          : 'datetime'
+                      : item.dateFormat == 'YYYY-MM'
+                      ? 'month'
+                      : item.dateFormat == 'YYYY'
+                      ? 'year'
+                      : 'datetime'
                   "
                 />
                 <el-tree-select
