@@ -277,7 +277,7 @@ public class StringUtil {
 	
 	 // 完整的URL正则表达式
     private static final String URL_REGEX = 
-        "^((http|https|ftp)://)?([\\w-]+\\.)+[\\w-]+(:\\d+)?(/[\\w-./?%&=]*)?$";
+        "^(http|https)://.*$";
     
     private static final Pattern URL_PATTERN = Pattern.compile(URL_REGEX);
     
