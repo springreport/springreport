@@ -786,11 +786,38 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 			}
 		}
 		
-		//获取所有的数据集
+		//获取所有的非公共数据集
 		QueryWrapper<ReportTplDataset> datasetQueryWrapper = new QueryWrapper<ReportTplDataset>();
 		datasetQueryWrapper.eq("tpl_id", reportTplDataset.getTplId());
+		datasetQueryWrapper.eq("is_common", YesNoEnum.NO.getCode());
 		datasetQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
 		List<ReportTplDataset> datasets = this.list(datasetQueryWrapper);
+		if(datasets == null) {
+			datasets = new ArrayList<ReportTplDataset>();
+		}
+		//获取所有的公共数据集
+		QueryWrapper<ReportTplDataset> commonDatasetQueryWrapper = new QueryWrapper<ReportTplDataset>();
+		commonDatasetQueryWrapper.eq("is_common", YesNoEnum.YES.getCode());
+		commonDatasetQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+		if(reportTplDataset.getReportType().intValue() == 1) {
+			commonDatasetQueryWrapper.eq("common_type", 1);
+			List<ReportTplDataset> commonDatasets = this.list(commonDatasetQueryWrapper);
+			if(ListUtil.isNotEmpty(commonDatasets)) {
+				datasets.addAll(commonDatasets);
+			}
+		}else if(reportTplDataset.getReportType().intValue() == 2) {
+			commonDatasetQueryWrapper.eq("common_type", 2);
+			List<ReportTplDataset> commonDatasets = this.list(commonDatasetQueryWrapper);
+			if(ListUtil.isNotEmpty(commonDatasets)) {
+				datasets.addAll(commonDatasets);
+			}
+		}else if(reportTplDataset.getReportType().intValue() == 3) {
+			commonDatasetQueryWrapper.eq("common_type", 3);
+			List<ReportTplDataset> commonDatasets = this.list(commonDatasetQueryWrapper);
+			if(ListUtil.isNotEmpty(commonDatasets)) {
+				datasets.addAll(commonDatasets);
+			}
+		}
 		if (!ListUtil.isEmpty(datasets)) {
 			for (int i = 0; i < datasets.size(); i++) {
 				//筛选报表中引用的数据集
