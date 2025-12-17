@@ -282,9 +282,6 @@ public class StringUtil {
     private static final Pattern URL_PATTERN = Pattern.compile(URL_REGEX);
     
     public static boolean isValidUrl(String url) {
-    	if(url.contains("http")) {
-    		System.err.println();
-    	}
         if (url == null || url.trim().isEmpty()) {
             return false;
         }
