@@ -661,7 +661,7 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 		Map<String, Object> subParams = new HashMap<String, Object>();//传给子表的参数
 		if(ListUtil.isNotEmpty(datasets)) {
 			for (int i = 0; i < datasets.size(); i++) {
-				Object datasetData = this.getDatasetDatas(model, datasets.get(i), reportSqls,paramsType,userInfoDto,apiCache,subParams);
+				Object datasetData = this.getDatasetDatas(model, datasets.get(i), reportSqls,paramsType,userInfoDto,apiCache,subParams,docTpl);
 				String subParamAttrs = datasets.get(i).getSubParamAttrs();
 				if(StringUtil.isNotEmpty(subParamAttrs) && datasetData != null) {
 					JSONArray attrs = JSON.parseArray(subParamAttrs);
@@ -1205,12 +1205,18 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 	 */ 
 	@Override
 	public Object getDatasetDatas(MesGenerateReportDto mesGenerateReportDto,ReportDatasetDto reportTplDataset,List<Map<String, String>> reportSqls,
-			Map<String, List<String>> paramsType,UserInfoDto userInfoDto,Map<String, String> apiCache,Map<String, Object> subParams) throws Exception {
+			Map<String, List<String>> paramsType,UserInfoDto userInfoDto,Map<String, String> apiCache,Map<String, Object> subParams,DocTpl docTpl) throws Exception {
 		Map<String, String> sqlMap = new HashMap<>();
 		List<Map<String, Object>> datas = null;
 		Map<String, Object> searchInfo = null;
-		if(mesGenerateReportDto.getSearchData() != null && mesGenerateReportDto.getSearchData().size() > 0) {
+//		if(mesGenerateReportDto.getSearchData() != null && mesGenerateReportDto.getSearchData().size() > 0) {
+//			searchInfo = mesGenerateReportDto.getSearchData().get(0);
+//		}
+		if(YesNoEnum.YES.getCode().intValue() == docTpl.getParamMerge().intValue())
+		{
 			searchInfo = mesGenerateReportDto.getSearchData().get(0);
+		}else {
+			searchInfo = this.getDatasetParamInfo(reportTplDataset.getDatasetName(), mesGenerateReportDto);
 		}
 		DataSource dataSource = null;
 		InfluxDBConnection dbConnection = null;
@@ -2390,6 +2396,32 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 			this.iReportTplDatasetService.saveBatch(datasets);
 		}
 		result.setStatusMsg(MessageUtil.getValue("info.copy",new String[] {newName}));
+		return result;
+	}
+	
+	/**  
+	 * @Title: getDatasetParamInfo
+	 * @Description: 获取数据集的参数信息
+	 * @param usedDatasetName
+	 * @param mesGenerateReportDto
+	 * @return
+	 * @author caiyang
+	 * @date 2021-06-18 04:24:20 
+	 */ 
+	private Map<String, Object> getDatasetParamInfo(String usedDatasetName,MesGenerateReportDto mesGenerateReportDto){
+		Map<String, Object> result = null;
+		if(ListUtil.isEmpty(mesGenerateReportDto.getSearchData()))
+		{
+			return result;
+		}else {
+			for (int i = 0; i < mesGenerateReportDto.getSearchData().size(); i++) {
+				if(usedDatasetName.equals(mesGenerateReportDto.getSearchData().get(i).get("datasetName")))
+				{
+					result = mesGenerateReportDto.getSearchData().get(i);
+					break;
+				}
+			}
+		}
 		return result;
 	}
 	

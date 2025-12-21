@@ -111,8 +111,8 @@ export default {
         cellRightClickConfig: {
           copyAs: false, // 复制为
           deleteCell: false, // 删除单元格
-          hideRow: false, // 隐藏选中行和显示选中行
-          hideColumn: false, // 隐藏选中列和显示选中列
+          hideRow: true, // 隐藏选中行和显示选中行
+          hideColumn: true, // 隐藏选中列和显示选中列
           matrix: false, // 矩阵操作选区
           sort: false, // 排序选区
           filter: false, // 筛选选区
