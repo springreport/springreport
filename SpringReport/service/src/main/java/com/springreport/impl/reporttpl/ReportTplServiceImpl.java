@@ -15099,7 +15099,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		if(dynamicRange.containsKey(key)) {
 			range = dynamicRange.getJSONObject(key);
 			range.put("edr", x);
-			range.put("edc", y);
+			range.put("edc", y+luckySheetBindData.getColSpan()-1);
 			String rangeValue = range.getString("value");
 			String value = "";
 			if(v.get("v") != null) {
@@ -15123,9 +15123,17 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		}else {
 			range = new JSONObject();
 			range.put("str", x);//起始行
-			range.put("edr", x);//结束行
+			if(luckySheetBindData.getCellValueType().intValue() == 1) {
+				range.put("edr", x+luckySheetBindData.getRowSpan()-1);//结束行
+			}else {
+				range.put("edr", x);//结束行
+			}
 			range.put("stc", y);//起始列
-			range.put("edc", y);//结束列
+			if(luckySheetBindData.getCellValueType().intValue() == 1) {
+				range.put("edc", y+luckySheetBindData.getColSpan()-1);//结束列
+			}else {
+				range.put("edc", y);//结束列
+			}
 			range.put("r", x);//内容长度最长的单元格x坐标
 			range.put("c", y);//内容长度最长的单元格x坐标
 			String value = "";
