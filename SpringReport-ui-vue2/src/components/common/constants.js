@@ -160,7 +160,11 @@ commonConstants.dictionary = {
     2: '除法',
     3: '乘法并转成中文大写',
     4: '除法并转成中文大写',
-  }
+  },
+  multiScreenType: {
+    1: '走马灯',
+    2: 'tab标签'
+  },
 }
 
 /**
@@ -644,6 +648,14 @@ commonConstants.routers = [
       //     title: "PPT模板管理",
       //   },
       // },
+      {
+        path: '/multiscreen',
+        name: 'multiscreen',
+        component: () => import('@/components/pages/multiscreen/MultiScreen.vue'),
+        meta: {
+          title: '多大屏管理'
+        }
+      },
     ]
   },
   {
@@ -784,6 +796,14 @@ commonConstants.routers = [
   //     title: "PPT预览",
   //   },
   // },
+  {
+    path: '/multiscreenView',
+    name: 'multiscreenView',
+    component: () => import('@/components/pages/multiscreen/multiscreenview.vue'),
+    meta: {
+      title: '多大屏查看'
+    }
+  },
   {
     path: '*',
     redirect: '/404'
