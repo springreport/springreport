@@ -161,7 +161,9 @@ public class ListUtil {
 						}else {
 							datasetNames = datasetNames + "," + newDatasetName;
 						}
-						cellValue = cellValue.replaceAll(datasetName+"\\.", newDatasetName+"\\.");
+						if(!cellValue.contains(newDatasetName)) {
+							cellValue = cellValue.replaceAll(datasetName+"\\.", newDatasetName+"\\.");
+						}
 						break;
 					}
 				}

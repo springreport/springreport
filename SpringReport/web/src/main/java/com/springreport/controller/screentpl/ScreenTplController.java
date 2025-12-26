@@ -166,7 +166,7 @@ public class ScreenTplController extends BaseController {
 	@RequestMapping(value = "/getScreenDesign",method = RequestMethod.POST)
 	@MethodLog(module="ScreenTpl",remark="获取大屏设计详情",operateType=Constants.OPERATE_TYPE_SEARCH)
 	@Check({"id:required#主键ID"})
-	@RequiresPermissions(value = {"screenTpl_screenDesign","screenTpl_previewDesign","screenTpl_viewScreen","multiScreen_preview","multiScreen_view","screenTemplate_design"},logical = Logical.OR)
+	@RequiresPermissions(value = {"screenTpl_screenDesign","screenTpl_previewDesign","screenTpl_viewScreen","multiScreen_preview","multiScreen_view","screenTemplate_design","multi_view"},logical = Logical.OR)
 	public Response getScreenDesign(@RequestBody ScreenTpl screenTpl,@LoginUser UserInfoDto userInfoDto)
 	{
 		ScreenTplDto result = this.iScreenTplService.getScreenDesign(screenTpl);
