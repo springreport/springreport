@@ -28,6 +28,7 @@ import com.springreport.util.JWTUtil;
 import com.springreport.util.ListUtil;
 import com.springreport.util.MessageUtil;
 import com.springreport.util.StringUtil;
+import com.springreport.util.UUIDUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.PageHelper;
@@ -505,6 +506,7 @@ public class ScreenTplServiceImpl extends ServiceImpl<ScreenTplMapper, ScreenTpl
 				screenContents.get(i).setId(id);
 				JSONObject content = JSONObject.parseObject(screenContents.get(i).getContent());
 				content.put("primaryKey", id);
+				content.put("id", UUIDUtil.getUUID());
 				screenContents.get(i).setContent(JSON.toJSONString(content));
 				screenContents.get(i).setTplId(screenTpl.getId());
 			}

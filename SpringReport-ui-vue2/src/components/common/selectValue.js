@@ -979,4 +979,8 @@ selectUtil.searchFormType = [
   { value: 2, label: '侧边栏弹出' }
 ]
 
+selectUtil.multiType = [
+  { value: 1, label: '走马灯' },
+  { value: 2, label: 'tab标签' }
+]
 export default selectUtil
