@@ -5091,7 +5091,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 									            }
 									            String format = LuckysheetUtil.getCellFormat(JSONObject.parseObject(subLuckysheetReportBlockCells.get(i).getCellData(), Map.class));
 									        	Object v = LuckysheetUtil.formatValue(format, value);
-									        	((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.CELLVALUE.getCode(), v);
+									        	((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.CELLVALUE.getCode(), value);
 											    ((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.CELLVALUEM.getCode(), v);
 			 						       }
 			 						      if(YesNoEnum.YES.getCode().intValue() == subLuckysheetReportBlockCells.get(i).getIsFunction().intValue())
@@ -5407,7 +5407,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 								            }
 								            String format = LuckysheetUtil.getCellFormat(JSONObject.parseObject(luckysheetReportBlockCells.get(t).getCellData(), Map.class));
 								        	Object v = LuckysheetUtil.formatValue(format, value);
-								        	((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.CELLVALUE.getCode(), v);
+								        	((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.CELLVALUE.getCode(), value);
 										    ((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.CELLVALUEM.getCode(), v);
 								        }
 								        if(YesNoEnum.YES.getCode().intValue() == luckysheetReportBlockCells.get(t).getIsFunction().intValue())
@@ -6278,7 +6278,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         Map<String, Object> cellData = luckySheetBindData.getCellData();
         String format = LuckysheetUtil.getCellFormat(luckySheetBindData.getCellData());
     	Object v = LuckysheetUtil.formatValue(format, calculateResult);
-        ((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.CELLVALUE.getCode(), v);
+        ((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.CELLVALUE.getCode(), calculateResult);
         ((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.CELLVALUEM.getCode(), v);
         if(luckySheetBindData.getCellFillType().intValue() == 2) {
         	this.processSummaryCoverCell(objectMapper, usedCells, luckySheetBindData, cellDatas, null, dataRowLen, configRowLen, dataColLen, configColumnLen, border, maxXAndY, maxCoordinate, borderInfo, v);
@@ -6733,7 +6733,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		}
         String format = LuckysheetUtil.getCellFormat(luckySheetBindData.getCellData());
     	Object v = LuckysheetUtil.formatValue(format, value);
-        ((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.CELLVALUE.getCode(), v);
+        ((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.CELLVALUE.getCode(), value);
         ((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.CELLVALUEM.getCode(), v);
         if(luckySheetBindData.getCellFillType().intValue() == 2) {
     		this.processSummaryCoverCell(objectMapper, usedCells, luckySheetBindData, cellDatas, null, dataRowLen, configRowLen, dataColLen, configColumnLen, border, maxXAndY, maxCoordinate, borderInfo, v);
@@ -7024,7 +7024,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		}
         String format = LuckysheetUtil.getCellFormat(luckySheetBindData.getCellData());
     	Object v = LuckysheetUtil.formatValue(format, value);
-        ((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.CELLVALUE.getCode(), v);
+        ((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.CELLVALUE.getCode(), value);
         ((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.CELLVALUEM.getCode(), v);
         if(dataRowLen != null)
         {
@@ -7522,7 +7522,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		}
         String format = LuckysheetUtil.getCellFormat(luckySheetBindData.getCellData());
     	Object v = LuckysheetUtil.formatValue(format, value);
-        ((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.CELLVALUE.getCode(), v);
+        ((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.CELLVALUE.getCode(), value);
         ((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.CELLVALUEM.getCode(), v);
         if(luckySheetBindData.getIsGroupMerge())
         {
@@ -8403,7 +8403,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		}
         String format = LuckysheetUtil.getCellFormat(luckySheetBindData.getCellData());
     	Object v = LuckysheetUtil.formatValue(format, value);
-    	((Map<String, Object>)luckySheetBindData.getCellData().get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.CELLVALUE.getCode(), v);
+    	((Map<String, Object>)luckySheetBindData.getCellData().get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.CELLVALUE.getCode(), value);
     	((Map<String, Object>)luckySheetBindData.getCellData().get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.CELLVALUEM.getCode(), v);
     	if(luckySheetBindData.getCellFillType().intValue() == 2) {
     		this.processSummaryCoverCell(objectMapper, usedCells, luckySheetBindData, cellDatas, calcChain, dataRowLen, configRowLen, dataColLen, configColumnLen, border, maxXAndY, maxCoordinate, borderInfo, v);
@@ -9003,7 +9003,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
     		}
     		
     	}
-    	((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.CELLVALUE.getCode(), v);
+    	((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.CELLVALUE.getCode(), value);
     	((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.CELLVALUEM.getCode(), v);
     	if(YesNoEnum.YES.getCode().intValue() == luckySheetBindData.getIsFunction().intValue())
     	{
