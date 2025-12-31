@@ -160,6 +160,14 @@ export const constantRoutes = [
   //     title: 'doc预览',
   //   },
   // },
+  // {
+  //   path: '/multiscreenView',
+  //   name: 'multiscreenView',
+  //   component: () => import('@/views/multiscreen/multiscreenview.vue'),
+  //   meta: {
+  //     title: '多大屏查看'
+  //   }
+  // },
   {
     path: '/',
     component: Layout,
@@ -398,6 +406,14 @@ export const constantRoutes = [
       //     title: "Word报表(onlyoffice)",
       //   },
       // },
+      // {
+      //   path: '/multiscreen',
+      //   name: 'multiscreen',
+      //   component: () => import('@/views/multiscreen/MultiScreen.vue'),
+      //   meta: {
+      //     title: '多大屏管理'
+      //   }
+      // },
     ],
   },
   {
@@ -573,7 +589,6 @@ export const constantThirdPartyRoutes = [
   //   children: [
   //   ],
   // },
-
   {
     path: '/index',
     name: 'Index',

@@ -6258,7 +6258,11 @@ commonConstants.dictionary={
         2: '除法',
         3: '乘法并转成中文大写',
         4: '除法并转成中文大写',
-    }
+    },
+    multiScreenType: {
+        1: '走马灯',
+        2: 'tab标签'
+    },
 }
 
 /**

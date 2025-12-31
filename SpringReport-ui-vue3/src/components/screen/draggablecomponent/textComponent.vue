@@ -1,6 +1,6 @@
 <template>
 <div
-  :style="{ height: '100%', width: '100%' }"
+  :style="{ height: component.h + 'px', width: component.w + 'px' }"
 >
 <component :is="component.borderType.replace('-reverse','')" v-if="component.isborder && component.borderType" :color="component.borderColor" :backgroundColor="component.borderBackgroundColor" :reverse="component.borderType.indexOf('-reverse')>-1">
   <div
