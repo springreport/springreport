@@ -10,6 +10,7 @@
 
 package com.springreport.constants;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -128,6 +129,7 @@ public class Constants {
      * @date 2023-01-06 10:54:42 
      */  
     public static final String IMG_EXTENTIONS = "jpg,jpeg,png,bmp";
+    
     
     /**  
      * @Fields DEFAULT_IMG_INFO : 报表图片默认信息
@@ -322,4 +324,29 @@ public class Constants {
      */  
     public static final String ICON_SET_RULE = "{\"cellrange\":[{\"column\":[1,1],\"row\":[2,2]}],\"format\":{\"len\":\"3\",\"top\":\"0\",\"leftMin\":\"0\"},\"type\":\"icons\"}";
 
+    /**  
+     * @Fields ATTACH_FILE_EXT : 附件文件后缀
+     * @author caiyang
+     * @date 2025年12月31日18:30:15
+     */  
+//    public static final String[] ATTACH_FILE_EXT = new String[] {".xls",".xlsx",".docx",".doc",".pdf",".json",".csv",".zip",".rar",".7z",".tar",".gz",".html",".txt",".mp3",".wav",".mp4",".avi",
+//    		".mkv",".mov",".wmv",".exe",".bat",".sh",".msi",".ppt",".mdb",".sql",".db",".js",".css"};
+
+    public static List<String> ATTACH_FILE_EXT = null;
+    
+    static{
+    	if(ATTACH_FILE_EXT == null) {
+    		String[] exts = new String[] {".xls",".xlsx",".docx",".doc",".pdf",".json",".csv",".zip",".rar",".7z",".tar",".gz",".html",".txt",".mp3",".wav",".mp4",".avi",
+    	    		".mkv",".mov",".wmv",".exe",".bat",".sh",".msi",".ppt",".mdb",".sql",".db",".js",".css"};
+    		ATTACH_FILE_EXT = Arrays.asList(exts);
+    	}
+    }
+    
+    /**  
+     * @Fields ATTACH_HYPERLINK : 附件超链接格式值
+     * @author caiyang
+     * @date 2026-01-01 07:37:39 
+     */  
+     
+    public static String ATTACH_HYPERLINK = "{\"fileName\":\"\",\"linkType\":\"attachment\",\"linkAddress\":\"\",\"linkTooltip\":\"\"}";
 }

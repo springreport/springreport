@@ -149,7 +149,7 @@ public class StringUtil {
 	 */ 
 	public static String getFileNameFromUrl(String url)
 	{
-		return url.substring(url.lastIndexOf("/")+1);
+		return url.substring(url.lastIndexOf("/")+1).split("\\?")[0];
 	}
 	
 	 /**
@@ -308,6 +308,31 @@ public class StringUtil {
 			if(StringUtil.isNotEmpty(contentType))
 			{
 				if(Constants.IMG_EXTENTIONS.contains(contentType))
+				{
+					result = true;
+				}
+			}
+		}
+		return result;
+	}
+	
+	/**  
+	 * @MethodName: isAttachUrl
+	 * @Description: 是否是附件url
+	 * @author caiyang
+	 * @param url
+	 * @return boolean
+	 * @date 2025-12-31 07:51:17 
+	 */  
+	public static boolean isAttachUrl(String url) {
+		boolean result = false;
+		boolean isUrl = isValidUrl(url);
+		if(isUrl)
+		{
+			String contentType = "."+getUrlExtensionSafe(url);
+			if(StringUtil.isNotEmpty(contentType))
+			{
+				if(Constants.ATTACH_FILE_EXT.contains(contentType))
 				{
 					result = true;
 				}
