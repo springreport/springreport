@@ -5030,6 +5030,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 									        String property = "";
 			 						        Object value = null;
 			 						        boolean isImg = false;
+			 						       boolean isAttachFile = false;//是否附件文件
 			 						       if(CellValueTypeEnum.VARIABLE.getCode().intValue() == subLuckysheetReportBlockCells.get(i).getCellValueType().intValue()) {
 									        	property = subLuckysheetReportBlockCells.get(i).getCellValue().replaceAll(subLuckysheetReportBlockCells.get(i).getDatasetName()+".", "").replaceAll("\\$", "").replaceAll("\\{", "").replaceAll("}", "");
 									        	Map<String, Object> mapData = ListUtil.getProperties(property, datas.get(j));
@@ -5064,6 +5065,12 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 								                		{
 								                			value = luckySheetBindData.getTplType() == 1?"":property;
 								        					isImg = true;
+								                		}else if(StringUtil.isAttachUrl(property))
+								                		{
+								                			isAttachFile = true;
+								                			String fileName = StringUtil.getFileNameFromUrl(String.valueOf(property));
+								                			this.processAttachHyperlink(hyperlinks, maxRow, maxCol, property, objectMapper,fileName);	
+								                			value = "附件:" + fileName;
 								                		}else if(!isJustProperty)
 								                		{
 								                			if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
@@ -5345,6 +5352,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		 						        String property = "";
 		 						        Object value = null;
 		 						        boolean isImg = false;
+		 						       boolean isAttachFile = false;//是否附件文件
 		  						        if(CellValueTypeEnum.VARIABLE.getCode().intValue() == luckysheetReportBlockCells.get(t).getCellValueType().intValue())
 								        {
 								        	property = luckysheetReportBlockCells.get(t).getCellValue().replaceAll(luckysheetReportBlockCells.get(t).getDatasetName()+".", "").replaceAll("\\$", "").replaceAll("\\{", "").replaceAll("}", "");
@@ -5380,6 +5388,12 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 							                		{
 							                			value = luckySheetBindData.getTplType() == 1?"":property;
 							        					isImg = true;
+							                		}else if(StringUtil.isAttachUrl(property))
+							                		{
+							                			isAttachFile = true;
+							                			String fileName = StringUtil.getFileNameFromUrl(String.valueOf(property));
+							                			this.processAttachHyperlink(hyperlinks, maxRow, maxCol, property, objectMapper,fileName);	
+							                			value = "附件:" + fileName;
 							                		}else if(!isJustProperty)
 							                		{
 							                			if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
@@ -8270,7 +8284,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         String property = luckySheetBindData.getProperty();
         Object value = null;
         boolean isImg = false;
-        
+        boolean isAttachFile = false;//是否附件文件
         if(luckySheetBindData.getIsDict())
         {
         	Map<String, String> dicts = null;
@@ -8357,6 +8371,12 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
             		{
             			value = luckySheetBindData.getTplType() == 1?"":property;
     					isImg = true;
+            		}else if(StringUtil.isAttachUrl(property))
+            		{
+            			isAttachFile = true;
+            			String fileName = StringUtil.getFileNameFromUrl(String.valueOf(property));
+            			this.processAttachHyperlink(hyperlinks, rowAndCol.get("maxX"), rowAndCol.get("maxY"), property, objectMapper,fileName);	
+            			value = "附件:" + fileName;
             		}else if(!isJustProperty)
             		{
             			if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
@@ -8864,6 +8884,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         boolean isJustProperty = false;
         Object value = null;
         boolean isImg = false;
+        boolean isAttachFile = false;//是否附件文件
         if(luckySheetBindData.getIsDict())
         {
         	Map<String, String> dicts = null;
@@ -8941,6 +8962,12 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
             		{
             			value = luckySheetBindData.getTplType() == 1?"":property;
     					isImg = true;
+            		}else if(StringUtil.isAttachUrl(property))
+            		{
+            			isAttachFile = true;
+            			String fileName = StringUtil.getFileNameFromUrl(String.valueOf(property));
+            			this.processAttachHyperlink(hyperlinks, rowAndCol.get("maxX"), rowAndCol.get("maxY"), property, objectMapper,fileName);	
+            			value = "附件:" + fileName;
             		}else if(!isJustProperty)
             		{
             			if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
@@ -10045,6 +10072,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         String property = luckySheetBindData.getProperty();
         boolean isJustProperty = false;
         boolean isImg = false;
+        boolean isAttachFile = false;//是否附件文件
         Object value = null;
         if(luckySheetBindData.getIsDict())
         {
@@ -10123,6 +10151,12 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
             		{
             			value = luckySheetBindData.getTplType() == 1?"":property;
     					isImg = true;
+            		}else if(StringUtil.isAttachUrl(property))
+            		{
+            			isAttachFile = true;
+            			String fileName = StringUtil.getFileNameFromUrl(String.valueOf(property));
+            			this.processAttachHyperlink(hyperlinks, rowAndCol.get("maxX"), rowAndCol.get("maxY"), property, objectMapper,fileName);	
+            			value = "附件:" + fileName;
             		}else if(!isJustProperty)
             		{
             			if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
@@ -10743,6 +10777,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
                 
                 Object value = null;
                 boolean isImg = false;
+                boolean isAttachFile = false;//是否附件文件
                 try {
                 	if(set.size() > 1)
                 	{
@@ -10762,6 +10797,12 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
                 		{
                 			value = luckySheetBindData.getTplType() == 1?"":property;
         					isImg = true;
+                		}else if(StringUtil.isAttachUrl(property))
+                		{
+                			isAttachFile = true;
+                			String fileName = StringUtil.getFileNameFromUrl(String.valueOf(property));
+                			this.processAttachHyperlink(hyperlinks, rowAndCol.get("maxX"), rowAndCol.get("maxY"), property, objectMapper,fileName);	
+                			value = "附件:" + fileName;
                 		}else if(!isJustProperty)
                 		{
                 			if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
@@ -11256,6 +11297,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
                 }
                 Object value = null;
                 boolean isImg = false;
+                boolean isAttachFile = false;//是否附件文件
                 try {
                 	if(set.size() > 1)
                 	{
@@ -11275,6 +11317,12 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
                 		{
                 			value = luckySheetBindData.getTplType() == 1?"":property;
         					isImg = true;
+                		}else if(StringUtil.isAttachUrl(property))
+                		{
+                			isAttachFile = true;
+                			String fileName = StringUtil.getFileNameFromUrl(String.valueOf(property));
+                			this.processAttachHyperlink(hyperlinks, rowAndCol.get("maxX"), rowAndCol.get("maxY"), property, objectMapper,fileName);	
+                			value = "附件:" + fileName;
                 		}else if(!isJustProperty)
                 		{
                 			if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
@@ -11668,6 +11716,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
             }
             Object value = null;
             boolean isImg = false;
+            boolean isAttachFile = false;//是否附件文件
             try {
             	if(set.size() > 1)
             	{
@@ -11687,6 +11736,12 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
             		{
             			value = luckySheetBindData.getTplType() == 1?"":property;
     					isImg = true;
+            		}else if(StringUtil.isAttachUrl(property))
+            		{
+            			isAttachFile = true;
+            			String fileName = StringUtil.getFileNameFromUrl(String.valueOf(property));
+            			this.processAttachHyperlink(hyperlinks, rowAndCol.get("maxX"), rowAndCol.get("maxY"), property, objectMapper,fileName);	
+            			value = "附件:" + fileName;
             		}else if(!isJustProperty)
             		{
             			if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
@@ -12025,6 +12080,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
             }
             Object value = null;
             boolean isImg = false;
+            boolean isAttachFile = false;//是否附件文件
             try {
             	if(set.size() > 1)
             	{
@@ -12044,6 +12100,12 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
             		{
             			value = luckySheetBindData.getTplType() == 1?"":property;
     					isImg = true;
+            		}else if(StringUtil.isAttachUrl(property))
+            		{
+            			isAttachFile = true;
+            			String fileName = StringUtil.getFileNameFromUrl(String.valueOf(property));
+            			this.processAttachHyperlink(hyperlinks, rowAndCol.get("maxX"), rowAndCol.get("maxY"), property, objectMapper,fileName);	
+            			value = "附件:" + fileName;
             		}else if(!isJustProperty)
             		{
             			if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
@@ -15806,5 +15868,12 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			result.add(y);
 		}
 		return result;
+	}
+	
+	private void processAttachHyperlink(Map<String, Map<String, Object>> hyperlinks,int maxRow,int maxCol,Object value,ObjectMapper objectMapper,String fileName) throws Exception {
+		Map<String, Object> linkConfig = objectMapper.readValue(Constants.ATTACH_HYPERLINK, Map.class);
+		linkConfig.put("fileName", fileName);
+		linkConfig.put("linkAddress", value);
+		hyperlinks.put(String.valueOf(maxRow)+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+String.valueOf(maxCol), linkConfig);
 	}
 }
