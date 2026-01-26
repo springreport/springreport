@@ -100,7 +100,7 @@ public class MybatisTemplateSqlExcutor {
         		      sql = sql.replaceFirst("\\?",Matcher.quoteReplacement(getParameterValue(obj)));
         		 }else
         		 {// 打印出缺失，提醒该参数缺失并防止错位
-        		      sql = sql.replaceFirst("\\?", "缺失");
+        		      sql = sql.replaceFirst("\\?", "''");
         		 }
         	 }
          }

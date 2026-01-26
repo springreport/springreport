@@ -60,6 +60,14 @@
       :modal-handles="pageData.folderModalHandles"
       @closeModal="closeFolderModal()"
     />
+    <modal
+        ref="shareReport"
+        :modal-config="pageData.shareReportConfig"
+        :modal-form="pageData.shareReportForm"
+        :modal-data="pageData.shareReportModalData"
+        :modal-handles="pageData.shareReportModalHandles"
+        @closeModal="closeShareReportModal()"
+      />
   </div>
   <div style="display: none">
         <input id="uploadPic" type="file" accept=".sr" @change="uploadPic">
