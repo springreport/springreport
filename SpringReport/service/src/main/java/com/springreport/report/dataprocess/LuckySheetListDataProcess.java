@@ -193,9 +193,6 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 				bindData.setIsChartAttr(variableCells.get(i).getIsChartAttr());
 				bindData.setCellFillType(variableCells.get(i).getCellFillType());
 				bindData.setDataSize(data.size());
-				if(bindData.getCoordsx() == 2 && bindData.getCoordsy() == 2) {
-					System.err.println();
-				}
 				if(variableCells.get(i).getIsSubtotal()) {
 					if(StringUtil.isNotEmpty(variableCells.get(i).getSubtotalCells())) {
 						JSONArray subtotalCells = JSON.parseArray(variableCells.get(i).getSubtotalCells());
