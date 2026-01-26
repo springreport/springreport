@@ -417,10 +417,40 @@ public class CheckUtil {
 	    }
 	  
 	  public static boolean validate(String formula) {
-	        String regex = "^((\\d+|\\d+[.]?\\d+)|\\(\\s*(\\d+|\\d+[.]?\\d+)\\s*[\\+\\-\\*/]\\s*(\\d+|\\d+[.]?\\d+)+\\s*\\))(\\s*[\\+\\-\\*/]\\s*((\\d+|\\d+[.]?\\d+)|\\(\\s*(\\d+|\\d+[.]?\\d+)\\s*[\\+\\-\\*/]\\s*(\\d+|\\d+[.]?\\d+)+\\s*\\)))*$";
-	        Pattern pattern = Pattern.compile(regex);
-	        return pattern.matcher(formula).matches();
-	    }
+          if (formula == null || formula.trim().isEmpty()) {
+              return false;
+          }
+
+          // 去除首尾空格
+          String trimmedFormula = formula.trim();
+
+          // 正则表达式：支持带括号的数学表达式
+          String regex = "^[+\\-]?[\\d.]+(?:\\s*[+\\-*/%]\\s*[+\\-]?[\\d.]+)*(?:\\s*[+\\-*/%]\\s*[+\\-]?\\(.*\\))*\\s*$|" +
+                  "^\\(.*\\)$|" +
+                  "^[+\\-]?\\(.*\\)(?:\\s*[+\\-*/%]\\s*[+\\-]?\\(.*\\)|[+\\-*/%][\\d.]+)*$|" +
+                  "^[+\\-]?[\\d.]+(?:\\s*[+\\-*/%]\\s*[+\\-]?\\(.*\\)|\\s*[+\\-*/%]\\s*[+\\-]?[\\d.]+)*$";
+
+          // 使用一个更通用的正则表达式
+          String generalRegex = "^\\s*[+\\-]?(?:\\d+(?:\\.\\d+)?|\\(.*\\))(?:\\s*[+\\-*/%]\\s*[+\\-]?(?:\\d+(?:\\.\\d+)?|\\(.*\\)))*\\s*$";
+
+          Pattern pattern = Pattern.compile(generalRegex);
+          boolean basicMatch = pattern.matcher(trimmedFormula).matches();
+
+          if (!basicMatch) return false;
+
+          // 检查括号匹配
+          int bracketCount = 0;
+          for (char c : trimmedFormula.toCharArray()) {
+              if (c == '(') {
+                  bracketCount++;
+              } else if (c == ')') {
+                  bracketCount--;
+                  if (bracketCount < 0) return false;
+              }
+          }
+
+      return bracketCount == 0;
+  }
 	  private static  String[] operators = {"\\+", "-", "\\*", "/", "%"};
 	  public static boolean containsOperator(String str) {
 		    for (String operator : operators) {

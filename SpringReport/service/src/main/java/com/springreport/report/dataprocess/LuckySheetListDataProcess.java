@@ -193,6 +193,9 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 				bindData.setIsChartAttr(variableCells.get(i).getIsChartAttr());
 				bindData.setCellFillType(variableCells.get(i).getCellFillType());
 				bindData.setDataSize(data.size());
+				if(bindData.getCoordsx() == 2 && bindData.getCoordsy() == 2) {
+					System.err.println();
+				}
 				if(variableCells.get(i).getIsSubtotal()) {
 					if(StringUtil.isNotEmpty(variableCells.get(i).getSubtotalCells())) {
 						JSONArray subtotalCells = JSON.parseArray(variableCells.get(i).getSubtotalCells());
@@ -259,7 +262,21 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 					}else if(DataFromEnum.ORIGINAL.getCode().intValue() == bindData.getDataFrom().intValue())
 					{//使用原始数据
 						List<List<Map<String, Object>>> datas = new ArrayList<List<Map<String,Object>>>();
-						datas.add(data);
+						if(bindData.getIsConditions().intValue() == YesNoEnum.YES.getCode().intValue()) {
+							List<Map<String, Object>> filterDatas = new ArrayList<Map<String,Object>>();
+							JSONArray filters = JSONArray.parseArray(bindData.getCellConditions());
+							if(ListUtil.isNotEmpty(data)) {
+								for (int k = 0; k < data.size(); k++) {
+									boolean filterResult = ListUtil.filterDatas(filters, data.get(k),bindData.getCellConditionType());
+									if(filterResult) {
+										filterDatas.add(data.get(k));
+									}
+								}
+							}
+							datas.add(filterDatas);
+						}else {
+							datas.add(data);
+						}
 						bindData.setDatas(datas);
 						bindData.setLastAggregateType(bindData.getAggregateType());
 					}else if(DataFromEnum.CELL.getCode().intValue() == bindData.getDataFrom().intValue())
