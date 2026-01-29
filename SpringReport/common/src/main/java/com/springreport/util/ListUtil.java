@@ -372,6 +372,38 @@ public class ListUtil {
 		return result;
 	}
 	
+	public static Map<String, Object> getProperties(List<String> attrs,Map<String, Object> datas,String datasetName)
+	{
+		Map<String, Object> result = new LinkedHashMap<>();
+		if(ListUtil.isNotEmpty(attrs)) {
+			for (int i = 0; i < attrs.size(); i++) {
+				Object data = datas.get(attrs.get(i).replaceAll(datasetName+".", ""));
+				if(data instanceof Timestamp)
+				{
+					Timestamp timestamp = (Timestamp) data;
+		        	long stamp = timestamp.getTime();
+		        	String date = DateUtil.Stamp2String(stamp);
+		        	result.put(attrs.get(i), date);
+				}else if(data instanceof Date)
+				{
+					Date date = (Date) data;
+		        	long stamp = date.getTime();
+		        	String dateString = DateUtil.Stamp2String(stamp,DateUtil.FORMAT_LONOGRAM);
+		        	result.put(attrs.get(i), dateString);
+				}else if(data instanceof LocalDateTime)
+				{
+					LocalDateTime localDateTime = (java.time.LocalDateTime) data;
+		        	java.util.Date date = java.util.Date.from(localDateTime.toInstant(ZoneOffset.of("+8")));
+		        	String dateString =  DateUtil.date2String(date, DateUtil.FORMAT_FULL);
+		        	result.put(attrs.get(i), dateString);
+				}else {
+					result.put(attrs.get(i), data);
+				}
+			}
+		}
+		return result;
+	}
+	
 	public static List<String> getPropertyList(String str,Map<String, Object> datas,String datesetName)
 	{
 		List<String> result = new ArrayList<>();
