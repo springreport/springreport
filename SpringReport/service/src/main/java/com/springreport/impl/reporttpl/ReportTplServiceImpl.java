@@ -219,8 +219,8 @@ import com.springreport.excel2pdf.PrintSettingsDto;
 import com.springreport.excel2pdf.ResMobileInfos;
 import com.springreport.excel2pdf.TableCell;
 import com.springreport.exception.BizException;
-//import com.springreport.function.CustomSpringReportFunction;
-import com.springreport.base.CustomSpringReportFunction;
+import com.springreport.function.CustomSpringReportFunction;
+//import com.springreport.base.CustomSpringReportFunction;
 import com.springreport.impl.codeit.MqProcessService;
 
  /**  
@@ -10105,7 +10105,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         	}
         }else if(customSpringReportFunction.isSpringReportFunction(property)) {
         	Map<String, Object> extraParams = new HashMap<>();
-        	extraParams.put("index", j);
+        	extraParams.put("index", luckySheetBindData.getIsRelyCell().intValue() == 1?(j+luckySheetBindData.getRelyIndex()):j);
         	extraParams.put("userInfo", userInfoDto);
         	extraParams.put("viewParams", viewParams);
         	value = customSpringReportFunction.calculate(luckySheetBindData, extraParams);

@@ -13,8 +13,8 @@ import org.springframework.beans.BeanUtils;
 
 import com.googlecode.aviator.AviatorEvaluator;
 import com.googlecode.aviator.Options;
-//import com.springreport.function.CustomSpringReportFunction;
-import com.springreport.base.CustomSpringReportFunction;
+import com.springreport.function.CustomSpringReportFunction;
+//import com.springreport.base.CustomSpringReportFunction;
 import com.springreport.base.LuckySheetBindData;
 import com.springreport.dto.reporttpl.GroupSummaryData;
 import com.springreport.util.CheckUtil;
@@ -46,6 +46,7 @@ public class GroupAddCalculate extends Calculate<GroupSummaryData>{
 			for (int i = 0; i < datasets.length; i++) {
 				List<List<Map<String, Object>>> datasetDatas = bindData.getMultiDatas().get(datasets[i]);
 				List<Map<String, Object>> groupDatas = datasetDatas.get(bindData.getIndex());
+				properties = new ArrayList<String>();
 				for (int j = 0; j < groupDatas.size(); j++) {
 					String property = bindData.getProperty();
 					if(StringUtil.isNullOrEmpty(property)) {
