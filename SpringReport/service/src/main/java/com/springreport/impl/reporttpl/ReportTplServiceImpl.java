@@ -219,8 +219,8 @@ import com.springreport.excel2pdf.PrintSettingsDto;
 import com.springreport.excel2pdf.ResMobileInfos;
 import com.springreport.excel2pdf.TableCell;
 import com.springreport.exception.BizException;
-//import com.springreport.base.CustomSpringReportFunction;
 import com.springreport.base.CustomSpringReportFunction;
+//import com.springreport.function.CustomSpringReportFunction;
 import com.springreport.impl.codeit.MqProcessService;
 
  /**  
@@ -9812,11 +9812,15 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			if(relyBindData != null && relyBindData.getCellExtend().intValue() != 4)
 			{
 				List<List<Map<String, Object>>> datas = new ArrayList<>();
-				if(YesNoEnum.YES.getCode().intValue() == luckySheetBindData.getIsConditions().intValue())
-				{
-					datas = this.processReliedDatas(luckySheetBindData.getFilterDatas().get(j), relyBindData);
+				if(luckySheetBindData.getMultiDatas().size() > 1 && relyBindData.getCellValueType() == 2 && !customSpringReportFunction.isSpringReportFunction(relyBindData.getProperty())&&relyBindData.getMultiDatas().size()<2) {
+					datas = this.processReliedDatas(luckySheetBindData.getMultiDatas().get(relyBindData.getDatasetName()).get(j), relyBindData);
 				}else {
-					datas = this.processReliedDatas(luckySheetBindData.getDatas().get(j), relyBindData);
+					if(YesNoEnum.YES.getCode().intValue() == luckySheetBindData.getIsConditions().intValue())
+					{
+						datas = this.processReliedDatas(luckySheetBindData.getFilterDatas().get(j), relyBindData);
+					}else {
+						datas = this.processReliedDatas(luckySheetBindData.getDatas().get(j), relyBindData);
+					}
 				}
 				relyBindData.setDataSize(luckySheetBindData.getDataSize());
 				relyBindData.setDatas(datas);
