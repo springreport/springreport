@@ -219,8 +219,8 @@ import com.springreport.excel2pdf.PrintSettingsDto;
 import com.springreport.excel2pdf.ResMobileInfos;
 import com.springreport.excel2pdf.TableCell;
 import com.springreport.exception.BizException;
-import com.springreport.function.CustomSpringReportFunction;
 //import com.springreport.base.CustomSpringReportFunction;
+import com.springreport.base.CustomSpringReportFunction;
 import com.springreport.impl.codeit.MqProcessService;
 
  /**  
