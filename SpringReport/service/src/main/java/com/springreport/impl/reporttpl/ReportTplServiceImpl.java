@@ -219,7 +219,7 @@ import com.springreport.excel2pdf.PrintSettingsDto;
 import com.springreport.excel2pdf.ResMobileInfos;
 import com.springreport.excel2pdf.TableCell;
 import com.springreport.exception.BizException;
-//import com.springreport.function.CustomSpringReportFunction;
+//import com.springreport.base.CustomSpringReportFunction;
 import com.springreport.base.CustomSpringReportFunction;
 import com.springreport.impl.codeit.MqProcessService;
 
@@ -6721,6 +6721,10 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
     	}
         //计算
         groupSummaryData.setDatas(data);
+        groupSummaryData.setIndex(luckySheetBindData.getRelyIndex());  
+        groupSummaryData.setLuckySheetBindData(luckySheetBindData);;
+        groupSummaryData.setMultiDatas(luckySheetBindData.getMultiDatas());
+        groupSummaryData.setDatasetName(luckySheetBindData.getDatasetName()); 
         String value = luckySheetGroupCalculates.get(luckySheetBindData.getCellFunction().intValue()).calculate(groupSummaryData);
       //2024年8月22日09:59:29注释掉，新增加了条件格式功能，不需要该功能了
 //        if(luckySheetBindData.getWarning() && StringUtil.isNotEmpty(luckySheetBindData.getThreshold()) && CheckUtil.isNumber(luckySheetBindData.getThreshold()))
@@ -7012,6 +7016,10 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         }
         usedCells.put(rowAndCol.get("maxX")+"_"+rowAndCol.get("maxY"), cellData);
         groupSummaryData.setDatas(data);
+        groupSummaryData.setIndex(luckySheetBindData.getRelyIndex());  
+        groupSummaryData.setLuckySheetBindData(luckySheetBindData);;
+        groupSummaryData.setMultiDatas(luckySheetBindData.getMultiDatas());
+        groupSummaryData.setDatasetName(luckySheetBindData.getDatasetName()); 
         String value = luckySheetGroupCalculates.get(luckySheetBindData.getCellFunction().intValue()).calculate(groupSummaryData);
       //2024年8月22日09:59:29注释掉，新增加了条件格式功能，不需要该功能了
 //        if(luckySheetBindData.getWarning() && StringUtil.isNotEmpty(luckySheetBindData.getThreshold()) && CheckUtil.isNumber(luckySheetBindData.getThreshold()))
@@ -8908,7 +8916,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         	}
         }else if(customSpringReportFunction.isSpringReportFunction(property)) {
         	Map<String, Object> extraParams = new HashMap<>();
-        	extraParams.put("index", j);
+        	extraParams.put("index", luckySheetBindData.getIsRelyCell().intValue() == 1?(j+luckySheetBindData.getRelyIndex()):j);
         	extraParams.put("userInfo", userInfoDto);
         	extraParams.put("viewParams", viewParams);
         	value = customSpringReportFunction.calculate(luckySheetBindData, extraParams);
@@ -10097,7 +10105,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         	}
         }else if(customSpringReportFunction.isSpringReportFunction(property)) {
         	Map<String, Object> extraParams = new HashMap<>();
-        	extraParams.put("index", j);
+        	extraParams.put("index", luckySheetBindData.getIsRelyCell().intValue() == 1?(j+luckySheetBindData.getRelyIndex()):j);
         	extraParams.put("userInfo", userInfoDto);
         	extraParams.put("viewParams", viewParams);
         	value = customSpringReportFunction.calculate(luckySheetBindData, extraParams);

@@ -647,7 +647,7 @@ public class JdbcUtils {
 				JSONObject jsonObject = JSON.parseObject(JSON.toJSONString(userInfoDto));
 				for (int i = 0; i < Constants.SYSTEM_PARAM.length; i++) {
 					Object value = jsonObject.get(Constants.SYSTEM_PARAM[i]);
-					systemParams.put("paramDefault", value);
+					systemParams.put(Constants.SYSTEM_PARAM[i], value);
 				}
 			}
 	    	if(!ListUtil.isEmpty(inParams))

@@ -3,6 +3,8 @@ package com.springreport.dto.reporttpl;
 import java.util.List;
 import java.util.Map;
 
+import com.springreport.base.LuckySheetBindData;
+
 import lombok.Data;
 
 /**  
@@ -40,4 +42,30 @@ public class GroupSummaryData {
 
     /** compare_attr2 - 同比/环比同期属性 */
     private String compareAttr2;
+    
+    /**
+     * 数据集对应的当前计算index
+     */
+    private Integer index;
+    
+    /**  
+     * @Fields multiDatas : 多数据集数据
+     * @author caiyang
+     * @date 2026年1月28日11:40:55
+     */  
+    private Map<String, List<List<Map<String, Object>>>> multiDatas;
+    
+    /**  
+     * @Fields datasetName : 数据集名称
+     * @author caiyang
+     * @date 2026年1月28日12:04:26
+     */  
+    private String datasetName;
+    
+    /**  
+     * @Fields luckySheetBindData
+     * @author caiyang
+     * @date 2026年1月28日18:42:24
+     */  
+    private LuckySheetBindData luckySheetBindData;
 }

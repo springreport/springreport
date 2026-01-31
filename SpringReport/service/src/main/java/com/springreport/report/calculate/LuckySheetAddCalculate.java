@@ -3,6 +3,8 @@ package com.springreport.report.calculate;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -10,6 +12,8 @@ import java.util.Set;
 import com.googlecode.aviator.AviatorEvaluator;
 import com.googlecode.aviator.Options;
 import com.springreport.base.LuckySheetBindData;
+//import com.springreport.base.CustomSpringReportFunction;
+import com.springreport.base.CustomSpringReportFunction;
 import com.springreport.util.CheckUtil;
 import com.springreport.util.ListUtil;
 import com.springreport.util.LuckysheetUtil;
@@ -22,25 +26,72 @@ import com.springreport.util.StringUtil;
 * @date 2020年5月19日
 */
 public class LuckySheetAddCalculate extends Calculate<LuckySheetBindData>{
+	
+	private static CustomSpringReportFunction customSpringReportFunction;
+	
+	static {
+		customSpringReportFunction = new CustomSpringReportFunction();
+	}
 
 	@Override
 	public String calculate(LuckySheetBindData bindData) {
 		BigDecimal result = new BigDecimal(0);
-		String[] datasetNames = LuckysheetUtil.getDatasetNames(bindData.getDatasetName());
-		if(datasetNames.length > 1)
+//		String[] datasetNames = LuckysheetUtil.getDatasetNames(bindData.getDatasetName());
+		if(bindData.getMultiDatas().size() > 1)
 		{
-			for (int i = 0; i < datasetNames.length; i++) {
-				List<List<Map<String, Object>>> datas = bindData.getMultiDatas().get(datasetNames[i]);
-				List<String> properties = ListUtil.getPropertyList(bindData.getProperty(), datas.get(0).get(0), datasetNames[i]);
-				for (int j = 0; j < properties.size(); j++) {
-					for (int j2 = 0; j2 < bindData.getDatas().size(); j2++) {
-						for (int k = 0; k < bindData.getDatas().get(j2).size(); k++) {
-							Object object = bindData.getDatas().get(j2).get(k).get(properties.get(j));
-							if(CheckUtil.isNumber(String.valueOf(object)))
-							{
-								result = result.add(new BigDecimal(String.valueOf(object)));
+			List<String> properties = new ArrayList<String>();
+			String[] datasets = bindData.getDatasetName().split(",");
+			Map<String, Object> datas = null;
+			Map<String, String> calculateFormula = new LinkedHashMap<String, String>();
+			for (int i = 0; i < datasets.length; i++) {
+				List<List<Map<String, Object>>> datasetDatas = bindData.getMultiDatas().get(datasets[i]);
+				properties = new ArrayList<String>();
+				for (int t = 0; t < datasetDatas.size(); t++) {
+					for (int j = 0; j < datasetDatas.get(t).size(); j++) {
+						String formulaKey = t+"_"+j;
+						String property = bindData.getProperty();
+						if(StringUtil.isNullOrEmpty(property)) {
+							break;
+						}
+						datas = ListUtil.getProperties(property, datasetDatas.get(t).get(j),datasets[i]);
+						for (String key : datas.keySet()) {
+							properties.add(key);
+						}
+						Set<String> set = datas.keySet();
+						if(ListUtil.isNotEmpty(set)) {
+							for (String o : set) {
+								if(calculateFormula.containsKey(formulaKey)) {
+									property = calculateFormula.get(formulaKey);
+								}
+					        	property = property.replace(o, datas.get(o)==null?"0":StringUtil.isNullOrEmpty(String.valueOf(datas.get(o)))?"0":String.valueOf(datas.get(o)));
+					        	calculateFormula.put(formulaKey, property);
 							}
 						}
+					}
+				}
+			}
+			Object object = null;
+			if(!StringUtil.isEmptyMap(calculateFormula)) {
+				for (String key : calculateFormula.keySet()) {
+					String formula = calculateFormula.get(key);
+					if(customSpringReportFunction.isSpringReportFunction(formula)) {
+						Map<String, Object> extraParams = new HashMap<>();
+			        	extraParams.put("userInfo", null);
+			        	extraParams.put("viewParams", null);
+			        	bindData.setProperty(formula);
+			        	object = customSpringReportFunction.calculate(bindData, extraParams);
+					}else {
+						try {
+							AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
+		        			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
+							object = AviatorEvaluator.execute(formula);
+						} catch (Exception e) {
+							object = 0;
+						}
+					}
+					if(CheckUtil.isNumber(String.valueOf(object)))
+					{
+						result = result.add(new BigDecimal(String.valueOf(object)));
 					}
 				}
 			}
