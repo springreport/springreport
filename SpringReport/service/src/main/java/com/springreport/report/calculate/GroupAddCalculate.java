@@ -14,7 +14,7 @@ import org.springframework.beans.BeanUtils;
 import com.googlecode.aviator.AviatorEvaluator;
 import com.googlecode.aviator.Options;
 import com.springreport.base.CustomSpringReportFunction;
-//import com.springreport.function.CustomSpringReportFunction;;
+//import com.springreport.function.CustomSpringReportFunction;
 import com.springreport.base.LuckySheetBindData;
 import com.springreport.dto.reporttpl.GroupSummaryData;
 import com.springreport.util.CheckUtil;
@@ -118,12 +118,23 @@ public class GroupAddCalculate extends Calculate<GroupSummaryData>{
 					for (String o : set) {
 			        	property = property.replace(o, datas.get(o)==null?"0":StringUtil.isNullOrEmpty(String.valueOf(datas.get(o)))?"0":String.valueOf(datas.get(o)));
 			        }
-					try {
-						AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
-	        			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
-						object = AviatorEvaluator.execute(property);
-					} catch (Exception e) {
-						object = 0;
+					if(customSpringReportFunction.isSpringReportFunction(property)) {
+						LuckySheetBindData luckySheetBindData = new LuckySheetBindData();
+						BeanUtils.copyProperties(bindData.getLuckySheetBindData(), luckySheetBindData);
+						Map<String, Object> extraParams = new HashMap<>();
+			        	extraParams.put("index", bindData.getIndex());
+			        	extraParams.put("userInfo", null);
+			        	extraParams.put("viewParams", null);
+			        	luckySheetBindData.setProperty(property);
+			        	object = customSpringReportFunction.calculate(luckySheetBindData, extraParams);
+					}else {
+						try {
+							AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
+		        			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
+							object = AviatorEvaluator.execute(property);
+						} catch (Exception e) {
+							object = 0;
+						}
 					}
 					
 				}else {

@@ -115,12 +115,21 @@ public class LuckySheetMinCalculate extends Calculate<LuckySheetBindData>{
 						tempProperty = tempProperty.replace(o, datas.get(o)==null?"0":StringUtil.isNullOrEmpty(String.valueOf(datas.get(o)))?"0":String.valueOf(datas.get(o)));
 					}
 					Object object = null;
-					try {
-						AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
-	        			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
-						object = AviatorEvaluator.execute(tempProperty);
-					} catch (Exception e) {
-						e.printStackTrace();
+					if(customSpringReportFunction.isSpringReportFunction(tempProperty)) {
+						LuckySheetBindData luckySheetBindData = new LuckySheetBindData();
+						Map<String, Object> extraParams = new HashMap<>();
+			        	extraParams.put("userInfo", null);
+			        	extraParams.put("viewParams", null);
+			        	luckySheetBindData.setProperty(tempProperty);
+			        	object = customSpringReportFunction.calculate(luckySheetBindData, extraParams);
+					}else {
+						try {
+							AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
+		        			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
+							object = AviatorEvaluator.execute(tempProperty);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 					}
 					if(CheckUtil.isNumber(String.valueOf(object)))
 					{
