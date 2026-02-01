@@ -120,12 +120,23 @@ public class GroupMaxCalculate extends Calculate<GroupSummaryData>{
 					for (String o : set) {
 						property = property.replace(o, datas.get(o)==null?"0":StringUtil.isNullOrEmpty(String.valueOf(datas.get(o)))?"0":String.valueOf(datas.get(o)));
 			        }
-					try {
-						AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
-	        			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
-						object = AviatorEvaluator.execute(property);
-					} catch (Exception e) {
-						object = 0;
+					if(customSpringReportFunction.isSpringReportFunction(property)) {
+						LuckySheetBindData luckySheetBindData = new LuckySheetBindData();
+						BeanUtils.copyProperties(bindData.getLuckySheetBindData(), luckySheetBindData);
+						Map<String, Object> extraParams = new HashMap<>();
+			        	extraParams.put("index", bindData.getIndex());
+			        	extraParams.put("userInfo", null);
+			        	extraParams.put("viewParams", null);
+			        	luckySheetBindData.setProperty(property);
+			        	object = customSpringReportFunction.calculate(luckySheetBindData, extraParams);
+					}else {
+						try {
+							AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
+		        			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
+							object = AviatorEvaluator.execute(property);
+						} catch (Exception e) {
+							object = 0;
+						}
 					}
 				}else {
 					object = bindData.getDatas().get(i).get(property);
