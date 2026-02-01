@@ -8916,7 +8916,15 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         	}
         }else if(customSpringReportFunction.isSpringReportFunction(property)) {
         	Map<String, Object> extraParams = new HashMap<>();
-        	extraParams.put("index", luckySheetBindData.getIsRelyCell().intValue() == 1?(j+luckySheetBindData.getRelyIndex()):j);
+        	if(luckySheetBindData.getIsRelyCell().intValue() == 1) {
+        		if(luckySheetBindData.getMultiDatas().size() > 1) {
+        			extraParams.put("index", j+luckySheetBindData.getRelyIndex());
+        		}else {
+        			extraParams.put("index", j);
+        		}
+        	}else {
+        		extraParams.put("index", j);
+        	}
         	extraParams.put("userInfo", userInfoDto);
         	extraParams.put("viewParams", viewParams);
         	value = customSpringReportFunction.calculate(luckySheetBindData, extraParams);
@@ -9812,8 +9820,21 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			if(relyBindData != null && relyBindData.getCellExtend().intValue() != 4)
 			{
 				List<List<Map<String, Object>>> datas = new ArrayList<>();
-				if(luckySheetBindData.getMultiDatas().size() > 1 && relyBindData.getCellValueType() == 2 && !customSpringReportFunction.isSpringReportFunction(relyBindData.getProperty())&&relyBindData.getMultiDatas().size()<2) {
-					datas = this.processReliedDatas(luckySheetBindData.getMultiDatas().get(relyBindData.getDatasetName()).get(j), relyBindData);
+				if(luckySheetBindData.getMultiDatas().size() > 1 && relyBindData.getCellValueType() == 2) {
+					if(relyBindData.getMultiDatas().size() > 1 && relyBindData.getAggregateType().contains("group")) {
+						String[] datasetNames = relyBindData.getDatasetName().split(",");
+						for (int k = 0; k < datasetNames.length; k++) {
+							if(luckySheetBindData.getMultiDatas().containsKey(datasetNames[k])) {
+								relyBindData.getMultiDatas().put(datasetNames[k], luckySheetBindData.getMultiDatas().get(datasetNames[k]));
+							}
+						}
+					}
+					if(YesNoEnum.YES.getCode().intValue() == luckySheetBindData.getIsConditions().intValue())
+					{
+						datas = this.processReliedDatas(luckySheetBindData.getFilterDatas().get(j), relyBindData);
+					}else {
+						datas = this.processReliedDatas(luckySheetBindData.getDatas().get(j), relyBindData);
+					}
 				}else {
 					if(YesNoEnum.YES.getCode().intValue() == luckySheetBindData.getIsConditions().intValue())
 					{
@@ -10109,7 +10130,8 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         	}
         }else if(customSpringReportFunction.isSpringReportFunction(property)) {
         	Map<String, Object> extraParams = new HashMap<>();
-        	extraParams.put("index", luckySheetBindData.getIsRelyCell().intValue() == 1?(j+luckySheetBindData.getRelyIndex()):j);
+//        	extraParams.put("index", luckySheetBindData.getIsRelyCell().intValue() == 1?(j+luckySheetBindData.getRelyIndex()):j);
+        	extraParams.put("index", j);
         	extraParams.put("userInfo", userInfoDto);
         	extraParams.put("viewParams", viewParams);
         	value = customSpringReportFunction.calculate(luckySheetBindData, extraParams);
