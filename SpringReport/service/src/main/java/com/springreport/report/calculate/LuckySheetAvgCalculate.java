@@ -40,7 +40,7 @@ public class LuckySheetAvgCalculate extends Calculate<LuckySheetBindData>{
 		BigDecimal sum = new BigDecimal(0);
 		int size = 0;
 //		String[] datasetNames = bindData.getDatasetName().split(",");
-		if(bindData.getMultiDatas().size() > 1)
+		if(bindData.getMultiDatas()!=null && bindData.getMultiDatas().size() > 1)
 		{
 			List<String> properties = new ArrayList<String>();
 			String[] datasets = bindData.getDatasetName().split(",");
