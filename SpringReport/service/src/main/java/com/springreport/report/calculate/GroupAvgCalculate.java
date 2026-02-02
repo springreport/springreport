@@ -42,7 +42,7 @@ public class GroupAvgCalculate extends Calculate<GroupSummaryData>{
 		int size = 0;
 		List<String> properties = new ArrayList<String>();
 		Map<String, Object> datas = null;
-		if(bindData.getMultiDatas().size() > 1) {
+		if(bindData.getMultiDatas()!=null && bindData.getMultiDatas().size() > 1) {
 			String[] datasets = bindData.getDatasetName().split(",");
 			Map<Integer, String> calculateFormula = new LinkedHashMap<Integer, String>();
 			for (int i = 0; i < datasets.length; i++) {

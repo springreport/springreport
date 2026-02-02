@@ -37,7 +37,7 @@ public class LuckySheetAddCalculate extends Calculate<LuckySheetBindData>{
 	public String calculate(LuckySheetBindData bindData) {
 		BigDecimal result = new BigDecimal(0);
 //		String[] datasetNames = LuckysheetUtil.getDatasetNames(bindData.getDatasetName());
-		if(bindData.getMultiDatas().size() > 1)
+		if(bindData.getMultiDatas()!=null && bindData.getMultiDatas().size() > 1)
 		{
 			List<String> properties = new ArrayList<String>();
 			String[] datasets = bindData.getDatasetName().split(",");

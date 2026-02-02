@@ -38,7 +38,7 @@ public class LuckySheetMaxCalculate extends Calculate<LuckySheetBindData>{
 		String property = bindData.getProperty();
 		List<String> properties = new ArrayList<String>();
 		Map<String, Object> datas = null;
-		if(bindData.getMultiDatas().size() > 1) {
+		if(bindData.getMultiDatas()!=null && bindData.getMultiDatas().size() > 1) {
 			String[] datasets = bindData.getDatasetName().split(",");
 			Map<String, String> calculateFormula = new LinkedHashMap<String, String>();
 			for (int i = 0; i < datasets.length; i++) {
