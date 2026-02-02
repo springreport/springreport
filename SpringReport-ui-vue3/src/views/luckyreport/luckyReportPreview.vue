@@ -33,6 +33,7 @@
           :users="users"
           :headerUsers="headerUsers"
           :drawer="drawer"
+          @back="back"
         />
       </div>
           <div style="width: 100%; flex: none; overflow: auto" v-if="searchFormType != '1'">
