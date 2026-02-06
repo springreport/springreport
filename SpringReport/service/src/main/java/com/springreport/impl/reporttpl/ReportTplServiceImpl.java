@@ -8291,6 +8291,11 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         boolean isJustProperty = false;
         String property = luckySheetBindData.getProperty();
         Object value = null;
+        String cellText = luckySheetBindData.getCellText();
+        if(YesNoEnum.YES.getCode().intValue() == luckySheetBindData.getIsFunction().intValue() && "list".equals(luckySheetBindData.getAggregateType()) && luckySheetBindData.getIsRelyCell().intValue() == 1) {
+    		int rowSpan = luckySheetBindData.getRowSpan();
+    		cellText = SheetUtil.calculateFormula(cellText,rowSpan*luckySheetBindData.getRelyIndex(), 2);
+    	}
         boolean isImg = false;
         boolean isAttachFile = false;//是否附件文件
         if(luckySheetBindData.getIsDict())
@@ -8318,6 +8323,9 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         	Map<String, Object> extraParams = new HashMap<>();
         	extraParams.put("userInfo", userInfoDto);
         	extraParams.put("viewParams", viewParams);
+        	if(luckySheetBindData.getMultiDatas().size()>1 && luckySheetBindData.getIsRelyCell() == 1) {
+        		extraParams.put("index", j+luckySheetBindData.getRelyIndex());
+        	}
         	value = customSpringReportFunction.calculate(luckySheetBindData, extraParams);
         }
         else {
@@ -8344,7 +8352,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
             	}
             }
             Set<String> set = datas.keySet();
-            String cellText = luckySheetBindData.getCellText();
+//            String cellText = luckySheetBindData.getCellText();
             for (String o : set) {
             	if(StringUtil.isNotEmpty(luckySheetBindData.getCellText())) {
             		property = cellText.replace("${"+o+"}", datas.get(o)==null?"":String.valueOf(datas.get(o)));
@@ -8437,10 +8445,10 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
     		this.processSummaryCoverCell(objectMapper, usedCells, luckySheetBindData, cellDatas, calcChain, dataRowLen, configRowLen, dataColLen, configColumnLen, border, maxXAndY, maxCoordinate, borderInfo, v);
          	return;
         }
-    	if(YesNoEnum.YES.getCode().intValue() == luckySheetBindData.getIsFunction().intValue() && "list".equals(luckySheetBindData.getAggregateType()) && luckySheetBindData.getIsRelyCell().intValue() == 1) {
-    		int rowSpan = luckySheetBindData.getRowSpan();
-    		value = SheetUtil.calculateFormula(property,rowSpan*luckySheetBindData.getRelyIndex(), 2);
-    	}
+//    	if(YesNoEnum.YES.getCode().intValue() == luckySheetBindData.getIsFunction().intValue() && "list".equals(luckySheetBindData.getAggregateType()) && luckySheetBindData.getIsRelyCell().intValue() == 1) {
+//    		int rowSpan = luckySheetBindData.getRowSpan();
+//    		value = SheetUtil.calculateFormula(property,rowSpan*luckySheetBindData.getRelyIndex(), 2);
+//    	}
     	if(YesNoEnum.YES.getCode().intValue() == luckySheetBindData.getIsFunction().intValue())
     	{
     		((Map<String, Object>)luckySheetBindData.getCellData().get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.FUNCTION.getCode(), value);
@@ -8891,6 +8899,23 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         String property = luckySheetBindData.getProperty();
         boolean isJustProperty = false;
         Object value = null;
+        String cellText = luckySheetBindData.getCellText();
+        if(YesNoEnum.YES.getCode().intValue() == luckySheetBindData.getIsFunction().intValue() && "list".equals(luckySheetBindData.getAggregateType())) {
+    		this.processCellFCustomF(property, luckySheetBindData);
+    		if(luckySheetBindData.getIsRelyCell().intValue() == YesNoEnum.YES.getCode().intValue()) {
+    			if(luckySheetBindData.getLastCoordsx() == null) {
+    				int rowSpan = luckySheetBindData.getRowSpan();
+    				cellText = SheetUtil.calculateFormula(cellText,0, 2);
+    			}else {
+    				int rowSpan = luckySheetBindData.getRowSpan();
+    				cellText = SheetUtil.calculateFormula(cellText,rowSpan*luckySheetBindData.getRelyIndex(), 2);
+    			}
+    		}else {
+    			int rowSpan = luckySheetBindData.getRowSpan();
+    			cellText = SheetUtil.calculateFormula(cellText,rowSpan*j, 2);
+    		}
+    		
+    	}
         boolean isImg = false;
         boolean isAttachFile = false;//是否附件文件
         if(luckySheetBindData.getIsDict())
@@ -8943,7 +8968,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         		datas = ListUtil.getProperties(properties, bindDatas.get(j).get(0));
         	}
             Set<String> set = datas.keySet();
-            String cellText = luckySheetBindData.getCellText();
+//            String cellText = luckySheetBindData.getCellText();
             for (String o : set) {
             	if(StringUtil.isNotEmpty(luckySheetBindData.getCellText())) {
             		property = cellText.replace("${"+o+"}", datas.get(o)==null?"":String.valueOf(datas.get(o)));
@@ -9030,22 +9055,22 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		}
         String format = LuckysheetUtil.getCellFormat(luckySheetBindData.getCellData());
     	Object v = LuckysheetUtil.formatValue(format, value);
-    	if(YesNoEnum.YES.getCode().intValue() == luckySheetBindData.getIsFunction().intValue() && "list".equals(luckySheetBindData.getAggregateType())) {
-    		this.processCellFCustomF(property, luckySheetBindData);
-    		if(luckySheetBindData.getIsRelyCell().intValue() == YesNoEnum.YES.getCode().intValue()) {
-    			if(luckySheetBindData.getLastCoordsx() == null) {
-    				int rowSpan = luckySheetBindData.getRowSpan();
-            		value = SheetUtil.calculateFormula(property,0, 2);
-    			}else {
-    				int rowSpan = luckySheetBindData.getRowSpan();
-            		value = SheetUtil.calculateFormula(property,rowSpan*luckySheetBindData.getRelyIndex(), 2);
-    			}
-    		}else {
-    			int rowSpan = luckySheetBindData.getRowSpan();
-        		value = SheetUtil.calculateFormula(property,rowSpan*j, 2);
-    		}
-    		
-    	}
+//    	if(YesNoEnum.YES.getCode().intValue() == luckySheetBindData.getIsFunction().intValue() && "list".equals(luckySheetBindData.getAggregateType())) {
+//    		this.processCellFCustomF(property, luckySheetBindData);
+//    		if(luckySheetBindData.getIsRelyCell().intValue() == YesNoEnum.YES.getCode().intValue()) {
+//    			if(luckySheetBindData.getLastCoordsx() == null) {
+//    				int rowSpan = luckySheetBindData.getRowSpan();
+//            		value = SheetUtil.calculateFormula(property,0, 2);
+//    			}else {
+//    				int rowSpan = luckySheetBindData.getRowSpan();
+//            		value = SheetUtil.calculateFormula(property,rowSpan*luckySheetBindData.getRelyIndex(), 2);
+//    			}
+//    		}else {
+//    			int rowSpan = luckySheetBindData.getRowSpan();
+//        		value = SheetUtil.calculateFormula(property,rowSpan*j, 2);
+//    		}
+//    		
+//    	}
     	((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.CELLVALUE.getCode(), value);
     	((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.CELLVALUEM.getCode(), v);
     	if(YesNoEnum.YES.getCode().intValue() == luckySheetBindData.getIsFunction().intValue())
@@ -10094,6 +10119,21 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         boolean isImg = false;
         boolean isAttachFile = false;//是否附件文件
         Object value = null;
+        String cellText = luckySheetBindData.getCellText();
+    	if(YesNoEnum.YES.getCode().intValue() == luckySheetBindData.getIsFunction().intValue() && "list".equals(luckySheetBindData.getAggregateType())) {
+			if(luckySheetBindData.getIsRelyCell().intValue() == YesNoEnum.YES.getCode().intValue()) {
+				if(luckySheetBindData.getLastCoordsx() == null) {
+	    			int colSpan = luckySheetBindData.getColSpan();
+	    			cellText = SheetUtil.calculateFormula(cellText,0, 1);
+	    		}else {
+	    			int colSpan = luckySheetBindData.getColSpan();
+	    			cellText = SheetUtil.calculateFormula(cellText,colSpan*luckySheetBindData.getRelyIndex(), 1);
+	    		}
+			}else {
+				int colSpan = luckySheetBindData.getColSpan();
+				cellText = SheetUtil.calculateFormula(cellText,colSpan*j, 1);
+			}
+		}
         if(luckySheetBindData.getIsDict())
         {
         	Map<String, String> dicts = null;
@@ -10140,7 +10180,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         		datas = ListUtil.getProperties(properties, bindDatas.get(j).get(0));
         	}
             Set<String> set = datas.keySet();
-            String cellText = luckySheetBindData.getCellText();
+//            String cellText = luckySheetBindData.getCellText();
             for (String o : set) {
             	if(StringUtil.isNotEmpty(luckySheetBindData.getCellText())) {
             		property = cellText.replace("${"+o+"}", datas.get(o)==null?"":String.valueOf(datas.get(o)));
@@ -10228,20 +10268,20 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		}
         String format = LuckysheetUtil.getCellFormat(luckySheetBindData.getCellData());
     	Object v = LuckysheetUtil.formatValue(format, value);
-    	if(YesNoEnum.YES.getCode().intValue() == luckySheetBindData.getIsFunction().intValue() && "list".equals(luckySheetBindData.getAggregateType())) {
-    		if(luckySheetBindData.getIsRelyCell().intValue() == YesNoEnum.YES.getCode().intValue()) {
-    			if(luckySheetBindData.getLastCoordsx() == null) {
-        			int colSpan = luckySheetBindData.getColSpan();
-            		value = SheetUtil.calculateFormula(property,0, 1);
-        		}else {
-        			int colSpan = luckySheetBindData.getColSpan();
-            		value = SheetUtil.calculateFormula(property,colSpan*luckySheetBindData.getRelyIndex(), 1);
-        		}
-    		}else {
-    			int colSpan = luckySheetBindData.getColSpan();
-        		value = SheetUtil.calculateFormula(property,colSpan*j, 1);
-    		}
-    	}
+//    	if(YesNoEnum.YES.getCode().intValue() == luckySheetBindData.getIsFunction().intValue() && "list".equals(luckySheetBindData.getAggregateType())) {
+//    		if(luckySheetBindData.getIsRelyCell().intValue() == YesNoEnum.YES.getCode().intValue()) {
+//    			if(luckySheetBindData.getLastCoordsx() == null) {
+//        			int colSpan = luckySheetBindData.getColSpan();
+//            		value = SheetUtil.calculateFormula(property,0, 1);
+//        		}else {
+//        			int colSpan = luckySheetBindData.getColSpan();
+//            		value = SheetUtil.calculateFormula(property,colSpan*luckySheetBindData.getRelyIndex(), 1);
+//        		}
+//    		}else {
+//    			int colSpan = luckySheetBindData.getColSpan();
+//        		value = SheetUtil.calculateFormula(property,colSpan*j, 1);
+//    		}
+//    	}
     	((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.CELLVALUE.getCode(), v);
     	((Map<String, Object>)cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode())).put(LuckySheetPropsEnum.CELLVALUEM.getCode(), v);
     	if(YesNoEnum.YES.getCode().intValue() == luckySheetBindData.getIsFunction().intValue())

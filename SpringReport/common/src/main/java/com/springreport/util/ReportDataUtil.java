@@ -345,30 +345,46 @@ public class ReportDataUtil {
 	    			}
 	    			if(InParamTypeEnum.INT.getCode().equals(jsonObject.getString("paramType")))
 	    			{
-	    				if(StringUtil.isNotEmpty(jsonObject.getString("paramDefault"))) {
+	    				if(param != null && StringUtil.isNotEmpty(String.valueOf(param))) {
 	    					cstm.setInt(i+1, Integer.valueOf(String.valueOf(param)));
 	    				}else {
 	    					cstm.setInt(i+1, 0);
 	    				}
 	    			}else if(InParamTypeEnum.STRING.getCode().equals(jsonObject.getString("paramType")))
     				{
-	    				if(StringUtil.isNotEmpty(jsonObject.getString("paramDefault"))) {
+	    				if(param != null && StringUtil.isNotEmpty(String.valueOf(param))) {
 	    					cstm.setString(i+1, String.valueOf(param));
 	    				}else {
 	    					cstm.setString(i+1, null);
 	    				}
     				}else if(InParamTypeEnum.LONG.getCode().equals(jsonObject.getString("paramType")))
     				{
-    					cstm.setLong(i+1, Long.valueOf(String.valueOf(param)));
+    					if(param != null && StringUtil.isNotEmpty(String.valueOf(param))) {
+    						cstm.setLong(i+1, Long.valueOf(String.valueOf(param)));
+    					}else {
+    						cstm.setLong(i+1, 0L);
+    					}
     				}else if(InParamTypeEnum.DOUBLE.getCode().equals(jsonObject.getString("paramType")))
     				{
-    					cstm.setDouble(i+1, Double.valueOf(String.valueOf(param)));
+    					if(param != null && StringUtil.isNotEmpty(String.valueOf(param))) {
+    						cstm.setDouble(i+1, Double.valueOf(String.valueOf(param)));
+    					}else {
+    						cstm.setDouble(i+1, 0);
+    					}
     				}else if(InParamTypeEnum.FLOAT.getCode().equals(jsonObject.getString("paramType")))
     				{
-    					cstm.setFloat(i+1, Float.valueOf(String.valueOf(param)));
+    					if(param != null && StringUtil.isNotEmpty(String.valueOf(param))) {
+    						cstm.setFloat(i+1, Float.valueOf(String.valueOf(param)));
+    					}else {
+    						cstm.setFloat(i+1, 0);
+    					}
     				}else if(InParamTypeEnum.BIGDECIMAL.getCode().equals(jsonObject.getString("paramType")))
     				{
-    					cstm.setBigDecimal(i+1, new BigDecimal(String.valueOf(param)));
+    					if(param != null && StringUtil.isNotEmpty(String.valueOf(param))) {
+    						cstm.setBigDecimal(i+1, new BigDecimal(String.valueOf(param)));
+    					}else {
+    						cstm.setBigDecimal(i+1, new BigDecimal(0));
+    					}
     				}else if(InParamTypeEnum.DATE.getCode().equals(jsonObject.getString("paramType")))
 	    			{
     					String dateFormat = jsonObject.getString("dateFormat");

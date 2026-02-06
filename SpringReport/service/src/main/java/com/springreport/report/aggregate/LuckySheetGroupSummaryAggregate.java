@@ -39,11 +39,11 @@ public class LuckySheetGroupSummaryAggregate extends Aggregate<LuckysheetReportC
 		String[] datasetNames = LuckysheetUtil.getDatasetNames(reportCell.getDatasetName());
 		if(datasetNames.length > 1)
 		{
-			property = property.replaceAll("\\$", "").replaceAll("\\{", "").replaceAll("}", "");
+			property = property.replaceAll("\\$\\{", "").replaceAll("}", "");
 		}else {
 			String cellText =  property.replaceAll(datasetNames[0]+".", "");
 			bindData.setCellText(cellText);
-			property = property.replaceAll(datasetNames[0]+".", "").replaceAll("\\$", "").replaceAll("\\{", "").replaceAll("}", "");
+			property = property.replaceAll(datasetNames[0]+".", "").replaceAll("\\$\\{", "").replaceAll("}", "");
 		}
 		bindData.setProperty(property);
 		String groupProperty = property;
