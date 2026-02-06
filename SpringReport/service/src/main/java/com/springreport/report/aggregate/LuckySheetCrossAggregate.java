@@ -27,7 +27,7 @@ public class LuckySheetCrossAggregate extends Aggregate<LuckysheetReportCell,Luc
 	@Override
 	public LuckySheetBindData aggregate(LuckysheetReportCell reportCell,LuckySheetBindData bindData,Map<String, LuckySheetBindData> cellBinddata,Map<String, String> reliedGroupMergeCells,Map<String, Integer> indexChains) {
 //		String property = reportCell.getCellValue().split("\\.")[1].replace("${", "").replace("}", "");//单元格属性值
-		String property = reportCell.getCellValue().replaceAll(reportCell.getDatasetName()+".", "").replaceAll("\\$", "").replaceAll("\\{", "").replaceAll("}", "");
+		String property = reportCell.getCellValue().replaceAll(reportCell.getDatasetName()+".", "").replaceAll("\\$\\{", "").replaceAll("}", "");
 		bindData.setProperty(property);
 		String groupProperty = bindData.getGroupProperty();
 		if(StringUtil.isNotEmpty(groupProperty)) {
