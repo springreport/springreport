@@ -390,7 +390,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 	* @throws 
 	*/ 
 	@Override
-	public PageEntity tablePagingQuery(ReportTpl model) {
+	public PageEntity tablePagingQuery(ReportTplDto model) {
 		PageEntity result = new PageEntity();
 		model.setDelFlag(DelFlagEnum.UNDEL.getCode());
 		model.setIsTemplate(model.getIsTemplate());
