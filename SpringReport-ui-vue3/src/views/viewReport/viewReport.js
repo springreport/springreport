@@ -82,6 +82,7 @@ export default {
           url:this.apis.reportTpl.listApi,
           params:Object.assign({}, this.pageData.queryData, this.pageData.tablePage),
         }
+        obj.params.viewPage = 1;
         var that = this;
         that.pageData.tableData = []
         this.commonUtil.getTableList(obj).then(response=>{

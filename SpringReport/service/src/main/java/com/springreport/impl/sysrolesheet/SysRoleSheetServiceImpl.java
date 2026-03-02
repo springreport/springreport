@@ -86,6 +86,7 @@ public class SysRoleSheetServiceImpl extends ServiceImpl<SysRoleSheetMapper, Sys
 		if(this.merchantmode == YesNoEnum.YES.getCode()) {
 			reportTypeQueryWrapper.eq("merchant_no", model.getMerchantNo());
 		}
+		reportTypeQueryWrapper.eq("type", 1);
 		reportTypeQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
 		List<ReportType> reportTypes = this.iReportTypeService.list(reportTypeQueryWrapper);
 		List<ReportTreeDto> treeData = new ArrayList<ReportTreeDto>();

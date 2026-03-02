@@ -3,7 +3,7 @@
 <!-- 本文件由代码生成器自动完成 -->
 <mapper namespace="com.springreport.mapper.reporttpl.ReportTplMapper" >
 
-  <select id="getTableList" databaseId="mysql" parameterType="com.springreport.entity.reporttpl.ReportTpl" resultType = "com.springreport.dto.reporttpl.ReportTplDto">
+  <select id="getTableList" databaseId="mysql" parameterType="com.springreport.dto.reporttpl.ReportTplDto" resultType = "com.springreport.dto.reporttpl.ReportTplDto">
   	SELECT
 	t1.id,
 	t1.tpl_code,
@@ -17,6 +17,11 @@
 	GROUP_CONCAT(t3.name) as dataSourceName
 	FROM
 	report_tpl t1
+	<if test="roleId !=null">
+	JOIN sys_role_sheet t5
+	on t5.role_id = #{roleId}
+	AND (t5.report_id = t1.id or t1.view_auth = 1)
+	</if>
 	LEFT JOIN
 	report_tpl_datasource t2
 	ON t1.id = t2.tpl_id

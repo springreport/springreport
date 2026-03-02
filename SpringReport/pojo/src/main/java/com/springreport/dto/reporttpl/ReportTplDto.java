@@ -56,4 +56,18 @@ public class ReportTplDto extends ReportTpl{
 	 */  
 	private boolean allowUpdate;
 	
+	/**  
+	 * @Fields roleId : 角色id
+	 * @author caiyang
+	 * @date 2026年3月2日18:39:48
+	 */  
+	private Long roleId;
+	
+	/**  
+	 * @Fields viewPage : 是否是报表查看页面 1是 2否
+	 * @author caiyang
+	 * @date 2026年3月2日18:39:48
+	 */
+	private Integer viewPage = 2;
+	
 }

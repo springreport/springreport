@@ -22,6 +22,7 @@ import com.springreport.base.BaseEntity;
 import com.springreport.base.PageEntity;
 import com.springreport.base.UserInfoDto;
 import com.springreport.constants.StatusCode;
+import com.springreport.dto.reporttpl.ReportTplDto;
 import com.springreport.dto.template.MesGetTemplateDto;
 
 import java.util.ArrayList;
@@ -216,7 +217,7 @@ public class SpringreportFieldServiceImpl extends ServiceImpl<SpringreportFieldM
 	public PageEntity getTemplates(MesGetTemplateDto model,UserInfoDto userInfoDto) {
 		PageEntity result = null;
 		if("excel".equals(model.getTemType())) {
-			ReportTpl reportTpl = new ReportTpl();
+			ReportTplDto reportTpl = new ReportTplDto();
 			reportTpl.setIsTemplate(model.getIsTemplate());
 			reportTpl.setTemplateField(model.getTemplateField());
 			reportTpl.setTplName(model.getTplName());

@@ -103,8 +103,11 @@ public class ReportTplController extends BaseController {
 	@RequestMapping(value = "/getTableList",method = RequestMethod.POST)
 	@MethodLog(module="ReportTpl",remark="获取页面表格数据",operateType=Constants.OPERATE_TYPE_SEARCH)
 	@RequiresPermissions(value = {"reportTpl_search","viewReport_Search","excelTemplate_search"},logical = Logical.OR)
-	public Response getTableList(@RequestBody ReportTpl model)
+	public Response getTableList(@RequestBody ReportTplDto model,@LoginUser UserInfoDto userInfoDto)
 	{
+		if(model.getViewPage() == 1 && userInfoDto.getIsAdmin().intValue() == YesNoEnum.NO.getCode()) {
+			model.setRoleId(userInfoDto.getRoleId());
+		}
 		PageEntity result = iReportTplService.tablePagingQuery(model);
 		return Response.success(result);
 	}
