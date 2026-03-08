@@ -26,3 +26,10 @@ SpringReport-ui-vue3/src/views/multiscreen/multiscreenview.js
 SpringReport-ui-vue3/src/views/multiscreen/multiscreenview.vue
 .gitignore
 .gitignore
+/SpringReport-ui-vue2/src/components/pages/doconlyoffice/DocOnlyOffice.js
+/SpringReport-ui-vue2/src/components/pages/doconlyoffice/DocOnlyOffice.vue
+/SpringReport-ui-vue2/src/components/pages/onlyoffice/docDesign.js
+/SpringReport-ui-vue2/src/components/pages/onlyoffice/docDesign.vue
+/SpringReport-ui-vue2/src/components/pages/onlyoffice/docPreview.js
+/SpringReport-ui-vue2/src/components/pages/onlyoffice/docPreview.vue
+/SpringReport-ui-vue2/src/components/pages/onlyoffice/vabOnlyOffice.vue

@@ -24,8 +24,8 @@
             </div>
         <el-form-item
           prop="dataSetId"
-          label="数据列"
-          :rules="filter_rules('返回值类型', { required: true })"
+          label="数据集"
+          :rules="filter_rules('数据集', { required: true })"
         >
           <el-select v-model="dataSetForm.dataSetId" placeholder="请选择" @change="changeDataset" filterable clearable>
             <el-option
