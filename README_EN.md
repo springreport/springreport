@@ -124,9 +124,9 @@ The following companies have infringed the use of SpringReport, please avoid ris
 
 | Serial Number | Company Name               | Unified Social Credit Code       |
 |------|------------------------|------------------------|
-| 1    | Qingdao Airei Information Technology Co., Ltd | 91370203350278010W     |
-| 2    | Hangzhou Wuxin Network Technology Co., Ltd | 91330108341851735A     |
-| 3    | Shenzhen Niutong Information Technology Co., Ltd | 91440300088334151A    |
+| 1    | 青岛艾瑞信息科技有限公司 | 91370203350278010W     |
+| 2    | 杭州务新网络科技有限公司 | 91330108341851735A     |
+| 3    | 深圳市牛童信息技术有限公司 | 91440300088334151A    |
 
 ## Donation Support
 Open source is not easy. If SpringReport is helpful to you, you can support the research and development through the following donation methods:
@@ -139,18 +139,18 @@ Open source is not easy. If SpringReport is helpful to you, you can support the 
 ### Thanks to Sponsors
 | Name         | Amount (CNY)  | Name           | Amount (CNY)  |
 |--------------|-------|----------------|-------|
-| AIfighting   | 50    | *Shan            | 10    |
+| AIfighting   | 50    | *扇            | 10    |
 | LG           | 8.8   | *e             | 100   |
-| Xiao Ding         | 50    | py__boy        | 260   |
-| Jun Mowen       | 132   | *Wo            | 100   |
-| Ma*Jie        | 500   | Lao Saoba Tou       | 200   |
-| Chao (yc3****3067) | 100 | *Liao            | 50    |
-| Lin*Sheng        | 50    | **Gang           | 188   |
-| *Gang (iql####fom) | 88  | c*e            | 8.88  |
-| Zai Jian Bu Jian     | 50    | Zui Wo Sha Chang Jun Mo Xiao | 66    |
-| Xin Ping Qi He     | 100   | null           | 100   |
-| y.x.l        | 100   | *Hao            | 88    |
-| A*n          | 20    | *Jing            | 15    |
+| 肖叮         | 50    | py__boy        | 260   |
+| 君莫问       | 132   | *我            | 100   |
+| 马*洁        | 500   | 老扫把头       | 200   |
+| 超(yc3****3067) | 100 | *了            | 50    |
+| 林*升        | 50    | **刚           | 188   |
+| *刚(iql####fom) | 88  | c*e            | 8.88  |
+| 再见不见     | 50    | 醉卧沙场君莫笑 | 66    |
+| 心平气和     | 100   | null           | 100   |
+| y.x.l        | 100   | *好            | 88    |
+| A*n          | 20    | *静            | 15    |
 | Meet and cherish | 100 | kirin、7       | 88.88 |
-| *Da          | 15    | Zhao Hua Xi Shi       | 30    |
-| *Ju          | 30    | -              | -     |
+| *哒          | 15    | 朝花夕拾       | 30    |
+| *句          | 30    | *海              | 100     |
