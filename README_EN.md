@@ -26,6 +26,17 @@
 | QQ Groups      | Group 1: 477055814 (Full)、Group 2: 1004742371 (Full)、Group 3: 1045719969      |
 | Author's WeChat   | 986539100                                                            |
 
+## Supporting Open Source
+Maintaining an open-source project is no easy task. If this project helps you, please **give it a star** to support us — your appreciation means a lot! Thank you so much!
+
+## Join the Community
+If you'd like to communicate, learn and share, you're welcome to join our group!
+
+## Commercial Use Notice
+If you use this project for **company or commercial purposes**, please respect the author’s hard work.  
+For commercial usage, please contact the author for authorization.  
+This will help the project get sustainable maintenance and continuous updates!
+
 ## Project Description
 SpringReport is an enterprise-level open-source report platform with zero-code drag-and-drop design. It provides one-stop support for Excel reports, Word templates, PPT, and data dashboards, compatible with mainstream databases and domestic independent innovation environments. Out-of-the-box, easy to integrate, and support secondary development, reducing report development costs by 90%.
 
