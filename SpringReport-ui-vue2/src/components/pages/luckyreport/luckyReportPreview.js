@@ -2990,6 +2990,13 @@ export default {
         }
       }
       return result;
+    },
+    copySql(item){
+       const input = document.getElementById('clipboradInput') // 承载复制内容
+        input.value = item.sql // 修改文本框的内容
+        input.select() // 选中文本
+        document.execCommand('copy') // 执行浏览器复制命令
+        this.$message.success('复制成功')
     }
   }
 }

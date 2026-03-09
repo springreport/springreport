@@ -132,13 +132,21 @@
                       <div class="action-box df-c">
                         <div
                           class="action action-edit"
-                          @click.stop="editDataSet(datasetItem)"
+                          :title="'编辑'"
+                          @click.stop="editDataSet(datasetItem,false)"
                           v-has="'reportDesign_editDataSet'"
                         />
                         <div
                           class="action action-del"
+                          :title="'删除'"
                           v-has="'reportDesign_deleteDataSet'"
                           @click.stop="deleteDataSet(datasetItem)"
+                        />
+                        <div
+                          class="action action-copy"
+                          :title="'复制数据集'"
+                          @click.stop="editDataSet(datasetItem,true)"
+                          v-has="'reportDesign_editDataSet'"
                         />
                       </div>
                     </div>
@@ -4980,6 +4988,9 @@
         .action-del {
           background-image: url("~@/static/img/sheet/dataset-del.png");
         }
+        .action-copy {
+          background-image: url("~@/static/img/sheet/dataset-copy.png");
+        }
       }
     }
     .dataset-item:hover,
@@ -4992,6 +5003,9 @@
       .action-del {
         background-image: url("~@/static/img/sheet/dataset-del-active.png") !important;
       }
+      .action-copy {
+          background-image: url("~@/static/img/sheet/dataset-copy-active.svg")!important;
+        }
     }
   }
   .dataset-fields {
