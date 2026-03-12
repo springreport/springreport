@@ -338,4 +338,11 @@ public class ResLuckySheetDataDto {
 		}
 		return maxXAndY;
 	}
+	
+	/**  
+	 * @Fields extendParamData : 扩展参数数据
+	 * @author caiyang
+	 * @date 2026-03-10 12:56:10 
+	 */  
+	private JSONObject extendParamData;
 }
