@@ -1655,6 +1655,20 @@
                   </el-collapse-item>
                 </el-collapse>
               </el-collapse-item>
+              <el-collapse-item title="PDF/打印配置" name="pdfConfig">
+                    <div class="df" style="padding: 8px 0 12px 0">
+                  <span
+                    class="cell-label"
+                    style="line-height: 20px"
+                  >行后分页</span>
+                  <el-switch
+                    v-model="cellForm.forcePagebreak"
+                    active-text="是"
+                    inactive-text="否"
+                    @change="changeCellAttr('forcePagebreak')"
+                  />
+                </div>
+              </el-collapse-item>
             </el-collapse>
           </el-form>
           <div v-show="tabIndex == 2" class="demo-form-inline">
@@ -1750,6 +1764,13 @@
                       style="min-width: 220px; max-width: 220px"
                     >
                       子循环块范围：{{ o.subBlockRange }}
+                    </p>
+                    <p
+                      class="column-tag"
+                      :title="o.forcePagebreak"
+                      style="min-width: 220px; max-width: 220px"
+                    >
+                      循环块分页：{{ o.forcePagebreak }}
                     </p>
                   </el-collapse-item>
                 </el-collapse>
@@ -3293,6 +3314,18 @@
             placeholder="子循环块范围，例如: A1:A1"
             size="small"
           />
+        </el-form-item>
+        <el-form-item
+          key="forcePagebreak"
+          label="循环块分页"
+          prop="forcePagebreak"
+          :rules="filter_rules('循环块分页', { required: false })"
+        >
+        <el-switch
+                    v-model="blockForm.forcePagebreak"
+                    active-text="是"
+                    inactive-text="否"
+                  />
         </el-form-item>
       </el-form>
       <el-alert
