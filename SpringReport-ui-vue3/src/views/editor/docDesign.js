@@ -1736,7 +1736,7 @@ export default {
       }
     },
     // 编辑数据及
-    editDataSet(dataSet) {
+    editDataSet(dataSet,isNew) {
       this.addDatasetsDialogVisiable = true
       this.datasourceType = dataSet.datasetType
       this.$nextTick(() => {
@@ -1753,7 +1753,9 @@ export default {
       this.sqlColumnTableData.tablePage.pageTotal = dataSet.columns?this.sqlColumnTableData.tableData.length:0
       this.sqlForm.datasetName = dataSet.datasetName
       this.sqlForm.datasourceId = dataSet.datasourceId
-      this.sqlForm.id = dataSet.id
+      if(!isNew){
+          this.sqlForm.id = dataSet.id
+      }
       this.sqlForm.sqlType = dataSet.sqlType
       this.sqlForm.groupId = dataSet.groupId
       this.sqlForm.isCommon = dataSet.isCommon

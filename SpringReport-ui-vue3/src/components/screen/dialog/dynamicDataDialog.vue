@@ -256,9 +256,14 @@
           <el-table-column prop="datasetName" label="数据集" align="center"> </el-table-column>
           <el-table-column label="操作" align="center">
             <template #default="scope">
-              <el-button size="small" type="primary" @click="editDatasets(scope.$index, scope.row)"
+              <el-button size="small" type="primary" @click="editDatasets(scope.$index, scope.row,false)"
                 >编辑</el-button
               >
+              <el-button
+                size="small"
+                type="warning"
+                @click="editDatasets(scope.$index, scope.row,true)"
+              >复制</el-button>
               <el-button size="small" type="danger" @click="deleteDatasets(scope.$index, scope.row)"
                 >删除</el-button
               >

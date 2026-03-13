@@ -377,13 +377,15 @@ export default {
       this.commonUtil.reLoadChart(this.chartsComponents, this.component);
       this.closeDynamicDataDialog();
     },
-    editDatasets(index, item) {
+    editDatasets(index, item,isNew) {
       this.addDatasetsDialogVisiable = true;
       this.datasourceType = item.datasetType
       this.getScreenTplDateSource();
       this.sqlForm.datasetName = item.datasetName;
       this.sqlForm.datasourceId = item.datasourceId;
-      this.sqlForm.id = item.id;
+      if(!isNew){
+        this.sqlForm.id = item.id
+      }
       this.sqlForm.mongoTable = item.mongoTable;
       this.sqlForm.mongoSearchType = item.mongoSearchType;
       if (item.datasetType == 1 || item.datasetType == 3) {

@@ -2127,7 +2127,7 @@ export default {
       this.procedureOutParamTableData.tableData.splice(index, 1);
     },
     //编辑数据及
-    editDataSet(dataSet) {
+    editDataSet(dataSet,isNew) {
       this.addDatasetsDialogVisiable = true;
       this.datasourceType = dataSet.datasetType
       this.$nextTick(() => {
@@ -2153,7 +2153,9 @@ export default {
       this.paginationForm.totalAttr = dataSet.totalAttr;
       this.sqlForm.datasetName = dataSet.datasetName;
       this.sqlForm.datasourceId = dataSet.datasourceId;
-      this.sqlForm.id = dataSet.id;
+      if(!isNew){
+          this.sqlForm.id = dataSet.id
+      }
       this.sqlForm.sqlType = dataSet.sqlType;
       this.sqlForm.groupId = dataSet.groupId
       this.sqlForm.isCommon = dataSet.isCommon
