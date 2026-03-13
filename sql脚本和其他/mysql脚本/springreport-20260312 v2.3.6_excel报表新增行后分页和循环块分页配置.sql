@@ -1,0 +1,1 @@
+ALTER TABLE luckysheet_report_cell ADD COLUMN force_pagebreak bit(1) DEFAULT b'0' COMMENT '行后分页/循环块分页'; 
