@@ -22,7 +22,8 @@ selectUtil.datasourceType = [
   { value: 11, label: 'kingbase(人大金仓)' },
   { value: 12, label: '瀚高(highgo)' },
   { value: 13, label: 'doris' },
-  { value: 14, label: 'mongodb' }
+  { value: 14, label: 'mongodb' },
+  { value: 15, label: '海量数据库 Vastbase G100' }
 ];
 selectUtil.yesNo = [
   { value: 1, label: '是' },
