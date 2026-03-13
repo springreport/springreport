@@ -633,5 +633,5 @@ public class LuckySheetBindData {
     private List<String> propertiesCache;
     
     /** force_pagebreak - 行后分页/循环块分页 */
-    private Boolean forcePagebreak;
+    private Boolean forcePagebreak = false;
 }

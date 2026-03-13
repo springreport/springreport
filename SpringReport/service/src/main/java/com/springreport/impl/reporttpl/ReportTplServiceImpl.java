@@ -3399,6 +3399,8 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 							bindData.setIsSubtotalCalc(fixedCells.get(i).getIsSubtotalCalc());
 							bindData.setSheetId(fixedCells.get(i).getSheetId());
 							bindData.setCellFillType(fixedCells.get(i).getCellFillType());
+							bindData.setPriortyMoveDirection(fixedCells.get(i).getPriortyMoveDirection());
+							bindData.setForcePagebreak(fixedCells.get(i).getForcePagebreak());
 							try {
 								bindData.setCellData(objectMapper.readValue(fixedCells.get(i).getCellData(), Map.class));
 							} catch (Exception e) {
