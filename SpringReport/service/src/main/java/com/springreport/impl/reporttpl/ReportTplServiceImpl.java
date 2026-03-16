@@ -14890,7 +14890,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 					printSettingsDto.setKeyWords("SpringReport_2.3.6");
 					printSettingsDto.setHorizontalPage(resPreviewData.getSheetDatas().get(i).getPrintSettings() == null?2:resPreviewData.getSheetDatas().get(i).getPrintSettings().getHorizontalPage());
 					printSettingsDto.setPageDivider(resPreviewData.getSheetDatas().get(i).getPageDivider());
-					objects.add(new ExcelObject("excel",new ByteArrayInputStream(baos.toByteArray()),x,y,endx,endy,mesGenerateReportDto.getPdfType(),colhidden,rowhidden,i,resPreviewData.getSheetDatas().get(i).getXxbtScreenshot(),printSettingsDto,mesExportExcel.getImageInfos(),mesExportExcel.getBackImages(),mesExportExcel.getSheetConfigs().get(i).getWrapText()));
+					objects.add(new ExcelObject("excel",new ByteArrayInputStream(baos.toByteArray()),x,y,endx,endy,mesGenerateReportDto.getPdfType(),colhidden,rowhidden,resPreviewData.getSheetDatas().get(i).getXxbtScreenshot(),printSettingsDto,mesExportExcel.getImageInfos(),mesExportExcel.getBackImages(),mesExportExcel.getSheetConfigs().get(0).getWrapText(),resPreviewData.getSheetDatas().get(i).getExtendParamData()));
 					ByteArrayOutputStream pdfbaos = new ByteArrayOutputStream();
 					Excel2Pdf pdf = new Excel2Pdf(objects, pdfbaos);
 					pdf.convert();
@@ -15257,7 +15257,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		JSONObject range = null;
 		if(dynamicRange.containsKey(key)) {
 			range = dynamicRange.getJSONObject(key);
-			range.put("edr", x);
+			range.put("edr", x+luckySheetBindData.getRowSpan()-1);
 			range.put("edc", y+luckySheetBindData.getColSpan()-1);
 			String rangeValue = range.getString("value");
 			String value = "";
@@ -15282,17 +15282,19 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		}else {
 			range = new JSONObject();
 			range.put("str", x);//起始行
-			if(luckySheetBindData.getCellValueType().intValue() == 1) {
-				range.put("edr", x+luckySheetBindData.getRowSpan()-1);//结束行
-			}else {
-				range.put("edr", x);//结束行
-			}
+//			if(luckySheetBindData.getCellValueType().intValue() == 1) {
+//				range.put("edr", x+luckySheetBindData.getRowSpan()-1);//结束行
+//			}else {
+//				range.put("edr", x);//结束行
+//			}
+			range.put("edr", x+luckySheetBindData.getRowSpan()-1);//结束行
 			range.put("stc", y);//起始列
-			if(luckySheetBindData.getCellValueType().intValue() == 1) {
-				range.put("edc", y+luckySheetBindData.getColSpan()-1);//结束列
-			}else {
-				range.put("edc", y);//结束列
-			}
+//			if(luckySheetBindData.getCellValueType().intValue() == 1) {
+//				range.put("edc", y+luckySheetBindData.getColSpan()-1);//结束列
+//			}else {
+//				range.put("edc", y);//结束列
+//			}
+			range.put("edc", y+luckySheetBindData.getColSpan()-1);//结束列
 			range.put("r", x);//内容长度最长的单元格x坐标
 			range.put("c", y);//内容长度最长的单元格x坐标
 			String value = "";
