@@ -146,7 +146,6 @@
                           class="action action-copy"
                           :title="'复制数据集'"
                           @click.stop="editDataSet(datasetItem,true)"
-                          v-has="'reportDesign_editDataSet'"
                         />
                       </div>
                     </div>
