@@ -35,7 +35,7 @@
               >
               <div class="el-dialog-div">
                   <div v-for="(item,index) in reportSqls" :key="index">
-                  <el-divider content-position="left">数据集：{{item.name}}</el-divider>
+                  <el-divider content-position="left">数据集：{{item.name}} <span title="复制sql语句" @click="copySql(item)"><icon-copy/></span></el-divider>
                   <el-descriptions title="" :column="1" border>
                       <!-- <el-descriptions-item label="数据集">{{item.name}}</el-descriptions-item> -->
                       <el-descriptions-item label="sql语句">{{item.sql}}</el-descriptions-item>
@@ -44,6 +44,11 @@
                   </div>
               </div>
           </el-dialog>
+          <textarea
+          id="clipboradInput"
+          value=""
+          style="opacity: 0; position: absolute"
+        />
     </div>
 </template>
 <script src="./docPreview.js"></script>

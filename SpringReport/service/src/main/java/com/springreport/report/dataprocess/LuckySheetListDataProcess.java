@@ -133,6 +133,7 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 				bindData.setIsDump(variableCells.get(i).getIsDump());
 				bindData.setDumpAttr(variableCells.get(i).getDumpAttr());
 				bindData.setKeepEmptyCell(variableCells.get(i).getKeepEmptyCell());
+				bindData.setForcePagebreak(variableCells.get(i).getForcePagebreak());
 				if(StringUtil.isNotEmpty(variableCells.get(i).getFormsAttrs())) {
 					//填报设置如果设置了下拉单选数据字典，则以填报设置为准
 					JSONObject formsAttrs = JSON.parseObject(variableCells.get(i).getFormsAttrs());

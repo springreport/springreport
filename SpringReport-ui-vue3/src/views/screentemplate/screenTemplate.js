@@ -147,7 +147,7 @@ export default {
         // modal表单 end
         // modal 数据 start
         folderModalData: { // modal页面数据
-          reportTypeName: ''// 类型名称
+          fieldName: ''// 类型名称
         },
         // modal 数据 end
         // modal 按钮 start

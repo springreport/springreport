@@ -178,6 +178,8 @@ public class ReportDatasourceServiceImpl extends ServiceImpl<ReportDatasourceMap
 			model.setDriverClass(DriverClassEnum.MONGODB.getName());
 		}else if (DriverClassEnum.TDENGINE.getCode().intValue() == model.getType().intValue()) {
 			model.setDriverClass(DriverClassEnum.TDENGINE.getName());
+		}else if (DriverClassEnum.VASTBASEG100.getCode().intValue() == model.getType().intValue()) {
+			model.setDriverClass(DriverClassEnum.VASTBASEG100.getName());
 		}
 		this.save(model);
 		result.setStatusMsg(MessageUtil.getValue("info.insert"));
@@ -239,6 +241,8 @@ public class ReportDatasourceServiceImpl extends ServiceImpl<ReportDatasourceMap
 			model.setDriverClass(DriverClassEnum.MONGODB.getName());
 		}else if (DriverClassEnum.TDENGINE.getCode().intValue() == model.getType().intValue()) {
 			model.setDriverClass(DriverClassEnum.TDENGINE.getName());
+		}else if (DriverClassEnum.VASTBASEG100.getCode().intValue() == model.getType().intValue()) {
+			model.setDriverClass(DriverClassEnum.VASTBASEG100.getName());
 		}
 		this.updateById(model);
 		result.setStatusMsg(MessageUtil.getValue("info.update"));
@@ -493,6 +497,9 @@ public class ReportDatasourceServiceImpl extends ServiceImpl<ReportDatasourceMap
 			}else if(DriverClassEnum.MONGODB.getCode().intValue() == reportDatasource.getType().intValue())
 			{
 				reportDatasource.setDriverClass(DriverClassEnum.MONGODB.getName());
+			}else if(DriverClassEnum.VASTBASEG100.getCode().intValue() == reportDatasource.getType().intValue())
+			{
+				reportDatasource.setDriverClass(DriverClassEnum.VASTBASEG100.getName());
 			}
 			//数据库
 			//数据源配置

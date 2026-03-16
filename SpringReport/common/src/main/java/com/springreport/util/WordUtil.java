@@ -1228,6 +1228,9 @@ public class WordUtil {
         	datas = (List<Map<String, Object>>) dynamicData.get(docChartSettingDto.getDatasetName());
         	String categoryField = docChartSettingDto.getCategoryField();
         	List<String> categories = new ArrayList<>();
+        	if(ListUtil.isEmpty(datas)) {
+        		return;
+        	}
         	for (int i = 0; i < datas.size(); i++) {
         		Object obj = datas.get(i).get(categoryField);
         		categories.add(String.valueOf(obj));

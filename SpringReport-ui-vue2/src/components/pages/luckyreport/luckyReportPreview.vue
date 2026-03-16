@@ -458,7 +458,12 @@
         <div v-for="(item, index) in reportSqls" :key="index">
           <el-divider
             content-position="left"
-          >数据集：{{ item.name }}</el-divider>
+          >数据集：{{ item.name }} <i
+                    class="el-icon-copy-document"
+                    title="复制sql语句
+                    "
+                    @click="copySql(item)"
+                  /></el-divider>
           <el-descriptions title="" :column="1" border>
             <!-- <el-descriptions-item label="数据集">{{item.name}}</el-descriptions-item> -->
             <el-descriptions-item label="sql语句">{{
@@ -472,6 +477,11 @@
     <div style="display: none">
       <input id="uploadBtn" type="file" accept="xlsx/*" @change="loadExcel">
     </div>
+    <textarea
+      id="clipboradInput"
+      value=""
+      style="opacity: 0; position: absolute"
+    />
   </div>
 </template>
 <script src="./luckyReportPreview.js"></script>

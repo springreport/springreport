@@ -257,6 +257,7 @@ export default {
         hloopEmptyCount:'',//横向循环间隔空行数
         vloopEmptyCount:'',//纵向循环间隔空行数
         subBlockRange:"",//子循环块范围
+        forcePagebreak:false,//循环块分页
       },
       cellConditionVisiable: false, // 单元格过滤条件对话框
       cellConditionForm: {
@@ -338,6 +339,7 @@ export default {
         compareAttr2:"",
         dumpAttr:"",
         isDump:false,
+        forcePagebreak:false,
         formsAttrs:{
           isOperationCol:false,//是否操作列
           valueType: '1', // 值类型 1文本 2数值 3日期 4下拉单选
@@ -953,7 +955,7 @@ export default {
         this.cellForm.dumpAttr = cellFormData.dumpAttr
         this.cellForm.isDump = cellFormData.isDump
         this.cellForm.keepEmptyCell = cellFormData.keepEmptyCell
-        
+        this.cellForm.forcePagebreak = cellFormData.forcePagebreak
         if(cellFormData.cellFillType){
           this.cellForm.cellFillType = cellFormData.cellFillType
         }else{
@@ -1022,6 +1024,7 @@ export default {
         this.cellForm.dumpAttr = ""
         this.cellForm.isDump = false
         this.cellForm.keepEmptyCell = false
+        this.cellForm.forcePagebreak = false
         // this.getDrillReport();
       }
       if (this.cellForm.datasourceId) {
@@ -1907,7 +1910,7 @@ export default {
       this.procedureOutParamTableData.tableData.splice(index, 1)
     },
     // 编辑数据及
-    editDataSet(dataSet) {
+    editDataSet(dataSet,isNew) {
       this.addDatasetsDialogVisiable = true
       this.datasourceType = dataSet.datasetType
       this.$nextTick(() => {
@@ -1931,7 +1934,9 @@ export default {
       this.paginationForm.totalAttr = dataSet.totalAttr
       this.sqlForm.datasetName = dataSet.datasetName
       this.sqlForm.datasourceId = dataSet.datasourceId
-      this.sqlForm.id = dataSet.id
+      if(!isNew){
+          this.sqlForm.id = dataSet.id
+      }
       this.sqlForm.sqlType = dataSet.sqlType
       this.sqlForm.groupId = dataSet.groupId
       this.sqlForm.isCommon = dataSet.isCommon
@@ -2117,6 +2122,7 @@ export default {
                   hloopEmptyCount: blockInfos.hloopEmptyCount,
                   vloopEmptyCount: blockInfos.vloopEmptyCount,
                   subBlockRange:blockInfos.subBlockRange,
+                  forcePagebreak:blockInfos.forcePagebreak,
                 }
                 reportTplBlockCells.push(reportTplBlockCell)
                 for (let i = 0; i < blockCells.length; i++) {
@@ -2739,6 +2745,7 @@ export default {
             hloopEmptyCount: this.blockForm.hloopEmptyCount,
             vloopEmptyCount: this.blockForm.vloopEmptyCount,
             subBlockRange: this.blockForm.subBlockRange,
+            forcePagebreak: this.blockForm.forcePagebreak,
           }
           var sheetIndex = luckysheet.getSheet().index
           var k = ''
@@ -2776,6 +2783,7 @@ export default {
       this.blockForm.hloopEmptyCount = obj.hloopEmptyCount
       this.blockForm.vloopEmptyCount = obj.vloopEmptyCount
       this.blockForm.subBlockRange = obj.subBlockRange
+      this.blockForm.forcePagebreak = obj.forcePagebreak
       this.blockVisiable = true
     },
     // 删除循环块
@@ -2816,6 +2824,7 @@ export default {
       result.hloopEmptyCount = hloopEmptyCount
       result.vloopEmptyCount = vloopEmptyCount
       result.subBlockRange = blockData.subBlockRange;
+      result.forcePagebreak = blockData.forcePagebreak;
       if(blockData.subBlockRange){
         var subStartCell = blockData.subBlockRange.split(":")[0];
         var subEndCell = blockData.subBlockRange.split(":")[1];

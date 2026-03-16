@@ -305,8 +305,13 @@
               <el-button
                 size="mini"
                 type="primary"
-                @click="editDatasets(scope.$index, scope.row)"
+                @click="editDatasets(scope.$index, scope.row,false)"
               >编辑</el-button>
+              <el-button
+                size="mini"
+                type="warning"
+                @click="editDatasets(scope.$index, scope.row,true)"
+              >复制</el-button>
               <el-button
                 size="mini"
                 type="danger"

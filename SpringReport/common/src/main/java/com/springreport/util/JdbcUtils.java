@@ -216,7 +216,8 @@ public class JdbcUtils {
 		sqlText = MybatisTemplateSqlExcutor.parseSql(sqlText,params);
 		System.err.println("解析后的sql:"+sqlText);
 		if(DriverClassEnum.MYSQL.getCode().intValue() == dataSourceType || DriverClassEnum.POSTGRESQL.getCode().intValue() == dataSourceType
-				|| DriverClassEnum.INFLUXDB.getCode().intValue() == dataSourceType)
+				|| DriverClassEnum.INFLUXDB.getCode().intValue() == dataSourceType || DriverClassEnum.KINGBASE.getCode().intValue() == dataSourceType
+				|| DriverClassEnum.VASTBASEG100.getCode().intValue() == dataSourceType)
 		{
 			final Pattern pattern = Pattern.compile(".*limit\\s+(\\S+?)($|;|\\s+.+)", Pattern.CASE_INSENSITIVE);
 	        final Matcher matcher = pattern.matcher(sqlText);
@@ -879,7 +880,8 @@ public class JdbcUtils {
 		{
 			sql = "select row_number () over (order by rand()) page_row_number,* from (" + sql + ") as page_table_alias";
 			sql = "select top "+pageCount + " * from (" + sql + ") as page_table_alias where page_row_number > " + (currentPage-1)*pageCount + " order by page_row_number";
-		}else if(DriverClassEnum.POSTGRESQL.getCode().intValue() == dataSourceType || DriverClassEnum.KINGBASE.getCode().intValue() == dataSourceType || DriverClassEnum.HIGODB.getCode().intValue() == dataSourceType) {
+		}else if(DriverClassEnum.POSTGRESQL.getCode().intValue() == dataSourceType || DriverClassEnum.KINGBASE.getCode().intValue() == dataSourceType || DriverClassEnum.HIGODB.getCode().intValue() == dataSourceType
+				|| DriverClassEnum.VASTBASEG100.getCode().intValue() == dataSourceType) {
 			sql = sql + " limit " + pageCount + " offset " + (currentPage-1)*pageCount;
 		}else if(DriverClassEnum.INFLUXDB.getCode().intValue() == dataSourceType || DriverClassEnum.TDENGINE.getCode().intValue() == dataSourceType) {
 			sql = sql + " limit " + pageCount + " offset " + (currentPage-1)*pageCount;
@@ -901,7 +903,8 @@ public class JdbcUtils {
 		{
 			sql = "select row_number () over (order by rand()) page_row_number,* from (" + sql + ") as page_table_alias";
 			sql = "select top "+(endPage-startPage+1)*pageCount + " * from (" + sql + ") as page_table_alias where page_row_number > " + (startPage-1)*pageCount + "order by page_row_number";
-		}else if(DriverClassEnum.POSTGRESQL.getCode().intValue() == dataSourceType || DriverClassEnum.KINGBASE.getCode().intValue() == dataSourceType) {
+		}else if(DriverClassEnum.POSTGRESQL.getCode().intValue() == dataSourceType || DriverClassEnum.KINGBASE.getCode().intValue() == dataSourceType
+			|| DriverClassEnum.VASTBASEG100.getCode().intValue() == dataSourceType) {
 			sql = sql + " limit " + (endPage-startPage+1)*pageCount + " offset " + (startPage-1)*pageCount;
 		}else if(DriverClassEnum.INFLUXDB.getCode().intValue() == dataSourceType || DriverClassEnum.TDENGINE.getCode().intValue() == dataSourceType) {
 			sql = sql + " limit " + (endPage-startPage+1)*pageCount + " offset " + (startPage-1)*pageCount;

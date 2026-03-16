@@ -132,11 +132,16 @@
                         </el-dropdown>
                         <div
                           class="action action-edit"
-                          @click.stop="editDataSet(datasetItem)"
+                          @click.stop="editDataSet(datasetItem,false)"
                         />
                         <div
                           class="action action-del"
                           @click.stop="deleteDataSet(datasetItem)"
+                        />
+                        <div
+                          class="action action-copy"
+                          :title="'复制数据集'"
+                          @click.stop="editDataSet(datasetItem,true)"
                         />
                       </div>
                     </div>

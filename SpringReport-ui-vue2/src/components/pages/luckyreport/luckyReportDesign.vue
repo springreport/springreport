@@ -132,13 +132,20 @@
                       <div class="action-box df-c">
                         <div
                           class="action action-edit"
-                          @click.stop="editDataSet(datasetItem)"
+                          :title="'编辑'"
+                          @click.stop="editDataSet(datasetItem,false)"
                           v-has="'reportDesign_editDataSet'"
                         />
                         <div
                           class="action action-del"
+                          :title="'删除'"
                           v-has="'reportDesign_deleteDataSet'"
                           @click.stop="deleteDataSet(datasetItem)"
+                        />
+                        <div
+                          class="action action-copy"
+                          :title="'复制数据集'"
+                          @click.stop="editDataSet(datasetItem,true)"
                         />
                       </div>
                     </div>
@@ -1647,6 +1654,20 @@
                   </el-collapse-item>
                 </el-collapse>
               </el-collapse-item>
+              <el-collapse-item title="PDF/打印配置" name="pdfConfig">
+                    <div class="df" style="padding: 8px 0 12px 0">
+                  <span
+                    class="cell-label"
+                    style="line-height: 20px"
+                  >行后分页</span>
+                  <el-switch
+                    v-model="cellForm.forcePagebreak"
+                    active-text="是"
+                    inactive-text="否"
+                    @change="changeCellAttr('forcePagebreak')"
+                  />
+                </div>
+              </el-collapse-item>
             </el-collapse>
           </el-form>
           <div v-show="tabIndex == 2" class="demo-form-inline">
@@ -1742,6 +1763,13 @@
                       style="min-width: 220px; max-width: 220px"
                     >
                       子循环块范围：{{ o.subBlockRange }}
+                    </p>
+                    <p
+                      class="column-tag"
+                      :title="o.forcePagebreak"
+                      style="min-width: 220px; max-width: 220px"
+                    >
+                      循环块分页：{{ o.forcePagebreak }}
                     </p>
                   </el-collapse-item>
                 </el-collapse>
@@ -3285,6 +3313,18 @@
             placeholder="子循环块范围，例如: A1:A1"
             size="small"
           />
+        </el-form-item>
+        <el-form-item
+          key="forcePagebreak"
+          label="循环块分页"
+          prop="forcePagebreak"
+          :rules="filter_rules('循环块分页', { required: false })"
+        >
+        <el-switch
+                    v-model="blockForm.forcePagebreak"
+                    active-text="是"
+                    inactive-text="否"
+                  />
         </el-form-item>
       </el-form>
       <el-alert
@@ -4980,6 +5020,9 @@
         .action-del {
           background-image: url("~@/static/img/sheet/dataset-del.png");
         }
+        .action-copy {
+          background-image: url("~@/static/img/sheet/dataset-copy.png");
+        }
       }
     }
     .dataset-item:hover,
@@ -4992,6 +5035,9 @@
       .action-del {
         background-image: url("~@/static/img/sheet/dataset-del-active.png") !important;
       }
+      .action-copy {
+          background-image: url("~@/static/img/sheet/dataset-copy-active.svg")!important;
+        }
     }
   }
   .dataset-fields {

@@ -129,4 +129,13 @@ public enum DriverClassEnum implements BaseIntEnum{
 			return "com.mongodb.jdbc.MongoDriver";
 		}
 	},
+	VASTBASEG100 {
+		public Integer getCode() {
+			return 15;
+		}
+
+		public String getName() {
+			return "org.postgresql.Driver";
+		}
+	},
 }

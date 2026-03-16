@@ -370,4 +370,8 @@ public class LuckysheetReportCell extends PageEntity {
     /** keep_empty_cell - 没有数据时是否保留空单元格*/
     @TableField("keep_empty_cell")
     private Boolean keepEmptyCell;
+    
+    /** force_pagebreak - 行后分页/循环块分页 */
+    @TableField("force_pagebreak")
+    private Boolean forcePagebreak;
 }
