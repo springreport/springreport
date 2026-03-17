@@ -303,6 +303,14 @@ public class ReportTplController extends BaseController {
 		if(ListUtil.isNotEmpty(result.getSheetDatas())) {
 			for (int i = 0; i < result.getSheetDatas().size(); i++) {
 				result.getSheetDatas().get(i).setCellBindData(null);
+				if(result.getTplType() == 1) {
+					result.getSheetDatas().get(i).setExtendCellOrigin(null);
+					result.getSheetDatas().get(i).setExtraCustomCellConfigs(null);
+					result.getSheetDatas().get(i).setAllowEditConfigs(null);
+					result.getSheetDatas().get(i).setColumnStartCoords(null);
+					result.getSheetDatas().get(i).setWrapDatas(null);
+					result.getSheetDatas().get(i).setReplacedData(null);
+				}
 			}
 		}
 		httpServletResponse.setHeader("Content-Encoding", "gzip");
@@ -379,6 +387,19 @@ public class ReportTplController extends BaseController {
 			}
 		}
 		ResPreviewData result = this.iReportTplService.previewLuckysheetReportData(mesGenerateReportDto,userInfoDto);
+		if(ListUtil.isNotEmpty(result.getSheetDatas())) {
+			for (int i = 0; i < result.getSheetDatas().size(); i++) {
+				result.getSheetDatas().get(i).setCellBindData(null);
+				if(result.getTplType() == 1) {
+					result.getSheetDatas().get(i).setExtendCellOrigin(null);
+					result.getSheetDatas().get(i).setExtraCustomCellConfigs(null);
+					result.getSheetDatas().get(i).setAllowEditConfigs(null);
+					result.getSheetDatas().get(i).setColumnStartCoords(null);
+					result.getSheetDatas().get(i).setWrapDatas(null);
+					result.getSheetDatas().get(i).setReplacedData(null);
+				}
+			}
+		}
 		httpServletResponse.setHeader("Content-Encoding", "gzip");
 		httpServletResponse.setContentType("text/html");
 		String resultStr="";
