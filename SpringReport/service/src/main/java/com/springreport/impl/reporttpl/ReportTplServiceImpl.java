@@ -15276,7 +15276,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				range.put("r", x);//内容长度最长的单元格x坐标
 				range.put("c", y);//内容长度最长的单元格x坐标
 				range.put("value", value);//内容
-				range.put("fs", fs);//内容字体大小
+				range.put("fs", fs==null?10:fs);//内容字体大小
 				range.put("ls", ls);//内容间距
 			}
 		}else {
@@ -15310,7 +15310,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				ls = v.get("ls");
 			}
 			range.put("value", value);//内容长度最长的单元格x坐标
-			range.put("fs", fs);//内容字体大小
+			range.put("fs", fs==null?10:fs);//内容字体大小
 			range.put("ls", ls);//内容间距
 			dynamicRange.put(key, range);
 		}
