@@ -11,6 +11,7 @@ import md5 from 'js-md5';
 import Axios from 'axios';
 import vchartsetting from '@/components/vchart/vchartsetting.vue';
 import headerReportForm from '../../components/reportForm/headerReportForm.vue'
+// import pako from '../../../public/luckysheet/plugins/webworker/pako_2.js'
 export default {
   components: {
     vchartsetting,
@@ -391,7 +392,9 @@ export default {
                   { label: '导出全部PDF', handle: () => that.pdfExport(1) }
                 ]
               },
-              {btnType: 'button', label: '打印', iconClass: 'action-icon-print',handle: () => that.pdfPrint(1), size: 'mini'}
+              {btnType: 'button', label: '打印', iconClass: 'action-icon-print',handle: () => that.pdfPrint(1), size: 'mini'},
+              {btnType: 'button', label: '保存快照', iconClass: 'action-icon action-icon-export-all',handle: () => this.showSnapshotDialog(), size: 'mini'},
+              {btnType: 'button', label: '快照管理', iconClass: 'action-icon action-icon-export-all',handle: () => this.reportSnapshot(), size: 'mini'},
             ]
           }else{
             that.searchHandle = [
@@ -406,7 +409,9 @@ export default {
                   { label: '导出全部PDF', handle: () => that.pdfExport(1) }
                 ]
               },
-              {btnType: 'button', label: '打印', iconClass: 'action-icon-print',handle: () => that.pdfPrint(1), size: 'mini'}
+              {btnType: 'button', label: '打印', iconClass: 'action-icon-print',handle: () => that.pdfPrint(1), size: 'mini'},
+              {btnType: 'button', label: '保存快照', iconClass: 'action-icon action-icon-export-all',handle: () => this.pdfPrint(1), size: 'mini'},
+              {btnType: 'button', label: '快照管理', iconClass: 'action-icon action-icon-export-all',handle: () => this.pdfPrint(1), size: 'mini'},
             ]
           }
           for (let i = 0; i < result.length; i++) {
@@ -3429,6 +3434,16 @@ export default {
             message: '复制成功',
             type: this.commonConstants.messageType.success,
         });
+    },
+    showSnapshotDialog(){
+      alert("该部分是付费插件功能，如需要请联系作者！")
+    },
+    //保存快照
+    saveSnapshot(value){
+       alert("该部分是付费插件功能，如需要请联系作者！")
+    },
+    reportSnapshot(){
+       alert("该部分是付费插件功能，如需要请联系作者！")
     }
   },
 };
