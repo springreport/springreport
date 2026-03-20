@@ -401,4 +401,10 @@ api.templateExportImport = {
   templateOnlyofficeImportApi:"/api/docOnlyOffice/exportOnlyofficeTemplate",
   templateOnlyofficeUploadApi:"/api/docOnlyOffice/onlyofficeUpload",
 }
+
+api.reportSnapshot = {
+  saveSnapshotApi:"/api/reportSnapshot/saveSnapshot",
+  getSnapshotApi:"/api/reportSnapshot/getSnapshot",
+  exportSnapshotApi:"/api/reportSnapshot/exportSnapshot",
+}
 export default api
