@@ -4,6 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 /**  
  * @ClassName: FileUtil
@@ -46,6 +48,25 @@ public class FileUtil {
 	        } catch (IOException e) {
 	            e.printStackTrace();
 	            return null;
+	        }
+	    }
+	 
+	 public static InputStream getInputStream(String urlString) throws IOException {
+	        URL url = new URL(urlString);
+	        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+	        
+	        // 设置请求头
+	        connection.setRequestProperty("Accept-Charset", "UTF-8");
+            connection.setRequestProperty("Content-Type", "text/plain; charset=" + "UTF-8");
+	        connection.setRequestMethod("GET");
+	        connection.setConnectTimeout(10000);
+	        connection.setReadTimeout(10000);
+	        
+	        int responseCode = connection.getResponseCode();
+	        if (responseCode == HttpURLConnection.HTTP_OK) {
+	            return connection.getInputStream();
+	        } else {
+	            throw new IOException("Failed to download file. Response code: " + responseCode);
 	        }
 	    }
 }

@@ -968,6 +968,7 @@ public class LuckysheetUtil {
 				break;
 			}
 			if(width == 0) {
+				c = c - 1;
 				result.put("percent", 1);
 				break;
 			}
@@ -1013,6 +1014,7 @@ public class LuckysheetUtil {
 				break;
 			}
 			if(height == 0) {
+				r = r - 1;
 				result.put("percent", 1);
 				break;
 			}

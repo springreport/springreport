@@ -128,7 +128,7 @@ public class Constants {
      * @author caiyang
      * @date 2023-01-06 10:54:42 
      */  
-    public static final String IMG_EXTENTIONS = "jpg,jpeg,png,bmp";
+    public static final String IMG_EXTENTIONS = "jpg,jpeg,png,bmp,gif";
     
     
     /**  

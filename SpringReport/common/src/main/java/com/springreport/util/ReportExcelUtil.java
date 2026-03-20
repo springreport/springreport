@@ -1443,8 +1443,9 @@ public class ReportExcelUtil {
 		//图片插入
         if (images != null){
         	Map<String, Object> map = images.getInnerMap();
+        	XSSFDrawing patriarch = sheet.createDrawingPatriarch();
         	for(Map.Entry<String, Object> entry : map.entrySet()) {
-        		XSSFDrawing patriarch = sheet.createDrawingPatriarch();
+        		
         		 //图片信息
                 JSONObject iamgeData = (JSONObject) entry.getValue();
                 Integer zIndex = iamgeData.getInteger("zIndex");
