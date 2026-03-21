@@ -72,13 +72,13 @@
               <el-avatar
                 v-for="(item, index) in headerUsers"
                 :key="index"
-                
                 :style="{
                   marginRight: '4px',
                   backgroundColor: item.color + ' !important',
                 }"
                 shape="circle"
                 :title="item.userName"
+                :size=30
               >
                 {{ item.userName.slice(0, 1).toUpperCase() }}
               </el-avatar>

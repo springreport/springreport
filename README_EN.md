@@ -154,3 +154,4 @@ Open source is not easy. If SpringReport is helpful to you, you can support the 
 | Meet and cherish | 100 | kirin、7       | 88.88 |
 | *哒          | 15    | 朝花夕拾       | 30    |
 | *句          | 30    | *海              | 100     |
+| *p          | 20    |               |      |
