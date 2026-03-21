@@ -9,6 +9,7 @@
 import Axios from 'axios'
 import vchartsetting from '../../component/vchart/vchartsetting.vue'
 import headerReportForm from '../../component/reportForm/headerReportForm.vue'
+// import pako from '../../../../public/luckysheet/plugins/webworker/pako.js'
 export default {
   components: {
     vchartsetting,
@@ -373,7 +374,9 @@ export default {
                   { label: '导出全部PDF', handle: () => this.pdfExport(1) }
                 ]
               },
-              {btnType: 'button', label: '打印', iconClass: 'action-icon action-icon-print',handle: () => this.pdfPrint(1), size: 'mini'}
+              {btnType: 'button', label: '打印', iconClass: 'action-icon action-icon-print',handle: () => this.pdfPrint(1), size: 'mini'},
+              {btnType: 'button', label: '保存快照', iconClass: 'action-icon action-icon-export-all',handle: () => this.showSnapshotDialog(), size: 'mini'},
+              {btnType: 'button', label: '快照管理', iconClass: 'action-icon action-icon-export-all',handle: () => this.reportSnapshot(), size: 'mini'},
             ]
           }else{
             this.searchHandle = [
@@ -388,7 +391,9 @@ export default {
                   { label: '导出全部PDF', handle: () => this.pdfExport(1) }
                 ]
               },
-              {btnType: 'button', label: '打印', iconClass: 'action-icon action-icon-print',handle: () => this.pdfPrint(1), size: 'mini'}
+              {btnType: 'button', label: '打印', iconClass: 'action-icon action-icon-print',handle: () => this.pdfPrint(1), size: 'mini'},
+              {btnType: 'button', label: '保存快照', iconClass: 'action-icon action-icon-export-all',handle: () => this.pdfPrint(1), size: 'mini'},
+              {btnType: 'button', label: '快照管理', iconClass: 'action-icon action-icon-export-all',handle: () => this.pdfPrint(1), size: 'mini'},
             ]
           }
           for (let i = 0; i < result.length; i++) {
@@ -2997,6 +3002,16 @@ export default {
         input.select() // 选中文本
         document.execCommand('copy') // 执行浏览器复制命令
         this.$message.success('复制成功')
+    },
+    showSnapshotDialog(){
+      alert("该部分是付费插件功能，如需要请联系作者！")
+    },
+    //保存快照
+    saveSnapshot(value){
+       alert("该部分是付费插件功能，如需要请联系作者！")
+    },
+    reportSnapshot(){
+       alert("该部分是付费插件功能，如需要请联系作者！")
     }
   }
 }

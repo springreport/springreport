@@ -633,6 +633,14 @@ commonConstants.routers = [
         },
       },
       // {
+      //   path: "/reportSnapshot",
+      //   name: "reportSnapshot",
+      //   component: () => import("@/components/pages/reportsnapshot/ReportSnapshot.vue"),
+      //   meta: {
+      //     title: "快照管理",
+      //   },
+      // },
+      // {
       //   path: "/doconlyoffice",
       //   name: "doconlyoffice",
       //   component: () => import("@/components/pages/doconlyoffice/DocOnlyOffice.vue"),
@@ -656,6 +664,7 @@ commonConstants.routers = [
       //     title: '多大屏管理'
       //   }
       // },
+      
     ]
   },
   {
@@ -802,6 +811,14 @@ commonConstants.routers = [
   //   component: () => import('@/components/pages/multiscreen/multiscreenview.vue'),
   //   meta: {
   //     title: '多大屏查看'
+  //   }
+  // },
+  // {
+  //   path: '/viewSnapshot',
+  //   name: 'viewSnapshot',
+  //   component: () => import('@/components/pages/reportsnapshot/snapshotPreview.vue'),
+  //   meta: {
+  //     title: '查看快照'
   //   }
   // },
   {

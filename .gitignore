@@ -33,3 +33,5 @@ SpringReport-ui-vue3/src/views/multiscreen/multiscreenview.vue
 /SpringReport-ui-vue2/src/components/pages/onlyoffice/docPreview.js
 /SpringReport-ui-vue2/src/components/pages/onlyoffice/docPreview.vue
 /SpringReport-ui-vue2/src/components/pages/onlyoffice/vabOnlyOffice.vue
+/SpringReport-ui-vue2/src/components/pages/reportsnapshot/*.js
+/SpringReport-ui-vue2/src/components/pages/reportsnapshot/*.vue
