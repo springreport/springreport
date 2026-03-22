@@ -77,8 +77,8 @@ The project started in 2020 (the first version CY-Report), was reconstructed bas
 ### 2. Commercial Paid Content (Including Tax)
 | Serial Number | Paid Content                                   | Price (CNY)     | Remarks                                                                 |
 |------|--------------------------------------------|----------|----------------------------------------------------------------------|
-| 1    | Remove watermark + Commercial authorization                        | ¥10499   | Only remove watermark, no source code provided                                                 |
-| 2    | luckysheet optimized source code + Remove watermark + Commercial authorization    | ¥14999   | No need to purchase if no secondary development is required                                               |
+| 1    | Remove watermark + Commercial authorization                        | ¥10499   | Only remove the watermark and provide commercial license, do not provide the source code of Luckysheet.|
+| 2    | luckysheet optimized source code + Remove watermark + Commercial authorization    | ¥14999   | The Luckysheet source code is available. If you don't need to do secondary development on Luckysheet, purchasing the source code is unnecessary. Not having it does not affect usage at all.|
 | 3    | SpringBoot3.2.6 backend code                   | ¥6499    | Functions are consistent with the SpringBoot2 version                                         |
 | 4    | Multi-database support (Oracle/SqlServer/Dameng, etc.)    | ¥5499    | Refers to the underlying database for project deployment, not the report data source                                   |
 | 5    | PPT plugin                                   | ¥6999    | Developed based on PPTist, backend is not open source                                         |
@@ -86,8 +86,9 @@ The project started in 2020 (the first version CY-Report), was reconstructed bas
 | 7    | Custom function plugin                             | ¥6499    | Free for users who pay ≥¥12999                                                |
 | 8    | Template export and import function                           | Gift     | Gift with any paid purchase (Original price ¥3499)                                     |
 | 9    | Multi-dashboard function plugin                             | Gift     | Gift with any paid purchase (Original price ¥1999)                                     |
-| 10   | All content (Original price ¥51000+)                   | ¥29999   | Full source code delivery, permanent free upgrade, no limit on the number of projects                             |
-| 11   | International version full source code                           | Quoted separately | Independent code, cannot be upgraded from the open-source version                                           |
+| 10   | Excel Report Snapshot plugin                          | Gift     | Gift with any paid purchase (Original price ¥1999)                                    |
+| 11   | All content (Original price ¥51000+)                   | ¥29999   | Full source code delivery, permanent free upgrade, no limit on the number of projects                             |
+| 12   | International version full source code                           | Quoted separately | Independent code, cannot be upgraded from the open-source version                                           |
 
 > Details of the international version: [https://www.springreport.vip/7.%E5%9B%BD%E9%99%85%E5%8C%96%E7%89%88%E6%9C%AC%E8%AF%B4%E6%98%8E.html](https://www.springreport.vip/7.%E5%9B%BD%E9%99%85%E5%8C%96%E7%89%88%E6%9C%AC%E8%AF%B4%E6%98%8E.html)
 
@@ -108,6 +109,7 @@ The project started in 2020 (the first version CY-Report), was reconstructed bas
 | 5    | Dameng Database   | Yes       | Yes           |
 | 6    | Kingbase     | Yes       | Yes           |
 | 7    | Highgo Database   | Yes       | Yes           |
+| 8    | vastbaseG100   | Yes       | Yes           |
 
 ## Technical Support
 If you need technical support from the author, you can contact him through the WeChat group/QQ group. The author will charge a reasonable fee based on the time and energy spent, please understand.
