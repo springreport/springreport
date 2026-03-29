@@ -409,4 +409,9 @@ api.reportSnapshot = {
   getSnapshotApi:"/api/reportSnapshot/getSnapshot",
   exportSnapshotApi:"/api/reportSnapshot/exportSnapshot",
 }
+
+api.ai = {
+  generateSqlByDSApi:"/api/ai/generateSqlByDS",
+  analysisByDSApi:"/api/ai/analysisByDS",
+}
 export default api;

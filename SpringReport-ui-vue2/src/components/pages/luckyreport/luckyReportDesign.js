@@ -38,6 +38,7 @@ export default {
   },
   data() {
     return {
+      showAISql:false,
       isInit:true,
       deleteTypeDialog:false,//数据删除方式dialog
       deleteTypeForm: {
@@ -5667,6 +5668,12 @@ export default {
         }
       }
       this.saveTplCache();
+    },
+    showAiDialog(){
+      alert("该部分是付费插件功能，如需要请联系作者！")
+    },
+    closeAISql(){
+      alert("该部分是付费插件功能，如需要请联系作者！")
     }
   },
   watch: {
