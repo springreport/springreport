@@ -6562,7 +6562,26 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
                 		rowAndCol.put("maxX", luckySheetBindData.getCoordsx());
                 		rowAndCol.put("maxY", luckySheetBindData.getCoordsy());
                 	}else {
-                		rowAndCol = this.getMaxRowAndCol(maxCoordinate, luckySheetBindData.getCoordsx(),luckySheetBindData.getCoordsy(),1,1);
+                		if(luckySheetBindData.getIsRelyCell().intValue() == 1)
+                		{
+                			JSONArray newCoords = getNewCoords(luckySheetBindData.getPriortyMoveDirection().intValue(), luckySheetBindData.getLastCoordsx()==null?luckySheetBindData.getCoordsx():luckySheetBindData.getLastCoordsx(), luckySheetBindData.getLastCoordsy()==null?luckySheetBindData.getCoordsy():luckySheetBindData.getLastCoordsy(), maxCoordinate, usedCells);
+                			if(!ListUtil.isEmpty(newCoords)) {
+                				luckySheetBindData.setLastCoordsx(newCoords.getIntValue(0));
+                				luckySheetBindData.setLastCoordsy(newCoords.getIntValue(1));
+                			}
+                			if(ListUtil.isEmpty(newCoords))
+                			{
+                				rowAndCol = this.getMaxRowAndCol(maxCoordinate, luckySheetBindData.getCoordsx(),luckySheetBindData.getCoordsy(),1,1);
+                			}else {
+                				rowAndCol = new HashMap<String, Integer>();
+                				rowAndCol.put("maxX", newCoords.getIntValue(0));
+                				rowAndCol.put("maxY", newCoords.getIntValue(1));
+                				luckySheetBindData.setCoordsx(newCoords.getIntValue(0));
+        						luckySheetBindData.setCoordsy(newCoords.getIntValue(1));
+                			}
+                		}else {
+                			rowAndCol = this.getMaxRowAndCol(maxCoordinate, luckySheetBindData.getCoordsx(),luckySheetBindData.getCoordsy(),1,1);
+                		}
                 	}
                     this.processNotExtendGroupSummaryValue(maxCoordinate, luckySheetBindData, rowAndCol, groupSummaryData, datas.get(j),
                       cellDatas, dataRowLen, dataColLen, rowlen, columnlen,objectMapper,maxXAndY,borderInfo,borderConfig,borderInfos,mergeMap,
