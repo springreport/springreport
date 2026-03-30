@@ -158,11 +158,38 @@ public class ScreenDesignServiceImpl implements IScreenDesignService{
 					headers = new HashMap<String, String>();
 					for (int j = 0; j < headersArray.size(); j++) {
 						String headerName = headersArray.getJSONObject(j).getString("headerName");
-						if(params != null && params.containsKey(headerName)) {
-							headers.put(headerName, String.valueOf(params.get(headerName)));	
+						int headerValueType = 1;
+						if(headersArray.getJSONObject(j).containsKey("headerValueType")) {
+							headerValueType = headersArray.getJSONObject(j).getIntValue("headerValueType");
+						}
+						if(headerValueType == 1) {
+							if(params != null && params.containsKey(headerName)) {
+								headers.put(headerName, String.valueOf(params.get(headerName)));	
+							}else {
+								headers.put(headerName, String.valueOf(headersArray.getJSONObject(j).getString("headerValue")));	
+							}
 						}else {
-							headers.put(headerName, String.valueOf(headersArray.getJSONObject(j).getString("headerValue")));	
-						}	
+							if(params != null && params.containsKey(headerName)) {
+								headers.put(headerName, String.valueOf(params.get(headerName)));	
+							}else {
+								String headerRequestType = headersArray.getJSONObject(j).getString("headerRequestType");
+								String headerRequestUrl = headersArray.getJSONObject(j).getString("headerRequestUrl");
+								String headerParams = headersArray.getJSONObject(j).getString("headerParams");
+								String headerResponseAttr = headersArray.getJSONObject(j).getString("headerResponseAttr");
+								JSONObject headerRequestParams = JSONObject.parseObject(headerParams);
+								String headerResult = HttpClientUtil.connectionTest(headerRequestUrl, headerRequestType, headerRequestParams, null);
+								JSONObject resultObj = JSONObject.parseObject(headerResult); 
+								String[] attrs =headerResponseAttr.split("\\.");
+								for (int t = 0; t < attrs.length; t++) {
+									if(t == attrs.length - 1) {
+										headers.put(headerName, resultObj.getString(attrs[t]));
+									}else {
+										resultObj = resultObj.getJSONObject(attrs[t]);
+									}
+								}
+							}
+						}
+							
 					}
 				}
 			}

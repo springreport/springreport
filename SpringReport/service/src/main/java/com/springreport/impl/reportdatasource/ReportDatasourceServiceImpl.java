@@ -411,10 +411,32 @@ public class ReportDatasourceServiceImpl extends ServiceImpl<ReportDatasourceMap
 				{
 					for (int i = 0; i < jsonArray.size(); i++) {
 						String headerName = jsonArray.getJSONObject(i).getString("headerName");
-						String headerValue = jsonArray.getJSONObject(i).getString("headerValue");
-						if(StringUtil.isNotEmpty(headerValue))
-						{
-							headers.put(headerName, headerValue);
+						int headerValueType = 1;
+						if(jsonArray.getJSONObject(i).containsKey("headerValueType")) {
+							headerValueType = jsonArray.getJSONObject(i).getIntValue("headerValueType");
+						}
+						if(headerValueType == 1) {
+							String headerValue = jsonArray.getJSONObject(i).getString("headerValue");
+							if(StringUtil.isNotEmpty(headerValue))
+							{
+								headers.put(headerName, headerValue);
+							}
+						}else {
+							String headerRequestType = jsonArray.getJSONObject(i).getString("headerRequestType");
+							String headerRequestUrl = jsonArray.getJSONObject(i).getString("headerRequestUrl");
+							String headerParams = jsonArray.getJSONObject(i).getString("headerParams");
+							String headerResponseAttr = jsonArray.getJSONObject(i).getString("headerResponseAttr");
+							JSONObject headerRequestParams = JSONObject.parseObject(headerParams);
+							String headerResult = HttpClientUtil.connectionTest(headerRequestUrl, headerRequestType, headerRequestParams, null);
+							JSONObject resultObj = JSONObject.parseObject(headerResult); 
+							String[] attrs =headerResponseAttr.split("\\.");
+							for (int j = 0; j < attrs.length; j++) {
+								if(j == attrs.length - 1) {
+									headers.put(headerName, resultObj.getString(attrs[j]));
+								}else {
+									resultObj = resultObj.getJSONObject(attrs[j]);
+								}
+							}
 						}
 					}
 				}
@@ -662,10 +684,32 @@ public class ReportDatasourceServiceImpl extends ServiceImpl<ReportDatasourceMap
 			{
 				for (int i = 0; i < jsonArray.size(); i++) {
 					String headerName = jsonArray.getJSONObject(i).getString("headerName");
-					String headerValue = jsonArray.getJSONObject(i).getString("headerValue");
-					if(StringUtil.isNotEmpty(headerValue))
-					{
-						headers.put(headerName, headerValue);
+					int headerValueType = 1;
+					if(jsonArray.getJSONObject(i).containsKey("headerValueType")) {
+						headerValueType = jsonArray.getJSONObject(i).getIntValue("headerValueType");
+					}
+					if(headerValueType == 1) {
+						String headerValue = jsonArray.getJSONObject(i).getString("headerValue");
+						if(StringUtil.isNotEmpty(headerValue))
+						{
+							headers.put(headerName, headerValue);
+						}
+					}else {
+						String headerRequestType = jsonArray.getJSONObject(i).getString("headerRequestType");
+						String headerRequestUrl = jsonArray.getJSONObject(i).getString("headerRequestUrl");
+						String headerParams = jsonArray.getJSONObject(i).getString("headerParams");
+						String headerResponseAttr = jsonArray.getJSONObject(i).getString("headerResponseAttr");
+						JSONObject headerRequestParams = JSONObject.parseObject(headerParams);
+						String headerResult = HttpClientUtil.connectionTest(headerRequestUrl, headerRequestType, headerRequestParams, null);
+						JSONObject resultObj = JSONObject.parseObject(headerResult); 
+						String[] attrs =headerResponseAttr.split("\\.");
+						for (int j = 0; j < attrs.length; j++) {
+							if(j == attrs.length - 1) {
+								headers.put(headerName, resultObj.getString(attrs[j]));
+							}else {
+								resultObj = resultObj.getJSONObject(attrs[j]);
+							}
+						}
 					}
 				}
 			}

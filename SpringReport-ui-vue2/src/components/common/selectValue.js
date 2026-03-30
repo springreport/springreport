@@ -984,4 +984,9 @@ selectUtil.multiType = [
   { value: 1, label: '走马灯' },
   { value: 2, label: 'tab标签' }
 ]
+
+selectUtil.headerValueType = [
+  { value: 1, label: '固定值' },
+  { value: 2, label: '动态获取' }
+]
 export default selectUtil

@@ -1279,11 +1279,38 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 					headers = new HashMap<String, String>();
 					for (int j = 0; j < headersArray.size(); j++) {
 						String headerName = headersArray.getJSONObject(j).getString("headerName");
-						if(mesGenerateReportDto.getApiHeaders() != null && mesGenerateReportDto.getApiHeaders().containsKey(headerName)) {
-							headers.put(headerName, String.valueOf(mesGenerateReportDto.getApiHeaders().get(headerName)));	
-						}else {
-							headers.put(headerName, String.valueOf(headersArray.getJSONObject(j).getString("headerValue")));	
+						int headerValueType = 1;
+						if(headersArray.getJSONObject(j).containsKey("headerValueType")) {
+							headerValueType = headersArray.getJSONObject(j).getIntValue("headerValueType");
 						}
+						if(headerValueType == 1) {
+							if(mesGenerateReportDto.getApiHeaders() != null && mesGenerateReportDto.getApiHeaders().containsKey(headerName)) {
+								headers.put(headerName, String.valueOf(mesGenerateReportDto.getApiHeaders().get(headerName)));	
+							}else {
+								headers.put(headerName, String.valueOf(headersArray.getJSONObject(j).getString("headerValue")));	
+							}
+						}else {
+							if(mesGenerateReportDto.getApiHeaders() != null && mesGenerateReportDto.getApiHeaders().containsKey(headerName)) {
+								headers.put(headerName, String.valueOf(mesGenerateReportDto.getApiHeaders().get(headerName)));	
+							}else {
+								String headerRequestType = headersArray.getJSONObject(j).getString("headerRequestType");
+								String headerRequestUrl = headersArray.getJSONObject(j).getString("headerRequestUrl");
+								String headerParams = headersArray.getJSONObject(j).getString("headerParams");
+								String headerResponseAttr = headersArray.getJSONObject(j).getString("headerResponseAttr");
+								JSONObject headerRequestParams = JSONObject.parseObject(headerParams);
+								String headerResult = HttpClientUtil.connectionTest(headerRequestUrl, headerRequestType, headerRequestParams, null);
+								JSONObject resultObj = JSONObject.parseObject(headerResult); 
+								String[] attrs =headerResponseAttr.split("\\.");
+								for (int t = 0; t < attrs.length; t++) {
+									if(t == attrs.length - 1) {
+										headers.put(headerName, resultObj.getString(attrs[t]));
+									}else {
+										resultObj = resultObj.getJSONObject(attrs[t]);
+									}
+								}
+							}
+						}
+						
 					}
 				}
 			}
