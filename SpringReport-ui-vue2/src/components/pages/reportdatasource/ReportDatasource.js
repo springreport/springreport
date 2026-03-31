@@ -507,6 +507,7 @@ export default {
       this.pageData.apiHeaderModalData.headerRequestUrl = row.headerRequestUrl
       this.pageData.apiHeaderModalData.headerParams = row.headerParams
       this.pageData.apiHeaderModalData.headerResponseAttr = row.headerResponseAttr
+      this.changeHeaderValueType();
     },
     closeHeadersModal() {
       this.pageData.apiHeaderModalConfig.show = false

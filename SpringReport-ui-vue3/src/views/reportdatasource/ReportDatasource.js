@@ -342,8 +342,8 @@ export default {
         //modal表单 start
         apiHeaderModalForm: [
           { type: 'Input', label: '属性', prop: 'headerName', rules: { required: true } },
+          { type: 'Select', label: '属性值类型', prop: 'headerValueType', rules: { required: true },options: this.selectUtil.headerValueType, change: this.changeHeaderValueType},
           { type: 'Input', label: '属性值', prop: 'headerValue', rules: { required: true } },
-          { type: 'Input', label: '属性值', prop: 'headerValue', rules: { required: true }},
           { type: 'Input', label: '接口链接', prop: 'headerRequestUrl', rules: { required: true }},
           { type: 'Select', label: '请求方式', prop: 'headerRequestType', rules: { required: true },options: this.selectUtil.requestType},
           { type: 'Input', label: '返回值属性', prop: 'headerResponseAttr', rules: { required: true }},
@@ -685,6 +685,7 @@ export default {
       this.pageData.apiHeaderModalData.headerRequestUrl = row.headerRequestUrl
       this.pageData.apiHeaderModalData.headerParams = row.headerParams
       this.pageData.apiHeaderModalData.headerResponseAttr = row.headerResponseAttr
+      this.changeHeaderValueType();
     },
     closeHeadersModal() {
       this.pageData.apiHeaderModalConfig.show = false;

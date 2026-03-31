@@ -87,8 +87,9 @@ The project started in 2020 (the first version CY-Report), was reconstructed bas
 | 8    | Template export and import function                           | Gift     | Gift with any paid purchase (Original price ¥3499)                                     |
 | 9    | Multi-dashboard function plugin                             | Gift     | Gift with any paid purchase (Original price ¥1999)                                     |
 | 10   | Excel Report Snapshot plugin                          | Gift     | Gift with any paid purchase (Original price ¥1999)                                    |
-| 11   | All content (Original price ¥51000+)                   | ¥29999   | Full source code delivery, permanent free upgrade, no limit on the number of projects                             |
-| 12   | International version full source code                           | Quoted separately | Independent code, cannot be upgraded from the open-source version                                           |
+| 11   | SpringReport-AI (DeepSeek integrated) | Gift | Free with full source code purchase (Original price ¥4999) |
+| 12   | All content (Original price ¥51000+)                   | ¥29999   | Full source code delivery, permanent free upgrade, no limit on the number of projects                             |
+| 13   | International version full source code                           | Quoted separately | Independent code, cannot be upgraded from the open-source version                                           |
 
 > Details of the international version: [https://www.springreport.vip/7.%E5%9B%BD%E9%99%85%E5%8C%96%E7%89%88%E6%9C%AC%E8%AF%B4%E6%98%8E.html](https://www.springreport.vip/7.%E5%9B%BD%E9%99%85%E5%8C%96%E7%89%88%E6%9C%AC%E8%AF%B4%E6%98%8E.html)
 
