@@ -5,7 +5,7 @@
         基础
       </div>
 
-      <div class="btn" :class="{ 'btn-active': currentIndex === 2 }" @click="currentIndex = 2">
+      <div class="btn" :class="{ 'btn-active': currentIndex === 2 }" @click="currentIndex = 1">
         标签
       </div>
     </div>
