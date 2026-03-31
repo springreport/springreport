@@ -2186,7 +2186,7 @@
                 size="small"
                 style="cursor: pointer"
                 @click="execSql"
-              ><i class="el-icon-caret-right" />执行</el-tag></el-tooltip>
+              ><i class="el-icon-caret-right" /> 执行</el-tag></el-tooltip>
               <el-tooltip
                 content="该操作会将sql语句进行格式化并显示"
                 placement="right"
@@ -2195,7 +2195,7 @@
                 style="cursor: pointer"
                 @click="formatSql"
                 v-if="datasourceType == 1"
-              ><i class="el-icon-document" />格式化</el-tag>
+              ><i class="el-icon-document" /> 格式化</el-tag>
               </el-tooltip>
               <el-tooltip
                 content="该操作会插入注释标签"
@@ -2206,7 +2206,17 @@
                 style="cursor: pointer"
                 @click="addComment(' <!--  -->')"
                 v-if="datasourceType == 1"
-              ><i class="el-icon-circle-plus-outline" />添加注释</el-tag>
+              ><i class="el-icon-circle-plus-outline" /> 添加注释</el-tag>
+              </el-tooltip>
+              <el-tooltip
+                :content="'AI智能 SQL 助手'"
+                placement="right"
+              ><el-tag
+                size="small"
+                style="cursor: pointer"
+                type="danger"
+                @click="showAiDialog"
+              ><i class="el-icon-document" /> SQL助手</el-tag>
               </el-tooltip>
               <el-dropdown
                 v-if="
@@ -5965,5 +5975,12 @@
       }
     }
   }
+}
+
+::v-deep .el-drawer__wrapper {
+  pointer-events: none !important; /* 让抽屉容器不阻挡下层点击 */
+}
+::v-deep .el-drawer {
+  pointer-events: auto !important; /* 抽屉自身恢复可点击，保证自身操作正常 */
 }
 </style>

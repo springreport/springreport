@@ -9,14 +9,14 @@
 import Axios from 'axios'
 import vchartsetting from '../../component/vchart/vchartsetting.vue'
 import headerReportForm from '../../component/reportForm/headerReportForm.vue'
-// import pako from '../../../../public/luckysheet/plugins/webworker/pako.js'
 export default {
   components: {
     vchartsetting,
-    headerReportForm
+    headerReportForm,
   },
   data() {
     return {
+      showAISql:false,
       searchFormType:"1",//查询条件组件类型 1在页面头部(查询条件较少，对表格显示范围影响小的情况适用) 2侧边栏弹出(查询条件多，放在表头影响表格显示范围建议使用该种方式)
       sheetPagination:{},
       drawer:false,
@@ -377,6 +377,7 @@ export default {
               {btnType: 'button', label: '打印', iconClass: 'action-icon action-icon-print',handle: () => this.pdfPrint(1), size: 'mini'},
               {btnType: 'button', label: '保存快照', iconClass: 'action-icon action-icon-export-all',handle: () => this.showSnapshotDialog(), size: 'mini'},
               {btnType: 'button', label: '快照管理', iconClass: 'action-icon action-icon-export-all',handle: () => this.reportSnapshot(), size: 'mini'},
+              {btnType: 'button', label: 'AI分析', iconClass: 'action-icon action-icon-export-all',handle: () => this.showAiDialog(), size: 'mini'},
             ]
           }else{
             this.searchHandle = [
@@ -394,6 +395,7 @@ export default {
               {btnType: 'button', label: '打印', iconClass: 'action-icon action-icon-print',handle: () => this.pdfPrint(1), size: 'mini'},
               {btnType: 'button', label: '保存快照', iconClass: 'action-icon action-icon-export-all',handle: () => this.pdfPrint(1), size: 'mini'},
               {btnType: 'button', label: '快照管理', iconClass: 'action-icon action-icon-export-all',handle: () => this.pdfPrint(1), size: 'mini'},
+              {btnType: 'button', label: 'AI分析', iconClass: 'action-icon action-icon-export-all',handle: () => this.showAiDialog(), size: 'mini'},
             ]
           }
           for (let i = 0; i < result.length; i++) {
@@ -3012,6 +3014,12 @@ export default {
     },
     reportSnapshot(){
        alert("该部分是付费插件功能，如需要请联系作者！")
+    },
+    showAiDialog(){
+      alert("该部分是付费插件功能，如需要请联系作者！")
+    },
+    closeAISql(){
+      alert("该部分是付费插件功能，如需要请联系作者！")
     }
   }
 }

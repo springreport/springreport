@@ -567,4 +567,21 @@
       width: 0;
     }
   }
+:deep(.drawer-modal){
+  position:static !important;
+  width:36% !important;
+  float:right !important;
+ 
+}
+
+:deep(.handle-drawer){
+  width: 36%;
+  left: unset;
+  // border: 1px solid #eee;
+   z-index: 1999;
+}
+:deep(.handle-drawer .el-drawer__body) {
+  // background-color: #f7f9fc;
+  padding: 8px 10px 52px !important;
+}
 </style>

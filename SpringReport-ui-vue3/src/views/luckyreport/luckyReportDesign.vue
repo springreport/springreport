@@ -1984,15 +1984,24 @@
               <el-tooltip placement="bottom">
                  <template #content>该操作将执行sql语句并校验sql语句的正确性，并将查询字段全部显示到下方的表格中</template>
                 <el-tag type="success" @click="execSql" style="cursor: pointer"
-                  ><icon-play />执行</el-tag>
+                  ><icon-play /> 执行</el-tag>
                   </el-tooltip>
               <el-tooltip placement="right" v-if="datasourceType == 1">
                 <template #content>该操作会将sql语句进行格式化并显示</template>
-                <el-tag @click="formatSql" style="cursor: pointer" ><icon-align-left-one />格式化</el-tag>
+                <el-tag @click="formatSql" style="cursor: pointer" ><icon-align-left-one /> 格式化</el-tag>
               </el-tooltip>
               <el-tooltip  placement="right" v-if="datasourceType == 1">
                 <template #content>该操作会插入注释标签</template>
-                <el-tag @click="addComment(' <!--  -->')" type="warning" style="cursor: pointer" ><icon-add-one />添加注释</el-tag>
+                <el-tag @click="addComment(' <!--  -->')" type="warning" style="cursor: pointer" ><icon-add-one /> 添加注释</el-tag>
+              </el-tooltip>
+              <el-tooltip
+                :content="'AI智能 SQL 助手'"
+                placement="right"
+              ><el-tag
+                style="cursor: pointer"
+                type="danger"
+                @click="showAiDialog"
+              ><icon-data/> SQL助手</el-tag>
               </el-tooltip>
               <el-dropdown v-if="paramTableData.tableData && paramTableData.tableData.length > 0 && datasourceType == 1" >
                 <el-tag type="danger" style="cursor: pointer"><icon-add-one />添加参数</el-tag>
@@ -5497,7 +5506,7 @@
 }
 </style>
 
-<style lang="scss">
+<style lang="scss" scoped>
   .add-dataset-dialog {
     .el-radio-button:first-child .el-radio-button__inner {
       border-radius: 10px 0 0 10px !important;

@@ -249,6 +249,7 @@ export default {
         apiHeaderProps: [
           { label: '属性', prop: 'headerName', align: 'center', width: 150, overflow: true },
           { label: '属性值', prop: 'headerValue', align: 'center', width: 150, overflow: true },
+          { label: '请求链接', prop: 'headerRequestUrl', align: 'center', overflow: true },
           {
             label: '操作',
             prop: 'operation',
@@ -341,12 +342,21 @@ export default {
         //modal表单 start
         apiHeaderModalForm: [
           { type: 'Input', label: '属性', prop: 'headerName', rules: { required: true } },
+          { type: 'Select', label: '属性值类型', prop: 'headerValueType', rules: { required: true },options: this.selectUtil.headerValueType, change: this.changeHeaderValueType},
           { type: 'Input', label: '属性值', prop: 'headerValue', rules: { required: true } },
+          { type: 'Input', label: '接口链接', prop: 'headerRequestUrl', rules: { required: true }},
+          { type: 'Select', label: '请求方式', prop: 'headerRequestType', rules: { required: true },options: this.selectUtil.requestType},
+          { type: 'Input', label: '返回值属性', prop: 'headerResponseAttr', rules: { required: true }},
+          { type: 'Textarea', label: '请求参数(json格式)', prop: 'headerParams', rules: { required: true }},
         ],
         apiHeaderModalData: {
-          //modal页面数据
-          headerName: '', //属性
-          headerValue: '', //属性值
+          headerName: '', // 属性
+          headerValueType:1,//属性值类型
+          headerValue: '',// 属性值
+          headerRequestType:'',//请求方式
+          headerRequestUrl:'',//请求链接
+          headerParams:'',//请求参数
+          headerResponseAttr:'',
         },
         apiHeaderModalHandles: [
           { label: '取消', type: 'default', handle: () => this.closeHeadersModal() },
@@ -659,6 +669,7 @@ export default {
       this.pageData.propsTableData.splice(index, 1);
     },
     showAddHeaders() {
+      this.changeHeaderValueType();
       this.pageData.apiHeaderModalConfig.show = true;
       this.pageData.isEdit = false;
       this.pageData.editIndex = null;
@@ -669,6 +680,12 @@ export default {
       this.pageData.editIndex = index;
       this.pageData.apiHeaderModalData.headerName = row.headerName;
       this.pageData.apiHeaderModalData.headerValue = row.headerValue;
+      this.pageData.apiHeaderModalData.headerValueType = row.headerValueType
+      this.pageData.apiHeaderModalData.headerRequestType = row.headerRequestType
+      this.pageData.apiHeaderModalData.headerRequestUrl = row.headerRequestUrl
+      this.pageData.apiHeaderModalData.headerParams = row.headerParams
+      this.pageData.apiHeaderModalData.headerResponseAttr = row.headerResponseAttr
+      this.changeHeaderValueType();
     },
     closeHeadersModal() {
       this.pageData.apiHeaderModalConfig.show = false;
@@ -684,6 +701,11 @@ export default {
           var obj = {
             headerName: this.pageData.apiHeaderModalData.headerName,
             headerValue: this.pageData.apiHeaderModalData.headerValue,
+            headerValueType: this.pageData.apiHeaderModalData.headerValueType,
+            headerRequestType: this.pageData.apiHeaderModalData.headerRequestType,
+            headerRequestUrl: this.pageData.apiHeaderModalData.headerRequestUrl,
+            headerParams: this.pageData.apiHeaderModalData.headerParams,
+            headerResponseAttr: this.pageData.apiHeaderModalData.headerResponseAttr,
           };
           if (this.pageData.isEdit) {
             this.pageData.headersTableData[this.pageData.editIndex] = obj;
@@ -742,6 +764,31 @@ export default {
           }
         }
       })
+    },
+    changeHeaderValueType(){
+      if (this.pageData.apiHeaderModalData.headerValueType == 2) {
+        this.pageData.apiHeaderModalForm[2].show = false
+        this.pageData.apiHeaderModalForm[2].rules.required = false
+        this.pageData.apiHeaderModalForm[3].show = true
+        this.pageData.apiHeaderModalForm[3].rules.required = true
+        this.pageData.apiHeaderModalForm[4].show = true
+        this.pageData.apiHeaderModalForm[4].rules.required = true
+        this.pageData.apiHeaderModalForm[5].show = true
+        this.pageData.apiHeaderModalForm[5].rules.required = true
+        this.pageData.apiHeaderModalForm[6].show = true
+        this.pageData.apiHeaderModalForm[6].rules.required = true
+      }else{
+        this.pageData.apiHeaderModalForm[2].show = true
+        this.pageData.apiHeaderModalForm[2].rules.required = true
+        this.pageData.apiHeaderModalForm[3].show = false
+        this.pageData.apiHeaderModalForm[3].rules.required = false
+        this.pageData.apiHeaderModalForm[4].show = false
+        this.pageData.apiHeaderModalForm[4].rules.required = false
+        this.pageData.apiHeaderModalForm[5].show = false
+        this.pageData.apiHeaderModalForm[5].rules.required = false
+        this.pageData.apiHeaderModalForm[6].show = false
+        this.pageData.apiHeaderModalForm[6].rules.required = false
+      }
     }
   },
 };

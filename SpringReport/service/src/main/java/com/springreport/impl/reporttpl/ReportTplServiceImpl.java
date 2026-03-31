@@ -4007,11 +4007,37 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 					headers = new HashMap<String, String>();
 					for (int j = 0; j < headersArray.size(); j++) {
 						String headerName = headersArray.getJSONObject(j).getString("headerName");
-						if(mesGenerateReportDto.getApiHeaders() != null && mesGenerateReportDto.getApiHeaders().containsKey(headerName)) {
-							headers.put(headerName, String.valueOf(mesGenerateReportDto.getApiHeaders().get(headerName)));	
+						int headerValueType = 1;
+						if(headersArray.getJSONObject(j).containsKey("headerValueType")) {
+							headerValueType = headersArray.getJSONObject(j).getIntValue("headerValueType");
+						}
+						if(headerValueType == 1) {
+							if(mesGenerateReportDto.getApiHeaders() != null && mesGenerateReportDto.getApiHeaders().containsKey(headerName)) {
+								headers.put(headerName, String.valueOf(mesGenerateReportDto.getApiHeaders().get(headerName)));	
+							}else {
+								headers.put(headerName, String.valueOf(headersArray.getJSONObject(j).getString("headerValue")));	
+							}
 						}else {
-							headers.put(headerName, String.valueOf(headersArray.getJSONObject(j).getString("headerValue")));	
-						}	
+							if(mesGenerateReportDto.getApiHeaders() != null && mesGenerateReportDto.getApiHeaders().containsKey(headerName)) {
+								headers.put(headerName, String.valueOf(mesGenerateReportDto.getApiHeaders().get(headerName)));	
+							}else {
+								String headerRequestType = headersArray.getJSONObject(j).getString("headerRequestType");
+								String headerRequestUrl = headersArray.getJSONObject(j).getString("headerRequestUrl");
+								String headerParams = headersArray.getJSONObject(j).getString("headerParams");
+								String headerResponseAttr = headersArray.getJSONObject(j).getString("headerResponseAttr");
+								JSONObject headerRequestParams = JSONObject.parseObject(headerParams);
+								String headerResult = HttpClientUtil.connectionTest(headerRequestUrl, headerRequestType, headerRequestParams, null);
+								JSONObject resultObj = JSONObject.parseObject(headerResult); 
+								String[] attrs =headerResponseAttr.split("\\.");
+								for (int t = 0; t < attrs.length; t++) {
+									if(t == attrs.length - 1) {
+										headers.put(headerName, resultObj.getString(attrs[t]));
+									}else {
+										resultObj = resultObj.getJSONObject(attrs[t]);
+									}
+								}
+							}
+						}
 					}
 				}
 			}
@@ -6562,7 +6588,26 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
                 		rowAndCol.put("maxX", luckySheetBindData.getCoordsx());
                 		rowAndCol.put("maxY", luckySheetBindData.getCoordsy());
                 	}else {
-                		rowAndCol = this.getMaxRowAndCol(maxCoordinate, luckySheetBindData.getCoordsx(),luckySheetBindData.getCoordsy(),1,1);
+                		if(luckySheetBindData.getIsRelyCell().intValue() == 1)
+                		{
+                			JSONArray newCoords = getNewCoords(luckySheetBindData.getPriortyMoveDirection().intValue(), luckySheetBindData.getLastCoordsx()==null?luckySheetBindData.getCoordsx():luckySheetBindData.getLastCoordsx(), luckySheetBindData.getLastCoordsy()==null?luckySheetBindData.getCoordsy():luckySheetBindData.getLastCoordsy(), maxCoordinate, usedCells);
+                			if(!ListUtil.isEmpty(newCoords)) {
+                				luckySheetBindData.setLastCoordsx(newCoords.getIntValue(0));
+                				luckySheetBindData.setLastCoordsy(newCoords.getIntValue(1));
+                			}
+                			if(ListUtil.isEmpty(newCoords))
+                			{
+                				rowAndCol = this.getMaxRowAndCol(maxCoordinate, luckySheetBindData.getCoordsx(),luckySheetBindData.getCoordsy(),1,1);
+                			}else {
+                				rowAndCol = new HashMap<String, Integer>();
+                				rowAndCol.put("maxX", newCoords.getIntValue(0));
+                				rowAndCol.put("maxY", newCoords.getIntValue(1));
+                				luckySheetBindData.setCoordsx(newCoords.getIntValue(0));
+        						luckySheetBindData.setCoordsy(newCoords.getIntValue(1));
+                			}
+                		}else {
+                			rowAndCol = this.getMaxRowAndCol(maxCoordinate, luckySheetBindData.getCoordsx(),luckySheetBindData.getCoordsy(),1,1);
+                		}
                 	}
                     this.processNotExtendGroupSummaryValue(maxCoordinate, luckySheetBindData, rowAndCol, groupSummaryData, datas.get(j),
                       cellDatas, dataRowLen, dataColLen, rowlen, columnlen,objectMapper,maxXAndY,borderInfo,borderConfig,borderInfos,mergeMap,

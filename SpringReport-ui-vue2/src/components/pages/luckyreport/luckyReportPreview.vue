@@ -630,4 +630,11 @@ body {
     width: 0;
   }
 }
+
+::v-deep .el-drawer__wrapper {
+  pointer-events: none !important; /* 让抽屉容器不阻挡下层点击 */
+}
+::v-deep .el-drawer {
+  pointer-events: auto !important; /* 抽屉自身恢复可点击，保证自身操作正常 */
+}
 </style>
