@@ -459,6 +459,7 @@ public class LuckySheetCellUtil {
 					 int cs = obj.getIntValue("cs");
 					 this.mergeCell(r, r+rs-1, c, c+cs-1);
 				}
+//				sheet.validateMergedRegions();
 			}
 		}
 	}
@@ -649,7 +650,7 @@ public class LuckySheetCellUtil {
 		if(firstRow != lastRow || firstCol != lastCol)
 		{
 			CellRangeAddress region = new CellRangeAddress(firstRow, lastRow, firstCol, lastCol);
-			sheet.addMergedRegion(region);
+			sheet.addMergedRegionUnsafe(region);
 		}
 	}
 	
