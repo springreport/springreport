@@ -2987,11 +2987,22 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		Map<String, Object> subtotalCellDatas = new HashMap<>();//小计单元格数据
 		Map<String, Object> subtotalCellMap = new HashMap<>();//需要小计的原始单元格
 		Map<String, JSONObject> subTotalDigits = new HashMap<>();//需要小计的原始单元格
+		Map<String, String> sheetNameDatasets = new HashMap<String, String>();
 		if(!ListUtil.isEmpty(sheets))
 		{
 			List<Long> sheetIds = new ArrayList<>();
 			for (int i = 0; i < sheets.size(); i++) {
 				sheetIds.add(sheets.get(i).getId());
+				String sheetName = sheets.get(i).getSheetName();
+				Pattern paramPattern=Pattern.compile("\\$\\s*\\{(.*?)}");
+				Matcher parammatcher=paramPattern.matcher(sheetName);
+				while(parammatcher.find()){
+					String match = parammatcher.group();
+					String datasetName = sheetName.replace("."+match, "");
+					String property = match.replaceAll("\\$\\{", "").replaceAll("}", "");
+					sheetNameDatasets.put(sheetName, datasetName+"|"+property);
+					break;
+				}
 			}
 			//获取所有的变量单元格
 			QueryWrapper<LuckysheetReportCell> queryWrapper = new QueryWrapper<LuckysheetReportCell>();
@@ -3025,6 +3036,14 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				}
 				usedDataSet = new ArrayList<>(hs);
 			}
+ 			if(!StringUtil.isEmptyMap(sheetNameDatasets)) {
+ 				for (String key : sheetNameDatasets.keySet()) {
+ 					String[] split = sheetNameDatasets.get(key).split("\\|");
+ 					if(!usedDataSet.contains(split[0])) {
+ 						usedDataSet.add(split[0]);
+ 					}
+ 				}
+ 			}
 			Map<String, String> datasetNameIdMap = new HashMap<String, String>();
 			List<List<String>> columnNames = this.getTplDatasetsColumnNames(reportTpl.getId(),datasetNameIdMap,userInfoDto);
 			//获取所有图表绑定的动态数据集属性
@@ -3472,7 +3491,23 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 					}
 				}
 				resLuckySheetDataDto.setSheetIndex(sheets.get(t).getSheetIndex());
-				resLuckySheetDataDto.setSheetName(sheets.get(t).getSheetName());
+				if(sheetNameDatasets.containsKey(sheets.get(t).getSheetName())) {
+					resLuckySheetDataDto.setSheetName(sheets.get(t).getSheetName());
+					String[] split = sheetNameDatasets.get(sheets.get(t).getSheetName()).split("\\|");
+					if(datasetDatas.containsKey(split[0])) {
+						if(ListUtil.isNotEmpty(datasetDatas.get(split[0]))){
+							Map<String, Object> data = datasetDatas.get(split[0]).get(0);
+							if(data != null) {
+								Object name = data.get(split[1]);
+								if(name != null && StringUtil.isNotEmpty(String.valueOf(name))) {
+									resLuckySheetDataDto.setSheetName(String.valueOf(name));
+								}
+							}
+						}
+					}
+				}else {
+					resLuckySheetDataDto.setSheetName(sheets.get(t).getSheetName());
+				}
 				resLuckySheetDataDto.setSheetOrder(sheets.get(t).getSheetOrder());
 				QueryWrapper<ReportFormsDatasource> datasourceQueryWrapper = new QueryWrapper<>();
 				datasourceQueryWrapper.eq("tpl_id", reportTpl.getId());
