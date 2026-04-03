@@ -110,4 +110,12 @@ public class ReportTplSheet extends PageEntity {
     /** conditionformat_save - 条件格式 */
     @TableField("conditionformat_save")
     private String conditionformatSave;
+    
+    /** is_loop - 是否循环 1是 2否 默认2 */
+    @TableField("is_loop")
+    private Integer isLoop;
+    
+    /** loop_settings - 循环设置 */
+    @TableField("loop_settings")
+    private String loopSettings;
 }
