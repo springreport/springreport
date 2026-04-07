@@ -103,6 +103,7 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 			int continueGroupMergeCount = 0;
 			List<List<Map<String, Object>>> lastData = null;
 			List<List<Map<String, Object>>> lastFilterData = null;
+			List<List<Map<String, Object>>> crossDatas = null;;
 			ObjectMapper objectMapper = new ObjectMapper();
 			for (int i = 0; i < variableCells.size(); i++) {
 				String key = variableCells.get(i).getSheetId() + "-" + variableCells.get(i).getCoordsx()+"_"+variableCells.get(i).getCoordsy();
@@ -325,8 +326,10 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 				}
 				if(CellExtendEnum.CROSS.getCode().intValue() == variableCells.get(i).getCellExtend().intValue())
 				{
-					bindData.setOriginalData(data);;
+					bindData.setOriginalData(data);
+					bindData.setCrossDatas(crossDatas);
 					bindData = aggregates.get(AggregateTypeEnum.CROSS.getCode()).aggregate(variableCells.get(i),bindData,cellBindData,reliedGroupMergeCells,indexChains);
+					crossDatas = bindData.getCrossDatas();
 				}else {
 					bindData = aggregates.get(variableCells.get(i).getAggregateType()).aggregate(variableCells.get(i),bindData,cellBindData,reliedGroupMergeCells,indexChains);
 				}

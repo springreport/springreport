@@ -11045,6 +11045,14 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
                 Set<String> set = datas.keySet();
                 String property = luckySheetBindData.getProperty();
                 boolean isJustProperty = false;
+                if(customSpringReportFunction.isSpringReportFunction(property)) {
+                	if(ListUtil.isNotEmpty(luckySheetBindData.getSrfParse())) {
+                		for (int i = 0; i < luckySheetBindData.getSrfParse().size(); i++) {
+							String methodName = luckySheetBindData.getSrfParse().getJSONObject(i).getString("methodName")+"("+luckySheetBindData.getSrfParse().getJSONObject(i).getString("params")+")";
+							property = property.replace(methodName, luckySheetBindData.getSrfParse().getJSONObject(i).getString("params"));
+						}
+                	}
+                }
                 if(ListUtil.isEmpty(set)) {
                 	property = "";
                 }else {
@@ -11984,6 +11992,14 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         	}
             Set<String> set = datas.keySet();
             String property = luckySheetBindData.getProperty();
+            if(customSpringReportFunction.isSpringReportFunction(property)) {
+            	if(ListUtil.isNotEmpty(luckySheetBindData.getSrfParse())) {
+            		for (int i = 0; i < luckySheetBindData.getSrfParse().size(); i++) {
+						String methodName = luckySheetBindData.getSrfParse().getJSONObject(i).getString("methodName")+"("+luckySheetBindData.getSrfParse().getJSONObject(i).getString("params")+")";
+						property = property.replace(methodName, luckySheetBindData.getSrfParse().getJSONObject(i).getString("params"));
+					}
+            	}
+            }
             boolean isJustProperty = false;
             if(ListUtil.isEmpty(set)) {
             	property = "";

@@ -3,6 +3,7 @@ package com.springreport.base;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.springreport.enums.CellExtendEnum;
 import com.springreport.enums.YesNoEnum;
@@ -634,4 +635,19 @@ public class LuckySheetBindData {
     
     /** force_pagebreak - 行后分页/循环块分页 */
     private Boolean forcePagebreak = false;
+    
+    /**  
+	 * @Fields crossDatas : 交叉扩展数据
+	 * @author caiyang
+	 * @date 2021-05-27 05:46:53 
+	 */ 
+	private List<List<Map<String, Object>>> crossDatas;
+	
+	/**  
+	 * @Fields srfParse : 自定义函数解析后的内容，目前只用于交叉报表
+	 * @author caiyang
+	 * @date 2026-04-07 09:21:56 
+	 */  
+	private JSONArray srfParse;
+	
 }
