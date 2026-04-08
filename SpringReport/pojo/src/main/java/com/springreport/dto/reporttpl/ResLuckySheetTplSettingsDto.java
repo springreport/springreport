@@ -165,4 +165,11 @@ public class ResLuckySheetTplSettingsDto {
      */  
     private JSONArray luckysheetConditionformatSave;
     
+    /**  
+     * @Fields sheetLoopData : sheet页循环配置
+     * @author caiyang
+     * @date 2026-04-02 08:51:50 
+     */  
+    private JSONObject sheetLoopData;
+    
 }

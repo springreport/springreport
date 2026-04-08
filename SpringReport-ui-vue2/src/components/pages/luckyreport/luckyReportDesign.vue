@@ -1774,6 +1774,65 @@
                   </el-collapse-item>
                 </el-collapse>
               </el-collapse-item>
+              <el-collapse-item title="sheet页循环配置" name="sheetLoop">
+                <div class="df" style="padding: 8px 0 12px 0">
+                  <span
+                    class="cell-label"
+                    style="line-height: 20px"
+                  >开启循环</span>
+                  <el-switch
+                    v-model="sheetLoopData.isLoop"
+                    active-text="是"
+                    inactive-text="否"
+                    @change="changeSheetLoop"
+                  />
+                </div>
+                <div class="right-dataset-title df-c-b" v-if="sheetLoopData.isLoop">
+                  <span class="attr-dataset-title">sheet页循环配置</span>
+                  <el-button
+                    class="addBtn"
+                    @click="addSheetLoop"
+                    v-if="sheetLoopData.isLoop && !sheetLoopData.loopSettings"
+                  ><i class="el-icon-plus el-icon--left" />添加</el-button>
+                </div>
+                <el-collapse
+                  v-if="sheetLoopData.loopSettings!=null"
+                  class="sub-collapse"
+                >
+                  <el-collapse-item
+                  >
+                    <template slot="title">
+                      sheet页循环
+                      <div
+                        class="right-block-el-icon-edit"
+                        @click.stop="editSheetLoop()"
+                      />
+                      <div
+                        class="right-el-icon-delete"
+                        @click.stop="deleteSheetLoop()"
+                      />
+                    </template>
+                    <p
+                      class="column-tag"
+                      style="min-width: 220px; max-width: 220px"
+                    >
+                      循环数据来源：{{ sheetLoopData.loopSettings.loopType==1?'自定义内容':'SQL语句' }}
+                    </p>
+                    <p
+                      class="column-tag"
+                      style="min-width: 220px; max-width: 220px"
+                    >
+                      {{sheetLoopData.loopSettings.loopType == 1?'自定义内容':'SQL语句'}}：{{ sheetLoopData.loopSettings.conditionContent }}
+                    </p>
+                    <p
+                      class="column-tag"
+                      style="min-width: 220px; max-width: 220px"
+                    >
+                      数据集过滤属性:{{ sheetLoopData.loopSettings.property }}
+                    </p>
+                  </el-collapse-item>
+                </el-collapse>
+              </el-collapse-item>
               <el-collapse-item title="图片配置" name="sheetImages">
                 <el-collapse
                   v-if="sheetImages && Object.keys(sheetImages).length>0"
@@ -4949,6 +5008,98 @@
         >确 定</el-button>
       </span>
     </el-dialog>
+
+    <el-drawer
+      title="sheet页循环设置"
+     :visible.sync="sheetLoopVisiable"
+      custom-class="handle-drawer"
+      class="handle-drawer"
+      :modal="true"
+      :close-on-click-modal="false"
+      size="100%"
+      @close="closeSheetLoopDialog"
+    >
+      <el-form
+        ref="sheetLoopRef"
+        label-position="top"
+        :model="sheetLoopForm"
+        class="demo-form-inline"
+      >
+        <el-form-item
+          key="loopType"
+          label="循环数据来源"
+          prop="loopType"
+          :rules="filter_rules('循环数据来源', { required: true })"
+        >
+          <el-select
+              v-model="sheetLoopForm.loopType"
+              style="width: 100%"
+              placeholder="循环数据来源"
+              size="small"
+          >
+              <el-option
+                v-for="op in selectUtil.sheetLoopType"
+                :key="op.value"
+                :label="op.label"
+                :value="op.value"
+              />
+          </el-select>
+        </el-form-item>
+        <el-form-item v-if="sheetLoopForm.loopType==2" prop="datasourceId" label="数据源" :rules="filter_rules('数据源', { required: true })">
+                  <el-select
+                    v-model="sheetLoopForm.datasourceId"
+                    style="width: 100%"
+                    placeholder="数据源"
+                    size="small"
+                  >
+                    <el-option
+                      v-for="op in dataSource"
+                      :key="op.datasourceId"
+                      :label="op.dataSourceName"
+                      :value="op.datasourceId"
+                    />
+                  </el-select>
+                </el-form-item>
+        <el-form-item
+            key="conditionContent"
+            :label="sheetLoopForm.loopType==2?'SQL语句':'自定义内容'"
+            prop="conditionContent"
+            :rules="filter_rules(sheetLoopForm.loopType==2?'SQL语句':'自定义内容', { required: true })"
+            >
+              <el-input
+                v-model="sheetLoopForm.conditionContent"
+                type="textarea"
+                :cols="80"
+                :placeholder="sheetLoopForm.loopType==2?'SQL语句':'自定义内容'"
+                size="small"
+              />
+              <div class="sub-title" v-show="sheetLoopForm.loopType==2">{{ 'sql语句需去重返回固定的属性value，例如:select distinct menu_name as value from table' }}</div>
+              <div class="sub-title" v-show="sheetLoopForm.loopType==1">{{ '自定义数据需设置成数组格式的数据，例如["name1","name2","name3"]' }}</div>
+          </el-form-item>
+          <el-form-item
+            key="property"
+            :label="'数据集过滤属性'"
+            prop="property"
+            :rules="filter_rules('数据集过滤属性', { required: true })"
+            >
+              <el-input
+                v-model="sheetLoopForm.property"
+                :cols="80"
+                :placeholder="'数据集过滤属性'"
+                size="small"
+              />
+          </el-form-item>
+      </el-form>
+      <div class="handle-drawer__footer">
+        <el-button size="small" @click="closeSheetLoopDialog">取 消</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          @click="confirmAddSheetLoop"
+        >确 定</el-button>
+      </div>
+    </el-drawer>
+
     <vchart :show.sync="vchartShow" @closeModal="closeAddChartModal()" />
     <textarea
       id="clipboradInput"

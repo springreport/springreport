@@ -137,6 +137,7 @@ import com.springreport.base.UserInfoDto;
 import com.springreport.constants.Constants;
 import com.springreport.constants.StatusCode;
 import com.springreport.dto.onlinetpl.OnlineTplTreeDto;
+import com.springreport.dto.reportdatasource.MesGetSelectDataDto;
 import com.springreport.dto.reporttpl.AlternateformatDto;
 import com.springreport.dto.reporttpl.GroupSummaryData;
 import com.springreport.base.LuckySheetBindData;
@@ -155,6 +156,7 @@ import com.springreport.dto.reporttpl.ResPreviewData;
 import com.springreport.dto.reporttpl.ResSheetsSettingsDto;
 import com.springreport.dto.reporttpl.SaveLuckySheetTplDto;
 import com.springreport.dto.reporttpl.ShareDto;
+import com.springreport.dto.reporttplsheet.ReportTplSheetDto;
 import com.springreport.dto.sysrolereport.MesRoleReportDto;
 
 import java.awt.font.FontRenderContext;
@@ -1215,6 +1217,19 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				reportTplSheet.setPageDivider(JSON.toJSONString(new JSONArray()));
 			}
 			
+			if(mesLuckySheetTplDto.getSheetLoopData() != null) {
+				if(mesLuckySheetTplDto.getSheetLoopData().getBooleanValue("isLoop")) {
+					reportTplSheet.setIsLoop(YesNoEnum.YES.getCode().intValue());
+				}else {
+					reportTplSheet.setIsLoop(YesNoEnum.NO.getCode().intValue());
+				}
+				JSONObject loopSettings = mesLuckySheetTplDto.getSheetLoopData().getJSONObject("loopSettings");
+				if(loopSettings != null) {
+					reportTplSheet.setLoopSettings(JSON.toJSONString(loopSettings));
+				}else {
+					reportTplSheet.setLoopSettings("{}");
+				}
+			}
 			this.iReportTplSheetService.saveOrUpdate(reportTplSheet);
 			//更新图表相关的配置信息，先删除，再新增
 			QueryWrapper<ReportTplSheetChart> updateWrapper = new QueryWrapper<ReportTplSheetChart>();
@@ -2703,6 +2718,14 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				}else {
 					result.setPageDivider(JSON.parseArray(sheets.get(t).getPageDivider()));
 				}
+				if(sheets.get(t).getIsLoop() == YesNoEnum.YES.getCode()) {
+					JSONObject sheetLoopData = new JSONObject();
+					sheetLoopData.put("isLoop", true);
+					if(StringUtil.isNotEmpty(sheets.get(t).getLoopSettings())) {
+						sheetLoopData.put("loopSettings", JSON.parseObject(sheets.get(t).getLoopSettings()));
+					}
+					result.setSheetLoopData(sheetLoopData);
+				}
 				QueryWrapper<ReportFormsDatasource> datasourceQueryWrapper = new QueryWrapper<>();
 				datasourceQueryWrapper.eq("tpl_id", reportTpl.getId());
 				datasourceQueryWrapper.eq("sheet_id", sheets.get(t).getId());
@@ -2944,7 +2967,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			resPreviewData.setVersion(version);;
 		}
 		//获取所有有权限的sheet
-		List<ReportTplSheet> sheets = null;
+		List<ReportTplSheet> reportTplSheets = null;
 		if(userInfoDto.getIsAdmin().intValue() == YesNoEnum.YES.getCode() || reportTpl.getViewAuth().intValue() == 1)
 		{//超级管理员
 			QueryWrapper<ReportTplSheet> sheetQueryWrapper = new QueryWrapper<>();
@@ -2954,7 +2977,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			{
 				sheetQueryWrapper.eq("sheet_index", mesGenerateReportDto.getSheetIndex());
 			}
-			sheets = this.iReportTplSheetService.list(sheetQueryWrapper);
+			reportTplSheets = this.iReportTplSheetService.list(sheetQueryWrapper);
 		}else {
 			QueryWrapper<SysRoleSheet> roleSheetQueryWrapper = new QueryWrapper<>();
 			roleSheetQueryWrapper.eq("report_id", reportTpl.getId());
@@ -2976,7 +2999,14 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			{
 				sheetQueryWrapper.eq("sheet_index", mesGenerateReportDto.getSheetIndex());
 			}
-			sheets = this.iReportTplSheetService.list(sheetQueryWrapper);
+			reportTplSheets = this.iReportTplSheetService.list(sheetQueryWrapper);
+		}
+		List<ReportTplSheetDto> sheets = new ArrayList<ReportTplSheetDto>();
+		ReportTplSheetDto reportTplSheetDto = null;
+		for (int i = 0; i < reportTplSheets.size(); i++) {
+			reportTplSheetDto = new ReportTplSheetDto();
+			BeanUtils.copyProperties(reportTplSheets.get(i), reportTplSheetDto);
+			sheets.add(reportTplSheetDto);
 		}
 		List<Map<String, String>> reportSqls = new ArrayList<>();
 		Map<String, JSONObject> imgCells = new HashMap<>();
@@ -2987,11 +3017,69 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		Map<String, Object> subtotalCellDatas = new HashMap<>();//小计单元格数据
 		Map<String, Object> subtotalCellMap = new HashMap<>();//需要小计的原始单元格
 		Map<String, JSONObject> subTotalDigits = new HashMap<>();//需要小计的原始单元格
+		Map<String, String> sheetNameDatasets = new HashMap<String, String>();
+//		Map<String, JSONObject> loopSheets = new HashMap<String, JSONObject>();//开启sheet循环的sheet
+		List<ReportTplSheetDto> allSheets = new ArrayList<ReportTplSheetDto>();//所有sheet，包括循环sheet后解析出来的sheet
 		if(!ListUtil.isEmpty(sheets))
 		{
 			List<Long> sheetIds = new ArrayList<>();
 			for (int i = 0; i < sheets.size(); i++) {
+				if(sheets.get(i).getIsLoop().intValue() == YesNoEnum.YES.getCode().intValue() && StringUtil.isNotEmpty(sheets.get(i).getLoopSettings())) {
+					JSONObject loopSettings = JSON.parseObject(sheets.get(i).getLoopSettings());
+					if(loopSettings != null && !StringUtil.isEmptyMap(loopSettings)) {
+						int loopType = loopSettings.getIntValue("loopType");
+						String conditionContent = loopSettings.getString("conditionContent");
+						String property = loopSettings.getString("property");
+						JSONArray data = null;
+						if(loopType == 1) {
+							//自定义
+							data = JSON.parseArray(conditionContent);
+						}else {
+							//sql语句
+							long datasourceId = loopSettings.getLongValue("datasourceId");
+							MesGetSelectDataDto mesGetSelectDataDto = new MesGetSelectDataDto();
+							mesGetSelectDataDto.setDataSourceId(datasourceId);
+							mesGetSelectDataDto.setSelectContent(conditionContent);
+							List<Map<String, Object>> loopDatas = this.iReportDatasourceService.getDatasourceSelectData(mesGetSelectDataDto);
+							if(ListUtil.isNotEmpty(loopDatas)) {
+								data = new JSONArray();
+								for (int t = 0; t < loopDatas.size(); t++) {
+									data.add(loopDatas.get(t).get("value"));
+								}
+							}
+						}
+						if(ListUtil.isNotEmpty(data)) {
+							ReportTplSheetDto loopSheet = null; 
+							for (int j = 0; j < data.size(); j++) {
+								loopSheet = new ReportTplSheetDto();
+								BeanUtils.copyProperties(sheets.get(i), loopSheet);
+								loopSheet.setProperty(property);
+								loopSheet.setFilterValue(data.getString(j));
+								loopSheet.setSource(sheets.get(i));
+								loopSheet.setSheetIndex(IdWorker.getIdStr());
+								loopSheet.setSheetName(sheets.get(i).getSheetName()+"_"+data.getString(j));
+								allSheets.add(loopSheet);
+							}
+						}else {
+							allSheets.add(sheets.get(i));
+						}
+					}else {
+						allSheets.add(sheets.get(i));
+					}
+				}else {
+					allSheets.add(sheets.get(i));
+				}
 				sheetIds.add(sheets.get(i).getId());
+				String sheetName = sheets.get(i).getSheetName();
+				Pattern paramPattern=Pattern.compile("\\$\\s*\\{(.*?)}");
+				Matcher parammatcher=paramPattern.matcher(sheetName);
+				while(parammatcher.find()){
+					String match = parammatcher.group();
+					String datasetName = sheetName.replace("."+match, "");
+					String property = match.replaceAll("\\$\\{", "").replaceAll("}", "");
+					sheetNameDatasets.put(sheetName, datasetName+"|"+property);
+					break;
+				}
 			}
 			//获取所有的变量单元格
 			QueryWrapper<LuckysheetReportCell> queryWrapper = new QueryWrapper<LuckysheetReportCell>();
@@ -3025,6 +3113,14 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				}
 				usedDataSet = new ArrayList<>(hs);
 			}
+ 			if(!StringUtil.isEmptyMap(sheetNameDatasets)) {
+ 				for (String key : sheetNameDatasets.keySet()) {
+ 					String[] split = sheetNameDatasets.get(key).split("\\|");
+ 					if(!usedDataSet.contains(split[0])) {
+ 						usedDataSet.add(split[0]);
+ 					}
+ 				}
+ 			}
 			Map<String, String> datasetNameIdMap = new HashMap<String, String>();
 			List<List<String>> columnNames = this.getTplDatasetsColumnNames(reportTpl.getId(),datasetNameIdMap,userInfoDto);
 			//获取所有图表绑定的动态数据集属性
@@ -3044,80 +3140,97 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			List<ReportTplDataset> reportTplDatasets = null;
 			//获取数据字典
 			ReportCellDictsDto cellDictsDto = this.getReportDict(sheets,dictCache,reportTpl,viewParams);
+			Map<String, Object> loopSheetCache = new HashMap<String, Object>();//循环sheet的一些配置缓存
+			sheets = allSheets;
 			for (int t = 0; t < sheets.size(); t++) {
 				ResLuckySheetDataDto resLuckySheetDataDto = new ResLuckySheetDataDto();
 				resLuckySheetDataDto.setSheetId(sheets.get(t).getId());
 				//获取打印设置
-				QueryWrapper<ReportSheetPdfPrintSetting> pdfPrintQueryWrapper = new QueryWrapper<ReportSheetPdfPrintSetting>();
-				pdfPrintQueryWrapper.eq("tpl_id", reportTpl.getId());
-				pdfPrintQueryWrapper.eq("tpl_sheet_id", sheets.get(t).getId());
-				pdfPrintQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
-				ReportSheetPdfPrintSetting printSettings = this.iReportSheetPdfPrintSettingService.getOne(pdfPrintQueryWrapper,false);
-				if(printSettings != null && printSettings.getPageHeaderShow().intValue() == 1) {
-					if(StringUtil.isNotEmpty(printSettings.getPageHeaderContent())) {
-						if(printSettings.getPageHeaderContent().contains(".${")) {
-							boolean flag = true;
-							for (int i = 0; i < usedDataSet.size(); i++) {
-								if(printSettings.getPageHeaderContent().contains(usedDataSet.get(i)+".${")) {
-									flag = false;
-									break;
+				ReportSheetPdfPrintSetting printSettings = null;
+				if(sheets.get(t).getIsLoop().intValue() == YesNoEnum.YES.getCode()) {
+					printSettings = loopSheetCache.get(sheets.get(t).getId()+"_printSettings") != null?(ReportSheetPdfPrintSetting) loopSheetCache.get(sheets.get(t).getId()+"_printSettings"):null;
+				}
+				if(printSettings == null && !loopSheetCache.containsKey(sheets.get(t).getId()+"_printSettings")) {
+					QueryWrapper<ReportSheetPdfPrintSetting> pdfPrintQueryWrapper = new QueryWrapper<ReportSheetPdfPrintSetting>();
+					pdfPrintQueryWrapper.eq("tpl_id", reportTpl.getId());
+					pdfPrintQueryWrapper.eq("tpl_sheet_id", sheets.get(t).getId());
+					pdfPrintQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+					printSettings = this.iReportSheetPdfPrintSettingService.getOne(pdfPrintQueryWrapper,false);
+					if(printSettings != null && printSettings.getPageHeaderShow().intValue() == 1) {
+						if(StringUtil.isNotEmpty(printSettings.getPageHeaderContent())) {
+							if(printSettings.getPageHeaderContent().contains(".${")) {
+								boolean flag = true;
+								for (int i = 0; i < usedDataSet.size(); i++) {
+									if(printSettings.getPageHeaderContent().contains(usedDataSet.get(i)+".${")) {
+										flag = false;
+										break;
+									}
 								}
-							}
-							if(flag) {
-								if(reportTplDatasets == null) {
-									QueryWrapper<ReportTplDataset> datasetQueryWrapper = new QueryWrapper<>();
-									pdfPrintQueryWrapper.eq("tpl_id", reportTpl.getId());
-									pdfPrintQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
-									reportTplDatasets = this.iReportTplDatasetService.list(datasetQueryWrapper);
-								}
-								if(ListUtil.isNotEmpty(reportTplDatasets)) {
-									for (int i = 0; i < reportTplDatasets.size(); i++) {
-										if(printSettings.getPageHeaderContent().contains(reportTplDatasets.get(i).getDatasetName()+".${")) {
-											usedDataSet.add(reportTplDatasets.get(i).getDatasetName());
-											break;
+								if(flag) {
+									if(reportTplDatasets == null) {
+										QueryWrapper<ReportTplDataset> datasetQueryWrapper = new QueryWrapper<>();
+										pdfPrintQueryWrapper.eq("tpl_id", reportTpl.getId());
+										pdfPrintQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+										reportTplDatasets = this.iReportTplDatasetService.list(datasetQueryWrapper);
+									}
+									if(ListUtil.isNotEmpty(reportTplDatasets)) {
+										for (int i = 0; i < reportTplDatasets.size(); i++) {
+											if(printSettings.getPageHeaderContent().contains(reportTplDatasets.get(i).getDatasetName()+".${")) {
+												usedDataSet.add(reportTplDatasets.get(i).getDatasetName());
+												break;
+											}
 										}
 									}
 								}
 							}
 						}
 					}
+					loopSheetCache.put(sheets.get(t).getId()+"_printSettings",printSettings);
 				}
+				
 				//获取所有的循环块
-				QueryWrapper<LuckysheetReportCell> blockCellQueryWrapper = new QueryWrapper<LuckysheetReportCell>();
-				blockCellQueryWrapper.eq("tpl_id", reportTpl.getId());
-				blockCellQueryWrapper.eq("sheet_id", sheets.get(t).getId());
-				blockCellQueryWrapper.eq("cell_value_type", CellValueTypeEnum.BLOCK.getCode());
-				blockCellQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
-				List<LuckysheetReportCell> blocks = this.iLuckysheetReportCellService.list(blockCellQueryWrapper);
-				if(!ListUtil.isEmpty(blocks))
-				{
-					QueryWrapper<LuckysheetReportBlockCell> reportBlockCellQueryWrapper = null;
-					for (int i = 0; i < blocks.size(); i++) {
-						//获取循环块中的变量单元格
-						reportBlockCellQueryWrapper = new QueryWrapper<LuckysheetReportBlockCell>();
-						reportBlockCellQueryWrapper.eq("report_cell_id", blocks.get(i).getId());
-						reportBlockCellQueryWrapper.eq("cell_value_type", CellValueTypeEnum.VARIABLE.getCode());
-						reportBlockCellQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
-						List<LuckysheetReportBlockCell> blockCells = this.iLuckysheetReportBlockCellService.list(reportBlockCellQueryWrapper);
-						if(!ListUtil.isEmpty(blockCells))
-						{
-							for (int j = 0; j < blockCells.size(); j++) {
-								if (!usedDataSet.contains(blockCells.get(j).getDatasetName())) {
-									usedDataSet.add(blockCells.get(j).getDatasetName());
-								}
-								String datasetName = blockCells.get(j).getDatasetName();
-								if(datasetSheets.containsKey(datasetName)) {
-									datasetSheetIds = datasetSheets.get(datasetName);
-								}else {
-									datasetSheetIds = new ArrayList<>();
-								}
-								if(!datasetSheetIds.contains(sheets.get(t).getId())) {
-									datasetSheetIds.add(sheets.get(t).getId());
-									datasetSheets.put(datasetName, datasetSheetIds);
+				List<LuckysheetReportCell> blocks = null;
+				if(sheets.get(t).getIsLoop().intValue() == YesNoEnum.YES.getCode()) {
+					blocks = loopSheetCache.get(sheets.get(t).getId()+"_blocks") != null?(List<LuckysheetReportCell>) loopSheetCache.get(sheets.get(t).getId()+"_blocks"):null;
+				}
+				if(blocks == null && !loopSheetCache.containsKey(sheets.get(t).getId()+"_blocks")) {
+					QueryWrapper<LuckysheetReportCell> blockCellQueryWrapper = new QueryWrapper<LuckysheetReportCell>();
+					blockCellQueryWrapper.eq("tpl_id", reportTpl.getId());
+					blockCellQueryWrapper.eq("sheet_id", sheets.get(t).getId());
+					blockCellQueryWrapper.eq("cell_value_type", CellValueTypeEnum.BLOCK.getCode());
+					blockCellQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+					blocks = this.iLuckysheetReportCellService.list(blockCellQueryWrapper);
+					if(!ListUtil.isEmpty(blocks))
+					{
+						QueryWrapper<LuckysheetReportBlockCell> reportBlockCellQueryWrapper = null;
+						for (int i = 0; i < blocks.size(); i++) {
+							//获取循环块中的变量单元格
+							reportBlockCellQueryWrapper = new QueryWrapper<LuckysheetReportBlockCell>();
+							reportBlockCellQueryWrapper.eq("report_cell_id", blocks.get(i).getId());
+							reportBlockCellQueryWrapper.eq("cell_value_type", CellValueTypeEnum.VARIABLE.getCode());
+							reportBlockCellQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+							List<LuckysheetReportBlockCell> blockCells = this.iLuckysheetReportBlockCellService.list(reportBlockCellQueryWrapper);
+							if(!ListUtil.isEmpty(blockCells))
+							{
+								for (int j = 0; j < blockCells.size(); j++) {
+									if (!usedDataSet.contains(blockCells.get(j).getDatasetName())) {
+										usedDataSet.add(blockCells.get(j).getDatasetName());
+									}
+									String datasetName = blockCells.get(j).getDatasetName();
+									if(datasetSheets.containsKey(datasetName)) {
+										datasetSheetIds = datasetSheets.get(datasetName);
+									}else {
+										datasetSheetIds = new ArrayList<>();
+									}
+									if(!datasetSheetIds.contains(sheets.get(t).getId())) {
+										datasetSheetIds.add(sheets.get(t).getId());
+										datasetSheets.put(datasetName, datasetSheetIds);
+									}
 								}
 							}
 						}
 					}
+					loopSheetCache.put(sheets.get(t).getId()+"_blocks",blocks);
 				}
 				ObjectMapper objectMapper = new ObjectMapper();
 				Map<String, Object> config = new HashMap<String, Object>();
@@ -3139,18 +3252,25 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				{
 					List<LuckySheetBindData> dataSetsBindDatas = new ArrayList<LuckySheetBindData>();//所有数据集绑定的数据
 					Map<String, LuckySheetBindData> cellBindData = new HashMap<>();//每个单元格绑定的数据，用于单元格过滤绑定单元格或者查询绑定单元格数据
-					//获取所有固定的单元格,并封装成bindata与动态数据组成一个list
-					QueryWrapper<LuckysheetReportCell> fixed = new QueryWrapper<LuckysheetReportCell>();
-					fixed.eq("tpl_id", reportTpl.getId());
-					fixed.eq("sheet_id", sheets.get(t).getId());
-					fixed.eq("cell_value_type", CellValueTypeEnum.FIXED.getCode());
-					if(mesGenerateReportDto.getIsMobile().intValue() == YesNoEnum.YES.getCode().intValue() && mesGenerateReportDto.getIsTask().intValue() != YesNoEnum.YES.getCode().intValue())
-					{
-						fixed.eq("is_chart_cell", YesNoEnum.NO.getCode());
+					List<LuckysheetReportCell> fixedCells = null;
+					if(sheets.get(t).getIsLoop().intValue() == YesNoEnum.YES.getCode()) {
+						fixedCells = loopSheetCache.get(sheets.get(t).getId()+"_fixedCells") != null?(List<LuckysheetReportCell>) loopSheetCache.get(sheets.get(t).getId()+"_fixedCells"):null;
 					}
-					fixed.eq("del_flag", DelFlagEnum.UNDEL.getCode());
-					fixed.orderByAsc("coordsx","coordsy");
-					List<LuckysheetReportCell> fixedCells = this.iLuckysheetReportCellService.list(fixed);
+					if(fixedCells == null && !loopSheetCache.containsKey(sheets.get(t).getId()+"_fixedCells")) {
+						//获取所有固定的单元格,并封装成bindata与动态数据组成一个list
+						QueryWrapper<LuckysheetReportCell> fixed = new QueryWrapper<LuckysheetReportCell>();
+						fixed.eq("tpl_id", reportTpl.getId());
+						fixed.eq("sheet_id", sheets.get(t).getId());
+						fixed.eq("cell_value_type", CellValueTypeEnum.FIXED.getCode());
+						if(mesGenerateReportDto.getIsMobile().intValue() == YesNoEnum.YES.getCode().intValue() && mesGenerateReportDto.getIsTask().intValue() != YesNoEnum.YES.getCode().intValue())
+						{
+							fixed.eq("is_chart_cell", YesNoEnum.NO.getCode());
+						}
+						fixed.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+						fixed.orderByAsc("coordsx","coordsy");
+						fixedCells = this.iLuckysheetReportCellService.list(fixed);
+						loopSheetCache.put(sheets.get(t).getId()+"_fixedCells", fixedCells);
+					}
 					if(!ListUtil.isEmpty(fixedCells))
 					{
 						LuckySheetBindData bindData = null;
@@ -3243,11 +3363,18 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 							}
 						}
 						//获取数据集对应的变量
-						LuckysheetReportCell params = new LuckysheetReportCell();
-						params.setTplId(reportTpl.getId());
- 						params.setSheetId(sheets.get(t).getId());
- 						params.setDatasetName(usedDataSet.get(i));
- 						List<LuckysheetReportCell> variableCells = this.luckysheetReportCellMapper.getVariableCells(params);
+						List<LuckysheetReportCell> variableCells = null;
+						if(sheets.get(t).getIsLoop().intValue() == YesNoEnum.YES.getCode()) {
+							variableCells = loopSheetCache.get(sheets.get(t).getId()+"_variableCells") != null?(List<LuckysheetReportCell>) loopSheetCache.get(sheets.get(t).getId()+"_variableCells"):null;
+						}
+						if(variableCells == null && !loopSheetCache.containsKey(sheets.get(t).getId()+"_variableCells")) {
+							LuckysheetReportCell params = new LuckysheetReportCell();
+							params.setTplId(reportTpl.getId());
+	 						params.setSheetId(sheets.get(t).getId());
+	 						params.setDatasetName(usedDataSet.get(i));
+	 						variableCells = this.luckysheetReportCellMapper.getVariableCells(params);
+	 						loopSheetCache.put(sheets.get(t).getId()+"_variableCells", variableCells);
+						}
 						if(!ListUtil.isEmpty(variableCells)) {
 							Map<String, Object> datasetParams = null;
 							if(result != null)
@@ -3296,7 +3423,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 							{
  								datasetName = datasetNameIdMap.get(usedDataSet.get(i))+"-"+usedDataSet.get(i);
 							}
- 							List<LuckySheetBindData> dataSetBindDatas = luckySheetDataProcess.get(1).process(variableCells, datas,datasetName,processedCells,blockBindDatas,subtotalCellDatas,subtotalCellMap,sheets.get(t).getSheetIndex(),cellBindData,subTotalDigits,reportTpl.getTplType(),subTotalCellCoords);
+ 							List<LuckySheetBindData> dataSetBindDatas = luckySheetDataProcess.get(1).process(variableCells, datas,datasetName,processedCells,blockBindDatas,subtotalCellDatas,subtotalCellMap,sheets.get(t).getSheetIndex(),cellBindData,subTotalDigits,reportTpl.getTplType(),subTotalCellCoords,sheets.get(t));
 							if(!ListUtil.isEmpty(dataSetBindDatas))
 							{
 								dataSetsBindDatas.addAll(dataSetBindDatas);
@@ -3472,7 +3599,23 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 					}
 				}
 				resLuckySheetDataDto.setSheetIndex(sheets.get(t).getSheetIndex());
-				resLuckySheetDataDto.setSheetName(sheets.get(t).getSheetName());
+				if(sheetNameDatasets.containsKey(sheets.get(t).getSheetName())) {
+					resLuckySheetDataDto.setSheetName(sheets.get(t).getSheetName());
+					String[] split = sheetNameDatasets.get(sheets.get(t).getSheetName()).split("\\|");
+					if(datasetDatas.containsKey(split[0])) {
+						if(ListUtil.isNotEmpty(datasetDatas.get(split[0]))){
+							Map<String, Object> data = datasetDatas.get(split[0]).get(0);
+							if(data != null) {
+								Object name = data.get(split[1]);
+								if(name != null && StringUtil.isNotEmpty(String.valueOf(name))) {
+									resLuckySheetDataDto.setSheetName(String.valueOf(name));
+								}
+							}
+						}
+					}
+				}else {
+					resLuckySheetDataDto.setSheetName(sheets.get(t).getSheetName());
+				}
 				resLuckySheetDataDto.setSheetOrder(sheets.get(t).getSheetOrder());
 				QueryWrapper<ReportFormsDatasource> datasourceQueryWrapper = new QueryWrapper<>();
 				datasourceQueryWrapper.eq("tpl_id", reportTpl.getId());
@@ -10902,6 +11045,14 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
                 Set<String> set = datas.keySet();
                 String property = luckySheetBindData.getProperty();
                 boolean isJustProperty = false;
+                if(customSpringReportFunction.isSpringReportFunction(property)) {
+                	if(ListUtil.isNotEmpty(luckySheetBindData.getSrfParse())) {
+                		for (int i = 0; i < luckySheetBindData.getSrfParse().size(); i++) {
+							String methodName = luckySheetBindData.getSrfParse().getJSONObject(i).getString("methodName")+"("+luckySheetBindData.getSrfParse().getJSONObject(i).getString("params")+")";
+							property = property.replace(methodName, luckySheetBindData.getSrfParse().getJSONObject(i).getString("params"));
+						}
+                	}
+                }
                 if(ListUtil.isEmpty(set)) {
                 	property = "";
                 }else {
@@ -11841,6 +11992,14 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         	}
             Set<String> set = datas.keySet();
             String property = luckySheetBindData.getProperty();
+            if(customSpringReportFunction.isSpringReportFunction(property)) {
+            	if(ListUtil.isNotEmpty(luckySheetBindData.getSrfParse())) {
+            		for (int i = 0; i < luckySheetBindData.getSrfParse().size(); i++) {
+						String methodName = luckySheetBindData.getSrfParse().getJSONObject(i).getString("methodName")+"("+luckySheetBindData.getSrfParse().getJSONObject(i).getString("params")+")";
+						property = property.replace(methodName, luckySheetBindData.getSrfParse().getJSONObject(i).getString("params"));
+					}
+            	}
+            }
             boolean isJustProperty = false;
             if(ListUtil.isEmpty(set)) {
             	property = "";
@@ -15833,7 +15992,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 	 * @throws ParseException 
 	 * @date 2022-11-28 09:43:56 
 	 */  
-	private ReportCellDictsDto getReportDict(List<ReportTplSheet> sheets,Map<String, Map<String, String>> dictCache,ReportTpl reportTpl,Map<String, Object> viewParams) throws JSQLParserException, ParseException {
+	private ReportCellDictsDto getReportDict(List<ReportTplSheetDto> sheets,Map<String, Map<String, String>> dictCache,ReportTpl reportTpl,Map<String, Object> viewParams) throws JSQLParserException, ParseException {
 		ReportCellDictsDto result = new ReportCellDictsDto();
 		List<Long> sheetIds = new ArrayList<>();
 		Map<Long, String> sheetIndexMap = new HashMap<>();

@@ -2,6 +2,8 @@ package com.springreport.base;
 
 import java.util.Map;
 
+import com.alibaba.fastjson.JSONArray;
+
 public abstract class AbstractSpringReportFunction {
 	
 	/**  
@@ -24,4 +26,14 @@ public abstract class AbstractSpringReportFunction {
 	 * @date 2025-08-31 10:00:33 
 	 */ 
 	public abstract Object calculate(LuckySheetBindData luckySheetBindData,Map<String, Object> extraParams);
+	
+	/**  
+	 * @MethodName: parseFormula
+	 * @Description: 解析自定义公式
+	 * @author caiyang
+	 * @param property
+	 * @return JSONArray
+	 * @date 2026-04-06 07:36:51 
+	 */  
+	public abstract JSONArray parseFormula(String property);
 }

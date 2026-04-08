@@ -13,8 +13,11 @@ import java.util.Map.Entry;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.github.pagehelper.util.StringUtil;
+import com.springreport.base.CustomSpringReportFunction;
+//import com.springreport.function.CustomSpringReportFunction;
 import com.springreport.base.LuckySheetBindData;
 import com.springreport.entity.luckysheetreportcell.LuckysheetReportCell;
+import com.springreport.util.ListUtil;
 
 /**  
  * @ClassName: LuckySheetCrossAggregate
@@ -24,6 +27,12 @@ import com.springreport.entity.luckysheetreportcell.LuckysheetReportCell;
 */  
 public class LuckySheetCrossAggregate extends Aggregate<LuckysheetReportCell,LuckySheetBindData,Map<String, LuckySheetBindData>,Map<String, String>,Map<String, Integer>>{
 
+	private static CustomSpringReportFunction customSpringReportFunction;
+	
+	static {
+		customSpringReportFunction = new CustomSpringReportFunction();
+	}
+	
 	@Override
 	public LuckySheetBindData aggregate(LuckysheetReportCell reportCell,LuckySheetBindData bindData,Map<String, LuckySheetBindData> cellBinddata,Map<String, String> reliedGroupMergeCells,Map<String, Integer> indexChains) {
 //		String property = reportCell.getCellValue().split("\\.")[1].replace("${", "").replace("}", "");//单元格属性值
@@ -50,19 +59,50 @@ public class LuckySheetCrossAggregate extends Aggregate<LuckysheetReportCell,Luc
 				categories.add(item);
 			}
 			List<List<Map<String, Object>>> datas = new ArrayList<>();
-			for (int i = 0; i < bindData.getDatas().size(); i++) {
-				Map<String, Map<String, Object>> mapDatas = this.processDatas(bindData.getDatas().get(i), properties);
-				List<Map<String, Object>> groupDatas = new ArrayList<>();
+			List<List<Map<String, Object>>> alldatas = new ArrayList<>();
+			List<List<Map<String, Object>>> crossdatas = bindData.getDatas();
+			if(bindData.getCrossDatas() != null) {
+				crossdatas = bindData.getCrossDatas();
+			}
+			for (int i = 0; i < crossdatas.size(); i++) {
+				Map<String, List<Map<String, Object>>> mapDatas = this.processDatas(crossdatas.get(i), properties);
+				List<Map<String, Object>> groupDatas = new ArrayList<>();//去重后的数据
+				List<Map<String, Object>> allGroupDatas = new ArrayList<>();//未去重的数据
 				for (int j = 0; j < categories.size(); j++) {
 					if(mapDatas.containsKey(categories.get(j))) {
-						groupDatas.add(mapDatas.get(categories.get(j)));
+						groupDatas.add(mapDatas.get(categories.get(j)).get(0));
+						allGroupDatas.addAll(mapDatas.get(categories.get(j)));
+						if(customSpringReportFunction.isSpringReportFunction(property)) {
+							JSONArray formulas = customSpringReportFunction.parseFormula(property);
+							LuckySheetBindData luckySheetBindData = null;
+							if(ListUtil.isNotEmpty(formulas)) {
+								for (int k = 0; k < formulas.size(); k++) {
+									Map<String, Object> extraParams = new HashMap<>();
+									extraParams.put("userInfo", null);
+						        	extraParams.put("viewParams", null);
+						        	luckySheetBindData = new LuckySheetBindData();
+						        	List<List<Map<String, Object>>> groupdatas = new ArrayList<List<Map<String,Object>>>();
+						        	groupdatas.add(allGroupDatas);
+						        	luckySheetBindData.setDatas(groupdatas);
+						        	String methodName = formulas.getJSONObject(k).getString("methodName");
+						        	String attr = formulas.getJSONObject(k).getString("params");
+						        	luckySheetBindData.setProperty(methodName+"("+attr+")");
+						        	Object value = customSpringReportFunction.calculate(luckySheetBindData, extraParams);
+						        	mapDatas.get(categories.get(j)).get(0).put(attr, value);
+								}
+								bindData.setSrfParse(formulas);
+							}
+						}
 					}else {
 						groupDatas.add(new HashMap<>());
+						allGroupDatas.add(new HashMap<>());
 					}
 				}
 				datas.add(groupDatas);
+				alldatas.add(allGroupDatas);
 			}
 			bindData.setDatas(datas);
+			bindData.setCrossDatas(alldatas);
 		}
 		return bindData;
 	}
@@ -95,8 +135,9 @@ public class LuckySheetCrossAggregate extends Aggregate<LuckysheetReportCell,Luc
 	    	return bindDatas;
 	    }
 	 
-	 private Map<String, Map<String, Object>> processDatas(List<Map<String, Object>> datas,String[] properties){
-			Map<String, Map<String, Object>> result = new HashMap<String, Map<String,Object>>();
+	 private Map<String, List<Map<String, Object>>> processDatas(List<Map<String, Object>> datas,String[] properties){
+			Map<String, List<Map<String, Object>>> result = new HashMap<String, List<Map<String, Object>>>();
+			List<Map<String, Object>> groupdatas = null;
 			for (int i = 0; i < datas.size(); i++) {
 				String item = "";
 				for (int t = 0; t < properties.length; t++) {
@@ -108,7 +149,12 @@ public class LuckySheetCrossAggregate extends Aggregate<LuckysheetReportCell,Luc
 					}
 				}
 				if(!result.containsKey(item)) {
-					result.put(item, datas.get(i));
+					groupdatas = new ArrayList<Map<String,Object>>();
+					groupdatas.add(datas.get(i));
+					result.put(item, groupdatas);
+				}else {
+					groupdatas = result.get(item);
+					groupdatas.add(datas.get(i));
 				}
 			}
 			return result;

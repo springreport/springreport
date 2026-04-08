@@ -989,4 +989,9 @@ selectUtil.headerValueType = [
   { value: 1, label: '固定值' },
   { value: 2, label: '动态获取' }
 ]
+
+selectUtil.sheetLoopType = [
+  { value: 1, label: '自定义' },
+  { value: 2, label: 'SQL语句' }
+]
 export default selectUtil;

@@ -15,6 +15,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.springreport.constants.StatusCode;
 import com.springreport.base.LuckySheetBindData;
 import com.springreport.dto.reporttpl.LuckySheetFormsBindData;
+import com.springreport.dto.reporttplsheet.ReportTplSheetDto;
 import com.springreport.entity.luckysheetreportcell.LuckysheetReportCell;
 import com.springreport.entity.luckysheetreportformscell.LuckysheetReportFormsCell;
 import com.springreport.enums.AggregateTypeEnum;
@@ -22,6 +23,7 @@ import com.springreport.enums.CellExtendEnum;
 import com.springreport.enums.CellValueTypeEnum;
 import com.springreport.enums.DataFromEnum;
 import com.springreport.enums.LuckySheetPropsEnum;
+import com.springreport.enums.OperatorEnum;
 import com.springreport.enums.YesNoEnum;
 import com.springreport.exception.BizException;
 import com.springreport.report.aggregate.Aggregate;
@@ -65,10 +67,30 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 //		formsAggregates.put(AggregateTypeEnum.CROSS.getCode(),new LuckySheetCrossAggregate());
 	}
 	@Override
-	public List<LuckySheetBindData> process(List<LuckysheetReportCell> variableCells, List<Map<String, Object>> data,String datasetName,
+	public List<LuckySheetBindData> process(List<LuckysheetReportCell> variableCells, List<Map<String, Object>> datasetData,String datasetName,
 			Map<String, Map<String, List<List<Map<String, Object>>>>> processedCells,Map<String, LuckySheetBindData> blockBindDatas,
-			Map<String, Object> subtotalCellDatas,Map<String, Object> subtotalCellMap,String sheetIndex,Map<String, LuckySheetBindData> cellBindData,Map<String, JSONObject> subTotalDigits,int tplType,List<String> subTotalCellCoords) {
+			Map<String, Object> subtotalCellDatas,Map<String, Object> subtotalCellMap,String sheetIndex,Map<String, LuckySheetBindData> cellBindData,Map<String, JSONObject> subTotalDigits,int tplType,List<String> subTotalCellCoords
+			,ReportTplSheetDto reportTplSheetDto) {
 		List<LuckySheetBindData> bindDatas = new ArrayList<LuckySheetBindData>();
+		List<Map<String, Object>> data = new ArrayList<Map<String,Object>>();
+		if(reportTplSheetDto.getIsLoop().intValue() == YesNoEnum.YES.getCode().intValue()) {
+			JSONArray filters = new JSONArray();
+			JSONObject filter = new JSONObject();
+			filter.put("property", reportTplSheetDto.getProperty());
+			filter.put("operator", OperatorEnum.EQ.getCode());
+			filter.put("value", reportTplSheetDto.getFilterValue());
+			filters.add(filter);
+			if(ListUtil.isNotEmpty(datasetData)) {
+				for (int k = 0; k < datasetData.size(); k++) {
+					boolean filterResult = ListUtil.filterDatas(filters, datasetData.get(k),"and");
+					if(filterResult) {
+						data.add(datasetData.get(k));
+					}
+				}
+			}
+		}else {
+			data = datasetData;
+		}
 //		if(!ListUtil.isEmpty(data))
 //		{
 			Map<String, String> reliedGroupMergeCells = new HashMap<>();//被依赖的合一单元格和依赖单元格对应关系
@@ -81,6 +103,7 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 			int continueGroupMergeCount = 0;
 			List<List<Map<String, Object>>> lastData = null;
 			List<List<Map<String, Object>>> lastFilterData = null;
+			List<List<Map<String, Object>>> crossDatas = null;;
 			ObjectMapper objectMapper = new ObjectMapper();
 			for (int i = 0; i < variableCells.size(); i++) {
 				String key = variableCells.get(i).getSheetId() + "-" + variableCells.get(i).getCoordsx()+"_"+variableCells.get(i).getCoordsy();
@@ -303,8 +326,10 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 				}
 				if(CellExtendEnum.CROSS.getCode().intValue() == variableCells.get(i).getCellExtend().intValue())
 				{
-					bindData.setOriginalData(data);;
+					bindData.setOriginalData(data);
+					bindData.setCrossDatas(crossDatas);
 					bindData = aggregates.get(AggregateTypeEnum.CROSS.getCode()).aggregate(variableCells.get(i),bindData,cellBindData,reliedGroupMergeCells,indexChains);
+					crossDatas = bindData.getCrossDatas();
 				}else {
 					bindData = aggregates.get(variableCells.get(i).getAggregateType()).aggregate(variableCells.get(i),bindData,cellBindData,reliedGroupMergeCells,indexChains);
 				}

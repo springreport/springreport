@@ -134,7 +134,7 @@ export default {
         'cellHide',
         ,'fillSettings'
       ],
-      rightFormCollapse2: ['generalConfig', 'sheetBlock'],
+      rightFormCollapse2: ['generalConfig', 'sheetBlock','sheetLoop','sheetImages'],
       groupSetVisible: false, // 分组设置弹框
       groupList: [],
       groupForm: {
@@ -317,6 +317,15 @@ export default {
       sheetBlockData: [],
       sheetImages:{},
       blockData: {}, //循环块数据
+      sheetLoop:{},//整个文档sheet页循环数据
+      sheetLoopData:{},//sheet页循环数据
+      sheetLoopVisiable:false,
+      sheetLoopForm:{
+        loopType:null,//类型
+        conditionContent:null,//自定义数据或者sql语句
+        property:null,//属性
+        datasourceId:null,
+      },
       datasourceType: '1', //1数据库 2api
       dragEndR: 0, //拖拽停止单元格横坐标
       dragEndC: 0, //拖拽停止单元格纵坐标
@@ -2421,6 +2430,7 @@ export default {
               configs.cellDatas = cellDatas;
             }
             configs.extraCustomCellConfigs = extraCustomCellConfigs;
+            configs.sheetLoopData = this.sheetLoop[luckysheetfile.index]
             var chartCells = this.getChartCells(luckysheetfile);
             var checkResult = this.checkChartFirstCellIsUsed(chartCells, cellDatas);
             if (checkResult) {
@@ -2923,6 +2933,12 @@ export default {
                 element.reportSheetPdfPrintSetting.rowheightMulti = element.reportSheetPdfPrintSetting.rowheightMulti + '';
                 _this.sheetPrintSettings[element.sheetIndex] = element.reportSheetPdfPrintSetting;
               }
+              if(element.sheetLoopData){
+                _this.sheetLoop[element.sheetIndex] = element.sheetLoopData;
+                if (index == 0) {
+                  _this.sheetLoopData = element.sheetLoopData
+                }
+              }
             }
           }
           _this.isParamMerge = response.responseData.isParamMerge == '1' ? true : false;
@@ -3310,6 +3326,11 @@ export default {
         this.sheetBlockData = this.blockData[index];
       }
       this.chartxAxisData = this.sheetChartxAxisDatas[index];
+
+      this.sheetLoopData = [];
+      if(this.sheetLoop[index]){
+        this.sheetLoopData = this.sheetLoop[index]
+      }
     },
     //删除sheet监听
     sheetDeleteBefore(sheet) {
@@ -6058,6 +6079,59 @@ export default {
     },
     closeAISql(){
       alert("该部分是付费插件功能，如需要请联系作者！")
-    }
+    },
+    changeSheetLoop(){
+      var sheetIndex = luckysheet.getSheet().index
+      if(!this.sheetLoop[sheetIndex]){
+        this.sheetLoop[sheetIndex] = this.sheetLoopData;
+      }
+      this.sheetLoop[sheetIndex].isLoop = this.sheetLoopData.isLoop;
+      if(!this.sheetLoopData.isLoop){
+        this.sheetLoopData.loopSettings = null;
+        this.sheetLoop[sheetIndex].loopSettings = null;
+        this.$forceUpdate();
+      }
+      
+    },
+    addSheetLoop(){
+      this.sheetLoopVisiable = true
+    },
+    closeSheetLoopDialog(){
+      this.$refs['sheetLoopRef'].resetFields()// 校验重置
+      this.commonUtil.clearObj(this.sheetLoopForm)
+      this.sheetLoopVisiable = false
+    },
+    confirmAddSheetLoop(){
+      var that = this;
+      this.$refs['sheetLoopRef'].validate((valid) => {
+          if (valid) {
+            var sheetIndex = luckysheet.getSheet().index
+            var data = {
+              loopType:that.sheetLoopForm.loopType,
+              conditionContent:that.sheetLoopForm.conditionContent,
+              property:that.sheetLoopForm.property,
+              datasourceId:that.sheetLoopForm.datasourceId,
+            }
+            that.sheetLoopData.loopSettings = data
+            that.sheetLoop[sheetIndex].loopSettings = data;
+            that.closeSheetLoopDialog();
+          } else {
+            return false
+          }
+        })
+      },
+      editSheetLoop(){
+        this.sheetLoopVisiable = true
+        this.sheetLoopForm.loopType = this.sheetLoopData.loopSettings.loopType
+        this.sheetLoopForm.conditionContent = this.sheetLoopData.loopSettings.conditionContent
+        this.sheetLoopForm.property = this.sheetLoopData.loopSettings.property
+        this.sheetLoopForm.datasourceId = this.sheetLoopData.loopSettings.datasourceId
+      },
+      deleteSheetLoop(){
+         var sheetIndex = luckysheet.getSheet().index
+         this.sheetLoopData.loopSettings = null;
+         this.sheetLoop[sheetIndex].loopSettings = null;
+         this.$forceUpdate();
+      }
   },
 };
