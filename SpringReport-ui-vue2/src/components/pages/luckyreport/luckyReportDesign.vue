@@ -1828,7 +1828,7 @@
                       class="column-tag"
                       style="min-width: 220px; max-width: 220px"
                     >
-                      数据集过滤属性{{ sheetLoopData.loopSettings.property }}
+                      数据集过滤属性:{{ sheetLoopData.loopSettings.property }}
                     </p>
                   </el-collapse-item>
                 </el-collapse>

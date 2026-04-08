@@ -2636,7 +2636,6 @@ export default {
       this.loadingText = '模板数据加载中...'
       param.callback = this.doPostCallback
       this.commonUtil.doPost(param).then(response => {
-        console.log(response)
         if (response.code == '200') {
           var charts = []
           if (response.responseData && response.responseData.settings) {
