@@ -3365,7 +3365,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 						//获取数据集对应的变量
 						List<LuckysheetReportCell> variableCells = null;
 						if(sheets.get(t).getIsLoop().intValue() == YesNoEnum.YES.getCode()) {
-							variableCells = loopSheetCache.get(sheets.get(t).getId()+"_variableCells") != null?(List<LuckysheetReportCell>) loopSheetCache.get(sheets.get(t).getId()+"_variableCells"):null;
+							variableCells = loopSheetCache.get(sheets.get(t).getId()+"_"+usedDataSet.get(i)+"_variableCells") != null?(List<LuckysheetReportCell>) loopSheetCache.get(sheets.get(t).getId()+"_"+usedDataSet.get(i)+"_variableCells"):null;
 						}
 						if(variableCells == null && (!loopSheetCache.containsKey(sheets.get(t).getId()+"_variableCells")||sheets.get(t).getIsLoop().intValue() == YesNoEnum.NO.getCode())) {
 							LuckysheetReportCell params = new LuckysheetReportCell();
@@ -3373,7 +3373,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 	 						params.setSheetId(sheets.get(t).getId());
 	 						params.setDatasetName(usedDataSet.get(i));
 	 						variableCells = this.luckysheetReportCellMapper.getVariableCells(params);
-	 						loopSheetCache.put(sheets.get(t).getId()+"_variableCells", variableCells);
+	 						loopSheetCache.put(sheets.get(t).getId()+"_"+usedDataSet.get(i)+"_variableCells", variableCells);
 						}
 						if(!ListUtil.isEmpty(variableCells)) {
 							Map<String, Object> datasetParams = null;
