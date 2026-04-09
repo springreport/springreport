@@ -3150,7 +3150,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				if(sheets.get(t).getIsLoop().intValue() == YesNoEnum.YES.getCode()) {
 					printSettings = loopSheetCache.get(sheets.get(t).getId()+"_printSettings") != null?(ReportSheetPdfPrintSetting) loopSheetCache.get(sheets.get(t).getId()+"_printSettings"):null;
 				}
-				if(printSettings == null && !loopSheetCache.containsKey(sheets.get(t).getId()+"_printSettings")) {
+				if(printSettings == null && (!loopSheetCache.containsKey(sheets.get(t).getId()+"_printSettings")||sheets.get(t).getIsLoop().intValue() == YesNoEnum.NO.getCode())) {
 					QueryWrapper<ReportSheetPdfPrintSetting> pdfPrintQueryWrapper = new QueryWrapper<ReportSheetPdfPrintSetting>();
 					pdfPrintQueryWrapper.eq("tpl_id", reportTpl.getId());
 					pdfPrintQueryWrapper.eq("tpl_sheet_id", sheets.get(t).getId());
@@ -3193,7 +3193,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				if(sheets.get(t).getIsLoop().intValue() == YesNoEnum.YES.getCode()) {
 					blocks = loopSheetCache.get(sheets.get(t).getId()+"_blocks") != null?(List<LuckysheetReportCell>) loopSheetCache.get(sheets.get(t).getId()+"_blocks"):null;
 				}
-				if(blocks == null && !loopSheetCache.containsKey(sheets.get(t).getId()+"_blocks")) {
+				if(blocks == null && (!loopSheetCache.containsKey(sheets.get(t).getId()+"_blocks")||sheets.get(t).getIsLoop().intValue() == YesNoEnum.NO.getCode())) {
 					QueryWrapper<LuckysheetReportCell> blockCellQueryWrapper = new QueryWrapper<LuckysheetReportCell>();
 					blockCellQueryWrapper.eq("tpl_id", reportTpl.getId());
 					blockCellQueryWrapper.eq("sheet_id", sheets.get(t).getId());
@@ -3256,7 +3256,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 					if(sheets.get(t).getIsLoop().intValue() == YesNoEnum.YES.getCode()) {
 						fixedCells = loopSheetCache.get(sheets.get(t).getId()+"_fixedCells") != null?(List<LuckysheetReportCell>) loopSheetCache.get(sheets.get(t).getId()+"_fixedCells"):null;
 					}
-					if(fixedCells == null && !loopSheetCache.containsKey(sheets.get(t).getId()+"_fixedCells")) {
+					if(fixedCells == null && (!loopSheetCache.containsKey(sheets.get(t).getId()+"_fixedCells")||sheets.get(t).getIsLoop().intValue() == YesNoEnum.NO.getCode())) {
 						//获取所有固定的单元格,并封装成bindata与动态数据组成一个list
 						QueryWrapper<LuckysheetReportCell> fixed = new QueryWrapper<LuckysheetReportCell>();
 						fixed.eq("tpl_id", reportTpl.getId());
@@ -3365,15 +3365,15 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 						//获取数据集对应的变量
 						List<LuckysheetReportCell> variableCells = null;
 						if(sheets.get(t).getIsLoop().intValue() == YesNoEnum.YES.getCode()) {
-							variableCells = loopSheetCache.get(sheets.get(t).getId()+"_variableCells") != null?(List<LuckysheetReportCell>) loopSheetCache.get(sheets.get(t).getId()+"_variableCells"):null;
+							variableCells = loopSheetCache.get(sheets.get(t).getId()+"_"+usedDataSet.get(i)+"_variableCells") != null?(List<LuckysheetReportCell>) loopSheetCache.get(sheets.get(t).getId()+"_"+usedDataSet.get(i)+"_variableCells"):null;
 						}
-						if(variableCells == null && !loopSheetCache.containsKey(sheets.get(t).getId()+"_variableCells")) {
+						if(variableCells == null && (!loopSheetCache.containsKey(sheets.get(t).getId()+"_variableCells")||sheets.get(t).getIsLoop().intValue() == YesNoEnum.NO.getCode())) {
 							LuckysheetReportCell params = new LuckysheetReportCell();
 							params.setTplId(reportTpl.getId());
 	 						params.setSheetId(sheets.get(t).getId());
 	 						params.setDatasetName(usedDataSet.get(i));
 	 						variableCells = this.luckysheetReportCellMapper.getVariableCells(params);
-	 						loopSheetCache.put(sheets.get(t).getId()+"_variableCells", variableCells);
+	 						loopSheetCache.put(sheets.get(t).getId()+"_"+usedDataSet.get(i)+"_variableCells", variableCells);
 						}
 						if(!ListUtil.isEmpty(variableCells)) {
 							Map<String, Object> datasetParams = null;
