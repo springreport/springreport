@@ -85,6 +85,10 @@ public class LuckySheetCellUtil {
     	numberFormat.put("#0.00%","1");
     	numberFormat.put("0%","1");
     	numberFormat.put("0.00%","1");
+    	numberFormat.put("0.000","1");
+    	numberFormat.put("0.0000","1");
+    	numberFormat.put("0.000%","1");
+    	numberFormat.put("0.0000%","1");
 	}
     
     /**  

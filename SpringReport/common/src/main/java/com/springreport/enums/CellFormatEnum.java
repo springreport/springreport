@@ -81,6 +81,22 @@ public enum CellFormatEnum implements BaseCharEnum{
 			return "逗号分割两位小数";
 		}
 	},
+	FLOAT2_5{
+		public String getCode() {
+			return "0.000";
+		}
+		public String getName() {
+			return "三位小数";
+		}
+	},
+	FLOAT2_6{
+		public String getCode() {
+			return "0.0000";
+		}
+		public String getName() {
+			return "四位小数";
+		}
+	},
 	PERCENT1{
 		public String getCode() {
 			return "0%";
@@ -103,6 +119,22 @@ public enum CellFormatEnum implements BaseCharEnum{
 		}
 		public String getName() {
 			return "两位小数百分比";
+		}
+	},
+	PERCENT2_3{
+		public String getCode() {
+			return "0.000%";
+		}
+		public String getName() {
+			return "三位小数百分比";
+		}
+	},
+	PERCENT2_4{
+		public String getCode() {
+			return "0.0000%";
+		}
+		public String getName() {
+			return "四位小数百分比";
 		}
 	},
 	SCIENTIC_1{
