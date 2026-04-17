@@ -76,6 +76,7 @@ MSG_LIST["info.delete"] = "数据删除成功。";
 MSG_LIST["info.apitest.success"] = "接口测试成功，返回数据结构:{0}";
 MSG_LIST["info.enter.sharemode"] = "您已开启分享模式。";
 MSG_LIST["info.exit.sharemode"] = "分享模式已退出。";
+MSG_LIST["info.snapshot"]="快照创建任务已提交，正在后台保存中。您可以稍后前往【快照管理】查看详情。";
 //通知成功消息end
 //警告成功消息start
 MSG_LIST["warning.sharemode.forbidden"] = "分享模式下只允许分享者进行编辑。";
