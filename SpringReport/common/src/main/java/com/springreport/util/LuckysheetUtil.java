@@ -92,6 +92,22 @@ public class LuckysheetUtil {
 			}else {
 				return value;
 			}
+		}else if(fa.equals(CellFormatEnum.FLOAT2_5.getCode())) {
+			//三位小数
+			if(CheckUtil.isNumber(String.valueOf(value)))
+			{
+				return numberTranform(value,3);
+			}else {
+				return value;
+			}
+		}else if(fa.equals(CellFormatEnum.FLOAT2_6.getCode())) {
+			//四位小数
+			if(CheckUtil.isNumber(String.valueOf(value)))
+			{
+				return numberTranform(value,4);
+			}else {
+				return value;
+			}
 		}else if(fa.equals(CellFormatEnum.PERCENT1.getCode())) {
 			//整数百分比
 			if(CheckUtil.isNumber(String.valueOf(value)))
@@ -101,7 +117,8 @@ public class LuckysheetUtil {
 			}else {
 				return value;
 			}
-		}else if(fa.equals(CellFormatEnum.PERCENT2_1.getCode()) || fa.equals(CellFormatEnum.PERCENT2_2.getCode())) {
+		}else if(fa.equals(CellFormatEnum.PERCENT2_1.getCode()) || fa.equals(CellFormatEnum.PERCENT2_2.getCode())
+				|| fa.equals(CellFormatEnum.PERCENT2_3.getCode()) || fa.equals(CellFormatEnum.PERCENT2_4.getCode())) {
 			//两位小数百分比
 			if(CheckUtil.isNumber(String.valueOf(value)))
 			{
