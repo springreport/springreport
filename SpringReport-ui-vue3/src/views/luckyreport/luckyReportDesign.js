@@ -566,7 +566,8 @@ export default {
           sheetActivateAfter: this.sheetActivateAfter,
           formulaAuthCheck: this.formulaAuthCheck,
           loadDataAfter: this.loadDataAfter,
-          saveClick: this.saveTpl,
+          saveClick: this.saveCurrentSheetTpl,
+          saveAllClick: this.saveTpl,
           previewClick: this.previewReport,
           pdfsettingClick: this.pdfsettingClick,
           uploadFileClick: this.uploadFileClick,
@@ -2323,10 +2324,16 @@ export default {
       });
     },
     //保存模板
-    saveTpl() {
+    saveTpl(isCurrent) {
       this.loadingText = '模板保存中...';
       this.loading = true;
-      var luckysheetfiles = luckysheet.getLuckysheetfile();
+      var luckysheetfiles;
+      if(isCurrent){
+        luckysheetfiles = [];
+        luckysheetfiles.push(luckysheet.getSheet())
+      }else{
+        luckysheetfiles = luckysheet.getLuckysheetfile()
+      }
       if (luckysheetfiles) {
         var params = {};
         var sheetConfigs = [];
@@ -4229,6 +4236,7 @@ export default {
           cellDatas
         );
         cellDatas = cellDatas.concat(dataVerificationCells);
+        var datasourceConfig = this.getDatasourceConfig(luckysheetfile.index)
         // if (cellDatas && cellDatas.length > 0) {
         //   var sheetCellFormats = this.cellFormats[luckysheetfile.index];
         //   if (sheetCellFormats) {
@@ -4262,6 +4270,7 @@ export default {
         configs.chartXaxisData = chartXaxisData;
         configs.chartCells = chartCells;
         configs.xxbtScreenShot = xxbtScreenShot;
+        configs.datasourceConfig = datasourceConfig
         var printSettings = this.sheetPrintSettings[luckysheetfile.index];
         if (printSettings) {
           configs.reportSheetPdfPrintSetting = printSettings;
@@ -4512,10 +4521,6 @@ export default {
       luckysheet.sendServerSocketMsg('deleteSheet', gridKey, null, { k: 'deleteSheet' });
     },
     frozenCancelAfter() {
-      if(this.isInit){
-        this.isInit = false;
-        return false;
-      }
       let configs = this.getSheetDatas();
       if (configs) {
         const reportTplId = this.$route.query.tplId;
@@ -6132,6 +6137,10 @@ export default {
          this.sheetLoopData.loopSettings = null;
          this.sheetLoop[sheetIndex].loopSettings = null;
          this.$forceUpdate();
+      },
+      //保存当前sheet页的模板
+      saveCurrentSheetTpl(){
+        this.saveTpl(true);
       }
   },
 };
