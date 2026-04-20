@@ -53,7 +53,7 @@ public interface IReportTplService extends IService<ReportTpl> {
 	*/ 
 	PageEntity tablePagingQuery(ReportTplDto model);
 	
-	List<ReportTplTreeDto> getChildren(ReportTpl model);
+	List<ReportTplTreeDto> getChildren(ReportTplDto model);
 
 	/**
 	*<p>Title: getDetail</p>

@@ -1049,6 +1049,7 @@ public class LuckysheetUtil {
 		int stc = wrapData.getIntValue("stc");
 		int edc = wrapData.getIntValue("edc");
 		int ls = wrapData.getIntValue("ls");;
+		JSONArray ignoreRows = wrapData.getJSONArray("ignoreRows");
 		String value = wrapData.getString("value");
 		short fs = wrapData.getShortValue("fs");
 		java.awt.Font font = new java.awt.Font("微软雅黑", 0, fs);
@@ -1057,7 +1058,15 @@ public class LuckysheetUtil {
 		double collen = LuckysheetUtil.calculateWidth(columnlen, stc, edc-stc+1);
 		double rows = Math.ceil(width/collen);
 		float poiHeight = (float) ((rec.height+ls) * rows)*(rows>1?1.88f:1f);
+		if(poiHeight > 546) {
+			poiHeight = 546;
+		}
 		for (int i = str; i <= edr; i++) {
+			if(ListUtil.isNotEmpty(ignoreRows)) {
+				if(ignoreRows.contains(i)) {
+					continue;
+				}
+			}
 			if(rowlen.containsKey(i+"")) {
 				float height = Float.parseFloat(rowlen.get(i+"")+"");
 				if(poiHeight > height) {
