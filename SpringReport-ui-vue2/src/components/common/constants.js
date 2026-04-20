@@ -245,6 +245,7 @@ commonConstants.pageCount = [5, 10, 15, 20, 30, 50, 100, 150, 200, 300, 500, 800
 
 // luckysheet预览工具栏
 commonConstants.luckysheetPreviewToolBarConfig = {
+  saveAll:false,
   save: false, // 保存
   preview: false,
   upload: false,

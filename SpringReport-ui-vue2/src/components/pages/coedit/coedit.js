@@ -55,6 +55,7 @@ export default {
                 showinfobar: false,//是否显示顶部信息栏
                 showsheetbar: true,//是否显示底部sheet按钮
                 showtoolbarConfig:{
+                    saveAll:false,//保存
                     save:false,//保存
                     preview:false,
                     redo:true,
