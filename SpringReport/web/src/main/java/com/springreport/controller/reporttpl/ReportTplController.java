@@ -115,7 +115,7 @@ public class ReportTplController extends BaseController {
 	@RequestMapping(value = "/getChildren",method = RequestMethod.POST)
 	@MethodLog(module="ReportTpl",remark="获取页面表格数据",operateType=Constants.OPERATE_TYPE_SEARCH)
 	@RequiresPermissions(value = {"reportTpl_search","excelTemplate_search"},logical = Logical.OR)
-	public Response getChildren(@RequestBody ReportTpl model)
+	public Response getChildren(@RequestBody ReportTplDto model)
 	{
 		List<ReportTplTreeDto> result = iReportTplService.getChildren(model);
 		return Response.success(result);
