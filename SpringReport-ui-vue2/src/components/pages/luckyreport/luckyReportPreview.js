@@ -803,6 +803,7 @@ export default {
             }else{
               luckysheet.destroyPager();
             }
+            luckysheet.collapseAllRows()
           }
 
           this.loading = false
@@ -2840,6 +2841,8 @@ export default {
       if(this.tplType == 2){
         this.processCalchainBasicData();
       }
+      luckysheet.collapseAllRows()
+      luckysheet.forceExecFunc();
     },
     rowInsertAfter(coordinate, count, direction, type, sheetIndex) {
       this.insertRowProcessBasicData(coordinate, count, direction, type, sheetIndex);
