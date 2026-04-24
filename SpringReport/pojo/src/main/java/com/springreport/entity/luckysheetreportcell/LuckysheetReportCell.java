@@ -374,4 +374,8 @@ public class LuckysheetReportCell extends PageEntity {
     /** force_pagebreak - 行后分页/循环块分页 */
     @TableField("force_pagebreak")
     private Boolean forcePagebreak;
+    
+    /** enable_collapse - 开启行分组折叠 */
+    @TableField("enable_collapse")
+    private Boolean enableCollapse;
 }
