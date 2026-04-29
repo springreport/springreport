@@ -445,11 +445,9 @@ public class LuckySheetCellUtil {
 				}else if(qrCodeCells != null && StringUtil.isNotEmpty(ff) && ff.contains("qrCode")) {
 					qrCodeCells.add(cellData);
 				}
-				
 			}
-			
 		}
-		this.setCellBorder(cellBorders);
+//		this.setCellBorder(cellBorders);
 		if(YesNoEnum.YES.getCode().intValue() == isCoedit.intValue())
 		{
 			if(!StringUtil.isEmptyMap(merge))
@@ -660,98 +658,210 @@ public class LuckySheetCellUtil {
 	
 	private CellStyle getCellStyle(Map<String, Object> cellData,Map<String, XSSFCellStyle> cellStyleMap,boolean isLock,String borderType,Map<String, Object> wrapText) {
 		Map<String, Object> cellConfig = (Map<String, Object>) cellData.get(LuckySheetPropsEnum.CELLCONFIG.getCode());
-		Map<String, Object> styleMap = getCellStyleMap(cellConfig,isLock);
-		styleMap.put("borderType", borderType);
-		String md5Key = Md5Util.generateMd5(JSONObject.toJSONString(styleMap));
+//		Map<String, Object> styleMap = getCellStyleMap(cellConfig,isLock);
+//		styleMap.put("borderType", borderType);
+		Object v = null;
+		Object m = null;
+		Object f = null;
+		if(cellConfig.containsKey("v")) {
+			v = cellConfig.get("v");
+		}
+		if(cellConfig.containsKey("m")) {
+			m = cellConfig.get("m");
+		}
+		if(cellConfig.containsKey("f")) {
+			f = cellConfig.get("f");
+		}
+		cellConfig.remove("v");
+		cellConfig.remove("m");
+		cellConfig.remove("f");
+		cellConfig.put("borderType", borderType);
+		String md5Key = Md5Util.generateMd5(JSONObject.toJSONString(cellConfig));
 		XSSFCellStyle cellStyle = cellStyleMap.get(md5Key);
 		int r = (int) cellData.get("r");
 		int c = (int) cellData.get("c");
-		String tb = String.valueOf(styleMap.get("tb"));
-		if("2".equals(tb)) {
-			if(!wrapText.containsKey(r+"")) {
-				wrapText.put(r+"_"+c, 0);
-			}
-			if(styleMap.containsKey("ls")) {
-				wrapText.put(r+"_"+c+"_ls", (Integer) styleMap.get("ls"));
-			}else {
-				wrapText.put(r+"_"+c+"_ls", 0);
+		String tb = "1";
+		if(cellConfig.containsKey("tb")) {
+			tb = String.valueOf(cellConfig.get("tb"));
+			if("2".equals(tb)) {
+				if(!wrapText.containsKey(r+"")) {
+					wrapText.put(r+"_"+c, 0);
+				}
+				if(cellConfig.containsKey("ls")) {
+					wrapText.put(r+"_"+c+"_ls", Integer.parseInt(String.valueOf(cellConfig.get("ls"))));
+				}else {
+					wrapText.put(r+"_"+c+"_ls", 0);
+				}
 			}
 		}
 		if(cellStyle != null)
 		{
+			cellConfig.put("v", v);
+			cellConfig.put("m", m);
+			if(f != null) {
+				cellConfig.put("f", f);
+			}
 			return cellStyle;
 		}else {
 			cellStyle = (XSSFCellStyle) wb.createCellStyle();
-			String fa = String.valueOf(styleMap.get("dataFormat")==null?"":styleMap.get("dataFormat"));
-			if("##0.00".equals(fa)) {
-				fa = "#,##0.00";
-			}else if("#0.00%".equals(fa)) {
-				fa = "0.00%";
+			Map<String, Object> ct = (Map<String, Object>) cellConfig.get(LuckySheetPropsEnum.CELLTYPE.getCode());
+			String fa = "General";
+			if(ct != null) {
+				fa = String.valueOf(ct.get(LuckySheetPropsEnum.CELLFORMAT.getCode()));
+				if("##0.00".equals(fa)) {
+					fa = "#,##0.00";
+				}else if("#0.00%".equals(fa)) {
+					fa = "0.00%";
+				}
 			}
 			DataFormat format = wb.createDataFormat();
 			cellStyle.setDataFormat(StringUtil.isNullOrEmpty(fa)?format.getFormat("General"):format.getFormat(fa));
 			XSSFFont font = (XSSFFont) wb.createFont();
 			//字体设置
-			String fontName = String.valueOf(styleMap.get("fontName"));
-			font.setFontName(fontName);
+			if(cellConfig.containsKey(LuckySheetPropsEnum.FONTFAMILY.getCode())) {
+				String fontName = String.valueOf(cellConfig.get(LuckySheetPropsEnum.FONTFAMILY.getCode()));
+				font.setFontName(fontName);
+			}
 			//是否加粗
-			boolean bold = (boolean) styleMap.get("bold");
-			font.setBold(bold);
+			if(cellConfig.containsKey(LuckySheetPropsEnum.BOLD.getCode())) {
+				String bold = String.valueOf(cellConfig.get((LuckySheetPropsEnum.BOLD.getCode())));
+				if("1".equals(bold)) {
+					font.setBold(true);
+				}else {
+					font.setBold(false);
+				}
+			}else {
+				font.setBold(false);
+			}
 			//是否斜体
-			boolean italic = (boolean) styleMap.get("italic");
-			font.setItalic(italic);
+			if(cellConfig.containsKey(LuckySheetPropsEnum.ITALIC.getCode())) {
+				String italic = String.valueOf(cellConfig.get((LuckySheetPropsEnum.ITALIC.getCode())));
+				if("1".equals(italic))
+				{
+					font.setItalic(true);
+				}else {
+					font.setItalic(false);
+				}
+			}else {
+				font.setItalic(false);
+			}
 			//删除线
-			boolean strikeOut = (boolean) styleMap.get("strikeOut");
-			font.setStrikeout(strikeOut);
+			if(cellConfig.containsKey(LuckySheetPropsEnum.CANCELLINE.getCode())) {
+				String cancleLine = String.valueOf(cellConfig.get((LuckySheetPropsEnum.CANCELLINE.getCode())));
+				if("1".equals(cancleLine)) {
+					font.setStrikeout(true);
+				}else {
+					font.setStrikeout(false);
+				}
+			}
+			else {
+				font.setStrikeout(false);
+			}
 			//下划线
-			byte underLine = (byte) styleMap.get("underLine");
-			font.setUnderline(underLine);
+			if(cellConfig.containsKey(LuckySheetPropsEnum.UNDERLINE.getCode())) {
+				String underLine = String.valueOf(cellConfig.get((LuckySheetPropsEnum.UNDERLINE.getCode())));
+				if("1".equals(underLine)) {
+					font.setUnderline(Font.U_SINGLE);
+				}else {
+					font.setUnderline(Font.U_NONE);
+				}
+			}else {
+				font.setUnderline(Font.U_NONE);
+			}
 			//字体颜色
-			int[] fontColor =  (int[]) styleMap.get("fontColor");
-			if(fontColor != null)
-			{
-				font.setColor(new XSSFColor(new Color(fontColor[0], fontColor[1], fontColor[2]),new DefaultIndexedColorMap()));
+			if(cellConfig.containsKey(LuckySheetPropsEnum.FONTCOLOR.getCode())) {
+				String fontColor = String.valueOf(cellConfig.get(LuckySheetPropsEnum.FONTCOLOR.getCode()));
+				int[] rgb = null;
+				if(fontColor.contains("rgb")) {
+					rgb = StringUtil.rgbStringToRgb(fontColor);
+				}else {
+					if(!"null".equals(fontColor))
+					{
+						rgb = StringUtil.hexToRgb(fontColor);
+					}
+				}
+				if(rgb != null) {
+					font.setColor(new XSSFColor(new Color(rgb[0], rgb[1], rgb[2]),new DefaultIndexedColorMap()));
+				}
 			}
 			//背景颜色
-			if(styleMap.get("background") != null)
-			{
-				int[] backgroundXSSFColor = (int[]) styleMap.get("background");
-				cellStyle.setFillForegroundColor(new XSSFColor(new Color(backgroundXSSFColor[0], backgroundXSSFColor[1], backgroundXSSFColor[2]),new DefaultIndexedColorMap()));
-				cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+			if(cellConfig.containsKey(LuckySheetPropsEnum.BACKGROUND.getCode())) {
+				Object object = cellConfig.get(LuckySheetPropsEnum.BACKGROUND.getCode());
+				if(object != null) {
+					String background = String.valueOf(object);
+					try {
+						int[] rgb = StringUtil.hexToRgb(background);
+						cellStyle.setFillForegroundColor(new XSSFColor(new Color(rgb[0], rgb[1], rgb[2]),new DefaultIndexedColorMap()));
+						cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+					} catch (Exception e) {
+					}
+				}
 			}
+			
 			//对齐方式
-			String horizontal = String.valueOf(styleMap.get("horizontal"));
-			switch (horizontal) {
-			case "0":
-				cellStyle.setAlignment(HorizontalAlignment.CENTER);
-				break;
-			case "1":
+			if(cellConfig.containsKey(LuckySheetPropsEnum.HORIZONTALTYPE.getCode())) {
+				String horizontal = "1";
+				horizontal = String.valueOf(cellConfig.get(LuckySheetPropsEnum.HORIZONTALTYPE.getCode()));
+				switch (horizontal) {
+				case "0":
+					cellStyle.setAlignment(HorizontalAlignment.CENTER);
+					break;
+				case "1":
+					cellStyle.setAlignment(HorizontalAlignment.LEFT);
+					break;
+				case "2":
+					cellStyle.setAlignment(HorizontalAlignment.RIGHT);
+					break;
+				}
+			}else {
 				cellStyle.setAlignment(HorizontalAlignment.LEFT);
-				break;
-			case "2":
-				cellStyle.setAlignment(HorizontalAlignment.RIGHT);
-				break;
 			}
-			String vertical = String.valueOf(styleMap.get("vertical"));
-			switch (vertical) {
-			case "0":
+			if(cellConfig.containsKey(LuckySheetPropsEnum.VERTICALTYPE.getCode())) {
+				String vertical = "0";
+				vertical = String.valueOf(cellConfig.get(LuckySheetPropsEnum.VERTICALTYPE.getCode()));
+				switch (vertical) {
+				case "0":
+					cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+					break;
+				case "1":
+					cellStyle.setVerticalAlignment(VerticalAlignment.TOP);
+					break;
+				case "2":
+					cellStyle.setVerticalAlignment(VerticalAlignment.BOTTOM);
+					break;
+				}
+			}else {
 				cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-				break;
-			case "1":
-				cellStyle.setVerticalAlignment(VerticalAlignment.TOP);
-				break;
-			case "2":
-				cellStyle.setVerticalAlignment(VerticalAlignment.BOTTOM);
-				break;
 			}
-			if(styleMap.get("tr") != null)
-			{
-				short tr = (short) styleMap.get("tr");
-				cellStyle.setRotation(tr);
+			//字体倾斜
+			if(cellConfig.containsKey("tr")) {
+				String tr = String.valueOf(cellConfig.get("tr"));
+				switch (tr) {
+				case "1":
+					cellStyle.setRotation(new Short("45"));
+					break;
+				case "2":
+					cellStyle.setRotation(new Short("135"));
+					break;
+				case "3":
+					cellStyle.setRotation(new Short("225"));
+					break;
+				case "4":
+					cellStyle.setRotation(new Short("90"));
+					break;
+				case "5":
+					cellStyle.setRotation(new Short("180"));
+					break;
+				default:
+					cellStyle.setRotation(new Short("0"));
+					break;
+				}
 			}
 			//字体大小
-			String fontSize = String.valueOf(styleMap.get("fontSize"));
-			font.setFontHeightInPoints(Short.parseShort(fontSize));
+			if(cellConfig.containsKey(LuckySheetPropsEnum.FONTSIZE.getCode())) {
+				String fontSize = String.valueOf(cellConfig.get(LuckySheetPropsEnum.FONTSIZE.getCode()));
+				font.setFontHeightInPoints(Short.parseShort(fontSize));
+			}
 			if("2".equals(tb)) {
 				cellStyle.setWrapText(true);
 			}else if("1".equals(tb)) {
@@ -759,7 +869,6 @@ public class LuckySheetCellUtil {
 			}else if("0".equals(tb)) {
 				cellStyle.setWrapText(true);
 			}
-			
 			cellStyle.setFont(font);
 			cellStyle.setLocked(isLock);
 			if(BorderTypeEnum.BORDERALL.getCode().equals(borderType))
@@ -787,6 +896,12 @@ public class LuckySheetCellUtil {
 				}
 			}
 			cellStyleMap.put(md5Key, cellStyle);
+			cellConfig.remove("borderType");
+			cellConfig.put("v", v);
+			cellConfig.put("m", m);
+			if(f != null) {
+				cellConfig.put("f", f);
+			}
 			return cellStyle;
 		}
 	}
