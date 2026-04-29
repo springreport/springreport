@@ -1622,7 +1622,7 @@
                     <p
                       class="column-tag"
                       :title="o.enableCollapse"
-                      style="min-width: 220px; max-width: 220px"
+                      style="min-width: 220px; max-width: 220px; margin: 0"
                     >
                       循环块折叠：{{ o.enableCollapse }}
                     </p>
