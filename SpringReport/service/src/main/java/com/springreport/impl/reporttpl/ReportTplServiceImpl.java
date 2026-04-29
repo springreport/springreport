@@ -15582,7 +15582,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			}
 			int edr = str + rowspan - 1;
 			collapseData = extendParamData.getJSONObject("collapseData");
-			if(edr-str>1 && !collapseData.containsKey(str+"")) {
+			if(edr-str>0 && !collapseData.containsKey(str+"")) {
 				JSONObject collapse = new JSONObject();
 				collapse.put("row", str);
 				collapse.put("collapsed", false);
