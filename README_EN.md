@@ -77,7 +77,7 @@ The project started in 2020 (the first version CY-Report), was reconstructed bas
 ### 2. Commercial Paid Content (Including Tax)
 | Serial Number | Paid Content                                   | Price (CNY)     | Remarks                                                                 |
 |------|--------------------------------------------|----------|----------------------------------------------------------------------|
-| 1    | Remove watermark + Commercial authorization                        | ¥10499   | Only remove the watermark and provide commercial license, do not provide the source code of Luckysheet.|
+| 1    | Remove watermark + Commercial authorization                        | ¥10999   | Only remove the watermark and provide commercial license, do not provide the source code of Luckysheet.|
 | 2    | luckysheet optimized source code + Remove watermark + Commercial authorization    | ¥14999   | The Luckysheet source code is available. If you don't need to do secondary development on Luckysheet, purchasing the source code is unnecessary. Not having it does not affect usage at all.|
 | 3    | SpringBoot3.2.6 backend code                   | ¥6499    | Functions are consistent with the SpringBoot2 version                                         |
 | 4    | Multi-database support (Oracle/SqlServer/Dameng, etc.)    | ¥5499    | Refers to the underlying database for project deployment, not the report data source                                   |
