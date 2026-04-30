@@ -2038,6 +2038,8 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			luckysheetReportCell.setKeepEmptyCell(keepEmptyCell);
 			boolean forcePagebreak = extraCustomCellConfig.getBooleanValue("forcePagebreak");
 			luckysheetReportCell.setForcePagebreak(forcePagebreak);
+			boolean enableCollapse = extraCustomCellConfig.getBooleanValue("enableCollapse");
+			luckysheetReportCell.setEnableCollapse(enableCollapse);
 		}
 		JSONObject hyperlink = hyperlinks.get(mapKey);
 		if(hyperlink != null)
@@ -2185,6 +2187,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		luckysheetReportCell.setVloopEmptyCount(object.get("vloopEmptyCount")==null?1:Integer.parseInt(String.valueOf(object.get("vloopEmptyCount"))));
 		luckysheetReportCell.setSubBlockRange(object.get("subBlockRange")==null?"":String.valueOf(object.get("subBlockRange")));
 		luckysheetReportCell.setForcePagebreak(object.get("forcePagebreak")==null?false:Boolean.valueOf(String.valueOf(object.get("forcePagebreak"))));
+		luckysheetReportCell.setEnableCollapse(object.get("enableCollapse")==null?false:Boolean.valueOf(String.valueOf(object.get("enableCollapse"))));
 		return luckysheetReportCell;
 	}
 	
@@ -2458,6 +2461,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 							blockMap.put("vloopEmptyCount",luckysheetReportCell.getVloopEmptyCount()+"");
 							blockMap.put("subBlockRange",luckysheetReportCell.getSubBlockRange());
 							blockMap.put("forcePagebreak", luckysheetReportCell.getForcePagebreak());
+							blockMap.put("enableCollapse", luckysheetReportCell.getEnableCollapse());
 							blockData.add(blockMap);
 							QueryWrapper<LuckysheetReportBlockCell> blockCellQueryWrapper = new QueryWrapper<LuckysheetReportBlockCell>();
 							blockCellQueryWrapper.eq("report_cell_id", luckysheetReportCell.getId());
@@ -2570,6 +2574,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 							extraCustomCellConfig.put("dumpAttr", luckysheetReportCell.getDumpAttr());
 							extraCustomCellConfig.put("keepEmptyCell", luckysheetReportCell.getKeepEmptyCell());
 							extraCustomCellConfig.put("forcePagebreak", luckysheetReportCell.getForcePagebreak());
+							extraCustomCellConfig.put("enableCollapse", luckysheetReportCell.getEnableCollapse());
 							if(luckysheetReportCell.getIsDrill())
 							{
 								extraCustomCellConfig.put(LuckySheetPropsEnum.DRILLID.getCode(), luckysheetReportCell.getDrillId());
@@ -3310,6 +3315,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 							bindData.setCellFillType(fixedCells.get(i).getCellFillType());
 							bindData.setPriortyMoveDirection(fixedCells.get(i).getPriortyMoveDirection());
 							bindData.setForcePagebreak(fixedCells.get(i).getForcePagebreak());
+							bindData.setEnableCollapse(fixedCells.get(i).getEnableCollapse());
 							if(StringUtil.isNotEmpty(fixedCells.get(i).getFormsAttrs())) {
 								JSONObject formsAttrs = JSON.parseObject(fixedCells.get(i).getFormsAttrs());
 								boolean isOperationCol =  formsAttrs.getBooleanValue("isOperationCol");
@@ -3528,6 +3534,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 							bindData.setCellFillType(fixedCells.get(i).getCellFillType());
 							bindData.setPriortyMoveDirection(fixedCells.get(i).getPriortyMoveDirection());
 							bindData.setForcePagebreak(fixedCells.get(i).getForcePagebreak());
+							bindData.setEnableCollapse(fixedCells.get(i).getEnableCollapse());
 							try {
 								bindData.setCellData(objectMapper.readValue(fixedCells.get(i).getCellData(), Map.class));
 							} catch (Exception e) {
@@ -4657,6 +4664,8 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		JSONObject extendParamData = new JSONObject();//扩展参数数据
 		JSONObject forcePageBreak = new JSONObject();//行后分页
 		extendParamData.put("forcePageBreak", forcePageBreak);
+		JSONObject collapseData = new JSONObject();//行折叠信息
+		extendParamData.put("collapseData", collapseData);
 //		Map<String, Object> replacedData = new HashMap<>();//被缓存替换的数据 
 //		Map<String, JSONObject> cacheDatas = new HashMap<>();//缓存数据
 		for (int i = 0; i < allCells.size(); i++) {
@@ -4773,6 +4782,9 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		newConfig.put(LuckySheetPropsEnum.ROWHIDDEN.getCode(), rowhidden);
 		newConfig.put(LuckySheetPropsEnum.COLHIDDEN.getCode(), colhidden);
 		newConfig.put("authority", authority);
+		if(extendParamData.containsKey("collapseData")) {
+			newConfig.put("collapseData", extendParamData.get("collapseData"));
+		}
 		for(String key:configColumnLen.keySet()) {
 			if(!columnlen.containsKey(key)) {
 				columnlen.put(key, configColumnLen.get(key));
@@ -4934,6 +4946,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				int maxCol = 0;
 				int startCol = 0;
 				int endCol = 0;
+				Integer collaspeStr = null;//循环块折叠起始行
 				Map<String, Integer> rowAndCol = null;
 				for (int m = 0; m < luckySheetBindData.getDatas().size(); m++) {
 					int z = 1;
@@ -4968,6 +4981,9 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 									fixedY.put(luckysheetReportBlockCells.get(t).getCoordsx()+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+(luckysheetReportBlockCells.get(t).getCoordsy()+i), rowAndCol.get("maxY"));
 								}
 //								fixedY.put(luckysheetReportBlockCells.get(t).getCoordsx()+LuckySheetPropsEnum.COORDINATECONNECTOR.getCode()+luckysheetReportBlockCells.get(t).getCoordsy(), rowAndCol.get("maxY"));
+								if(collaspeStr==null) {
+									collaspeStr = maxRow;
+								}
 							}else {
 								if(loopCount > 1) {
 									if(z == 1) {
@@ -5802,6 +5818,8 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 						maxCoordinate.put("y-"+k, maxRow+vloopEmptyCount+1);
 					}
 					this.processForcePageBreak(extendParamData, maxRow+vloopEmptyCount, luckySheetBindData);
+					this.processCollapse(luckySheetBindData, extendParamData, collaspeStr,maxRow);
+					collaspeStr = maxRow+vloopEmptyCount+1;
 				}
 			}
 		}
@@ -9725,7 +9743,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		if(j == bindDatas.size() - 1) {
     		this.processForcePageBreak(extendParamData, rowAndCol.get("maxX"), luckySheetBindData);
     	}
-		
+		this.processCollapse(luckySheetBindData, extendParamData, cellData);
 		if(luckySheetBindData.getIsRelied().intValue() == 1)
 		{
 			luckySheetBindData.setRecalculateCoords(YesNoEnum.NO.getCode().intValue());
@@ -15540,6 +15558,61 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			range.put("fs", fs==null?10:fs);//内容字体大小
 			range.put("ls", ls);//内容间距
 			dynamicRange.put(key, range);
+		}
+	}
+	
+	private void processCollapse(LuckySheetBindData luckySheetBindData,JSONObject extendParamData,Map<String, Object> cellData) {
+		if((luckySheetBindData.getAggregateType().equals(AggregateTypeEnum.GROUP.getCode())||luckySheetBindData.getAggregateType().equals(AggregateTypeEnum.GROUPSUMMARY.getCode()))
+				&& !luckySheetBindData.getIsGroupMerge() && luckySheetBindData.getEnableCollapse()) {
+			JSONObject collapseData = null;
+			if(!extendParamData.containsKey("collapseData")) {
+				collapseData = new JSONObject();
+				extendParamData.put("collapseData", collapseData);
+			}
+			int str = (int) cellData.get("r");
+			int rowspan = 1;
+			if(cellData.containsKey("v")) {
+				Map v = (Map) cellData.get("v");
+				if(v.containsKey("mc")) {
+					Map mc = (Map) v.get("mc");
+					if(mc.containsKey("rs")) {
+						rowspan = (int) mc.get("rs");
+					}
+				}
+			}
+			int edr = str + rowspan - 1;
+			collapseData = extendParamData.getJSONObject("collapseData");
+			if(edr-str>0 && !collapseData.containsKey(str+"")) {
+				JSONObject collapse = new JSONObject();
+				collapse.put("row", str);
+				collapse.put("collapsed", false);
+				JSONArray rowRange = new JSONArray();
+				rowRange.add(str);
+				rowRange.add(edr);
+				collapse.put("rowRange", rowRange);
+				collapseData.put(str+"", collapse);
+			}
+		}
+	}
+	
+	private void processCollapse(LuckySheetBindData luckySheetBindData,JSONObject extendParamData,int str,int edr) {
+		if(luckySheetBindData.getEnableCollapse()) {
+			JSONObject collapseData = null;
+			if(!extendParamData.containsKey("collapseData")) {
+				collapseData = new JSONObject();
+				extendParamData.put("collapseData", collapseData);
+			}
+			collapseData = extendParamData.getJSONObject("collapseData");
+			if(edr-str>1 && !collapseData.containsKey(str+"")) {
+				JSONObject collapse = new JSONObject();
+				collapse.put("row", str);
+				collapse.put("collapsed", false);
+				JSONArray rowRange = new JSONArray();
+				rowRange.add(str);
+				rowRange.add(edr);
+				collapse.put("rowRange", rowRange);
+				collapseData.put(str+"", collapse);
+			}
 		}
 	}
 	

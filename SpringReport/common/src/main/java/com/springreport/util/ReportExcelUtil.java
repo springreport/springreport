@@ -142,6 +142,7 @@ public class ReportExcelUtil {
         } finally {
             try {
                 outputStream.close();
+                wb.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -382,6 +383,7 @@ public class ReportExcelUtil {
             } finally {
                 try {
                     outputStream.close();
+                    wb.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -617,6 +619,7 @@ public class ReportExcelUtil {
             } finally {
                 try {
                     outputStream.close();
+                    wb.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

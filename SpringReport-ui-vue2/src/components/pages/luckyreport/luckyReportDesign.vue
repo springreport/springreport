@@ -419,6 +419,21 @@
                     @change="changeIsGroupMerge"
                   />
                 </el-form-item>
+                <el-form-item
+                  v-show="
+                    (cellForm.aggregateType == 'group' ||
+                      cellForm.aggregateType == 'groupSummary') && !cellForm.isGroupMerge
+                  "
+                  label="开启分组折叠"
+                  size="small"
+                  :disabled="attrDisabled"
+                  class="df-form-item"
+                >
+                  <el-switch
+                    v-model="cellForm.enableCollapse"
+                    @change="changeCellAttr('enableCollapse')"
+                  />
+                </el-form-item>
                 <el-form-item label="数据来源">
                   <el-select
                     v-if="cellForm.cellExtend != 4"
@@ -1770,6 +1785,13 @@
                       style="min-width: 220px; max-width: 220px"
                     >
                       循环块分页：{{ o.forcePagebreak }}
+                    </p>
+                    <p
+                      class="column-tag"
+                      :title="o.enableCollapse"
+                      style="min-width: 220px; max-width: 220px"
+                    >
+                      循环块折叠：{{ o.enableCollapse }}
                     </p>
                   </el-collapse-item>
                 </el-collapse>
@@ -3391,6 +3413,18 @@
         >
         <el-switch
                     v-model="blockForm.forcePagebreak"
+                    active-text="是"
+                    inactive-text="否"
+                  />
+        </el-form-item>
+        <el-form-item
+          key="enableCollapse"
+          label="循环块折叠"
+          prop="enableCollapse"
+          :rules="filter_rules('循环块折叠', { required: false })"
+        >
+        <el-switch
+                    v-model="blockForm.enableCollapse"
                     active-text="是"
                     inactive-text="否"
                   />

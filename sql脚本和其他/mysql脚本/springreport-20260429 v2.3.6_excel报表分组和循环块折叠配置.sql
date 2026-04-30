@@ -1,0 +1,1 @@
+ALTER TABLE luckysheet_report_cell ADD COLUMN enable_collapse bit(1) DEFAULT b'0' COMMENT '开启行分组折叠'; 

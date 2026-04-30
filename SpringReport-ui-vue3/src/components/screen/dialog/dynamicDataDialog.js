@@ -113,7 +113,7 @@ export default {
       let tplId = this.$route.query.tplId; //tplId
       let obj = {
         url: this.apis.reportDesign.getDataSetsApi,
-        params: { tplId: tplId },
+        params: { tplId: tplId,commonType:5 },
         removeEmpty: false,
       };
       var that = this;
@@ -211,7 +211,9 @@ export default {
             tplSql: tplSql,
             datasourceId: this.sqlForm.datasourceId,
             datasetName: this.sqlForm.datasetName,
-            mongoTable:this.sqlForm.mongoTable,mongoOrder:orderSql,mongoSearchType:this.sqlForm.mongoSearchType
+            mongoTable:this.sqlForm.mongoTable,mongoOrder:orderSql,mongoSearchType:this.sqlForm.mongoSearchType,
+            isCommon:2,
+            commonType:5
           },
           removeEmpty: false,
         };

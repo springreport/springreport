@@ -294,6 +294,7 @@ export default {
         vloopEmptyCount:'',//纵向循环间隔空行数
         subBlockRange:"",//子循环块范围
         forcePagebreak:false,//循环块分页
+        enableCollapse:false,
       },
       cellConditionVisiable: false, //单元格过滤条件对话框
       cellConditionForm: {
@@ -383,6 +384,7 @@ export default {
         dumpAttr:"",
         isDump:false,
         forcePagebreak:false,
+        enableCollapse:false,
         formsAttrs:{
           isOperationCol:false,//是否操作列
           valueType: '1', // 值类型 1文本 2数值 3日期 4下拉单选
@@ -1101,6 +1103,7 @@ export default {
         this.cellForm.isDump = cellFormData.isDump
         this.cellForm.keepEmptyCell = cellFormData.keepEmptyCell
         this.cellForm.forcePagebreak = cellFormData.forcePagebreak
+        this.cellForm.enableCollapse = cellFormData.enableCollapse
         if (cellFormData.cellFillType) {
           this.cellForm.cellFillType = cellFormData.cellFillType;
         } else {
@@ -1170,6 +1173,7 @@ export default {
         this.cellForm.isDump = false
         this.cellForm.keepEmptyCell = false
         this.cellForm.forcePagebreak = false
+        this.cellForm.enableCollapse = false
         // this.getDrillReport();
       }
       if (this.cellForm.datasourceId) {
@@ -2402,6 +2406,7 @@ export default {
                   vloopEmptyCount: blockInfos.vloopEmptyCount,
                   subBlockRange:blockInfos.subBlockRange,
                   forcePagebreak:blockInfos.forcePagebreak,
+                  enableCollapse:blockInfos.enableCollapse,
                 };
                 reportTplBlockCells.push(reportTplBlockCell);
                 for (let i = 0; i < blockCells.length; i++) {
@@ -2992,6 +2997,7 @@ export default {
             vloopEmptyCount: this.blockForm.vloopEmptyCount,
             subBlockRange: this.blockForm.subBlockRange,
             forcePagebreak: this.blockForm.forcePagebreak,
+            enableCollapse: this.blockForm.enableCollapse,
           };
           var sheetIndex = luckysheet.getSheet().index;
           var k = '';
@@ -3030,6 +3036,7 @@ export default {
       this.blockForm.vloopEmptyCount = obj.vloopEmptyCount
       this.blockForm.subBlockRange = obj.subBlockRange
       this.blockForm.forcePagebreak = obj.forcePagebreak
+      this.blockForm.enableCollapse = obj.enableCollapse
       this.blockVisiable = true;
     },
     //删除循环块
@@ -3071,6 +3078,7 @@ export default {
       result.vloopEmptyCount = vloopEmptyCount
       result.subBlockRange = blockData.subBlockRange;
       result.forcePagebreak = blockData.forcePagebreak;
+      result.enableCollapse = blockData.enableCollapse;
       if(blockData.subBlockRange){
         var subStartCell = blockData.subBlockRange.split(":")[0];
         var subEndCell = blockData.subBlockRange.split(":")[1];

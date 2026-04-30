@@ -650,4 +650,7 @@ public class LuckySheetBindData {
 	 */  
 	private JSONArray srfParse;
 	
+	/** enable_collapse - 开启行分组折叠 */
+    private Boolean enableCollapse = false;
+	
 }
