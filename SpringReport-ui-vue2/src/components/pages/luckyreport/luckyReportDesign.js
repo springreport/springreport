@@ -352,6 +352,7 @@ export default {
         isDump:false,
         forcePagebreak:false,
         enableCollapse:false,
+        isOperationCol:false,//打印/导出是否隐藏列
         formsAttrs:{
           isOperationCol:false,//是否操作列
           valueType: '1', // 值类型 1文本 2数值 3日期 4下拉单选
@@ -970,6 +971,7 @@ export default {
         this.cellForm.keepEmptyCell = cellFormData.keepEmptyCell
         this.cellForm.forcePagebreak = cellFormData.forcePagebreak
         this.cellForm.enableCollapse = cellFormData.enableCollapse
+        this.cellForm.isOperationCol = cellFormData.isOperationCol
         if(cellFormData.cellFillType){
           this.cellForm.cellFillType = cellFormData.cellFillType
         }else{
@@ -1040,6 +1042,7 @@ export default {
         this.cellForm.keepEmptyCell = false
         this.cellForm.forcePagebreak = false
         this.cellForm.enableCollapse = false
+        this.cellForm.isOperationCol = false
         // this.getDrillReport();
       }
       if (this.cellForm.datasourceId) {

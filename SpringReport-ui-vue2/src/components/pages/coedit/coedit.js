@@ -114,6 +114,7 @@ export default {
                     editVChart:this.editVChart,
                     activeVChart:this.activeVChart,
                     highlightRowCol:this.highlightRowCol,
+                    sheetDeleteBefore:this.sheetDeleteBefore,
                 }
             },
             users:[],//当前查看文档的用户
@@ -1291,6 +1292,20 @@ export default {
           this.commonUtil.showMessage({ message: '已开启选中单元格行列高亮模式。', type: this.commonConstants.messageType.success })
         }else{
           this.commonUtil.showMessage({ message: '已关闭选中单元格行列高亮模式。', type: this.commonConstants.messageType.success })
+        }
+      },
+      sheetDeleteBefore(){
+        let shareMode = luckysheet.getServerAttr("shareMode");
+        let shareUser = luckysheet.getServerAttr("shareUser");
+        if(shareMode && !shareUser)
+        {
+          this.commonUtil.showMessage({message:this.commonUtil.getMessageFromList("warning.sharemode.forbiddendel",null),type: this.commonConstants.messageType.warning})
+          return false;
+        }
+        if(!this.isCreator)
+        {
+          this.commonUtil.showMessage({ message: '您没有权限进行此操作，只有创建者【'+this.creatorName+'】才有权限进行操作。', type: this.commonConstants.messageType.error })
+          return false;
         }
       }
     }
