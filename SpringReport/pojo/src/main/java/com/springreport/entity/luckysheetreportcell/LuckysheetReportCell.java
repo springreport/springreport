@@ -378,4 +378,9 @@ public class LuckysheetReportCell extends PageEntity {
     /** enable_collapse - 开启行分组折叠 */
     @TableField("enable_collapse")
     private Boolean enableCollapse;
+    
+    /** is_operation_col - 打印是否隐藏列 */
+    @TableField("is_operation_col")
+    private Boolean isOperationCol;
+    
 }

@@ -158,6 +158,7 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 				bindData.setKeepEmptyCell(variableCells.get(i).getKeepEmptyCell());
 				bindData.setForcePagebreak(variableCells.get(i).getForcePagebreak());
 				bindData.setEnableCollapse(variableCells.get(i).getEnableCollapse());
+				bindData.setOperationCol(variableCells.get(i).getIsOperationCol());
 				if(StringUtil.isNotEmpty(variableCells.get(i).getFormsAttrs())) {
 					//填报设置如果设置了下拉单选数据字典，则以填报设置为准
 					JSONObject formsAttrs = JSON.parseObject(variableCells.get(i).getFormsAttrs());
@@ -189,8 +190,8 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 								}
 							}
 						}
-						boolean isOperationCol =  formsAttrs.getBooleanValue("isOperationCol");
-						bindData.setOperationCol(isOperationCol);
+//						boolean isOperationCol =  formsAttrs.getBooleanValue("isOperationCol");
+//						bindData.setOperationCol(isOperationCol);
 					}
 				}
 				bindData.setAlternateFormat(variableCells.get(i).getAlternateFormat());

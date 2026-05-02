@@ -2040,6 +2040,8 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			luckysheetReportCell.setForcePagebreak(forcePagebreak);
 			boolean enableCollapse = extraCustomCellConfig.getBooleanValue("enableCollapse");
 			luckysheetReportCell.setEnableCollapse(enableCollapse);
+			boolean isOperationCol = extraCustomCellConfig.getBooleanValue("isOperationCol");
+			luckysheetReportCell.setIsOperationCol(isOperationCol);
 		}
 		JSONObject hyperlink = hyperlinks.get(mapKey);
 		if(hyperlink != null)
@@ -2575,6 +2577,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 							extraCustomCellConfig.put("keepEmptyCell", luckysheetReportCell.getKeepEmptyCell());
 							extraCustomCellConfig.put("forcePagebreak", luckysheetReportCell.getForcePagebreak());
 							extraCustomCellConfig.put("enableCollapse", luckysheetReportCell.getEnableCollapse());
+							extraCustomCellConfig.put("isOperationCol", luckysheetReportCell.getIsOperationCol());
 							if(luckysheetReportCell.getIsDrill())
 							{
 								extraCustomCellConfig.put(LuckySheetPropsEnum.DRILLID.getCode(), luckysheetReportCell.getDrillId());
@@ -3316,11 +3319,12 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 							bindData.setPriortyMoveDirection(fixedCells.get(i).getPriortyMoveDirection());
 							bindData.setForcePagebreak(fixedCells.get(i).getForcePagebreak());
 							bindData.setEnableCollapse(fixedCells.get(i).getEnableCollapse());
-							if(StringUtil.isNotEmpty(fixedCells.get(i).getFormsAttrs())) {
-								JSONObject formsAttrs = JSON.parseObject(fixedCells.get(i).getFormsAttrs());
-								boolean isOperationCol =  formsAttrs.getBooleanValue("isOperationCol");
-								bindData.setOperationCol(isOperationCol);
-							}
+							bindData.setOperationCol(fixedCells.get(i).getIsOperationCol());
+//							if(StringUtil.isNotEmpty(fixedCells.get(i).getFormsAttrs())) {
+//								JSONObject formsAttrs = JSON.parseObject(fixedCells.get(i).getFormsAttrs());
+//								boolean isOperationCol =  formsAttrs.getBooleanValue("isOperationCol");
+//								bindData.setOperationCol(isOperationCol);
+//							}
 							if(YesNoEnum.YES.getCode().intValue() == fixedCells.get(i).getIsChartCell().intValue())
 							{
 								bindData.setChartId(fixedCells.get(i).getChartIds());
@@ -3535,6 +3539,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 							bindData.setPriortyMoveDirection(fixedCells.get(i).getPriortyMoveDirection());
 							bindData.setForcePagebreak(fixedCells.get(i).getForcePagebreak());
 							bindData.setEnableCollapse(fixedCells.get(i).getEnableCollapse());
+							bindData.setOperationCol(fixedCells.get(i).getIsOperationCol());
 							try {
 								bindData.setCellData(objectMapper.readValue(fixedCells.get(i).getCellData(), Map.class));
 							} catch (Exception e) {
@@ -16248,7 +16253,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 	}
 	
 	private void isOperationCol(LuckySheetBindData bindData,int c,boolean isExport,Map colhidden) {
-		if(isExport && bindData.getTplType() == 2 && bindData.isOperationCol()) {
+		if(isExport && bindData.isOperationCol()) {
 		   colhidden.put(c, 0);
 		}
 	}
