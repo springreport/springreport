@@ -1083,10 +1083,10 @@ public class LuckysheetUtil {
 		int c = img.getIntValue("c");
 		int rowSpan = img.getIntValue("rowSpan");
 		int colSpan = img.getIntValue("colSpan");
-		double top = LuckysheetUtil.calculateTop(rowlen, r,rowhidden);
-		double left = LuckysheetUtil.calculateLeft(columnlen, c,colhidden);
-		Object width = LuckysheetUtil.calculateWidth(columnlen, c, colSpan==0?1:colSpan);
-		Object height = LuckysheetUtil.calculateHeight(rowlen, r, rowSpan==0?1:rowSpan);
+		double top = LuckysheetUtil.calculateTop(rowlen, r,rowhidden)+2;
+		double left = LuckysheetUtil.calculateLeft(columnlen, c,colhidden)+2;
+		Object width = LuckysheetUtil.calculateWidth(columnlen, c, colSpan==0?1:colSpan)-6;
+		Object height = LuckysheetUtil.calculateHeight(rowlen, r, rowSpan==0?1:rowSpan)-6;
 		img.getJSONObject("imgInfo").getJSONObject("default").put("top", top);
 		img.getJSONObject("imgInfo").getJSONObject("default").put("left", left);
 		img.getJSONObject("imgInfo").getJSONObject("default").put("width", width);

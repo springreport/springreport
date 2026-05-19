@@ -5203,6 +5203,8 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 								}
 							}else {
 								datas = luckySheetBindData.getDatas().get(m);
+								groupdatas = new ArrayList<List<Map<String,Object>>>();
+								groupdatas.add(datas);
 							}
 							if(ListUtil.isNotEmpty(groupdatas)) {
 								for (int l = 0; l < groupdatas.size(); l++) {
@@ -15685,7 +15687,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		}
 	}
 	
-	private void processCollapse(LuckySheetBindData luckySheetBindData,JSONObject extendParamData,int str,int edr) {
+	private void processCollapse(LuckySheetBindData luckySheetBindData,JSONObject extendParamData,Integer str,Integer edr) {
 		if(luckySheetBindData.getEnableCollapse()) {
 			JSONObject collapseData = null;
 			if(!extendParamData.containsKey("collapseData")) {
@@ -15884,7 +15886,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 					if(imager == r && imagec == c) {
 						imageObj.put("r", newr);
 						imageObj.put("c", newc);
-						double top = LuckysheetUtil.calculateTop(rowlen, newr,null);
+						double top = LuckysheetUtil.calculateTop(rowlen, newr,null)+2;
 						double left = LuckysheetUtil.calculateLeft(columnlen, newc,null);
 						double originalLeft = imageObj.getJSONObject("default").getDoubleValue("left");
 						imageObj.getJSONObject("default").put("top", top);
