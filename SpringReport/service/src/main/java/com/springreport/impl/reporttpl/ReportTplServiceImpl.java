@@ -4680,6 +4680,8 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		JSONObject collapseData = new JSONObject();//行折叠信息
 		extendParamData.put("collapseData", collapseData);
 		extendParamData.put("images", result.getImages());
+		extendParamData.put("userInfoDto", userInfoDto);
+		extendParamData.put("viewParams", viewParams);
 //		Map<String, Object> replacedData = new HashMap<>();//被缓存替换的数据 
 //		Map<String, JSONObject> cacheDatas = new HashMap<>();//缓存数据
 		for (int i = 0; i < allCells.size(); i++) {
@@ -4964,6 +4966,8 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				int endCol = 0;
 				Integer collaspeStr = null;//循环块折叠起始行
 				Map<String, Integer> rowAndCol = null;
+				LuckySheetBindData bindData = null;//自定义函数计算用
+	        	List<List<Map<String, Object>>> bindDatas = null;//自定义函数计算用
 				for (int m = 0; m < luckySheetBindData.getDatas().size(); m++) {
 					int z = 1;
 					if(loopCount > 1) {
@@ -5214,7 +5218,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 										if(luckysheetReportBlockCells.get(t).getIsSubCell().intValue() == 1) {
 											for (int j = 0; j < datas.size(); j++) {
 												for (int i = 0; i < subLuckysheetReportBlockCells.size(); i++) {
-													if(m == 0&&j==0)
+													if(m == 0&&l==0)
 													{
 						 								rowAndCol = this.getMaxRowAndCol(maxCoordinate, subLuckysheetReportBlockCells.get(i).getCoordsx(),subLuckysheetReportBlockCells.get(i).getCoordsy(),1,1);
 						 								maxRow = rowAndCol.get("maxX");
@@ -5262,62 +5266,78 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 											        	Map<String, Object> mapData = ListUtil.getProperties(property, datas.get(j));
 											        	Set<String> set = mapData.keySet();
 											        	boolean isJustProperty = false;//是否只有数据库中的属性
-											        	for (String o : set) {
-											            	property = property.replace(o, mapData.get(o) == null?"":String.valueOf(mapData.get(o)));
-											            	if(set.size() == 1)
-											            	{
-											            		if(property.equals("") || property.length() == String.valueOf(mapData.get(o)).length())
-											            		{
-											            			isJustProperty = true;
-											            		}
-											            	}
-											            }
-											            try {
-											            	if(set.size() > 1)
-										                	{
-											            		if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
-											            			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
-											            			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
-											            			value = AviatorEvaluator.execute(property);
-																}else {
-										    						value = property;
-										    					}
-										                		if(value instanceof Double && (Double.isNaN((double) value) || Double.isInfinite((double) value)))
-										                		{
-										                			value = 0;
-										                		}
-										                	}else {
-										                		if(StringUtil.isImgUrl(property))
-										                		{
-										                			value = luckySheetBindData.getTplType() == 1?"":property;
-										        					isImg = true;
-										                		}else if(StringUtil.isAttachUrl(property))
-										                		{
-										                			isAttachFile = true;
-										                			String fileName = StringUtil.getFileNameFromUrl(String.valueOf(property));
-										                			this.processAttachHyperlink(hyperlinks, maxRow, maxCol, property, objectMapper,fileName);	
-										                			value = "附件:" + fileName;
-										                		}else if(!isJustProperty)
-										                		{
-										                			if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
-										                				AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
-										                				AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
-										                				value = AviatorEvaluator.execute(property);
-										        					}else {
-										        						value = property;
-										        					}
-										                			if(value instanceof Double && (Double.isNaN((double) value) || Double.isInfinite((double) value)))
-										                    		{
-										                    			value = 0;
-										                    		}
-										                		}
-										                		else {
-										                			value = property;
-										                		}
-										                	}
-											    		} catch (Exception e) {
-											    			
-											    		}
+											        	if(customSpringReportFunction.isSpringReportFunction(String.valueOf(property))) {
+												        	Map<String, Object> extraParams = new HashMap<>();
+												        	extraParams.put("userInfo", extendParamData.get("userInfoDto"));
+												        	extraParams.put("viewParams", extendParamData.get("viewParams"));
+												        	bindData = new LuckySheetBindData(); 
+												        	bindData.setProperty(String.valueOf(property));
+												        	bindDatas = new ArrayList<List<Map<String,Object>>>();
+												        	bindDatas.add(datas);
+												        	bindData.setDatas(bindDatas);
+												        	property = String.valueOf(customSpringReportFunction.calculate(bindData, extraParams));
+												        	if(StringUtil.isImgUrl(String.valueOf(property)))
+												    		{
+																isImg = true;
+												    		}
+												        }else {
+												        	for (String o : set) {
+												            	property = property.replace(o, mapData.get(o) == null?"":String.valueOf(mapData.get(o)));
+												            	if(set.size() == 1)
+												            	{
+												            		if(property.equals("") || property.length() == String.valueOf(mapData.get(o)).length())
+												            		{
+												            			isJustProperty = true;
+												            		}
+												            	}
+												            }
+												            try {
+												            	if(set.size() > 1)
+											                	{
+												            		if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
+												            			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
+												            			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
+												            			value = AviatorEvaluator.execute(property);
+																	}else {
+											    						value = property;
+											    					}
+											                		if(value instanceof Double && (Double.isNaN((double) value) || Double.isInfinite((double) value)))
+											                		{
+											                			value = 0;
+											                		}
+											                	}else {
+											                		if(StringUtil.isImgUrl(property))
+											                		{
+											                			value = luckySheetBindData.getTplType() == 1?"":property;
+											        					isImg = true;
+											                		}else if(StringUtil.isAttachUrl(property))
+											                		{
+											                			isAttachFile = true;
+											                			String fileName = StringUtil.getFileNameFromUrl(String.valueOf(property));
+											                			this.processAttachHyperlink(hyperlinks, maxRow, maxCol, property, objectMapper,fileName);	
+											                			value = "附件:" + fileName;
+											                		}else if(!isJustProperty)
+											                		{
+											                			if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
+											                				AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
+											                				AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
+											                				value = AviatorEvaluator.execute(property);
+											        					}else {
+											        						value = property;
+											        					}
+											                			if(value instanceof Double && (Double.isNaN((double) value) || Double.isInfinite((double) value)))
+											                    		{
+											                    			value = 0;
+											                    		}
+											                		}
+											                		else {
+											                			value = property;
+											                		}
+											                	}
+												    		} catch (Exception e) {
+												    			
+												    		}
+												        }
 											            if(value == null)
 											            {
 //											            	value = property;
@@ -5595,62 +5615,79 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 										        	Map<String, Object> mapData = ListUtil.getProperties(cellProperty, datas.get(j));
 										        	Set<String> set = mapData.keySet();
 										        	boolean isJustProperty = false;//是否只有数据库中的属性
-										        	for (String o : set) {
-										            	cellProperty = cellProperty.replace(o, mapData.get(o) == null?"":String.valueOf(mapData.get(o)));
-										            	if(set.size() == 1)
-										            	{
-										            		if(cellProperty.equals("") || cellProperty.length() == String.valueOf(mapData.get(o)).length())
-										            		{
-										            			isJustProperty = true;
-										            		}
-										            	}
-										            }
-										            try {
-										            	if(set.size() > 1)
-									                	{
-										            		if(CheckUtil.validate(String.valueOf(cellProperty))&&CheckUtil.containsOperator(String.valueOf(cellProperty))) {
-										            			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
-										            			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
-										            			value = AviatorEvaluator.execute(cellProperty);
-															}else {
-									    						value = cellProperty;
-									    					}
-									                		if(value instanceof Double && (Double.isNaN((double) value) || Double.isInfinite((double) value)))
-									                		{
-									                			value = 0;
-									                		}
-									                	}else {
-									                		if(StringUtil.isImgUrl(cellProperty))
-									                		{
-									                			value = luckySheetBindData.getTplType() == 1?"":cellProperty;
-									        					isImg = true;
-									                		}else if(StringUtil.isAttachUrl(cellProperty))
-									                		{
-									                			isAttachFile = true;
-									                			String fileName = StringUtil.getFileNameFromUrl(String.valueOf(cellProperty));
-									                			this.processAttachHyperlink(hyperlinks, maxRow, maxCol, cellProperty, objectMapper,fileName);	
-									                			value = "附件:" + fileName;
-									                		}else if(!isJustProperty)
-									                		{
-									                			if(CheckUtil.validate(String.valueOf(cellProperty))&&CheckUtil.containsOperator(String.valueOf(cellProperty))) {
-									                				AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
-									                				AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
-									                				value = AviatorEvaluator.execute(cellProperty);
-									        					}else {
-									        						value = cellProperty;
-									        					}
-									                			if(value instanceof Double && (Double.isNaN((double) value) || Double.isInfinite((double) value)))
-									                    		{
-									                    			value = 0;
-									                    		}
-									                		}
-									                		else {
-									                			value = cellProperty;
-									                		}
-									                	}
-										    		} catch (Exception e) {
-										    			
-										    		}
+										        	if(customSpringReportFunction.isSpringReportFunction(String.valueOf(cellProperty))) {
+											        	Map<String, Object> extraParams = new HashMap<>();
+											        	extraParams.put("userInfo", extendParamData.get("userInfoDto"));
+											        	extraParams.put("viewParams", extendParamData.get("viewParams"));
+											        	bindData = new LuckySheetBindData(); 
+											        	bindData.setProperty(String.valueOf(cellProperty));
+											        	bindDatas = new ArrayList<List<Map<String,Object>>>();
+											        	bindDatas.add(datas);
+											        	bindData.setDatas(bindDatas);
+											        	cellProperty = String.valueOf(customSpringReportFunction.calculate(bindData, extraParams));
+											        	if(StringUtil.isImgUrl(String.valueOf(cellProperty)))
+											    		{
+															isImg = true;
+											    		}
+											        }
+										        	else {
+										        		for (String o : set) {
+											            	cellProperty = cellProperty.replace(o, mapData.get(o) == null?"":String.valueOf(mapData.get(o)));
+											            	if(set.size() == 1)
+											            	{
+											            		if(cellProperty.equals("") || cellProperty.length() == String.valueOf(mapData.get(o)).length())
+											            		{
+											            			isJustProperty = true;
+											            		}
+											            	}
+											            }
+											        	try {
+											            	if(set.size() > 1)
+										                	{
+											            		if(CheckUtil.validate(String.valueOf(cellProperty))&&CheckUtil.containsOperator(String.valueOf(cellProperty))) {
+											            			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
+											            			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
+											            			value = AviatorEvaluator.execute(cellProperty);
+																}else {
+										    						value = cellProperty;
+										    					}
+										                		if(value instanceof Double && (Double.isNaN((double) value) || Double.isInfinite((double) value)))
+										                		{
+										                			value = 0;
+										                		}
+										                	}else {
+										                		if(StringUtil.isImgUrl(cellProperty))
+										                		{
+										                			value = luckySheetBindData.getTplType() == 1?"":cellProperty;
+										        					isImg = true;
+										                		}else if(StringUtil.isAttachUrl(cellProperty))
+										                		{
+										                			isAttachFile = true;
+										                			String fileName = StringUtil.getFileNameFromUrl(String.valueOf(cellProperty));
+										                			this.processAttachHyperlink(hyperlinks, maxRow, maxCol, cellProperty, objectMapper,fileName);	
+										                			value = "附件:" + fileName;
+										                		}else if(!isJustProperty)
+										                		{
+										                			if(CheckUtil.validate(String.valueOf(cellProperty))&&CheckUtil.containsOperator(String.valueOf(cellProperty))) {
+										                				AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
+										                				AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
+										                				value = AviatorEvaluator.execute(cellProperty);
+										        					}else {
+										        						value = cellProperty;
+										        					}
+										                			if(value instanceof Double && (Double.isNaN((double) value) || Double.isInfinite((double) value)))
+										                    		{
+										                    			value = 0;
+										                    		}
+										                		}
+										                		else {
+										                			value = cellProperty;
+										                		}
+										                	}
+											    		} catch (Exception e) {
+											    			
+											    		}
+											        }
 										            if(value == null)
 										            {
 //										            	value = property;
@@ -6093,6 +6130,11 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		        	extraParams.put("viewParams", viewParams);
 		        	luckySheetBindData.setProperty(String.valueOf(originalValue));
 		        	value = customSpringReportFunction.calculate(luckySheetBindData, extraParams);
+		        	if(StringUtil.isImgUrl(String.valueOf(value)))
+		    		{
+		    			value = luckySheetBindData.getTplType() == 1?"":value;
+						isImg = true;
+		    		}
 		        }else {
 		        	if(StringUtil.isImgUrl(String.valueOf(originalValue)))
 					{
@@ -8653,6 +8695,12 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         		extraParams.put("index", j+luckySheetBindData.getRelyIndex());
         	}
         	value = customSpringReportFunction.calculate(luckySheetBindData, extraParams);
+        	if(StringUtil.isImgUrl(String.valueOf(value)))
+    		{
+        		property = String.valueOf(value);
+    			value = luckySheetBindData.getTplType() == 1?"":value;
+				isImg = true;
+    		}
         }
         else {
         	List<String> properties = null;
@@ -9279,6 +9327,12 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         	extraParams.put("userInfo", userInfoDto);
         	extraParams.put("viewParams", viewParams);
         	value = customSpringReportFunction.calculate(luckySheetBindData, extraParams);
+        	if(StringUtil.isImgUrl(String.valueOf(value)))
+    		{
+        		property = String.valueOf(value);
+    			value = luckySheetBindData.getTplType() == 1?"":value;
+				isImg = true;
+    		}
         }else {
         	List<String> properties = null;
         	Map<String, Object> datas = null;
@@ -10493,6 +10547,12 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         	extraParams.put("userInfo", userInfoDto);
         	extraParams.put("viewParams", viewParams);
         	value = customSpringReportFunction.calculate(luckySheetBindData, extraParams);
+        	if(StringUtil.isImgUrl(String.valueOf(value)))
+    		{
+        		property = String.valueOf(value);
+    			value = luckySheetBindData.getTplType() == 1?"":value;
+				isImg = true;
+    		}
         }else {
         	List<String> properties = null;
         	Map<String, Object> datas = null;

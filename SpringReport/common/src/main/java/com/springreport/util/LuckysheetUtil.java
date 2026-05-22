@@ -1083,17 +1083,60 @@ public class LuckysheetUtil {
 		int c = img.getIntValue("c");
 		int rowSpan = img.getIntValue("rowSpan");
 		int colSpan = img.getIntValue("colSpan");
+		JSONObject imgInfo = img.getJSONObject("imgInfo");
+		String src = imgInfo.getString("src");
+		Map<String, String> params = UrlUtils.getUrlParamMap(src);
 		double top = LuckysheetUtil.calculateTop(rowlen, r,rowhidden)+2;
 		double left = LuckysheetUtil.calculateLeft(columnlen, c,colhidden)+2;
-		Object width = LuckysheetUtil.calculateWidth(columnlen, c, colSpan==0?1:colSpan)-6;
-		Object height = LuckysheetUtil.calculateHeight(rowlen, r, rowSpan==0?1:rowSpan)-6;
+		double cellWidth = LuckysheetUtil.calculateWidth(columnlen, c, colSpan==0?1:colSpan)-6;
+		double imgWidth = 0;
+		if(params.containsKey("width")) {
+			imgWidth = Double.parseDouble(String.valueOf(params.get("width")));
+		}else {
+			imgWidth = cellWidth;
+		}
+		double cellHeight = LuckysheetUtil.calculateHeight(rowlen, r, rowSpan==0?1:rowSpan)-6;
+		double imgHeight = 0;
+		if(params.containsKey("height")) {
+			imgHeight = Double.parseDouble(String.valueOf(params.get("height")));
+		}else {
+			imgHeight = cellHeight;
+		}
+		double[] imageSize = calculateScaledSize(imgWidth, imgHeight,cellWidth, cellHeight);
 		img.getJSONObject("imgInfo").getJSONObject("default").put("top", top);
 		img.getJSONObject("imgInfo").getJSONObject("default").put("left", left);
-		img.getJSONObject("imgInfo").getJSONObject("default").put("width", width);
-		img.getJSONObject("imgInfo").getJSONObject("default").put("height", height);
-		img.getJSONObject("imgInfo").getJSONObject("crop").put("width", width);
-		img.getJSONObject("imgInfo").getJSONObject("crop").put("height", height);
+		img.getJSONObject("imgInfo").getJSONObject("default").put("width", imageSize[0]);
+		img.getJSONObject("imgInfo").getJSONObject("default").put("height", imageSize[1]);
+		img.getJSONObject("imgInfo").getJSONObject("crop").put("width", imageSize[0]);
+		img.getJSONObject("imgInfo").getJSONObject("crop").put("height", imageSize[1]);
 	}
+	
+	 /**
+     * 计算等比缩放后的目标尺寸
+     *
+     * @param originalWidth  原图宽度
+     * @param originalHeight 原图高度
+     * @param maxWidth       指定的最大宽度（不为空时生效）
+     * @param maxHeight      指定的最大高度（不为空时生效）
+     * @return int[2] {目标宽度, 目标高度}
+     */
+    public static double[] calculateScaledSize(double originalWidth, double originalHeight,
+    		double maxWidth, double maxHeight) {
+        // 如果指定的宽高都比原图大或相等，直接返回原图尺寸
+        if (originalWidth <= maxWidth && originalHeight <= maxHeight) {
+            return new double[]{originalWidth, originalHeight};
+        }
+
+        double ratio = Math.min(
+                (double) maxWidth / originalWidth,
+                (double) maxHeight / originalHeight
+        );
+
+        int targetWidth = (int) Math.round(originalWidth * ratio);
+        int targetHeight = (int) Math.round(originalHeight * ratio);
+
+        return new double[]{targetWidth, targetHeight};
+    }
 	
 	public static void main(String[] args) {
 //		java.text.NumberFormat percentFormat =java.text.NumberFormat.getPercentInstance();
