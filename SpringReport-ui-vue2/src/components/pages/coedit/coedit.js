@@ -1071,7 +1071,6 @@ export default {
         }
     },
     showSheetAuthedRanges(sheetIndex){
-        console.log(this.sheetAuth)
         let range = [];
         let noauthrange = [];
         if(this.sheetRangeAuth)

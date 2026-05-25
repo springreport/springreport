@@ -133,7 +133,7 @@
             </el-descriptions>
             <div v-if="isCreator" style="text-align:right;margin-top:5px">
               <el-button type="primary" title="编辑" icon="el-icon-edit" circle size="mini" @click="editRange(item)" />
-              <el-button type="warning" icon="el-icon-monitor" title="显示选区" circle size="mini" @click="showRange(item)" v-show="addAuthForm.authType == 2"/>
+              <el-button type="warning" icon="el-icon-monitor" title="显示选区" circle size="mini" @click="showRange(item)" v-show="!item.isSheetAuth"/>
               <el-button type="danger" icon="el-icon-delete" title="删除" circle size="mini" @click="deleteRange(item,index)" />
             </div>
             <el-divider content-position="left" />
