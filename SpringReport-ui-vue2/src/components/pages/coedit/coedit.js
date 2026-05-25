@@ -1437,7 +1437,8 @@ export default {
         }
       },
       addSheetAuthClick(){
-        if(this.sheetAuth && Object.keys(this.sheetAuth).length > 0){
+        const sheetIndex = luckysheet.getSheet().index;
+        if(this.sheetAuth && this.sheetAuth[sheetIndex]){
           this.commonUtil.showMessage({ message: '该工作表已经添加权限设置，请点击【查看保护范围】查看详细设置信息！', type: this.commonConstants.messageType.error })
           return;
         }
@@ -1450,7 +1451,6 @@ export default {
           this.commonUtil.showMessage({ message: '您没有权限进行此操作，只有创建者【'+this.creatorName+'】才有权限进行操作。', type: this.commonConstants.messageType.error })
           return;
         }
-        const sheetIndex = luckysheet.getSheet().index;
         const sheetName = luckysheet.getSheet().name;
         // if(!this.sheetRangeAuth[sheetIndex]){
         //   this.sheetRangeAuth[sheetIndex] = {};
