@@ -4215,7 +4215,8 @@ screenConstants.scrollTableInit = {
     borderColor: '#FFFFFF', // 边框颜色
     borderWidth: 1, // 边框宽度
     borderStyle: 'solid', // 边框样式
-    indexWidth: '20'
+    indexWidth: '20',
+    textAlign:'center'
   },
   bodyStyle: { // 表体样式
     oddRowColor: '#33a3dc', // 奇数行颜色
