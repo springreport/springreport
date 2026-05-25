@@ -651,7 +651,7 @@ public class LuckysheetUtil {
 			}
 			result = result +temp;
 		}
-		result = result+r-1;
+//		result = result+r-1;
 		return Math.ceil(result);
 	}
 	

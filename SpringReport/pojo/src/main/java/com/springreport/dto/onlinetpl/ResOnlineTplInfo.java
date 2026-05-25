@@ -16,11 +16,18 @@ public class ResOnlineTplInfo {
     private boolean isCreator = false;
     
     /**  
-     * @Fields rangeAuth : 权限
+     * @Fields rangeAuth : 范围权限
      * @author caiyang
      * @date 2024-03-04 09:15:48 
      */  
     private JSONObject sheetRangeAuth;
+    
+    /**  
+     * @Fields rangeAuth : 工作表权限
+     * @author caiyang
+     * @date 2024-03-04 09:15:48 
+     */  
+    private JSONObject sheetAuth;
     
     /**  
      * @Fields creatorName : 创建者名称

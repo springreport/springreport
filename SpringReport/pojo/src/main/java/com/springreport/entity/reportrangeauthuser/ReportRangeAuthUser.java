@@ -78,4 +78,8 @@ public class ReportRangeAuthUser extends PageEntity {
     /** auth_type - 授权类型 1编辑权限 2不允许查看 */
     @TableField("auth_type")
     private Integer authType;
+    
+    /** range_sheet - 范围授权还是工作表授权 1范围授权 2工作表授权 */
+    @TableField("range_sheet")
+    private Integer rangeSheet;
 }

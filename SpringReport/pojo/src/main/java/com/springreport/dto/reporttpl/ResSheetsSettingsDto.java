@@ -47,11 +47,18 @@ public class ResSheetsSettingsDto {
     private boolean isCreator;
     
     /**  
-     * @Fields rangeAuth : 权限
+     * @Fields rangeAuth : 范围权限
      * @author caiyang
      * @date 2024-03-04 09:15:48 
      */  
     private JSONObject sheetRangeAuth;
+    
+    /**  
+     * @Fields rangeAuth : 工作表权限
+     * @author caiyang
+     * @date 2026年5月25日11:42:32
+     */  
+    private JSONObject sheetAuth;
     
     /**  
      * @Fields creatorName : 创建者名称

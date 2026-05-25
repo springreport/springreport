@@ -193,6 +193,13 @@ public class MesLuckySheetTplDto {
     private JSONObject sheetRangeAuth;
     
     /**  
+     * @Fields sheetAuth : 工作表权限
+     * @author caiyang
+     * @date 2024-03-03 06:04:14 
+     */  
+    private JSONObject sheetAuth;
+    
+    /**  
      * @Fields luckysheetConditionformatSave : 条件格式配置
      * @author caiyang
      * @date 2024年8月16日18:54:55
