@@ -15591,6 +15591,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 	@Override
 	public JSONObject getTplAuth(ReportTpl model, UserInfoDto userInfoDto) {
 		JSONObject sheetRangeAuth = new JSONObject();
+		JSONObject sheetAuth = new JSONObject();
 		//获取用户对应的权限
 		QueryWrapper<ReportRangeAuthUser> rangeAuthUserQueryWrapper = new QueryWrapper<>();
 		rangeAuthUserQueryWrapper.eq("tpl_id", model.getId());
@@ -15610,17 +15611,24 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			if(ListUtil.isNotEmpty(reportRangeAuths))
 			{
 				for (int i = 0; i < reportRangeAuths.size(); i++) {
-					JSONObject rangeAxis = new JSONObject();
-					rangeAxis.put("rangeAxis", reportRangeAuths.get(i).getRangeTxt());
-					JSONObject range = new JSONObject();
-					range.put("row", JSON.parseArray(reportRangeAuths.get(i).getRowsNo()));
-					range.put("column", JSON.parseArray(reportRangeAuths.get(i).getColsNo()));
-					rangeAxis.put("range", range);
-					rangeAxis.put("sheetIndex", reportRangeAuths.get(i).getSheetIndex());
-					if(!sheetRangeAuth.containsKey(reportRangeAuths.get(i).getSheetIndex())) {
-						sheetRangeAuth.put(reportRangeAuths.get(i).getSheetIndex(), new JSONObject());
+					if(reportRangeAuths.get(i).getAuthType().intValue() == 1) {
+						JSONObject rangeAxis = new JSONObject();
+						rangeAxis.put("rangeAxis", reportRangeAuths.get(i).getRangeTxt());
+						JSONObject range = new JSONObject();
+						range.put("row", JSON.parseArray(reportRangeAuths.get(i).getRowsNo()));
+						range.put("column", JSON.parseArray(reportRangeAuths.get(i).getColsNo()));
+						rangeAxis.put("range", range);
+						rangeAxis.put("sheetIndex", reportRangeAuths.get(i).getSheetIndex());
+						if(!sheetRangeAuth.containsKey(reportRangeAuths.get(i).getSheetIndex())) {
+							sheetRangeAuth.put(reportRangeAuths.get(i).getSheetIndex(), new JSONObject());
+						}
+						sheetRangeAuth.getJSONObject(reportRangeAuths.get(i).getSheetIndex()).put(reportRangeAuths.get(i).getRangeTxt(), rangeAxis);
+					}else {
+						if(!sheetAuth.containsKey(reportRangeAuths.get(i).getSheetIndex())) {
+							sheetAuth.put(reportRangeAuths.get(i).getSheetIndex(), new JSONObject());
+						}
 					}
-					sheetRangeAuth.getJSONObject(reportRangeAuths.get(i).getSheetIndex()).put(reportRangeAuths.get(i).getRangeTxt(), rangeAxis);
+					
 				}
 			}
 		}

@@ -1,6 +1,7 @@
 package com.springreport.impl.onlinetpl;
 
 import com.springreport.entity.luckysheet.Luckysheet;
+import com.springreport.entity.luckysheetcell.LuckysheetCell;
 import com.springreport.entity.luckysheetonlinecell.LuckysheetOnlineCell;
 import com.springreport.entity.onlinetpl.OnlineTpl;
 import com.springreport.entity.onlinetplsheet.OnlineTplSheet;
@@ -11,6 +12,8 @@ import com.springreport.entity.sysuser.SysUser;
 import com.springreport.mapper.luckysheet.LuckysheetMapper;
 import com.springreport.mapper.onlinetpl.OnlineTplMapper;
 import com.springreport.api.coedit.ICoeditService;
+import com.springreport.api.luckysheet.ILuckysheetService;
+import com.springreport.api.luckysheetcell.ILuckysheetCellService;
 import com.springreport.api.luckysheetonlinecell.ILuckysheetOnlineCellService;
 import com.springreport.api.onlinetpl.IOnlineTplService;
 import com.springreport.api.onlinetplsheet.IOnlineTplSheetService;
@@ -33,6 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.springreport.util.DateUtil;
 import com.springreport.util.ListUtil;
 import com.springreport.util.MessageUtil;
 import com.springreport.util.RedisUtil;
@@ -51,6 +55,7 @@ import com.springreport.dto.reporttpl.ResLuckySheetTplSettingsDto;
 import com.springreport.dto.reporttpl.ResSheetsSettingsDto;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -105,6 +110,15 @@ public class OnlineTplServiceImpl extends ServiceImpl<OnlineTplMapper, OnlineTpl
 	
 	@Value("${thirdParty.type}")
     private String thirdPartyType;
+	
+	@Autowired
+	private LuckysheetMapper luckysheetMapper;
+	
+	@Autowired
+	private ILuckysheetCellService iLuckysheetCellService;
+	
+	@Autowired
+	private ILuckysheetService iLuckysheetService;
 	
 	/** 
 	* @Title: tablePagingQuery 
@@ -864,4 +878,124 @@ public class OnlineTplServiceImpl extends ServiceImpl<OnlineTplMapper, OnlineTpl
 		return sheetRangeAuth;
 	}
 
+	/**
+	 * <p>Title: copyDocument</p>
+	 * <p>Description: 复制文档</p>
+	 * @author caiyang
+	 * @param id 源文档ID
+	 * @param userInfoDto
+	 * @return
+	 */
+	@Override
+	@Transactional
+	public BaseEntity copyDocument(Long id, UserInfoDto userInfoDto) {
+		BaseEntity result = new BaseEntity();
+		OnlineTpl sourceTpl = this.getById(id);
+		if(sourceTpl == null)
+		{
+			throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.notexist", new String[] {"该文档"}));
+		}
+		OnlineTpl newTpl = new OnlineTpl();
+		BeanUtils.copyProperties(sourceTpl, newTpl);
+		newTpl.setId(null);
+		newTpl.setListId(UUIDUtil.getUUID());
+		String end = DateUtil.getLastSixDigits();
+		newTpl.setTplName(sourceTpl.getTplName() +"_copy_"+end);
+		newTpl.setCreator(userInfoDto.getUserId());
+		newTpl.setCreateTime(new Date());
+		newTpl.setUpdater(userInfoDto.getUserId());
+		newTpl.setUpdateTime(new Date());
+		this.save(newTpl);
+		QueryWrapper<Luckysheet> sheetQueryWrapper = new QueryWrapper<>();
+		sheetQueryWrapper.eq("block_id", id);
+		sheetQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+		List<Luckysheet> sourceSheets = this.iLuckysheetService.list(sheetQueryWrapper);
+		if(ListUtil.isNotEmpty(sourceSheets))
+		{
+			Map<String, String> sheetIndexMap = new HashMap<>();
+			List<Luckysheet> newSheets = new ArrayList<>();
+			for(Luckysheet sourceSheet : sourceSheets)
+			{
+				Luckysheet newSheet = new Luckysheet();
+				BeanUtils.copyProperties(sourceSheet, newSheet);
+				newSheet.setId(null);
+				newSheet.setBlockId(newTpl.getId()+"");
+				newSheet.setSheetIndex("Sheet" + UUIDUtil.getUUID());
+				newSheet.setListId(newTpl.getListId());
+				newSheets.add(newSheet);
+				sheetIndexMap.put(sourceSheet.getSheetIndex(), newSheet.getSheetIndex());
+			}
+			this.iLuckysheetService.saveBatch(newSheets);
+			QueryWrapper<LuckysheetCell> cellQueryWrapper = new QueryWrapper<>();
+			cellQueryWrapper.eq("block_id", id+"");
+			cellQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+			List<LuckysheetCell> sourceCells = this.iLuckysheetCellService.list(cellQueryWrapper);
+			if(ListUtil.isNotEmpty(sourceCells))
+			{
+				List<LuckysheetCell> newCells = new ArrayList<>();
+				for(LuckysheetCell sourceCell : sourceCells)
+				{
+					LuckysheetCell newCell = new LuckysheetCell();
+					BeanUtils.copyProperties(sourceCell, newCell);
+					newCell.setId(null);
+					newCell.setBlockId(newTpl.getId()+"");
+					newCell.setSheetIndex(sheetIndexMap.get(sourceCell.getSheetIndex()));
+					newCell.setListId(newTpl.getListId());
+					newCells.add(newCell);
+				}
+				this.iLuckysheetCellService.saveBatch(newCells);
+			}
+			
+			QueryWrapper<ReportRangeAuth> rangeAuthQueryWrapper = new QueryWrapper<>();
+			rangeAuthQueryWrapper.eq("tpl_id", id);
+			rangeAuthQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+			List<ReportRangeAuth> sourceRangeAuths = this.iReportRangeAuthService.list(rangeAuthQueryWrapper);
+			if(ListUtil.isNotEmpty(sourceRangeAuths))
+			{
+				Map<Long, Long> rangeAuthIdMap = new HashMap<>();
+				List<ReportRangeAuth> newRangeAuths = new ArrayList<>();
+				for(ReportRangeAuth sourceRangeAuth : sourceRangeAuths)
+				{
+					ReportRangeAuth newRangeAuth = new ReportRangeAuth();
+					BeanUtils.copyProperties(sourceRangeAuth, newRangeAuth);
+					newRangeAuth.setId(IdWorker.getId());
+					newRangeAuth.setTplId(newTpl.getId());
+					newRangeAuth.setSheetIndex(sheetIndexMap.get(sourceRangeAuth.getSheetIndex()));
+					newRangeAuth.setCreator(userInfoDto.getUserId());
+					newRangeAuth.setCreateTime(new Date());
+					newRangeAuth.setUpdater(userInfoDto.getUserId());
+					newRangeAuth.setUpdateTime(new Date());
+					newRangeAuths.add(newRangeAuth);
+					rangeAuthIdMap.put(sourceRangeAuth.getId(), newRangeAuth.getId());
+				}
+				this.iReportRangeAuthService.saveBatch(newRangeAuths);
+				
+				QueryWrapper<ReportRangeAuthUser> rangeAuthUserQueryWrapper = new QueryWrapper<>();
+				rangeAuthUserQueryWrapper.eq("tpl_id", id);
+				rangeAuthUserQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+				List<ReportRangeAuthUser> sourceRangeAuthUsers = this.iReportRangeAuthUserService.list(rangeAuthUserQueryWrapper);
+				if(ListUtil.isNotEmpty(sourceRangeAuthUsers))
+				{
+					List<ReportRangeAuthUser> newRangeAuthUsers = new ArrayList<>();
+					for(ReportRangeAuthUser sourceRangeAuthUser : sourceRangeAuthUsers)
+					{
+						ReportRangeAuthUser newRangeAuthUser = new ReportRangeAuthUser();
+						BeanUtils.copyProperties(sourceRangeAuthUser, newRangeAuthUser);
+						newRangeAuthUser.setId(null);
+						newRangeAuthUser.setTplId(newTpl.getId());
+						newRangeAuthUser.setRangeAuthId(rangeAuthIdMap.get(sourceRangeAuthUser.getRangeAuthId()));
+						newRangeAuthUser.setCreator(userInfoDto.getUserId());
+						newRangeAuthUser.setCreateTime(new Date());
+						newRangeAuthUser.setUpdater(userInfoDto.getUserId());
+						newRangeAuthUser.setUpdateTime(new Date());
+						newRangeAuthUsers.add(newRangeAuthUser);
+					}
+					this.iReportRangeAuthUserService.saveBatch(newRangeAuthUsers);
+				}
+			}
+		}
+		result.setStatusMsg(MessageUtil.getValue("info.insert"));
+		return result;
+	}
+	
 }

@@ -142,4 +142,16 @@ public interface IOnlineTplService extends IService<OnlineTpl> {
 	 * @date 2024-03-11 11:42:13 
 	 */ 
 	JSONObject getCoeditAuth(OnlineTpl model,UserInfoDto userInfoDto);
+	
+
+	/**  
+	 * @MethodName: copyDocument
+	 * @Description: 复制文档
+	 * @author caiyang
+	 * @param id 源文档ID
+	 * @param userInfoDto
+	 * @return BaseEntity
+	 * @date 2026-05-12
+	 */ 
+	BaseEntity copyDocument(Long id, UserInfoDto userInfoDto);
 }

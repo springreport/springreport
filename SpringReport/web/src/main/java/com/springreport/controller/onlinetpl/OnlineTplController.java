@@ -270,4 +270,21 @@ public class OnlineTplController extends BaseController {
 		JSONObject result = this.iOnlineTplService.getCoeditAuth(model, userInfoDto);
 		return Response.success(result);
 	}
+	
+	/** 
+	* @Description: 复制文档
+	* @param id
+	* @param @return  BaseEntity
+	* @return  
+	* @throws 
+	*/ 
+	@RequestMapping(value = "/copyDocument",method = RequestMethod.GET)
+	@MethodLog(module="OnlineTpl",remark="复制文档",operateType=Constants.OPERATE_TYPE_SEARCH)
+	@Check({"id:required#主键ID"})
+	@RequiresPermissions(value = {"onlineTpl_getDetai","onlineTpl_update"},logical = Logical.OR)
+	public Response copyDocument(@RequestParam Long id,@LoginUser UserInfoDto userInfoDto) throws Exception
+	{
+		BaseEntity result = iOnlineTplService.copyDocument(id,userInfoDto);
+		return Response.success(result);
+	}
 }
