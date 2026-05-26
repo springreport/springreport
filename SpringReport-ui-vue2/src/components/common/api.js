@@ -283,7 +283,8 @@ api.onlineTpl = {
   deleteRangeAuthApi: '/api/onlineTpl/deletRangeAuth',
   getCoeditAuthApi: '/api/onlineTpl/getCoeditAuth', // 获取授权范围,
   getRangeUsersApi: '/api/reportRangeAuthUser/getRangeUsers', // 获取授权用户
-  getChildrenApi: '/api/onlineTpl/getChildren'
+  getChildrenApi: '/api/onlineTpl/getChildren',
+  copyDocumentApi: '/api/onlineTpl/copyDocument'
 }
 api.reportTask = {
   listApi: '/api/qrtzReportDetail/getTableList', // 获取表格数据api
