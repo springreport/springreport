@@ -101,6 +101,7 @@
               <span>{{ node.label }}</span>
               <span v-if="node.key.indexOf('dept')<0">
                 <el-select v-model="data.authType" placeholder="请选择" size="mini" style="margin-left: 10px;width:120px;height:20px" @change="changeAuthType(data)">
+                  <el-option label="仅查看" :value="3" v-show="addAuthForm.authType == 2" />
                   <el-option label="编辑" :value="1" />
                   <el-option label="不可查看" :value="2" />
                 </el-select>
@@ -125,13 +126,14 @@
         <div v-if="authedRange && authedRange.length > 0" class="el-dialog-div">
           <div v-for="(item,index) in authedRange" :key="index">
             <el-descriptions title="" :column="1" border>
-              <el-descriptions-item label="保护范围">{{ item.rangeAxis }}</el-descriptions-item>
+              <el-descriptions-item label="保护范围" v-if="!item.isSheetAuth">{{ item.rangeAxis }}</el-descriptions-item>
+              <el-descriptions-item label="保护范围" v-if="item.isSheetAuth">{{ '当前工作表' }}</el-descriptions-item>
               <el-descriptions-item v-if="!isCreator" label="保护类型">{{ item.authType==1?'可编辑':'不可查看' }}</el-descriptions-item>
               <el-descriptions-item v-if="isCreator" label="授权人数">{{ item.userIds.length }}</el-descriptions-item>
             </el-descriptions>
             <div v-if="isCreator" style="text-align:right;margin-top:5px">
               <el-button type="primary" title="编辑" icon="el-icon-edit" circle size="mini" @click="editRange(item)" />
-              <el-button type="warning" icon="el-icon-monitor" title="显示选区" circle size="mini" @click="showRange(item)" />
+              <el-button type="warning" icon="el-icon-monitor" title="显示选区" circle size="mini" @click="showRange(item)" v-show="!item.isSheetAuth"/>
               <el-button type="danger" icon="el-icon-delete" title="删除" circle size="mini" @click="deleteRange(item,index)" />
             </div>
             <el-divider content-position="left" />

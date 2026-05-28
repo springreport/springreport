@@ -1729,7 +1729,7 @@
                       class="switch-tag"
                       style="min-width: 220px; max-width: 220px;margin: 0"
                     >
-                      跟随单元格移动：<el-switch v-model="o.isMove" size="mini"/>
+                      跟随单元格移动：<el-switch v-model="o.isMove" size="small"/>
                     </p>
                     <p
                       class="switch-tag"
@@ -3536,7 +3536,10 @@
       <div class="el-dialog-div" v-if="authedRange && authedRange.length > 0">
         <div v-for="(item, index) in authedRange" :key="index">
           <el-descriptions title="" :column="1" border>
-            <el-descriptions-item label="保护范围">{{ item.rangeAxis }}</el-descriptions-item>
+            <el-descriptions-item label="保护范围" v-if="!item.isSheetAuth">{{ item.rangeAxis }}</el-descriptions-item>
+            <el-descriptions-item label="保护范围" v-if="item.isSheetAuth">{{
+              '当前工作表'
+            }}</el-descriptions-item>
             <el-descriptions-item label="授权人数" v-if="isCreator">{{
               item.userIds.length
             }}</el-descriptions-item>
@@ -3555,6 +3558,7 @@
               title="显示选区"
               circle
               @click="showRange(item)"
+              v-show="!item.isSheetAuth"
             ></el-button>
             <el-button
               type="danger"

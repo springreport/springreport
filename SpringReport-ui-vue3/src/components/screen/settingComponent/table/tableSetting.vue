@@ -479,6 +479,16 @@
             <template #append>%</template>
           </el-input>
         </el-form-item>
+        <el-form-item label="水平对齐">
+            <el-select v-model="tableColumnForm.textAlign" placeholder="请选择">
+              <el-option
+                v-for="item in selectUtil.textAlign"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
         <el-form-item label="是否超链接"  prop="isHyperLink" :rules="filter_rules('是否超链接', { required: true })">
           <el-switch v-model="tableColumnForm.isHyperLink" active-text="是" inactive-text="否"  />
         </el-form-item>
@@ -693,6 +703,7 @@
           downColor:"",//小于阈值显示的颜色
           equalColor:"",//等于阈值显示的颜色
           textColor:"",
+          textAlign:'',
         },
         colorConditionForm:{
           conditionOperator:'',
@@ -735,6 +746,7 @@
           this.tableColumnForm.downColor = row.downColor;
           this.tableColumnForm.equalColor = row.equalColor;
           this.tableColumnForm.textColor = row.textColor;
+          this.tableColumnForm.textAlign = row.textAlign;
         } else {
           this.tableColumnForm.name = '';
           this.tableColumnForm.key = '';
@@ -751,6 +763,7 @@
           this.tableColumnForm.downColor = '';
           this.tableColumnForm.equalColor = '';
           this.tableColumnForm.textColor = null;
+          this.tableColumnForm.textAlign = null;
         }
       },
       addTableColomn() {
@@ -769,7 +782,8 @@
                 upColor: this.tableColumnForm.upColor,
                 downColor: this.tableColumnForm.downColor,
                 equalColor: this.tableColumnForm.equalColor,
-                textColor: this.tableColumnForm.textColor
+                textColor: this.tableColumnForm.textColor,
+                textAlign: this.tableColumnForm.textAlign
               };
               if (this.component.type == 'scrollTable') {
                 obj.style = { width: this.tableColumnForm.width };
@@ -805,6 +819,8 @@
                 this.tableColumnForm.equalColor
               this.component.tableColumn[this.tableColumnForm.index].textColor =
                 this.tableColumnForm.textColor
+              this.component.tableColumn[this.tableColumnForm.index].textAlign =
+              this.tableColumnForm.textAlign
             }
             this.tableColumnForm.name = '';
             this.tableColumnForm.key = '';
@@ -822,6 +838,7 @@
             this.tableColumnForm.downColor = ""
             this.tableColumnForm.equalColor = ""
             this.tableColumnForm.textColor = null
+            this.tableColumnForm.textAlign = null
             this.closeTableColumnDialog();
             this.reloadTable(this.component);
           }

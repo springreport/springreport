@@ -46,6 +46,7 @@ export default {
             { label: '查看', type: 'text', auth: 'onlineTpl_getDetai', handle: (row) => this.showModal(this.commonConstants.modalType.detail, row.id), show: (row) => this.isShowBtn(row) },
             { label: '编辑', type: 'text', auth: 'onlineTpl_update', handle: (row) => this.showModal(this.commonConstants.modalType.update, row.id, row.type) },
             { label: '编辑文档', type: 'text', auth: 'onlineTpl_editDoc', handle: (row) => this.routerTo(row), show: (row) => this.isShowBtn(row) },
+            { label: '复制', type: 'text', auth: 'onlineTpl_copy', handle: (row) => this.copyOne(row.id),show: (row) => this.isShowBtn(row) },
             { label: '删除', type: 'text', auth: 'onlineTpl_delete', handle: (row) => this.deleteOne(row.id, row.type) }
           ] },
           { label: '文档名称', prop: 'tplName', align: 'left', icon: true },
@@ -355,6 +356,16 @@ export default {
           this.pageData.modalForm[2].options = response.responseData
         }
       })
-    }
+    },
+    copyOne(id) {
+      const obj = {
+        url: this.apis.onlineTpl.copyDocumentApi,
+        messageContent: this.commonUtil.getMessageFromList('confirm.copy', null),
+        callback: this.searchtablelist,
+        params: { id: id },
+        type: 'get'
+      }
+      this.commonUtil.showConfirm(obj)
+    },
   }
 }

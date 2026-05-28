@@ -1602,6 +1602,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 							JSONObject range = mesLuckySheetTplDto.getSheetRangeAuth().getJSONObject(mapKey).getJSONObject("range");
 							reportRangeAuth.setRowsNo(JSON.toJSONString(range.getJSONArray("row")));
 							reportRangeAuth.setColsNo(JSON.toJSONString(range.getJSONArray("column")));
+							reportRangeAuth.setAuthType(1);
 							rangeAuths.add(reportRangeAuth);
 							JSONArray userIds = mesLuckySheetTplDto.getSheetRangeAuth().getJSONObject(mapKey).getJSONArray("userIds");
 							for (int j = 0; j < userIds.size(); j++) {
@@ -1610,8 +1611,30 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 								reportRangeAuthUser.setSheetId(reportTplSheet.getId());
 								reportRangeAuthUser.setRangeAuthId(reportRangeAuth.getId());
 								reportRangeAuthUser.setUserId(userIds.getLong(j));
+								reportRangeAuthUser.setRangeSheet(1);
 								rangeAuthUsers.add(reportRangeAuthUser);
 							}
+						}
+					}
+					if(mesLuckySheetTplDto.getSheetAuth() != null && !StringUtil.isEmptyMap(mesLuckySheetTplDto.getSheetAuth())) {
+						ReportRangeAuth reportRangeAuth = null;
+						ReportRangeAuthUser reportRangeAuthUser = null;
+						reportRangeAuth = new ReportRangeAuth();
+						reportRangeAuth.setId(IdWorker.getId());
+						reportRangeAuth.setTplId(reportTpl.getId());
+						reportRangeAuth.setSheetId(reportTplSheet.getId());
+						reportRangeAuth.setSheetIndex(reportTplSheet.getSheetIndex());
+						reportRangeAuth.setAuthType(2);
+						rangeAuths.add(reportRangeAuth);
+						JSONArray userIds = mesLuckySheetTplDto.getSheetAuth().getJSONArray("userIds");
+						for (int j = 0; j < userIds.size(); j++) {
+							reportRangeAuthUser = new ReportRangeAuthUser();
+							reportRangeAuthUser.setTplId(reportTpl.getId());
+							reportRangeAuthUser.setSheetId(reportTplSheet.getId());
+							reportRangeAuthUser.setRangeAuthId(reportRangeAuth.getId());
+							reportRangeAuthUser.setUserId(userIds.getLong(j));
+							reportRangeAuthUser.setRangeSheet(2);
+							rangeAuthUsers.add(reportRangeAuthUser);
 						}
 					}
 				}
@@ -2815,6 +2838,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		}
 		//获取权限信息
 		JSONObject sheetRangeAuth = new JSONObject();
+		JSONObject sheetAuth = new JSONObject();//工作表权限信息
 		if(isCreator) {
 			QueryWrapper<ReportRangeAuth> queryWrapper = new QueryWrapper<>();
 			queryWrapper.eq("tpl_id", sheets.get(0).getTplId());
@@ -2838,26 +2862,44 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 					groupDatas = reportRangeAuthUsers.stream().collect(Collectors.groupingBy(ReportRangeAuthUser::getRangeAuthId));
 				}
 				for (int i = 0; i < reportRangeAuths.size(); i++) {
-					JSONObject rangeAxis = new JSONObject();
-					rangeAxis.put("rangeAxis", reportRangeAuths.get(i).getRangeTxt());
-					JSONObject range = new JSONObject();
-					range.put("row", JSON.parseArray(reportRangeAuths.get(i).getRowsNo()));
-					range.put("column", JSON.parseArray(reportRangeAuths.get(i).getColsNo()));
-					rangeAxis.put("range", range);
-					rangeAxis.put("sheetIndex", reportRangeAuths.get(i).getSheetIndex());
-					List<ReportRangeAuthUser> datas = groupDatas.get(reportRangeAuths.get(i).getId());
-					if(ListUtil.isNotEmpty(datas))
-					{
-						JSONArray userIds = new JSONArray();
-						for (int j = 0; j < datas.size(); j++) {
-							userIds.add(datas.get(j).getUserId());
+					if(StringUtil.isNotEmpty(reportRangeAuths.get(i).getRangeTxt())) {
+						JSONObject rangeAxis = new JSONObject();
+						rangeAxis.put("rangeAxis", reportRangeAuths.get(i).getRangeTxt());
+						JSONObject range = new JSONObject();
+						range.put("row", JSON.parseArray(reportRangeAuths.get(i).getRowsNo()));
+						range.put("column", JSON.parseArray(reportRangeAuths.get(i).getColsNo()));
+						rangeAxis.put("range", range);
+						rangeAxis.put("sheetIndex", reportRangeAuths.get(i).getSheetIndex());
+						List<ReportRangeAuthUser> datas = groupDatas.get(reportRangeAuths.get(i).getId());
+						if(ListUtil.isNotEmpty(datas))
+						{
+							JSONArray userIds = new JSONArray();
+							for (int j = 0; j < datas.size(); j++) {
+								userIds.add(datas.get(j).getUserId());
+							}
+							rangeAxis.put("userIds", userIds);
 						}
-						rangeAxis.put("userIds", userIds);
+						if(!sheetRangeAuth.containsKey(reportRangeAuths.get(i).getSheetIndex())) {
+							sheetRangeAuth.put(reportRangeAuths.get(i).getSheetIndex(), new JSONObject());
+						}
+						sheetRangeAuth.getJSONObject(reportRangeAuths.get(i).getSheetIndex()).put(reportRangeAuths.get(i).getRangeTxt(), rangeAxis);
+					}else {
+						List<ReportRangeAuthUser> datas = groupDatas.get(reportRangeAuths.get(i).getId());
+						if(ListUtil.isNotEmpty(datas))
+						{
+							JSONArray userIds = new JSONArray();
+							JSONObject userAuth = new JSONObject();
+							for (int j = 0; j < datas.size(); j++) {
+								userIds.add(datas.get(j).getUserId());
+								userAuth.put(String.valueOf(datas.get(j).getUserId()), datas.get(j).getAuthType());
+							}
+							if(!sheetAuth.containsKey(reportRangeAuths.get(i).getSheetIndex())) {
+								sheetAuth.put(reportRangeAuths.get(i).getSheetIndex(), new JSONObject());
+							}
+							sheetAuth.getJSONObject(reportRangeAuths.get(i).getSheetIndex()).put("userIds", userIds);
+							sheetAuth.getJSONObject(reportRangeAuths.get(i).getSheetIndex()).put("userAuth", userAuth);
+						}
 					}
-					if(!sheetRangeAuth.containsKey(reportRangeAuths.get(i).getSheetIndex())) {
-						sheetRangeAuth.put(reportRangeAuths.get(i).getSheetIndex(), new JSONObject());
-					}
-					sheetRangeAuth.getJSONObject(reportRangeAuths.get(i).getSheetIndex()).put(reportRangeAuths.get(i).getRangeTxt(), rangeAxis);
 				}
 			}
 		}else {
@@ -2880,17 +2922,24 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				if(ListUtil.isNotEmpty(reportRangeAuths))
 				{
 					for (int i = 0; i < reportRangeAuths.size(); i++) {
-						JSONObject rangeAxis = new JSONObject();
-						rangeAxis.put("rangeAxis", reportRangeAuths.get(i).getRangeTxt());
-						JSONObject range = new JSONObject();
-						range.put("row", JSON.parseArray(reportRangeAuths.get(i).getRowsNo()));
-						range.put("column", JSON.parseArray(reportRangeAuths.get(i).getColsNo()));
-						rangeAxis.put("range", range);
-						rangeAxis.put("sheetIndex", reportRangeAuths.get(i).getSheetIndex());
-						if(!sheetRangeAuth.containsKey(reportRangeAuths.get(i).getSheetIndex())) {
-							sheetRangeAuth.put(reportRangeAuths.get(i).getSheetIndex(), new JSONObject());
+						if(reportRangeAuths.get(i).getAuthType().intValue() == 1) {
+							JSONObject rangeAxis = new JSONObject();
+							rangeAxis.put("rangeAxis", reportRangeAuths.get(i).getRangeTxt());
+							JSONObject range = new JSONObject();
+							range.put("row", JSON.parseArray(reportRangeAuths.get(i).getRowsNo()));
+							range.put("column", JSON.parseArray(reportRangeAuths.get(i).getColsNo()));
+							rangeAxis.put("range", range);
+							rangeAxis.put("sheetIndex", reportRangeAuths.get(i).getSheetIndex());
+							if(!sheetRangeAuth.containsKey(reportRangeAuths.get(i).getSheetIndex())) {
+								sheetRangeAuth.put(reportRangeAuths.get(i).getSheetIndex(), new JSONObject());
+							}
+							sheetRangeAuth.getJSONObject(reportRangeAuths.get(i).getSheetIndex()).put(reportRangeAuths.get(i).getRangeTxt(), rangeAxis);
+						}else {
+							if(!sheetAuth.containsKey(reportRangeAuths.get(i).getSheetIndex())) {
+								sheetAuth.put(reportRangeAuths.get(i).getSheetIndex(), new JSONObject());
+							}
+							sheetAuth.getJSONObject(reportRangeAuths.get(i).getSheetIndex()).put("authType", 2);
 						}
-						sheetRangeAuth.getJSONObject(reportRangeAuths.get(i).getSheetIndex()).put(reportRangeAuths.get(i).getRangeTxt(), rangeAxis);
 					}
 				}
 			}
@@ -2908,6 +2957,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			}
 		}
 		settings.setSheetRangeAuth(sheetRangeAuth);
+		settings.setSheetAuth(sheetAuth);
 	}
 
 	/**  
@@ -4680,6 +4730,8 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		JSONObject collapseData = new JSONObject();//行折叠信息
 		extendParamData.put("collapseData", collapseData);
 		extendParamData.put("images", result.getImages());
+		extendParamData.put("userInfoDto", userInfoDto);
+		extendParamData.put("viewParams", viewParams);
 //		Map<String, Object> replacedData = new HashMap<>();//被缓存替换的数据 
 //		Map<String, JSONObject> cacheDatas = new HashMap<>();//缓存数据
 		for (int i = 0; i < allCells.size(); i++) {
@@ -4964,6 +5016,8 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				int endCol = 0;
 				Integer collaspeStr = null;//循环块折叠起始行
 				Map<String, Integer> rowAndCol = null;
+				LuckySheetBindData bindData = null;//自定义函数计算用
+	        	List<List<Map<String, Object>>> bindDatas = null;//自定义函数计算用
 				for (int m = 0; m < luckySheetBindData.getDatas().size(); m++) {
 					int z = 1;
 					if(loopCount > 1) {
@@ -5203,6 +5257,8 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 								}
 							}else {
 								datas = luckySheetBindData.getDatas().get(m);
+								groupdatas = new ArrayList<List<Map<String,Object>>>();
+								groupdatas.add(datas);
 							}
 							if(ListUtil.isNotEmpty(groupdatas)) {
 								for (int l = 0; l < groupdatas.size(); l++) {
@@ -5212,7 +5268,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 										if(luckysheetReportBlockCells.get(t).getIsSubCell().intValue() == 1) {
 											for (int j = 0; j < datas.size(); j++) {
 												for (int i = 0; i < subLuckysheetReportBlockCells.size(); i++) {
-													if(m == 0&&j==0)
+													if(m == 0&&l==0)
 													{
 						 								rowAndCol = this.getMaxRowAndCol(maxCoordinate, subLuckysheetReportBlockCells.get(i).getCoordsx(),subLuckysheetReportBlockCells.get(i).getCoordsy(),1,1);
 						 								maxRow = rowAndCol.get("maxX");
@@ -5260,62 +5316,78 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 											        	Map<String, Object> mapData = ListUtil.getProperties(property, datas.get(j));
 											        	Set<String> set = mapData.keySet();
 											        	boolean isJustProperty = false;//是否只有数据库中的属性
-											        	for (String o : set) {
-											            	property = property.replace(o, mapData.get(o) == null?"":String.valueOf(mapData.get(o)));
-											            	if(set.size() == 1)
-											            	{
-											            		if(property.equals("") || property.length() == String.valueOf(mapData.get(o)).length())
-											            		{
-											            			isJustProperty = true;
-											            		}
-											            	}
-											            }
-											            try {
-											            	if(set.size() > 1)
-										                	{
-											            		if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
-											            			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
-											            			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
-											            			value = AviatorEvaluator.execute(property);
-																}else {
-										    						value = property;
-										    					}
-										                		if(value instanceof Double && (Double.isNaN((double) value) || Double.isInfinite((double) value)))
-										                		{
-										                			value = 0;
-										                		}
-										                	}else {
-										                		if(StringUtil.isImgUrl(property))
-										                		{
-										                			value = luckySheetBindData.getTplType() == 1?"":property;
-										        					isImg = true;
-										                		}else if(StringUtil.isAttachUrl(property))
-										                		{
-										                			isAttachFile = true;
-										                			String fileName = StringUtil.getFileNameFromUrl(String.valueOf(property));
-										                			this.processAttachHyperlink(hyperlinks, maxRow, maxCol, property, objectMapper,fileName);	
-										                			value = "附件:" + fileName;
-										                		}else if(!isJustProperty)
-										                		{
-										                			if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
-										                				AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
-										                				AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
-										                				value = AviatorEvaluator.execute(property);
-										        					}else {
-										        						value = property;
-										        					}
-										                			if(value instanceof Double && (Double.isNaN((double) value) || Double.isInfinite((double) value)))
-										                    		{
-										                    			value = 0;
-										                    		}
-										                		}
-										                		else {
-										                			value = property;
-										                		}
-										                	}
-											    		} catch (Exception e) {
-											    			
-											    		}
+											        	if(customSpringReportFunction.isSpringReportFunction(String.valueOf(property))) {
+												        	Map<String, Object> extraParams = new HashMap<>();
+												        	extraParams.put("userInfo", extendParamData.get("userInfoDto"));
+												        	extraParams.put("viewParams", extendParamData.get("viewParams"));
+												        	bindData = new LuckySheetBindData(); 
+												        	bindData.setProperty(String.valueOf(property));
+												        	bindDatas = new ArrayList<List<Map<String,Object>>>();
+												        	bindDatas.add(datas);
+												        	bindData.setDatas(bindDatas);
+												        	property = String.valueOf(customSpringReportFunction.calculate(bindData, extraParams));
+												        	if(StringUtil.isImgUrl(String.valueOf(property)))
+												    		{
+																isImg = true;
+												    		}
+												        }else {
+												        	for (String o : set) {
+												            	property = property.replace(o, mapData.get(o) == null?"":String.valueOf(mapData.get(o)));
+												            	if(set.size() == 1)
+												            	{
+												            		if(property.equals("") || property.length() == String.valueOf(mapData.get(o)).length())
+												            		{
+												            			isJustProperty = true;
+												            		}
+												            	}
+												            }
+												            try {
+												            	if(set.size() > 1)
+											                	{
+												            		if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
+												            			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
+												            			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
+												            			value = AviatorEvaluator.execute(property);
+																	}else {
+											    						value = property;
+											    					}
+											                		if(value instanceof Double && (Double.isNaN((double) value) || Double.isInfinite((double) value)))
+											                		{
+											                			value = 0;
+											                		}
+											                	}else {
+											                		if(StringUtil.isImgUrl(property))
+											                		{
+											                			value = luckySheetBindData.getTplType() == 1?"":property;
+											        					isImg = true;
+											                		}else if(StringUtil.isAttachUrl(property))
+											                		{
+											                			isAttachFile = true;
+											                			String fileName = StringUtil.getFileNameFromUrl(String.valueOf(property));
+											                			this.processAttachHyperlink(hyperlinks, maxRow, maxCol, property, objectMapper,fileName);	
+											                			value = "附件:" + fileName;
+											                		}else if(!isJustProperty)
+											                		{
+											                			if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
+											                				AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
+											                				AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
+											                				value = AviatorEvaluator.execute(property);
+											        					}else {
+											        						value = property;
+											        					}
+											                			if(value instanceof Double && (Double.isNaN((double) value) || Double.isInfinite((double) value)))
+											                    		{
+											                    			value = 0;
+											                    		}
+											                		}
+											                		else {
+											                			value = property;
+											                		}
+											                	}
+												    		} catch (Exception e) {
+												    			
+												    		}
+												        }
 											            if(value == null)
 											            {
 //											            	value = property;
@@ -5593,62 +5665,79 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 										        	Map<String, Object> mapData = ListUtil.getProperties(cellProperty, datas.get(j));
 										        	Set<String> set = mapData.keySet();
 										        	boolean isJustProperty = false;//是否只有数据库中的属性
-										        	for (String o : set) {
-										            	cellProperty = cellProperty.replace(o, mapData.get(o) == null?"":String.valueOf(mapData.get(o)));
-										            	if(set.size() == 1)
-										            	{
-										            		if(cellProperty.equals("") || cellProperty.length() == String.valueOf(mapData.get(o)).length())
-										            		{
-										            			isJustProperty = true;
-										            		}
-										            	}
-										            }
-										            try {
-										            	if(set.size() > 1)
-									                	{
-										            		if(CheckUtil.validate(String.valueOf(cellProperty))&&CheckUtil.containsOperator(String.valueOf(cellProperty))) {
-										            			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
-										            			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
-										            			value = AviatorEvaluator.execute(cellProperty);
-															}else {
-									    						value = cellProperty;
-									    					}
-									                		if(value instanceof Double && (Double.isNaN((double) value) || Double.isInfinite((double) value)))
-									                		{
-									                			value = 0;
-									                		}
-									                	}else {
-									                		if(StringUtil.isImgUrl(cellProperty))
-									                		{
-									                			value = luckySheetBindData.getTplType() == 1?"":cellProperty;
-									        					isImg = true;
-									                		}else if(StringUtil.isAttachUrl(cellProperty))
-									                		{
-									                			isAttachFile = true;
-									                			String fileName = StringUtil.getFileNameFromUrl(String.valueOf(cellProperty));
-									                			this.processAttachHyperlink(hyperlinks, maxRow, maxCol, cellProperty, objectMapper,fileName);	
-									                			value = "附件:" + fileName;
-									                		}else if(!isJustProperty)
-									                		{
-									                			if(CheckUtil.validate(String.valueOf(cellProperty))&&CheckUtil.containsOperator(String.valueOf(cellProperty))) {
-									                				AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
-									                				AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
-									                				value = AviatorEvaluator.execute(cellProperty);
-									        					}else {
-									        						value = cellProperty;
-									        					}
-									                			if(value instanceof Double && (Double.isNaN((double) value) || Double.isInfinite((double) value)))
-									                    		{
-									                    			value = 0;
-									                    		}
-									                		}
-									                		else {
-									                			value = cellProperty;
-									                		}
-									                	}
-										    		} catch (Exception e) {
-										    			
-										    		}
+										        	if(customSpringReportFunction.isSpringReportFunction(String.valueOf(cellProperty))) {
+											        	Map<String, Object> extraParams = new HashMap<>();
+											        	extraParams.put("userInfo", extendParamData.get("userInfoDto"));
+											        	extraParams.put("viewParams", extendParamData.get("viewParams"));
+											        	bindData = new LuckySheetBindData(); 
+											        	bindData.setProperty(String.valueOf(cellProperty));
+											        	bindDatas = new ArrayList<List<Map<String,Object>>>();
+											        	bindDatas.add(datas);
+											        	bindData.setDatas(bindDatas);
+											        	cellProperty = String.valueOf(customSpringReportFunction.calculate(bindData, extraParams));
+											        	if(StringUtil.isImgUrl(String.valueOf(cellProperty)))
+											    		{
+															isImg = true;
+											    		}
+											        }
+										        	else {
+										        		for (String o : set) {
+											            	cellProperty = cellProperty.replace(o, mapData.get(o) == null?"":String.valueOf(mapData.get(o)));
+											            	if(set.size() == 1)
+											            	{
+											            		if(cellProperty.equals("") || cellProperty.length() == String.valueOf(mapData.get(o)).length())
+											            		{
+											            			isJustProperty = true;
+											            		}
+											            	}
+											            }
+											        	try {
+											            	if(set.size() > 1)
+										                	{
+											            		if(CheckUtil.validate(String.valueOf(cellProperty))&&CheckUtil.containsOperator(String.valueOf(cellProperty))) {
+											            			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
+											            			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
+											            			value = AviatorEvaluator.execute(cellProperty);
+																}else {
+										    						value = cellProperty;
+										    					}
+										                		if(value instanceof Double && (Double.isNaN((double) value) || Double.isInfinite((double) value)))
+										                		{
+										                			value = 0;
+										                		}
+										                	}else {
+										                		if(StringUtil.isImgUrl(cellProperty))
+										                		{
+										                			value = luckySheetBindData.getTplType() == 1?"":cellProperty;
+										        					isImg = true;
+										                		}else if(StringUtil.isAttachUrl(cellProperty))
+										                		{
+										                			isAttachFile = true;
+										                			String fileName = StringUtil.getFileNameFromUrl(String.valueOf(cellProperty));
+										                			this.processAttachHyperlink(hyperlinks, maxRow, maxCol, cellProperty, objectMapper,fileName);	
+										                			value = "附件:" + fileName;
+										                		}else if(!isJustProperty)
+										                		{
+										                			if(CheckUtil.validate(String.valueOf(cellProperty))&&CheckUtil.containsOperator(String.valueOf(cellProperty))) {
+										                				AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
+										                				AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
+										                				value = AviatorEvaluator.execute(cellProperty);
+										        					}else {
+										        						value = cellProperty;
+										        					}
+										                			if(value instanceof Double && (Double.isNaN((double) value) || Double.isInfinite((double) value)))
+										                    		{
+										                    			value = 0;
+										                    		}
+										                		}
+										                		else {
+										                			value = cellProperty;
+										                		}
+										                	}
+											    		} catch (Exception e) {
+											    			
+											    		}
+											        }
 										            if(value == null)
 										            {
 //										            	value = property;
@@ -6091,6 +6180,11 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		        	extraParams.put("viewParams", viewParams);
 		        	luckySheetBindData.setProperty(String.valueOf(originalValue));
 		        	value = customSpringReportFunction.calculate(luckySheetBindData, extraParams);
+		        	if(StringUtil.isImgUrl(String.valueOf(value)))
+		    		{
+		    			value = luckySheetBindData.getTplType() == 1?"":value;
+						isImg = true;
+		    		}
 		        }else {
 		        	if(StringUtil.isImgUrl(String.valueOf(originalValue)))
 					{
@@ -8651,6 +8745,12 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         		extraParams.put("index", j+luckySheetBindData.getRelyIndex());
         	}
         	value = customSpringReportFunction.calculate(luckySheetBindData, extraParams);
+        	if(StringUtil.isImgUrl(String.valueOf(value)))
+    		{
+        		property = String.valueOf(value);
+    			value = luckySheetBindData.getTplType() == 1?"":value;
+				isImg = true;
+    		}
         }
         else {
         	List<String> properties = null;
@@ -9277,6 +9377,12 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         	extraParams.put("userInfo", userInfoDto);
         	extraParams.put("viewParams", viewParams);
         	value = customSpringReportFunction.calculate(luckySheetBindData, extraParams);
+        	if(StringUtil.isImgUrl(String.valueOf(value)))
+    		{
+        		property = String.valueOf(value);
+    			value = luckySheetBindData.getTplType() == 1?"":value;
+				isImg = true;
+    		}
         }else {
         	List<String> properties = null;
         	Map<String, Object> datas = null;
@@ -10491,6 +10597,12 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         	extraParams.put("userInfo", userInfoDto);
         	extraParams.put("viewParams", viewParams);
         	value = customSpringReportFunction.calculate(luckySheetBindData, extraParams);
+        	if(StringUtil.isImgUrl(String.valueOf(value)))
+    		{
+        		property = String.valueOf(value);
+    			value = luckySheetBindData.getTplType() == 1?"":value;
+				isImg = true;
+    		}
         }else {
         	List<String> properties = null;
         	Map<String, Object> datas = null;
@@ -15479,6 +15591,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 	@Override
 	public JSONObject getTplAuth(ReportTpl model, UserInfoDto userInfoDto) {
 		JSONObject sheetRangeAuth = new JSONObject();
+		JSONObject sheetAuth = new JSONObject();
 		//获取用户对应的权限
 		QueryWrapper<ReportRangeAuthUser> rangeAuthUserQueryWrapper = new QueryWrapper<>();
 		rangeAuthUserQueryWrapper.eq("tpl_id", model.getId());
@@ -15498,17 +15611,24 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 			if(ListUtil.isNotEmpty(reportRangeAuths))
 			{
 				for (int i = 0; i < reportRangeAuths.size(); i++) {
-					JSONObject rangeAxis = new JSONObject();
-					rangeAxis.put("rangeAxis", reportRangeAuths.get(i).getRangeTxt());
-					JSONObject range = new JSONObject();
-					range.put("row", JSON.parseArray(reportRangeAuths.get(i).getRowsNo()));
-					range.put("column", JSON.parseArray(reportRangeAuths.get(i).getColsNo()));
-					rangeAxis.put("range", range);
-					rangeAxis.put("sheetIndex", reportRangeAuths.get(i).getSheetIndex());
-					if(!sheetRangeAuth.containsKey(reportRangeAuths.get(i).getSheetIndex())) {
-						sheetRangeAuth.put(reportRangeAuths.get(i).getSheetIndex(), new JSONObject());
+					if(reportRangeAuths.get(i).getAuthType().intValue() == 1) {
+						JSONObject rangeAxis = new JSONObject();
+						rangeAxis.put("rangeAxis", reportRangeAuths.get(i).getRangeTxt());
+						JSONObject range = new JSONObject();
+						range.put("row", JSON.parseArray(reportRangeAuths.get(i).getRowsNo()));
+						range.put("column", JSON.parseArray(reportRangeAuths.get(i).getColsNo()));
+						rangeAxis.put("range", range);
+						rangeAxis.put("sheetIndex", reportRangeAuths.get(i).getSheetIndex());
+						if(!sheetRangeAuth.containsKey(reportRangeAuths.get(i).getSheetIndex())) {
+							sheetRangeAuth.put(reportRangeAuths.get(i).getSheetIndex(), new JSONObject());
+						}
+						sheetRangeAuth.getJSONObject(reportRangeAuths.get(i).getSheetIndex()).put(reportRangeAuths.get(i).getRangeTxt(), rangeAxis);
+					}else {
+						if(!sheetAuth.containsKey(reportRangeAuths.get(i).getSheetIndex())) {
+							sheetAuth.put(reportRangeAuths.get(i).getSheetIndex(), new JSONObject());
+						}
 					}
-					sheetRangeAuth.getJSONObject(reportRangeAuths.get(i).getSheetIndex()).put(reportRangeAuths.get(i).getRangeTxt(), rangeAxis);
+					
 				}
 			}
 		}
@@ -15685,7 +15805,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		}
 	}
 	
-	private void processCollapse(LuckySheetBindData luckySheetBindData,JSONObject extendParamData,int str,int edr) {
+	private void processCollapse(LuckySheetBindData luckySheetBindData,JSONObject extendParamData,Integer str,Integer edr) {
 		if(luckySheetBindData.getEnableCollapse()) {
 			JSONObject collapseData = null;
 			if(!extendParamData.containsKey("collapseData")) {
@@ -15884,7 +16004,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 					if(imager == r && imagec == c) {
 						imageObj.put("r", newr);
 						imageObj.put("c", newc);
-						double top = LuckysheetUtil.calculateTop(rowlen, newr,null);
+						double top = LuckysheetUtil.calculateTop(rowlen, newr,null)+2;
 						double left = LuckysheetUtil.calculateLeft(columnlen, newc,null);
 						double originalLeft = imageObj.getJSONObject("default").getDoubleValue("left");
 						imageObj.getJSONObject("default").put("top", top);

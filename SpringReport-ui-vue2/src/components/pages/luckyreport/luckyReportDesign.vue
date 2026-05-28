@@ -4150,8 +4150,11 @@
       <div v-if="authedRange && authedRange.length > 0" class="el-dialog-div">
         <div v-for="(item, index) in authedRange" :key="index">
           <el-descriptions title="" :column="1" border>
-            <el-descriptions-item label="保护范围">{{
+            <el-descriptions-item label="保护范围" v-if="!item.isSheetAuth">{{
               item.rangeAxis
+            }}</el-descriptions-item>
+            <el-descriptions-item label="保护范围" v-if="item.isSheetAuth">{{
+              '当前工作表'
             }}</el-descriptions-item>
             <el-descriptions-item v-if="isCreator" label="授权人数">{{
               item.userIds.length
@@ -4173,6 +4176,7 @@
               circle
               size="mini"
               @click="showRange(item)"
+              v-show="!item.isSheetAuth"
             />
             <el-button
               type="danger"

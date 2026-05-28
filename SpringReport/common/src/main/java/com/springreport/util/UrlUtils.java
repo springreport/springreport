@@ -1,8 +1,10 @@
 package com.springreport.util;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -62,6 +64,19 @@ public class UrlUtils {
         }  
     }  
     
+    /**
+     * 解析完整URL中的请求参数
+     * @param url 完整url 例: http://a.com?name=test&age=18
+     * @return 参数Map
+     */
+    public static Map<String, String> getUrlParamMap(String url) {
+        if (url == null || url.isEmpty() || !url.contains("?")) {
+            return new HashMap<>();
+        }
+        // 截取?后面所有参数
+        String queryStr = url.substring(url.indexOf("?") + 1);
+        return parseQueryString(queryStr);
+    }
 
     /**
      * 解码
@@ -91,6 +106,56 @@ public class UrlUtils {
             System.out.println("urlEncode error:"+str+" info:"+e.toString());
         }
         return null;
+    }
+    
+    /**
+     * 单独解析参数字符串
+     * @param queryStr 参数串 例: name=test&age=18
+     * @return 参数Map
+     */
+    public static Map<String, String> parseQueryString(String queryStr) {
+        Map<String, String> paramMap = new HashMap<>(16);
+        if (queryStr == null || queryStr.isEmpty()) {
+            return paramMap;
+        }
+        String[] paramArr = queryStr.split("&");
+        for (String param : paramArr) {
+            if (!param.contains("=")) {
+                continue;
+            }
+            String[] kv = param.split("=", 2);
+            String key = decode(kv[0]);
+            String value = kv.length > 1 ? decode(kv[1]) : "";
+            paramMap.put(key, value);
+        }
+        return paramMap;
+    }
+    
+    /**
+     * URL解码 UTF-8
+     */
+    private static String decode(String str) {
+        if (str == null) {
+            return "";
+        }
+        try {
+			return URLDecoder.decode(str, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+        return "";
+    }
+
+
+    /**
+     * 根据key获取单个参数值
+     * @param url 完整url
+     * @param key 参数名
+     * @return 参数值
+     */
+    public static String getParamValue(String url, String key) {
+        Map<String, String> map = getUrlParamMap(url);
+        return map.getOrDefault(key, "");
     }
 
     //字符串转字节

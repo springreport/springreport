@@ -82,4 +82,8 @@ public class ReportRangeAuth extends PageEntity {
     /** del_flag - 删除标记 1未删除 2已删除 */
     @TableField("del_flag")
     private Integer delFlag;
+    
+    /** auth_type - 保护类型 1范围保护 2工作表保护 */
+    @TableField("auth_type")
+    private Integer authType;
 }

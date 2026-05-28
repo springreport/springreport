@@ -1,6 +1,7 @@
 package com.springreport.impl.onlinetpl;
 
 import com.springreport.entity.luckysheet.Luckysheet;
+import com.springreport.entity.luckysheetcell.LuckysheetCell;
 import com.springreport.entity.luckysheetonlinecell.LuckysheetOnlineCell;
 import com.springreport.entity.onlinetpl.OnlineTpl;
 import com.springreport.entity.onlinetplsheet.OnlineTplSheet;
@@ -11,6 +12,8 @@ import com.springreport.entity.sysuser.SysUser;
 import com.springreport.mapper.luckysheet.LuckysheetMapper;
 import com.springreport.mapper.onlinetpl.OnlineTplMapper;
 import com.springreport.api.coedit.ICoeditService;
+import com.springreport.api.luckysheet.ILuckysheetService;
+import com.springreport.api.luckysheetcell.ILuckysheetCellService;
 import com.springreport.api.luckysheetonlinecell.ILuckysheetOnlineCellService;
 import com.springreport.api.onlinetpl.IOnlineTplService;
 import com.springreport.api.onlinetplsheet.IOnlineTplSheetService;
@@ -33,6 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.springreport.util.DateUtil;
 import com.springreport.util.ListUtil;
 import com.springreport.util.MessageUtil;
 import com.springreport.util.RedisUtil;
@@ -51,6 +55,7 @@ import com.springreport.dto.reporttpl.ResLuckySheetTplSettingsDto;
 import com.springreport.dto.reporttpl.ResSheetsSettingsDto;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -105,6 +110,15 @@ public class OnlineTplServiceImpl extends ServiceImpl<OnlineTplMapper, OnlineTpl
 	
 	@Value("${thirdParty.type}")
     private String thirdPartyType;
+	
+	@Autowired
+	private LuckysheetMapper luckysheetMapper;
+	
+	@Autowired
+	private ILuckysheetCellService iLuckysheetCellService;
+	
+	@Autowired
+	private ILuckysheetService iLuckysheetService;
 	
 	/** 
 	* @Title: tablePagingQuery 
@@ -504,7 +518,8 @@ public class OnlineTplServiceImpl extends ServiceImpl<OnlineTplMapper, OnlineTpl
 				result.setCreatorName(sysUser.getUserName());
 			}
 			//获取权限信息
-			JSONObject sheetRangeAuth = new JSONObject();
+			JSONObject sheetRangeAuth = new JSONObject();//区域权限信息
+			JSONObject sheetAuth = new JSONObject();//工作表权限信息
 			if(isCreator) {
 				QueryWrapper<ReportRangeAuth> queryWrapper = new QueryWrapper<>();
 				queryWrapper.eq("tpl_id", onlineTpl.getId());
@@ -528,29 +543,47 @@ public class OnlineTplServiceImpl extends ServiceImpl<OnlineTplMapper, OnlineTpl
 						groupDatas = reportRangeAuthUsers.stream().collect(Collectors.groupingBy(ReportRangeAuthUser::getRangeAuthId));
 					}
 					for (int i = 0; i < reportRangeAuths.size(); i++) {
-						JSONObject rangeAxis = new JSONObject();
-						rangeAxis.put("rangeAxis", reportRangeAuths.get(i).getRangeTxt());
-						JSONObject range = new JSONObject();
-						range.put("row", JSON.parseArray(reportRangeAuths.get(i).getRowsNo()));
-						range.put("column", JSON.parseArray(reportRangeAuths.get(i).getColsNo()));
-						rangeAxis.put("range", range);
-						rangeAxis.put("sheetIndex", reportRangeAuths.get(i).getSheetIndex());
-						List<ReportRangeAuthUser> datas = groupDatas.get(reportRangeAuths.get(i).getId());
-						if(ListUtil.isNotEmpty(datas))
-						{
-							JSONArray userIds = new JSONArray();
-							JSONObject userAuth = new JSONObject();
-							for (int j = 0; j < datas.size(); j++) {
-								userIds.add(datas.get(j).getUserId());
-								userAuth.put(String.valueOf(datas.get(j).getUserId()), datas.get(j).getAuthType());
+						if(StringUtil.isNotEmpty(reportRangeAuths.get(i).getRangeTxt())) {
+							JSONObject rangeAxis = new JSONObject();
+							rangeAxis.put("rangeAxis", reportRangeAuths.get(i).getRangeTxt());
+							JSONObject range = new JSONObject();
+							range.put("row", JSON.parseArray(reportRangeAuths.get(i).getRowsNo()));
+							range.put("column", JSON.parseArray(reportRangeAuths.get(i).getColsNo()));
+							rangeAxis.put("range", range);
+							rangeAxis.put("sheetIndex", reportRangeAuths.get(i).getSheetIndex());
+							List<ReportRangeAuthUser> datas = groupDatas.get(reportRangeAuths.get(i).getId());
+							if(ListUtil.isNotEmpty(datas))
+							{
+								JSONArray userIds = new JSONArray();
+								JSONObject userAuth = new JSONObject();
+								for (int j = 0; j < datas.size(); j++) {
+									userIds.add(datas.get(j).getUserId());
+									userAuth.put(String.valueOf(datas.get(j).getUserId()), datas.get(j).getAuthType());
+								}
+								rangeAxis.put("userIds", userIds);
+								rangeAxis.put("userAuth", userAuth);
 							}
-							rangeAxis.put("userIds", userIds);
-							rangeAxis.put("userAuth", userAuth);
+							if(!sheetRangeAuth.containsKey(reportRangeAuths.get(i).getSheetIndex())) {
+								sheetRangeAuth.put(reportRangeAuths.get(i).getSheetIndex(), new JSONObject());
+							}
+							sheetRangeAuth.getJSONObject(reportRangeAuths.get(i).getSheetIndex()).put(reportRangeAuths.get(i).getRangeTxt(), rangeAxis);
+						}else {
+							List<ReportRangeAuthUser> datas = groupDatas.get(reportRangeAuths.get(i).getId());
+							if(ListUtil.isNotEmpty(datas))
+							{
+								JSONArray userIds = new JSONArray();
+								JSONObject userAuth = new JSONObject();
+								for (int j = 0; j < datas.size(); j++) {
+									userIds.add(datas.get(j).getUserId());
+									userAuth.put(String.valueOf(datas.get(j).getUserId()), datas.get(j).getAuthType());
+								}
+								if(!sheetAuth.containsKey(reportRangeAuths.get(i).getSheetIndex())) {
+									sheetAuth.put(reportRangeAuths.get(i).getSheetIndex(), new JSONObject());
+								}
+								sheetAuth.getJSONObject(reportRangeAuths.get(i).getSheetIndex()).put("userIds", userIds);
+								sheetAuth.getJSONObject(reportRangeAuths.get(i).getSheetIndex()).put("userAuth", userAuth);
+							}
 						}
-						if(!sheetRangeAuth.containsKey(reportRangeAuths.get(i).getSheetIndex())) {
-							sheetRangeAuth.put(reportRangeAuths.get(i).getSheetIndex(), new JSONObject());
-						}
-						sheetRangeAuth.getJSONObject(reportRangeAuths.get(i).getSheetIndex()).put(reportRangeAuths.get(i).getRangeTxt(), rangeAxis);
 					}
 				}
 			}else {
@@ -563,10 +596,15 @@ public class OnlineTplServiceImpl extends ServiceImpl<OnlineTplMapper, OnlineTpl
 				if(ListUtil.isNotEmpty(reportRangeAuthUsers))
 				{
 					JSONObject rangeAuthType = new JSONObject();
+					JSONObject sheetAuthType = new JSONObject();
 					List<Long> authRangeIds = new ArrayList<>();
 					for (int i = 0; i < reportRangeAuthUsers.size(); i++) {
 						authRangeIds.add(reportRangeAuthUsers.get(i).getRangeAuthId());
-						rangeAuthType.put(String.valueOf(reportRangeAuthUsers.get(i).getRangeAuthId()), reportRangeAuthUsers.get(i).getAuthType());
+						if(reportRangeAuthUsers.get(i).getRangeSheet().intValue() == 1) {
+							rangeAuthType.put(String.valueOf(reportRangeAuthUsers.get(i).getRangeAuthId()), reportRangeAuthUsers.get(i).getAuthType());
+						}else {
+							sheetAuthType.put(String.valueOf(reportRangeAuthUsers.get(i).getRangeAuthId()), reportRangeAuthUsers.get(i).getAuthType());
+						}
 					}
 					//获取对应的权限操作范围
 					QueryWrapper<ReportRangeAuth> queryWrapper = new QueryWrapper<>();
@@ -575,28 +613,35 @@ public class OnlineTplServiceImpl extends ServiceImpl<OnlineTplMapper, OnlineTpl
 					if(ListUtil.isNotEmpty(reportRangeAuths))
 					{
 						for (int i = 0; i < reportRangeAuths.size(); i++) {
-							JSONObject rangeAxis = new JSONObject();
-							rangeAxis.put("rangeAxis", reportRangeAuths.get(i).getRangeTxt());
-							JSONObject range = new JSONObject();
-							range.put("row", JSON.parseArray(reportRangeAuths.get(i).getRowsNo()));
-							range.put("column", JSON.parseArray(reportRangeAuths.get(i).getColsNo()));
-							rangeAxis.put("range", range);
-							rangeAxis.put("sheetIndex", reportRangeAuths.get(i).getSheetIndex());
-							if(rangeAuthType.containsKey(String.valueOf(reportRangeAuths.get(i).getId()))) {
-								rangeAxis.put("authType", rangeAuthType.getInteger(String.valueOf(reportRangeAuths.get(i).getId())));
+							if(reportRangeAuths.get(i).getAuthType().intValue() == 1) {
+								JSONObject rangeAxis = new JSONObject();
+								rangeAxis.put("rangeAxis", reportRangeAuths.get(i).getRangeTxt());
+								JSONObject range = new JSONObject();
+								range.put("row", JSON.parseArray(reportRangeAuths.get(i).getRowsNo()));
+								range.put("column", JSON.parseArray(reportRangeAuths.get(i).getColsNo()));
+								rangeAxis.put("range", range);
+								rangeAxis.put("sheetIndex", reportRangeAuths.get(i).getSheetIndex());
+								if(rangeAuthType.containsKey(String.valueOf(reportRangeAuths.get(i).getId()))) {
+									rangeAxis.put("authType", rangeAuthType.getInteger(String.valueOf(reportRangeAuths.get(i).getId())));
+								}else {
+									rangeAxis.put("authType", 1);
+								}
+								if(!sheetRangeAuth.containsKey(reportRangeAuths.get(i).getSheetIndex())) {
+									sheetRangeAuth.put(reportRangeAuths.get(i).getSheetIndex(), new JSONObject());
+								}
+								sheetRangeAuth.getJSONObject(reportRangeAuths.get(i).getSheetIndex()).put(reportRangeAuths.get(i).getRangeTxt(), rangeAxis);
 							}else {
-								rangeAxis.put("authType", 1);
+								if(!sheetAuth.containsKey(reportRangeAuths.get(i).getSheetIndex())) {
+									sheetAuth.put(reportRangeAuths.get(i).getSheetIndex(), new JSONObject());
+								}
+								sheetAuth.getJSONObject(reportRangeAuths.get(i).getSheetIndex()).put("authType", sheetAuthType.getInteger(String.valueOf(reportRangeAuths.get(i).getId())));
 							}
-							if(!sheetRangeAuth.containsKey(reportRangeAuths.get(i).getSheetIndex())) {
-								sheetRangeAuth.put(reportRangeAuths.get(i).getSheetIndex(), new JSONObject());
-							}
-							
-							sheetRangeAuth.getJSONObject(reportRangeAuths.get(i).getSheetIndex()).put(reportRangeAuths.get(i).getRangeTxt(), rangeAxis);
 						}
 					}
 				}
 			}
 			result.setSheetRangeAuth(sheetRangeAuth);
+			result.setSheetAuth(sheetAuth);
 			result.setTplName(onlineTpl.getTplName());
 		}
 		return result;
@@ -622,45 +667,90 @@ public class OnlineTplServiceImpl extends ServiceImpl<OnlineTplMapper, OnlineTpl
 		{
 			if(model.getRangeAuth() != null)
 			{
-				String rangeAxis = model.getRangeAuth().getString("rangeAxis");
-				String sheetIndex = model.getRangeAuth().getString("sheetIndex");
-				JSONArray userIds = model.getRangeAuth().getJSONArray("userIds");
-				JSONObject userAuthType = model.getRangeAuth().getJSONObject("userAuthType");
-				QueryWrapper<ReportRangeAuth> rangeAuthQueryWrapper = new QueryWrapper<>();
-				rangeAuthQueryWrapper.eq("tpl_id", onlineTpl.getId());
-				rangeAuthQueryWrapper.eq("sheet_index", sheetIndex);
-				rangeAuthQueryWrapper.eq("range_txt", rangeAxis);
-				ReportRangeAuth rangeAuth = this.iReportRangeAuthService.getOne(rangeAuthQueryWrapper);
-				if(rangeAuth == null)
-				{
-					rangeAuth = new ReportRangeAuth();
-					rangeAuth.setId(IdWorker.getId());
+				if(model.getAuthType() == 1) {
+					//范围授权
+					String rangeAxis = model.getRangeAuth().getString("rangeAxis");
+					String sheetIndex = model.getRangeAuth().getString("sheetIndex");
+					JSONArray userIds = model.getRangeAuth().getJSONArray("userIds");
+					JSONObject userAuthType = model.getRangeAuth().getJSONObject("userAuthType");
+					QueryWrapper<ReportRangeAuth> rangeAuthQueryWrapper = new QueryWrapper<>();
+					rangeAuthQueryWrapper.eq("tpl_id", onlineTpl.getId());
+					rangeAuthQueryWrapper.eq("sheet_index", sheetIndex);
+					rangeAuthQueryWrapper.eq("range_txt", rangeAxis);
+					rangeAuthQueryWrapper.eq("auth_type", 1);
+					ReportRangeAuth rangeAuth = this.iReportRangeAuthService.getOne(rangeAuthQueryWrapper);
+					if(rangeAuth == null)
+					{
+						rangeAuth = new ReportRangeAuth();
+						rangeAuth.setId(IdWorker.getId());
+					}else {
+						//删除用户授权信息
+						QueryWrapper<ReportRangeAuthUser> reportRangeAuthUserQueryWrapper = new QueryWrapper<>();
+						reportRangeAuthUserQueryWrapper.eq("tpl_id", onlineTpl.getId());
+						reportRangeAuthUserQueryWrapper.eq("range_auth_id", rangeAuth.getId());
+						this.iReportRangeAuthUserService.remove(reportRangeAuthUserQueryWrapper);
+					}
+					rangeAuth.setTplId(onlineTpl.getId());
+					rangeAuth.setSheetIndex(sheetIndex);
+					rangeAuth.setRangeTxt(rangeAxis);
+					rangeAuth.setRowsNo(JSON.toJSONString(model.getRangeAuth().getJSONObject("range").getJSONArray("row")));
+					rangeAuth.setColsNo(JSON.toJSONString(model.getRangeAuth().getJSONObject("range").getJSONArray("column")));
+					rangeAuth.setType(2);
+					rangeAuth.setAuthType(1);
+					List<ReportRangeAuthUser> rangeAuthUsers = new ArrayList<>();
+					ReportRangeAuthUser rangeAuthUser = null;
+					for (int i = 0; i < userIds.size(); i++) {
+						rangeAuthUser = new ReportRangeAuthUser();
+						rangeAuthUser.setTplId(onlineTpl.getId());
+						rangeAuthUser.setRangeAuthId(rangeAuth.getId());
+						rangeAuthUser.setUserId(userIds.getLong(i));
+						rangeAuthUser.setType(2);
+						rangeAuthUser.setAuthType(userAuthType.getInteger(userIds.getString(i)));
+						rangeAuthUsers.add(rangeAuthUser);
+					}
+					this.iReportRangeAuthService.saveOrUpdate(rangeAuth);
+					this.iReportRangeAuthUserService.saveBatch(rangeAuthUsers);
 				}else {
-					//删除用户授权信息
-					QueryWrapper<ReportRangeAuthUser> reportRangeAuthUserQueryWrapper = new QueryWrapper<>();
-					reportRangeAuthUserQueryWrapper.eq("tpl_id", onlineTpl.getId());
-					reportRangeAuthUserQueryWrapper.eq("range_auth_id", rangeAuth.getId());
-					this.iReportRangeAuthUserService.remove(reportRangeAuthUserQueryWrapper);
+					//工作表授权
+					JSONObject authUser = model.getRangeAuth();
+					if(!StringUtil.isEmptyMap(authUser)) {
+						String sheetIndex = model.getSheetIndex();
+						QueryWrapper<ReportRangeAuth> rangeAuthQueryWrapper = new QueryWrapper<>();
+						rangeAuthQueryWrapper.eq("tpl_id", onlineTpl.getId());
+						rangeAuthQueryWrapper.eq("sheet_index", sheetIndex);
+						rangeAuthQueryWrapper.eq("auth_type", 2);
+						ReportRangeAuth rangeAuth = this.iReportRangeAuthService.getOne(rangeAuthQueryWrapper);
+						if(rangeAuth == null) {
+							rangeAuth = new ReportRangeAuth();
+							rangeAuth.setTplId(onlineTpl.getId());
+							rangeAuth.setSheetIndex(sheetIndex);
+							rangeAuth.setType(2);
+							rangeAuth.setId(IdWorker.getId());
+							rangeAuth.setAuthType(2);
+						}else {
+							//删除用户授权信息
+							QueryWrapper<ReportRangeAuthUser> reportRangeAuthUserQueryWrapper = new QueryWrapper<>();
+							reportRangeAuthUserQueryWrapper.eq("tpl_id", onlineTpl.getId());
+							reportRangeAuthUserQueryWrapper.eq("range_auth_id", rangeAuth.getId());
+							this.iReportRangeAuthUserService.remove(reportRangeAuthUserQueryWrapper);
+						}
+						List<ReportRangeAuthUser> rangeAuthUsers = new ArrayList<>();
+						ReportRangeAuthUser rangeAuthUser = null;
+						for (String key : authUser.keySet()) {
+							rangeAuthUser = new ReportRangeAuthUser();
+							rangeAuthUser.setTplId(onlineTpl.getId());
+							rangeAuthUser.setRangeAuthId(rangeAuth.getId());
+							rangeAuthUser.setUserId(Long.parseLong(key));
+							rangeAuthUser.setType(2);
+							rangeAuthUser.setAuthType(authUser.getInteger(key));
+							rangeAuthUser.setRangeSheet(2);
+							rangeAuthUsers.add(rangeAuthUser);
+						}
+						this.iReportRangeAuthService.saveOrUpdate(rangeAuth);
+						this.iReportRangeAuthUserService.saveBatch(rangeAuthUsers);
+					}
 				}
-				rangeAuth.setTplId(onlineTpl.getId());
-				rangeAuth.setSheetIndex(sheetIndex);
-				rangeAuth.setRangeTxt(rangeAxis);
-				rangeAuth.setRowsNo(JSON.toJSONString(model.getRangeAuth().getJSONObject("range").getJSONArray("row")));
-				rangeAuth.setColsNo(JSON.toJSONString(model.getRangeAuth().getJSONObject("range").getJSONArray("column")));
-				rangeAuth.setType(2);
-				List<ReportRangeAuthUser> rangeAuthUsers = new ArrayList<>();
-				ReportRangeAuthUser rangeAuthUser = null;
-				for (int i = 0; i < userIds.size(); i++) {
-					rangeAuthUser = new ReportRangeAuthUser();
-					rangeAuthUser.setTplId(onlineTpl.getId());
-					rangeAuthUser.setRangeAuthId(rangeAuth.getId());
-					rangeAuthUser.setUserId(userIds.getLong(i));
-					rangeAuthUser.setType(2);
-					rangeAuthUser.setAuthType(userAuthType.getInteger(userIds.getString(i)));
-					rangeAuthUsers.add(rangeAuthUser);
-				}
-				this.iReportRangeAuthService.saveOrUpdate(rangeAuth);
-				this.iReportRangeAuthUserService.saveBatch(rangeAuthUsers);
+				
 			}
 			
 		}
@@ -687,10 +777,16 @@ public class OnlineTplServiceImpl extends ServiceImpl<OnlineTplMapper, OnlineTpl
 			if(model.getRangeAuth() != null) {
 				String rangeAxis = model.getRangeAuth().getString("rangeAxis");
 				String sheetIndex = model.getRangeAuth().getString("sheetIndex");
+				boolean isSheetAuth = model.getRangeAuth().getBooleanValue("isSheetAuth");
 				QueryWrapper<ReportRangeAuth> rangeAuthQueryWrapper = new QueryWrapper<>();
 				rangeAuthQueryWrapper.eq("tpl_id", onlineTpl.getId());
 				rangeAuthQueryWrapper.eq("sheet_index", sheetIndex);
-				rangeAuthQueryWrapper.eq("range_txt", rangeAxis);
+				if(isSheetAuth) {
+					rangeAuthQueryWrapper.eq("auth_type", 2);	
+				}else {
+					rangeAuthQueryWrapper.eq("range_txt", rangeAxis);
+					rangeAuthQueryWrapper.eq("auth_type", 1);	
+				}
 				ReportRangeAuth rangeAuth = this.iReportRangeAuthService.getOne(rangeAuthQueryWrapper);
 				if(rangeAuth != null) {
 					this.iReportRangeAuthService.removeById(rangeAuth.getId());
@@ -721,6 +817,7 @@ public class OnlineTplServiceImpl extends ServiceImpl<OnlineTplMapper, OnlineTpl
 		onlineTplQueryWrapper.eq("list_id", model.getListId());
 		model = this.getOne(onlineTplQueryWrapper, false);
 		JSONObject sheetRangeAuth = new JSONObject();
+		JSONObject sheetAuth = new JSONObject();
 		if(model != null)
 		{
 			//获取用户对应的权限
@@ -733,9 +830,14 @@ public class OnlineTplServiceImpl extends ServiceImpl<OnlineTplMapper, OnlineTpl
 			{
 				List<Long> authRangeIds = new ArrayList<>();
 				JSONObject rangeAuthType = new JSONObject();
+				JSONObject sheetAuthType = new JSONObject();
 				for (int i = 0; i < reportRangeAuthUsers.size(); i++) {
 					authRangeIds.add(reportRangeAuthUsers.get(i).getRangeAuthId());
-					rangeAuthType.put(String.valueOf(reportRangeAuthUsers.get(i).getRangeAuthId()), reportRangeAuthUsers.get(i).getAuthType());
+					if(reportRangeAuthUsers.get(i).getRangeSheet().intValue() == 1) {
+						rangeAuthType.put(String.valueOf(reportRangeAuthUsers.get(i).getRangeAuthId()), reportRangeAuthUsers.get(i).getAuthType());
+					}else {
+						sheetAuthType.put(String.valueOf(reportRangeAuthUsers.get(i).getRangeAuthId()), reportRangeAuthUsers.get(i).getAuthType());
+					}
 				}
 				//获取对应的权限操作范围
 				QueryWrapper<ReportRangeAuth> queryWrapper = new QueryWrapper<>();
@@ -744,27 +846,156 @@ public class OnlineTplServiceImpl extends ServiceImpl<OnlineTplMapper, OnlineTpl
 				if(ListUtil.isNotEmpty(reportRangeAuths))
 				{
 					for (int i = 0; i < reportRangeAuths.size(); i++) {
-						JSONObject rangeAxis = new JSONObject();
-						rangeAxis.put("rangeAxis", reportRangeAuths.get(i).getRangeTxt());
-						JSONObject range = new JSONObject();
-						range.put("row", JSON.parseArray(reportRangeAuths.get(i).getRowsNo()));
-						range.put("column", JSON.parseArray(reportRangeAuths.get(i).getColsNo()));
-						rangeAxis.put("range", range);
-						rangeAxis.put("sheetIndex", reportRangeAuths.get(i).getSheetIndex());
-						if(!sheetRangeAuth.containsKey(reportRangeAuths.get(i).getSheetIndex())) {
-							sheetRangeAuth.put(reportRangeAuths.get(i).getSheetIndex(), new JSONObject());
-						}
-						if(rangeAuthType.containsKey(String.valueOf(reportRangeAuths.get(i).getId()))) {
-							rangeAxis.put("authType", rangeAuthType.getInteger(String.valueOf(reportRangeAuths.get(i).getId())));
+						if(reportRangeAuths.get(i).getAuthType().intValue() == 1) {
+							JSONObject rangeAxis = new JSONObject();
+							rangeAxis.put("rangeAxis", reportRangeAuths.get(i).getRangeTxt());
+							JSONObject range = new JSONObject();
+							range.put("row", JSON.parseArray(reportRangeAuths.get(i).getRowsNo()));
+							range.put("column", JSON.parseArray(reportRangeAuths.get(i).getColsNo()));
+							rangeAxis.put("range", range);
+							rangeAxis.put("sheetIndex", reportRangeAuths.get(i).getSheetIndex());
+							if(!sheetRangeAuth.containsKey(reportRangeAuths.get(i).getSheetIndex())) {
+								sheetRangeAuth.put(reportRangeAuths.get(i).getSheetIndex(), new JSONObject());
+							}
+							if(rangeAuthType.containsKey(String.valueOf(reportRangeAuths.get(i).getId()))) {
+								rangeAxis.put("authType", rangeAuthType.getInteger(String.valueOf(reportRangeAuths.get(i).getId())));
+							}else {
+								rangeAxis.put("authType", 1);
+							}
+							sheetRangeAuth.getJSONObject(reportRangeAuths.get(i).getSheetIndex()).put(reportRangeAuths.get(i).getRangeTxt(), rangeAxis);
 						}else {
-							rangeAxis.put("authType", 1);
+							if(!sheetAuth.containsKey(reportRangeAuths.get(i).getSheetIndex())) {
+								sheetAuth.put(reportRangeAuths.get(i).getSheetIndex(), new JSONObject());
+							}
+							sheetAuth.getJSONObject(reportRangeAuths.get(i).getSheetIndex()).put("authType", sheetAuthType.getInteger(String.valueOf(reportRangeAuths.get(i).getId())));
 						}
-						sheetRangeAuth.getJSONObject(reportRangeAuths.get(i).getSheetIndex()).put(reportRangeAuths.get(i).getRangeTxt(), rangeAxis);
+						
 					}
 				}
 			}
 		}
+		sheetRangeAuth.put("sheetAuth", sheetAuth);
 		return sheetRangeAuth;
 	}
 
+	/**
+	 * <p>Title: copyDocument</p>
+	 * <p>Description: 复制文档</p>
+	 * @author caiyang
+	 * @param id 源文档ID
+	 * @param userInfoDto
+	 * @return
+	 */
+	@Override
+	@Transactional
+	public BaseEntity copyDocument(Long id, UserInfoDto userInfoDto) {
+		BaseEntity result = new BaseEntity();
+		OnlineTpl sourceTpl = this.getById(id);
+		if(sourceTpl == null)
+		{
+			throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.notexist", new String[] {"该文档"}));
+		}
+		OnlineTpl newTpl = new OnlineTpl();
+		BeanUtils.copyProperties(sourceTpl, newTpl);
+		newTpl.setId(null);
+		newTpl.setListId(UUIDUtil.getUUID());
+		String end = DateUtil.getLastSixDigits();
+		newTpl.setTplName(sourceTpl.getTplName() +"_copy_"+end);
+		newTpl.setCreator(userInfoDto.getUserId());
+		newTpl.setCreateTime(new Date());
+		newTpl.setUpdater(userInfoDto.getUserId());
+		newTpl.setUpdateTime(new Date());
+		this.save(newTpl);
+		QueryWrapper<Luckysheet> sheetQueryWrapper = new QueryWrapper<>();
+		sheetQueryWrapper.eq("block_id", id);
+		sheetQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+		List<Luckysheet> sourceSheets = this.iLuckysheetService.list(sheetQueryWrapper);
+		if(ListUtil.isNotEmpty(sourceSheets))
+		{
+			Map<String, String> sheetIndexMap = new HashMap<>();
+			List<Luckysheet> newSheets = new ArrayList<>();
+			for(Luckysheet sourceSheet : sourceSheets)
+			{
+				Luckysheet newSheet = new Luckysheet();
+				BeanUtils.copyProperties(sourceSheet, newSheet);
+				newSheet.setId(null);
+				newSheet.setBlockId(newTpl.getId()+"");
+				newSheet.setSheetIndex("Sheet" + UUIDUtil.getUUID());
+				newSheet.setListId(newTpl.getListId());
+				newSheets.add(newSheet);
+				sheetIndexMap.put(sourceSheet.getSheetIndex(), newSheet.getSheetIndex());
+			}
+			this.iLuckysheetService.saveBatch(newSheets);
+			QueryWrapper<LuckysheetCell> cellQueryWrapper = new QueryWrapper<>();
+			cellQueryWrapper.eq("block_id", id+"");
+			cellQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+			List<LuckysheetCell> sourceCells = this.iLuckysheetCellService.list(cellQueryWrapper);
+			if(ListUtil.isNotEmpty(sourceCells))
+			{
+				List<LuckysheetCell> newCells = new ArrayList<>();
+				for(LuckysheetCell sourceCell : sourceCells)
+				{
+					LuckysheetCell newCell = new LuckysheetCell();
+					BeanUtils.copyProperties(sourceCell, newCell);
+					newCell.setId(null);
+					newCell.setBlockId(newTpl.getId()+"");
+					newCell.setSheetIndex(sheetIndexMap.get(sourceCell.getSheetIndex()));
+					newCell.setListId(newTpl.getListId());
+					newCells.add(newCell);
+				}
+				this.iLuckysheetCellService.saveBatch(newCells);
+			}
+			
+			QueryWrapper<ReportRangeAuth> rangeAuthQueryWrapper = new QueryWrapper<>();
+			rangeAuthQueryWrapper.eq("tpl_id", id);
+			rangeAuthQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+			List<ReportRangeAuth> sourceRangeAuths = this.iReportRangeAuthService.list(rangeAuthQueryWrapper);
+			if(ListUtil.isNotEmpty(sourceRangeAuths))
+			{
+				Map<Long, Long> rangeAuthIdMap = new HashMap<>();
+				List<ReportRangeAuth> newRangeAuths = new ArrayList<>();
+				for(ReportRangeAuth sourceRangeAuth : sourceRangeAuths)
+				{
+					ReportRangeAuth newRangeAuth = new ReportRangeAuth();
+					BeanUtils.copyProperties(sourceRangeAuth, newRangeAuth);
+					newRangeAuth.setId(IdWorker.getId());
+					newRangeAuth.setTplId(newTpl.getId());
+					newRangeAuth.setSheetIndex(sheetIndexMap.get(sourceRangeAuth.getSheetIndex()));
+					newRangeAuth.setCreator(userInfoDto.getUserId());
+					newRangeAuth.setCreateTime(new Date());
+					newRangeAuth.setUpdater(userInfoDto.getUserId());
+					newRangeAuth.setUpdateTime(new Date());
+					newRangeAuths.add(newRangeAuth);
+					rangeAuthIdMap.put(sourceRangeAuth.getId(), newRangeAuth.getId());
+				}
+				this.iReportRangeAuthService.saveBatch(newRangeAuths);
+				
+				QueryWrapper<ReportRangeAuthUser> rangeAuthUserQueryWrapper = new QueryWrapper<>();
+				rangeAuthUserQueryWrapper.eq("tpl_id", id);
+				rangeAuthUserQueryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+				List<ReportRangeAuthUser> sourceRangeAuthUsers = this.iReportRangeAuthUserService.list(rangeAuthUserQueryWrapper);
+				if(ListUtil.isNotEmpty(sourceRangeAuthUsers))
+				{
+					List<ReportRangeAuthUser> newRangeAuthUsers = new ArrayList<>();
+					for(ReportRangeAuthUser sourceRangeAuthUser : sourceRangeAuthUsers)
+					{
+						ReportRangeAuthUser newRangeAuthUser = new ReportRangeAuthUser();
+						BeanUtils.copyProperties(sourceRangeAuthUser, newRangeAuthUser);
+						newRangeAuthUser.setId(null);
+						newRangeAuthUser.setTplId(newTpl.getId());
+						newRangeAuthUser.setRangeAuthId(rangeAuthIdMap.get(sourceRangeAuthUser.getRangeAuthId()));
+						newRangeAuthUser.setCreator(userInfoDto.getUserId());
+						newRangeAuthUser.setCreateTime(new Date());
+						newRangeAuthUser.setUpdater(userInfoDto.getUserId());
+						newRangeAuthUser.setUpdateTime(new Date());
+						newRangeAuthUsers.add(newRangeAuthUser);
+					}
+					this.iReportRangeAuthUserService.saveBatch(newRangeAuthUsers);
+				}
+			}
+		}
+		result.setStatusMsg(MessageUtil.getValue("info.insert"));
+		return result;
+	}
+	
 }

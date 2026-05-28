@@ -548,7 +548,8 @@ export default {
           afterInitImg:this.afterInitImg,
           datasourceClick: this.datasourceClick,
           highlightRowCol:this.highlightRowCol,
-          execFAfter:this.execFAfter
+          execFAfter:this.execFAfter,
+          addSheetAuthClick:this.addSheetAuthClick,
         }
       },
       settingModalConfig: {
@@ -673,11 +674,13 @@ export default {
       },
       addAuthVisiable: false,
       addAuthForm: {
-        userIds: []
+        userIds: [],
+        authType:"1",//保护类型 1范围保护 2工作表保护
       },
       authUsers: [],
       authTitle: '',
-      sheetRangeAuth: {},
+      sheetRangeAuth: {},//范围权限
+      sheetAuth:{},//工作表权限
       rangeAxis: null,
       range: null,
       isCreator: false,
@@ -2507,6 +2510,9 @@ export default {
       if (this.sheetRangeAuth[luckysheetfile.index]) {
         result.sheetRangeAuth = this.sheetRangeAuth[luckysheetfile.index]
       }
+      if (this.sheetAuth[luckysheetfile.index]) {
+        result.sheetAuth = this.sheetAuth[luckysheetfile.index]
+      }
       return result
     },
     getChartCells(luckysheetfile) {
@@ -2660,6 +2666,7 @@ export default {
             document.title = response.responseData.tplName
             _this.tplType = response.responseData.tplType;
             _this.sheetRangeAuth = response.responseData.sheetRangeAuth
+            _this.sheetAuth = response.responseData.sheetAuth
             _this.isCreator = response.responseData.creator
             _this.creatorName = response.responseData.creatorName
             for (let index = 0; index < response.responseData.settings.length; index++) {
@@ -2684,15 +2691,18 @@ export default {
                 pageDivider: element.pageDivider
               }
               if (!_this.isCreator) {
+                let range = []
                 if (_this.sheetRangeAuth) {
                   if (_this.sheetRangeAuth[element.sheetIndex]) {
-                    const range = []
                     for (var key in _this.sheetRangeAuth[element.sheetIndex]) {
                       range.push(_this.sheetRangeAuth[element.sheetIndex][key].range)
                     }
-                    cellDatas.authrange = range
                   }
                 }
+                if(_this.sheetAuth && _this.sheetAuth[element.sheetIndex]){
+                  range = [];
+                }
+                cellDatas.authrange = range
               }
               if (element.chart) {
                 charts = charts.concat(element.chart)
@@ -4514,6 +4524,7 @@ export default {
       }
       this.range = luckysheet.getRange()[0]
       this.authTitle = '为选区【' + rangeAxis[0] + '】添加保护权限'
+      this.addAuthForm.authType = "1"
       this.addAuthVisiable = true
     },
     closeAddAuth() {
@@ -4526,6 +4537,7 @@ export default {
     },
     confirmAddAuth() {
       const checkedKeys = this.$refs.tree.getCheckedKeys()
+      const sheetIndex = luckysheet.getSheet().index;
       if (checkedKeys && checkedKeys.length > 0) {
         const userIds = []
         for (let index = 0; index < checkedKeys.length; index++) {
@@ -4534,19 +4546,38 @@ export default {
             userIds.push(element)
           }
         }
-        const sheetIndex = luckysheet.getSheet().index
         if (!this.sheetRangeAuth[sheetIndex]) {
           this.sheetRangeAuth[sheetIndex] = {}
         }
-        const rangeAuth = this.sheetRangeAuth[sheetIndex]
-        rangeAuth[this.rangeAxis] = {
-          rangeAxis: this.rangeAxis,
-          range: this.range,
-          sheetIndex: sheetIndex,
-          userIds: userIds
+        if(this.addAuthForm.authType == "1"){
+          const rangeAuth = this.sheetRangeAuth[sheetIndex]
+          rangeAuth[this.rangeAxis] = {
+            rangeAxis: this.rangeAxis,
+            range: this.range,
+            sheetIndex: sheetIndex,
+            userIds: userIds
+          }
+          this.authRangeToArray()
+          this.closeAddAuth()
+        }else{
+          let sheetAuth = this.sheetAuth[sheetIndex];
+            if(!sheetAuth){
+              sheetAuth = {}
+              this.sheetAuth[sheetIndex] = sheetAuth;
+            }
+            let userAuthType = {};
+            for (let index = 0; index < userIds.length; index++) {
+              const element = userIds[index];
+              // if(this.authUsersMap[element]){
+              //   userAuthType[element] = this.authUsersMap[element].authType
+              // }
+            }
+            sheetAuth.userIds = userIds;
+            // sheetAuth.userAuth = userAuthType;
+            this.authRangeToArray();
+            this.closeAddAuth();
         }
-        this.authRangeToArray()
-        this.closeAddAuth()
+        
       } else {
         this.commonUtil.showMessage({ message: '请添加授权用户。', type: this.commonConstants.messageType.error })
       }
@@ -4570,8 +4601,16 @@ export default {
       if (this.sheetRangeAuth) {
         if (this.sheetRangeAuth[sheetIndex]) {
           for (var key in this.sheetRangeAuth[sheetIndex]) {
+            this.sheetRangeAuth[sheetIndex][key].isSheetAuth = false
             this.authedRange.push(this.sheetRangeAuth[sheetIndex][key])
           }
+        }
+      }
+      if(this.sheetAuth)
+      {
+        if(this.sheetAuth[sheetIndex]){
+          this.sheetAuth[sheetIndex].isSheetAuth = true
+          this.authedRange.push(this.sheetAuth[sheetIndex])
         }
       }
     },
@@ -4593,6 +4632,10 @@ export default {
         return true
       } else {
         const sheetIndex = luckysheet.getSheet().index
+        //如果有工作表授权，先判断工作表授权，没有则继续判断范围授权
+          if(this.sheetAuth && this.sheetAuth[sheetIndex]){
+            return true;
+          }
         if (!this.sheetRangeAuth[sheetIndex]) {
           return false
         } else {
@@ -4637,6 +4680,17 @@ export default {
     },
     checkPasteRange(r, c, rowspan, colspan) {
       const sheetIndex = luckysheet.getSheet().index
+      //如果有工作表授权，先判断工作表授权，没有则继续判断范围授权
+      if(this.sheetAuth && this.sheetAuth[sheetIndex]){
+        let authType = this.sheetAuth[sheetIndex].authType;
+        if(authType == 1){
+           //编辑权限
+          return true;
+        }else if(authType == 2 || authType == 3){
+          //不允许查看权限 | 仅查看
+          return false;
+        }
+      }
       if (!this.sheetRangeAuth[sheetIndex]) {
         return false
       } else {
@@ -4792,9 +4846,17 @@ export default {
       }
     },
     editRange(range) {
-      this.rangeAxis = range.rangeAxis
-      this.range = range.range
-      this.authTitle = '修改选区【' + range.rangeAxis + '】权限'
+      if(range.isSheetAuth){
+        const sheetName = luckysheet.getSheet().name;
+        this.authTitle = "修改工作表【"+sheetName+"】权限";
+        this.addAuthForm.authType = 2
+      }else{
+        this.rangeAxis = range.rangeAxis
+        this.range = range.range
+        this.authTitle = '修改选区【' + range.rangeAxis + '】权限'
+        this.addAuthForm.authType = 1
+      }
+      
       // this.addAuthForm.userIds = range.userIds;
       this.defaultCheckedUsers = range.userIds
       this.addAuthVisiable = true
@@ -4802,9 +4864,13 @@ export default {
     deleteRange(range, index) {
       this.authedRange.splice(index, 1)
       const sheetIndex = luckysheet.getSheet().index
-      if (this.sheetRangeAuth) {
-        if (this.sheetRangeAuth[sheetIndex]) {
-          delete this.sheetRangeAuth[sheetIndex][range.rangeAxis]
+      if (this.sheetRangeAuth || this.sheetAuth) {
+        if (this.sheetRangeAuth[sheetIndex] || this.sheetAuth[sheetIndex]) {
+          if(range.isSheetAuth){
+            delete this.sheetAuth[sheetIndex]
+          }else{
+            delete this.sheetRangeAuth[sheetIndex][range.rangeAxis]
+          }
         }
       }
     },
@@ -4834,24 +4900,34 @@ export default {
       this.commonUtil.doPost(obj).then(response => {
         if (response.code == '200') {
           that.sheetRangeAuth = response.responseData
+          that.sheetAuth = that.sheetRangeAuth.sheetAuth;
+          delete that.sheetRangeAuth["sheetAuth"];
           that.authRangeToArray()
           that.showSheetAuthedRanges(sheetIndex)
         }
       })
     },
     showSheetAuthedRanges(sheetIndex) {
+      let range = [];
       if (this.sheetRangeAuth) {
         if (this.sheetRangeAuth[sheetIndex]) {
-          const range = []
           for (var key in this.sheetRangeAuth[sheetIndex]) {
             range.push(this.sheetRangeAuth[sheetIndex][key].range)
           }
-          luckysheet.addLuckysheetAuthRange(range)
+          // luckysheet.addLuckysheetAuthRange(range)
         } else {
-          luckysheet.addLuckysheetAuthRange(null)
+          // luckysheet.addLuckysheetAuthRange(null)
         }
       } else {
-        luckysheet.addLuckysheetAuthRange(null)
+        // luckysheet.addLuckysheetAuthRange(null)
+      }
+      if(this.sheetAuth && this.sheetAuth[sheetIndex]){
+          range = [];
+        }
+      if(range.length > 0){
+        luckysheet.addLuckysheetAuthRange(range);
+      }else{
+        luckysheet.addLuckysheetAuthRange(null);
       }
     },
     sheetActivateAfter(index) {
@@ -4871,6 +4947,10 @@ export default {
     showAuthInfoMsg() {
       if (!this.isCreator) {
         const sheetIndex = luckysheet.getSheet().index
+        //如果有工作表授权，先判断工作表授权，没有则继续判断范围授权
+        if(this.sheetAuth && this.sheetAuth[sheetIndex]){
+          return;
+        }
         if (this.sheetRangeAuth) {
           if (this.sheetRangeAuth[sheetIndex]) {
             this.commonUtil.showMessage({ message: this.commonUtil.getMessageFromList('warning.auth.operate', [this.creatorName]), type: this.commonConstants.messageType.warning })
@@ -5846,7 +5926,36 @@ export default {
             }
           }
         }
-      }
+      },
+    addSheetAuthClick(){
+        const sheetIndex = luckysheet.getSheet().index;
+        if(this.sheetAuth && this.sheetAuth[sheetIndex]){
+          this.commonUtil.showMessage({ message: '该工作表已经添加权限设置，请点击【查看保护范围】查看详细设置信息！', type: this.commonConstants.messageType.error })
+          return;
+        }
+        if(this.isThirdParty == 1){
+          this.commonUtil.showMessage({ message: '第三方iframe调用暂不支持该功能！', type: this.commonConstants.messageType.error })
+          return;
+        }
+        if(!this.isCreator)
+        {
+          this.commonUtil.showMessage({ message: '您没有权限进行此操作，只有创建者【'+this.creatorName+'】才有权限进行操作。', type: this.commonConstants.messageType.error })
+          return;
+        }
+        const sheetName = luckysheet.getSheet().name;
+        // if(!this.sheetRangeAuth[sheetIndex]){
+        //   this.sheetRangeAuth[sheetIndex] = {};
+        // }
+        // let rangeAuth = this.sheetRangeAuth[sheetIndex];
+        // if(rangeAuth[this.rangeAxis])
+        // {
+        //   this.commonUtil.showMessage({ message: '该选区已经设置权限，请勿重复设置。', type: this.commonConstants.messageType.error })
+        //   return;
+        // }
+        this.authTitle = "为工作表【"+sheetName+"】添加保护权限";
+        this.addAuthForm.authType = "2"
+        this.addAuthVisiable = true;
+      }  
   },
   watch: {
     'settingFormData.waterMarkImgs': function(newValue, oldValue) {
