@@ -146,6 +146,7 @@
                   style="margin-left: 10px; width: 120px; height: 20px"
                   @change="changeAuthType(data)"
                 >
+                  <el-option label="仅查看" :value="3" v-show="addAuthForm.authType == 2" />
                   <el-option label="编辑" :value="1"></el-option>
                   <el-option label="不可查看" :value="2"></el-option>
                 </el-select>
@@ -170,7 +171,8 @@
         <div class="el-dialog-div" v-if="authedRange && authedRange.length > 0">
           <div v-for="(item, index) in authedRange" :key="index">
             <el-descriptions title="" :column="1" border>
-              <el-descriptions-item label="保护范围">{{ item.rangeAxis }}</el-descriptions-item>
+              <el-descriptions-item label="保护范围" v-if="!item.isSheetAuth">{{ item.rangeAxis }}</el-descriptions-item>
+              <el-descriptions-item label="保护范围" v-if="item.isSheetAuth">{{ '当前工作表' }}</el-descriptions-item>
               <el-descriptions-item label="保护类型" v-if="!isCreator">{{
                 item.authType == 1 ? '可编辑' : '不可查看'
               }}</el-descriptions-item>
@@ -194,6 +196,7 @@
                 circle
                 size="small"
                 @click="showRange(item)"
+                v-show="!item.isSheetAuth"
               ></el-button>
               <el-button
                 type="danger"
