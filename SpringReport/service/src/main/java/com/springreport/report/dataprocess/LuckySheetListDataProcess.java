@@ -343,13 +343,16 @@ public class LuckySheetListDataProcess extends LuckySheetBasicDynamicDataProcess
 					if(sheetBindData != null)
 					{
 						blockDatas = sheetBindData.getBlockDatas();
+						if(reportTplSheetDto.getIsLoop() == 1) {
+							bindData.setBlockDatas(blockDatas);
+						}
 					}else {
 						sheetBindData = bindData;
 						blockDatas = new HashMap<>();
 					}
    					blockDatas.put(datasetName, bindData.getDatas());
      				sheetBindData.setBlockDatas(blockDatas);
-     				if(blockBindDatas.containsKey(key))
+     				if(blockBindDatas.containsKey(key) && reportTplSheetDto.getIsLoop() != 1)
     				{
     					continue;
     				}else {

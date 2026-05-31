@@ -15632,6 +15632,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				}
 			}
 		}
+		sheetRangeAuth.put("sheetAuth", sheetAuth);
 		return sheetRangeAuth;
 	}
 	
