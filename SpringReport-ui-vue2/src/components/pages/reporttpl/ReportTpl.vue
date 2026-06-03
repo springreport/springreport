@@ -86,7 +86,7 @@
       />
       <textarea id="clipboradInput" style="opacity:0;position:absolute" />
       <div style="display: none">
-        <input id="uploadPic" type="file" accept=".sr" @change="uploadPic">
+        <input id="uploadPic" type="file" accept=".zip" @change="uploadPic">
       </div>
     </div>
   </div>

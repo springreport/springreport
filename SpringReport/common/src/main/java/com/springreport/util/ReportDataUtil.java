@@ -767,7 +767,7 @@ public class ReportDataUtil {
 	    						 processInsertSql(columns,sqlParamsMap,tableName,autoFillAttrs,userInfoDto,details.get(i).getDatasoaurceId(),details.get(i).getFormsName(),columnJavaType);
 	    					 }else {
 	    						 //keys如果是多个，需要先查询看一下是否有数据，有则更新，没有则新增
-	    						 if(ListUtil.isNotEmpty(keys) && keys.size() >1) {
+	    						 if(ListUtil.isNotEmpty(keys)) {
 	    							String whereSql = " ";
 	 	    						List<Object> whereParams = new ArrayList<>();
 	 	    						for (int j = 0; j < keys.size(); j++) {
