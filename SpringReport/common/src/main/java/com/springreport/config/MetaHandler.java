@@ -52,9 +52,9 @@ public class MetaHandler implements MetaObjectHandler{
 					if (metaObject.hasGetter("creator") && userInfoDto != null) {
 						this.setFieldValByName("creator", userInfoDto.getUserId(), metaObject);
 					}
-					if (metaObject.hasGetter("updateBy"))
+					if (metaObject.hasGetter("updater"))
 			    	{
-			    		this.setFieldValByName("updateBy", userInfoDto.getUserId(), metaObject);
+			    		this.setFieldValByName("updater", userInfoDto.getUserId(), metaObject);
 			    	}
 				}
 			}
