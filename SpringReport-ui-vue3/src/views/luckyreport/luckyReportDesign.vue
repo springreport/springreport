@@ -1185,7 +1185,7 @@
                     active-text="是"
                     inactive-text="否"
                     :disabled="attrDisabled"
-                    @change="changeCellAttr('otherCellCompare','forceUpdate')"
+                    @change="changeCellAttr('forceUpdate','formsAttrs')"
                   />
                 </el-form-item>
                 <el-form-item
