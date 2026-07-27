@@ -3135,7 +3135,6 @@ export default {
       if(this.sheetLoop[index]){
         this.sheetLoopData = this.sheetLoop[index]
       }
-      this.$forceUpdate();
       
     },
     // 删除sheet监听
@@ -5815,9 +5814,8 @@ export default {
       if(!this.sheetLoopData.isLoop){
         this.sheetLoopData.loopSettings = null;
         this.sheetLoop[sheetIndex].loopSettings = null;
-        this.$forceUpdate();
       }
-      
+      this.$forceUpdate();
     },
     addSheetLoop(){
       this.sheetLoopVisiable = true
