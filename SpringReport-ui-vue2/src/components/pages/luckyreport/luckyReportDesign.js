@@ -5971,7 +5971,58 @@ export default {
             this.editUsers = response.responseData
           }
         })
-      },  
+      },
+      changeSelect(fieldItem){
+        this.$forceUpdate();
+      },
+      selectAllFields(item){
+        if(item.columns){
+          for (let index = 0; index < item.columns.length; index++) {
+            const element = item.columns[index];
+            element.checked = item.isAllSelected
+          }
+        }
+      },
+      addSelectedFields(item){
+        let selectedRanges = luckysheet.getRange();
+        let r = 0;
+        let c = 0;
+        if(selectedRanges && selectedRanges.length > 0){
+          const range = selectedRanges[0];
+          r = range.row[0];
+          c = range.column[0];
+        }
+        if(item.columns){
+          let data = luckysheet.getSheet().data;
+          let columnSize = data[0].length
+          for (let index = 0; index < item.columns.length; index++) {
+            const element = item.columns[index];
+            if(element.checked){
+              try {
+                if(data[r][c]){
+                  data[r][c].v = item.datasetName + '.${' + element.columnName + '}'
+                  data[r][c].m = item.datasetName + '.${' + element.columnName + '}'
+                }else{
+                  if(c < columnSize){
+                    data[r][c] = {}
+                    data[r][c].v = item.datasetName + '.${' + element.columnName + '}'
+                    data[r][c].m = item.datasetName + '.${' + element.columnName + '}'
+                  }
+                }
+                c = c + 1;
+              } catch (error) {
+                this.commonUtil.showMessage({
+                  message:error.message,
+                  type: this.commonConstants.messageType.error,
+                });
+                return;
+              }
+              
+            }
+          }
+          luckysheet.refresh()
+        }
+      },
   },
   watch: {
     'settingFormData.waterMarkImgs': function(newValue, oldValue) {
