@@ -38,6 +38,7 @@ export default {
   },
   data() {
     return {
+      uploadSheet:[],//新上传的sheet页，解决issue：https://gitee.com/springreport/springreport/issues/IK1D38
       showAISql:false,
       isInit:true,
       deleteTypeDialog:false,//数据删除方式dialog
@@ -3082,6 +3083,7 @@ export default {
                   if (!flag) {
                     var data = luckysheet.buildGridData(element)
                     element.data = data
+                    that.uploadSheet.push(element.index)
                     luckysheet.appendSheets(element, false)
                   }
                 }
@@ -4145,10 +4147,13 @@ export default {
           type: this.commonConstants.messageType.warning,
         });
       } else if ('sheetNotExist' == k) {
-        this.commonUtil.showMessage({
-          message: '该sheet页已经被删除，请尝试刷新页面获取最新的模板数据',
-          type: this.commonConstants.messageType.warning,
-        });
+        let sheetIndex = data.i.split("-")[2];
+        if(this.uploadSheet.indexOf(sheetIndex)<0){
+          this.commonUtil.showMessage({
+            message: '该sheet页已经被删除，请尝试刷新页面获取最新的模板数据',
+            type: this.commonConstants.messageType.warning,
+          });
+        }
       } else if ('deleteDataSet' == k) {
         if (this.datasets && this.datasets.length > 0) {
           for (let index = 0; index < this.datasets.length; index++) {
