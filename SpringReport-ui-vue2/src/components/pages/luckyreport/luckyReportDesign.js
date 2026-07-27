@@ -3129,10 +3129,14 @@ export default {
       }
       this.chartxAxisData = this.sheetChartxAxisDatas[index]
 
-      this.sheetLoopData = [];
+      this.sheetLoopData = {};
+      this.sheetLoopData.isLoop = false;
+      this.sheetLoopData.loopSettings = null;
       if(this.sheetLoop[index]){
         this.sheetLoopData = this.sheetLoop[index]
       }
+      this.$forceUpdate();
+      
     },
     // 删除sheet监听
     sheetDeleteBefore(sheet) {
