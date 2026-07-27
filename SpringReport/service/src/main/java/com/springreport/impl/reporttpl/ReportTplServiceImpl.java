@@ -4417,7 +4417,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 					|| "echarts|area|default".equals(chartAllType)) {
 				JSONArray xField = new JSONArray();
 				xField.add("type");
-				xField.add("seriesField");
+//				xField.add("seriesField");
 				spec.put("xField", xField);
 				spec.put("yField", "value");
 				spec.put("seriesField", "seriesField");
