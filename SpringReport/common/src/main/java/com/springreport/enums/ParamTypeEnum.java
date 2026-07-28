@@ -47,6 +47,15 @@ public enum ParamTypeEnum implements BaseCharEnum{
 			return "日期类型";
 		}
 	},
+	DATERANGE {
+		public String getCode() {
+			return "dateRange";
+		}
+
+		public String getName() {
+			return "日期范围类型";
+		}
+	},
 	SELECT{
 		public String getCode() {
 			return "select";
