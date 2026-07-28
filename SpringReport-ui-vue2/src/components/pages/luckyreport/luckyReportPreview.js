@@ -436,6 +436,16 @@ export default {
                   }
                 }
                 param[result[i].params[m].paramCode] = data
+              }else if (result[i].params[m].paramType == 'dateRange') {
+                var data = new Array()
+                  if (this.$route.query[result[i].params[m].paramCode]) {
+                    data = this.$route.query[result[i].params[m].paramCode].split(',')
+                  } else {
+                    if (result[i].params[m].paramDefault != null && result[i].params[m].paramDefault != '') {
+                      data = result[i].params[m].paramDefault.split(',')
+                    }
+                  }
+                param[result[i].params[m].paramCode] = data
               } else {
                 if (that.isDrillBack == 1) {
                   if (that.parentParams && that.parentParams[dataSet.datasetId] && that.parentParams[dataSet.datasetId][result[i].params[m].paramCode]) {
