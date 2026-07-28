@@ -6011,7 +6011,12 @@ export default {
                   data[r][c].m = item.datasetName + '.${' + element.columnName + '}'
                 }else{
                   if(c < columnSize){
-                    data[r][c] = {}
+                    data[r][c] = {
+                      ct:{
+                        t:"s",
+                        fa:"@"
+                      }
+                    }
                     data[r][c].v = item.datasetName + '.${' + element.columnName + '}'
                     data[r][c].m = item.datasetName + '.${' + element.columnName + '}'
                   }

@@ -5534,7 +5534,7 @@
     flex: 1;
     padding: 0 12px;
     flex-shrink: 0;
-    width: 50%;
+    width: 45%;
     .section-name {
       height: 32px;
       color: #666;
