@@ -3976,7 +3976,10 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 						JSONObject autoFills = model.getAutoFillAttrs().getJSONObject(sheetIndex);
 						autoFills.forEach((key, value) -> {
 						    if(key.startsWith(datasourceId+"|")) {
-						    	autoFillAttrs.put(key, value);
+						    	if(!autoFills.getJSONObject(key).getBooleanValue("isExtend")){
+						    		autoFillAttrs.put(key, value);
+						    	}
+						    	
 						    }
 						});
 					}
