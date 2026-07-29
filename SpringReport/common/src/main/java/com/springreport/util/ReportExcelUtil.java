@@ -681,6 +681,8 @@ public class ReportExcelUtil {
 						}else if("top10".equals(conditionName) || "top10%".equals(conditionName) || "last10%".equals(conditionName)
 							|| "last10".equals(conditionName) || "AboveAverage".equals(conditionName) || "SubAverage".equals(conditionName)) {
 							rule = createConditionalFormattingRuleRank(sheet.getSheetConditionalFormatting(),conditionName,conditionValue);
+						}else if("formula".equals(conditionName)) {
+							rule = sheet.getSheetConditionalFormatting().createConditionalFormattingRule(conditionValue.getString(0));
 						}
 						if(rule != null) {
 							String cellColor = format.getString("cellColor");

@@ -4417,7 +4417,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 					|| "echarts|area|default".equals(chartAllType)) {
 				JSONArray xField = new JSONArray();
 				xField.add("type");
-				xField.add("seriesField");
+//				xField.add("seriesField");
 				spec.put("xField", xField);
 				spec.put("yField", "value");
 				spec.put("seriesField", "seriesField");
@@ -6239,7 +6239,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 		{
 			String f = String.valueOf(cellConfig.get("f"));
 			f = this.processCellFCustomF(f, luckySheetBindData);
-			if(luckySheetBindData.getIsRelyCell().intValue() == 1 && "list".equals(luckySheetBindData.getLastAggregateType())) {
+			if(luckySheetBindData.getIsRelyCell().intValue() == 1 && ("list".equals(luckySheetBindData.getLastAggregateType())||("group".equals(luckySheetBindData.getLastAggregateType())&&luckySheetBindData.getLastIsGroupMerge()))) {
 				if(isFirst) {
 					String formula = SheetUtil.calculateFormula(String.valueOf(f),0, luckySheetBindData.getRelyCellExtend().intValue()==2?1:2);
 					cellConfig.put("f", formula);
@@ -8710,7 +8710,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         String property = luckySheetBindData.getProperty();
         Object value = null;
         String cellText = luckySheetBindData.getCellText();
-        if(YesNoEnum.YES.getCode().intValue() == luckySheetBindData.getIsFunction().intValue() && "list".equals(luckySheetBindData.getAggregateType()) && luckySheetBindData.getIsRelyCell().intValue() == 1) {
+        if(YesNoEnum.YES.getCode().intValue() == luckySheetBindData.getIsFunction().intValue() && ("list".equals(luckySheetBindData.getAggregateType())||("group".equals(luckySheetBindData.getAggregateType())&&luckySheetBindData.getIsGroupMerge())) && luckySheetBindData.getIsRelyCell().intValue() == 1) {
     		int rowSpan = luckySheetBindData.getRowSpan();
     		cellText = SheetUtil.calculateFormula(cellText,rowSpan*luckySheetBindData.getRelyIndex(), 2);
     	}
@@ -9324,7 +9324,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         boolean isJustProperty = false;
         Object value = null;
         String cellText = luckySheetBindData.getCellText();
-        if(YesNoEnum.YES.getCode().intValue() == luckySheetBindData.getIsFunction().intValue() && "list".equals(luckySheetBindData.getAggregateType())) {
+        if(YesNoEnum.YES.getCode().intValue() == luckySheetBindData.getIsFunction().intValue() && ("list".equals(luckySheetBindData.getAggregateType())||("group".equals(luckySheetBindData.getAggregateType())&& luckySheetBindData.getIsGroupMerge()))) {
     		this.processCellFCustomF(property, luckySheetBindData);
     		if(luckySheetBindData.getIsRelyCell().intValue() == YesNoEnum.YES.getCode().intValue()) {
     			if(luckySheetBindData.getLastCoordsx() == null) {
@@ -10296,6 +10296,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				relyBindData.setRelyCoordsy(luckySheetBindData.getCoordsy());
 				relyBindData.setLastCellExtend(luckySheetBindData.getLastCellExtend());
 				relyBindData.setLastAggregateType(luckySheetBindData.getAggregateType());
+				relyBindData.setLastIsGroupMerge(luckySheetBindData.getIsGroupMerge());
 				relyBindData.setRelyIndex(j);
 				this.processBindData(relyBindData, maxCoordinate, cellDatas, hyperlinks, dataRowLen, dataColLen, rowlen, columnlen, mergeMap, 
 						objectMapper, maxXAndY, borderInfo, borderConfig, borderInfos, calcChain, configRowLen, configColumnLen, images, 
@@ -10552,8 +10553,9 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
         boolean isAttachFile = false;//是否附件文件
         Object value = null;
         String cellText = luckySheetBindData.getCellText();
-    	if(YesNoEnum.YES.getCode().intValue() == luckySheetBindData.getIsFunction().intValue() && "list".equals(luckySheetBindData.getAggregateType())) {
-			if(luckySheetBindData.getIsRelyCell().intValue() == YesNoEnum.YES.getCode().intValue()) {
+//        if(YesNoEnum.YES.getCode().intValue() == luckySheetBindData.getIsFunction().intValue() && "list".equals(luckySheetBindData.getAggregateType())) {
+        if(YesNoEnum.YES.getCode().intValue() == luckySheetBindData.getIsFunction().intValue() && ("list".equals(luckySheetBindData.getAggregateType())||("group".equals(luckySheetBindData.getAggregateType())&& luckySheetBindData.getIsGroupMerge()))) {	
+        	if(luckySheetBindData.getIsRelyCell().intValue() == YesNoEnum.YES.getCode().intValue()) {
 				if(luckySheetBindData.getLastCoordsx() == null) {
 	    			int colSpan = luckySheetBindData.getColSpan();
 	    			cellText = SheetUtil.calculateFormula(cellText,0, 1);

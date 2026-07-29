@@ -1229,6 +1229,7 @@
                   <el-option label="字符串" value="varchar"></el-option>
                   <el-option label="数值" value="number"></el-option>
                   <el-option label="日期" value="date"></el-option>
+                  <el-option label="日期范围" value="dateRange" />
                   <el-option label="下拉单选" value="select"></el-option>
                   <el-option label="下拉多选" value="mutiselect"></el-option>
                   <el-option label="下拉树(单选)" value="treeSelect"></el-option>

@@ -152,6 +152,15 @@
               element-loading-spinner="el-icon-loading"
             >
               <template v-if="displayFields.length">
+                <div class="batch-toolbar" v-if="displayFields.length > 0">
+                <el-checkbox v-model="datasetItem.isAllSelected" @change="selectAllFields(datasetItem)">全选</el-checkbox>
+                <div class="toolbar-btns">
+                  <!-- <el-button size="mini" @click="clearSelected">清空选择</el-button> -->
+                  <el-button class="addBtn" :disabled="attrDisabled" @click="addSelectedFields(datasetItem)"
+                      ><i class="el-icon-plus el-icon--left" />添加</el-button
+                    >
+                </div>
+              </div>
                 <draggable
                   v-model="displayFields"
                   class="wrapper"
@@ -164,6 +173,7 @@
                       class="dataset-item df-c-b"
                       @dragend="endDraggable(datasetItem.datasetName, element.name)"
                     >
+                    <el-checkbox v-model="element.checked" label=" " size="large" />
                       <div
                         class="set-name overflow-text"
                         style="flex: 1"
@@ -1691,7 +1701,7 @@
                   ><i class="el-icon-plus el-icon--left" />添加</el-button>
                 </div>
                 <el-collapse
-                  v-if="sheetLoopData.loopSettings!=null"
+                  v-if="sheetLoopData.loopSettings!=null && Object.keys(sheetLoopData.loopSettings).length"
                   class="sub-collapse"
                 >
                   <el-collapse-item
@@ -2310,6 +2320,7 @@
                   <el-option label="字符串" value="varchar"></el-option>
                   <el-option label="数值" value="number"></el-option>
                   <el-option label="日期" value="date"></el-option>
+                  <el-option label="日期范围" value="dateRange" />
                   <el-option label="下拉单选" value="select"></el-option>
                   <el-option label="下拉多选" value="mutiselect"></el-option>
                   <el-option label="下拉树(单选)" value="treeSelect"></el-option>
@@ -4955,7 +4966,7 @@
       flex: 1;
       padding: 0 12px;
       flex-shrink: 0;
-      width: 50%;
+      width: 45%;
 
       .section-name {
         height: 32px;
@@ -5738,5 +5749,16 @@
     .el-radio-button:last-child .el-radio-button__inner {
       border-radius: 0 10px 10px 0 !important;
     }
+  }
+
+  .batch-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 10px;
+    gap: 8px;
   }
 </style>

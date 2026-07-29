@@ -38,6 +38,7 @@ export default {
   },
   data() {
     return {
+      uploadSheet:[],//新上传的sheet页，解决issue：https://gitee.com/springreport/springreport/issues/IK1D38
       showAISql:false,
       isInit:true,
       deleteTypeDialog:false,//数据删除方式dialog
@@ -3082,6 +3083,7 @@ export default {
                   if (!flag) {
                     var data = luckysheet.buildGridData(element)
                     element.data = data
+                    that.uploadSheet.push(element.index)
                     luckysheet.appendSheets(element, false)
                   }
                 }
@@ -3127,10 +3129,13 @@ export default {
       }
       this.chartxAxisData = this.sheetChartxAxisDatas[index]
 
-      this.sheetLoopData = [];
+      this.sheetLoopData = {};
+      this.sheetLoopData.isLoop = false;
+      this.sheetLoopData.loopSettings = null;
       if(this.sheetLoop[index]){
         this.sheetLoopData = this.sheetLoop[index]
       }
+      
     },
     // 删除sheet监听
     sheetDeleteBefore(sheet) {
@@ -4145,10 +4150,13 @@ export default {
           type: this.commonConstants.messageType.warning,
         });
       } else if ('sheetNotExist' == k) {
-        this.commonUtil.showMessage({
-          message: '该sheet页已经被删除，请尝试刷新页面获取最新的模板数据',
-          type: this.commonConstants.messageType.warning,
-        });
+        let sheetIndex = data.i.split("-")[2];
+        if(this.uploadSheet.indexOf(sheetIndex)<0){
+          this.commonUtil.showMessage({
+            message: '该sheet页已经被删除，请尝试刷新页面获取最新的模板数据',
+            type: this.commonConstants.messageType.warning,
+          });
+        }
       } else if ('deleteDataSet' == k) {
         if (this.datasets && this.datasets.length > 0) {
           for (let index = 0; index < this.datasets.length; index++) {
@@ -5806,9 +5814,8 @@ export default {
       if(!this.sheetLoopData.isLoop){
         this.sheetLoopData.loopSettings = null;
         this.sheetLoop[sheetIndex].loopSettings = null;
-        this.$forceUpdate();
       }
-      
+      this.$forceUpdate();
     },
     addSheetLoop(){
       this.sheetLoopVisiable = true
@@ -5971,7 +5978,63 @@ export default {
             this.editUsers = response.responseData
           }
         })
-      },  
+      },
+      changeSelect(fieldItem){
+        this.$forceUpdate();
+      },
+      selectAllFields(item){
+        if(item.columns){
+          for (let index = 0; index < item.columns.length; index++) {
+            const element = item.columns[index];
+            element.checked = item.isAllSelected
+          }
+        }
+      },
+      addSelectedFields(item){
+        let selectedRanges = luckysheet.getRange();
+        let r = 0;
+        let c = 0;
+        if(selectedRanges && selectedRanges.length > 0){
+          const range = selectedRanges[0];
+          r = range.row[0];
+          c = range.column[0];
+        }
+        if(item.columns){
+          let data = luckysheet.getSheet().data;
+          let columnSize = data[0].length
+          for (let index = 0; index < item.columns.length; index++) {
+            const element = item.columns[index];
+            if(element.checked){
+              try {
+                if(data[r][c]){
+                  data[r][c].v = item.datasetName + '.${' + element.columnName + '}'
+                  data[r][c].m = item.datasetName + '.${' + element.columnName + '}'
+                }else{
+                  if(c < columnSize){
+                    data[r][c] = {
+                      ct:{
+                        t:"s",
+                        fa:"@"
+                      }
+                    }
+                    data[r][c].v = item.datasetName + '.${' + element.columnName + '}'
+                    data[r][c].m = item.datasetName + '.${' + element.columnName + '}'
+                  }
+                }
+                c = c + 1;
+              } catch (error) {
+                this.commonUtil.showMessage({
+                  message:error.message,
+                  type: this.commonConstants.messageType.error,
+                });
+                return;
+              }
+              
+            }
+          }
+          luckysheet.refresh()
+        }
+      },
   },
   watch: {
     'settingFormData.waterMarkImgs': function(newValue, oldValue) {

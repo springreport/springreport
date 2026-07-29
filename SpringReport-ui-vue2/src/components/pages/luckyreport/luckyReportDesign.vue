@@ -172,6 +172,15 @@
               element-loading-spinner="el-icon-loading"
             >
               <template v-if="displayFields.length">
+                <div class="batch-toolbar" v-if="displayFields.length > 0">
+                <el-checkbox v-model="datasetItem.isAllSelected" @change="selectAllFields(datasetItem)">全选</el-checkbox>
+                <div class="toolbar-btns">
+                  <!-- <el-button size="mini" @click="clearSelected">清空选择</el-button> -->
+                  <el-button class="addBtn" :disabled="attrDisabled" @click="addSelectedFields(datasetItem)"
+                      ><i class="el-icon-plus el-icon--left" />添加</el-button
+                    >
+                </div>
+              </div>
                 <vuedraggable
                   v-model="displayFields"
                   class="wrapper"
@@ -186,6 +195,7 @@
                       endDraggable(datasetItem.datasetName, fieldItem.name)
                     "
                   >
+                  <el-checkbox v-model="fieldItem.checked" label=" " size="large" @change="changeSelect"/>
                     <div
                       class="set-name overflow-text"
                       style="flex: 1"
@@ -1862,7 +1872,7 @@
                   ><i class="el-icon-plus el-icon--left" />添加</el-button>
                 </div>
                 <el-collapse
-                  v-if="sheetLoopData.loopSettings!=null"
+                  v-if="sheetLoopData.loopSettings!=null && Object.keys(sheetLoopData.loopSettings).length"
                   class="sub-collapse"
                 >
                   <el-collapse-item
@@ -2569,6 +2579,7 @@
                   <el-option label="字符串" value="varchar" />
                   <el-option label="数值" value="number" />
                   <el-option label="日期" value="date" />
+                  <el-option label="日期范围" value="dateRange" />
                   <el-option label="下拉单选" value="select" />
                   <el-option label="下拉多选" value="mutiselect" />
                   <el-option label="下拉树(单选)" value="treeSelect" />
@@ -5524,7 +5535,7 @@
     flex: 1;
     padding: 0 12px;
     flex-shrink: 0;
-    width: 50%;
+    width: 45%;
     .section-name {
       height: 32px;
       color: #666;
@@ -6222,4 +6233,14 @@
 ::v-deep .el-drawer {
   pointer-events: auto !important; /* 抽屉自身恢复可点击，保证自身操作正常 */
 }
+.batch-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 10px;
+    gap: 8px;
+  }
 </style>

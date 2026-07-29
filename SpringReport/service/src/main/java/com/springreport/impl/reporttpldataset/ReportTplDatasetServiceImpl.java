@@ -66,6 +66,7 @@ import com.springreport.dto.reporttpldataset.ReportTplDatasetDto;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -941,6 +942,8 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 								//TODO 支持接口获取
 							} else if (ParamTypeEnum.DATE.getCode().equals(params.get(j).getParamType())) {
 								this.processDateParam(params.get(j));
+							} else if (ParamTypeEnum.DATERANGE.getCode().equals(params.get(j).getParamType())) {
+								this.processDateRangeParam(params.get(j));
 							} else if (ParamTypeEnum.MULTITREESELECT.getCode().equals(params.get(j).getParamType()) || ParamTypeEnum.TREESELECT.getCode().equals(params.get(j).getParamType()) ||
 									ParamTypeEnum.MULTITREESELECT.getCode().equals(params.get(j).getComponentType()) || ParamTypeEnum.TREESELECT.getCode().equals(params.get(j).getComponentType())) {
 								if (StringUtil.isNotEmpty(params.get(j).getParamDefault()) || reportTplDataset.isInitSelectData()) {
@@ -1144,6 +1147,116 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 					}
 				}
 			}
+		}
+	}
+	
+	private void processDateRangeParam(ReportParamDto param) throws ParseException {
+		if(StringUtil.isNotEmpty(param.getParamDefault()))
+		{
+			String dateDefaultValue = param.getParamDefault();
+			String dateFormat = DateUtil.FORMAT_LONOGRAM;
+			String[] defaultValus = dateDefaultValue.split(",");
+			List<String> list = new ArrayList<>(Arrays.asList(defaultValus));
+			if(list.size() == 1) {
+				list.add(list.get(0));
+			}
+			String defaultValue = "";
+			for (int i = 0; i < 2; i++) {
+				param.setParamDefault(list.get(i));
+				if(Constants.CURRENT_DATE.equals(StringUtil.trim(param.getParamDefault()).toLowerCase()))
+				{//当前日期
+					String currentDate = DateUtil.getNow(StringUtil.isNotEmpty(dateFormat)?dateFormat:DateUtil.FORMAT_LONOGRAM);
+					param.setParamDefault(currentDate);
+					param.setDateFormat(StringUtil.isNotEmpty(param.getDateFormat())?param.getDateFormat():DateUtil.FORMAT_LONOGRAM);
+				}else if(DefaultDateTypeEnum.WF.getCode().equals(StringUtil.trim(param.getParamDefault()).toLowerCase()))
+				{//本周第一天
+					String currentDate = DateUtil.getWeekStart();
+					currentDate = DateUtil.date2String(DateUtil.string2Date(currentDate), dateFormat);
+					param.setParamDefault(currentDate);
+					param.setDateFormat(StringUtil.isNotEmpty(param.getDateFormat())?param.getDateFormat():DateUtil.FORMAT_LONOGRAM);
+				}else if(DefaultDateTypeEnum.WL.getCode().equals(StringUtil.trim(param.getParamDefault()).toLowerCase()))
+				{//本周最后一天
+					String currentDate = DateUtil.getWeekEnd();
+					currentDate = DateUtil.date2String(DateUtil.string2Date(currentDate), dateFormat);
+					param.setParamDefault(currentDate);
+					param.setDateFormat(StringUtil.isNotEmpty(param.getDateFormat())?param.getDateFormat():DateUtil.FORMAT_LONOGRAM);
+				}else if(DefaultDateTypeEnum.MF.getCode().equals(StringUtil.trim(param.getParamDefault()).toLowerCase()))
+				{//本月第一天
+					String currentDate = DateUtil.getMonthStart();
+					currentDate = DateUtil.date2String(DateUtil.string2Date(currentDate), dateFormat);
+					param.setParamDefault(currentDate);
+					param.setDateFormat(StringUtil.isNotEmpty(param.getDateFormat())?param.getDateFormat():DateUtil.FORMAT_LONOGRAM);
+				}else if(DefaultDateTypeEnum.ML.getCode().equals(StringUtil.trim(param.getParamDefault()).toLowerCase()))
+				{//本月最后一天
+					String currentDate = DateUtil.getMonthEnd();
+					currentDate = DateUtil.date2String(DateUtil.string2Date(currentDate), dateFormat);
+					param.setParamDefault(currentDate);
+					param.setDateFormat(StringUtil.isNotEmpty(param.getDateFormat())?param.getDateFormat():DateUtil.FORMAT_LONOGRAM);
+				}else if(DefaultDateTypeEnum.SF.getCode().equals(StringUtil.trim(param.getParamDefault()).toLowerCase()))
+				{//本季度第一天
+					String currentDate = DateUtil.getQuarterStart(new Date());
+					currentDate = DateUtil.date2String(DateUtil.string2Date(currentDate), dateFormat);
+					param.setParamDefault(currentDate);
+					param.setDateFormat(StringUtil.isNotEmpty(param.getDateFormat())?param.getDateFormat():DateUtil.FORMAT_LONOGRAM);
+				}else if(DefaultDateTypeEnum.SL.getCode().equals(StringUtil.trim(param.getParamDefault()).toLowerCase()))
+				{//本季度最后一天
+					String currentDate = DateUtil.getQuarterEnd(new Date());
+					currentDate = DateUtil.date2String(DateUtil.string2Date(currentDate), dateFormat);
+					param.setParamDefault(currentDate);
+					param.setDateFormat(StringUtil.isNotEmpty(param.getDateFormat())?param.getDateFormat():DateUtil.FORMAT_LONOGRAM);
+				}else if(DefaultDateTypeEnum.YF.getCode().equals(StringUtil.trim(param.getParamDefault()).toLowerCase()))
+				{//本年度第一天
+					String currentDate = DateUtil.getYearStart();
+					currentDate = DateUtil.date2String(DateUtil.string2Date(currentDate), dateFormat);
+					param.setParamDefault(currentDate);
+					param.setDateFormat(StringUtil.isNotEmpty(param.getDateFormat())?param.getDateFormat():DateUtil.FORMAT_LONOGRAM);
+				}else if(DefaultDateTypeEnum.YL.getCode().equals(StringUtil.trim(param.getParamDefault()).toLowerCase()))
+				{//本年度最后一天
+					String currentDate = DateUtil.getYearEnd();
+					currentDate = DateUtil.date2String(DateUtil.string2Date(currentDate), dateFormat);
+					param.setParamDefault(currentDate);
+					param.setDateFormat(StringUtil.isNotEmpty(param.getDateFormat())?param.getDateFormat():DateUtil.FORMAT_LONOGRAM);
+				}else {
+					if(CheckUtil.isNumber(param.getParamDefault()))
+					{
+						int days = Double.valueOf(param.getParamDefault()).intValue();
+						if(DateUtil.FORMAT_YEARMONTH.equals(dateFormat))
+						{
+							String date = DateUtil.addMonth(days, DateUtil.getNow(DateUtil.FORMAT_LONOGRAM),DateUtil.FORMAT_YEARMONTH);
+							param.setParamDefault(date);
+						}else if(DateUtil.FORMAT_YEAR.equals(dateFormat))
+						{
+							String date = DateUtil.addYear(days, DateUtil.getNow(DateUtil.FORMAT_LONOGRAM),DateUtil.FORMAT_YEAR);
+							param.setParamDefault(date);
+						}else {
+							String date = DateUtil.addDays(days, DateUtil.getNow(),StringUtil.isNotEmpty(param.getDateFormat())?dateFormat:DateUtil.FORMAT_LONOGRAM);
+							if(StringUtil.isNullOrEmpty(param.getDateFormat()))
+							{
+								param.setDateFormat(DateUtil.FORMAT_LONOGRAM);
+							}
+							param.setParamDefault(date);
+						}
+					}else {
+						if(StringUtil.isNullOrEmpty(dateFormat)) {
+							dateFormat = DateUtil.FORMAT_LONOGRAM;
+						}
+						if(!DateUtil.isValidDate(param.getParamDefault(),dateFormat))
+						{
+							param.setParamDefault("");
+						}
+					}
+				}
+				if(StringUtil.isNotEmpty(param.getParamDefault())) {
+					if(i == 0) {
+						defaultValue = defaultValue + param.getParamDefault()+",";
+					}else {
+						defaultValue = defaultValue + param.getParamDefault();
+					}
+					
+				}
+			}
+			param.setDateDefaultValue(defaultValue);
+			param.setParamDefault(defaultValue);
 		}
 	}
 	
