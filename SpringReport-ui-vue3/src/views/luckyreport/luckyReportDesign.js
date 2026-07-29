@@ -3356,13 +3356,15 @@ export default {
       if (!this.blockData) {
         this.blockData = {};
       }
-      this.sheetBlockData = [];
+      
       if (this.blockData[index]) {
         this.sheetBlockData = this.blockData[index];
       }
       this.chartxAxisData = this.sheetChartxAxisDatas[index];
 
-      this.sheetLoopData = [];
+      this.sheetLoopData = {};
+      this.sheetLoopData.isLoop = false;
+      this.sheetLoopData.loopSettings = null;
       if(this.sheetLoop[index]){
         this.sheetLoopData = this.sheetLoop[index]
       }

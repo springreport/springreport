@@ -1701,7 +1701,7 @@
                   ><i class="el-icon-plus el-icon--left" />添加</el-button>
                 </div>
                 <el-collapse
-                  v-if="sheetLoopData.loopSettings!=null"
+                  v-if="sheetLoopData.loopSettings!=null && Object.keys(sheetLoopData.loopSettings).length"
                   class="sub-collapse"
                 >
                   <el-collapse-item
