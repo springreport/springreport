@@ -2022,7 +2022,7 @@ export default {
             if(autoFillAttrs){
               for(var key in autoFillAttrs) {
                 let obj = autoFillAttrs[key];
-                if(obj && obj.fillType == 5 && !obj.isFillValue){
+                if(obj && obj.fillType == 5 && !obj.isFillValue && !obj.isExtend){
                   let fillValue = obj.fillValue;
                   let range = luckysheet.getRangeByTxt(fillValue);
                   let r = range.row[0];
@@ -2077,6 +2077,37 @@ export default {
         })
       }
     },
+    //获取扩展类型的自动填充的单元格
+    getExtendAutoFillAttrs(){
+      let extendAuthFill = {};
+      if(this.sheetAutoFillAttrs){
+        for(var i in this.sheetAutoFillAttrs) {
+          extendAuthFill[i] = {};
+          let autoFillAttrs = this.sheetAutoFillAttrs[i];
+          if(autoFillAttrs){
+            for(var key in autoFillAttrs) {
+              let obj = autoFillAttrs[key];
+              if(obj && obj.fillType == 5){
+                let fillValue = obj.fillValue;
+                let range = luckysheet.getRangeByTxt(fillValue);
+                let r = range.row[0];
+                let c = range.column[0];
+                let cellKey = r + "_" + c;
+                if(this.extraCustomCellConfigs && this.extraCustomCellConfigs[i] && this.extraCustomCellConfigs[i][cellKey]){
+                  let cellConfig = this.extraCustomCellConfigs[i][cellKey];
+                  if(cellConfig.cellExtend == 2 || cellConfig.cellExtend == 3){
+                    obj.isExtend = true;
+                    obj.cellExtend = cellConfig.cellExtend;
+                    extendAuthFill[i][cellKey] = obj;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      return extendAuthFill;
+    },
     submitDatasCallback() {
       this.loading = false;
     },
@@ -2111,10 +2142,12 @@ export default {
       var luckysheetfiles = luckysheet.getLuckysheetfile()
       var msgMap = {}
       if (luckysheetfiles) {
+        let extendAuthFill = this.getExtendAutoFillAttrs();
         this.submitBasicData = {}
         for (let index = 0; index < luckysheetfiles.length; index++) {
           const luckysheetfile = luckysheetfiles[index]
           const sheetIndex = luckysheetfile.index
+          const sheetExtendAuthFill = extendAuthFill[sheetIndex];
           if (!luckysheetfile.isPivotTable && this.extendCellOrigins[sheetIndex]) {
             var cellDatas = this.getCellDatas(luckysheetfile)
             let dataRange = this.getDataRange(cellDatas);
@@ -2236,6 +2269,12 @@ export default {
                           rowKey = sheetIndex + '|' + datasourceConfig.datasourceId + '|' + datasourceConfig.table + '|' + datasourceConfig.name + '|' + flag
                           r = r + m;
                           this.getRowDatas(r,c,sheetIndex,rowKey,extraConfig,datasourceConfig,luckysheetfile,originCell,wrongMsg,v,flag,isChanged,isNew,ri,ci,dictKey,msgMap);
+                          const cellKey = originCell.r+"_"+originCell.c;
+                          if(sheetExtendAuthFill && sheetExtendAuthFill[cellKey]){
+                            var data = this.rowDatas[rowKey]
+                            var autoFillObj = sheetExtendAuthFill[cellKey];
+                            data[autoFillObj.columnName] = v;
+                          }
                         }
                       }else if(extraConfig.cellExtend == 2){//向右扩展
                         for (let m = 0; m < cs; m++) {
@@ -2243,6 +2282,12 @@ export default {
                           rowKey = sheetIndex + '|' + datasourceConfig.datasourceId + '|' + datasourceConfig.table + '|' + datasourceConfig.name + '|' + flag
                           c = c + m;
                           this.getRowDatas(r,c,sheetIndex,rowKey,extraConfig,datasourceConfig,luckysheetfile,originCell,wrongMsg,v,flag,isChanged,isNew,ri,ci,dictKey,msgMap);
+                          const cellKey = originCell.r+"_"+originCell.c;
+                          if(sheetExtendAuthFill && sheetExtendAuthFill[cellKey]){
+                            var data = this.rowDatas[rowKey]
+                            var autoFillObj = sheetExtendAuthFill[cellKey];
+                            data[autoFillObj.columnName] = v;
+                          }
                         }
                       }else{
                         this.getRowDatas(r,c,sheetIndex,rowKey,extraConfig,datasourceConfig,luckysheetfile,originCell,wrongMsg,v,rowFlag,isChanged,isNew,ri,ci,dictKey,msgMap);
@@ -2258,6 +2303,22 @@ export default {
                           if (this.rowDatas[rowDatasKey] && !this.rowDatas[rowDatasKey][columnName]) {
                             this.rowDatas[rowDatasKey][columnName] = null
                           }
+                        }
+                      }
+                    }else{
+                      let cellk = originCell.r+"_"+originCell.c;
+                      if(sheetExtendAuthFill && sheetExtendAuthFill[cellk]){
+                        var rowFlag = 0
+                        var autoFillObj = sheetExtendAuthFill[cellk];
+                        if(autoFillObj.cellExtend == 2) { // 向右扩展
+                          rowFlag = c - originCell.c
+                        } else if (autoFillObj.cellExtend == 3) { // 向下扩展
+                          rowFlag = r - originCell.r
+                        }
+                        var rowKey = sheetIndex + '|' + autoFillObj.datasourceId + '|' + autoFillObj.table + '|' + autoFillObj.name + '|' + rowFlag
+                        var data = this.rowDatas[rowKey]
+                        if(data){
+                          data[autoFillObj.columnName] = v;
                         }
                       }
                     }
