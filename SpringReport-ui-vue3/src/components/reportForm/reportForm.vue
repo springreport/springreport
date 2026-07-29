@@ -271,6 +271,18 @@
                         : 'datetime'
                     "
                   ></el-date-picker>
+                  <!-- 日期范围 -->
+                  <el-date-picker
+                    v-if="item.paramType === 'dateRange'"
+                    v-model="searchData.params[i].params[index][item.paramCode]"
+                    style="width: 260px"
+                    size="mini"
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    type="daterange"
+                    value-format="YYYY-MM-DD"
+                  />
                   <el-tree-select
                     v-if="
                       item.paramType === 'multiTreeSelect' ||
@@ -460,6 +472,18 @@
                       : 'datetime'
                   "
                 ></el-date-picker>
+                <!-- 日期范围 -->
+                <el-date-picker
+                    v-if="item.paramType === 'dateRange'"
+                    v-model="searchData.params[0].params[index][item.paramCode]"
+                    style="width: 260px"
+                    size="mini"
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    type="daterange"
+                    value-format="YYYY-MM-DD"
+                  />
                 <el-tree-select
                   v-if="
                     item.paramType === 'multiTreeSelect' || item.componentType === 'multiTreeSelect'
