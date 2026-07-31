@@ -89,6 +89,10 @@
             @change="changeValue(component)"
             clearable
             ></el-cascader>
+        <el-radio-group v-model="component.paramValue" :size="component.style.size"  v-if="component.type === 'formsRadio'" @change="changeValue(component)">
+          <el-radio v-for="op in component.selectContent" :key="op.value"
+            :label="op.value" border>{{op.name}}</el-radio>
+        </el-radio-group>
         <el-button v-if="component.type === 'formsButton'" :size="component.style.size" :style="{ backgroundColor: component.style.btnColor, color: component.style.fontColor,width:component.width+'px',fontSize:component.style.fontSize+'px' }" @click="changeValue(component)">{{component.btnText}}</el-button>
   </div>
  </component>

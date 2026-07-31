@@ -2560,6 +2560,7 @@ commonUtil.arrayToTree = function(items, config = {}) {
   // 建立 id -> node 的映射，并初始化 children 数组
   for (const item of items) {
     const node = { ...item };          // 浅拷贝原对象
+    node.value = item[idKey];
     node[childrenKey] = [];             // 统一准备 children 容器
     map.set(node[idKey], node);
   }

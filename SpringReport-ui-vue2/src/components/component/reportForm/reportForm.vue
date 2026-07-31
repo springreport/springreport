@@ -301,6 +301,7 @@
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
                     type="daterange"
+                    value-format="yyyy-MM-dd"
                   />
                   <multiselectNode
                     v-if="
