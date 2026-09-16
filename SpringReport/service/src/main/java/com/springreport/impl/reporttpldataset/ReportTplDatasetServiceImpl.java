@@ -1476,13 +1476,16 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 	 * @date 2024-01-22 08:52:15 
 	 */
 	@Override
-	public List<Map<String, Object>> getSelectData(MesGetRelyOnSelectData mesGetRelyOnSelectData)
+	public List<Map<String, Object>> getSelectData(MesGetRelyOnSelectData mesGetRelyOnSelectData,UserInfoDto userInfoDto)
 			throws JSQLParserException {
 		ReportDatasource reportDatasource  = iReportDatasourceService.getById(mesGetRelyOnSelectData.getDatasourceId());
 		//数据源配置
 		DataSourceConfig dataSourceConfig = new DataSourceConfig(reportDatasource.getId(), reportDatasource.getDriverClass(), reportDatasource.getJdbcUrl(), reportDatasource.getUserName(), reportDatasource.getPassword(), null);
 		//获取数据源
 		DataSource dataSource = JdbcUtils.getDataSource(dataSourceConfig);
+		//系统变量
+		Map<String, Object> systemParams = getSystemParams(userInfoDto);
+		mesGetRelyOnSelectData.getParams().putAll(systemParams);
 		String sql = JdbcUtils.processSqlParams(mesGetRelyOnSelectData.getSelectContent(), mesGetRelyOnSelectData.getParams());
 		List<Map<String, Object>> selectDatas = ReportDataUtil.getSelectData(dataSource, sql,true);
 		return selectDatas;
@@ -1501,13 +1504,16 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 	 * @date 2024-01-23 10:12:21 
 	 */
 	@Override
-	public List<Map<String, Object>> getTreeSelectData(MesGetRelyOnSelectData mesGetRelyOnSelectData)
+	public List<Map<String, Object>> getTreeSelectData(MesGetRelyOnSelectData mesGetRelyOnSelectData,UserInfoDto userInfoDto)
 			throws JSQLParserException {
 		ReportDatasource reportDatasource  = iReportDatasourceService.getById(mesGetRelyOnSelectData.getDatasourceId());
 		//数据源配置
 		DataSourceConfig dataSourceConfig = new DataSourceConfig(reportDatasource.getId(), reportDatasource.getDriverClass(), reportDatasource.getJdbcUrl(), reportDatasource.getUserName(), reportDatasource.getPassword(), null);
 		//获取数据源
 		DataSource dataSource = JdbcUtils.getDataSource(dataSourceConfig);
+		//系统变量
+		Map<String, Object> systemParams = getSystemParams(userInfoDto);
+		mesGetRelyOnSelectData.getParams().putAll(systemParams);
 		String sql = JdbcUtils.processSqlParams(mesGetRelyOnSelectData.getSelectContent(), mesGetRelyOnSelectData.getParams());
 		List<Map<String, Object>> list = ReportDataUtil.getSelectData(dataSource, sql,false);
 		List<Map<String, Object>> resultList = new ArrayList<>();
@@ -1662,5 +1668,26 @@ public class ReportTplDatasetServiceImpl extends ServiceImpl<ReportTplDatasetMap
 		}
 		datasetGroups.add(commonGroup);
 		return datasetGroups;
+	}
+	
+	/**  
+	 * @MethodName: getSystemParams
+	 * @Description: 获取系统变量
+	 * @author caiyang
+	 * @param userInfoDto
+	 * @return Map<String,Object>
+	 * @date 2026-09-16 02:19:29 
+	 */  
+	private Map<String, Object> getSystemParams(UserInfoDto userInfoDto) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		//系统变量
+		if(userInfoDto != null) {
+			JSONObject jsonObject = JSON.parseObject(JSON.toJSONString(userInfoDto));
+			for (int i = 0; i < Constants.SYSTEM_PARAM.length; i++) {
+				Object value = jsonObject.get(Constants.SYSTEM_PARAM[i]);
+				result.put(Constants.SYSTEM_PARAM[i], value);
+			}
+		}
+		return result;
 	}
 }

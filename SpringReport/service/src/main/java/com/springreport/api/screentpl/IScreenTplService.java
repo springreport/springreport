@@ -86,7 +86,7 @@ public interface IScreenTplService extends IService<ScreenTpl> {
 	 * @throws ParseException 
 	 * @date 2021-08-02 11:39:06 
 	 */ 
-	ScreenTplDto getScreenDesign(ScreenTpl screenTpl) throws Exception;
+	ScreenTplDto getScreenDesign(ScreenTpl screenTpl,UserInfoDto userInfoDto) throws Exception;
 	
 	/**  
 	 * @Title: saveScreenDesign

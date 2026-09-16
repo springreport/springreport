@@ -310,6 +310,12 @@ public class JdbcUtils {
 							if("date".equals(paramType.toLowerCase()))
 							{
 								params.put(paramCode, StringUtil.isNotEmpty(dateFormat)?DateUtil.getNow(dateFormat):DateUtil.getNow(DateUtil.FORMAT_LONOGRAM));
+							}else if("daterange".equals(paramType.toLowerCase()))
+							{
+								List<String> dateRange = new ArrayList<String>();
+								dateRange.add(DateUtil.getNow(DateUtil.FORMAT_LONOGRAM));
+								dateRange.add(DateUtil.getNow(DateUtil.FORMAT_LONOGRAM));
+								params.put(paramCode, dateRange);
 							}else if("mutiselect".equals(paramType.toLowerCase()) || "multitreeselect".equals(paramType.toLowerCase()))
 							{
 								params.put(paramCode, new JSONArray());
@@ -415,6 +421,12 @@ public class JdbcUtils {
 							if("date".equals(paramType.toLowerCase()))
 							{
 								params.put(paramCode, StringUtil.isNotEmpty(dateFormat)?DateUtil.getNow(dateFormat):DateUtil.getNow(DateUtil.FORMAT_LONOGRAM));
+							}else if("daterange".equals(paramType.toLowerCase()))
+							{
+								List<String> dateRange = new ArrayList<String>();
+								dateRange.add(DateUtil.getNow(DateUtil.FORMAT_LONOGRAM));
+								dateRange.add(DateUtil.getNow(DateUtil.FORMAT_LONOGRAM));
+								params.put(paramCode, dateRange);
 							}else if("mutiselect".equals(paramType.toLowerCase()))
 							{
 								params.put(paramCode, new JSONArray());
@@ -495,6 +507,12 @@ public class JdbcUtils {
 						if("date".equals(paramType.toLowerCase()))
 						{
 							params.put(paramCode, StringUtil.isNotEmpty(dateFormat)?DateUtil.getNow(dateFormat):DateUtil.getNow(DateUtil.FORMAT_LONOGRAM));
+						}else if("daterange".equals(paramType.toLowerCase()))
+						{
+							List<String> dateRange = new ArrayList<String>();
+							dateRange.add(DateUtil.getNow(DateUtil.FORMAT_LONOGRAM));
+							dateRange.add(DateUtil.getNow(DateUtil.FORMAT_LONOGRAM));
+							params.put(paramCode, dateRange);
 						}else if("mutiselect".equals(paramType.toLowerCase()))
 						{
 							params.put(paramCode, new JSONArray());
@@ -568,6 +586,12 @@ public class JdbcUtils {
 					if("date".equals(paramType.toLowerCase()))
 					{
 						params.put(paramCode, StringUtil.isNotEmpty(dateFormat)?DateUtil.getNow(dateFormat):DateUtil.getNow(DateUtil.FORMAT_LONOGRAM));
+					}else if("daterange".equals(paramType.toLowerCase()))
+					{
+						List<String> dateRange = new ArrayList<String>();
+						dateRange.add(DateUtil.getNow(DateUtil.FORMAT_LONOGRAM));
+						dateRange.add(DateUtil.getNow(DateUtil.FORMAT_LONOGRAM));
+						params.put(paramCode, dateRange);
 					}else if("mutiselect".equals(paramType.toLowerCase()))
 					{
 						params.put(paramCode, new JSONArray());
@@ -1208,6 +1232,12 @@ public class JdbcUtils {
 							if("date".equals(paramType.toLowerCase()))
 							{
 								params.put(paramCode, StringUtil.isNotEmpty(dateFormat)?DateUtil.getNow(dateFormat):DateUtil.getNow(DateUtil.FORMAT_LONOGRAM));
+							}else if("daterange".equals(paramType.toLowerCase()))
+							{
+								List<String> dateRange = new ArrayList<String>();
+								dateRange.add(DateUtil.getNow(DateUtil.FORMAT_LONOGRAM));
+								dateRange.add(DateUtil.getNow(DateUtil.FORMAT_LONOGRAM));
+								params.put(paramCode, dateRange);
 							}else if("mutiselect".equals(paramType.toLowerCase()) || "multitreeselect".equals(paramType.toLowerCase()))
 							{
 								params.put(paramCode, new JSONArray());
