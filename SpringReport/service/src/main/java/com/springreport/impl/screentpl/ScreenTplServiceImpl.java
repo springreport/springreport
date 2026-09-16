@@ -354,7 +354,7 @@ public class ScreenTplServiceImpl extends ServiceImpl<ScreenTplMapper, ScreenTpl
 	 * @date 2021-08-02 11:40:00 
 	 */
 	@Override
-	public ScreenTplDto getScreenDesign(ScreenTpl screenTpl) throws Exception {
+	public ScreenTplDto getScreenDesign(ScreenTpl screenTpl,UserInfoDto userInfoDto) throws Exception {
 		ScreenTplDto result = new ScreenTplDto();
 		//获取大屏模板
 		screenTpl = this.getById(screenTpl.getId());
@@ -421,7 +421,7 @@ public class ScreenTplServiceImpl extends ServiceImpl<ScreenTplMapper, ScreenTpl
 							MesGetRelyOnSelectData mesGetRelyOnSelectData = new MesGetRelyOnSelectData(); 
 							mesGetRelyOnSelectData.setDatasourceId(datasourceId);
 							mesGetRelyOnSelectData.setSelectContent(dataContent);
-							List<Map<String, Object>> datas = this.iReportTplDatasetService.getSelectData(mesGetRelyOnSelectData);
+							List<Map<String, Object>> datas = this.iReportTplDatasetService.getSelectData(mesGetRelyOnSelectData,userInfoDto);
 							content.put("selectContent", datas);
 						}else {
 							content.put("dataContent", "");
@@ -458,7 +458,7 @@ public class ScreenTplServiceImpl extends ServiceImpl<ScreenTplMapper, ScreenTpl
 							MesGetRelyOnSelectData mesGetRelyOnSelectData = new MesGetRelyOnSelectData(); 
 							mesGetRelyOnSelectData.setDatasourceId(datasourceId);
 							mesGetRelyOnSelectData.setSelectContent(dataContent);
-							List<Map<String, Object>> datas = this.iReportTplDatasetService.getTreeSelectData(mesGetRelyOnSelectData);
+							List<Map<String, Object>> datas = this.iReportTplDatasetService.getTreeSelectData(mesGetRelyOnSelectData,userInfoDto);
 							content.put("selectContent", datas);
 						}else {
 							content.put("dataContent", "");

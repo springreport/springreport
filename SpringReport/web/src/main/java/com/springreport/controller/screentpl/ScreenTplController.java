@@ -171,7 +171,7 @@ public class ScreenTplController extends BaseController {
 	@RequiresPermissions(value = {"screenTpl_screenDesign","screenTpl_previewDesign","screenTpl_viewScreen","multiScreen_preview","multiScreen_view","screenTemplate_design","multi_view"},logical = Logical.OR)
 	public Response getScreenDesign(@RequestBody ScreenTpl screenTpl,@LoginUser UserInfoDto userInfoDto) throws Exception
 	{
-		ScreenTplDto result = this.iScreenTplService.getScreenDesign(screenTpl);
+		ScreenTplDto result = this.iScreenTplService.getScreenDesign(screenTpl,userInfoDto);
 		return Response.success(result);
 	}
 	

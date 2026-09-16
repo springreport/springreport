@@ -197,7 +197,7 @@ public interface IReportTplDatasetService extends IService<ReportTplDataset> {
 	 * @throws JSQLParserException List<Map<String,Object>>
 	 * @date 2024-01-22 08:47:38 
 	 */ 
-	List<Map<String, Object>> getSelectData(MesGetRelyOnSelectData mesGetRelyOnSelectData) throws JSQLParserException;
+	List<Map<String, Object>> getSelectData(MesGetRelyOnSelectData mesGetRelyOnSelectData,UserInfoDto userInfoDto) throws JSQLParserException;
 	
 	/**  
 	 * @MethodName: getTreeSelectData
@@ -208,7 +208,7 @@ public interface IReportTplDatasetService extends IService<ReportTplDataset> {
 	 * @throws JSQLParserException ReportParamTreeDto
 	 * @date 2024-01-23 10:12:01 
 	 */ 
-	List<Map<String, Object>> getTreeSelectData(MesGetRelyOnSelectData mesGetRelyOnSelectData) throws JSQLParserException;
+	List<Map<String, Object>> getTreeSelectData(MesGetRelyOnSelectData mesGetRelyOnSelectData,UserInfoDto userInfoDto) throws JSQLParserException;
 	
 	/**  
 	 * @MethodName: getDatasetDatasource
