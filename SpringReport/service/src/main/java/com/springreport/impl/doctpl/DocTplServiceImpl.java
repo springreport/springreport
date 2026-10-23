@@ -1359,7 +1359,7 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 		}
 		String datasetName = reportTplDataset.getDatasetName();
 		//处理数据
-		if(DatasetTypeEnum.SQL.getCode().intValue() == reportTplDataset.getDatasetType().intValue() || DatasetTypeEnum.MONGO.getCode().intValue() == reportTplDataset.getDatasetType().intValue()) {
+//		if(DatasetTypeEnum.SQL.getCode().intValue() == reportTplDataset.getDatasetType().intValue() || DatasetTypeEnum.MONGO.getCode().intValue() == reportTplDataset.getDatasetType().intValue()) {
 			//sql查询，如果数据集名称是以_v或者_V结尾的，则说明是列表数据，并且是竖向扩展，
 			//如果数据集名称是以_h或者_H结尾的，则说明是列表数据，并且是横向扩展
 			//如果数据集名称是以_l结尾的，则说明是列表数据，将列表数据直接返回
@@ -1405,70 +1405,70 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 					return null;
 				}
 			}
-		}else {
-			//api查询，根据reportdatasource返回值类型(api_result_type)字段判断，ObjectArray是列表数据，Object是对象数据
-			String apiResultType = reportDatasource.getApiResultType();
-			if("ObjectArray".equals(apiResultType)) {
-				//列表数据，如果数据集名称是以_v或者_V结尾的，则说明是列表数据，并且是竖向扩展，
-				//如果数据集名称是以_h或者_H结尾的，则说明是列表数据，并且是横向扩展
-				//如果都没有则默认按照竖向扩展的规则
-				if(datasetName.toLowerCase().endsWith("_v")) {
-					List<String> vertical = paramsType.get("vertical");
-					if(vertical == null) {
-						vertical = new ArrayList<>();
-						paramsType.put("vertical", vertical);
-					}
-					vertical.add(datasetName);
-					return datas;
-				}else if(datasetName.toLowerCase().endsWith("_h")){
-					List<String> horizontal = paramsType.get("horizontal");
-					if(horizontal == null) {
-						horizontal = new ArrayList<>();
-						paramsType.put("horizontal", horizontal);
-					}
-					horizontal.add(datasetName);
-					return datas;
-				}else if(datasetName.toLowerCase().endsWith("_g")){
-					List<String> group = paramsType.get("group");
-					if(group == null) {
-						group = new ArrayList<>();
-						paramsType.put("group", group);
-					}
-					group.add(datasetName);
-					return this.getServerTableData(datas);	
-				}else {
-					List<String> vertical = paramsType.get("vertical");
-					if(vertical == null) {
-						vertical = new ArrayList<>();
-						paramsType.put("vertical", vertical);
-					}
-					vertical.add(datasetName);
-					return datas;
-				}
-			}else {
-				if(ListUtil.isNotEmpty(datas)) {
-					Map<String, Object> data = datas.get(0);
-					for(String mapKey : data.keySet()){
-						Object value = data.get(mapKey);
-						if(value instanceof List) {
-							List<String> vertical = paramsType.get("vertical");
-							if(vertical == null) {
-								vertical = new ArrayList<>();
-								paramsType.put("vertical", vertical);
-							}
-							vertical.add(mapKey);
-						}
-					}
-					if(datas.size() >1) {
-						return datas;
-					}else {
-						return datas.get(0);	
-					}
-				}else {
-					return null;
-				}
-			}
-		}
+//		}else {
+//			//api查询，根据reportdatasource返回值类型(api_result_type)字段判断，ObjectArray是列表数据，Object是对象数据
+//			String apiResultType = reportDatasource.getApiResultType();
+//			if("ObjectArray".equals(apiResultType)) {
+//				//列表数据，如果数据集名称是以_v或者_V结尾的，则说明是列表数据，并且是竖向扩展，
+//				//如果数据集名称是以_h或者_H结尾的，则说明是列表数据，并且是横向扩展
+//				//如果都没有则默认按照竖向扩展的规则
+//				if(datasetName.toLowerCase().endsWith("_v")) {
+//					List<String> vertical = paramsType.get("vertical");
+//					if(vertical == null) {
+//						vertical = new ArrayList<>();
+//						paramsType.put("vertical", vertical);
+//					}
+//					vertical.add(datasetName);
+//					return datas;
+//				}else if(datasetName.toLowerCase().endsWith("_h")){
+//					List<String> horizontal = paramsType.get("horizontal");
+//					if(horizontal == null) {
+//						horizontal = new ArrayList<>();
+//						paramsType.put("horizontal", horizontal);
+//					}
+//					horizontal.add(datasetName);
+//					return datas;
+//				}else if(datasetName.toLowerCase().endsWith("_g")){
+//					List<String> group = paramsType.get("group");
+//					if(group == null) {
+//						group = new ArrayList<>();
+//						paramsType.put("group", group);
+//					}
+//					group.add(datasetName);
+//					return this.getServerTableData(datas);	
+//				}else {
+//					List<String> vertical = paramsType.get("vertical");
+//					if(vertical == null) {
+//						vertical = new ArrayList<>();
+//						paramsType.put("vertical", vertical);
+//					}
+//					vertical.add(datasetName);
+//					return datas;
+//				}
+//			}else {
+//				if(ListUtil.isNotEmpty(datas)) {
+//					Map<String, Object> data = datas.get(0);
+//					for(String mapKey : data.keySet()){
+//						Object value = data.get(mapKey);
+//						if(value instanceof List) {
+//							List<String> vertical = paramsType.get("vertical");
+//							if(vertical == null) {
+//								vertical = new ArrayList<>();
+//								paramsType.put("vertical", vertical);
+//							}
+//							vertical.add(mapKey);
+//						}
+//					}
+//					if(datas.size() >1) {
+//						return datas;
+//					}else {
+//						return datas.get(0);	
+//					}
+//				}else {
+//					return null;
+//				}
+//			}
+//		}
 	}
 	
 	 private ServerTableData getServerTableData(List<Map<String, Object>> datas) {
