@@ -4235,6 +4235,14 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 								String headerParams = headersArray.getJSONObject(j).getString("headerParams");
 								String headerResponseAttr = headersArray.getJSONObject(j).getString("headerResponseAttr");
 								JSONObject headerRequestParams = JSONObject.parseObject(headerParams);
+								for (String key : headerRequestParams.keySet()) {
+									if(!StringUtil.isEmptyMap(params) && params.containsKey(key)) {
+										Object value = params.get(key);
+										if(value != null) {
+											headerRequestParams.put(key, value);
+										}
+									}
+								}
 								String headerResult = HttpClientUtil.connectionTest(headerRequestUrl, headerRequestType, headerRequestParams, null);
 								JSONObject resultObj = JSONObject.parseObject(headerResult); 
 								String[] attrs =headerResponseAttr.split("\\.");
