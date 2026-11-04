@@ -1233,14 +1233,13 @@
           component.type.toLowerCase().indexOf('basicmap') < 0 &&
           component.type.toLowerCase().indexOf('boxplot') < 0 &&
           component.type.toLowerCase().indexOf('combochartdbbar')<0
-          && component.type.toLowerCase().indexOf('combocharthl')<0
           && component.type.toLowerCase().indexOf('tablemap')<0
         "
       >
-        <div class="right-dataset-title">
+        <div class="right-dataset-title" v-if="component.type.toLowerCase().indexOf('combocharthl')<0">
           <span class="attr-dataset-title">标签设置</span>
         </div>
-        <div class="right-dataset-warp">
+        <div class="right-dataset-warp" v-if="component.type.toLowerCase().indexOf('combocharthl')<0">
           <el-form-item label="标签是否显示" class="df-form-item">
             <el-switch
               v-model="component.spec.label.visible"
