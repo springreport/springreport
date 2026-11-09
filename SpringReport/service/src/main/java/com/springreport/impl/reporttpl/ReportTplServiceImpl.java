@@ -106,6 +106,7 @@ import com.springreport.util.RedisUtil;
 import com.springreport.util.ReportDataUtil;
 import com.springreport.util.ReportExcelUtil;
 import com.springreport.util.RowConvertColUtil;
+import com.springreport.util.SafeAviatorExecutor;
 import com.springreport.util.SendEmailUtil;
 import com.springreport.util.SheetUtil;
 import com.springreport.util.StringUtil;
@@ -120,6 +121,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.PageHelper;
 import com.googlecode.aviator.AviatorEvaluator;
+import com.googlecode.aviator.AviatorEvaluatorInstance;
 import com.googlecode.aviator.Options;
 
 import net.sf.jsqlparser.JSQLParserException;
@@ -175,6 +177,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -5353,9 +5356,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 												            	if(set.size() > 1)
 											                	{
 												            		if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
-												            			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
-												            			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
-												            			value = AviatorEvaluator.execute(property);
+												            			value = SafeAviatorExecutor.evaluate(property);
 																	}else {
 											    						value = property;
 											    					}
@@ -5377,9 +5378,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 											                		}else if(!isJustProperty)
 											                		{
 											                			if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
-											                				AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
-											                				AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
-											                				value = AviatorEvaluator.execute(property);
+											                				value = SafeAviatorExecutor.evaluate(property);
 											        					}else {
 											        						value = property;
 											        					}
@@ -5703,9 +5702,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 											            	if(set.size() > 1)
 										                	{
 											            		if(CheckUtil.validate(String.valueOf(cellProperty))&&CheckUtil.containsOperator(String.valueOf(cellProperty))) {
-											            			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
-											            			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
-											            			value = AviatorEvaluator.execute(cellProperty);
+											            			value = SafeAviatorExecutor.evaluate(cellProperty);
 																}else {
 										    						value = cellProperty;
 										    					}
@@ -5727,9 +5724,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 										                		}else if(!isJustProperty)
 										                		{
 										                			if(CheckUtil.validate(String.valueOf(cellProperty))&&CheckUtil.containsOperator(String.valueOf(cellProperty))) {
-										                				AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
-										                				AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
-										                				value = AviatorEvaluator.execute(cellProperty);
+										                				value = SafeAviatorExecutor.evaluate(cellProperty);
 										        					}else {
 										        						value = cellProperty;
 										        					}
@@ -6201,9 +6196,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 					}else {
 						try {
 							if(CheckUtil.validate(String.valueOf(originalValue))&&CheckUtil.containsOperator(String.valueOf(originalValue))&&!format.equals(CellFormatEnum.TEXT.getCode())) {
-								AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
-								AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
-								value = AviatorEvaluator.execute(String.valueOf(originalValue));
+								value = SafeAviatorExecutor.evaluate(String.valueOf(originalValue));
 							}
 							if(value instanceof Double && (Double.isNaN((double) value) || Double.isInfinite((double) value)))
 	                		{
@@ -8804,9 +8797,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
             	if(set.size() > 1)
             	{
             		if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
-            			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
-            			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
-            			value = AviatorEvaluator.execute(property);
+            			value = SafeAviatorExecutor.evaluate(property);
 					}else {
 						value = property;
 					}
@@ -8828,9 +8819,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
             		}else if(!isJustProperty)
             		{
             			if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
-            				AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
-            				AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
-            				value = AviatorEvaluator.execute(property);
+            				value = SafeAviatorExecutor.evaluate(property);
     					}else {
     						value = property;
     					}
@@ -9426,9 +9415,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
             	if(set.size() > 1)
             	{
             		if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
-            			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
-            			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
-            			value = AviatorEvaluator.execute(property);
+            			value = SafeAviatorExecutor.evaluate(property);
 					}else {
 						value = property;
 					}
@@ -9450,9 +9437,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
             		}else if(!isJustProperty)
             		{
             			if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
-            				AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
-            				AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
-            				value = AviatorEvaluator.execute(property);
+            				value = SafeAviatorExecutor.evaluate(property);
     					}else {
     						value = property;
     					}
@@ -10648,9 +10633,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
             	if(set.size() > 1)
             	{
             		if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
-            			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
-            			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
-            			value = AviatorEvaluator.execute(property);
+            			value = SafeAviatorExecutor.evaluate(property);
 					}else {
 						value = property;
 					}
@@ -10672,9 +10655,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
             		}else if(!isJustProperty)
             		{
             			if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
-            				AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
-            				AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
-            				value = AviatorEvaluator.execute(property);
+            				value = SafeAviatorExecutor.evaluate(property);
     					}else {
     						value = property;
     					}
@@ -11305,9 +11286,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
                 	if(set.size() > 1)
                 	{
                 		if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
-                			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
-                			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
-                			value = AviatorEvaluator.execute(property);
+                			value = SafeAviatorExecutor.evaluate(property);
     					}else {
     						value = property;
     					}
@@ -11329,9 +11308,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
                 		}else if(!isJustProperty)
                 		{
                 			if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
-                				AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
-                				AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
-                				value = AviatorEvaluator.execute(property);
+                				value = SafeAviatorExecutor.evaluate(property);
         					}else {
         						value = property;
         					}
@@ -11825,9 +11802,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
                 	if(set.size() > 1)
                 	{
                 		if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
-                			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
-                			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
-                			value = AviatorEvaluator.execute(property);
+                			value = SafeAviatorExecutor.evaluate(property);
     					}else {
     						value = property;
     					}
@@ -11849,9 +11824,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
                 		}else if(!isJustProperty)
                 		{
                 			if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
-                				AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
-                				AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
-                				value = AviatorEvaluator.execute(property);
+                				value = SafeAviatorExecutor.evaluate(property);
         					}else {
         						value = property;
         					}
@@ -12252,9 +12225,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
             	if(set.size() > 1)
             	{
             		if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
-            			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
-            			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
-            			value = AviatorEvaluator.execute(property);
+            			value = SafeAviatorExecutor.evaluate(property);
 					}else {
 						value = property;
 					}
@@ -12276,9 +12247,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
             		}else if(!isJustProperty)
             		{
             			if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
-            				AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
-            				AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
-            				value = AviatorEvaluator.execute(property);
+            				value = SafeAviatorExecutor.evaluate(property);
     					}else {
     						value = property;
     					}
@@ -12616,9 +12585,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
             	if(set.size() > 1)
             	{
             		if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
-            			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
-            			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
-            			value = AviatorEvaluator.execute(property);
+            			value = SafeAviatorExecutor.evaluate(property);
 					}else {
 						value = property;
 					}
@@ -12640,9 +12607,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
             		}else if(!isJustProperty)
             		{
             			if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
-            				AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
-            				AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
-            				value = AviatorEvaluator.execute(property);
+            				value = SafeAviatorExecutor.evaluate(property);
     					}else {
     						value = property;
     					}
@@ -14578,9 +14543,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 						Object value = null;
 						try {
 							if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
-								AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
-								AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
-								value = AviatorEvaluator.execute(property);
+								value = SafeAviatorExecutor.evaluate(property);
 							}else {
 	    						value = property;
 	    					}
@@ -14606,9 +14569,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 								Object value = null;
 								try {
 									if(CheckUtil.validate(String.valueOf(property))&&CheckUtil.containsOperator(String.valueOf(property))) {
-										AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
-										AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
-										value = AviatorEvaluator.execute(property);
+										value = SafeAviatorExecutor.evaluate(property);
 									}else {
 			    						value = tempProperty;
 			    					}

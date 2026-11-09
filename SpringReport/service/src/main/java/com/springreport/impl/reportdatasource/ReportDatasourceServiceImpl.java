@@ -149,6 +149,8 @@ public class ReportDatasourceServiceImpl extends ServiceImpl<ReportDatasourceMap
 		//数据驱动
 		if (DriverClassEnum.MYSQL.getCode().intValue() == model.getType().intValue()) {
 			model.setDriverClass(DriverClassEnum.MYSQL.getName());
+			String safeUrl = JdbcUtils.withSecurityParams(model.getJdbcUrl());
+			model.setJdbcUrl(safeUrl);
 		}else if(DriverClassEnum.SQLSERVER.getCode().intValue() == model.getType().intValue())
 		{
 			model.setDriverClass(DriverClassEnum.SQLSERVER.getName());
@@ -212,6 +214,8 @@ public class ReportDatasourceServiceImpl extends ServiceImpl<ReportDatasourceMap
 		//数据驱动
 		if (DriverClassEnum.MYSQL.getCode().intValue() == model.getType().intValue()) {
 			model.setDriverClass(DriverClassEnum.MYSQL.getName());
+			String safeUrl = JdbcUtils.withSecurityParams(model.getJdbcUrl());
+			model.setJdbcUrl(safeUrl);
 		}else if(DriverClassEnum.SQLSERVER.getCode().intValue() == model.getType().intValue())
 		{
 			model.setDriverClass(DriverClassEnum.SQLSERVER.getName());

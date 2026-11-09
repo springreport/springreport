@@ -290,5 +290,14 @@ public enum RedisPrefixEnum implements BaseCharEnum{
 		public String getName() {
 			return "onlyoffice锁key";
 		}
-	}
+	},
+	USERLOGONFAILURETIMEKEY{
+		public String getCode() {
+			return "userLogonFailureTimeKey:";
+		}
+
+		public String getName() {
+			return "用户登录失败次数key";
+		}
+	},
 }

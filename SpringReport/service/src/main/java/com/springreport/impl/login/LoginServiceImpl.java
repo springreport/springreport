@@ -25,6 +25,7 @@ import com.springreport.api.sysuser.ISysUserService;
 import com.springreport.api.sysuserdept.ISysUserDeptService;
 import com.springreport.api.sysuserrole.ISysUserRoleService;
 import com.springreport.base.UserInfoDto;
+import com.springreport.constants.Constants;
 import com.springreport.constants.StatusCode;
 import com.springreport.entity.loginlog.LoginLog;
 import com.springreport.entity.sysapi.SysApi;
@@ -35,6 +36,7 @@ import com.springreport.entity.sysuser.SysUser;
 import com.springreport.entity.sysuserdept.SysUserDept;
 import com.springreport.entity.sysuserrole.SysUserRole;
 import com.springreport.enums.DelFlagEnum;
+import com.springreport.enums.RedisPrefixEnum;
 import com.springreport.enums.YesNoEnum;
 import com.springreport.exception.BizException;
 import com.springreport.util.CusAccessObjectUtil;
@@ -42,6 +44,7 @@ import com.springreport.util.JWTUtil;
 import com.springreport.util.ListUtil;
 import com.springreport.util.Md5Util;
 import com.springreport.util.MessageUtil;
+import com.springreport.util.RedisUtil;
 
 /**  
  * @ClassName: LoginServiceImpl
@@ -87,6 +90,9 @@ public class LoginServiceImpl implements ILoginService{
 	
 	@Value("${merchantmode}")
     private Integer merchantmode;
+	
+	@Autowired
+	private RedisUtil redisUtil;
 
 	/**  
 	 * @Title: doLogin
@@ -120,14 +126,26 @@ public class LoginServiceImpl implements ILoginService{
 		}
 		if(user.getUserLocked().intValue() == YesNoEnum.YES.getCode().intValue())
 		{
-			throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.status.forbidden", new String[] {"用户"}));
+			throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.user.locked"));
 		}
+		String failureKey = RedisPrefixEnum.USERLOGONFAILURETIMEKEY.getCode()+sysUser.getUserName();
 		if(!Md5Util.generateMd5(sysUser.getPassword()).equals(user.getPassword()))
 		{
 			loginLog.setStatus(YesNoEnum.NO.getCode());
 			loginLog.setErrorInfo(MessageUtil.getValue("error.login"));
 			this.iLoginLogService.save(loginLog);
+			Long failureTimes = redisUtil.increment(failureKey);
+			if (failureTimes != null && failureTimes == 1) {
+				redisUtil.setExpire(failureKey, Constants.USER_LOGON_FIAULRE_TIME);
+			}
+			if(failureTimes > Constants.USER_LOGON_ATTEMPT_TIMES) {
+				SysUser lockUser = new SysUser();
+				lockUser.setId(user.getId());
+				lockUser.setUserLocked(YesNoEnum.YES.getCode().intValue());
+				this.iSysUserService.updateUser(lockUser);
+			}
 			throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.login"));
+			
 		}
 		UserInfoDto result = new UserInfoDto();
 		result.setUserId(user.getId());
@@ -261,6 +279,7 @@ public class LoginServiceImpl implements ILoginService{
 		result.setMerchantMode(merchantmode);
 		String token = JWTUtil.sign(result, user.getPassword());
 		result.setToken(token);
+		redisUtil.del(failureKey);
 		return result;
 	}
 

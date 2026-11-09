@@ -17,6 +17,7 @@ import com.springreport.base.LuckySheetBindData;
 import com.springreport.base.CustomSpringReportFunction;
 import com.springreport.util.CheckUtil;
 import com.springreport.util.ListUtil;
+import com.springreport.util.SafeAviatorExecutor;
 import com.springreport.util.StringUtil;
 
 /**
@@ -90,9 +91,7 @@ public class LuckySheetAvgCalculate extends Calculate<LuckySheetBindData>{
 			        	object = customSpringReportFunction.calculate(luckySheetBindData, extraParams);
 					}else {
 						try {
-							AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
-		        			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
-							object = AviatorEvaluator.execute(formula);
+							object = SafeAviatorExecutor.evaluate(formula);
 						} catch (Exception e) {
 							object = 0;
 						}
@@ -133,9 +132,7 @@ public class LuckySheetAvgCalculate extends Calculate<LuckySheetBindData>{
 			        	object = customSpringReportFunction.calculate(luckySheetBindData, extraParams);
 					}else {
 						try {
-							AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
-	            			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
-							object = AviatorEvaluator.execute(tempProperty);
+							object = SafeAviatorExecutor.evaluate(tempProperty);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}

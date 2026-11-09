@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import com.springreport.enums.DelFlagEnum;
 import com.springreport.enums.YesNoEnum;
@@ -511,5 +512,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 			}
 		}
 		return resultList;
+	}
+
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public void updateUser(SysUser sysUser) {
+		this.saveOrUpdate(sysUser);
 	}
 }
