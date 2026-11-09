@@ -109,6 +109,11 @@
     "report",
     "element-ui",
     "luckysheet",
-    "报表"
-  ]
+    "\u62a5\u8868"
+  ],
+  "pnpm": {
+    "overrides": {
+      "cipher-base": "1.0.5"
+    }
+  }
 }
