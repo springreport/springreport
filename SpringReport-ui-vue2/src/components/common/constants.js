@@ -641,22 +641,22 @@ commonConstants.routers = [
       //     title: "快照管理",
       //   },
       // },
-      {
-        path: "/doconlyoffice",
-        name: "doconlyoffice",
-        component: () => import("@/components/pages/doconlyoffice/DocOnlyOffice.vue"),
-        meta: {
-          title: "Word报表(onlyoffice)",
-        },
-      },
-      {
-        path: "/slideTpl",
-        name: "slideTpl",
-        component: () => import("@/components/pages/slidetpl/SlideTpl.vue"),
-        meta: {
-          title: "PPT模板管理",
-        },
-      },
+      // {
+      //   path: "/doconlyoffice",
+      //   name: "doconlyoffice",
+      //   component: () => import("@/components/pages/doconlyoffice/DocOnlyOffice.vue"),
+      //   meta: {
+      //     title: "Word报表(onlyoffice)",
+      //   },
+      // },
+      // {
+      //   path: "/slideTpl",
+      //   name: "slideTpl",
+      //   component: () => import("@/components/pages/slidetpl/SlideTpl.vue"),
+      //   meta: {
+      //     title: "PPT模板管理",
+      //   },
+      // },
       // {
       //   path: '/multiscreen',
       //   name: 'multiscreen',
@@ -750,22 +750,22 @@ commonConstants.routers = [
       title: 'doc预览'
     }
   },
-  {
-    path: "/onlyOfficeDocDesign",
-    name: "onlyOfficeDocDesign",
-    component: () => import("@/components/pages/onlyoffice/docDesign.vue"),
-    meta: {
-      title: "doc设计",
-    },
-  },
-  {
-    path: "/onlyOfficeDocPreview",
-    name: "onlyOfficeDocPreview",
-    component: () => import("@/components/pages/onlyoffice/docPreview.vue"),
-    meta: {
-      title: "doc预览",
-    },
-  },
+  // {
+  //   path: "/onlyOfficeDocDesign",
+  //   name: "onlyOfficeDocDesign",
+  //   component: () => import("@/components/pages/onlyoffice/docDesign.vue"),
+  //   meta: {
+  //     title: "doc设计",
+  //   },
+  // },
+  // {
+  //   path: "/onlyOfficeDocPreview",
+  //   name: "onlyOfficeDocPreview",
+  //   component: () => import("@/components/pages/onlyoffice/docPreview.vue"),
+  //   meta: {
+  //     title: "doc预览",
+  //   },
+  // },
   {
     path: '/screenDesign',
     name: 'screenDesign',
@@ -790,22 +790,22 @@ commonConstants.routers = [
       title: '附件查看'
     }
   },
-  {
-    path: "/slideDesign",
-    name: "slideDesign",
-    component: () => import("@/components/pages/slide/slideDesign.vue"),
-    meta: {
-      title: "PPT设计",
-    },
-  },
-  {
-    path: "/slidePreview",
-    name: "slidePreview",
-    component: () => import("@/components/pages/slide/slidePreview.vue"),
-    meta: {
-      title: "PPT预览",
-    },
-  },
+  // {
+  //   path: "/slideDesign",
+  //   name: "slideDesign",
+  //   component: () => import("@/components/pages/slide/slideDesign.vue"),
+  //   meta: {
+  //     title: "PPT设计",
+  //   },
+  // },
+  // {
+  //   path: "/slidePreview",
+  //   name: "slidePreview",
+  //   component: () => import("@/components/pages/slide/slidePreview.vue"),
+  //   meta: {
+  //     title: "PPT预览",
+  //   },
+  // },
   // {
   //   path: '/multiscreenView',
   //   name: 'multiscreenView',
