@@ -3,6 +3,7 @@ package com.springreport.report.calculate;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.Set;
 import org.springframework.beans.BeanUtils;
 
 import com.googlecode.aviator.AviatorEvaluator;
+import com.googlecode.aviator.AviatorEvaluatorInstance;
 import com.googlecode.aviator.Options;
 import com.springreport.base.CustomSpringReportFunction;
 //import com.springreport.function.CustomSpringReportFunction;
@@ -19,6 +21,7 @@ import com.springreport.base.LuckySheetBindData;
 import com.springreport.dto.reporttpl.GroupSummaryData;
 import com.springreport.util.CheckUtil;
 import com.springreport.util.ListUtil;
+import com.springreport.util.SafeAviatorExecutor;
 import com.springreport.util.StringUtil;
 
 /**  
@@ -34,7 +37,7 @@ public class GroupAddCalculate extends Calculate<GroupSummaryData>{
 	static {
 		customSpringReportFunction = new CustomSpringReportFunction();
 	}
-
+	
 	@Override
 	public String calculate(GroupSummaryData bindData) {
 		BigDecimal result = new BigDecimal(0);
@@ -83,9 +86,7 @@ public class GroupAddCalculate extends Calculate<GroupSummaryData>{
 			        	object = customSpringReportFunction.calculate(luckySheetBindData, extraParams);
 					}else {
 						try {
-							AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
-		        			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
-							object = AviatorEvaluator.execute(formula);
+							object = SafeAviatorExecutor.evaluate(formula);
 						} catch (Exception e) {
 							object = 0;
 						}
@@ -129,9 +130,7 @@ public class GroupAddCalculate extends Calculate<GroupSummaryData>{
 			        	object = customSpringReportFunction.calculate(luckySheetBindData, extraParams);
 					}else {
 						try {
-							AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
-		        			AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_INTEGRAL_NUMBER_INTO_DECIMAL, true);
-							object = AviatorEvaluator.execute(property);
+							object = SafeAviatorExecutor.evaluate(property);
 						} catch (Exception e) {
 							object = 0;
 						}

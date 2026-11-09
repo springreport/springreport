@@ -20,6 +20,13 @@ import java.util.List;
  * @date 2018年4月24日17:47:40
  * @version V1.0
  */
+/**  
+ * @ClassName: Constants
+ * @Description: TODO
+ * @author caiyang
+ * @date 2026-11-09 11:20:11 
+*/  
+
 public class Constants {
 	
 	/**
@@ -349,4 +356,18 @@ public class Constants {
      */  
      
     public static String ATTACH_HYPERLINK = "{\"fileName\":\"\",\"linkType\":\"attachment\",\"linkAddress\":\"\",\"linkTooltip\":\"\"}";
+    
+    /**  
+     * @Fields USER_LOGON_ATTEMPT_TIMES : 用户登录失败连续次数，超过该次数奖杯锁定，与USER_LOGON_FIAULRE_TIME一起使用，10分钟内连续登录失败5次，用户将被锁定
+     * @author caiyang
+     * @date 2026-11-09 11:20:22 
+     */  
+    public static final int USER_LOGON_ATTEMPT_TIMES = 5;
+    
+    /**  
+     * @Fields USER_LOGON_FIAULRE_TIME : 用户连续登录失败时间限制，与USER_LOGON_ATTEMPT_TIMES一起使用，10分钟内连续登录失败5次，用户将被锁定
+     * @author caiyang
+     * @date 2026-11-09 11:22:55 
+     */  
+    public static final long USER_LOGON_FIAULRE_TIME = 10*60;
 }

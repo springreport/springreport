@@ -13,6 +13,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -24,6 +25,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.imageio.ImageIO;
 
@@ -611,6 +614,33 @@ public class StringUtil {
         return (dot > 0 && dot < last.length() - 1) ? 
                last.substring(dot + 1).toLowerCase() : "";
     }
+    
+    /**
+     * 生成恶意zip，entry名称为 ../../test-slip.txt
+     * @param zipOutputPath 输出zip文件完整路径，例如 D:/test/evil.zip
+     */
+    public static void generateEvilZip(String zipOutputPath) throws IOException {
+        File outFile = new File(zipOutputPath);
+        // 先创建父目录
+        File parent = outFile.getParentFile();
+        if (!parent.exists()) {
+            parent.mkdirs();
+        }
+
+        try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(outFile))) {
+            // 重点：直接构造带 ../ 的条目名，这就是 ZipEntry.getName()
+            String entryName = "..\\win-slip.txt";
+            ZipEntry entry = new ZipEntry(entryName);
+            zos.putNextEntry(entry);
+
+            // 写入文件内容
+            String content = "This is zip slip test file content";
+            zos.write(content.getBytes(StandardCharsets.UTF_8));
+
+            zos.closeEntry();
+        }
+        System.out.println("恶意zip生成成功：" + outFile.getAbsolutePath());
+    }
 
 	public static void main(String[] args) throws Exception {
 //		 double number = 1;
@@ -622,6 +652,8 @@ public class StringUtil {
 //	        String formattedNumber = decimalFormat.format(number);
 //	        String value = "\n\n\ncdfadfad\n\n\n\n ";
 //	        String [] split = value.split("\n");
-	        System.out.println(getUrlExtensionSafe("https://www.springreport.vip//images/chart/bor2der1.png?t=1764759254279"));
+//	        System.out.println(getUrlExtensionSafe("https://www.springreport.vip//images/chart/bor2der1.png?t=1764759254279"));
+		String targetZipPath = "D:/temp/evil.zip";
+        generateEvilZip(targetZipPath);
 	}
 }

@@ -77,6 +77,9 @@ public class HandleParamAop {
 		                				 param.put(key, value);
 		                			 }
 		            			 }
+		            			 if("orderSql".equals(key)) {
+		            				 param.put(key, null);
+		            			 }
 		            			 
 		            		}
 				            Object result = object.getClass().newInstance();

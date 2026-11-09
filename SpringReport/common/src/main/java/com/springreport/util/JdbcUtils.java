@@ -15,8 +15,10 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -1278,6 +1280,55 @@ public class JdbcUtils {
 		return sqlText;
 	}
 	
+	/**
+     * 将指定的安全参数写入 JDBC URL：已存在则替换值，不存在则追加。
+     * 其他已有参数保持不变，顺序保持原有顺序（新参数追加在末尾）。
+     *
+     * @param jdbcUrl 原始 JDBC URL
+     * @return 处理后的 JDBC URL
+     */
+    public static String withSecurityParams(String jdbcUrl) {
+        if (jdbcUrl == null || jdbcUrl.isEmpty()) {
+            throw new IllegalArgumentException("jdbcUrl must not be empty");
+        }
+
+        // 需要强制写入的安全参数（顺序固定）
+        Map<String, String> securityParams = new LinkedHashMap<>();
+        securityParams.put("allowLoadLocalInfile", "false");
+        securityParams.put("allowUrlInLocalInfile", "false");
+        securityParams.put("autoDeserialize", "false");
+
+        int queryIndex = jdbcUrl.indexOf('?');
+        String baseUrl = queryIndex < 0 ? jdbcUrl : jdbcUrl.substring(0, queryIndex);
+        String query = queryIndex < 0 ? "" : jdbcUrl.substring(queryIndex + 1);
+
+        // 用 LinkedHashMap 保持原有参数顺序
+        Map<String, String> params = new LinkedHashMap<>();
+        if (!query.isEmpty()) {
+            for (String pair : query.split("&")) {
+                if (pair.isEmpty()) {
+                    continue;
+                }
+                int eq = pair.indexOf('=');
+                if (eq < 0) {
+                    params.put(pair, "");
+                } else {
+                    params.put(pair.substring(0, eq), pair.substring(eq + 1));
+                }
+            }
+        }
+
+        // 已存在则替换（put 覆盖），不存在则追加
+        params.putAll(securityParams);
+
+        StringJoiner joiner = new StringJoiner("&");
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            joiner.add(entry.getKey() + "=" + entry.getValue());
+        }
+
+        return baseUrl + "?" + joiner;
+    }
+	
 	public static void main(String[] args) {
 //		String sql = "select  D.CUSTOMER_CODE AS 客户编码 ,D.CUSTOMER_NAME AS  客户名称,G.ADMIN_UNIT_NAME AS 部门, F.EMPLOYEE_NAME as 业务员, E.ITEM_CODE AS 品号,B.ITEM_DESCRIPTION AS 品名,B.ITEM_SPECIFICATION AS 规格型号,\n" + 
 //				"cast(sum(B.PRICE_QTY) as float) AS 数量,  cast(sum(B.AMOUNT_UNINCLUDE_TAX_OC+B.TAX_OC) as float) as 原币金额 ,  \n" + 
@@ -1298,12 +1349,23 @@ public class JdbcUtils {
 //		//获取数据源
 //		DataSource dataSource = JdbcUtils.getDataSource(dataSourceConfig);
 //		JdbcUtils.parseProcedureColumns(dataSource, "call next4()",1,null,null);
-		int pageCount = 10;
-		int currentPage = 2;
-		String sql = "SELECT * FROM test";
-		sql = "select row_number () over (order by rand()) page_row_number,* from (" + sql + ") as page_table_alias";
-		sql = "select top "+pageCount + " * from (" + sql + ") as page_table_alias where page_row_number > " + (currentPage-1)*pageCount + " order by page_row_number";
-		System.err.println(101/pageCount+1);
+//		int pageCount = 10;
+//		int currentPage = 2;
+//		String sql = "SELECT * FROM test";
+//		sql = "select row_number () over (order by rand()) page_row_number,* from (" + sql + ") as page_table_alias";
+//		sql = "select top "+pageCount + " * from (" + sql + ") as page_table_alias where page_row_number > " + (currentPage-1)*pageCount + " order by page_row_number";
+//		System.err.println(101/pageCount+1);
+		System.out.println(withSecurityParams("jdbc:mysql://127.0.0.1:3306/test"));
+        // jdbc:mysql://127.0.0.1:3306/test?allowLoadLocalInfile=false&allowUrlInLocalInfile=false&autoDeserialize=false
+
+        // 已存在部分参数，且值为危险值
+        System.out.println(withSecurityParams(
+                "jdbc:mysql://127.0.0.1:3306/test?useSSL=true&allowLoadLocalInfile=true&autoDeserialize=true"));
+        // jdbc:mysql://127.0.0.1:3306/test?useSSL=true&allowLoadLocalInfile=false&autoDeserialize=false&allowUrlInLocalInfile=false
+
+        // 参数顺序与原顺序一致，新参数追加在末尾
+        System.out.println(withSecurityParams(
+                "jdbc:mysql://127.0.0.1:3306/test?serverTimezone=Asia/Shanghai&allowLoadLocalInfile=1"));
 	 }
 	
 	

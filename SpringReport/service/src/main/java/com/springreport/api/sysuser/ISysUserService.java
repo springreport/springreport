@@ -110,4 +110,6 @@ public interface ISysUserService extends IService<SysUser> {
 	 * @date 2024-11-13 05:42:59 
 	 */ 
 	List<UserTreeDto> getDeptUserTree(SysUser model);
+	
+	void updateUser(SysUser sysUser);
 }

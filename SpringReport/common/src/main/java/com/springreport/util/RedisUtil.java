@@ -447,6 +447,10 @@ public class RedisUtil {
     	
     }
     
+    public void setExpire(String key,long seconds) {
+    	redisTemplate.expire(key, seconds, TimeUnit.SECONDS);
+    }
+    
 //    public boolean set(String key, Object value,int offset) {
 //		try {
 //			redisTemplate.opsForValue().set(key, value,offset);
