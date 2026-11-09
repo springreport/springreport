@@ -653,7 +653,9 @@ public class StringUtil {
 //	        String value = "\n\n\ncdfadfad\n\n\n\n ";
 //	        String [] split = value.split("\n");
 //	        System.out.println(getUrlExtensionSafe("https://www.springreport.vip//images/chart/bor2der1.png?t=1764759254279"));
-		String targetZipPath = "D:/temp/evil.zip";
-        generateEvilZip(targetZipPath);
+//		String targetZipPath = "D:/temp/evil.zip";
+//        generateEvilZip(targetZipPath);
+		String test = "123.2.32.1,154.52.241.36";
+		System.err.println(test.split(",")[0]);
 	}
 }

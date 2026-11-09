@@ -39,6 +39,15 @@ public class ShiroConfig {
 	@Value("${authentic.enabale}")
     private boolean authenticEnabale;
 	
+	@Value("${enable.white.check}")
+    private boolean enableWhiteCheck;
+	
+	@Value("${ip.white.list}")
+    private String ipWhiteList;
+	
+	@Value("${domain.white.list}")
+    private String domainWhiteList;
+	
 	@Autowired
 	private RedisUtil redisUtil;
 	
@@ -50,7 +59,12 @@ public class ShiroConfig {
 		{
 			// 添加自己的过滤器并且取名为jwt
 			Map<String, Filter> filterMap = new HashMap<>();
-			filterMap.put(Constants.JWT_STRING, new JWTFilter(redisUtil));
+			JWTFilter jwtFilter = new JWTFilter(redisUtil);
+			jwtFilter.setIpWhitelist(ipWhiteList);
+			jwtFilter.setDomainWhitelist(domainWhiteList);
+			jwtFilter.setEnableWhiteCheck(enableWhiteCheck);
+			filterMap.put(Constants.JWT_STRING, jwtFilter);
+			
 			shiroFilterFactoryBean.setFilters(filterMap);
 			shiroFilterFactoryBean.setSecurityManager(securityManager);
 //			shiroFilterFactoryBean.setUnauthorizedUrl("/api/common/unnauthorized");//未授权跳转url
@@ -79,8 +93,8 @@ public class ShiroConfig {
 			map.put("/springReport/api/login/getMerchantMode", Constants.PUBLIC_STRING); 
 			map.put("/springReport/api/docOnlyOffice/callback", Constants.PUBLIC_STRING); 
 			map.put("/springReport/api/springreportLog/insert", Constants.PUBLIC_STRING); 
-			
 	        map.put("/**", Constants.JWT_STRING); 
+	        
 //			shiroFilterFactoryBean.setFilterChainDefinitionMap(chainDefinitionSectionMetaSource.getObject());
 	        shiroFilterFactoryBean.setFilterChainDefinitionMap(map);
 			return shiroFilterFactoryBean;

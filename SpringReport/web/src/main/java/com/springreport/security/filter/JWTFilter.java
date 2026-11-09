@@ -2,9 +2,12 @@ package com.springreport.security.filter;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -26,6 +29,7 @@ import com.springreport.enums.MsgLevelEnum;
 import com.springreport.enums.RedisPrefixEnum;
 import com.springreport.enums.YesNoEnum;
 import com.springreport.security.config.JWTToken;
+import com.springreport.util.CusAccessObjectUtil;
 import com.springreport.util.HttpClientUtil;
 import com.springreport.util.JWTUtil;
 import com.springreport.util.MessageUtil;
@@ -48,6 +52,25 @@ public class JWTFilter extends BasicHttpAuthenticationFilter{
 	public JWTFilter(RedisUtil redisUtil) {
 		super();
 		this.redisUtil = redisUtil;
+	}
+	
+	// IP 白名单（支持逗号分隔）
+    private Set<String> ipWhitelist = new HashSet<>();
+    // 域名白名单（匹配 Host 请求头）
+    private Set<String> domainWhitelist = new HashSet<>();
+    
+    private boolean enableWhiteCheck = false;
+
+    public void setIpWhitelist(String ips) {
+        this.ipWhitelist = new HashSet<>(Arrays.asList(ips.split(",")));
+    }
+
+    public void setDomainWhitelist(String domains) {
+        this.domainWhitelist = new HashSet<>(Arrays.asList(domains.split(",")));
+    }
+    
+    public void setEnableWhiteCheck(boolean enableWhiteCheck) {
+		this.enableWhiteCheck = enableWhiteCheck;
 	}
 
 	/**
@@ -171,6 +194,31 @@ public class JWTFilter extends BasicHttpAuthenticationFilter{
      */
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
+    	if(enableWhiteCheck) {
+    		HttpServletRequest httpRequest = (HttpServletRequest) request;
+    		 // 1. 获取真实 IP（考虑代理场景，优先取 X-Forwarded-For）
+            String clientIp = CusAccessObjectUtil.getIpAddress(httpRequest);
+            boolean whiteCheck = false;
+            if (ipWhitelist.contains(clientIp)) {
+            	whiteCheck = true;
+            }
+            if(!whiteCheck) {
+            	// 2. 获取请求的 Host（域名）
+                String host = httpRequest.getHeader("Host");
+                if (host != null) {
+                    // 去掉端口号，例如 "example.com:8080" -> "example.com"
+                    String domain = host.split(":")[0];
+                    if (domainWhitelist.contains(domain)) {
+                    	whiteCheck = true;
+                    }
+                }
+            }
+            if(!whiteCheck) {
+            	HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+            	httpServletResponse.setHeader("statusCode", StatusCode.WHITE_LIST_FAILURE);
+            	return false;
+            }
+    	}
         if (isLoginAttempt(request, response)) {
               return executeLogin(request, response);
         }
@@ -179,7 +227,6 @@ public class JWTFilter extends BasicHttpAuthenticationFilter{
     
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
-    	
     	HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         httpServletResponse.setStatus(200);
         httpServletResponse.setContentType("application/json;charset=utf-8");
@@ -188,7 +235,13 @@ public class JWTFilter extends BasicHttpAuthenticationFilter{
         JSONObject json = new JSONObject();
         if (StatusCode.TOKEN_LOCK.equals(statusCode)) {
         	json.put("code", StatusCode.TOKEN_LOCK);
-            json.put("message", MessageUtil.getValue("error.token.stop"));
+            json.put("message", MessageUtil.getValue("error.token"));
+            json.put("msgLevel", MsgLevelEnum.ERROR.getCode());
+            JSONObject result = new JSONObject();
+            json.put("responseData",result);
+		}else if (StatusCode.WHITE_LIST_FAILURE.equals(statusCode)) {
+        	json.put("code", StatusCode.WHITE_LIST_FAILURE);
+            json.put("message", MessageUtil.getValue("error.request.source"));
             json.put("msgLevel", MsgLevelEnum.ERROR.getCode());
             JSONObject result = new JSONObject();
             json.put("responseData",result);
@@ -224,5 +277,4 @@ public class JWTFilter extends BasicHttpAuthenticationFilter{
         return super.preHandle(request, response);
     }
 
-    
 }
