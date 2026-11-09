@@ -82,4 +82,11 @@ public class StatusCode {
 	 * @date 2020年8月18日15:41:54
 	 */ 
 	public static String ACCOUNT_NOTEXIST = "50011";
+	
+	/**  
+	 * @Fields WHITE_LIST_FAILURE : 白名单异常
+	 * @author caiyang
+	 * @date 2026年11月9日18:54:01
+	 */ 
+	public static String WHITE_LIST_FAILURE = "50012";
 }
