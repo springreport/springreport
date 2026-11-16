@@ -1405,7 +1405,7 @@
             </el-form-item>
             <el-form-item
               v-if="
-                paramForm.paramType == 'select' && paramForm.selectType == '2'
+                (paramForm.paramType == 'select' || paramForm.paramType == 'mutiselect' || paramForm.paramType == 'treeSelect' || paramForm.paramType == 'multiTreeSelect') && (paramForm.selectType == '2' || paramForm.paramType == 'treeSelect' || paramForm.paramType == 'multiTreeSelect')
               "
               key="isRelyOnParams"
               label="是否依赖其他参数"
@@ -1423,9 +1423,9 @@
             </el-form-item>
             <el-form-item
               v-if="
-                paramForm.paramType == 'select' &&
-                  paramForm.selectType == '2' &&
-                  paramForm.isRelyOnParams == '1'
+                (paramForm.paramType == 'select' || paramForm.paramType == 'mutiselect' || paramForm.paramType == 'treeSelect' || paramForm.paramType == 'multiTreeSelect') &&
+                    (paramForm.selectType == '2' || paramForm.paramType == 'treeSelect' || paramForm.paramType == 'multiTreeSelect') &&
+                    paramForm.isRelyOnParams == '1'
               "
               key="relyOnParams"
               label="依赖参数代码"
