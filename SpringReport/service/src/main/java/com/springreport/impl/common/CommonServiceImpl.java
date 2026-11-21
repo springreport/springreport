@@ -10,6 +10,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -29,6 +30,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.springreport.api.common.ICommonService;
+import com.springreport.constants.Constants;
 import com.springreport.constants.StatusCode;
 import com.springreport.dto.common.ApiRequestDto;
 import com.springreport.dto.common.PrintApiRequestDto;
@@ -67,6 +69,7 @@ public class CommonServiceImpl implements ICommonService{
 	@Autowired
 	private RedisUtil redisUtil;
 	
+	
 	/**  
 	 * @Title: upload
 	 * @Description: 上传文件
@@ -83,6 +86,9 @@ public class CommonServiceImpl implements ICommonService{
 		InputStream inputStream2 = file.getInputStream();
 		//文件后缀
 		String fileExt = cn.hutool.core.io.FileUtil.extName(file.getOriginalFilename());
+		if(Constants.FORBIDDEN_UPLOAD_FILE.length > 0 && Arrays.asList(Constants.FORBIDDEN_UPLOAD_FILE).contains("fileExt")) {
+			throw new BizException(StatusCode.FAILURE, "不允许上传该类型的文件");
+		}
 		String filename = IdWorker.getIdStr()+"."+fileExt;
 		String date = DateUtil.getNow(DateUtil.FORMAT_LONOGRAM);
 		File dest = new File(dirPath + date + "/" + filename);
@@ -138,6 +144,9 @@ public class CommonServiceImpl implements ICommonService{
 		Map<String, Object> result = new HashMap<String, Object>();
 		//文件后缀
 		String fileExt = cn.hutool.core.io.FileUtil.extName(file.getOriginalFilename());
+		if(Constants.FORBIDDEN_UPLOAD_FILE.length > 0 && Arrays.asList(Constants.FORBIDDEN_UPLOAD_FILE).contains(fileExt)) {
+			throw new BizException(StatusCode.FAILURE, "不允许上传该类型的文件");
+		}
 		String filename = IdWorker.getIdStr()+"."+fileExt;
 		String date = DateUtil.getNow(DateUtil.FORMAT_LONOGRAM);
 		File dest = new File(dirPath + date + "/" + filename);

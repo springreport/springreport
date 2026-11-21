@@ -492,6 +492,8 @@ public class ReportDatasourceServiceImpl extends ServiceImpl<ReportDatasourceMap
 			}
 			//数据驱动
 			if (DriverClassEnum.MYSQL.getCode().intValue() == reportDatasource.getType().intValue()) {
+				String safeUrl = JdbcUtils.withSecurityParams(reportDatasource.getJdbcUrl());
+				reportDatasource.setJdbcUrl(safeUrl);
 				reportDatasource.setDriverClass(DriverClassEnum.MYSQL.getName());
 			}else if(DriverClassEnum.SQLSERVER.getCode().intValue() == reportDatasource.getType().intValue())
 			{

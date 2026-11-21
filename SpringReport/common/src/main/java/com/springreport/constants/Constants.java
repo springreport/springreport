@@ -370,4 +370,12 @@ public class Constants {
      * @date 2026-11-09 11:22:55 
      */  
     public static final long USER_LOGON_FIAULRE_TIME = 10*60;
+    
+    /**  
+     * @Fields FORBIDDEN_UPLOAD_FILE : 禁止上传的文件类型，例如 .html和.jsp类型的文件不允许上传，则写上 new String [] {"html,jsp"}，如果还有其他的则需要继续添加
+     * @author caiyang
+     * @date 2026-11-21 06:56:50 
+     */  
+     
+    public static final String[] FORBIDDEN_UPLOAD_FILE = new String [] {"html","htm"};
 }

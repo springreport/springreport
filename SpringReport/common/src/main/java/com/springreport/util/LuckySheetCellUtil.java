@@ -152,6 +152,8 @@ public class LuckySheetCellUtil {
    					} catch (Exception e) {
    						row.setHeightInPoints(sheet.getDefaultRowHeightInPoints());//默认行高
    					}
+   	   			}else {
+   	   				row.setHeightInPoints(sheet.getDefaultRowHeightInPoints());//默认行高
    	   			}
    			}
    		}
@@ -793,8 +795,16 @@ public class LuckySheetCellUtil {
 				Object object = cellConfig.get(LuckySheetPropsEnum.BACKGROUND.getCode());
 				if(object != null) {
 					String background = String.valueOf(object);
+					int[] rgb = null;
 					try {
-						int[] rgb = StringUtil.hexToRgb(background);
+						if(background.contains("rgb")) {
+							rgb = StringUtil.rgbStringToRgb(background);
+						}else {
+							if(!"null".equals(background))
+							{
+								rgb = StringUtil.hexToRgb(background);
+							}
+						}
 						cellStyle.setFillForegroundColor(new XSSFColor(new Color(rgb[0], rgb[1], rgb[2]),new DefaultIndexedColorMap()));
 						cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 					} catch (Exception e) {

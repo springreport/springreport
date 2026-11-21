@@ -542,15 +542,15 @@ public class ReportTplController extends BaseController {
 	 * @return Response
 	 * @date 2022-11-16 01:37:52 
 	 */  
-	@RequestMapping(value = "/saveReportFormsTpl",method = RequestMethod.POST)
-	@MethodLog(module="ReportTpl",remark="保存填报模板",operateType=Constants.OPERATE_TYPE_UPDATE)
-	@Check({"tplId:required#主键ID"})
-	@RequiresPermissions(value = {"reportForms_saveTpl"})
-	public Response saveReportFormsTpl(@RequestBody MesLuckysheetsTplDto mesLuckysheetsTplDto,@LoginUser UserInfoDto userInfoDto) throws Exception
-	{
-		BaseEntity result = this.iReportTplService.saveReportFormsTpl(mesLuckysheetsTplDto,userInfoDto);
-		return Response.success(result,result.getStatusMsg());
-	}
+//	@RequestMapping(value = "/saveReportFormsTpl",method = RequestMethod.POST)
+//	@MethodLog(module="ReportTpl",remark="保存填报模板",operateType=Constants.OPERATE_TYPE_UPDATE)
+//	@Check({"tplId:required#主键ID"})
+//	@RequiresPermissions(value = {"reportForms_saveTpl"})
+//	public Response saveReportFormsTpl(@RequestBody MesLuckysheetsTplDto mesLuckysheetsTplDto,@LoginUser UserInfoDto userInfoDto) throws Exception
+//	{
+//		BaseEntity result = this.iReportTplService.saveReportFormsTpl(mesLuckysheetsTplDto,userInfoDto);
+//		return Response.success(result,result.getStatusMsg());
+//	}
 	
 	/**  
 	 * @MethodName: getReportFormsTpl
@@ -582,15 +582,15 @@ public class ReportTplController extends BaseController {
 	 * @author caiyang
 	 * @date 2022-02-02 08:28:40 
 	 */ 
-	@RequestMapping(value = "/previewLuckysheetFormsReportData",method = RequestMethod.POST)
-	@MethodLog(module="ReportTpl",remark="预览luckysheet报表",operateType=Constants.OPERATE_TYPE_SEARCH)
-	@Check({"tplId:required#模板"})
-	@RequiresPermissions(value = {"reportForms_previewReport","reportTpl_reportView","viewReport_view"},logical = Logical.OR)
-	public Response previewLuckysheetFormsReportData(@RequestBody MesGenerateReportDto mesGenerateReportDto,@LoginUser UserInfoDto userInfoDto) throws Exception
-	{
-//		ResPreviewData result = this.iReportTplFormsService.previewLuckysheetReportFormsData(mesGenerateReportDto,userInfoDto);
-		return Response.success(null);
-	}
+//	@RequestMapping(value = "/previewLuckysheetFormsReportData",method = RequestMethod.POST)
+//	@MethodLog(module="ReportTpl",remark="预览luckysheet报表",operateType=Constants.OPERATE_TYPE_SEARCH)
+//	@Check({"tplId:required#模板"})
+//	@RequiresPermissions(value = {"reportForms_previewReport","reportTpl_reportView","viewReport_view"},logical = Logical.OR)
+//	public Response previewLuckysheetFormsReportData(@RequestBody MesGenerateReportDto mesGenerateReportDto,@LoginUser UserInfoDto userInfoDto) throws Exception
+//	{
+////		ResPreviewData result = this.iReportTplFormsService.previewLuckysheetReportFormsData(mesGenerateReportDto,userInfoDto);
+//		return Response.success(null);
+//	}
 	
 	/**  
 	 * @Title: previewShareLuckysheetFormsReportData
@@ -601,48 +601,48 @@ public class ReportTplController extends BaseController {
 	 * @author caiyang
 	 * @date 2022-02-02 08:28:40 
 	 */ 
-	@RequestMapping(value = "/previewShareLuckysheetFormsReportData",method = RequestMethod.POST)
-	@MethodLog(module="ReportTpl",remark="预览luckysheet报表",operateType=Constants.OPERATE_TYPE_SEARCH)
-	@Check({"tplId:required#模板"})
-	public Response previewShareLuckysheetFormsReportData(@RequestBody MesGenerateReportDto mesGenerateReportDto) throws Exception
-	{
-		String shareCode = this.httpServletRequest.getHeader("shareCode");
-		String shareUser = this.httpServletRequest.getHeader("shareUser");
-		if(StringUtil.isNullOrEmpty(shareCode) || StringUtil.isNullOrEmpty(shareUser))
-		{
-			throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.share.param"));
-		}
-		Object redisShareCode = redisUtil.get(RedisPrefixEnum.SHAREREPORT.getCode()+shareCode);;
-		if(redisShareCode == null)
-		{
-			throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.share.time"));
-		}
-		SysUser sysUser = iSysUserService.getById(shareUser);
-		if(sysUser == null)
-		{
-			throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.share.param"));
-		}
-		UserInfoDto userInfoDto = new UserInfoDto();
-		userInfoDto.setUserId(sysUser.getId());
-		userInfoDto.setIsAdmin(sysUser.getIsAdmin());
-		if(YesNoEnum.YES.getCode().intValue() != sysUser.getIsAdmin().intValue())
-		{
-			QueryWrapper<SysUserRole> queryWrapper = new QueryWrapper<>();
-			queryWrapper.eq("user_id", sysUser.getId());
-			queryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
-			SysUserRole sysUserRole = this.iSysUserRoleService.getOne(queryWrapper, false);
-			if(sysUserRole != null)
-			{
-				userInfoDto.setRoleId(sysUserRole.getRoleId());
-			}
-		}
-		ReportTpl reportTpl = this.iReportTplService.getById(mesGenerateReportDto.getTplId());
-		if (reportTpl == null) {
-			throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.check.notexist", new String[] {"报表模板"}));
-		}
-		ResPreviewData result = this.iReportTplFormsService.previewLuckysheetReportFormsData(mesGenerateReportDto,userInfoDto,reportTpl,true);
-		return Response.success(result);
-	}
+//	@RequestMapping(value = "/previewShareLuckysheetFormsReportData",method = RequestMethod.POST)
+//	@MethodLog(module="ReportTpl",remark="预览luckysheet报表",operateType=Constants.OPERATE_TYPE_SEARCH)
+//	@Check({"tplId:required#模板"})
+//	public Response previewShareLuckysheetFormsReportData(@RequestBody MesGenerateReportDto mesGenerateReportDto) throws Exception
+//	{
+//		String shareCode = this.httpServletRequest.getHeader("shareCode");
+//		String shareUser = this.httpServletRequest.getHeader("shareUser");
+//		if(StringUtil.isNullOrEmpty(shareCode) || StringUtil.isNullOrEmpty(shareUser))
+//		{
+//			throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.share.param"));
+//		}
+//		Object redisShareCode = redisUtil.get(RedisPrefixEnum.SHAREREPORT.getCode()+shareCode);;
+//		if(redisShareCode == null)
+//		{
+//			throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.share.time"));
+//		}
+//		SysUser sysUser = iSysUserService.getById(shareUser);
+//		if(sysUser == null)
+//		{
+//			throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.share.param"));
+//		}
+//		UserInfoDto userInfoDto = new UserInfoDto();
+//		userInfoDto.setUserId(sysUser.getId());
+//		userInfoDto.setIsAdmin(sysUser.getIsAdmin());
+//		if(YesNoEnum.YES.getCode().intValue() != sysUser.getIsAdmin().intValue())
+//		{
+//			QueryWrapper<SysUserRole> queryWrapper = new QueryWrapper<>();
+//			queryWrapper.eq("user_id", sysUser.getId());
+//			queryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
+//			SysUserRole sysUserRole = this.iSysUserRoleService.getOne(queryWrapper, false);
+//			if(sysUserRole != null)
+//			{
+//				userInfoDto.setRoleId(sysUserRole.getRoleId());
+//			}
+//		}
+//		ReportTpl reportTpl = this.iReportTplService.getById(mesGenerateReportDto.getTplId());
+//		if (reportTpl == null) {
+//			throw new BizException(StatusCode.FAILURE, MessageUtil.getValue("error.check.notexist", new String[] {"报表模板"}));
+//		}
+//		ResPreviewData result = this.iReportTplFormsService.previewLuckysheetReportFormsData(mesGenerateReportDto,userInfoDto,reportTpl,true);
+//		return Response.success(result);
+//	}
 	
 	/**  
 	 * @MethodName: reportData
