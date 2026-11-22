@@ -18,6 +18,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import javax.sql.DataSource;
 
@@ -1046,6 +1047,10 @@ public class ReportDataUtil {
 		String table = params.getString("table");
 		String deleteType = params.getString("deleteType");
 		Object deleteValue = params.get("deleteValue");
+		Pattern colPattern = Pattern.compile("^`?[a-zA-Z0-9_]+`?$");
+		if (!colPattern.matcher(column).matches()) {
+		    throw new BizException(StatusCode.FAILURE,"字段格式非法");
+		}
 		String sql = "";
 		if(!StringUtil.isEmptyMap(columnJavaType)) {
 			if(columnJavaType.containsKey(column)) {
