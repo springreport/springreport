@@ -101,6 +101,7 @@ public class ReportDatasourceServiceImpl extends ServiceImpl<ReportDatasourceMap
 		List<ReportDatasource> list = this.baseMapper.searchDataLike(model);
 		if(ListUtil.isNotEmpty(list)) {
 			for (int i = 0; i < list.size(); i++) {
+				list.get(i).setUserName(null);
 				list.get(i).setPassword(null);
 			}
 		}
@@ -174,6 +175,8 @@ public class ReportDatasourceServiceImpl extends ServiceImpl<ReportDatasourceMap
 			model.setDriverClass(DriverClassEnum.HIGODB.getName());
 		}else if (DriverClassEnum.DORIS.getCode().intValue() == model.getType().intValue()) {
 			model.setDriverClass(DriverClassEnum.DORIS.getName());
+			String safeUrl = JdbcUtils.withSecurityParams(model.getJdbcUrl());
+			model.setJdbcUrl(safeUrl);
 		}else if (DriverClassEnum.INFLUXDB.getCode().intValue() == model.getType().intValue()) {
 			model.setDriverClass(DriverClassEnum.INFLUXDB.getName());
 		}else if (DriverClassEnum.MONGODB.getCode().intValue() == model.getType().intValue()) {
@@ -239,6 +242,8 @@ public class ReportDatasourceServiceImpl extends ServiceImpl<ReportDatasourceMap
 			model.setDriverClass(DriverClassEnum.HIGODB.getName());
 		}else if (DriverClassEnum.DORIS.getCode().intValue() == model.getType().intValue()) {
 			model.setDriverClass(DriverClassEnum.DORIS.getName());
+			String safeUrl = JdbcUtils.withSecurityParams(model.getJdbcUrl());
+			model.setJdbcUrl(safeUrl);
 		}else if (DriverClassEnum.INFLUXDB.getCode().intValue() == model.getType().intValue()) {
 			model.setDriverClass(DriverClassEnum.INFLUXDB.getName());
 		}else if (DriverClassEnum.MONGODB.getCode().intValue() == model.getType().intValue()) {
@@ -321,6 +326,13 @@ public class ReportDatasourceServiceImpl extends ServiceImpl<ReportDatasourceMap
 		}
 		queryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
 		List<ReportDatasource> result = this.list(queryWrapper);
+		if(ListUtil.isNotEmpty(result)) {
+			for (int i = 0; i < result.size(); i++) {
+				result.get(i).setUserName(null);
+				result.get(i).setPassword(null);
+				result.get(i).setJdbcUrl(null);
+			}
+		}
 		return result;
 	}
 	
@@ -521,6 +533,8 @@ public class ReportDatasourceServiceImpl extends ServiceImpl<ReportDatasourceMap
 				reportDatasource.setDriverClass(DriverClassEnum.HIGODB.getName());
 			}else if(DriverClassEnum.DORIS.getCode().intValue() == reportDatasource.getType().intValue())
 			{
+				String safeUrl = JdbcUtils.withSecurityParams(reportDatasource.getJdbcUrl());
+				reportDatasource.setJdbcUrl(safeUrl);
 				reportDatasource.setDriverClass(DriverClassEnum.DORIS.getName());
 			}else if(DriverClassEnum.MONGODB.getCode().intValue() == reportDatasource.getType().intValue())
 			{
