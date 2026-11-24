@@ -66,7 +66,7 @@ public class ReportDatasourceTablesController extends BaseController {
 	@RequestMapping(value = "/getDetail",method = RequestMethod.GET)
 	@MethodLog(module="ReportDatasourceTables",remark="获取详细信息",operateType=Constants.OPERATE_TYPE_SEARCH)
 	@Check({"id:required#主键ID"})
-	@RequiresPermissions(value = {"reportDatasourceTables_getDetail"},logical = Logical.OR)
+	@RequiresPermissions(value = {"reportDatasourceTables_getDetail","reportDatasourceTables_update"},logical = Logical.OR)
 	public Response getDetail(@RequestParam Long id) throws Exception
 	{
 		BaseEntity result = iReportDatasourceTablesService.getDetail(id);

@@ -27,8 +27,8 @@ export default {
         //查询条件 end
         //查询表单按钮start
         searchHandle:[
-          {label:'查询',type:'primary',handle:()=>this.searchtablelist(),auth:'ignore'},
-          {label:'清除条件',type:'warning',handle:()=>this.resetSearch(),auth:'ignore'}
+          {label:'查询',type:'primary',handle:()=>this.searchtablelist(),auth:'whitelist_search'},
+          {label:'清除条件',type:'warning',handle:()=>this.resetSearch(),auth:'whitelist_search'}
         ],
         //查询表单按钮end
         //表格数据start
@@ -36,8 +36,8 @@ export default {
         //表格数据end
         //表格工具栏按钮 start
         tableHandles:[
-          {label:'新增',position: 'right', iconClass: 'action-icon-add',type:'primary',handle:()=>this.showModal(this.commonConstants.modalType.insert),auth:'ignore'},
-          {label:'批量删除',position: 'left', iconClass: 'action-icon-del',type:'danger',handle:()=>this.deleteBatch(),auth:'ignore'}
+          {label:'新增',position: 'right', iconClass: 'action-icon-add',type:'primary',handle:()=>this.showModal(this.commonConstants.modalType.insert),auth:'whitelist_insert'},
+          {label:'批量删除',position: 'left', iconClass: 'action-icon-del',type:'danger',handle:()=>this.deleteBatch(),auth:'whitelist_delete'}
         ],
         //表格工具栏按钮 end
         selectList:[],//表格选中的数据
@@ -54,9 +54,9 @@ export default {
 					{label:'IP或域名值',prop:'value',align:'center'},
           {label:'类型',prop:'valueType',align:'center',codeType: 'whitelistType', formatter: this.commonUtil.getTableCodeName},
 					{label:'操作',prop:'operation',align:'center',type:'button',btnList:[
-						{label:'查看',type:'text',auth:'ignore',handle:(row)=>this.showModal(this.commonConstants.modalType.detail,row.id)},
-						{label:'编辑',type:'text',auth:'ignore',handle:(row)=>this.showModal(this.commonConstants.modalType.update,row.id)},
-						{label:'删除',type:'text',auth:'ignore',handle:(row)=>this.deleteOne(row.id)},
+						{label:'查看',type:'text',auth:'whitelist_getDetail',handle:(row)=>this.showModal(this.commonConstants.modalType.detail,row.id)},
+						{label:'编辑',type:'text',auth:'whitelist_update',handle:(row)=>this.showModal(this.commonConstants.modalType.update,row.id)},
+						{label:'删除',type:'text',auth:'whitelist_delete',handle:(row)=>this.deleteOne(row.id)},
 					]}
         ],
         //表格列表头end
