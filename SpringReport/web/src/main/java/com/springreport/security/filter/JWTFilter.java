@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.springreport.api.whitelist.IWhitelistService;
 import com.springreport.base.UserInfoDto;
 import com.springreport.constants.Constants;
 import com.springreport.constants.StatusCode;
@@ -54,23 +55,17 @@ public class JWTFilter extends BasicHttpAuthenticationFilter{
 		this.redisUtil = redisUtil;
 	}
 	
-	// IP 白名单（支持逗号分隔）
-    private Set<String> ipWhitelist = new HashSet<>();
-    // 域名白名单（匹配 Host 请求头）
-    private Set<String> domainWhitelist = new HashSet<>();
     
     private boolean enableWhiteCheck = false;
 
-    public void setIpWhitelist(String ips) {
-        this.ipWhitelist = new HashSet<>(Arrays.asList(ips.split(",")));
-    }
-
-    public void setDomainWhitelist(String domains) {
-        this.domainWhitelist = new HashSet<>(Arrays.asList(domains.split(",")));
-    }
-    
     public void setEnableWhiteCheck(boolean enableWhiteCheck) {
 		this.enableWhiteCheck = enableWhiteCheck;
+	}
+    
+    private IWhitelistService iWhitelistService;
+
+	public void setiWhitelistService(IWhitelistService iWhitelistService) {
+		this.iWhitelistService = iWhitelistService;
 	}
 
 	/**
@@ -198,6 +193,9 @@ public class JWTFilter extends BasicHttpAuthenticationFilter{
     		HttpServletRequest httpRequest = (HttpServletRequest) request;
     		 // 1. 获取真实 IP（考虑代理场景，优先取 X-Forwarded-For）
             String clientIp = CusAccessObjectUtil.getIpAddress(httpRequest);
+            JSONObject whiteList = this.iWhitelistService.getWhiteList();
+            List<String> ipWhitelist = (List<String>) whiteList.get("ipWhitelist");
+            List<String> domainWhitelist = (List<String>) whiteList.get("domainWhitelist");
             boolean whiteCheck = false;
             if (ipWhitelist.contains(clientIp)) {
             	whiteCheck = true;

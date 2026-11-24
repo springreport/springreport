@@ -1011,4 +1011,9 @@ selectUtil.dataType = [
   { value: '1', label: '自定义' },
   { value: '2', label: 'SQL语句' }
 ]
+selectUtil.whitelistType = [
+  { value: 1, label: 'IP' },
+  { value: 2, label: '域名' }
+]
+
 export default selectUtil

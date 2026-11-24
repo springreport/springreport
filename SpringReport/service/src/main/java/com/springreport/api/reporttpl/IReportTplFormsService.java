@@ -41,8 +41,9 @@ public interface IReportTplFormsService {
 	 * @param model
 	 * @param userInfoDto
 	 * @return BaseEntity
+	 * @throws Exception 
 	 * @date 2025-02-17 12:22:43 
 	 */ 
-	BaseEntity deleteReportData(JSONObject model,UserInfoDto userInfoDto);
+	BaseEntity deleteReportData(JSONObject model,UserInfoDto userInfoDto) throws Exception;
 	
 }

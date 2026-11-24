@@ -1032,11 +1032,12 @@ public class ReportTplController extends BaseController {
 	 * @param model
 	 * @param userInfoDto
 	 * @return Response
+	 * @throws Exception 
 	 * @date 2025-02-17 12:09:52 
 	 */ 
 	@RequestMapping(value = "/deleteReportData",method = RequestMethod.POST)
 	@MethodLog(module="ReportTpl",remark="填报报表删除数据",operateType=Constants.OPERATE_TYPE_DELETE)
-	public Response deleteReportData(@RequestBody JSONObject model,@LoginUser UserInfoDto userInfoDto) {
+	public Response deleteReportData(@RequestBody JSONObject model,@LoginUser UserInfoDto userInfoDto) throws Exception {
 		BaseEntity result = this.iReportTplFormsService.deleteReportData(model,userInfoDto);
 		return Response.success(result,result.getStatusMsg());
 	}

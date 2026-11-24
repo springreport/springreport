@@ -31,6 +31,7 @@ import com.springreport.api.luckysheetreportformscell.ILuckysheetReportFormsCell
 import com.springreport.api.luckysheetreportformshis.ILuckysheetReportFormsHisService;
 import com.springreport.api.reportdatasource.IReportDatasourceService;
 import com.springreport.api.reportdatasourcedictdata.IReportDatasourceDictDataService;
+import com.springreport.api.reportdatasourcetables.IReportDatasourceTablesService;
 import com.springreport.api.reportformsdatasource.IReportFormsDatasourceService;
 import com.springreport.api.reportformsdatasourceattrs.IReportFormsDatasourceAttrsService;
 import com.springreport.api.reportsheetpdfprintsetting.IReportSheetPdfPrintSettingService;
@@ -156,6 +157,9 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 	
 	@Autowired
 	private IReportSheetPdfPrintSettingService iReportSheetPdfPrintSettingService;
+	
+	@Autowired
+	private IReportDatasourceTablesService iReportDatasourceTablesService;
 	
 	private static Map<Integer,LuckySheetBasicDynamicDataProcess> luckySheetDataProcess=new HashMap<Integer,LuckySheetBasicDynamicDataProcess>();
 	
@@ -4471,20 +4475,23 @@ public class ReportTplFormsServiceImpl implements IReportTplFormsService{
 	 * @param model
 	 * @param userInfoDto
 	 * @return
+	 * @throws Exception 
 	 * @see com.springreport.api.reporttpl.IReportTplFormsService#deleteReportData(com.alibaba.fastjson.JSONObject, com.springreport.base.UserInfoDto)
 	 * @date 2025-02-17 12:26:37 
 	 */
 	@Override
-	public BaseEntity deleteReportData(JSONObject model, UserInfoDto userInfoDto) {
+	public BaseEntity deleteReportData(JSONObject model, UserInfoDto userInfoDto) throws Exception {
 		BaseEntity result = new BaseEntity();
 		Long datasourceId = model.getLongValue("datasourceId");
 		ReportDatasource reportDatasource = this.iReportDatasourceService.getById(Long.valueOf(datasourceId));
 		DataSourceConfig dataSourceConfig = new DataSourceConfig(Long.valueOf(datasourceId), reportDatasource.getDriverClass(), reportDatasource.getJdbcUrl(), reportDatasource.getUserName(), reportDatasource.getPassword(), null);
 		DataSource dataSource = JdbcUtils.getDataSource(dataSourceConfig);
 		Map<String, String> columnJavaType = new HashMap<>();
+		String table = model.getString("table");
+		String column = model.getString("column");
+		this.iReportDatasourceTablesService.datasouceWhiteCheck(datasourceId, table, column);
 		if(reportDatasource.getType().intValue() == 5 || reportDatasource.getType().intValue() == 11 || reportDatasource.getType().intValue() == 12) {
-			String table = model.getString("table");
-			String column = model.getString("column");
+			
 			String deleteType = model.getString("deleteType");
 			String deleteColumn = model.getString("deleteColumn");
 			String sqlText = "";

@@ -300,4 +300,22 @@ public enum RedisPrefixEnum implements BaseCharEnum{
 			return "用户登录失败次数key";
 		}
 	},
+	DATASOURCETABLESKEY{
+		public String getCode() {
+			return "datasourceTablesKey:";
+		}
+
+		public String getName() {
+			return "数据源下的所有表缓存key";
+		}
+	},
+	DATASOURCETABLECOLUMNSKEY{
+		public String getCode() {
+			return "datasourceTableColumnsKey:";
+		}
+
+		public String getName() {
+			return "数据源下的表对应的字段名缓存key";
+		}
+	},
 }

@@ -1,9 +1,11 @@
 package com.springreport.impl.reportdatasource;
 
 import com.springreport.entity.reportdatasource.ReportDatasource;
+import com.springreport.entity.reportdatasourcetables.ReportDatasourceTables;
 import com.springreport.entity.reporttpldataset.ReportTplDataset;
 import com.springreport.mapper.reportdatasource.ReportDatasourceMapper;
 import com.springreport.api.reportdatasource.IReportDatasourceService;
+import com.springreport.api.reportdatasourcetables.IReportDatasourceTablesService;
 import com.springreport.api.reporttpl.IReportTplService;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -84,6 +86,9 @@ public class ReportDatasourceServiceImpl extends ServiceImpl<ReportDatasourceMap
 	
 	@Value("${merchantmode}")
     private Integer merchantmode;
+	
+	@Autowired
+	private IReportDatasourceTablesService reportDatasourceTablesService;
 	
 	/** 
 	* @Title: tablePagingQuery 
@@ -187,6 +192,27 @@ public class ReportDatasourceServiceImpl extends ServiceImpl<ReportDatasourceMap
 			model.setDriverClass(DriverClassEnum.VASTBASEG100.getName());
 		}
 		this.save(model);
+		//将这个数据源下的表解析一下插入到report_datasource_tables表里面，用于后面白名单校验
+		List<Map<String, String>> datasourceTables = this.getDatabseTables(model);
+		try {
+			if(ListUtil.isNotEmpty(datasourceTables)) {
+				List<ReportDatasourceTables> reportDatasourceTables = new ArrayList<ReportDatasourceTables>();
+				ReportDatasourceTables tables = null;
+				for (int i = 0; i < datasourceTables.size(); i++) {
+					tables = new ReportDatasourceTables();
+					if(datasourceTables.get(i).get("name") != null) {
+						tables.setTableName(String.valueOf(datasourceTables.get(i).get("name")));
+						tables.setDatasourceId(model.getId());
+						reportDatasourceTables.add(tables);
+					}
+				}
+				redisUtil.set(RedisPrefixEnum.DATASOURCETABLESKEY.getCode()+String.valueOf(model.getId()), reportDatasourceTables);
+				this.reportDatasourceTablesService.saveBatch(reportDatasourceTables);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		result.setStatusMsg(MessageUtil.getValue("info.insert"));
 		return result;
 	}

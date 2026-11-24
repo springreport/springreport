@@ -21,6 +21,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Primary;
 
+import com.springreport.api.whitelist.IWhitelistService;
 import com.springreport.constants.Constants;
 import com.springreport.security.filter.JWTFilter;
 import com.springreport.shiro.ShiroMethodInterceptor;
@@ -42,14 +43,11 @@ public class ShiroConfig {
 	@Value("${enable.white.check}")
     private boolean enableWhiteCheck;
 	
-	@Value("${ip.white.list}")
-    private String ipWhiteList;
-	
-	@Value("${domain.white.list}")
-    private String domainWhiteList;
-	
 	@Autowired
 	private RedisUtil redisUtil;
+	
+	@Autowired
+	private IWhitelistService iWhitelistService;
 	
 	
 	@Bean(name = "shiroFilterFactoryBean")
@@ -60,9 +58,8 @@ public class ShiroConfig {
 			// 添加自己的过滤器并且取名为jwt
 			Map<String, Filter> filterMap = new HashMap<>();
 			JWTFilter jwtFilter = new JWTFilter(redisUtil);
-			jwtFilter.setIpWhitelist(ipWhiteList);
-			jwtFilter.setDomainWhitelist(domainWhiteList);
 			jwtFilter.setEnableWhiteCheck(enableWhiteCheck);
+			jwtFilter.setiWhitelistService(iWhitelistService);
 			filterMap.put(Constants.JWT_STRING, jwtFilter);
 			
 			shiroFilterFactoryBean.setFilters(filterMap);

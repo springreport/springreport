@@ -48,7 +48,8 @@ export default {
             { label: '查看', type: 'text', auth: 'reportDatasource_getDetail', handle: (row) => this.showModal(this.commonConstants.modalType.detail, row.id) },
             { label: '编辑', type: 'text', auth: 'reportDatasource_update', handle: (row) => this.showModal(this.commonConstants.modalType.update, row.id) },
             { label: '删除', type: 'text', auth: 'reportDatasource_delete', handle: (row) => this.deleteOne(row.id) },
-            { label: '数据字典', type: 'text', auth: 'reportDatasource_dict', handle: (row) => this.routerTo(row) }
+            { label: '数据字典', type: 'text', auth: 'reportDatasource_dict', handle: (row) => this.routerTo(row,'reportDatasourceDictType') },
+            { label: '数据源表', type: 'text', auth: 'reportDatasource_tables', handle: (row) => this.routerTo(row,'ReportDatasourceTables') }
           ] },
           { label: '编码', prop: 'code', align: 'center', overflow: true },
           { label: '数据源名称', prop: 'name', align: 'center', overflow: true },
@@ -393,9 +394,10 @@ export default {
     selectChange(rows) {
       this.pageData.selectList = rows
     },
-    routerTo(row) {
+    routerTo(row,routerName) {
       this.$store.commit('setParameters', { key: 'reportDatasourceId', value: row.id })
-      this.$router.push({ name: 'reportDatasourceDictType',query:{thirdPartyType:localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)} })
+      this.$store.commit('setParameters', { key: 'reportDatasourceId2', value: row.id })
+      this.$router.push({ name: routerName,query:{thirdPartyType:localStorage.getItem(this.commonConstants.sessionItem.thirdPartyType)} })
     },
     // 修改数据源类型
     changeDatasourceType() {

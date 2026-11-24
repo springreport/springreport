@@ -165,6 +165,10 @@ commonConstants.dictionary = {
     1: '走马灯',
     2: 'tab标签'
   },
+  whitelistType: {
+    1: 'IP',
+    2: '域名'
+  },
 }
 
 /**
@@ -467,6 +471,15 @@ commonConstants.routers = [
         }
       },
       {
+        path: '/ReportDatasourceTables',
+        name: 'ReportDatasourceTables',
+        component: () =>
+          import('@/components/pages/reportdatasourcetables/ReportDatasourceTables.vue'),
+        meta: {
+          title: '数据源表'
+        }
+      },
+      {
         path: '/reportTpl',
         name: 'reportTpl',
         component: () => import('@/components/pages/reporttpl/ReportTpl.vue'),
@@ -504,6 +517,14 @@ commonConstants.routers = [
         component: () => import('@/components/pages/syspost/SysPost.vue'),
         meta: {
           title: '岗位管理'
+        }
+      },
+      {
+        path: '/whitelist',
+        name: 'whitelist',
+        component: () => import('@/components/pages/whitelist/Whitelist.vue'),
+        meta: {
+          title: '白名单管理'
         }
       },
       {
